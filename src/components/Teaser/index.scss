@@ -1,13 +1,11 @@
 @import '../../styles/palette';
 @import '../../styles/shadow';
 
-
-.dydu-header {
+.dydu-teaser {
   @extend %background-primary;
-  @extend %shadow-1;
+  @extend %shadow-2;
   @extend %text-accent;
 
-  align-items: center;
-  flex: 0 0 auto;
+  cursor: pointer;
   padding: 1em;
 }
