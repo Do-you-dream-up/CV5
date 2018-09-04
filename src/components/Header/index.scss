@@ -8,6 +8,32 @@
   @extend %text-accent;
 
   align-items: center;
+  display: flex;
   flex: 0 0 auto;
+  justify-content: space-between;
   padding: 1em;
+
+  .dydu-header-actions {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      $height: 32px;
+      $width: 32px;
+
+      align-items: center;
+      border-radius: 50%;
+      display: flex;
+      height: $height;
+      justify-content: center;
+      margin-left: .5em;
+      width: $width;
+
+      &:hover {
+        @extend %background-primary-dark;
+      }
+    }
+  }
 }

@@ -9,9 +9,10 @@ import './index.scss';
 
 class Chatbox extends React.Component {
   render() {
+    const { toggle } = this.props;
     return (
       <div className="dydu-chatbox">
-        <Header />
+        <Header toggle={toggle} />
         <History />
         <Footer />
       </div>

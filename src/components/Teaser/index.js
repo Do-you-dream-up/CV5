@@ -5,8 +5,9 @@ import './index.scss';
 
 class Teaser extends React.Component {
   render() {
+    const { toggle } = this.props;
     return (
-      <div>
+      <div className="dydu-teaser" onClick={toggle}>
         Teaser
       </div>
     );
