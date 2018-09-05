@@ -2,6 +2,8 @@
 
 
 .dydu-button {
+  background: 0;
+  border: 0;
   cursor: pointer;
   display: flex;
 
@@ -16,8 +18,8 @@
   }
 
   &.dydu-button-icon {
-    $height: 32px;
-    $width: 32px;
+    $height: 40px;
+    $width: 40px;
 
     align-items: center;
     border-radius: 50%;
@@ -28,5 +30,17 @@
 
   &:hover {
     @extend %background-primary-dark;
+  }
+}
+
+.dydu-button-actions {
+  align-items: center;
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  > * {
+    margin-left: .5em;
   }
 }

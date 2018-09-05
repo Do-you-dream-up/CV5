@@ -1,4 +1,18 @@
+@import '../../styles/palette';
+
+
 .dydu-footer {
+  @extend %background-primary;
+
+  display: flex;
   flex: 0 0 auto;
-  padding: 1em;
+  padding: .5em;
+
+  .dydu-footer-input {
+    @extend %background-primary-light;
+
+    border: 0;
+    flex: auto;
+    padding-left: 1em;
+  }
 }
