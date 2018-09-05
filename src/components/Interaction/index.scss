@@ -2,7 +2,7 @@
 @import '../../styles/shadow.scss';
 
 
-.dydu-bubble {
+.dydu-interaction {
   $color-avatar: #FFFFFF;
   $color-request: $primary;
   $color-response: #FFFFFF;
@@ -13,33 +13,33 @@
     margin-bottom: 1em;
   }
 
-  &.dydu-bubble-request {
+  &.dydu-interaction-request {
     margin-left: auto;
 
-    .dydu-bubble-avatar {
+    .dydu-interaction-avatar {
       margin-left: .5em;
       order: 2;
     }
 
-    .dydu-bubble-content {
+    .dydu-interaction-content {
       @extend %text-accent;
 
       background-color: $color-request;
     }
   }
 
-  &.dydu-bubble-response {
+  &.dydu-interaction-response {
 
-    .dydu-bubble-avatar {
+    .dydu-interaction-avatar {
       margin-right: .5em;
     }
 
-    .dydu-bubble-content {
+    .dydu-interaction-content {
       background-color: $color-response;
     }
   }
 
-  .dydu-bubble-avatar {
+  .dydu-interaction-avatar {
     @extend %shadow-1;
 
     background-color: $color-avatar;
@@ -48,7 +48,7 @@
     width: 40px;
   }
 
-  .dydu-bubble-content {
+  .dydu-interaction-content {
     @extend %shadow-1;
 
     border-radius: 8px;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Bubble from '../Bubble';
+import Interaction from '../Interaction';
 
 import './index.scss';
 
@@ -10,7 +10,7 @@ class History extends React.Component {
     const bubbles = [];
     return (
       <div className="dydu-history">
-        {bubbles.map((it, index) => <Bubble children={it.text} key={index} type={it.type} />)}
+        {bubbles.map((it, index) => <Interaction children={it.text} key={index} type={it.type} />)}
       </div>
     );
   }
