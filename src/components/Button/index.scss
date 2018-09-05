@@ -1,0 +1,32 @@
+@import '../../styles/palette';
+
+
+.dydu-button {
+  cursor: pointer;
+  display: flex;
+
+  &.dydu-button-default {
+    align-items: center;
+    border-radius: 4px;
+    padding: .5em 1em;
+
+    > *:not(:first-child) {
+      margin-left: .5em;
+    }
+  }
+
+  &.dydu-button-icon {
+    $height: 32px;
+    $width: 32px;
+
+    align-items: center;
+    border-radius: 50%;
+    height: $height;
+    justify-content: center;
+    width: $width;
+  }
+
+  &:hover {
+    @extend %background-primary-dark;
+  }
+}

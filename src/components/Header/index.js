@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Button from '../Button';
+
 import './index.scss';
 
 
@@ -10,7 +12,9 @@ class Header extends React.Component {
       <div className="dydu-header">
         <div className="dydu-header-title">Header</div>
         <ul className="dydu-header-actions">
-          <li onClick={toggle}><img alt="Close" src="icons/close.png" title="Close"/></li>
+          <Button component="li" onClick={toggle} variant="icon">
+            <img alt="Close" src="icons/close.png" title="Close"/>
+          </Button>
         </ul>
       </div>
     );
