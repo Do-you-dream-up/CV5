@@ -1,0 +1,58 @@
+@import '../../styles/palette.scss';
+@import '../../styles/shadow.scss';
+
+
+.dydu-bubble {
+  $color-avatar: #FFFFFF;
+  $color-request: $primary;
+  $color-response: #FFFFFF;
+
+  display: flex;
+
+  &:not(:last-child) {
+    margin-bottom: 1em;
+  }
+
+  &.dydu-bubble-request {
+    margin-left: auto;
+
+    .dydu-bubble-avatar {
+      margin-left: .5em;
+      order: 2;
+    }
+
+    .dydu-bubble-content {
+      @extend %text-accent;
+
+      background-color: $color-request;
+    }
+  }
+
+  &.dydu-bubble-response {
+
+    .dydu-bubble-avatar {
+      margin-right: .5em;
+    }
+
+    .dydu-bubble-content {
+      background-color: $color-response;
+    }
+  }
+
+  .dydu-bubble-avatar {
+    @extend %shadow-1;
+
+    background-color: $color-avatar;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+  }
+
+  .dydu-bubble-content {
+    @extend %shadow-1;
+
+    border-radius: 8px;
+    flex: 1;
+    padding: 1em;
+  }
+}
