@@ -11,7 +11,7 @@ class Footer extends React.Component {
       <div className="dydu-footer">
         <input className="dydu-footer-input" placeholder="Type here..." type="text" />
         <ul className="dydu-button-actions">
-          <Button component="li" variant="icon"><img alt="Send" src="icons/send.png" title="Send"/></Button>
+          <li><Button children={<img alt="Send" src="icons/send.png" title="Send"/>} variant="icon" /></li>
         </ul>
       </div>
     );

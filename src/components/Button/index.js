@@ -1,15 +1,14 @@
 import React from 'react';
 
+import classNames from 'classnames';
+
 import './index.scss';
 
 
 class Button extends React.Component {
   render() {
     const { className, component, variant, ...properties } = this.props;
-    const classes = ['dydu-button', {
-      default: 'dydu-button-default',
-      icon: 'dydu-button-icon'
-    }[variant || 'default'], className].join(' ');
+    const classes = classNames('dydu-button', `dydu-button-${variant}`);
     return React.createElement(component ? component : 'button', {...properties, className: classes});
   }
 }

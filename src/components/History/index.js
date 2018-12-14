@@ -7,10 +7,10 @@ import './index.scss';
 
 class History extends React.Component {
   render() {
-    const bubbles = [];
+    const interactions = [];
     return (
       <div className="dydu-history">
-        {bubbles.map((it, index) => <Interaction children={it.text} key={index} type={it.type} />)}
+        {interactions.map((it, index) => <Interaction key={index} text={it.text} type={it.type} />)}
       </div>
     );
   }

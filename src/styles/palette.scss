@@ -1,19 +1,17 @@
-$accent: #FF4081;
-$divider: #BDBDBD;
-$primary-dark: #303F9F;
-$primary-light: #C5CAE9;
-$primary: #3F51B5;
-$text-accent: #FFFFFF;
-$text-primary: #212121;
-$text-secondary: #757575;
+$palette-accent: #FF4081;
+$palette-divider: #BDBDBD;
+$palette-primary-dark: #303F9F;
+$palette-primary-light: #C5CAE9;
+$palette-primary: #3F51B5;
+$palette-text-accent: #FFFFFF;
+$palette-text-primary: #212121;
+$palette-text-secondary: #757575;
 
+%background-accent { background-color: $palette-accent; }
+%background-primary { background-color: $palette-primary; }
+%background-primary-dark { background-color: $palette-primary-dark; }
+%background-primary-light { background-color: $palette-primary-light; }
 
-%background-accent { background-color: $accent; }
-%background-primary { background-color: $primary; }
-%background-primary-dark { background-color: $primary-dark; }
-%background-primary-light { background-color: $primary-light; }
-
-
-%text-accent { color: $text-accent; }
-%text-primary { color: $text-primary; }
-%text-secondary { color: $text-secondary; }
+%text-accent { color: $palette-text-accent; }
+%text-primary { color: $palette-text-primary; }
+%text-secondary { color: $palette-text-secondary; }

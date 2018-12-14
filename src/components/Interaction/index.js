@@ -1,19 +1,18 @@
 import React from 'react';
 
+import classNames from 'classnames';
+
 import './index.scss';
 
 
 class Interaction extends React.Component {
   render() {
-    const { children, className, type, ...properties } = this.props;
-    const classes = ['dydu-interaction', {
-      request: 'dydu-interaction-request',
-      response: 'dydu-interaction-response'
-    }[type], className].join(' ');
+    const { className, text, type, ...properties } = this.props;
+    const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
       <div className={classes} {...properties}>
         <div className="dydu-interaction-avatar"></div>
-        <div className="dydu-interaction-content" children={children}></div>
+        <div className="dydu-interaction-content" dangerouslySetInnerHTML={{__html: text}}></div>
       </div>
     );
   }

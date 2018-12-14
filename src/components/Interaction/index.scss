@@ -1,10 +1,10 @@
-@import '../../styles/palette.scss';
-@import '../../styles/shadow.scss';
+@import '../../styles/palette';
+@import '../../styles/shadow';
 
 
 .dydu-interaction {
   $color-avatar: #FFFFFF;
-  $color-request: $primary;
+  $color-request: $palette-primary;
   $color-response: #FFFFFF;
 
   display: flex;
