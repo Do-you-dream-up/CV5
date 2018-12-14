@@ -4,3 +4,8 @@
 hr {
   border-color: $palette-divider;
 }
+
+p {
+  &:first-child { margin-top: 0; }
+  &:last-child { margin-bottom: 0; }
+}

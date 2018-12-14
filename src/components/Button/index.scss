@@ -6,6 +6,8 @@
   border: 0;
   cursor: pointer;
   display: flex;
+  outline: none;
+  padding: 0;
 
   &.dydu-button-default {
     align-items: center;
@@ -26,6 +28,14 @@
     height: $height;
     justify-content: center;
     width: $width;
+
+    img {
+      $height: 20px;
+      $width: 20px;
+
+      height: $height;
+      width: $width;
+    }
   }
 
   &:hover {
