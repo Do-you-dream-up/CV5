@@ -13,4 +13,13 @@
   justify-content: space-between;
   padding: .5em;
   position: relative;
+
+  .dydu-header-actions {
+    align-items: center;
+    display: flex;
+
+    > * {
+      margin-left: .5em;
+    }
+  }
 }

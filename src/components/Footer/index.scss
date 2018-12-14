@@ -15,4 +15,13 @@
     flex: auto;
     padding-left: 1em;
   }
+
+  .dydu-footer-actions {
+    align-items: center;
+    display: flex;
+
+    > * {
+      margin-left: .5em;
+    }
+  }
 }

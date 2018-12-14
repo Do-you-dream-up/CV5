@@ -42,15 +42,3 @@
     @extend %background-primary-dark;
   }
 }
-
-.dydu-button-actions {
-  align-items: center;
-  display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-
-  > * {
-    margin-left: .5em;
-  }
-}

@@ -11,11 +11,9 @@ class Header extends React.Component {
     return (
       <div className="dydu-header">
         <div className="dydu-header-title">Header</div>
-        <ul className="dydu-button-actions">
-          <Button component="li" onClick={toggle} variant="icon">
-            <img alt="Close" src="icons/close.png" title="Close"/>
-          </Button>
-        </ul>
+        <div className="dydu-header-actions">
+          <Button onClick={toggle} variant="icon"><img alt="Close" src="icons/close.png" title="Close" /></Button>
+        </div>
       </div>
     );
   }
