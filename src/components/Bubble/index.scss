@@ -1,0 +1,22 @@
+@import '../../styles/palette';
+@import '../../styles/shadow';
+
+
+.dydu-bubble {
+  @extend %shadow-1;
+
+  border-radius: 8px;
+  padding: 1em;
+
+  &:not(:last-child) {
+    margin-bottom: .5em;
+  }
+
+  &.dydu-bubble-request {
+    @extend %palette-bubble-request;
+  }
+
+  &.dydu-bubble-response {
+    @extend %palette-bubble-response;
+  }
+}

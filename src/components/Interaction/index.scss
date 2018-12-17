@@ -3,10 +3,6 @@
 
 
 .dydu-interaction {
-  $color-avatar: #FFFFFF;
-  $color-request: $palette-primary;
-  $color-response: #FFFFFF;
-
   display: flex;
 
   &:not(:last-child) {
@@ -17,42 +13,24 @@
     margin-left: auto;
 
     .dydu-interaction-avatar {
+      @extend %palette-avatar-request;
       margin-left: .5em;
+      margin-right: 0;
       order: 2;
-    }
-
-    .dydu-interaction-content {
-      @extend %text-accent;
-
-      background-color: $color-request;
-    }
-  }
-
-  &.dydu-interaction-response {
-
-    .dydu-interaction-avatar {
-      margin-right: .5em;
-    }
-
-    .dydu-interaction-content {
-      background-color: $color-response;
     }
   }
 
   .dydu-interaction-avatar {
+    @extend %palette-avatar-response;
     @extend %shadow-1;
 
-    background-color: $color-avatar;
     border-radius: 50%;
     height: 40px;
+    margin-right: .5em;
     width: 40px;
   }
 
-  .dydu-interaction-content {
-    @extend %shadow-1;
-
-    border-radius: 8px;
+  .dydu-interaction-bubbles {
     flex: 1;
-    padding: 1em;
   }
 }

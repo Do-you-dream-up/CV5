@@ -15,3 +15,24 @@ $palette-text-secondary: #757575;
 %text-accent { color: $palette-text-accent; }
 %text-primary { color: $palette-text-primary; }
 %text-secondary { color: $palette-text-secondary; }
+
+%palette-avatar-request {
+  $color: $palette-primary;
+  background-color: $color;
+}
+
+%palette-avatar-response {
+  $color: #FFFFFF;
+  background-color: $color;
+}
+
+%palette-bubble-request {
+  $color: $palette-primary;
+  @extend %text-accent;
+  background-color: $color;
+}
+
+%palette-bubble-response {
+  $color: #FFFFFF;
+  background-color: $color;
+}
