@@ -11,7 +11,7 @@ class Footer extends React.PureComponent {
       <div className="dydu-footer">
         <input className="dydu-footer-input" placeholder="Type here..." type="text" />
         <div className="dydu-footer-actions">
-          <Button variant="icon"><img alt="Send" src="icons/send.png" title="Send" /></Button>
+          <Button children={<img alt="Send" src="icons/send.png" title="Send" />} variant="icon" />
         </div>
       </div>
     );
