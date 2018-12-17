@@ -6,14 +6,37 @@ import './index.scss';
 
 
 class Footer extends React.PureComponent {
+
+  state = {input: ''};
+
+  change = event => {
+    this.setState({input: event.target.value});
+  };
+
+  reset = () => {
+    this.setState({input: ''});
+  };
+
+  submit = event => {
+    event.preventDefault();
+    if (this.state.input.trim()) {
+      this.reset();
+    }
+  };
+
   render() {
     return (
-      <div className="dydu-footer">
-        <input className="dydu-footer-input" placeholder="Type here..." type="text" />
+      <form className="dydu-footer" onSubmit={this.submit}>
+        <input autoFocus
+               className="dydu-footer-input"
+               onChange={this.change}
+               placeholder="Type here..."
+               type="text"
+               value={this.state.input} />
         <div className="dydu-footer-actions">
-          <Button children={<img alt="Send" src="icons/send.png" title="Send" />} variant="icon" />
+          <Button children={<img alt="Send" src="icons/send.png" title="Send" />} type="submit" variant="icon" />
         </div>
-      </div>
+      </form>
     );
   }
 }
