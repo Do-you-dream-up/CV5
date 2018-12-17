@@ -21,6 +21,7 @@ class Footer extends React.PureComponent {
     event.preventDefault();
     if (this.state.input.trim()) {
       this.reset();
+      window.dydu.api.talk(this.state.input.trim());
     }
   };
 
