@@ -5,7 +5,7 @@ import Interaction from '../Interaction';
 import './index.scss';
 
 
-class History extends React.Component {
+class History extends React.PureComponent {
   render() {
     const interactions = [];
     return (

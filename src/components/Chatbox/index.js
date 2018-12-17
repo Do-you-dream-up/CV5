@@ -7,7 +7,7 @@ import History from '../History';
 import './index.scss';
 
 
-class Chatbox extends React.Component {
+class Chatbox extends React.PureComponent {
   render() {
     const { toggle } = this.props;
     return (

@@ -5,7 +5,7 @@ import Button from '../Button';
 import './index.scss';
 
 
-class Footer extends React.Component {
+class Footer extends React.PureComponent {
   render() {
     return (
       <div className="dydu-footer">

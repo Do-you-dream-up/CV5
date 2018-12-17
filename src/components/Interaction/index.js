@@ -7,7 +7,7 @@ import Bubble from  '../Bubble';
 import './index.scss';
 
 
-class Interaction extends React.Component {
+class Interaction extends React.PureComponent {
 
   state = {bubbles: []};
 

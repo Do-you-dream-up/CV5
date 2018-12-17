@@ -6,7 +6,7 @@ import Teaser from '../Teaser';
 import './index.scss';
 
 
-class Application extends React.Component {
+class Application extends React.PureComponent {
 
   state = {open: true};
 

@@ -5,7 +5,7 @@ import Button from '../Button';
 import './index.scss';
 
 
-class Header extends React.Component {
+class Header extends React.PureComponent {
   render() {
     const { toggle } = this.props;
     return (
