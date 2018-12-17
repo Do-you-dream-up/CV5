@@ -1,8 +1,8 @@
 import React from 'react';
 
+import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
-import History from '../History';
 
 import './index.scss';
 
@@ -13,7 +13,7 @@ class Chatbox extends React.PureComponent {
     return (
       <div className="dydu-chatbox">
         <Header toggle={toggle} />
-        <History />
+        <Dialog />
         <Footer />
       </div>
     );
