@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import classNames from 'classnames';
 
@@ -15,6 +16,12 @@ class Interaction extends React.PureComponent {
     const interaction = document.createElement('div');
     interaction.innerHTML = this.props.text;
     this.setState(state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}));
+  }
+
+  componentDidUpdate() {
+    if (this.props.last) {
+      ReactDOM.findDOMNode(this).scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
   }
 
   render() {
