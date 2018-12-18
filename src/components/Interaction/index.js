@@ -18,7 +18,8 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { className, text, type, ...properties } = this.props;
+    const { className, last, request, text, ...properties } = this.props;
+    const type = request ? 'request' : 'response';
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
       <div className={classes} {...properties}>

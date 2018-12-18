@@ -23,7 +23,10 @@ class Footer extends React.PureComponent {
     const text = this.state.input.trim();
     if (text) {
       this.reset();
-      dydu.talk(text);
+      this.props.onRequest(text);
+      dydu.talk(text).then(response => {
+        this.props.onResponse(response);
+      });
     }
   };
 

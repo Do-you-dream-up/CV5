@@ -13,13 +13,25 @@ class Chatbox extends React.PureComponent {
     interactions: [],
   };
 
+  add = interaction => {
+    this.setState(state => ({interactions: [...state.interactions, interaction]}));
+  };
+
+  addRequest = it => {
+    this.add(it && it.type ? it : {type: 'talk', values: {text: it}});
+  };
+
+  addResponse = it => {
+    this.add(it && it.type ? it : {type: 'talkResponse', values: {text: it}});
+  };
+
   render() {
     const { toggle } = this.props;
     return (
       <div className="dydu-chatbox">
         <Header toggle={toggle} />
         <Dialog interactions={this.state.interactions} />
-        <Footer />
+        <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
       </div>
     );
   }
