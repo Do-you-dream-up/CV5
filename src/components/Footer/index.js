@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Button from '../Button';
+import dydu from '../../tools/dydu';
 
 import './index.scss';
 
@@ -19,9 +20,10 @@ class Footer extends React.PureComponent {
 
   submit = event => {
     event.preventDefault();
-    if (this.state.input.trim()) {
+    const text = this.state.input.trim();
+    if (text) {
       this.reset();
-      window.dydu.api.talk(this.state.input.trim());
+      dydu.talk(text);
     }
   };
 
