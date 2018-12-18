@@ -1,21 +1,22 @@
 import React from 'react';
 
 import Interaction from '../Interaction';
-import { HistoryConsumer } from '../../contexts/History';
 
 import './index.scss';
 
 
 class Dialog extends React.PureComponent {
   render() {
+    const { interactions } = this.props;
     return (
-      <HistoryConsumer>
-        {({state}) => (
-          <div className="dydu-history">
-            {state.interactions.map((it, index) => <Interaction key={index} text={it.text} type={it.type} />)}
-          </div>
-        )}
-      </HistoryConsumer>
+      <div className="dydu-history">
+        {interactions.map((it, index) => (
+          <Interaction key={index}
+                       last={index === interactions.length - 1}
+                       request={it.type === 'talk'}
+                       text={it.values ? it.values.text : null} />
+        ))}
+      </div>
     );
   }
 }
