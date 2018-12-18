@@ -14,16 +14,9 @@ class Dydu {
 
   constructor() {
 
-    window.dydu = window.dydu || {
-
-      api: {
-        talk: this.talk.bind(this),
-      },
-
-      cookies: {
-        client: 'dydu.client.id',
-        context: 'dydu.context.id',
-      },
+    this.cookies = {
+      client: 'dydu.client.id',
+      context: 'dydu.context.id',
     };
 
     this.alreadyCame = !!this.clientId;
@@ -32,7 +25,7 @@ class Dydu {
   }
 
   get clientId() {
-    const clientId = cookie.get(window.dydu.cookies.client);
+    const clientId = cookie.get(this.cookies.client);
     if (clientId !== undefined) {
       return decode(clientId);
     }
@@ -44,18 +37,18 @@ class Dydu {
 
   set clientId(value) {
     if (value !== undefined) {
-      cookie.set(window.dydu.cookies.client, encode(value), {expires: 365})
+      cookie.set(this.cookies.client, encode(value), {expires: 365})
     }
   }
 
   get contextId() {
-    const contextId = cookie.get(window.dydu.cookies.context);
+    const contextId = cookie.get(this.cookies.context);
     return contextId !== undefined ? decode(contextId) : undefined;
   }
 
   set contextId(value) {
     if (value !== undefined) {
-      cookie.set(window.dydu.cookies.context, encode(value), {expires: 1 / 24 / 60 * 10})
+      cookie.set(this.cookies.context, encode(value), {expires: 1 / 24 / 60 * 10})
     }
   }
 
@@ -67,7 +60,6 @@ class Dydu {
         response.data.values = decode(response.data.values);
         this.contextId = response.data.values.contextId;
       }
-      console.log(response.data);
       return response.data;
     });
   }
