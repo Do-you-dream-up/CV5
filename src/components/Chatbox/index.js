@@ -3,6 +3,7 @@ import React from 'react';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
+import dydu from '../../tools/dydu';
 
 import './index.scss';
 
@@ -15,7 +16,9 @@ class Chatbox extends React.PureComponent {
   };
 
   add = interaction => {
-    this.setState(state => ({interactions: [...state.interactions, interaction]}));
+    this.setState(state => ({
+      interactions: [...state.interactions, ...(Array.isArray(interaction) ? interaction : [interaction])],
+    }));
   };
 
   addRequest = it => {
@@ -30,11 +33,28 @@ class Chatbox extends React.PureComponent {
     }.bind(this), 1000)
   };
 
+  fetchHistory = () => (
+    dydu.history().then(response => {
+      if (response.values && Array.isArray(response.values.interactions)) {
+        const interactions = response.values.interactions.reduce((accumulator, it) => (
+          accumulator.push(
+            this.makeInteraction(it.user, 'talk'),
+            this.makeInteraction(it.text, 'talkResponse')) && accumulator
+        ), []);
+        this.add(interactions);
+      }
+    })
+  );
+
   makeInteraction = (it, type) => (it && it.type ? it : {type: type, values: {text: it}});
 
   think = think => {
     this.setState({thinking: think === undefined ? true : !!think});
   };
+
+  componentDidMount() {
+    this.fetchHistory();
+  }
 
   render() {
     const { toggle } = this.props;

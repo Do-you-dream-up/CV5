@@ -64,6 +64,15 @@ class Dydu {
     });
   }
 
+  history(options) {
+    const data = this.makeMessage('history');
+    data.parameters = {
+      ...data.parameters,
+      useServerCookieForContext: false,
+    };
+    return this.emit(data);
+  }
+
   makeMessage(type) {
     return {
       parameters: {
