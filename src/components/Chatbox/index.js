@@ -23,7 +23,15 @@ class Chatbox extends React.PureComponent {
   };
 
   addResponse = it => {
-    this.add(it && it.type ? it : {type: 'talkResponse', values: {text: it}});
+    this.think();
+    setTimeout(function() {
+      this.add(it && it.type ? it : {type: 'talkResponse', values: {text: it}})
+      this.think(false);
+    }.bind(this), 1000)
+  };
+
+  think = think => {
+    this.setState({thinking: think === undefined ? true : !!think});
   };
 
   render() {
