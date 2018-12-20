@@ -12,22 +12,29 @@ class Interaction extends React.PureComponent {
 
   state = {bubbles: []};
 
+  scroll() {
+    if (this.props.scroll) {
+      ReactDOM.findDOMNode(this).scrollIntoView({behavior: 'smooth', block: 'start'})
+    }
+  }
+
   componentDidMount() {
     if (this.props.text) {
       const interaction = document.createElement('div');
-      interaction.innerHTML = this.props.text;
-      this.setState(state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}));
+      interaction.innerHTML = this.props.text || '';
+      this.setState(
+        state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}),
+        this.scroll,
+      );
     }
   }
 
   componentDidUpdate() {
-    if (this.props.last) {
-      ReactDOM.findDOMNode(this).scrollIntoView({behavior: 'smooth', block: 'start'});
-    }
+    this.scroll();
   }
 
   render() {
-    const { avatar, children, className, last, text, type, ...properties } = this.props;
+    const { avatar, children, className, scroll, text, type, ...properties } = this.props;
     const { bubbles } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (

@@ -16,11 +16,11 @@ class Dialog extends React.PureComponent {
           const type = it.type === 'talk' ? 'request' : 'response';
           return <Interaction avatar={<Avatar type={type} />}
                               key={index}
-                              last={index === interactions.length - 1}
+                              scroll={index === interactions.length - 1}
                               text={it.values ? it.values.text : null}
                               type={type} />;
         })}
-        {thinking && <Interaction avatar={<Avatar type="response" />} children={<Loader />} />}
+        {thinking && <Interaction avatar={<Avatar type="response" />} children={<Loader />} scroll />}
       </div>
     );
   }
