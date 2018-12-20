@@ -11,23 +11,6 @@
 
   &.dydu-interaction-request {
     margin-left: auto;
-
-    .dydu-interaction-avatar {
-      @extend %palette-avatar-request;
-      margin-left: .5em;
-      margin-right: 0;
-      order: 2;
-    }
-  }
-
-  .dydu-interaction-avatar {
-    @extend %palette-avatar-response;
-    @extend %shadow-1;
-
-    border-radius: 50%;
-    height: 40px;
-    margin-right: .5em;
-    width: 40px;
   }
 
   .dydu-interaction-bubbles {

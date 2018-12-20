@@ -1,0 +1,21 @@
+@import '../../styles/palette';
+@import '../../styles/shadow';
+
+
+.dydu-avatar {
+  @extend %palette-avatar-response;
+  @extend %shadow-1;
+
+  border-radius: 50%;
+  height: 40px;
+  margin-right: .5em;
+  width: 40px;
+
+  &.dydu-avatar-request {
+    @extend %palette-avatar-request;
+
+    margin-left: .5em;
+    margin-right: 0;
+    order: 2;
+  }
+}

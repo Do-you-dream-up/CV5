@@ -13,9 +13,11 @@ class Interaction extends React.PureComponent {
   state = {bubbles: []};
 
   componentDidMount() {
-    const interaction = document.createElement('div');
-    interaction.innerHTML = this.props.text;
-    this.setState(state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}));
+    if (this.props.text) {
+      const interaction = document.createElement('div');
+      interaction.innerHTML = this.props.text;
+      this.setState(state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}));
+    }
   }
 
   componentDidUpdate() {
@@ -25,17 +27,20 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { className, last, request, text, ...properties } = this.props;
-    const type = request ? 'request' : 'response';
+    const { avatar, children, className, last, text, type, ...properties } = this.props;
+    const { bubbles } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
       <div className={classes} {...properties}>
-        <div className="dydu-interaction-avatar"></div>
-        <div className="dydu-interaction-bubbles">
-          {this.state.bubbles.map((it, index) => (
-            <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
-          ))}
-        </div>
+        {avatar}
+        {!!bubbles.length && (
+          <div className="dydu-interaction-bubbles">
+            {bubbles.map((it, index) => (
+              <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
+            ))}
+          </div>
+        )}
+        {children}
       </div>
     );
   }
