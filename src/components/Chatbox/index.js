@@ -11,6 +11,7 @@ class Chatbox extends React.PureComponent {
 
   state = {
     interactions: [],
+    thinking: false,
   };
 
   add = interaction => {
@@ -27,10 +28,11 @@ class Chatbox extends React.PureComponent {
 
   render() {
     const { toggle } = this.props;
+    const { thinking, interactions } = this.state;
     return (
       <div className="dydu-chatbox">
         <Header toggle={toggle} />
-        <Dialog interactions={this.state.interactions} />
+        <Dialog thinking={thinking} interactions={interactions} />
         <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
       </div>
     );

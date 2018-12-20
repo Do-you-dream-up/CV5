@@ -2,13 +2,14 @@ import React from 'react';
 
 import Avatar from '../Avatar';
 import Interaction from '../Interaction';
+import Loader from '../Loader';
 
 import './index.scss';
 
 
 class Dialog extends React.PureComponent {
   render() {
-    const { interactions } = this.props;
+    const { interactions, thinking } = this.props;
     return (
       <div className="dydu-history">
         {interactions.map((it, index) => {
@@ -19,6 +20,7 @@ class Dialog extends React.PureComponent {
                               text={it.values ? it.values.text : null}
                               type={type} />;
         })}
+        {thinking && <Interaction avatar={<Avatar type="response" />} children={<Loader />} />}
       </div>
     );
   }

@@ -1,0 +1,33 @@
+@import '../../styles/palette';
+@import '../../styles/shadow';
+
+
+.dydu-loader {
+  $spacing: .25em;
+
+  align-self: center;
+
+  display: flex;
+  margin-left: -$spacing;
+  margin-right: -$spacing;
+
+  .dydu-loader-bullet {
+    @extend %palette-loader;
+    @extend %shadow-1;
+
+    animation-direction: alternate;
+    animation-duration: .5s;
+    animation-iteration-count: infinite;
+    animation-name: pulse;
+    border-radius: 50%;
+    height: .75em;
+    margin-left: $spacing;
+    margin-right: $spacing;
+    width: .75em;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+}
