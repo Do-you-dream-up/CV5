@@ -67,19 +67,13 @@ class Dydu {
   makeMessage(type) {
     return {
       parameters: {
-        alreadyCame: this.alreadyCame,
         botId: bot.id,
-        browser: this.browser,
         clientId: this.clientId,
         contextId: this.contextId,
-        contextType: 'Web',
-        disableLanguageDetection: true,
         language: 'en',
-        mode: 'Synchron',
-        os: this.os,
+        qualificationMode: true,
         solutionUsed: 'ASSISTANT',
         timestamp: new Date().getTime(),
-        userUrl: window.location.href,
       },
       type: type,
     };
@@ -87,7 +81,18 @@ class Dydu {
 
   talk(text, options) {
     const data = this.makeMessage('talk');
-    data.parameters = {...data.parameters, ...{userInput: text, ...(options && {extraParameters: options})}}
+    data.parameters = {
+      ...data.parameters,
+      browser: this.browser,
+      os: this.os,
+      userUrl: window.location.href,
+      contextType: 'Web',
+      disableLanguageDetection: true,
+      mode: 'Synchron',
+      alreadyCame: this.alreadyCame,
+      userInput: text,
+      ...(options && {extraParameters: options}),
+    };
     return this.emit(data);
   }
 }
