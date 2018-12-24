@@ -37,7 +37,7 @@ class Dydu {
 
   set clientId(value) {
     if (value !== undefined) {
-      cookie.set(this.cookies.client, encode(value), {expires: 365})
+      cookie.set(this.cookies.client, encode(value), {expires: 365});
     }
   }
 
@@ -48,7 +48,7 @@ class Dydu {
 
   set contextId(value) {
     if (value !== undefined) {
-      cookie.set(this.cookies.context, encode(value), {expires: 1 / 24 / 60 * 10})
+      cookie.set(this.cookies.context, encode(value), {expires: 1 / 24 / 60 * 10});
     }
   }
 
@@ -64,7 +64,7 @@ class Dydu {
     });
   }
 
-  history(options) {
+  history() {
     const data = this.makeMessage('history');
     data.parameters = {
       ...data.parameters,

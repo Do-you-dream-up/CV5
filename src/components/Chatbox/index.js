@@ -30,7 +30,7 @@ class Chatbox extends React.PureComponent {
     setTimeout(function() {
       this.add(this.makeInteraction(it, 'talkResponse'));
       this.think(false);
-    }.bind(this), 1000)
+    }.bind(this), 1000);
   };
 
   fetchHistory = () => (

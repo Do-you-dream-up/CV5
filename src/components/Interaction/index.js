@@ -1,7 +1,6 @@
+import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import classNames from 'classnames';
 
 import Bubble from  '../Bubble';
 
@@ -23,7 +22,7 @@ class Interaction extends React.PureComponent {
       const interaction = document.createElement('div');
       interaction.innerHTML = this.props.text || '';
       this.setState(
-        state => ({bubbles: [...interaction.innerHTML.split('<hr>')]}),
+        () => ({bubbles: [...interaction.innerHTML.split('<hr>')]}),
         this.scroll,
       );
     }
@@ -34,11 +33,11 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { avatar, children, className, scroll, text, type, ...properties } = this.props;
+    const { avatar, children, type } = this.props;
     const { bubbles } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
-      <div className={classes} {...properties}>
+      <div className={classes}>
         {avatar}
         {!!bubbles.length && (
           <div className="dydu-interaction-bubbles">
