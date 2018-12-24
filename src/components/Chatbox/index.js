@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Avatar from '../Avatar';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
+import Interaction from '../Interaction';
 import dydu from '../../tools/dydu';
 
 import './index.scss';
@@ -13,7 +15,6 @@ class Chatbox extends React.PureComponent {
 
   state = {
     interactions: [],
-    thinking: false,
   };
 
   add = interaction => {
@@ -22,16 +23,12 @@ class Chatbox extends React.PureComponent {
     }));
   };
 
-  addRequest = it => {
-    this.add(this.makeInteraction(it, 'talk'));
+  addRequest = text => {
+    this.add(this.makeInteraction(text, 'request'));
   };
 
-  addResponse = it => {
-    this.think();
-    setTimeout(function() {
-      this.add(this.makeInteraction(it, 'talkResponse'));
-      this.think(false);
-    }.bind(this), 1000);
+  addResponse = text => {
+    this.add(this.makeInteraction(text, 'response', true));
   };
 
   fetchHistory = () => (
@@ -39,19 +36,18 @@ class Chatbox extends React.PureComponent {
       if (response.values && Array.isArray(response.values.interactions)) {
         const interactions = response.values.interactions.reduce((accumulator, it) => (
           accumulator.push(
-            this.makeInteraction(it.user, 'talk'),
-            this.makeInteraction(it.text, 'talkResponse')) && accumulator
+            this.makeInteraction(it.user, 'request'),
+            this.makeInteraction(it.text, 'response'),
+          ) && accumulator
         ), []);
         this.add(interactions);
       }
     })
   );
 
-  makeInteraction = (it, type) => (it && it.type ? it : {type: type, values: {text: it}});
-
-  think = think => {
-    this.setState({thinking: think === undefined ? true : !!think});
-  };
+  makeInteraction = (text, type, thinking) => (
+    <Interaction avatar={<Avatar type={type} />} text={text} thinking={thinking} type={type} />
+  );
 
   componentDidMount() {
     this.fetchHistory();
@@ -59,11 +55,11 @@ class Chatbox extends React.PureComponent {
 
   render() {
     const { toggle } = this.props;
-    const { thinking, interactions } = this.state;
+    const { interactions } = this.state;
     return (
       <div className="dydu-chatbox">
         <Header toggle={toggle} />
-        <Dialog thinking={thinking} interactions={interactions} />
+        <Dialog interactions={interactions} />
         <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
       </div>
     );

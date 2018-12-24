@@ -3,50 +3,61 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from  '../Bubble';
+import Loader from  '../Loader';
 
 import './index.scss';
 
 
 class Interaction extends React.PureComponent {
 
-  state = {bubbles: []};
+  state = {bubbles: [], length: 0};
 
-  scroll() {
-    if (this.props.scroll) {
-      this.node.scrollIntoView({behavior: 'smooth', block: 'start'});
+  addBubble = bubbles => {
+    if (this.props.thinking) {
+      setTimeout(function() {
+        this.setState(
+          state => ({bubbles: [...state.bubbles, bubbles.shift()]}),
+          () => bubbles.length && this.addBubble(bubbles),
+        );
+      }.bind(this), 1000);
     }
-  }
+    else {
+      this.setState(({bubbles: bubbles}));
+    }
+  };
+
+  mount = () => {
+    const interaction = document.createElement('div');
+    interaction.innerHTML = this.props.text || '';
+    const bubbles = interaction.innerHTML.split('<hr>');
+    this.setState(
+      ({length: bubbles.length}),
+      () => this.addBubble(bubbles),
+    );
+  };
 
   componentDidMount() {
-    if (this.props.text) {
-      const interaction = document.createElement('div');
-      interaction.innerHTML = this.props.text || '';
-      this.setState(
-        () => ({bubbles: [...interaction.innerHTML.split('<hr>')]}),
-        this.scroll,
-      );
+    if (this.props.thinking) {
+      setTimeout(this.mount, 250);
     }
-  }
-
-  componentDidUpdate() {
-    this.scroll();
+    else {
+      this.mount();
+    }
   }
 
   render() {
-    const { avatar, children, type } = this.props;
-    const { bubbles } = this.state;
+    const { avatar, type } = this.props;
+    const { bubbles, length } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
       <div className={classes} ref={node => this.node = node}>
         {avatar}
-        {!!bubbles.length && (
-          <div className="dydu-interaction-bubbles">
-            {bubbles.map((it, index) => (
-              <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
-            ))}
-          </div>
-        )}
-        {children}
+        <div className="dydu-interaction-bubbles">
+          {bubbles.map((it, index) => (
+            <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
+          ))}
+          {bubbles.length < length && <Loader />}
+        </div>
       </div>
     );
   }
@@ -55,10 +66,9 @@ class Interaction extends React.PureComponent {
 
 Interaction.propTypes = {
   avatar: PropTypes.object,
-  children: PropTypes.node,
-  scroll: PropTypes.bool,
-  text: PropTypes.string,
-  type: PropTypes.string,
+  text: PropTypes.string.isRequired,
+  thinking: PropTypes.bool,
+  type: PropTypes.string.isRequired,
 };
 
 
