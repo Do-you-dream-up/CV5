@@ -1,2 +1,57 @@
-#+TITLE: Bliss
+#+TITLE: Dydu Bliss
 #+AUTHOR: Mathieu Marques
+
+* Installation
+
+The below instructions assume you have a working setup with latest =npm=.
+
+#+BEGIN_SRC sh
+npm install
+npm start
+#+END_SRC
+
+* Contributing
+
+** Setup
+
+Install the following dependencies globally when working outside of =npm=. This
+lets your editor know about ESLint dependencies.
+
+#+BEGIN_SRC emacs-lisp
+npm install -g babel-eslint eslint eslint-plugin-react
+#+END_SRC
+
+** Branches
+
+Namespace branches according to their content. Use kebab-case to name branches.
+
+- =feature/=: Enhancement. You add a new feature to the code
+- =fix/=: Bug fix. You add a fix to existing features
+- =test/=: Tests. You add scenarii to the test suite
+
+** Commit Changes
+
+Make sure the code you stage to commit passes ESLint before committing. There's
+a hook that won't let your commit pass through in the presence of ESLint errors.
+
+[[http://www.commitstrip.com/en/2012/03/06/pre-commit-hook-irl/][http://www.commitstrip.com/wp-content/uploads/2012/03/Strip-SVN-English800-final.jpg]]
+
+Use English in your commit messages.
+
+Good etiquette about committing in a shared environment:
+[[https://chris.beams.io/posts/git-commit/]]. Here is the gist of it:
+
+- [[https://chris.beams.io/posts/git-commit/#separate][Separate subject from body with a blank line]]
+- [[https://chris.beams.io/posts/git-commit/#limit-50][Limit the subject line to 50 characters]]
+- [[https://chris.beams.io/posts/git-commit/#capitalize][Capitalize the subject line]]
+- [[https://chris.beams.io/posts/git-commit/#end][Do not end the subject line with a period]]
+- [[https://chris.beams.io/posts/git-commit/#imperative][Use the imperative mood in the subject line]]
+- [[https://chris.beams.io/posts/git-commit/#wrap-72][Wrap the body at 72 characters]]
+- [[https://chris.beams.io/posts/git-commit/#why-not-how][Use the body to explain what and why vs. how]]
+
+** Pushing Changes
+
+1. Pull =:master= into a new branch with the corresponding prefix =:namespace/what-the-change-is-about=
+1. Push your code to your branch
+1. Pull =master= in your branch again
+1. Wait for the merge :-)
