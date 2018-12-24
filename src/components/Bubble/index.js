@@ -6,10 +6,19 @@ import './index.scss';
 
 
 class Bubble extends React.PureComponent {
+
+  scroll = () => {
+    this.node.scrollIntoView({behavior: 'smooth', block: 'start'});
+  };
+
+  componentDidMount() {
+    this.scroll();
+  }
+
   render() {
     const { type, ...properties } = this.props;
     const classes = classNames('dydu-bubble', `dydu-bubble-${type}`);
-    return <div className={classes} {...properties}></div>;
+    return <div className={classes} {...properties} ref={node => this.node = node} />;
   }
 }
 
