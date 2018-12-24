@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Bubble from  '../Bubble';
 
@@ -14,7 +13,7 @@ class Interaction extends React.PureComponent {
 
   scroll() {
     if (this.props.scroll) {
-      ReactDOM.findDOMNode(this).scrollIntoView({behavior: 'smooth', block: 'start'})
+      this.node.scrollIntoView({behavior: 'smooth', block: 'start'});
     }
   }
 
@@ -38,7 +37,7 @@ class Interaction extends React.PureComponent {
     const { bubbles } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     return (
-      <div className={classes}>
+      <div className={classes} ref={node => this.node = node}>
         {avatar}
         {!!bubbles.length && (
           <div className="dydu-interaction-bubbles">
