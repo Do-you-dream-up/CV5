@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import './index.scss';
@@ -11,6 +12,11 @@ class Bubble extends React.PureComponent {
     return <div className={classes} {...properties}></div>;
   }
 }
+
+
+Bubble.propTypes = {
+  type: PropTypes.string,
+};
 
 
 export default Bubble;
