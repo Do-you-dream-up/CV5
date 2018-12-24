@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Avatar from '../Avatar';
@@ -25,6 +26,12 @@ class Dialog extends React.PureComponent {
     );
   }
 }
+
+
+Dialog.propTypes = {
+  interactions: PropTypes.array.isRequired,
+  thinking: PropTypes.bool,
+};
 
 
 export default Dialog;

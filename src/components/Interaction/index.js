@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -51,6 +52,15 @@ class Interaction extends React.PureComponent {
     );
   }
 }
+
+
+Interaction.propTypes = {
+  avatar: PropTypes.object,
+  children: PropTypes.node,
+  scroll: PropTypes.bool,
+  text: PropTypes.string,
+  type: PropTypes.string,
+};
 
 
 export default Interaction;

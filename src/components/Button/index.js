@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import './index.scss';
@@ -12,5 +13,10 @@ class Button extends React.PureComponent {
   }
 }
 
+
+Button.propTypes = {
+  component: PropTypes.element,
+  variant: PropTypes.string,
+};
 
 export default Button;

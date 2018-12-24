@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import './index.scss';
@@ -15,6 +16,11 @@ class Loader extends React.PureComponent {
     );
   }
 }
+
+
+Loader.propTypes = {
+  size: PropTypes.number,
+};
 
 
 export default Loader;

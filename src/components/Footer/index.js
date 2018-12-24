@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Button from '../Button';
@@ -46,6 +47,12 @@ class Footer extends React.PureComponent {
     );
   }
 }
+
+
+Footer.propTypes = {
+  onRequest: PropTypes.func.isRequired,
+  onResponse: PropTypes.func.isRequired,
+};
 
 
 export default Footer;

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Button from '../Button';
@@ -18,6 +19,11 @@ class Header extends React.PureComponent {
     );
   }
 }
+
+
+Header.propTypes = {
+  toggle: PropTypes.func.isRequired,
+};
 
 
 export default Header;

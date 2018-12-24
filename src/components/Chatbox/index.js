@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import Dialog from '../Dialog';
@@ -68,6 +69,11 @@ class Chatbox extends React.PureComponent {
     );
   }
 }
+
+
+Chatbox.propTypes = {
+  toggle: PropTypes.func.isRequired,
+};
 
 
 export default Chatbox;
