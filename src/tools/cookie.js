@@ -6,6 +6,7 @@ class Cookie {
   static cookies = {
     client: 'dydu.client.id',
     context: 'dydu.context.id',
+    open: 'dydu.open',
   };
 
   static duration = {

@@ -13,7 +13,9 @@ class Header extends React.PureComponent {
       <div className="dydu-header">
         <div className="dydu-header-title">Header</div>
         <div className="dydu-header-actions">
-          <Button onClick={toggle} variant="icon"><img alt="Close" src="icons/close.png" title="Close" /></Button>
+          <Button onClick={toggle()} variant="icon">
+            <img alt="Close" src="icons/close.png" title="Close" />
+          </Button>
         </div>
       </div>
     );
