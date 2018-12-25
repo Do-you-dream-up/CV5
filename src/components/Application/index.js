@@ -2,6 +2,7 @@ import React from 'react';
 
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
+import Configuration from '../../tools/configuration';
 import Cookie from '../../tools/cookie';
 
 import './index.scss';
@@ -21,7 +22,7 @@ class Application extends React.PureComponent {
 
   componentDidMount() {
     const open = Cookie.get(Cookie.cookies.open);
-    this.toggle(open)();
+    this.toggle(open === undefined ? Configuration.get('application.open') : open)();
   }
 
   render() {
