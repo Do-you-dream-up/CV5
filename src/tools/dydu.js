@@ -1,9 +1,9 @@
 import axios from 'axios';
 import bowser from 'bowser';
-import cookie from 'js-cookie';
 import uuid from 'uuid/v4';
 
 import { decode, encode } from './cipher';
+import Cookie from './cookie';
 import bot from '../bot';
 
 
@@ -13,19 +13,13 @@ const browser = bowser.getParser(window.navigator.userAgent).parse().parsedResul
 class Dydu {
 
   constructor() {
-
-    this.cookies = {
-      client: 'dydu.client.id',
-      context: 'dydu.context.id',
-    };
-
     this.alreadyCame = !!this.clientId;
     this.browser = `${browser.browser.name} ${browser.browser.version}`;
     this.os = `${browser.os.name} ${browser.os.versionName || browser.os.version}`;
   }
 
   get clientId() {
-    const clientId = cookie.get(this.cookies.client);
+    const clientId = Cookie.get(Cookie.cookies.client);
     if (clientId !== undefined) {
       return decode(clientId);
     }
@@ -37,18 +31,18 @@ class Dydu {
 
   set clientId(value) {
     if (value !== undefined) {
-      cookie.set(this.cookies.client, encode(value), {expires: 365});
+      Cookie.set(Cookie.cookies.client, encode(value), Cookie.duration.long);
     }
   }
 
   get contextId() {
-    const contextId = cookie.get(this.cookies.context);
+    const contextId = Cookie.get(Cookie.cookies.context);
     return contextId !== undefined ? decode(contextId) : undefined;
   }
 
   set contextId(value) {
     if (value !== undefined) {
-      cookie.set(this.cookies.context, encode(value), {expires: 1 / 24 / 60 * 10});
+      Cookie.set(Cookie.cookies.context, encode(value), Cookie.duration.short);
     }
   }
 
