@@ -21,6 +21,13 @@ lets your editor know about ESLint dependencies.
 npm install -g babel-eslint eslint eslint-plugin-react
 #+END_SRC
 
+Copy local sample files.
+
+#+BEGIN_SRC sh
+cp src/bot.json.sample src/bot.json
+cp src/configuration.json.sample src/configuration.json
+#+END_SRC
+
 ** Branches
 
 Namespace branches according to their content. Use kebab-case to name branches.
