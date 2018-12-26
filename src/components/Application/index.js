@@ -15,7 +15,7 @@ class Application extends React.PureComponent {
   toggle = open => () => {
     open = open === undefined ? !this.state.open : !!open;
     this.setState(
-      ({open: open}),
+      {open: open},
       () => Cookie.set(Cookie.cookies.open, open, Cookie.duration.long),
     );
   };
