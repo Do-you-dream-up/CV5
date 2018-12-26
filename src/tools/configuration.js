@@ -4,7 +4,12 @@ import configuration from '../configuration';
 class Configuration {
 
   static get(key, fallback) {
-    return key.split('.').reduce((accumulator, it) => accumulator[it], configuration);
+    try {
+      return key.split('.').reduce((accumulator, it) => accumulator[it] || fallback, configuration);
+    }
+    catch {
+      return fallback;
+    }
   }
 }
 
