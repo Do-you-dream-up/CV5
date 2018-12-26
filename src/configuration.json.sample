@@ -1,5 +1,9 @@
 {
   "application": {
     "open": false
+  },
+  "chatbox": {
+    "height": 500,
+    "width": 350
   }
 }
