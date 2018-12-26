@@ -6,6 +6,9 @@
   @extend %shadow-2;
   @extend %text-accent;
 
+  align-items: center;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
   padding: 1em;
 }
