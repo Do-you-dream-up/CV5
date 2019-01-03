@@ -14,12 +14,15 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^4.6.0",
     "eslint-plugin-react": "^7.11.1",
     "husky": "^1.2.1",
-    "lint-staged": "^8.1.0"
+    "lint-staged": "^8.1.0",
+    "unminified-webpack-plugin": "^2.0.0",
+    "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "rm -fr build/ && webpack --env production",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test"

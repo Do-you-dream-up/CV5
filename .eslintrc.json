@@ -7,6 +7,12 @@
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "globals": {
+    "__dirname": false,
+    "module": false,
+    "process": false,
+    "require": false
+  },
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
