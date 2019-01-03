@@ -12,38 +12,12 @@ const browser = bowser.getParser(window.navigator.userAgent).parse().parsedResul
 
 class Dydu {
 
+  clientId = this.getClientId();
+
   constructor() {
     this.alreadyCame = !!this.clientId;
     this.browser = `${browser.browser.name} ${browser.browser.version}`;
     this.os = `${browser.os.name} ${browser.os.versionName || browser.os.version}`;
-  }
-
-  get clientId() {
-    const clientId = Cookie.get(Cookie.cookies.client);
-    if (clientId !== undefined) {
-      return decode(clientId);
-    }
-    else {
-      this.clientId = uuid();
-      return this.clientId;
-    }
-  }
-
-  set clientId(value) {
-    if (value !== undefined) {
-      Cookie.set(Cookie.cookies.client, encode(value), Cookie.duration.long);
-    }
-  }
-
-  get contextId() {
-    const contextId = Cookie.get(Cookie.cookies.context);
-    return contextId !== undefined ? decode(contextId) : undefined;
-  }
-
-  set contextId(value) {
-    if (value !== undefined) {
-      Cookie.set(Cookie.cookies.context, encode(value), Cookie.duration.short);
-    }
   }
 
   emit(data) {
@@ -52,10 +26,26 @@ class Dydu {
     return axios.get(path).then(response => {
       if (response.data && response.data.values) {
         response.data.values = decode(response.data.values);
-        this.contextId = response.data.values.contextId;
+        this.setContextId(response.data.values.contextId);
       }
       return response.data;
     });
+  }
+
+  getClientId() {
+    const clientId = Cookie.get(Cookie.cookies.client);
+    if (clientId !== undefined) {
+      return decode(clientId);
+    }
+    else {
+      this.setClientId(uuid());
+      return this.clientId;
+    }
+  }
+
+  getContextId() {
+    const contextId = Cookie.get(Cookie.cookies.context);
+    return contextId !== undefined ? decode(contextId) : undefined;
   }
 
   history() {
@@ -71,8 +61,8 @@ class Dydu {
     return {
       parameters: {
         botId: bot.id,
-        clientId: this.clientId,
-        contextId: this.contextId,
+        clientId: this.getClientId(),
+        contextId: this.getContextId(),
         language: 'en',
         qualificationMode: true,
         solutionUsed: 'ASSISTANT',
@@ -80,6 +70,18 @@ class Dydu {
       },
       type: type,
     };
+  }
+
+  setClientId(value) {
+    if (value !== undefined) {
+      Cookie.set(Cookie.cookies.client, encode(value), Cookie.duration.long);
+    }
+  }
+
+  setContextId(value) {
+    if (value !== undefined) {
+      Cookie.set(Cookie.cookies.context, encode(value), Cookie.duration.short);
+    }
   }
 
   talk(text, options) {
