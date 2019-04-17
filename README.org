@@ -39,7 +39,8 @@ Namespace branches according to their content. Use kebab-case to name branches.
 ** Commit Changes
 
 Make sure the code you stage to commit passes ESLint before committing. There's
-a hook that won't let your commit pass through in the presence of ESLint errors.
+a pre-commit hook that won't let your pass through in the presence of ESLint
+errors.
 
 [[http://www.commitstrip.com/en/2012/03/06/pre-commit-hook-irl/][http://www.commitstrip.com/wp-content/uploads/2012/03/Strip-SVN-English800-final.jpg]]
 
@@ -60,5 +61,5 @@ Good etiquette about committing in a shared environment:
 
 1. Pull =:master= into a new branch with the corresponding prefix =:namespace/what-the-change-is-about=
 1. Push your code to your branch
-1. Pull =master= in your branch again
+1. Pull =:master= in your branch again
 1. Wait for the merge :-)
