@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Button from '../Button';
+import Configuration from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 
 import './index.scss';
@@ -34,8 +35,9 @@ class Footer extends React.PureComponent {
   };
 
   render() {
+    const styles = Configuration.get('footer.styles');
     return (
-      <form className="dydu-footer" onSubmit={this.submit}>
+      <form className="dydu-footer" onSubmit={this.submit} style={styles}>
         <input autoFocus
                className="dydu-footer-input"
                onChange={this.change}
