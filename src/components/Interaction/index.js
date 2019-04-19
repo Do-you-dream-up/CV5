@@ -9,18 +9,22 @@ import Configuration from  '../../tools/configuration';
 import './index.scss';
 
 
+const loader = Configuration.get('interaction', {}).loader;
+const delays = (Array.isArray(loader) ? loader : [loader]).map(it => it === true ? 1000 : ~~it);
+
+
 class Interaction extends React.PureComponent {
 
   state = {bubbles: [], length: 0};
 
-  addBubble = bubbles => {
+  addBubble = (bubbles, index = 0) => {
     if (this.props.thinking) {
       setTimeout(function() {
         this.setState(
           state => ({bubbles: [...state.bubbles, bubbles.shift()]}),
-          () => bubbles.length && this.addBubble(bubbles),
+          () => bubbles.length && this.addBubble(bubbles, index + 1),
         );
-      }.bind(this), 1000);
+      }.bind(this), delays[index % delays.length]);
     }
     else {
       this.setState(({bubbles: bubbles}));
