@@ -40,7 +40,7 @@ Namespace branches according to their content. Use kebab-case to name branches.
 
 Make sure the code you stage to commit passes ESLint before committing. There's
 a pre-commit hook that won't let your pass through in the presence of ESLint
-errors.
+errors or a malformed commit message.
 
 [[http://www.commitstrip.com/en/2012/03/06/pre-commit-hook-irl/][http://www.commitstrip.com/wp-content/uploads/2012/03/Strip-SVN-English800-final.jpg]]
 
