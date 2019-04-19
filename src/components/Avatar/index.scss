@@ -7,9 +7,9 @@
   @extend %shadow-1;
 
   border-radius: 50%;
-  height: 40px;
+  height: 3em;
   margin-right: .5em;
-  width: 40px;
+  width: 3em;
 
   &.dydu-avatar-request {
     @extend %palette-avatar-request;

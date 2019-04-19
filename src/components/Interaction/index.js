@@ -37,12 +37,7 @@ class Interaction extends React.PureComponent {
   };
 
   componentDidMount() {
-    if (this.props.thinking) {
-      setTimeout(this.mount, 250);
-    }
-    else {
-      this.mount();
-    }
+    this.mount();
   }
 
   render() {

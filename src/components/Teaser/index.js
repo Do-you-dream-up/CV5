@@ -9,8 +9,8 @@ import './index.scss';
 class Teaser extends React.PureComponent {
   render() {
     const { toggle } = this.props;
-    const style = (({height, width}) => ({height, width}))(Configuration.get('teaser', {}));
-    return <div className="dydu-teaser" onClick={toggle()} style={style}>Teaser</div>;
+    const styles = Configuration.get('teaser.styles');
+    return <div className="dydu-teaser" onClick={toggle()} style={styles}>Teaser</div>;
   }
 }
 

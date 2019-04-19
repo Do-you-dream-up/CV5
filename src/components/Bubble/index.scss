@@ -5,7 +5,7 @@
 .dydu-bubble {
   @extend %shadow-1;
 
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 1em;
 
   &:not(:last-child) {

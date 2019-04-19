@@ -6,17 +6,15 @@ import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
 import Interaction from '../Interaction';
-import dydu from '../../tools/dydu';
 import Configuration from '../../tools/configuration';
+import dydu from '../../tools/dydu';
 
 import './index.scss';
 
 
 class Chatbox extends React.PureComponent {
 
-  state = {
-    interactions: [],
-  };
+  state = {interactions: []};
 
   add = interaction => {
     this.setState(state => ({
@@ -57,9 +55,9 @@ class Chatbox extends React.PureComponent {
   render() {
     const { toggle } = this.props;
     const { interactions } = this.state;
-    const style = (({height, width}) => ({height, width}))(Configuration.get('chatbox', {}));
+    const styles = Configuration.get('chatbox.styles');
     return (
-      <div className="dydu-chatbox" style={style}>
+      <div className="dydu-chatbox" style={styles}>
         <Header toggle={toggle} />
         <Dialog interactions={interactions} />
         <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
