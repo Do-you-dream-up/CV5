@@ -4,12 +4,17 @@ import configuration from '../configuration';
 class Configuration {
 
   static get(key, fallback) {
+    if (!key) {
+      return configuration;
+    }
+    let result;
     try {
-      return key.split('.').reduce((accumulator, it) => accumulator[it] || fallback, configuration);
+      result = key.split('.').reduce((accumulator, it) => accumulator[it], configuration);
     }
     catch {
-      return fallback;
+      result = fallback;
     }
+    return result === undefined ? fallback : result;
   }
 }
 
