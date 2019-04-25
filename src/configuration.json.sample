@@ -1,29 +1,32 @@
 {
   "application": {
-    "open": false
+    "bottom": 16,
+    "open": false,
+    "right": 16
   },
   "avatar": {
-    "styles": {
-      "boxShadow": "none"
-    }
+    "shadow": true
   },
   "bubble": {
-    "styles": {
-      "boxShadow": "none"
-    }
+    "shadow": true
   },
   "chatbox": {
-    "styles": {
-      "height": 500,
-      "width": 350
-    }
+    "height": 500,
+    "shadow": 6,
+    "width": 350
   },
-  "dialog": {},
   "footer": {},
-  "header": {},
-  "interaction": {
-    "avatar": true,
-    "loader": [true, 500, 500, 500]
+  "header": {
+    "shadow": true
   },
-  "teaser": {}
+  "interaction": {
+    "avatar": {
+      "request": false,
+      "response": true
+    },
+    "loader": [true, 250, 600, 300]
+  },
+  "teaser": {
+    "shadow": 6
+  }
 }
