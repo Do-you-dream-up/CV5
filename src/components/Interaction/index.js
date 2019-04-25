@@ -51,8 +51,8 @@ class Interaction extends React.PureComponent {
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     const configuration = Configuration.get('interaction', {});
     return (
-      <div className={classes} ref={node => this.node = node} style={configuration.styles}>
-        {!!configuration.avatar && avatar}
+      <div className={classes} ref={node => this.node = node}>
+        {!!(configuration.avatar || {})[type] && avatar}
         <div className="dydu-interaction-bubbles">
           {bubbles.map((it, index) => (
             <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />

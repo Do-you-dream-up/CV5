@@ -6,6 +6,7 @@ import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
 import Interaction from '../Interaction';
+import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 
@@ -53,9 +54,12 @@ class Chatbox extends React.PureComponent {
   }
 
   render() {
-    const { toggle } = this.props;
+    const { theme, toggle } = this.props;
     const { interactions } = this.state;
-    const styles = Configuration.get('chatbox.styles');
+    const styles = {
+      backgroundColor: theme.palette.background.default,
+      ...Configuration.getStyles('chatbox', theme),
+    };
     return (
       <div className="dydu-chatbox" style={styles}>
         <Header toggle={toggle} />
@@ -68,8 +72,9 @@ class Chatbox extends React.PureComponent {
 
 
 Chatbox.propTypes = {
+  theme: PropTypes.object.isRequired,
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default Chatbox;
+export default withTheme(Chatbox);

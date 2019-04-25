@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Button from '../Button';
+import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 
@@ -35,13 +36,25 @@ class Footer extends React.PureComponent {
   };
 
   render() {
-    const styles = Configuration.get('footer.styles');
+    const { theme } = this.props;
+    const styles = {
+      input: {
+        backgroundColor: theme.palette.primary.light,
+        borderRadius: theme.shape.borderRadius,
+      },
+      root: {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.text,
+        ...Configuration.getStyles('footer', theme),
+      },
+    };
     return (
-      <form className="dydu-footer" onSubmit={this.submit} style={styles}>
+      <form className="dydu-footer" onSubmit={this.submit} style={styles.root}>
         <input autoFocus
                className="dydu-footer-input"
                onChange={this.change}
                placeholder="Type here..."
+               style={styles.input}
                type="text"
                value={this.state.input} />
         <div className="dydu-footer-actions">
@@ -56,7 +69,8 @@ class Footer extends React.PureComponent {
 Footer.propTypes = {
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
 
-export default Footer;
+export default withTheme(Footer);

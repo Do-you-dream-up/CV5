@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Button from '../Button';
+import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 
 import './index.scss';
@@ -9,8 +10,12 @@ import './index.scss';
 
 class Header extends React.PureComponent {
   render() {
-    const { toggle } = this.props;
-    const styles = Configuration.get('header.styles');
+    const { theme, toggle } = this.props;
+    const styles = {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.text,
+      ...Configuration.getStyles('header', theme),
+    };
     return (
       <div className="dydu-header" style={styles}>
         <div className="dydu-header-title">Header</div>
@@ -26,8 +31,9 @@ class Header extends React.PureComponent {
 
 
 Header.propTypes = {
+  theme: PropTypes.object.isRequired,
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default Header;
+export default withTheme(Header);

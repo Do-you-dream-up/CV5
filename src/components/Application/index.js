@@ -21,12 +21,17 @@ class Application extends React.PureComponent {
   };
 
   componentDidMount() {
-    const open = Cookie.get(Cookie.cookies.open);
-    this.toggle(open === undefined ? Configuration.get('application.open') : open)();
+    const open = !!Cookie.get(Cookie.cookies.open);
+    this.toggle(open === undefined ? !!Configuration.get('application.open') : open)();
   }
 
   render() {
-    return React.createElement(this.state.open ? Chatbox : Teaser, {toggle: this.toggle});
+    const styles = Configuration.getStyles('application');
+    return (
+      <div className="dydu-application" style={styles}>
+        {React.createElement(this.state.open ? Chatbox : Teaser, {toggle: this.toggle})}
+      </div>
+    );
   }
 }
 
