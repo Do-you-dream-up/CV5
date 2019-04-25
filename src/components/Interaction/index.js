@@ -69,7 +69,7 @@ Interaction.propTypes = {
   avatar: PropTypes.object,
   text: PropTypes.string.isRequired,
   thinking: PropTypes.bool,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 

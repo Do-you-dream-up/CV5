@@ -34,7 +34,7 @@ class Bubble extends React.PureComponent {
 
 Bubble.propTypes = {
   theme: PropTypes.object.isRequired,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 

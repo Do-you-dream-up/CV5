@@ -24,7 +24,7 @@ class Avatar extends React.PureComponent {
 
 Avatar.propTypes = {
   theme: PropTypes.object.isRequired,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 
