@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Loader from  '../Loader';
 import Configuration from  '../../tools/configuration';
@@ -9,8 +10,8 @@ import Configuration from  '../../tools/configuration';
 import './index.scss';
 
 
-const loader = Configuration.get('interaction', {}).loader;
-const delays = (Array.isArray(loader) ? loader : [loader]).map(it => it === true ? 1000 : ~~it);
+const LOADER = Configuration.get('interaction', {}).loader;
+const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
 
 
 class Interaction extends React.PureComponent {
@@ -24,7 +25,7 @@ class Interaction extends React.PureComponent {
           state => ({bubbles: [...state.bubbles, bubbles.shift()]}),
           () => bubbles.length && this.addBubble(bubbles, index + 1),
         );
-      }.bind(this), delays[index % delays.length]);
+      }.bind(this), DELAYS[index % DELAYS.length]);
     }
     else {
       this.setState(({bubbles: bubbles}));
@@ -46,13 +47,13 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { avatar, type } = this.props;
+    const { type } = this.props;
     const { bubbles, length } = this.state;
     const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
     const configuration = Configuration.get('interaction', {});
     return (
       <div className={classes} ref={node => this.node = node}>
-        {!!(configuration.avatar || {})[type] && avatar}
+        {!!(configuration.avatar || {})[type] && <Avatar type={type} />}
         <div className="dydu-interaction-bubbles">
           {bubbles.map((it, index) => (
             <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
@@ -66,7 +67,6 @@ class Interaction extends React.PureComponent {
 
 
 Interaction.propTypes = {
-  avatar: PropTypes.object,
   text: PropTypes.string.isRequired,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,

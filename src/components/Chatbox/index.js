@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Avatar from '../Avatar';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
@@ -45,9 +44,7 @@ class Chatbox extends React.PureComponent {
     })
   );
 
-  makeInteraction = (text, type, thinking) => (
-    <Interaction avatar={<Avatar type={type} />} text={text} thinking={thinking} type={type} />
-  );
+  makeInteraction = (text, type, thinking) => <Interaction text={text} thinking={thinking} type={type} />;
 
   componentDidMount() {
     this.fetchHistory();
