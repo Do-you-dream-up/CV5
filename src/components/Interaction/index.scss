@@ -1,12 +1,16 @@
 .dydu-interaction {
   display: flex;
 
-  &:not(:first-child) {
-    padding-top: 1em;
+  &.dydu-interaction-request {
+    margin-left: 2em;
   }
 
-  &.dydu-interaction-request {
-    margin-left: auto;
+  &.dydu-interaction-response {
+    margin-right: 2em;
+  }
+
+  &:not(:first-child) {
+    padding-top: 1em;
   }
 
   .dydu-interaction-bubbles {
