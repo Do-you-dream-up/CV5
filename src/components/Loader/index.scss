@@ -1,7 +1,3 @@
-@import '../../styles/palette';
-@import '../../styles/shadow';
-
-
 .dydu-loader {
   $spacing: .25em;
 
@@ -10,9 +6,6 @@
   margin-right: -$spacing;
 
   .dydu-loader-bullet {
-    @extend %palette-loader;
-    @extend %shadow-1;
-
     animation-direction: alternate;
     animation-duration: .5s;
     animation-iteration-count: infinite;

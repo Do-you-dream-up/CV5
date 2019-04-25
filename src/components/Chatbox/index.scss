@@ -1,16 +1,4 @@
-@import '../../styles/palette';
-@import '../../styles/shadow';
-
-
 .dydu-chatbox {
-  $height: 500px;
-  $width: 350px;
-
-  @extend %background-primary-light;
-  @extend %shadow-2;
-
   display: flex;
   flex-direction: column;
-  height: $height;
-  width: $width;
 }

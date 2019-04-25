@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@callstack/react-theme-provider": "^2.0.1",
     "axios": "^0.18.0",
     "bowser": "^2.0.0-beta.3",
     "classnames": "^2.2.6",

@@ -1,6 +1,3 @@
-@import '../../styles/palette';
-
-
 .dydu-button {
   background: 0;
   border: 0;
@@ -39,6 +36,5 @@
   }
 
   &:hover {
-    @extend %background-primary-dark;
   }
 }

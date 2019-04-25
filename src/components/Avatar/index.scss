@@ -1,19 +1,10 @@
-@import '../../styles/palette';
-@import '../../styles/shadow';
-
-
 .dydu-avatar {
-  @extend %palette-avatar-response;
-  @extend %shadow-1;
-
   border-radius: 50%;
   height: 3em;
   margin-right: .5em;
   width: 3em;
 
   &.dydu-avatar-request {
-    @extend %palette-avatar-request;
-
     margin-left: .5em;
     margin-right: 0;
     order: 2;

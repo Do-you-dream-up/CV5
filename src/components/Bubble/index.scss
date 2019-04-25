@@ -1,10 +1,4 @@
-@import '../../styles/palette';
-@import '../../styles/shadow';
-
-
 .dydu-bubble {
-  @extend %shadow-1;
-
   border-radius: 4px;
   padding: 1em;
 
@@ -13,10 +7,8 @@
   }
 
   &.dydu-bubble-request {
-    @extend %palette-bubble-request;
   }
 
   &.dydu-bubble-response {
-    @extend %palette-bubble-response;
   }
 }

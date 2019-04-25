@@ -1,11 +1,4 @@
-@import '../../styles/palette';
-@import '../../styles/shadow';
-
 .dydu-teaser {
-  @extend %background-primary;
-  @extend %shadow-2;
-  @extend %text-accent;
-
   align-items: center;
   cursor: pointer;
   display: flex;
