@@ -55,9 +55,7 @@ class Interaction extends React.PureComponent {
       <div className={classes} ref={node => this.node = node}>
         {!!(configuration.avatar || {})[type] && <Avatar type={type} />}
         <div className="dydu-interaction-bubbles">
-          {bubbles.map((it, index) => (
-            <Bubble dangerouslySetInnerHTML={{__html: it}} key={index} type={type} />
-          ))}
+          {bubbles.map((it, index) => <Bubble html={it} key={index} type={type} />)}
           {bubbles.length < length && <Loader />}
         </div>
       </div>

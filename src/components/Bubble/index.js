@@ -19,7 +19,7 @@ class Bubble extends React.PureComponent {
   }
 
   render() {
-    const { theme, type, ...rest } = this.props;
+    const { html, theme, type } = this.props;
     const classes = classNames('dydu-bubble', `dydu-bubble-${type}`);
     const styles = {
       backgroundColor: theme.palette[type].background,
@@ -27,12 +27,18 @@ class Bubble extends React.PureComponent {
       color: theme.palette[type].text,
       ...Configuration.getStyles('bubble', theme),
     };
-    return <div {...rest} className={classes} ref={node => this.node = node} style={styles} />;
+    return (
+      <div className={classes}
+           dangerouslySetInnerHTML={{__html: html}}
+           ref={node => this.node = node}
+           style={styles} />
+    );
   }
 }
 
 
 Bubble.propTypes = {
+  html: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
