@@ -26,6 +26,10 @@
     },
     "loader": [true, 250, 600, 300]
   },
+  "loader": {
+    "shadow": true,
+    "size": 3
+  },
   "teaser": {
     "shadow": 6
   }
