@@ -3,9 +3,9 @@ import React from 'react';
 
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
+import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import Cookie from '../../tools/cookie';
-import { withTheme } from '../../theme';
 
 import './index.scss';
 
