@@ -10,7 +10,7 @@ import './index.scss';
 
 class Loader extends React.PureComponent {
   render() {
-    const { size, theme } = this.props;
+    const { size=3, theme } = this.props;
     const configuration = Configuration.get('loader', {});
     const styles = {
       backgroundColor: theme.palette.response.background,
@@ -18,7 +18,7 @@ class Loader extends React.PureComponent {
     };
     return (
       <Scroll className="dydu-loader">
-        {[...Array(size || configuration.size || 3)].map((it, index) => (
+        {[...Array(configuration.size || size)].map((it, index) => (
           <div className="dydu-loader-bullet"
                key={index}
                style={{animationDelay: `${index / 10}s`, ...styles}} />
