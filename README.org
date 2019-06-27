@@ -3,6 +3,13 @@
 
 * Installation
 
+Copy local sample files.
+
+#+BEGIN_SRC sh
+cp src/bot.json.sample src/bot.json
+cp src/configuration.json.sample src/configuration.json
+#+END_SRC
+
 The below instructions assume you have a working setup with latest =npm=.
 
 #+BEGIN_SRC sh
@@ -19,13 +26,6 @@ lets your editor know about ESLint dependencies.
 
 #+BEGIN_SRC emacs-lisp
 npm install -g babel-eslint eslint eslint-plugin-react
-#+END_SRC
-
-Copy local sample files.
-
-#+BEGIN_SRC sh
-cp src/bot.json.sample src/bot.json
-cp src/configuration.json.sample src/configuration.json
 #+END_SRC
 
 ** Branches
