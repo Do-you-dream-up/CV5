@@ -71,7 +71,9 @@ class Footer extends React.PureComponent {
                type="text"
                value={this.state.input} />
         <div className={classNames('dydu-footer-actions', classes.actions)}>
-          <Button children={<img alt="Send" src="icons/send.png" title="Send" />} type="submit" variant="icon" />
+          <Button type="submit" variant="icon">
+            <img alt="Send" src="icons/send.png" title="Send" />
+          </Button>
         </div>
       </form>
     );

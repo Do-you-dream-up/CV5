@@ -31,7 +31,7 @@ const styles = {
 };
 
 
-const LOADER = Configuration.get('interaction', {}).loader;
+const LOADER = Configuration.get('interaction').loader;
 const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
 
 

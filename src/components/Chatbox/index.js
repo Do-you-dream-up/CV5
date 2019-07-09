@@ -27,7 +27,10 @@ class Chatbox extends React.PureComponent {
 
   add = interaction => {
     this.setState(state => ({
-      interactions: [...state.interactions, ...(Array.isArray(interaction) ? interaction : [interaction])],
+      interactions: [
+        ...state.interactions,
+        ...(Array.isArray(interaction) ? interaction : [interaction]),
+      ],
     }));
   };
 
