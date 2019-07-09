@@ -41,13 +41,14 @@ const styles = theme => ({
 class Button extends React.PureComponent {
   render() {
     const { classes, component, variant, ...properties } = this.props;
+    const type = variant.toLowerCase();
     return React.createElement(
       component ? component : 'button',
       {...properties, className: classNames(
         'dydu-button',
-        `dydu-button-${variant || 'default'}`,
+        `dydu-button-${type || 'default'}`,
         classes.base,
-        classes[variant || 'default'],
+        classes[type || 'default'],
       )},
     );
   }
