@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 
-import Dialog from '../Dialog';
-import Footer from '../Footer';
-import Header from '../Header';
-import Interaction from '../Interaction';
-import Configuration from '../../tools/configuration';
-import dydu from '../../tools/dydu';
+import Dialog from './Dialog';
+import Footer from './Footer';
+import Header from './Header';
+import Interaction from './Interaction';
+import Configuration from '../tools/configuration';
+import dydu from '../tools/dydu';
 
 
 const styles = theme => ({

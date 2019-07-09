@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 
-import Button from '../Button';
-import Configuration from '../../tools/configuration';
-import dydu from '../../tools/dydu';
+import Button from './Button';
+import Configuration from '../tools/configuration';
+import dydu from '../tools/dydu';
 
 
 const styles = theme => ({
