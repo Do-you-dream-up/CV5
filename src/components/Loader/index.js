@@ -1,27 +1,49 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Scroll from '../Scroll';
-import { withTheme } from '../../theme';
 import Configuration from  '../../tools/configuration';
 
-import './index.scss';
+
+const styles = theme => ({
+  bullet: {
+    animationDirection: 'alternate',
+    animationDuration: '.5s',
+    animationIterationCount: 'infinite',
+    animationName: '$pulse',
+    backgroundColor: theme.palette.response.background,
+    borderRadius: '50%',
+    height: '.75em',
+    marginLeft: '.25em',
+    marginRight: '.25em',
+    transform: 'scale(0)',
+    width: '.75em',
+    '&&': Configuration.getStyles('loader'),
+  },
+  root: {
+    display: 'flex',
+    marginLeft: '-.25em',
+    marginRight: '-.25em',
+  },
+  '@keyframes pulse': {
+    from: {transform: 'scale(0)'},
+    to: {transform: 'scale(1)'},
+  },
+});
 
 
 class Loader extends React.PureComponent {
   render() {
-    const { size=3, theme } = this.props;
-    const configuration = Configuration.get('loader', {});
-    const styles = {
-      backgroundColor: theme.palette.response.background,
-      ...Configuration.getStyles(configuration, theme),
-    };
+    const { classes, size: defaultSize = 30 } = this.props;
+    const { size = defaultSize } = Configuration.get('loader');
     return (
-      <Scroll className="dydu-loader">
-        {[...Array(configuration.size || size)].map((it, index) => (
-          <div className="dydu-loader-bullet"
+      <Scroll className={classNames('dydu-loader', classes.root)}>
+        {[...Array(size)].map((it, index) => (
+          <div className={classNames('dydu-loader-bullet', classes.bullet)}
                key={index}
-               style={{animationDelay: `${index / 10}s`, ...styles}} />
+               style={{animationDelay: `${index / 10}s`}} />
         ))}
       </Scroll>
     );
@@ -30,9 +52,9 @@ class Loader extends React.PureComponent {
 
 
 Loader.propTypes = {
+  classes: PropTypes.object.isRequired,
   size: PropTypes.number,
-  theme: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(Loader);
+export default withStyles(styles)(Loader);

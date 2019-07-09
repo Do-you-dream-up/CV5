@@ -1,15 +1,24 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
 import Interaction from '../Interaction';
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 
-import './index.scss';
+
+const styles = theme => ({
+  root: {
+    backgroundColor: theme.palette.background.default,
+    display: 'flex',
+    flexDirection: 'column',
+    '&&': Configuration.getStyles('chatbox'),
+  },
+});
 
 
 class Chatbox extends React.PureComponent {
@@ -44,21 +53,19 @@ class Chatbox extends React.PureComponent {
     })
   );
 
-  makeInteraction = (text, type, thinking) => <Interaction text={text} thinking={thinking} type={type} />;
+  makeInteraction = (text, type, thinking) => (
+    <Interaction text={text} thinking={thinking} type={type} />
+  );
 
   componentDidMount() {
     this.fetchHistory();
   }
 
   render() {
-    const { theme, toggle } = this.props;
+    const { classes, toggle } = this.props;
     const { interactions } = this.state;
-    const styles = {
-      backgroundColor: theme.palette.background.default,
-      ...Configuration.getStyles('chatbox', theme),
-    };
     return (
-      <div className="dydu-chatbox" style={styles}>
+      <div className={classNames('dydu-chatbox', classes.root)}>
         <Header toggle={toggle} />
         <Dialog interactions={interactions} />
         <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
@@ -69,9 +76,9 @@ class Chatbox extends React.PureComponent {
 
 
 Chatbox.propTypes = {
-  theme: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default withTheme(Chatbox);
+export default withStyles(styles)(Chatbox);

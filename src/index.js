@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ThemeProvider } from 'react-jss';
 
 import Application from './components/Application';
-import { ThemeProvider } from './theme';
+import theme from './theme';
 
 import './styles/reset.scss';
 
 
 const root = document.getElementById('dydu-root');
 if (root) {
-  ReactDOM.render(<ThemeProvider children={<Application />} />, root);
+  ReactDOM.render(<ThemeProvider children={<Application />} theme={theme} />, root);
 }

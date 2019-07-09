@@ -1,13 +1,23 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import Cookie from '../../tools/cookie';
 
-import './index.scss';
+
+const styles = {
+  root: {
+    bottom: 0,
+    fontFamily: 'sans-serif',
+    position: 'absolute',
+    right: 0,
+    '&&': Configuration.getStyles('application'),
+  },
+};
 
 
 class Application extends React.PureComponent {
@@ -28,10 +38,9 @@ class Application extends React.PureComponent {
   }
 
   render() {
-    const { theme } = this.props;
-    const styles = Configuration.getStyles('application', theme);
+    const { classes } = this.props;
     return (
-      <div className="dydu-application" style={styles}>
+      <div className={classNames('dydu-application', classes.root)}>
         {React.createElement(this.state.open ? Chatbox : Teaser, {toggle: this.toggle})}
       </div>
     );
@@ -40,8 +49,8 @@ class Application extends React.PureComponent {
 
 
 Application.propTypes = {
-  theme: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(Application);
+export default withStyles(styles)(Application);

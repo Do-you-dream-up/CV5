@@ -1,12 +1,37 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Button from '../Button';
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 
-import './index.scss';
+
+const styles = theme => ({
+  actions: {
+    alignItems: 'center',
+    display: 'flex',
+    '& > *': {
+      marginLeft: '.5em',
+    }
+  },
+  input: {
+    backgroundColor: theme.palette.primary.light,
+    border: 0,
+    borderRadius: theme.shape.borderRadius,
+    flex: 'auto',
+    paddingLeft: '1em',
+  },
+  root: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.text,
+    display: 'flex',
+    flex: '0 0 auto',
+    padding: '.5em',
+    '&&': Configuration.getStyles('footer', theme),
+  },
+});
 
 
 class Footer extends React.PureComponent {
@@ -36,28 +61,16 @@ class Footer extends React.PureComponent {
   };
 
   render() {
-    const { theme } = this.props;
-    const styles = {
-      input: {
-        backgroundColor: theme.palette.primary.light,
-        borderRadius: theme.shape.borderRadius,
-      },
-      root: {
-        backgroundColor: theme.palette.primary.main,
-        color: theme.palette.primary.text,
-        ...Configuration.getStyles('footer', theme),
-      },
-    };
+    const { classes } = this.props;
     return (
-      <form className="dydu-footer" onSubmit={this.submit} style={styles.root}>
+      <form className={classNames('dydu-footer', classes.root)} onSubmit={this.submit}>
         <input autoFocus
-               className="dydu-footer-input"
+               className={classNames('dydu-footer-input', classes.input)}
                onChange={this.change}
                placeholder="Type here..."
-               style={styles.input}
                type="text"
                value={this.state.input} />
-        <div className="dydu-footer-actions">
+        <div className={classNames('dydu-footer-actions', classes.actions)}>
           <Button children={<img alt="Send" src="icons/send.png" title="Send" />} type="submit" variant="icon" />
         </div>
       </form>
@@ -67,10 +80,10 @@ class Footer extends React.PureComponent {
 
 
 Footer.propTypes = {
+  classes: PropTypes.object.isRequired,
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
 };
 
 
-export default withTheme(Footer);
+export default withStyles(styles)(Footer);

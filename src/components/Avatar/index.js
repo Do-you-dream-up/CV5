@@ -1,31 +1,46 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 
-import './index.scss';
+
+const styles = theme => ({
+  base: {
+    borderRadius: '50%',
+    height: '3em',
+    width: '3em',
+    '&&': Configuration.getStyles('avatar'),
+  },
+  request: {
+    backgroundColor: theme.palette.request.background,
+    color: theme.palette.request.text,
+    marginLeft: '.5em',
+    order: 2,
+  },
+  response: {
+    backgroundColor: theme.palette.response.background,
+    color: theme.palette.response.text,
+    marginRight: '.5em',
+  },
+});
 
 
 class Avatar extends React.PureComponent {
   render() {
-    const { theme, type } = this.props;
-    const classes = classNames('dydu-avatar', `dydu-avatar-${type}`);
-    const styles = {
-      backgroundColor: theme.palette[type].background,
-      color: theme.palette[type].text,
-      ...Configuration.getStyles('avatar', theme),
-    };
-    return <div className={classes} style={styles} />;
+    const { classes, type } = this.props;
+    return (
+      <div className={classNames('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type])} />
+    );
   }
 }
 
 
 Avatar.propTypes = {
-  theme: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 
-export default withTheme(Avatar);
+export default withStyles(styles)(Avatar);

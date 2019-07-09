@@ -1,7 +1,4 @@
-import { createTheming } from '@callstack/react-theme-provider';
-
-
-const { ThemeProvider, withTheme } = createTheming({
+export default {
 
   palette: {
     background: {
@@ -62,9 +59,5 @@ const { ThemeProvider, withTheme } = createTheming({
 
   shape: {
     borderRadius: 4,
-  }
-});
-
-
-// NOTE: When stable React supports hooks, we can use `useTheme` instead.
-export { ThemeProvider, withTheme };
+  },
+};

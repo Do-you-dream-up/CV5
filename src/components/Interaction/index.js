@@ -1,13 +1,34 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Loader from  '../Loader';
 import Configuration from  '../../tools/configuration';
 
-import './index.scss';
+
+const styles = {
+  base: {
+    display: 'flex',
+    '&:not(:first-child)': {
+      paddingTop: '1em',
+    },
+  },
+  bubbles: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  request: {
+    marginLeft: '2em',
+  },
+  response: {
+    marginRight: '2em',
+  },
+};
 
 
 const LOADER = Configuration.get('interaction', {}).loader;
@@ -47,14 +68,15 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { type } = this.props;
+    const { classes, type } = this.props;
     const { bubbles, length } = this.state;
-    const classes = classNames('dydu-interaction', `dydu-interaction-${type}`);
-    const configuration = Configuration.get('interaction', {});
+    const { avatar = {} } = Configuration.get('interaction');
     return (
-      <div className={classes} ref={node => this.node = node}>
-        {!!(configuration.avatar || {})[type] && <Avatar type={type} />}
-        <div className="dydu-interaction-bubbles">
+      <div className={classNames(
+        'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
+      )} ref={node => this.node = node}>
+        {!!avatar[type] && <Avatar type={type} />}
+        <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
           {bubbles.map((it, index) => <Bubble html={it} key={index} type={type} />)}
           {bubbles.length < length && <Loader />}
         </div>
@@ -65,10 +87,11 @@ class Interaction extends React.PureComponent {
 
 
 Interaction.propTypes = {
+  classes: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 
-export default Interaction;
+export default withStyles(styles)(Interaction);

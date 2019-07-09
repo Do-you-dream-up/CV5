@@ -1,25 +1,44 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Button from '../Button';
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 
-import './index.scss';
+
+const styles = theme => ({
+  actions: {
+    alignItems: 'center',
+    display: 'flex',
+    '& > *': {
+      marginLeft: '.5em',
+    }
+  },
+  root: {
+    alignItems: 'center',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.text,
+    display: 'flex',
+    flex: '0 0 auto',
+    justifyContent: 'space-between',
+    padding: '.5em',
+    position: 'relative',
+    '&&': Configuration.getStyles('header'),
+  },
+  title: {
+    padding: '.5em',
+  },
+});
 
 
 class Header extends React.PureComponent {
   render() {
-    const { theme, toggle } = this.props;
-    const styles = {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.primary.text,
-      ...Configuration.getStyles('header', theme),
-    };
+    const { classes, toggle } = this.props;
     return (
-      <div className="dydu-header" style={styles}>
-        <div className="dydu-header-title">Header</div>
-        <div className="dydu-header-actions">
+      <div className={classNames('dydu-header', classes.root)}>
+        <div className={classNames('dydu-header-title', classes.title)}>Header</div>
+        <div className={classNames('dydu-header-actions', classes.actions)}>
           <Button onClick={toggle()} variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
@@ -31,9 +50,9 @@ class Header extends React.PureComponent {
 
 
 Header.propTypes = {
-  theme: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default withTheme(Header);
+export default withStyles(styles)(Header);

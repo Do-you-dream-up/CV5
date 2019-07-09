@@ -1,35 +1,50 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
 
 import Scroll from '../Scroll';
-import { withTheme } from '../../theme';
 import Configuration from '../../tools/configuration';
 
-import './index.scss';
+
+const styles = theme => ({
+  base: {
+    borderRadius: theme.shape.borderRadius,
+    padding: '1em',
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
+    '&&': Configuration.getStyles('bubble'),
+  },
+  request: {
+    backgroundColor: theme.palette.request.background,
+    color: theme.palette.request.text,
+    marginLeft: 'auto',
+  },
+  response: {
+    backgroundColor: theme.palette.response.background,
+    color: theme.palette.response.text,
+    marginRight: 'auto',
+  },
+});
 
 
 class Bubble extends React.PureComponent {
-
   render() {
-    const { html, theme, type } = this.props;
-    const classes = classNames('dydu-bubble', `dydu-bubble-${type}`);
-    const styles = {
-      backgroundColor: theme.palette[type].background,
-      borderRadius: theme.shape.borderRadius,
-      color: theme.palette[type].text,
-      ...Configuration.getStyles('bubble', theme),
-    };
-    return <Scroll className={classes} dangerouslySetInnerHTML={{__html: html}} style={styles} />;
+    const { classes, html, type } = this.props;
+    return (
+      <Scroll className={classNames('dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type])}
+              dangerouslySetInnerHTML={{__html: html}} />
+    );
   }
 }
 
 
 Bubble.propTypes = {
+  classes: PropTypes.object.isRequired,
   html: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
 
 
-export default withTheme(Bubble);
+export default withStyles(styles)(Bubble);

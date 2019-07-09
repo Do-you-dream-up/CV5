@@ -1,9 +1,10 @@
 import configuration from '../configuration';
+import theme from '../theme';
 
 
-class Configuration {
+export default class Configuration {
 
-  static get(key, fallback) {
+  static get(key, fallback = {}) {
     if (!key) {
       return configuration;
     }
@@ -17,7 +18,7 @@ class Configuration {
     return result === undefined ? fallback : result;
   }
 
-  static getStyles(it, theme = {}) {
+  static getStyles(it) {
     const data = typeof it === 'string' ? this.get(it, {}) : it;
     return (({background, bottom, height, left, position, right, shadow, top, width}) => ({
       ...(background && {backgroundColor: background}),
@@ -32,6 +33,3 @@ class Configuration {
     }))(data);
   }
 }
-
-
-export default Configuration;
