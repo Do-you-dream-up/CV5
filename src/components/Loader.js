@@ -36,8 +36,8 @@ const styles = theme => ({
 
 class Loader extends React.PureComponent {
   render() {
-    const { classes, size: defaultSize = 30 } = this.props;
-    const { size = defaultSize } = Configuration.get('loader');
+    const { classes, size: defaultSize=30 } = this.props;
+    const { size=defaultSize } = Configuration.get('loader');
     return (
       <Scroll className={classNames('dydu-loader', classes.root)}>
         {[...Array(size)].map((it, index) => (

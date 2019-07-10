@@ -70,7 +70,7 @@ class Interaction extends React.PureComponent {
   render() {
     const { classes, type } = this.props;
     const { bubbles, length } = this.state;
-    const { avatar = {} } = Configuration.get('interaction');
+    const { avatar={} } = Configuration.get('interaction');
     return (
       <div className={classNames(
         'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
