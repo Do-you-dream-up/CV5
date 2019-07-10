@@ -43,9 +43,9 @@ class Chatbox extends React.PureComponent {
   };
 
   fetchHistory = () => (
-    dydu.history().then(response => {
-      if (response.values && Array.isArray(response.values.interactions)) {
-        const interactions = response.values.interactions.reduce((accumulator, it) => (
+    dydu.history().then(({ interactions }) => {
+      if (Array.isArray(interactions)) {
+        interactions = interactions.reduce((accumulator, it) => (
           accumulator.push(
             this.makeInteraction(it.user, 'request'),
             this.makeInteraction(it.text, 'response'),

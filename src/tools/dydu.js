@@ -1,5 +1,6 @@
 import axios from 'axios';
 import bowser from 'bowser';
+import qs from 'qs';
 import uuid from 'uuid/v4';
 
 import { decode, encode } from './cipher';
@@ -7,6 +8,13 @@ import Cookie from './cookie';
 import bot from '../bot';
 
 
+const api = axios.create({
+  baseURL: `https:${bot.server}/servlet/api/`,
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+  },
+});
 const browser = bowser.getParser(window.navigator.userAgent).parse().parsedResult;
 
 
@@ -18,18 +26,6 @@ class Dydu {
     this.alreadyCame = !!this.clientId;
     this.browser = `${browser.browser.name} ${browser.browser.version}`;
     this.os = `${browser.os.name} ${browser.os.versionName || browser.os.version}`;
-  }
-
-  emit(data) {
-    data.parameters = encode(data.parameters);
-    const path = `https:${bot.server}/servlet/chatHttp?data=${JSON.stringify(data)}`;
-    return axios.get(path).then(response => {
-      if (response.data && response.data.values) {
-        response.data.values = decode(response.data.values);
-        this.setContextId(response.data.values.contextId);
-      }
-      return response.data;
-    });
   }
 
   getClientId() {
@@ -48,28 +44,24 @@ class Dydu {
     return contextId !== undefined ? decode(contextId) : undefined;
   }
 
-  history() {
-    const data = this.makeMessage('history');
-    data.parameters = {
-      ...data.parameters,
-      useServerCookieForContext: false,
-    };
-    return this.emit(data);
+  emit(verb, path, data) {
+    return verb(path, data).then(({ data={} }) => {
+      data.values = decode(data.values);
+      this.setContextId(data.values.contextId);
+      return data.values;
+    });
   }
 
-  makeMessage(type) {
-    return {
-      parameters: {
-        botId: bot.id,
-        clientId: this.getClientId(),
-        contextId: this.getContextId(),
-        language: 'en',
-        qualificationMode: true,
-        solutionUsed: 'ASSISTANT',
-        timestamp: new Date().getTime(),
-      },
-      type: type,
-    };
+  history() {
+    const history = new Promise(resolve => {
+      const contextId = this.getContextId();
+      if (contextId) {
+        const data = qs.stringify({contextUuid: contextId});
+        const path = `chat/history/${bot.id}/`;
+        resolve(this.emit(api.post, path, data));
+      }
+    });
+    return history;
   }
 
   setClientId(value) {
@@ -85,21 +77,16 @@ class Dydu {
   }
 
   talk(text, options) {
-    const data = this.makeMessage('talk');
-    data.parameters = {
-      ...data.parameters,
-      browser: this.browser,
-      os: this.os,
-      userUrl: window.location.href,
-      contextType: 'Web',
-      disableLanguageDetection: true,
-      mode: 'Synchron',
-      alreadyCame: this.alreadyCame,
+    const data = qs.stringify({
+      language: 'en',
       userInput: text,
       ...(options && {extraParameters: options}),
-    };
-    return this.emit(data);
+    });
+    const contextId = this.getContextId();
+    const path = `chat/talk/${bot.id}/${contextId ? `${contextId}/` : ''}`;
+    return this.emit(api.post, path, data);
   }
 }
+
 
 export default new Dydu();

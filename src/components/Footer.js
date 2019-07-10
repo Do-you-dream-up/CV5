@@ -52,9 +52,9 @@ class Footer extends React.PureComponent {
     if (text) {
       this.reset();
       this.props.onRequest(text);
-      dydu.talk(text).then(response => {
-        if (response.values) {
-          this.props.onResponse(response.values.text);
+      dydu.talk(text).then(({ text }) => {
+        if (text) {
+          this.props.onResponse(text);
         }
       });
     }
