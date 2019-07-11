@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Chatbox from './Chatbox';
 import Teaser from './Teaser';
 import Configuration from '../tools/configuration';
@@ -21,6 +20,10 @@ const styles = {
 
 
 class Application extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
 
   state = {open: false};
 
@@ -46,11 +49,6 @@ class Application extends React.PureComponent {
     );
   }
 }
-
-
-Application.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 
 export default withStyles(styles)(Application);

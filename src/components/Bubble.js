@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Scroll from './Scroll';
 import Configuration from '../tools/configuration';
 
@@ -30,6 +29,13 @@ const styles = theme => ({
 
 
 class Bubble extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    html: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(['request', 'response']).isRequired,
+  };
+
   render() {
     const { classes, html, type } = this.props;
     return (
@@ -38,13 +44,6 @@ class Bubble extends React.PureComponent {
     );
   }
 }
-
-
-Bubble.propTypes = {
-  classes: PropTypes.object.isRequired,
-  html: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['request', 'response']).isRequired,
-};
 
 
 export default withStyles(styles)(Bubble);

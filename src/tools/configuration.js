@@ -4,7 +4,7 @@ import theme from '../theme';
 
 export default class Configuration {
 
-  static get(key, fallback = {}) {
+  static get = (key, fallback={}) => {
     if (!key) {
       return configuration;
     }
@@ -16,9 +16,9 @@ export default class Configuration {
       result = fallback;
     }
     return result === undefined ? fallback : result;
-  }
+  };
 
-  static getStyles(it) {
+  static getStyles = it => {
     const data = typeof it === 'string' ? this.get(it, {}) : it;
     return (({background, bottom, height, left, position, right, shadow, top, width}) => ({
       ...(background && {backgroundColor: background}),
@@ -31,5 +31,5 @@ export default class Configuration {
       ...(top && {top: typeof top === 'string' ? top : `${top}px`}),
       ...(width && {width}),
     }))(data);
-  }
+  };
 }

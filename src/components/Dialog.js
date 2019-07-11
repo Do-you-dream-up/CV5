@@ -14,6 +14,12 @@ const styles = {
 
 
 class Dialog extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    interactions: PropTypes.array.isRequired,
+  };
+
   render() {
     const { classes, interactions } = this.props;
     return (
@@ -23,12 +29,6 @@ class Dialog extends React.PureComponent {
     );
   }
 }
-
-
-Dialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-  interactions: PropTypes.array.isRequired,
-};
 
 
 export default withStyles(styles)(Dialog);

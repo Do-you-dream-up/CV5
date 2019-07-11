@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Button from './Button';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
@@ -35,6 +34,12 @@ const styles = theme => ({
 
 
 class Footer extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    onRequest: PropTypes.func.isRequired,
+    onResponse: PropTypes.func.isRequired,
+  };
 
   state = {input: ''};
 
@@ -79,13 +84,6 @@ class Footer extends React.PureComponent {
     );
   }
 }
-
-
-Footer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onRequest: PropTypes.func.isRequired,
-  onResponse: PropTypes.func.isRequired,
-};
 
 
 export default withStyles(styles)(Footer);

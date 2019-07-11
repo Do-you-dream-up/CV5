@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Configuration from '../tools/configuration';
 
 
@@ -22,17 +21,17 @@ const styles = theme => ({
 
 
 class Teaser extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    toggle: PropTypes.func.isRequired,
+  };
+
   render() {
     const { classes, toggle } = this.props;
     return <div className={classNames('dydu-teaser', classes.root)} onClick={toggle()}>Teaser</div>;
   }
 }
-
-
-Teaser.propTypes = {
-  classes: PropTypes.object.isRequired,
-  toggle: PropTypes.func.isRequired,
-};
 
 
 export default withStyles(styles)(Teaser);

@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Configuration from '../tools/configuration';
 
 
@@ -28,6 +27,12 @@ const styles = theme => ({
 
 
 class Avatar extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    type: PropTypes.oneOf(['request', 'response']).isRequired,
+  };
+
   render() {
     const { classes, type } = this.props;
     return (
@@ -35,12 +40,6 @@ class Avatar extends React.PureComponent {
     );
   }
 }
-
-
-Avatar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  type: PropTypes.oneOf(['request', 'response']).isRequired,
-};
 
 
 export default withStyles(styles)(Avatar);

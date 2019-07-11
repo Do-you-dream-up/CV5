@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Avatar from  './Avatar';
 import Bubble from  './Bubble';
 import Loader from  './Loader';
@@ -31,11 +30,18 @@ const styles = {
 };
 
 
-const LOADER = Configuration.get('interaction').loader;
+const LOADER = Configuration.get('interaction.loader');
 const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
 
 
 class Interaction extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    text: PropTypes.string.isRequired,
+    thinking: PropTypes.bool,
+    type: PropTypes.oneOf(['request', 'response']).isRequired,
+  };
 
   state = {bubbles: [], length: 0};
 
@@ -70,7 +76,7 @@ class Interaction extends React.PureComponent {
   render() {
     const { classes, type } = this.props;
     const { bubbles, length } = this.state;
-    const { avatar={} } = Configuration.get('interaction');
+    const { avatar } = Configuration.get('interaction');
     return (
       <div className={classNames(
         'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
@@ -84,14 +90,6 @@ class Interaction extends React.PureComponent {
     );
   }
 }
-
-
-Interaction.propTypes = {
-  classes: PropTypes.object.isRequired,
-  text: PropTypes.string.isRequired,
-  thinking: PropTypes.bool,
-  type: PropTypes.oneOf(['request', 'response']).isRequired,
-};
 
 
 export default withStyles(styles)(Interaction);

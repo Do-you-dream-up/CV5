@@ -1,7 +1,7 @@
 import cookie from 'js-cookie';
 
 
-class Cookie {
+export default class Cookie {
 
   static cookies = {
     client: 'dydu.client.id',
@@ -17,6 +17,3 @@ class Cookie {
   static get = cookie.getJSON;
   static set = cookie.set;
 }
-
-
-export default Cookie;

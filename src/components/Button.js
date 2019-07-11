@@ -39,6 +39,13 @@ const styles = theme => ({
 
 
 class Button extends React.PureComponent {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    component: PropTypes.element,
+    variant: PropTypes.string,
+  };
+
   render() {
     const { classes, component, variant, ...properties } = this.props;
     const type = variant.toLowerCase();
@@ -54,11 +61,5 @@ class Button extends React.PureComponent {
   }
 }
 
-
-Button.propTypes = {
-  classes: PropTypes.object.isRequired,
-  component: PropTypes.element,
-  variant: PropTypes.string,
-};
 
 export default withStyles(styles)(Button);

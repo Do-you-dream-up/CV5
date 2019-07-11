@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-
 import Dialog from './Dialog';
 import Footer from './Footer';
 import Header from './Header';
@@ -23,6 +22,11 @@ const styles = theme => ({
 
 class Chatbox extends React.PureComponent {
 
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    toggle: PropTypes.func.isRequired,
+  };
+
   state = {interactions: []};
 
   add = interaction => {
@@ -42,19 +46,17 @@ class Chatbox extends React.PureComponent {
     this.add(this.makeInteraction(text, 'response', true));
   };
 
-  fetchHistory = () => (
-    dydu.history().then(({ interactions }) => {
-      if (Array.isArray(interactions)) {
-        interactions = interactions.reduce((accumulator, it) => (
-          accumulator.push(
-            this.makeInteraction(it.user, 'request'),
-            this.makeInteraction(it.text, 'response'),
-          ) && accumulator
-        ), []);
-        this.add(interactions);
-      }
-    })
-  );
+  fetchHistory = () => dydu.history().then(({ interactions }) => {
+    if (Array.isArray(interactions)) {
+      interactions = interactions.reduce((accumulator, it) => (
+        accumulator.push(
+          this.makeInteraction(it.user, 'request'),
+          this.makeInteraction(it.text, 'response'),
+        ) && accumulator
+      ), []);
+      this.add(interactions);
+    }
+  });
 
   makeInteraction = (text, type, thinking) => (
     <Interaction text={text} thinking={thinking} type={type} />
@@ -92,12 +94,6 @@ class Chatbox extends React.PureComponent {
     );
   }
 }
-
-
-Chatbox.propTypes = {
-  classes: PropTypes.object.isRequired,
-  toggle: PropTypes.func.isRequired,
-};
 
 
 export default withStyles(styles)(Chatbox);

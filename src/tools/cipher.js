@@ -1,7 +1,7 @@
 import { Base64 } from 'js-base64';
 
 
-function transform(data, manipulator) {
+const transform = (data, manipulator) => {
   if (Array.isArray(data)) {
     for (let i = 0; i < data.length; i++) {
       data[i] = transform(data[i], manipulator);
@@ -16,7 +16,8 @@ function transform(data, manipulator) {
     return manipulator(data);
   }
   return data;
-}
+};
+
 
 export const decode = data => transform(data, Base64.decode);
 export const encode = data => transform(data, Base64.encode);
