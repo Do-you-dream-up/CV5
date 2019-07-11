@@ -1,4 +1,5 @@
 import axios from 'axios';
+import debounce from 'debounce-promise';
 import qs from 'qs';
 import { decode, encode } from './cipher';
 import Cookie from './cookie';
@@ -21,14 +22,14 @@ class Dydu {
     return contextId !== undefined ? decode(contextId) : undefined;
   };
 
-  emit = (verb, path, data) => verb(path, data).then(({ data={} }) => {
+  emit = debounce((verb, path, data) => verb(path, data).then(({ data={} }) => {
     if (data.hasOwnProperty('values')) {
       data.values = decode(data.values);
       this.setContextId(data.values.contextId);
       return data.values;
     }
     return data;
-  });
+  }), 100, {leading: true});
 
   history = () => new Promise(resolve => {
     const contextId = this.getContextId();

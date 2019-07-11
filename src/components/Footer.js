@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import debounce from 'debounce-promise';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
@@ -47,12 +48,16 @@ class Footer extends React.PureComponent {
     this.setState({input: event.target.value});
   };
 
+  onSubmit = event => {
+    event.preventDefault();
+    return this.submit();
+  };
+
   reset = () => {
     this.setState({input: ''});
   };
 
-  submit = event => {
-    event.preventDefault();
+  submit = debounce(() => {
     const text = this.state.input.trim();
     if (text) {
       this.reset();
@@ -63,12 +68,12 @@ class Footer extends React.PureComponent {
         }
       });
     }
-  };
+  }, 200, {leading: true});
 
   render() {
     const { classes } = this.props;
     return (
-      <form className={classNames('dydu-footer', classes.root)} onSubmit={this.submit}>
+      <form className={classNames('dydu-footer', classes.root)} onSubmit={this.onSubmit}>
         <input autoFocus
                className={classNames('dydu-footer-input', classes.input)}
                onChange={this.change}
