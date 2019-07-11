@@ -2,7 +2,8 @@
   "application": {
     "bottom": 16,
     "open": false,
-    "right": 16
+    "right": 16,
+    "top": 16
   },
   "avatar": {
     "shadow": true
@@ -11,7 +12,7 @@
     "shadow": true
   },
   "chatbox": {
-    "height": 500,
+    "height": "100%",
     "shadow": 6,
     "width": 350
   },
