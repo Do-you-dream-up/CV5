@@ -60,8 +60,24 @@ class Chatbox extends React.PureComponent {
     <Interaction text={text} thinking={thinking} type={type} />
   );
 
+  reword = (text, options) => {
+    text = text.trim();
+    if (text) {
+      options = Object.assign({hide: false}, options);
+      if (!options.hide) {
+        this.addRequest(text);
+      }
+      dydu.talk(text).then(({ text }) => {
+        if (text) {
+          this.addResponse(text);
+        }
+      });
+    }
+  };
+
   componentDidMount() {
     this.fetchHistory();
+    window.dydu.reword = this.reword;
   }
 
   render() {

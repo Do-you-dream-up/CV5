@@ -10,5 +10,6 @@ import './styles/reset.scss';
 
 const root = document.getElementById('dydu-root');
 if (root) {
+  window.dydu = {};
   ReactDOM.render(<ThemeProvider children={<Application />} theme={theme} />, root);
 }
