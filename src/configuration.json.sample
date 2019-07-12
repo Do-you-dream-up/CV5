@@ -20,6 +20,9 @@
   "header": {
     "shadow": true
   },
+  "input": {
+    "delay": 400
+  },
   "interaction": {
     "avatar": {
       "request": false,
