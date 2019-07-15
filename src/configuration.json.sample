@@ -21,7 +21,11 @@
     "shadow": true
   },
   "input": {
-    "delay": 400
+    "delay": 300,
+    "placeholder": "Type here...",
+    "suggestions": {
+      "shadow": true
+    }
   },
   "interaction": {
     "avatar": {

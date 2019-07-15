@@ -21,6 +21,7 @@ const styles = theme => ({
     display: 'flex',
     flex: '0 0 auto',
     padding: '.5em',
+    position: 'relative',
     '&&': Configuration.getStyles('footer', theme),
   },
 });

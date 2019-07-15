@@ -46,6 +46,12 @@ class Dydu {
     }
   };
 
+  suggest = text => {
+    const data = qs.stringify({language: 'en', search: text});
+    const path = `chat/search/${bot.id}/`;
+    return this.emit(api.post, path, data);
+  };
+
   talk = (text, options) => {
     const data = qs.stringify({
       language: 'en',
