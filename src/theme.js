@@ -1,6 +1,10 @@
 export default {
 
   palette: {
+    action: {
+      hover: 'rgba(0, 0, 0, .14)',
+      selected: 'rgba(0, 0, 0, .08)',
+    },
     background: {
       default: '#FAFAFA',
     },
