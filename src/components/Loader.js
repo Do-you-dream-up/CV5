@@ -41,7 +41,7 @@ class Loader extends React.PureComponent {
   };
 
   render() {
-    const { classes, size: defaultSize=30 } = this.props;
+    const { classes, size: defaultSize=3 } = this.props;
     const { size=defaultSize } = Configuration.get('loader');
     return (
       <Scroll className={classNames('dydu-loader', classes.root)}>
