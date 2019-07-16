@@ -5,7 +5,7 @@ import withStyles from 'react-jss';
 import Dialog from './Dialog';
 import Footer from './Footer';
 import Header from './Header';
-import Interaction from './Interaction';
+import { DialogContext } from '../contexts/DialogContext';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 
@@ -22,74 +22,41 @@ const styles = theme => ({
 
 class Chatbox extends React.PureComponent {
 
+  static contextType = DialogContext;
+
   static propTypes = {
     classes: PropTypes.object.isRequired,
     toggle: PropTypes.func.isRequired,
   };
-
-  state = {interactions: []};
-
-  add = interaction => {
-    this.setState(state => ({
-      interactions: [
-        ...state.interactions,
-        ...(Array.isArray(interaction) ? interaction : [interaction]),
-      ],
-    }));
-  };
-
-  addRequest = text => {
-    this.add(this.makeInteraction(text, 'request'));
-  };
-
-  addResponse = text => {
-    this.add(this.makeInteraction(text, 'response', true));
-  };
-
-  fetchHistory = () => dydu.history().then(({ interactions }) => {
-    if (Array.isArray(interactions)) {
-      interactions = interactions.reduce((accumulator, it) => (
-        accumulator.push(
-          this.makeInteraction(it.user, 'request'),
-          this.makeInteraction(it.text, 'response'),
-        ) && accumulator
-      ), []);
-      this.add(interactions);
-    }
-  });
-
-  makeInteraction = (text, type, thinking) => (
-    <Interaction text={text} thinking={thinking} type={type} />
-  );
 
   reword = (text, options) => {
     text = text.trim();
     if (text) {
       options = Object.assign({hide: false}, options);
       if (!options.hide) {
-        this.addRequest(text);
+        this.context.addRequest(text);
       }
       dydu.talk(text).then(({ text }) => {
         if (text) {
-          this.addResponse(text);
+          this.context.addResponse(text);
         }
       });
     }
   };
 
   componentDidMount() {
-    this.fetchHistory();
     window.dydu.reword = this.reword;
   }
 
   render() {
+    const { add, addRequest, addResponse, state: dialogState } = this.context;
     const { classes, toggle } = this.props;
-    const { interactions } = this.state;
+    const { interactions } = dialogState;
     return (
       <div className={classNames('dydu-chatbox', classes.root)}>
         <Header toggle={toggle} />
-        <Dialog interactions={interactions} />
-        <Footer onRequest={this.addRequest} onResponse={this.addResponse} />
+        <Dialog interactions={interactions} onAdd={add} />
+        <Footer onRequest={addRequest} onResponse={addResponse} />
       </div>
     );
   }
