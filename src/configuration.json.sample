@@ -38,6 +38,14 @@
     "shadow": true,
     "size": 3
   },
+  "onboarding": {
+    "next": "Suivant",
+    "previous": "Précédent",
+    "steps": [
+      "<h1>Bonjour</h1><p>Préférez des phrases complètes à des mots clés.</p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+      {"content": "<h1>Bonjour</h1><p>Mes connaissances évoluent de jour en jour.</p><p>Je vous apporte mon aide en quelques minutes. Si je ne parviens pas à vous répondre ou vous aider, je vous redirigerai vers le bon interlocuteur.</p>", "next": "Terminer"}
+    ]
+  },
   "teaser": {
     "shadow": 6
   }

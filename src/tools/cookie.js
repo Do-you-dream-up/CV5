@@ -6,6 +6,7 @@ export default class Cookie {
   static cookies = {
     client: 'dydu.client.id',
     context: 'dydu.context.id',
+    onboarding: 'dydu.onboarding',
     open: 'dydu.open',
   };
 

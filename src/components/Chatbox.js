@@ -5,6 +5,7 @@ import withStyles from 'react-jss';
 import Dialog from './Dialog';
 import Footer from './Footer';
 import Header from './Header';
+import Onboarding from './Onboarding';
 import { DialogContext } from '../contexts/DialogContext';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
@@ -55,8 +56,10 @@ class Chatbox extends React.PureComponent {
     return (
       <div className={classNames('dydu-chatbox', classes.root)}>
         <Header toggle={toggle} />
-        <Dialog interactions={interactions} onAdd={add} />
-        <Footer onRequest={addRequest} onResponse={addResponse} />
+        <Onboarding>
+          <Dialog interactions={interactions} onAdd={add} />
+          <Footer onRequest={addRequest} onResponse={addResponse} />
+        </Onboarding>
       </div>
     );
   }
