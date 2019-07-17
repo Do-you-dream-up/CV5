@@ -17,6 +17,10 @@ const styles = theme => ({
     '& > *:not(:first-child)': {
       marginLeft: '.5em',
     },
+    '&:disabled': {
+      backgroundColor: theme.palette.action.disabled,
+      cursor: 'not-allowed',
+    },
   },
 
   default: {
@@ -25,7 +29,7 @@ const styles = theme => ({
     color: theme.palette.primary.text,
     padding: '.5em 1em',
     textTransform: 'uppercase',
-    '&:hover': {backgroundColor: theme.palette.primary.dark},
+    '&:hover:not(:disabled)': {backgroundColor: theme.palette.primary.dark},
   },
 
   icon: {
@@ -33,7 +37,7 @@ const styles = theme => ({
     height: 40,
     justifyContent: 'center',
     width: 40,
-    '&:hover': {backgroundColor: theme.palette.primary.dark},
+    '&:hover:not(:disabled)': {backgroundColor: theme.palette.primary.dark},
     '& img': {height: 20, width: 20},
   },
 });

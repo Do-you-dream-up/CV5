@@ -3,6 +3,8 @@ export default {
   palette: {
     action: {
       hover: 'rgba(0, 0, 0, .14)',
+      disabled: 'rgba(0, 0, 0, .26)',
+      disabledBackground: 'rgba(0, 0, 0, .12)',
       selected: 'rgba(0, 0, 0, .08)',
     },
     background: {
