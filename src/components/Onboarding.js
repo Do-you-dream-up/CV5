@@ -33,6 +33,7 @@ class Onboarding extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
     classes: PropTypes.object.isRequired,
+    render: PropTypes.bool,
   };
 
   state = {
@@ -63,10 +64,10 @@ class Onboarding extends React.PureComponent {
   };
 
   render() {
-    const { children, classes } = this.props;
+    const { children, classes, render } = this.props;
     const { active, step, steps } = this.state;
     let content = children;
-    if (active && steps[step]) {
+    if (render && active && steps[step]) {
       const previous = steps[step].previous || ONBOARDING.previous;
       const next = steps[step].next || ONBOARDING.next;
       const body = document.createElement('div');
