@@ -37,11 +37,7 @@ class Chatbox extends React.PureComponent {
       if (!options.hide) {
         this.context.addRequest(text);
       }
-      dydu.talk(text).then(({ text }) => {
-        if (text) {
-          this.context.addResponse(text);
-        }
-      });
+      dydu.talk(text).then(this.context.addResponse);
     }
   };
 

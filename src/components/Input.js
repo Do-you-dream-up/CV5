@@ -100,11 +100,7 @@ class Input extends React.PureComponent {
     if (text) {
       this.reset();
       this.props.onRequest(text);
-      dydu.talk(text).then(({ text }) => {
-        if (text) {
-          this.props.onResponse(text);
-        }
-      });
+      dydu.talk(text).then(this.props.onResponse);
     }
   }, 200, {leading: true});
 

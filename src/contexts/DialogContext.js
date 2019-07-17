@@ -22,11 +22,15 @@ export class DialogProvider extends React.Component {
   };
 
   addRequest = text => {
-    this.add(<Interaction text={text} type="request" />);
+    if (text) {
+      this.add(<Interaction text={text} type="request" />);
+    }
   };
 
-  addResponse = text => {
-    this.add(<Interaction text={text} type="response" thinking />);
+  addResponse = ({ text }) => {
+    if (text) {
+      this.add(<Interaction text={text} type="response" thinking />);
+    }
   };
 
   render() {
