@@ -8,7 +8,7 @@ const styles = theme => ({
 
   base: {
     alignItems: 'center',
-    background: 0,
+    backgroundColor: theme.palette.primary.main,
     border: 0,
     cursor: 'pointer',
     display: 'flex',
@@ -24,12 +24,15 @@ const styles = theme => ({
   },
 
   default: {
-    backgroundColor: theme.palette.primary.main,
     borderRadius: 4,
     color: theme.palette.primary.text,
     padding: '.5em 1em',
     textTransform: 'uppercase',
     '&:hover:not(:disabled)': {backgroundColor: theme.palette.primary.dark},
+  },
+
+  flat: {
+    background: 0,
   },
 
   icon: {
@@ -48,14 +51,15 @@ class Button extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     component: PropTypes.element,
+    flat: PropTypes.bool,
     variant: PropTypes.string,
   };
 
   render() {
-    const { classes, component='button', variant='default', ...properties } = this.props;
+    const { classes, component='button', flat, variant='default', ...properties } = this.props;
     const type = variant.toLowerCase();
     return React.createElement(component, {...properties, className: classNames(
-      'dydu-button', `dydu-button-${type}`, classes.base, classes[type]
+      'dydu-button', `dydu-button-${type}`, classes.base, classes[type], {[classes.flat]: flat}
     )});
   }
 }
