@@ -18,6 +18,7 @@ const styles = {
     flexBasis: 'auto',
     flexGrow: '1',
     flexShrink: '1',
+    overflowY: 'auto',
     padding: '1em',
   },
 };
