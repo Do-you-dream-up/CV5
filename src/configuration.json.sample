@@ -16,7 +16,9 @@
     "shadow": 6,
     "width": 350
   },
-  "footer": {},
+  "footer": {
+    "shadow": true
+  },
   "header": {
     "shadow": true
   },

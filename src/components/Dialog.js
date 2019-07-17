@@ -40,9 +40,9 @@ class Dialog extends React.PureComponent {
   }
 
   render() {
-    const { classes, interactions } = this.props;
+    const { classes, interactions, onAdd, ...rest } = this.props;
     return (
-      <div className={classNames('dydu-dialog', classes.root)}>
+      <div className={classNames('dydu-dialog', classes.root)} {...rest}>
         {interactions.map((it, index) => ({...it, key: index}))}
       </div>
     );

@@ -39,9 +39,9 @@ class Header extends React.PureComponent {
   };
 
   render() {
-    const { classes, toggle } = this.props;
+    const { classes, toggle, ...rest } = this.props;
     return (
-      <div className={classNames('dydu-header', classes.root)}>
+      <div className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-title', classes.title)}>Header</div>
         <div className={classNames('dydu-header-actions', classes.actions)}>
           <Button onClick={toggle()} variant="icon">

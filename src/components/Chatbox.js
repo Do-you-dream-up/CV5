@@ -51,11 +51,11 @@ class Chatbox extends React.PureComponent {
     const { interactions } = dialogState;
     return (
       <div className={classNames('dydu-chatbox', classes.root)}>
-        <Header toggle={toggle} />
-        <Onboarding>
-          <Dialog interactions={interactions} onAdd={add} />
-          <Footer onRequest={addRequest} onResponse={addResponse} />
+        <Onboarding render style={{order: 2}}>
+          <Dialog interactions={interactions} onAdd={add} style={{order: 2}} />
+          <Footer onRequest={addRequest} onResponse={addResponse} style={{order: 3}} />
         </Onboarding>
+        <Header toggle={toggle} style={{order: 1}} />
       </div>
     );
   }

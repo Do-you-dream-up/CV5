@@ -64,7 +64,7 @@ class Onboarding extends React.PureComponent {
   };
 
   render() {
-    const { children, classes, render } = this.props;
+    const { children, classes, render, ...rest } = this.props;
     const { active, step, steps } = this.state;
     let content = children;
     if (render && active && steps[step]) {
@@ -73,7 +73,7 @@ class Onboarding extends React.PureComponent {
       const body = document.createElement('div');
       body.innerHTML = steps[step].content || steps[step] || '';
       content = (
-        <div className={classNames('dydu-onboarding', classes.root)}>
+        <div className={classNames('dydu-onboarding', classes.root)} {...rest}>
           <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body.innerHTML}} />
           <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
             <Button children={previous} disabled={!step} onClick={this.previous()} />

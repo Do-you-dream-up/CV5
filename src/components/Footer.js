@@ -36,9 +36,9 @@ class Footer extends React.PureComponent {
   };
 
   render() {
-    const { classes, onRequest, onResponse } = this.props;
+    const { classes, onRequest, onResponse, ...rest } = this.props;
     return (
-      <div className={classNames('dydu-footer', classes.root)}>
+      <div className={classNames('dydu-footer', classes.root)} {...rest}>
         <Input onRequest={onRequest} onResponse={onResponse} />
         <div className={classNames('dydu-footer-actions', classes.actions)}>
           <Button flat type="submit" variant="icon">
