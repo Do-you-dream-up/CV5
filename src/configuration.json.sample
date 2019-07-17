@@ -48,6 +48,10 @@
       {"content": "<h1>Bonjour</h1><p>Mes connaissances évoluent de jour en jour.</p><p>Je vous apporte mon aide en quelques minutes. Si je ne parviens pas à vous répondre ou vous aider, je vous redirigerai vers le bon interlocuteur.</p>", "next": "Terminer"}
     ]
   },
+  "secondary": {
+    "mode": "side",
+    "shadow": 6
+  },
   "teaser": {
     "shadow": 6
   }

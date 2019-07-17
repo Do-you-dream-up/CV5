@@ -6,6 +6,7 @@ import Dialog from './Dialog';
 import Footer from './Footer';
 import Header from './Header';
 import Onboarding from './Onboarding';
+import Secondary from './Secondary';
 import { DialogContext } from '../contexts/DialogContext';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
@@ -19,6 +20,9 @@ const styles = theme => ({
     '&&': Configuration.getStyles('chatbox'),
   },
 });
+
+
+const SECONDARY_MODE = Configuration.get('secondary.mode');
 
 
 class Chatbox extends React.PureComponent {
@@ -56,6 +60,7 @@ class Chatbox extends React.PureComponent {
           <Footer onRequest={addRequest} onResponse={addResponse} style={{order: 3}} />
         </Onboarding>
         <Header toggle={toggle} style={{order: 1}} />
+        {SECONDARY_MODE === 'side' && <Secondary mode={SECONDARY_MODE} />}
       </div>
     );
   }

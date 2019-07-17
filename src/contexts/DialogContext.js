@@ -10,7 +10,7 @@ export class DialogProvider extends React.Component {
     children: PropTypes.object,
   };
 
-  state = {interactions: []};
+  state = {interactions: [], secondaryActive: false, secondaryContent: null};
 
   add = interaction => {
     this.setState(state => ({
@@ -27,10 +27,22 @@ export class DialogProvider extends React.Component {
     }
   };
 
-  addResponse = ({ text }) => {
+  addResponse = ({ text, sidebar }) => {
     if (text) {
       this.add(<Interaction text={text} type="response" thinking />);
     }
+    if (sidebar) {
+      const body = document.createElement('div');
+      body.innerHTML = sidebar.content;
+      this.setState({
+        secondaryActive: true,
+        secondaryContent: {body: body.innerHTML, title: sidebar.title},
+      });
+    }
+  };
+
+  toggleSecondary = open => () => {
+    this.setState(state => ({secondaryActive: open === undefined ? !state.secondaryActive : open}));
   };
 
   render() {
@@ -39,6 +51,7 @@ export class DialogProvider extends React.Component {
       addRequest: this.addRequest,
       addResponse: this.addResponse,
       state: this.state,
+      toggleSecondary: this.toggleSecondary,
     }} />;
   }
 }

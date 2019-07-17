@@ -9,6 +9,7 @@ export default {
     },
     background: {
       default: '#FAFAFA',
+      secondary: '#FFFFFF',
     },
     divider: '#BDBDBD',
     primary: {
