@@ -20,6 +20,7 @@ const styles = theme => ({
   },
 
   default: {
+    backgroundColor: theme.palette.primary.main,
     borderRadius: 4,
     color: theme.palette.primary.text,
     padding: '.5em 1em',
@@ -47,17 +48,11 @@ class Button extends React.PureComponent {
   };
 
   render() {
-    const { classes, component, variant, ...properties } = this.props;
+    const { classes, component='button', variant='default', ...properties } = this.props;
     const type = variant.toLowerCase();
-    return React.createElement(
-      component ? component : 'button',
-      {...properties, className: classNames(
-        'dydu-button',
-        `dydu-button-${type || 'default'}`,
-        classes.base,
-        classes[type || 'default'],
-      )},
-    );
+    return React.createElement(component, {...properties, className: classNames(
+      'dydu-button', `dydu-button-${type}`, classes.base, classes[type]
+    )});
   }
 }
 
