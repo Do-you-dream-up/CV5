@@ -49,6 +49,7 @@
     ]
   },
   "secondary": {
+    "automatic": true,
     "mode": "side",
     "shadow": 6
   },

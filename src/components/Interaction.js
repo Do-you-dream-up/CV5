@@ -34,6 +34,7 @@ const styles = {
 
 const LOADER = Configuration.get('interaction.loader');
 const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
+const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
 
 
 class Interaction extends React.PureComponent {
@@ -67,7 +68,7 @@ class Interaction extends React.PureComponent {
   addSecondary = () => {
     const { content, title } = this.props.secondary || {};
     if (content) {
-      this.context.toggleSecondary(true, {body: sanitize(content), title})();
+      this.context.toggleSecondary(SECONDARY_AUTOMATIC, {body: sanitize(content), title})();
     }
   };
 
