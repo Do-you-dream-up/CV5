@@ -84,7 +84,8 @@ class Interaction extends React.PureComponent {
   }
 
   render() {
-    const { classes, type } = this.props;
+    const { toggleSecondary } = this.context;
+    const { classes, secondary, type } = this.props;
     const { bubbles, length } = this.state;
     const { avatar } = Configuration.get('interaction');
     return (
@@ -93,7 +94,10 @@ class Interaction extends React.PureComponent {
       )} ref={node => this.node = node}>
         {!!avatar[type] && <Avatar type={type} />}
         <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
-          {bubbles.map((it, index) => <Bubble html={it} key={index} type={type} />)}
+          {bubbles.map((it, index) => {
+            const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
+            return <Bubble actions={actions} html={it} key={index} type={type} />;
+          })}
           {bubbles.length < length && <Loader />}
         </div>
       </div>
