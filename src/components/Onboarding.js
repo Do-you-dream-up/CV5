@@ -6,6 +6,7 @@ import Button from './Button';
 import { encode } from '../tools/cipher';
 import Configuration from '../tools/configuration';
 import Cookie from '../tools/cookie';
+import sanitize from '../tools/sanitize';
 
 
 const styles = {
@@ -70,11 +71,10 @@ class Onboarding extends React.PureComponent {
     if (render && active && steps[step]) {
       const previous = steps[step].previous || ONBOARDING.previous;
       const next = steps[step].next || ONBOARDING.next;
-      const body = document.createElement('div');
-      body.innerHTML = steps[step].content || steps[step] || '';
+      const body = sanitize(steps[step].content || steps[step]);
       content = (
         <div className={classNames('dydu-onboarding', classes.root)} {...rest}>
-          <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body.innerHTML}} />
+          <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
           <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
             <Button children={previous} disabled={!step} onClick={this.previous()} />
             <Button children={next} onClick={this.next()} />
