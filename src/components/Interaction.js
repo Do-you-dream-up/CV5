@@ -5,6 +5,7 @@ import withStyles from 'react-jss';
 import Avatar from  './Avatar';
 import Bubble from  './Bubble';
 import Loader from  './Loader';
+import { DialogContext } from  '../contexts/DialogContext';
 import Configuration from  '../tools/configuration';
 import sanitize from  '../tools/sanitize';
 
@@ -37,26 +38,36 @@ const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true
 
 class Interaction extends React.PureComponent {
 
+  static contextType = DialogContext;
+
   static propTypes = {
     classes: PropTypes.object.isRequired,
     text: PropTypes.string.isRequired,
+    secondary: PropTypes.object,
     thinking: PropTypes.bool,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
   };
 
   state = {bubbles: [], length: 0};
 
-  addBubble = (bubbles, index = 0) => {
+  addBubble = (bubbles, callback, index=0) => {
     if (this.props.thinking) {
       setTimeout(function() {
         this.setState(
           state => ({bubbles: [...state.bubbles, bubbles.shift()]}),
-          () => bubbles.length && this.addBubble(bubbles, index + 1),
+          () => bubbles.length ? this.addBubble(bubbles, callback, index + 1) : callback(),
         );
       }.bind(this), DELAYS[index % DELAYS.length]);
     }
     else {
-      this.setState(({bubbles: bubbles}));
+      this.setState(({bubbles: bubbles}), callback);
+    }
+  };
+
+  addSecondary = () => {
+    const { content, title } = this.props.secondary || {};
+    if (content) {
+      this.context.toggleSecondary(true, {body: sanitize(content), title})();
     }
   };
 
@@ -64,7 +75,7 @@ class Interaction extends React.PureComponent {
     const bubbles = sanitize(this.props.text).split('<hr>');
     this.setState(
       ({length: bubbles.length}),
-      () => this.addBubble(bubbles),
+      () => this.addBubble(bubbles, this.addSecondary),
     );
   };
 

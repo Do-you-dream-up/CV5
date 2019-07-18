@@ -29,20 +29,15 @@ export class DialogProvider extends React.Component {
 
   addResponse = ({ text, sidebar }) => {
     if (text) {
-      this.add(<Interaction text={text} type="response" thinking />);
-    }
-    if (sidebar) {
-      const body = document.createElement('div');
-      body.innerHTML = sidebar.content;
-      this.setState({
-        secondaryActive: true,
-        secondaryContent: {body: body.innerHTML, title: sidebar.title},
-      });
+      this.add(<Interaction text={text} type="response" secondary={sidebar} thinking  />);
     }
   };
 
-  toggleSecondary = open => () => {
-    this.setState(state => ({secondaryActive: open === undefined ? !state.secondaryActive : open}));
+  toggleSecondary = (open, { body, title }={}) => () => {
+    this.setState(state => ({
+      secondaryActive: open === undefined ? !state.secondaryActive : open,
+      ...((body || title) && {secondaryContent: {body: body, title: title}}),
+    }));
   };
 
   render() {
