@@ -15,9 +15,14 @@ const styles = theme => ({
     },
   },
   header: {
+    backgroundColor: `${theme.palette.background.secondary}CC`,
     display: 'flex',
+    padding: '1em',
     position: 'sticky',
     top: 0,
+    '& > *': {
+      margin: 0,
+    },
   },
   over: {
     bottom: 0,
@@ -29,8 +34,10 @@ const styles = theme => ({
   base: {
     backgroundColor: theme.palette.background.secondary,
     overflowY: 'auto',
-    padding: '1em',
     '&&': Configuration.getStyles('secondary'),
+  },
+  body: {
+    padding: '1em',
   },
   side: {
     bottom: 0,
