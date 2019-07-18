@@ -10,12 +10,14 @@ import Configuration from '../tools/configuration';
 const styles = theme => ({
   actions: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    position: 'sticky',
-    top: 0,
     '& > :not(:first-child)': {
       marginLeft: '1em',
     },
+  },
+  header: {
+    display: 'flex',
+    position: 'sticky',
+    top: 0,
   },
   over: {
     bottom: 0,
@@ -58,13 +60,18 @@ class Secondary extends React.PureComponent {
       <div className={classNames(
         'dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode],
       )}>
-        <div className={classNames('dydu-secondary-actions', classes.actions)}>
-          <Button onClick={toggleSecondary(false)} type="button" variant="icon">
-            <img alt="Close" src="icons/close.png" title="Close" />
-          </Button>
+        <div className={classNames('dydu-secondary-header', classes.header)}>
+          {title && <h1 children={title} />}
+          <div className={classNames('dydu-secondary-actions', classes.actions)}>
+            <Button onClick={toggleSecondary(false)} type="button" variant="icon">
+              <img alt="Close" src="icons/close.png" title="Close" />
+            </Button>
+          </div>
         </div>
-        {title && <h1 dangerouslySetInnerHTML={{__html: title}} />}
-        {body && <div dangerouslySetInnerHTML={{__html: body}} />}
+        {body && (
+          <div className={classNames('dydu-secondary-body', classes.body)}
+               dangerouslySetInnerHTML={{__html: body}} />
+        )}
       </div>
     ) : null;
   }

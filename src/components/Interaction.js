@@ -6,6 +6,7 @@ import Avatar from  './Avatar';
 import Bubble from  './Bubble';
 import Loader from  './Loader';
 import Configuration from  '../tools/configuration';
+import sanitize from  '../tools/sanitize';
 
 
 const styles = {
@@ -60,9 +61,7 @@ class Interaction extends React.PureComponent {
   };
 
   mount = () => {
-    const interaction = document.createElement('div');
-    interaction.innerHTML = this.props.text || '';
-    const bubbles = interaction.innerHTML.split('<hr>');
+    const bubbles = sanitize(this.props.text).split('<hr>');
     this.setState(
       ({length: bubbles.length}),
       () => this.addBubble(bubbles),
