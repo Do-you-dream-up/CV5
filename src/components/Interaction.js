@@ -32,7 +32,7 @@ const styles = {
 };
 
 
-const LOADER = Configuration.get('interaction.loader');
+const { avatar: AVATAR={}, loader: LOADER } = Configuration.get('interaction');
 const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
 const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
 
@@ -43,8 +43,8 @@ class Interaction extends React.PureComponent {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    text: PropTypes.string.isRequired,
     secondary: PropTypes.object,
+    text: PropTypes.string.isRequired,
     thinking: PropTypes.bool,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
   };
@@ -88,12 +88,11 @@ class Interaction extends React.PureComponent {
     const { toggleSecondary } = this.context;
     const { classes, secondary, type } = this.props;
     const { bubbles, length } = this.state;
-    const { avatar } = Configuration.get('interaction');
     return (
       <div className={classNames(
         'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
       )} ref={node => this.node = node}>
-        {!!avatar[type] && <Avatar type={type} />}
+        {!!AVATAR[type] && <Avatar type={type} />}
         <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
           {bubbles.map((it, index) => {
             const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
