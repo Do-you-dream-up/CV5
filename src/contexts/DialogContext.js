@@ -29,7 +29,7 @@ export class DialogProvider extends React.Component {
 
   addResponse = ({ text, sidebar }) => {
     if (text) {
-      this.add(<Interaction text={text} type="response" secondary={sidebar} thinking  />);
+      this.add(<Interaction text={text} type="response" secondary={sidebar} secondaryOpen thinking  />);
     }
   };
 

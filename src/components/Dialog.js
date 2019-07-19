@@ -31,10 +31,13 @@ class Dialog extends React.PureComponent {
 
   fetchHistory = () => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
-      interactions = interactions.reduce((accumulator, it) => (
+      interactions = interactions.reduce((accumulator, it, index) => (
         accumulator.push(
           <Interaction text={it.user} type="request" />,
-          <Interaction text={it.text} type="response" />,
+          <Interaction text={it.text}
+                       secondary={it.sidebar}
+                       secondaryOpen={index === interactions.length - 1}
+                       type="response" />,
         ) && accumulator
       ), []);
       this.props.onAdd(interactions);

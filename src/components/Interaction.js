@@ -44,6 +44,7 @@ class Interaction extends React.PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     secondary: PropTypes.object,
+    secondaryOpen: PropTypes.bool,
     text: PropTypes.string.isRequired,
     thinking: PropTypes.bool,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
@@ -68,7 +69,10 @@ class Interaction extends React.PureComponent {
   addSecondary = () => {
     const { content, title } = this.props.secondary || {};
     if (content) {
-      this.context.toggleSecondary(SECONDARY_AUTOMATIC, {body: sanitize(content), title})();
+      this.context.toggleSecondary(
+        this.props.secondaryOpen && SECONDARY_AUTOMATIC,
+        {body: sanitize(content), title},
+      )();
     }
   };
 
