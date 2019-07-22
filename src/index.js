@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'react-jss';
 import Application from './components/Application';
 import { DialogProvider } from './contexts/DialogContext';
+import { OnboardingProvider } from './contexts/OnboardingContext';
 import theme from './theme';
 import './styles/reset.scss';
 
@@ -12,7 +13,9 @@ if (root) {
   window.dydu = {};
   ReactDOM.render(
     <DialogProvider>
-      <ThemeProvider children={<Application />} theme={theme} />
+      <OnboardingProvider>
+        <ThemeProvider children={<Application />} theme={theme} />
+      </OnboardingProvider>
     </DialogProvider> , root
   );
 }
