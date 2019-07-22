@@ -11,7 +11,6 @@ import dydu from '../tools/dydu';
 const styles = {
   root: {
     flex: '1 1 auto',
-    overflowY: 'auto',
     padding: '1em',
     position: 'relative',
   },

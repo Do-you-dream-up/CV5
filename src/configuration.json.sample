@@ -53,6 +53,13 @@
     "mode": "side",
     "shadow": 6
   },
+  "tabs": {
+    "selected": 0,
+    "values": [
+      {"text": "Dialog", "value": "dialog"},
+      {"text": "Contacts", "value": "contacts"}
+    ]
+  },
   "teaser": {
     "shadow": 6
   }

@@ -2,17 +2,24 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import Contacts from './Contacts';
 import Dialog from './Dialog';
 import Footer from './Footer';
 import Header from './Header';
 import Onboarding from './Onboarding';
 import Secondary from './Secondary';
+import Tab from './Tab';
 import { DialogContext } from '../contexts/DialogContext';
+import { TabProvider } from '../contexts/TabContext';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 
 
 const styles = theme => ({
+  body: {
+    flexGrow: 1,
+    overflowY: 'auto',
+  },
   root: {
     backgroundColor: theme.palette.background.default,
     display: 'flex',
@@ -54,14 +61,19 @@ class Chatbox extends React.PureComponent {
     const { classes, toggle } = this.props;
     const { interactions } = dialogState;
     return (
-      <div className={classNames('dydu-chatbox', classes.root)}>
-        <Onboarding render style={{order: 2}}>
-          <Dialog interactions={interactions} onAdd={add} style={{order: 2}} />
-          <Footer onRequest={addRequest} onResponse={addResponse} style={{order: 3}} />
-        </Onboarding>
-        <Header toggle={toggle} style={{order: 1}} />
-        {SECONDARY_MODE === 'side' && <Secondary mode={SECONDARY_MODE} />}
-      </div>
+      <TabProvider>
+        <div className={classNames('dydu-chatbox', classes.root)}>
+          <Onboarding render>
+            <div className={classNames('dydu-chatbox-body', classes.body)}>
+              <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
+              <Tab component={Contacts} value="contacts" />
+            </div>
+            <Footer onRequest={addRequest} onResponse={addResponse}  />
+          </Onboarding>
+          <Header toggle={toggle} style={{order: -1}} />
+          {SECONDARY_MODE === 'side' && <Secondary mode={SECONDARY_MODE} />}
+        </div>
+      </TabProvider>
     );
   }
 }
