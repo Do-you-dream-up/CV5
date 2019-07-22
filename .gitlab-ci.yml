@@ -1,0 +1,16 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+build:
+  script:
+    - npm i
+    - npm run build
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - lftp -c "set ftp:ssl-allow no; open -u ${FTP_USERNAME},${FTP_PASSWORD} ${FTP_HOST}; mirror -Rev dist/ ./html/bliss/master  --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/"
+  only:
+    - master
