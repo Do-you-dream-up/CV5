@@ -56,9 +56,9 @@ class Button extends React.PureComponent {
   };
 
   render() {
-    const { classes, component='button', flat, variant='default', ...properties } = this.props;
+    const { classes, component='button', flat, variant='default', ...rest } = this.props;
     const type = variant.toLowerCase();
-    return React.createElement(component, {...properties, className: classNames(
+    return React.createElement(component, {...rest, className: classNames(
       'dydu-button', `dydu-button-${type}`, classes.base, classes[type], {[classes.flat]: flat}
     )});
   }
