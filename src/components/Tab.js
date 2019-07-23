@@ -23,9 +23,9 @@ class Tab extends React.PureComponent {
   };
 
   render() {
-    const { state: tabState } = this.context;
+    const { should } = this.context;
     const { children, classes, component='div', render, value, ...rest } = this.props;
-    const display = value === tabState.current;
+    const display = should(value);
     return render || display ? React.createElement(
       component, {...(render && !display && {style: {display: 'none'}}), ...rest}, children
     ) : null;

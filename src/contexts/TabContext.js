@@ -19,14 +19,17 @@ export class TabProvider extends React.Component {
   state = {current: (TABS_VALUES[TABS_SELECTED] || {}).value};
 
   select = value => () => {
-    if (TABS_POSSIBLE_VALUES) {
+    if (TABS_POSSIBLE_VALUES.includes(value)) {
       this.setState({current: value});
     }
   };
 
+  should = value => value === this.state.current;
+
   render() {
     return <TabContext.Provider children={this.props.children} value={{
       select: this.select,
+      should: this.should,
       state: this.state,
     }} />;
   }
