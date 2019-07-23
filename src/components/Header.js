@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 import Button from './Button';
+import Menu from './Menu';
 import Onboarding from './Onboarding';
 import Tabs from './Tabs';
 import Configuration from '../tools/configuration';
@@ -42,19 +43,47 @@ class Header extends React.PureComponent {
     toggle: PropTypes.func.isRequired,
   };
 
+  state = {menuAnchor: null};
+
+  toggleMenu = event => (
+    this.setState({menuAnchor: event.currentTarget})
+  );
+
   render() {
     const { classes, toggle, ...rest } = this.props;
+    const { menuAnchor } = this.state;
+    const menu = [
+      {onClick: () => window.dydu.reword('#chatboxinfos#'),        text: '#chatboxinfos#'},
+      {onClick: () => window.dydu.reword('#comment#'),             text: '#comment#'},
+      {onClick: () => window.dydu.reword('#contextvariables#'),    text: '#contextvariables#'},
+      {onClick: () => window.dydu.reword('#feedback#'),            text: '#feedback#'},
+      {onClick: () => window.dydu.reword('#hostname#'),            text: '#hostname#'},
+      {onClick: () => window.dydu.reword('#iframe#'),              text: '#iframe#'},
+      {onClick: () => window.dydu.reword('#lien#'),                text: '#lien#'},
+      {onClick: () => window.dydu.reword('#liste#'),               text: '#liste#'},
+      {onClick: () => window.dydu.reword('#livechatconnection#'),  text: '#livechatconnection#'},
+      {onClick: () => window.dydu.reword('#newdialog#'),           text: '#newdialog#'},
+      {onClick: () => window.dydu.reword('#sidebar#'),             text: '#sidebar#'},
+      {onClick: () => window.dydu.reword('#split#'),               text: '#split#'},
+      {onClick: () => window.dydu.reword('#step#'),                text: '#step#'},
+      {onClick: () => window.dydu.reword('#stepsidebar#'),         text: '#stepsidebar#'},
+      {onClick: () => window.dydu.reword('#template#'),            text: '#template#'},
+    ];
     return (
       <div className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
           <div className={classNames('dydu-header-title', classes.title)}>Header</div>
           <div className={classNames('dydu-header-actions', classes.actions)}>
+            <Button onClick={this.toggleMenu} variant="icon">
+              <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
+            </Button>
             <Button onClick={toggle()} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
             </Button>
           </div>
         </div>
         <Onboarding children={<Tabs />} />
+        <Menu anchor={menuAnchor} items={menu} open={!!menuAnchor} />
       </div>
     );
   }

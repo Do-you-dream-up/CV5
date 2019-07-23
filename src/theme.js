@@ -9,6 +9,7 @@ export default {
     },
     background: {
       default: '#FAFAFA',
+      menu: '#FFFFFF',
       secondary: '#FFFFFF',
     },
     divider: '#BDBDBD',
