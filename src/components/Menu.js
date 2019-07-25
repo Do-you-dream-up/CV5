@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+// import ReactDOM from 'react-dom';
 import withStyles from 'react-jss';
+import { Portal } from 'react-portal';
 import Configuration from '../tools/configuration';
 
 
@@ -12,58 +14,86 @@ const styles = theme => ({
     paddingLeft: '1.6em',
     paddingRight: '1.6em',
     paddingTop: '.8em',
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
+    '&:first-child': {marginTop: '.5em'},
+    '&:last-child': {marginBottom: '.5em'},
+    '&:hover': {backgroundColor: theme.palette.action.hover},
   },
   root: {
     backgroundColor: theme.palette.background.menu,
     color: theme.palette.text.primary,
+    fontFamily: 'sans-serif',
     listStyleType: 'none',
     margin: 0,
+    overflowY: 'auto',
     padding: 0,
-    paddingBottom: '.5em',
-    paddingTop: '.5em',
     position: 'fixed',
     '&&': Configuration.getStyles('menu'),
   },
 });
 
 
+const ROOT = Configuration.get('root');
+const SPACING = ~~Configuration.get('menu.spacing');
+
+
 class Menu extends React.PureComponent {
 
   static propTypes = {
-    anchor: PropTypes.instanceOf(Element),
+    children: PropTypes.element.isRequired,
     classes: PropTypes.object.isRequired,
-    items: PropTypes.array.isRequired,
-    open: PropTypes.bool.isRequired,
+    items: PropTypes.arrayOf(PropTypes.shape({
+      onClick: PropTypes.func,
+      text: PropTypes.string.isRequired,
+    })).isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.ref = React.createRef();
+    this.anchor = React.createRef();
+    this.menu = React.createRef();
+    this.state = {geometry: null, open: false};
   }
 
-  getPosition = () => {
-    const { offsetHeight: height, offsetWidth: width } = this.ref.current || {};
-    return {height, width};
+  setGeometry = () => {
+    if (this.menu.current) {
+      // const anchor = ReactDOM.findDOMNode(this.anchor.current).getBoundingClientRect();
+      const anchor = this.anchor.current.getBoundingClientRect();
+      const left = anchor.left + anchor.width / 2 - this.menu.current.offsetWidth / 2;
+      this.setState({geometry: {
+        left: Math.max(0, Math.min(left, window.innerWidth - this.menu.current.offsetWidth - SPACING)),
+        maxHeight: window.innerHeight - anchor.bottom - SPACING,
+        top: anchor.bottom + SPACING,
+      }});
+    }
+  };
+
+  toggle = value => () => {
+    this.setState(
+      state => ({open: value === undefined ? !state.open : value}),
+      () => (this.state.open && this.setGeometry()),
+    );
   };
 
   render() {
-    const { anchor, classes, items, open } = this.props;
-    // if (anchor) {
-    //   style = (({ x: left, y: top }) => ({left, top: top + 40}))(anchor.getBoundingClientRect());
-    // }
-    const style = this.getPosition(anchor);
-    return open && (
-      <ul className={classNames('dydu-menu', classes.root)} ref={this.ref} style={style}>
-        {items.map((it, index) => (
-          <li children={it.text}
-              className={classNames('dydu-menu-item', classes.item)}
-              key={index}
-              onClick={it.onClick}/>
-        ))}
-      </ul>
+    const { children, classes, items } = this.props;
+    const { geometry, open } = this.state;
+    const node = document && document.getElementById(ROOT);
+    return (
+      <>
+        {React.cloneElement(children, {onClick: this.toggle(), ref: this.anchor})}
+        {open && (
+          <Portal node={node}>
+            <ul className={classNames('dydu-menu', classes.root)} ref={this.menu} style={geometry}>
+              {items.map((it, index) => (
+                <li children={it.text}
+                    className={classNames('dydu-menu-item', classes.item)}
+                    key={index}
+                    onClick={it.onClick}/>
+              ))}
+            </ul>
+          </Portal>
+        )}
+      </>
     );
   }
 }

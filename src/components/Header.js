@@ -43,15 +43,12 @@ class Header extends React.PureComponent {
     toggle: PropTypes.func.isRequired,
   };
 
-  state = {menuAnchor: null};
-
   toggleMenu = event => (
     this.setState({menuAnchor: event.currentTarget})
   );
 
   render() {
     const { classes, toggle, ...rest } = this.props;
-    const { menuAnchor } = this.state;
     const menu = [
       {onClick: () => window.dydu.reword('#chatboxinfos#'),        text: '#chatboxinfos#'},
       {onClick: () => window.dydu.reword('#comment#'),             text: '#comment#'},
@@ -74,16 +71,17 @@ class Header extends React.PureComponent {
         <div className={classNames('dydu-header-body', classes.body)}>
           <div className={classNames('dydu-header-title', classes.title)}>Header</div>
           <div className={classNames('dydu-header-actions', classes.actions)}>
-            <Button onClick={this.toggleMenu} variant="icon">
-              <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
-            </Button>
+            <Menu items={menu}>
+              <Button onClick={this.toggleMenu} variant="icon">
+                <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
+              </Button>
+            </Menu>
             <Button onClick={toggle()} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
             </Button>
           </div>
         </div>
         <Onboarding children={<Tabs />} />
-        <Menu anchor={menuAnchor} items={menu} open={!!menuAnchor} />
       </div>
     );
   }

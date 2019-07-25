@@ -40,6 +40,10 @@
     "shadow": true,
     "size": 3
   },
+  "menu": {
+    "shadow": true,
+    "spacing": 8
+  },
   "onboarding": {
     "next": "Suivant",
     "previous": "Précédent",
