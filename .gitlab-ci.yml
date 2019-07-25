@@ -13,7 +13,7 @@ build:
     - npm i
     - npm run build
     - apt-get update -qq && apt-get install -y -qq lftp
-    - lftp -c "set ftp:ssl-allow no; open -u ${FTP_USERNAME},${FTP_PASSWORD} ${FTP_HOST}; mirror -Rev build/ ./html/bliss/master  --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/"
+    - lftp -c "set ftp:ssl-allow no; open -u ${FTP_USERNAME},${FTP_PASSWORD} -p ${FTP_PORT} ${FTP_HOST}; mirror -Rev build/ ./html/bliss/master  --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/"
   only:
     - master
     - production
