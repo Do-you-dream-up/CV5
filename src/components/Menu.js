@@ -59,6 +59,12 @@ class Menu extends React.PureComponent {
     this.state = {geometry: null, open: false};
   }
 
+  onDocumentClick = event => {
+    if (!this.anchor.current.contains(event.target) && !this.menu.current.contains(event.target)) {
+      this.toggleClose();
+    }
+  };
+
   setGeometry = () => {
     if (this.menu.current) {
       const anchor = this.anchor.current.getBoundingClientRect();
@@ -72,11 +78,18 @@ class Menu extends React.PureComponent {
   };
 
   toggle = value => () => {
-    this.setState(
-      state => ({open: value === undefined ? !state.open : value}),
-      () => (this.state.open && this.setGeometry()),
-    );
+    value = value === undefined ? !this.state.open : value;
+    return value ? this.toggleOpen() : this.toggleClose();
   };
+
+  toggleClose = () => this.setState({open: false}, () => {
+    document.removeEventListener('mousedown', this.onDocumentClick);
+  });
+
+  toggleOpen = () => this.setState({open: true}, () => {
+    this.setGeometry();
+    document.addEventListener('mousedown', this.onDocumentClick);
+  });
 
   render() {
     const { children, classes, items } = this.props;
