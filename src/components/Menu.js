@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-// import ReactDOM from 'react-dom';
 import withStyles from 'react-jss';
 import { Portal } from 'react-portal';
 import Configuration from '../tools/configuration';
@@ -56,7 +55,6 @@ class Menu extends React.PureComponent {
 
   setGeometry = () => {
     if (this.menu.current) {
-      // const anchor = ReactDOM.findDOMNode(this.anchor.current).getBoundingClientRect();
       const anchor = this.anchor.current.getBoundingClientRect();
       const left = anchor.left + anchor.width / 2 - this.menu.current.offsetWidth / 2;
       this.setState({geometry: {
