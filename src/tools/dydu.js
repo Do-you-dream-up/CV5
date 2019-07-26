@@ -6,7 +6,7 @@ import Cookie from './cookie';
 import bot from '../bot';
 
 
-const api = axios.create({
+const API = axios.create({
   baseURL: `https:${bot.server}/servlet/api/`,
   headers: {
     'Accept': 'application/json',
@@ -36,7 +36,7 @@ class Dydu {
     if (contextId) {
       const data = qs.stringify({contextUuid: contextId});
       const path = `chat/history/${bot.id}/`;
-      resolve(this.emit(api.post, path, data));
+      resolve(this.emit(API.post, path, data));
     }
   });
 
@@ -49,7 +49,7 @@ class Dydu {
   suggest = text => {
     const data = qs.stringify({language: 'en', search: text});
     const path = `chat/search/${bot.id}/`;
-    return this.emit(api.post, path, data);
+    return this.emit(API.post, path, data);
   };
 
   talk = (text, options) => {
@@ -60,7 +60,7 @@ class Dydu {
     });
     const contextId = this.getContextId();
     const path = `chat/talk/${bot.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(api.post, path, data);
+    return this.emit(API.post, path, data);
   };
 }
 
