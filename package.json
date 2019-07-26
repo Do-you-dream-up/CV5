@@ -38,15 +38,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "commitlint": {
-    "rules": {
-      "body-leading-blank": [2, "always"],
-      "body-max-line-length": [2, "always", 72],
-      "header-case": [2, "always", "sentence-case"],
-      "header-max-length": [2, "always", 72],
-      "header-min-length": [2, "always", 8]
-    }
-  },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint --env HUSKY_GIT_PARAMS",
