@@ -52,17 +52,28 @@ class Button extends React.PureComponent {
     classes: PropTypes.object.isRequired,
     component: PropTypes.element,
     flat: PropTypes.bool,
+    reference: PropTypes.object,
     variant: PropTypes.string,
   };
 
   render() {
-    const { classes, component='button', flat, variant='default', ...rest } = this.props;
+    const { classes, component='button', flat, reference, variant='default', ...rest } = this.props;
     const type = variant.toLowerCase();
-    return React.createElement(component, {...rest, className: classNames(
-      'dydu-button', `dydu-button-${type}`, classes.base, classes[type], {[classes.flat]: flat}
-    )});
+    return React.createElement(component, {
+      ...rest,
+      className: classNames(
+        'dydu-button',
+        `dydu-button-${type}`,
+        classes.base,
+        classes[type],
+        {[classes.flat]: flat},
+      ),
+      ref: reference,
+    });
   }
 }
 
 
-export default withStyles(styles)(Button);
+const forwardedButton = React.forwardRef((props, ref) => <Button {...props} reference={ref} />);
+forwardedButton.displayName = Button.displayName;
+export default withStyles(styles)(forwardedButton);
