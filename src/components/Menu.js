@@ -65,6 +65,13 @@ class Menu extends React.PureComponent {
     }
   };
 
+  onItemClick = callback => () => {
+    if (callback) {
+      callback();
+      this.toggleClose();
+    }
+  };
+
   setGeometry = () => {
     if (this.menu.current) {
       const anchor = this.anchor.current.getBoundingClientRect();
@@ -109,7 +116,7 @@ class Menu extends React.PureComponent {
                       it.onClick ? classes.itemEnabled : classes.itemDisabled
                     )}
                     key={index}
-                    onClick={it.onClick}/>
+                    onClick={this.onItemClick(it.onClick)} />
               ))}
             </ul>
           </Portal>
