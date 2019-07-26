@@ -8,14 +8,20 @@ import Configuration from '../tools/configuration';
 
 const styles = theme => ({
   item: {
-    cursor: 'pointer',
     paddingBottom: '.8em',
     paddingLeft: '1.6em',
     paddingRight: '1.6em',
     paddingTop: '.8em',
     '&:first-child': {marginTop: '.5em'},
     '&:last-child': {marginBottom: '.5em'},
+  },
+  itemEnabled: {
+    cursor: 'pointer',
     '&:hover': {backgroundColor: theme.palette.action.hover},
+  },
+  itemDisabled: {
+    color: theme.palette.text.disabled,
+    cursor: 'not-allowed',
   },
   root: {
     backgroundColor: theme.palette.background.menu,
@@ -84,7 +90,11 @@ class Menu extends React.PureComponent {
             <ul className={classNames('dydu-menu', classes.root)} ref={this.menu} style={geometry}>
               {items.map((it, index) => (
                 <li children={it.text}
-                    className={classNames('dydu-menu-item', classes.item)}
+                    className={classNames(
+                      'dydu-menu-item',
+                      classes.item,
+                      it.onClick ? classes.itemEnabled : classes.itemDisabled
+                    )}
                     key={index}
                     onClick={it.onClick}/>
               ))}

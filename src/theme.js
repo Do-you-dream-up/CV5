@@ -32,6 +32,7 @@ export default {
       text: '#FFFFFF',
     },
     text: {
+      disabled: '#BFBFBF',
       primary: '#212121',
       secondary: '#757575',
     },
