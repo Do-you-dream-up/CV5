@@ -3,11 +3,18 @@ import debounce from 'debounce-promise';
 import qs from 'qs';
 import { decode, encode } from './cipher';
 import Cookie from './cookie';
+import getUrlParameters from './get-url-parameters';
 import bot from '../bot';
 
 
+const BOT = Object.assign({}, bot, (({ bot:id, server }) => ({
+  ...id && {id},
+  ...server && {server},
+}))(getUrlParameters()));
+
+
 const API = axios.create({
-  baseURL: `https:${bot.server}/servlet/api/`,
+  baseURL: `https:${BOT.server}/servlet/api/`,
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
@@ -35,7 +42,7 @@ class Dydu {
     const contextId = this.getContextId();
     if (contextId) {
       const data = qs.stringify({contextUuid: contextId});
-      const path = `chat/history/${bot.id}/`;
+      const path = `chat/history/${BOT.id}/`;
       resolve(this.emit(API.post, path, data));
     }
   });
@@ -48,7 +55,7 @@ class Dydu {
 
   suggest = text => {
     const data = qs.stringify({language: 'en', search: text});
-    const path = `chat/search/${bot.id}/`;
+    const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
 
@@ -59,7 +66,7 @@ class Dydu {
       ...(options && {extraParameters: options}),
     });
     const contextId = this.getContextId();
-    const path = `chat/talk/${bot.id}/${contextId ? `${contextId}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };
 }
