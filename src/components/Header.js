@@ -13,6 +13,7 @@ const styles = theme => ({
   actions: {
     alignItems: 'center',
     display: 'flex',
+    marginLeft: 'auto',
     '& > *': {
       marginLeft: '.5em',
     }
@@ -20,7 +21,6 @@ const styles = theme => ({
   body: {
     alignItems: 'center',
     display: 'flex',
-    justifyContent: 'space-between',
     padding: '.5em',
   },
   root: {
