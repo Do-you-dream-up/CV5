@@ -20,6 +20,9 @@ const styles = theme => ({
 });
 
 
+const TEASER_TITLE = Configuration.get('teaser.title', null);
+
+
 class Teaser extends React.PureComponent {
 
   static propTypes = {
@@ -29,7 +32,9 @@ class Teaser extends React.PureComponent {
 
   render() {
     const { classes, toggle } = this.props;
-    return <div className={classNames('dydu-teaser', classes.root)} onClick={toggle()}>Teaser</div>;
+    return <div children={TEASER_TITLE}
+                className={classNames('dydu-teaser', classes.root)}
+                onClick={toggle()} />;
   }
 }
 

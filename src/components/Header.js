@@ -36,6 +36,9 @@ const styles = theme => ({
 });
 
 
+const HEADER_TITLE = Configuration.get('header.title', null);
+
+
 class Header extends React.PureComponent {
 
   static propTypes = {
@@ -69,7 +72,7 @@ class Header extends React.PureComponent {
     return (
       <div className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
-          <div className={classNames('dydu-header-title', classes.title)}>Header</div>
+          <div children={HEADER_TITLE} className={classNames('dydu-header-title', classes.title)} />
           <div className={classNames('dydu-header-actions', classes.actions)}>
             <Menu items={menu}>
               <Button onClick={this.toggleMenu} variant="icon">
