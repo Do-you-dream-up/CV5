@@ -8,8 +8,8 @@ variables:
 
 build:
   script:
-    - cp src/bot.json.sample src/bot.json
-    - cp src/configuration.json.sample src/configuration.json
+    - cp -n src/bot.json.sample src/bot.json
+    - cp -n src/configuration.json.sample src/configuration.json
     - npm i
     - npm run build
     - apt-get update -qq && apt-get install -y -qq lftp
