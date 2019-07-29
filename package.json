@@ -28,6 +28,7 @@
   },
   "scripts": {
     "build": "rm -fr build/ && webpack --env production",
+    "build:development": "rm -fr build/ && webpack --env development",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test"
