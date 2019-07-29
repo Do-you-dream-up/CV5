@@ -14,7 +14,7 @@ const BOT = Object.assign({}, bot, (({ bot:id, server }) => ({
 
 
 const API = axios.create({
-  baseURL: `https:${BOT.server}/servlet/api/`,
+  baseURL: `https://${BOT.server}/servlet/api/`,
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
