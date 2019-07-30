@@ -1,9 +1,6 @@
 {
   "application": {
-    "bottom": 16,
-    "open": false,
-    "right": 16,
-    "top": 16
+    "open": false
   },
   "avatar": {
     "shadow": true
@@ -12,8 +9,11 @@
     "shadow": true
   },
   "chatbox": {
-    "height": "100%",
+    "bottom": 16,
+    "height": "unset",
+    "right": 16,
     "shadow": 6,
+    "top": 16,
     "width": 350
   },
   "footer": {
@@ -67,6 +67,8 @@
     ]
   },
   "teaser": {
+    "bottom": 16,
+    "right": 16,
     "shadow": 6,
     "title": "Teaser"
   }

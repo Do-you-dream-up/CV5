@@ -22,7 +22,7 @@ const styles = theme => ({
     flex: '0 0 auto',
     padding: '.5em',
     position: 'relative',
-    '&&': Configuration.getStyles('footer', theme),
+    '&&': Configuration.getStyles('footer'),
   },
 });
 

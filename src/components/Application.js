@@ -10,11 +10,7 @@ import Cookie from '../tools/cookie';
 
 const styles = {
   root: {
-    bottom: 0,
     fontFamily: 'sans-serif',
-    position: 'absolute',
-    right: 0,
-    '&&': Configuration.getStyles('application'),
   },
 };
 

@@ -1,5 +1,5 @@
 import configuration from '../configuration';
-import theme from '../theme';
+import theme from '../styles/theme';
 
 
 export default class Configuration {
@@ -21,15 +21,15 @@ export default class Configuration {
   static getStyles = it => {
     const data = typeof it === 'string' ? this.get(it, {}) : it;
     return (({background, bottom, height, left, position, right, shadow, top, width}) => ({
-      ...(background && {backgroundColor: background}),
-      ...(bottom && {bottom: typeof bottom === 'string' ? bottom : `${bottom}px`}),
-      ...(height && {height}),
-      ...(left && {left: typeof left === 'string' ? left : `${left}px`}),
-      ...(position && {position}),
-      ...(right && {right: typeof right === 'string' ? right : `${right}px`}),
-      ...(shadow && {boxShadow: theme.shadows && theme.shadows[~~shadow]}),
-      ...(top && {top: typeof top === 'string' ? top : `${top}px`}),
-      ...(width && {width}),
+      ...(background !== undefined && {backgroundColor: background}),
+      ...(bottom !== undefined && {bottom}),
+      ...(height !== undefined && {height}),
+      ...(left !== undefined && {left}),
+      ...(position !== undefined && {position}),
+      ...(right !== undefined && {right}),
+      ...(shadow !== undefined && theme.shadows && {boxShadow: theme.shadows[~~shadow]}),
+      ...(top !== undefined && {top}),
+      ...(width !== undefined && {width}),
     }))(data);
   };
 }

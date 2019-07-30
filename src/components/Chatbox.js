@@ -22,8 +22,13 @@ const styles = theme => ({
   },
   root: {
     backgroundColor: theme.palette.background.default,
+    bottom: 0,
     display: 'flex',
     flexDirection: 'column',
+    height: 500,
+    position: 'absolute',
+    right: 0,
+    width: 350,
     '&&': Configuration.getStyles('chatbox'),
   },
 });
