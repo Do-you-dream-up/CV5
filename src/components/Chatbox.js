@@ -30,6 +30,7 @@ const styles = theme => ({
     right: 0,
     width: 350,
     '&&': Configuration.getStyles('chatbox'),
+    [theme.breakpoints.down('xs')]: {'&&': Configuration.getStyles('chatbox.mobile')},
   },
 });
 

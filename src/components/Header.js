@@ -25,6 +25,8 @@ const styles = theme => ({
   },
   root: {
     backgroundColor: theme.palette.primary.main,
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
     color: theme.palette.primary.text,
     flex: '0 0 auto',
     position: 'relative',

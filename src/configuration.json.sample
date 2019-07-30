@@ -11,6 +11,14 @@
   "chatbox": {
     "bottom": 16,
     "height": "unset",
+    "mobile": {
+      "bottom": 0,
+      "left": 0,
+      "height": "unset",
+      "right": 0,
+      "top": 0,
+      "width": "unset"
+    },
     "right": 16,
     "shadow": 6,
     "top": 16,
