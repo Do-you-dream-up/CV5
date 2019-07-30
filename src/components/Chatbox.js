@@ -59,6 +59,7 @@ class Chatbox extends React.PureComponent {
   };
 
   componentDidMount() {
+    window.dydu.empty = this.context.empty;
     window.dydu.reword = this.reword;
   }
 

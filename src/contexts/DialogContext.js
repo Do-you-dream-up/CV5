@@ -33,6 +33,10 @@ export class DialogProvider extends React.Component {
     }
   };
 
+  empty = callback => {
+    this.setState({interactions: []}, callback);
+  };
+
   toggleSecondary = (open, { body, title }={}) => () => {
     this.setState(state => ({
       secondaryActive: open === undefined ? !state.secondaryActive : open,
@@ -45,6 +49,7 @@ export class DialogProvider extends React.Component {
       add: this.add,
       addRequest: this.addRequest,
       addResponse: this.addResponse,
+      empty: this.empty,
       state: this.state,
       toggleSecondary: this.toggleSecondary,
     }} />;
