@@ -65,13 +65,15 @@ class Header extends React.PureComponent {
         <div className={classNames('dydu-header-body', classes.body)}>
           <div children={HEADER_TITLE} className={classNames('dydu-header-title', classes.title)} />
           <div className={classNames('dydu-header-actions', classes.actions)}>
-            <Onboarding>
-              <Menu items={menu}>
-                <Button onClick={this.toggleMenu} variant="icon">
-                  <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
-                </Button>
-              </Menu>
-            </Onboarding>
+            {menu.length > 0 && (
+              <Onboarding>
+                <Menu items={menu}>
+                  <Button onClick={this.toggleMenu} variant="icon">
+                    <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
+                  </Button>
+                </Menu>
+              </Onboarding>
+            )}
             <Button onClick={toggle()} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
             </Button>
