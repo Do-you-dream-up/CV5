@@ -25,6 +25,7 @@ const styles = theme => ({
     padding: '.5em',
     position: 'relative',
     '&&': Configuration.getStyles('footer'),
+    [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
   },
 });
 

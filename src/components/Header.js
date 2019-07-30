@@ -31,6 +31,7 @@ const styles = theme => ({
     flex: '0 0 auto',
     position: 'relative',
     '&&': Configuration.getStyles('header'),
+    [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
   },
   title: {
     padding: '.5em',

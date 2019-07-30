@@ -51,7 +51,7 @@
   },
   "menu": {
     "shadow": true,
-    "spacing": 8
+    "spacing": 4
   },
   "onboarding": {
     "next": "Suivant",
