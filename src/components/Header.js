@@ -7,6 +7,7 @@ import Menu from './Menu';
 import Onboarding from './Onboarding';
 import Tabs from './Tabs';
 import Configuration from '../tools/configuration';
+import { ACTIONS } from '../tools/keyword';
 
 
 const styles = theme => ({
@@ -55,23 +56,10 @@ class Header extends React.PureComponent {
 
   render() {
     const { classes, toggle, ...rest } = this.props;
-    const menu = [
-      {onClick: () => window.dydu.reword('#chatboxinfos#'),        text: '#chatboxinfos#'},
-      {onClick: () => window.dydu.reword('#comment#'),             text: '#comment#'},
-      {onClick: () => window.dydu.reword('#contextvariables#'),    text: '#contextvariables#'},
-      {onClick: () => window.dydu.reword('#feedback#'),            text: '#feedback#'},
-      {onClick: () => window.dydu.reword('#hostname#'),            text: '#hostname#'},
-      {onClick: () => window.dydu.reword('#iframe#'),              text: '#iframe#'},
-      {onClick: () => window.dydu.reword('#lien#'),                text: '#lien#'},
-      {onClick: () => window.dydu.reword('#liste#'),               text: '#liste#'},
-      {onClick: () => window.dydu.reword('#livechatconnection#'),  text: '#livechatconnection#'},
-      {onClick: () => window.dydu.reword('#newdialog#'),           text: '#newdialog#'},
-      {onClick: () => window.dydu.reword('#sidebar#'),             text: '#sidebar#'},
-      {onClick: () => window.dydu.reword('#split#'),               text: '#split#'},
-      {onClick: () => window.dydu.reword('#step#'),                text: '#step#'},
-      {onClick: () => window.dydu.reword('#stepsidebar#'),         text: '#stepsidebar#'},
-      {onClick: () => window.dydu.reword('#template#'),            text: '#template#'},
-    ];
+    const menu = Object.keys(ACTIONS).map(it => ({
+      onClick: ACTIONS[it] && (() => window.dydu.reword(it, {hide: true})),
+      text: it,
+    }));
     return (
       <div className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
