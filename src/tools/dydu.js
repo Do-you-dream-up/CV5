@@ -4,7 +4,6 @@ import qs from 'qs';
 import { decode, encode } from './cipher';
 import Cookie from './cookie';
 import getUrlParameters from './get-url-parameters';
-import keyword from './keyword';
 import bot from '../bot';
 
 
@@ -60,19 +59,16 @@ class Dydu {
     return this.emit(API.post, path, data);
   };
 
-  talk = (text, options) => keyword(text).then(
-    response => Promise.reject(response),
-    () => {
-      const data = qs.stringify({
-        language: 'en',
-        userInput: text,
-        ...(options && {extraParameters: options}),
-      });
-      const contextId = this.getContextId();
-      const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-      return this.emit(API.post, path, data);
-    },
-  );
+  talk = (text, options) => {
+    const data = qs.stringify({
+      language: 'en',
+      userInput: text,
+      ...(options && {extraParameters: options}),
+    });
+    const contextId = this.getContextId();
+    const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
+    return this.emit(API.post, path, data);
+  };
 }
 
 

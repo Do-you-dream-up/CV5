@@ -7,7 +7,7 @@ import Menu from './Menu';
 import Onboarding from './Onboarding';
 import Tabs from './Tabs';
 import Configuration from '../tools/configuration';
-import { ACTIONS } from '../tools/keyword';
+import { ACTIONS } from '../tools/talk';
 
 
 const styles = theme => ({

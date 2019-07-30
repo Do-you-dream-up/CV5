@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest';
 import withStyles from 'react-jss';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
+import talk from '../tools/talk';
 
 
 const styles = theme => ({
@@ -100,7 +101,7 @@ class Input extends React.PureComponent {
     if (text) {
       this.reset();
       this.props.onRequest(text);
-      dydu.talk(text).then(this.props.onResponse, () => {});
+      talk(text).then(this.props.onResponse);
     }
   }, 200, {leading: true});
 

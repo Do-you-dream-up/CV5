@@ -12,7 +12,7 @@ import Tab from './Tab';
 import { DialogContext } from '../contexts/DialogContext';
 import { TabProvider } from '../contexts/TabContext';
 import Configuration from '../tools/configuration';
-import dydu from '../tools/dydu';
+import talk from '../tools/talk';
 
 
 const styles = theme => ({
@@ -54,7 +54,7 @@ class Chatbox extends React.PureComponent {
       if (!options.hide) {
         this.context.addRequest(text);
       }
-      dydu.talk(text).then(this.context.addResponse, () => {});
+      talk(text).then(this.context.addResponse);
     }
   };
 

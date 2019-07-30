@@ -1,3 +1,6 @@
+import dydu from './dydu';
+
+
 export const ACTIONS = {
   '#comment#':    null,
   '#context#':    null,
@@ -15,11 +18,11 @@ export const ACTIONS = {
 };
 
 
-export default text => new Promise((resolve, reject) => {
+export default (text, options) => new Promise(resolve => {
   if (ACTIONS[text]) {
-    ACTIONS[text](() => resolve(text));
+    ACTIONS[text]();
   }
   else {
-    reject(text);
+    resolve(dydu.talk(text, options));
   }
 });
