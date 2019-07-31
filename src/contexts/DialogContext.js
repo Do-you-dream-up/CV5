@@ -33,8 +33,8 @@ export class DialogProvider extends React.Component {
     }
   };
 
-  empty = callback => {
-    this.setState({interactions: []}, callback);
+  empty = () => {
+    this.setState({interactions: []});
   };
 
   toggleSecondary = (open, { body, title }={}) => () => {
