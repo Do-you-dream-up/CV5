@@ -61,6 +61,7 @@ class Chatbox extends React.PureComponent {
   componentDidMount() {
     window.dydu.empty = () => this.context.empty();
     window.dydu.reword = this.reword;
+    window.dydu.reply = text => this.context.addResponse({text: text});
   }
 
   render() {

@@ -5,7 +5,7 @@ export const ACTIONS = {
   '#comment#':    null,
   '#context#':    null,
   '#feedback#':   null,
-  '#host#':       null,
+  '#host#':       () => dydu.whoami().then(window.dydu.reply),
   '#iframe#':     null,
   '#link#':       null,
   '#list#':       null,

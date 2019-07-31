@@ -69,6 +69,11 @@ class Dydu {
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };
+
+  whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
+    const data = headers.find(it => it.hasOwnProperty('host'));
+    return data && data.host;
+  });
 }
 
 
