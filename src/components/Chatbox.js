@@ -47,7 +47,7 @@ class Chatbox extends React.PureComponent {
     toggle: PropTypes.func.isRequired,
   };
 
-  reword = (text, options) => {
+  ask = (text, options) => {
     text = text.trim();
     if (text) {
       options = Object.assign({hide: false}, options);
@@ -59,8 +59,8 @@ class Chatbox extends React.PureComponent {
   };
 
   componentDidMount() {
+    window.dydu.ask = (text, options) => this.ask(text, options);
     window.dydu.empty = () => this.context.empty();
-    window.dydu.reword = this.reword;
     window.dydu.reply = text => this.context.addResponse({text: text});
   }
 

@@ -57,7 +57,7 @@ class Header extends React.PureComponent {
   render() {
     const { classes, toggle, ...rest } = this.props;
     const menu = Object.keys(ACTIONS).map(it => ({
-      onClick: ACTIONS[it] && (() => window.dydu.reword(it, {hide: true})),
+      onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),
       text: it,
     }));
     return (
