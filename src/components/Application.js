@@ -38,9 +38,11 @@ class Application extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
+    const { open } = this.state;
     return (
       <div className={classNames('dydu-application', classes.root)}>
-        {React.createElement(this.state.open ? Chatbox : Teaser, {toggle: this.toggle})}
+        <Chatbox open={open} toggle={this.toggle} />
+        <Teaser open={!open} toggle={this.toggle} />
       </div>
     );
   }

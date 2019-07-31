@@ -6,6 +6,9 @@ import Configuration from '../tools/configuration';
 
 
 const styles = theme => ({
+  hidden: {
+    '&&': {display: 'none'},
+  },
   root: {
     alignItems: 'center',
     backgroundColor: theme.palette.primary.main,
@@ -30,13 +33,14 @@ class Teaser extends React.PureComponent {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    open: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
   };
 
   render() {
-    const { classes, toggle } = this.props;
+    const { classes, open, toggle } = this.props;
     return <div children={TEASER_TITLE}
-                className={classNames('dydu-teaser', classes.root)}
+                className={classNames('dydu-teaser', classes.root, {[classes.hidden]: !open})}
                 onClick={toggle()} />;
   }
 }

@@ -20,6 +20,9 @@ const styles = theme => ({
     flexGrow: 1,
     overflowY: 'auto',
   },
+  hidden: {
+    '&&': {display: 'none'},
+  },
   root: {
     backgroundColor: theme.palette.background.default,
     bottom: 0,
@@ -44,6 +47,7 @@ class Chatbox extends React.PureComponent {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    open: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
   };
 
@@ -66,11 +70,11 @@ class Chatbox extends React.PureComponent {
 
   render() {
     const { add, addRequest, addResponse, state: dialogState } = this.context;
-    const { classes, toggle } = this.props;
+    const { classes, open, toggle } = this.props;
     const { interactions } = dialogState;
     return (
       <TabProvider>
-        <div className={classNames('dydu-chatbox', classes.root)}>
+        <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}>
           <Onboarding render>
             <div className={classNames('dydu-chatbox-body', classes.body)}>
               <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
