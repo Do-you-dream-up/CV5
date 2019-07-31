@@ -19,6 +19,7 @@ const styles = theme => ({
   base: {
     borderRadius: theme.shape.borderRadius,
     padding: '1em',
+    wordBreak: 'break-word',
     '&:not(:last-child)': {
       marginBottom: '.5em',
     },

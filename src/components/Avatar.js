@@ -9,6 +9,7 @@ const styles = theme => ({
   base: {
     borderRadius: '50%',
     height: '3em',
+    minWidth: '3em',
     width: '3em',
     '&&': Configuration.getStyles('avatar'),
   },
