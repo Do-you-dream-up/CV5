@@ -81,6 +81,7 @@ class Dydu {
 
   whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
     const data = headers.find(it => it.hasOwnProperty('host'));
+    // TOFIX: SQUAD-162
     return data && data.host;
   });
 }

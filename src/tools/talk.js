@@ -30,7 +30,7 @@ export const ACTIONS = {
   '#comment#':    null,
   '#context#':    null,
   '#feedback#':   null,
-  '#host#':       () => dydu.whoami().then(window.dydu.reply),
+  '#host#':       () => dydu.whoami().then(text => window.dydu.reply(`<p>${text}</p>`)),
   '#iframe#':     null,
   '#link#':       null,
   '#list#':       null,
