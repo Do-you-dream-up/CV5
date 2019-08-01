@@ -61,7 +61,7 @@ class Header extends React.PureComponent {
       text: it,
     }));
     return (
-      <div className={classNames('dydu-header', classes.root)} {...rest}>
+      <header className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
           <div children={HEADER_TITLE} className={classNames('dydu-header-title', classes.title)} />
           <div className={classNames('dydu-header-actions', classes.actions)}>
@@ -80,7 +80,7 @@ class Header extends React.PureComponent {
           </div>
         </div>
         <Onboarding children={<Tabs />} />
-      </div>
+      </header>
     );
   }
 }

@@ -29,7 +29,7 @@ class Dialog extends React.PureComponent {
     onAdd: PropTypes.func.isRequired,
   };
 
-  fetchHistory = () => dydu.history().then(({ interactions }) => {
+  fetch = () => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it, index) => (
         accumulator.push(
@@ -45,7 +45,7 @@ class Dialog extends React.PureComponent {
   }, () => {});
 
   componentDidMount() {
-    this.fetchHistory();
+    this.fetch();
   }
 
   render() {

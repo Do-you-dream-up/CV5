@@ -33,9 +33,9 @@ class Footer extends React.PureComponent {
   render() {
     const { classes, onRequest, onResponse, ...rest } = this.props;
     return (
-      <div className={classNames('dydu-footer', classes.root)} {...rest}>
+      <footer className={classNames('dydu-footer', classes.root)} {...rest}>
         <Input onRequest={onRequest} onResponse={onResponse} />
-      </div>
+      </footer>
     );
   }
 }
