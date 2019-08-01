@@ -38,6 +38,7 @@ export default {
     },
     text: {
       disabled: 'rgba(0, 0, 0, .38)',
+      link: '#FF4081',
       primary: 'rgba(0, 0, 0, .87)',
       secondary: 'rgba(0, 0, 0, .54)',
     },

@@ -4,6 +4,7 @@ import React from 'react';
 import withStyles from 'react-jss';
 import Interaction from './Interaction';
 import Secondary from './Secondary';
+import Top from './Top';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 
@@ -52,6 +53,7 @@ class Dialog extends React.PureComponent {
     const { classes, interactions, onAdd, ...rest } = this.props;
     return (
       <div className={classNames('dydu-dialog', classes.root)} {...rest}>
+        <Top />
         {interactions.map((it, index) => ({...it, key: index}))}
         {SECONDARY_MODE === 'over' && <Secondary mode={SECONDARY_MODE} />}
       </div>

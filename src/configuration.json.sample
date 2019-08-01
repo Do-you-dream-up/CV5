@@ -79,5 +79,9 @@
     "right": 16,
     "shadow": 6,
     "title": "Teaser"
+  },
+  "top": {
+    "size": 3,
+    "text": "<p>Top-asked questions:</p>"
   }
 }

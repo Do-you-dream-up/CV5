@@ -73,6 +73,12 @@ class Dydu {
     return this.emit(API.post, path, data);
   };
 
+  top = ({ size }) => {
+    const data = qs.stringify({maxKnowledge: size});
+    const path = `chat/topknowledge/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
   whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
     const data = headers.find(it => it.hasOwnProperty('host'));
     return data && data.host;
