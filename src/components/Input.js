@@ -4,12 +4,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import withStyles from 'react-jss';
+import Button from './Button';
 import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 import talk from '../tools/talk';
 
 
 const styles = theme => ({
+
+  actions: {
+    alignItems: 'center',
+    display: 'flex',
+    '& > *': {
+      marginLeft: '.5em',
+    }
+  },
 
   container: {
     display: 'flex',
@@ -143,6 +152,11 @@ class Input extends React.PureComponent {
                      renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
                      suggestions={suggestions}
                      theme={theme} />
+        <div className={classNames('dydu-input-actions', classes.actions)}>
+          <Button flat type="submit" variant="icon">
+            <img alt="Send" src="icons/send.png" title="Send" />
+          </Button>
+        </div>
       </form>
     );
   }

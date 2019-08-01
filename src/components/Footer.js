@@ -2,19 +2,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Button from './Button';
 import Input from './Input';
 import Configuration from '../tools/configuration';
 
 
 const styles = theme => ({
-  actions: {
-    alignItems: 'center',
-    display: 'flex',
-    '& > *': {
-      marginLeft: '.5em',
-    }
-  },
   root: {
     backgroundColor: theme.palette.primary.main,
     borderBottomLeftRadius: theme.shape.borderRadius,
@@ -43,11 +35,6 @@ class Footer extends React.PureComponent {
     return (
       <div className={classNames('dydu-footer', classes.root)} {...rest}>
         <Input onRequest={onRequest} onResponse={onResponse} />
-        <div className={classNames('dydu-footer-actions', classes.actions)}>
-          <Button flat type="submit" variant="icon">
-            <img alt="Send" src="icons/send.png" title="Send" />
-          </Button>
-        </div>
       </div>
     );
   }
