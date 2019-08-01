@@ -17,7 +17,7 @@ export default {
       menu: '#FFFFFF',
       secondary: '#FFFFFF',
     },
-    divider: '#BDBDBD',
+    divider: 'rgba(0, 0, 0, 0.12)',
     primary: {
       dark: '#0288D1',
       light: '#B3E5FC',
@@ -26,20 +26,20 @@ export default {
     },
     request: {
       background: '#FFFFFF',
-      text: '#212121',
+      text: 'rgba(0, 0, 0, .87)',
     },
     response: {
       background: '#B3E5FC',
-      text: '#212121',
+      text: 'rgba(0, 0, 0, .87)',
     },
     secondary: {
       main: '#FF4081',
       text: '#FFFFFF',
     },
     text: {
-      disabled: '#BFBFBF',
-      primary: '#212121',
-      secondary: '#757575',
+      disabled: 'rgba(0, 0, 0, .38)',
+      primary: 'rgba(0, 0, 0, .87)',
+      secondary: 'rgba(0, 0, 0, .54)',
     },
   },
 

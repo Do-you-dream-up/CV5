@@ -10,7 +10,7 @@ import Configuration from  '../tools/configuration';
 import sanitize from  '../tools/sanitize';
 
 
-const styles = {
+const styles = theme => ({
   base: {
     display: 'flex',
     '&:not(:first-child)': {
@@ -27,9 +27,11 @@ const styles = {
     marginLeft: '2em',
   },
   response: {
-    marginRight: '2em',
+    [theme.breakpoints.up('sm')]: {
+      marginRight: '2em',
+    },
   },
-};
+});
 
 
 const { avatar: AVATAR={}, loader: LOADER } = Configuration.get('interaction');
