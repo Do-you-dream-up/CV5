@@ -42,7 +42,7 @@ class Dialog extends React.PureComponent {
       ), []);
       this.props.onAdd(interactions);
     }
-  });
+  }, () => {});
 
   componentDidMount() {
     this.fetchHistory();

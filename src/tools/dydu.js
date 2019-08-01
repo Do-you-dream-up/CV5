@@ -38,12 +38,15 @@ class Dydu {
     return data;
   }), 100, {leading: true});
 
-  history = () => new Promise(resolve => {
+  history = () => new Promise((resolve, reject) => {
     const contextId = this.getContextId();
     if (contextId) {
       const data = qs.stringify({contextUuid: contextId});
       const path = `chat/history/${BOT.id}/`;
       resolve(this.emit(API.post, path, data));
+    }
+    else {
+      reject();
     }
   });
 
