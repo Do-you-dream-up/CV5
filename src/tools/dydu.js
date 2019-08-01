@@ -3,14 +3,13 @@ import debounce from 'debounce-promise';
 import qs from 'qs';
 import { decode, encode } from './cipher';
 import Cookie from './cookie';
-import getUrlParameters from './get-url-parameters';
 import bot from '../bot';
 
 
-const BOT = Object.assign({}, bot, (({ bot:id, server }) => ({
+const BOT = Object.assign({}, bot, (({ bot: id, server }) => ({
   ...id && {id},
   ...server && {server},
-}))(getUrlParameters()));
+}))(qs.parse(window.location.search, {ignoreQueryPrefix: true})));
 
 
 const API = axios.create({
