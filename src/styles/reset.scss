@@ -1,7 +1,0 @@
-@import 'mixins';
-
-%heading,
-p {
-  &:first-child { margin-top: 0; }
-  &:last-child { margin-bottom: 0; }
-}

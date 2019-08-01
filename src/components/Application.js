@@ -6,13 +6,15 @@ import Chatbox from './Chatbox';
 import Teaser from './Teaser';
 import Configuration from '../tools/configuration';
 import Cookie from '../tools/cookie';
+import reset from '../styles/reset';
 
 
-const styles = {
+const styles = theme => ({
   root: {
+    '@global': reset(theme),
     fontFamily: 'sans-serif',
   },
-};
+});
 
 
 class Application extends React.PureComponent {
