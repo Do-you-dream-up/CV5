@@ -12,6 +12,7 @@ import Tab from './Tab';
 import { DialogContext } from '../contexts/DialogContext';
 import { TabProvider } from '../contexts/TabContext';
 import Configuration from '../tools/configuration';
+import LOREM from '../tools/lorem';
 import talk from '../tools/talk';
 
 
@@ -65,6 +66,7 @@ class Chatbox extends React.PureComponent {
   componentDidMount() {
     window.dydu.ask = (text, options) => this.ask(text, options);
     window.dydu.empty = () => this.context.empty();
+    window.dydu.lorem = () => this.context.addResponse({text: Object.values(LOREM).join('')});
     window.dydu.reply = text => this.context.addResponse({text: text});
   }
 

@@ -28,7 +28,7 @@ export default theme => ({
     fontWeight: 'normal',
     textTransform: 'capitalize',
   },
-  'ol': {
+  'ol, ul': {
     paddingLeft: '1.4em',
   },
 });
