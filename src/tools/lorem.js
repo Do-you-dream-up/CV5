@@ -1,7 +1,7 @@
-export default {
+export const LOREM = {
 
   links: `
-    <h1>Links</h1>
+    <h2>Links</h2>
     <p>
       Internal link: <a href>click</a>
       <br />
@@ -10,7 +10,7 @@ export default {
   `,
 
   lists: `
-    <h1>Lists</h1>
+    <h2>Lists</h2>
     <ol>
       <li>Quis lectus nulla at volutpat diam ut venenatis!</li>
       <li>Nibh nisl.</li>
@@ -22,9 +22,12 @@ export default {
   `,
 
   paragraphs: `
-    <h1>Paragraphs</h1>
+    <h2>Paragraphs</h2>
     <p>Pellentesque massa placerat duis ultricies lacus sed turpis tinciduntid aliquet risus.</p>
     <p>Dictum at tempor commodo.</p>
     <p>Ullamcorper a lacus vestibulum sed? Ullamcorper eget nulla facilisi etiam!</p>
   `,
 };
+
+
+export const LOREM_HTML = Object.values(LOREM).join('');
