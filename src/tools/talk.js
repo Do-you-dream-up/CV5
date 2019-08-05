@@ -1,5 +1,6 @@
 import Bowser from 'bowser';
 import dydu from './dydu';
+import { LOREM_HTML } from './lorem';
 
 
 const meta = () => {
@@ -35,7 +36,7 @@ export const ACTIONS = {
   '#lorem#':      () => window.dydu.lorem(),
   '#meta#':       meta,
   '#reset#':      null,
-  '#secondary#':  null,
+  '#secondary#':  () => window.dydu.toggleSecondary(true, {body: LOREM_HTML, title: 'Secondary'}),
   '#split#':      null,
   '#steps#':      null,
   '#template#':   null,
