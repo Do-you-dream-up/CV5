@@ -10,6 +10,7 @@ import Configuration from '../tools/configuration';
 const styles = theme => ({
   actions: {
     display: 'flex',
+    marginLeft: 'auto',
     '& > :not(:first-child)': {
       marginLeft: '1em',
     },
@@ -20,9 +21,6 @@ const styles = theme => ({
     padding: '1em',
     position: 'sticky',
     top: 0,
-    '& > *': {
-      margin: 0,
-    },
   },
   over: {
     bottom: 0,
@@ -30,6 +28,7 @@ const styles = theme => ({
     position: 'absolute',
     right: 0,
     top: 0,
+    width: 'unset !important',
   },
   base: {
     backgroundColor: theme.palette.background.secondary,
@@ -40,12 +39,15 @@ const styles = theme => ({
     padding: '1em',
   },
   side: {
+    borderRadius: theme.shape.borderRadius,
     bottom: 0,
-    left: '-100%',
     marginRight: '1em',
     position: 'absolute',
     right: '100%',
     top: 0,
+  },
+  title: {
+    margin: 0,
   },
 });
 
@@ -68,7 +70,9 @@ class Secondary extends React.PureComponent {
         'dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode],
       )}>
         <div className={classNames('dydu-secondary-header', classes.header)}>
-          {title && <h1 children={title} />}
+          {title && (
+            <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />
+          )}
           <div className={classNames('dydu-secondary-actions', classes.actions)}>
             <Button onClick={toggleSecondary(false)} type="button" variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />

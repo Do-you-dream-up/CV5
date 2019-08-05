@@ -65,7 +65,8 @@
   "secondary": {
     "automatic": true,
     "mode": "side",
-    "shadow": 6
+    "shadow": 6,
+    "width": 500
   },
   "tabs": {
     "selected": 0,

@@ -28,6 +28,9 @@ export default theme => ({
     fontWeight: 'normal',
     textTransform: 'capitalize',
   },
+  'li:not(:last-child)': {
+    marginBottom: '.5em',
+  },
   'ol, ul': {
     paddingLeft: '1.4em',
   },

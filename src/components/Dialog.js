@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 import Interaction from './Interaction';
-import Secondary from './Secondary';
 import Top from './Top';
-import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 
 
@@ -14,12 +12,8 @@ const styles = {
     flex: '1 1 auto',
     overflowX: 'hidden',
     padding: '1em',
-    position: 'relative',
   },
 };
-
-
-const SECONDARY_MODE = Configuration.get('secondary.mode');
 
 
 class Dialog extends React.PureComponent {
@@ -55,7 +49,6 @@ class Dialog extends React.PureComponent {
       <div className={classNames('dydu-dialog', classes.root)} {...rest}>
         <Top />
         {interactions.map((it, index) => ({...it, key: index}))}
-        {SECONDARY_MODE === 'over' && <Secondary mode={SECONDARY_MODE} />}
       </div>
     );
   }

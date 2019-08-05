@@ -20,6 +20,7 @@ const styles = theme => ({
   body: {
     flexGrow: 1,
     overflowY: 'auto',
+    position: 'relative',
   },
   hidden: {
     '&&': {display: 'none'},
@@ -81,6 +82,7 @@ class Chatbox extends React.PureComponent {
             <div className={classNames('dydu-chatbox-body', classes.body)}>
               <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
               <Tab component={Contacts} value="contacts" />
+              {SECONDARY_MODE === 'over' && <Secondary mode={SECONDARY_MODE} />}
             </div>
             <Footer onRequest={addRequest} onResponse={addResponse} />
           </Onboarding>
