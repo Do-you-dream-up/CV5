@@ -69,6 +69,7 @@ class Chatbox extends React.PureComponent {
     window.dydu.empty = () => this.context.empty();
     window.dydu.lorem = () => this.context.addResponse({text: LOREM_HTML});
     window.dydu.reply = text => this.context.addResponse({text: text});
+    window.dydu.toggle = open => this.props.toggle(open)();
     window.dydu.toggleSecondary = (open, { body, title }) => (
       this.context.toggleSecondary(open, {body, title})()
     );
