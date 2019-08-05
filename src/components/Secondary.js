@@ -45,6 +45,13 @@ const styles = theme => ({
     position: 'absolute',
     right: '100%',
     top: 0,
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: 0,
+      left: 0,
+      marginRight: 'unset',
+      right: 0,
+      width: 'unset !important',
+    },
   },
   title: {
     margin: 0,
