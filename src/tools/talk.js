@@ -37,7 +37,7 @@ export const ACTIONS = {
   '#meta#':       meta,
   '#reset#':      null,
   '#secondary#':  () => window.dydu.toggleSecondary(true, {body: LOREM_HTML, title: 'Secondary'}),
-  '#split#':      null,
+  '#split#':      () => window.dydu.loremSplit(),
   '#steps#':      null,
   '#template#':   null,
 };

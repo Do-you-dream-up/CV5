@@ -31,3 +31,4 @@ export const LOREM = {
 
 
 export const LOREM_HTML = Object.values(LOREM).join('');
+export const LOREM_HTML_SPLIT = Object.values(LOREM).join('<hr />');
