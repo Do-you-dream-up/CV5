@@ -33,6 +33,8 @@ const styles = theme => ({
 
   flat: {
     background: 0,
+    color: theme.palette.text.primary,
+    '&:hover:not(:disabled)': {backgroundColor: theme.palette.action.hover},
   },
 
   icon: {
@@ -40,7 +42,7 @@ const styles = theme => ({
     height: 40,
     justifyContent: 'center',
     width: 40,
-    '&:hover:not(:disabled)': {backgroundColor: theme.palette.primary.dark},
+    '&:hover:not(:disabled)': {backgroundColor: theme.palette.action.hover},
     '& img': {height: 20, width: 20},
   },
 });
