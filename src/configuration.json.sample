@@ -82,6 +82,7 @@
     "title": "Teaser"
   },
   "top": {
+    "loader": true,
     "size": 3,
     "text": "<p>Top-asked questions:</p>"
   }

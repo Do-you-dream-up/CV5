@@ -4,7 +4,8 @@ import Configuration from '../tools/configuration';
 import dydu from '../tools/dydu';
 
 
-const { size: TOP_SIZE=3, text: TOP_TEXT } = Configuration.get('top');
+const TOP = Configuration.get('top');
+const { size: TOP_SIZE=3, text: TOP_TEXT } = TOP;
 
 
 export default class Top extends React.PureComponent {
@@ -38,6 +39,10 @@ export default class Top extends React.PureComponent {
       }).join(''),
       '</ol>',
     ].join('');
-    return html && <article children={<Interaction text={html} type="response" />} />;
+    return html && (
+      <article>
+        <Interaction text={html} thinking={!!TOP.loader} type="response" />
+      </article>
+    );
   }
 }
