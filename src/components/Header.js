@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import Banner from './Banner';
 import Button from './Button';
 import Menu from './Menu';
 import Onboarding from './Onboarding';
@@ -79,7 +80,7 @@ class Header extends React.PureComponent {
             </Button>
           </div>
         </div>
-        <Onboarding children={<Tabs />} />
+        <Onboarding children={<><Tabs /><Banner /></>} />
       </header>
     );
   }

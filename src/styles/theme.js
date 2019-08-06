@@ -42,6 +42,10 @@ export default {
       primary: 'rgba(0, 0, 0, .87)',
       secondary: 'rgba(0, 0, 0, .54)',
     },
+    warning: {
+      main: '#FFB74D',
+      text: 'rgba(0, 0, 0, .87)',
+    },
   },
 
   shadows: [

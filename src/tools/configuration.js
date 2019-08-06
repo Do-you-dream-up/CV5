@@ -20,11 +20,12 @@ export default class Configuration {
 
   static getStyles = it => {
     const data = typeof it === 'string' ? this.get(it, {}) : it;
-    return (({background, bottom, height, left, position, right, shadow, top, width}) => ({
+    return (({background, bottom, height, left, maxHeight, position, right, shadow, top, width}) => ({
       ...(background !== undefined && {backgroundColor: background}),
       ...(bottom !== undefined && {bottom}),
       ...(height !== undefined && {height}),
       ...(left !== undefined && {left}),
+      ...(maxHeight !== undefined && {maxHeight}),
       ...(position !== undefined && {position}),
       ...(right !== undefined && {right}),
       ...(shadow !== undefined && theme.shadows && {boxShadow: theme.shadows[~~shadow]}),

@@ -4,6 +4,7 @@ import cookie from 'js-cookie';
 export default class Cookie {
 
   static cookies = {
+    banner: 'dydu.banner',
     client: 'dydu.client.id',
     context: 'dydu.context.id',
     onboarding: 'dydu.onboarding',
