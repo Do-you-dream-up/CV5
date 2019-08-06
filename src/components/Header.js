@@ -17,7 +17,7 @@ const styles = theme => ({
     marginLeft: 'auto',
     '& > *': {
       marginLeft: '.5em',
-    }
+    },
   },
   body: {
     alignItems: 'center',

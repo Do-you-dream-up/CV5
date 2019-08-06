@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Configuration from '../tools/configuration';
-import { encode } from '../tools/cipher';
 import Cookie from '../tools/cookie';
 
 
@@ -49,7 +48,7 @@ export class OnboardingProvider extends React.Component {
   end = () => {
     this.setState(
       {active: false, index: 0, step: ONBOARDING_STEPS[0]},
-      () => Cookie.set(Cookie.cookies.onboarding, encode(new Date()), Cookie.duration.long),
+      () => Cookie.set(Cookie.cookies.onboarding, new Date(), Cookie.duration.long),
     );
   };
 

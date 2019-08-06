@@ -53,7 +53,7 @@ class Button extends React.PureComponent {
     component: PropTypes.element,
     flat: PropTypes.bool,
     reference: PropTypes.object,
-    variant: PropTypes.string,
+    variant: PropTypes.oneOf(['default', 'icon']),
   };
 
   render() {
