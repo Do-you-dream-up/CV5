@@ -6,12 +6,19 @@ import Cookie from './cookie';
 import bot from '../bot';
 
 
+/**
+ * Read the bot ID and the API server from URL parameters when found. Default to
+ * the bot configuration.
+ */
 const BOT = Object.assign({}, bot, (({ bot: id, server }) => ({
   ...id && {id},
   ...server && {server},
 }))(qs.parse(window.location.search, {ignoreQueryPrefix: true})));
 
 
+/**
+ * Prefix the API and add generic headers.
+ */
 const API = axios.create({
   baseURL: `https://${BOT.server}/servlet/api/`,
   headers: {
@@ -21,13 +28,31 @@ const API = axios.create({
 });
 
 
+/**
+ * Implement JavaScript bindings for Dydu's REST API.
+ * https://uat.mars.doyoudreamup.com/servlet/api/doc3/index.html
+ */
 class Dydu {
 
+  /**
+   * Read the context ID from the cookies and return it.
+   *
+   * @returns {string|undefined} The context ID or undefined.
+   */
   getContextId = () => {
     const contextId = Cookie.get(Cookie.cookies.context);
     return contextId !== undefined ? decode(contextId) : undefined;
   };
 
+  /**
+   * Debounce-request against the provided path with the specified data. When
+   * the response contains values, decode it and refresh the context ID.
+   *
+   * @param {function} verb - A verb method to request with.
+   * @param {string} path - Path to send the request to.
+   * @param {object} data - Data to send.
+   * @returns {Promise}
+   */
   emit = debounce((verb, path, data) => verb(path, data).then(({ data={} }) => {
     if (data.hasOwnProperty('values')) {
       data.values = decode(data.values);
@@ -37,6 +62,11 @@ class Dydu {
     return data;
   }), 100, {leading: true});
 
+  /**
+   * Fetch previous conversations.
+   *
+   * @returns {Promise}
+   */
   history = () => new Promise((resolve, reject) => {
     const contextId = this.getContextId();
     if (contextId) {
@@ -49,18 +79,36 @@ class Dydu {
     }
   });
 
+  /**
+   * Save the provided context ID to the cookies.
+   *
+   * @returns {undefined}
+   */
   setContextId = value => {
     if (value !== undefined) {
       Cookie.set(Cookie.cookies.context, encode(value), Cookie.duration.short);
     }
   };
 
+  /**
+   * Fetch candidates for auto-completion.
+   *
+   * @param {string} text - Input to search against.
+   * @returns {Promise}
+   */
   suggest = text => {
     const data = qs.stringify({language: 'en', search: text});
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
 
+  /**
+   * Send the provided input with optional extra parameters.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
   talk = (text, options) => {
     const data = qs.stringify({
       language: 'en',
@@ -72,15 +120,25 @@ class Dydu {
     return this.emit(API.post, path, data);
   };
 
-  top = ({ size }) => {
+  /**
+   * Fetch the top-asked topics. Limit results to the provided size.
+   *
+   * @param {number} [size] - Maximum number of topics to retrieve.
+   * @returns {Promise}
+   */
+  top = size => {
     const data = qs.stringify({maxKnowledge: size});
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
 
+  /**
+   * Retrieve the bot identity.
+   *
+   * @returns {Promise}
+   */
   whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
     const data = headers.find(it => it.hasOwnProperty('host'));
-    // TOFIX: SQUAD-162
     return data && data.host;
   });
 }

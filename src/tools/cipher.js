@@ -1,6 +1,13 @@
 import { Base64 } from 'js-base64';
 
 
+/**
+ * Deep-apply manipulator onto data.
+ *
+ * @param {*} data - Parameter description.
+ * @param {function} manipulator - Function to transform with.
+ * @returns {*} The transformed data.
+ */
 const transform = (data, manipulator) => {
   if (Array.isArray(data)) {
     for (let i = 0; i < data.length; i++) {
