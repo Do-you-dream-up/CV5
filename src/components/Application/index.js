@@ -2,19 +2,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Chatbox from './Chatbox';
-import Teaser from './Teaser';
-import Configuration from '../tools/configuration';
-import Cookie from '../tools/cookie';
-import reset from '../styles/reset';
-
-
-const styles = theme => ({
-  root: {
-    '@global': reset(theme),
-    fontFamily: 'sans-serif',
-  },
-});
+import styles from './styles';
+import Chatbox from '../Chatbox';
+import Teaser from '../Teaser';
+import Configuration from '../../tools/configuration';
+import Cookie from '../../tools/cookie';
 
 
 class Application extends React.PureComponent {

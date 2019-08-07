@@ -2,18 +2,18 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Contacts from './Contacts';
-import Dialog from './Dialog';
-import Footer from './Footer';
-import Header from './Header';
-import Onboarding from './Onboarding';
-import Secondary from './Secondary';
-import Tab from './Tab';
-import { DialogContext } from '../contexts/DialogContext';
-import { TabProvider } from '../contexts/TabContext';
-import Configuration from '../tools/configuration';
-import { LOREM_HTML, LOREM_HTML_SPLIT } from '../tools/lorem';
-import talk from '../tools/talk';
+import Contacts from '../Contacts';
+import Dialog from '../Dialog';
+import Footer from '../Footer';
+import Header from '../Header';
+import Onboarding from '../Onboarding';
+import Secondary from '../Secondary';
+import Tab from '../Tab';
+import { DialogContext } from '../../contexts/DialogContext';
+import { TabProvider } from '../../contexts/TabContext';
+import Configuration from '../../tools/configuration';
+import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
+import talk from '../../tools/talk';
 
 
 const styles = theme => ({

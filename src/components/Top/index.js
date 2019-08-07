@@ -1,7 +1,7 @@
 import React from 'react';
-import Interaction from './Interaction';
-import Configuration from '../tools/configuration';
-import dydu from '../tools/dydu';
+import Interaction from '../Interaction';
+import Configuration from '../../tools/configuration';
+import dydu from '../../tools/dydu';
 
 
 const TOP = Configuration.get('top');

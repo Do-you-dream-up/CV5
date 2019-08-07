@@ -2,10 +2,10 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Button from './Button';
-import Configuration from '../tools/configuration';
-import Cookie from '../tools/cookie';
-import sanitize from '../tools/sanitize';
+import Button from '../Button';
+import Configuration from '../../tools/configuration';
+import Cookie from '../../tools/cookie';
+import sanitize from '../../tools/sanitize';
 
 
 const styles = theme => ({

@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import { TabContext } from '../contexts/TabContext';
-import Configuration from '../tools/configuration';
+import { TabContext } from '../../contexts/TabContext';
+import Configuration from '../../tools/configuration';
 
 
 const styles = theme => ({

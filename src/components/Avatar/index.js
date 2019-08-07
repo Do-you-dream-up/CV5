@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Configuration from '../tools/configuration';
+import Configuration from '../../tools/configuration';
 
 
 const styles = theme => ({

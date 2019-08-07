@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import withStyles from 'react-jss';
-import Button from './Button';
-import Configuration from '../tools/configuration';
-import dydu from '../tools/dydu';
-import talk from '../tools/talk';
+import Button from '../Button';
+import Configuration from '../../tools/configuration';
+import dydu from '../../tools/dydu';
+import talk from '../../tools/talk';
 
 
 const styles = theme => ({

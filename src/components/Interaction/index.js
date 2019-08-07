@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Avatar from  './Avatar';
-import Bubble from  './Bubble';
-import Loader from  './Loader';
-import { DialogContext } from  '../contexts/DialogContext';
-import Configuration from  '../tools/configuration';
-import sanitize from  '../tools/sanitize';
+import Avatar from  '../Avatar';
+import Bubble from  '../Bubble';
+import Loader from  '../Loader';
+import { DialogContext } from  '../../contexts/DialogContext';
+import Configuration from  '../../tools/configuration';
+import sanitize from  '../../tools/sanitize';
 
 
 const styles = theme => ({

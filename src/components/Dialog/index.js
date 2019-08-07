@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Interaction from './Interaction';
-import Top from './Top';
-import dydu from '../tools/dydu';
+import Interaction from '../Interaction';
+import Top from '../Top';
+import dydu from '../../tools/dydu';
 
 
 const styles = {

@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
-import Button from './Button';
-import { DialogContext } from '../contexts/DialogContext';
-import Configuration from '../tools/configuration';
+import Button from '../Button';
+import { DialogContext } from '../../contexts/DialogContext';
+import Configuration from '../../tools/configuration';
 
 
 const styles = theme => ({
