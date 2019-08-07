@@ -40,6 +40,10 @@ const styles = theme => ({
 
 class Bubble extends React.PureComponent {
 
+  static defaultProps = {
+    actions: [],
+  };
+
   static propTypes = {
     actions: PropTypes.array,
     classes: PropTypes.object.isRequired,
@@ -48,7 +52,7 @@ class Bubble extends React.PureComponent {
   };
 
   render() {
-    const { actions=[], classes, html, type } = this.props;
+    const { actions, classes, html, type } = this.props;
     return (
       <Scroll className={classNames('dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type])}>
         <div className="dydu-bubble-body" dangerouslySetInnerHTML={{__html: html}} />

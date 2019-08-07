@@ -50,16 +50,21 @@ const styles = theme => ({
 
 class Button extends React.PureComponent {
 
+  static defaultProps = {
+    component: 'button',
+    variant: 'default',
+  };
+
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    component: PropTypes.element,
+    component: PropTypes.node,
     flat: PropTypes.bool,
     reference: PropTypes.object,
     variant: PropTypes.oneOf(['default', 'icon']),
   };
 
   render() {
-    const { classes, component='button', flat, reference, variant='default', ...rest } = this.props;
+    const { classes, component, flat, reference, variant, ...rest } = this.props;
     const type = variant.toLowerCase();
     return React.createElement(component, {
       ...rest,

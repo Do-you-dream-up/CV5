@@ -7,6 +7,10 @@ export default class Tab extends React.PureComponent {
 
   static contextType = TabContext;
 
+  static defaultProps = {
+    component: 'div',
+  };
+
   static propTypes = {
     children: PropTypes.node,
     component: PropTypes.elementType,
@@ -16,7 +20,7 @@ export default class Tab extends React.PureComponent {
 
   render() {
     const { should } = this.context;
-    const { children, component='div', render, value, ...rest } = this.props;
+    const { children, component, render, value, ...rest } = this.props;
     const display = should(value);
     return render || display ? React.createElement(
       component, {...(render && !display && {style: {display: 'none'}}), ...rest}, children
