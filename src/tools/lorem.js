@@ -1,3 +1,6 @@
+/**
+ * Export ready-to-use dummy texts.
+ */
 export const LOREM = {
 
   links: `

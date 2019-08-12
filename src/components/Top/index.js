@@ -12,7 +12,7 @@ export default class Top extends React.PureComponent {
 
   state = {items: []};
 
-  fetch = () => dydu.top({size: TOP_SIZE}).then(({ knowledgeArticles }) => {
+  fetch = () => dydu.top(TOP_SIZE).then(({ knowledgeArticles }) => {
     try {
       const top = JSON.parse(knowledgeArticles);
       this.setState({items: Array.isArray(top) ? top : [top]});

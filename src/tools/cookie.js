@@ -1,6 +1,9 @@
 import cookie from 'js-cookie';
 
 
+/**
+ * Small wrapper featuring a getter and a setter for browser cookies.
+ */
 export default class Cookie {
 
   static cookies = {
