@@ -3,6 +3,10 @@ import React from 'react';
 import { TabContext } from '../../contexts/TabContext';
 
 
+/**
+ * Render the content of a tab. The content can be forced into the page but
+ * hidden using CSS to avoid unnecessary mounting.
+ */
 export default class Tab extends React.PureComponent {
 
   static contextType = TabContext;

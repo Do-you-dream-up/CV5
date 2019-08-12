@@ -9,9 +9,13 @@ import Configuration from '../../tools/configuration';
 const TEASER_TITLE = Configuration.get('teaser.title', null);
 
 
+/**
+ * Minified version of the chatbox.
+ */
 class Teaser extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,

@@ -11,11 +11,16 @@ const TABS = Configuration.get('tabs');
 const TABS_VALUES = Array.isArray(TABS.values) ? TABS.values : [TABS.values];
 
 
+/**
+ * Render clickable tabs to select the current tab content. The available tabs
+ * are pulled from the configuration.
+ */
 class Tabs extends React.PureComponent {
 
   static contextType = TabContext;
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
   };
 

@@ -7,11 +7,17 @@ import Button from '../Button';
 import { DialogContext } from '../../contexts/DialogContext';
 
 
+/**
+ * Render secondary content. The content can be modal and blocking for the rest
+ * of the chatbox by being placed over the conversation or less intrusive on a
+ * side of the chatbox.
+ */
 class Secondary extends React.PureComponent {
 
   static contextType = DialogContext;
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     mode: PropTypes.oneOf(['over', 'side']).isRequired,
   };

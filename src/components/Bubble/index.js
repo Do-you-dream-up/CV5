@@ -7,6 +7,15 @@ import Button from  '../Button';
 import Scroll from '../Scroll';
 
 
+/**
+ * A conversation bubble.
+ *
+ * It can either represent the user's input or its response. Typically, a
+ * request should be displayed on the right of the conversation while its
+ * response should appear in front, on the left.
+ *
+ * The bubble can have clickable actions, appearing as buttons below its content.
+ */
 class Bubble extends React.PureComponent {
 
   static defaultProps = {
@@ -15,6 +24,7 @@ class Bubble extends React.PureComponent {
 
   static propTypes = {
     actions: PropTypes.array,
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     html: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['request', 'response']).isRequired,

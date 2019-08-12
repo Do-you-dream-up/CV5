@@ -8,10 +8,18 @@ const TOP = Configuration.get('top');
 const { size: TOP_SIZE=3, text: TOP_TEXT } = TOP;
 
 
+/**
+ * Fetch the top-asked resources and display them in a numbered list.
+ */
 export default class Top extends React.PureComponent {
 
   state = {items: []};
 
+  /**
+   * Fetch the N top-asked knowledge. N is pulled from the configuration.
+   *
+   * @public
+   */
   fetch = () => dydu.top(TOP_SIZE).then(({ knowledgeArticles }) => {
     try {
       const top = JSON.parse(knowledgeArticles);

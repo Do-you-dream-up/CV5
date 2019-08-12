@@ -7,6 +7,12 @@ import Scroll from '../Scroll';
 import Configuration from  '../../tools/configuration';
 
 
+/**
+ * The Loader suggests to the user that the chatbot is *thinking* by display a
+ * loader animated with CSS styling.
+ *
+ * The loader size determines the number of bullets.
+ */
 class Loader extends React.PureComponent {
 
   static defaultProps = {
@@ -14,6 +20,7 @@ class Loader extends React.PureComponent {
   };
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     size: PropTypes.number,
   };

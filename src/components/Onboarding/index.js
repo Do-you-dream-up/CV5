@@ -12,12 +12,22 @@ import sanitize from '../../tools/sanitize';
 const ONBOARDING = Configuration.get('onboarding');
 
 
+/**
+ * Protect the children of this component behind an *onboarding* wall.
+ * Typically, sensitive content should be only available to the user once they
+ * have agreed to the onboarding of the application when relevant.
+ *
+ * To actually render the onboarding steps instead and not just hide the
+ * children, use the property `render` on this component. Ideally the `render`
+ * property is utilized on only one instance of this component.
+ */
 class Onboarding extends React.PureComponent {
 
   static contextType = OnboardingContext;
 
   static propTypes = {
     children: PropTypes.node,
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     render: PropTypes.bool,
   };

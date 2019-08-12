@@ -6,9 +6,17 @@ import styles from './styles';
 import Input from '../Input';
 
 
+/**
+ * The footer typically contains the input field for the user to type text into
+ * the conversation.
+ *
+ * It transports the function to call whenever input is submitted and a second
+ * function to handle the response.
+ */
 class Footer extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     onRequest: PropTypes.func.isRequired,
     onResponse: PropTypes.func.isRequired,

@@ -16,9 +16,13 @@ const INPUT_DELAY = INPUT.delay === true ? 1000 : ~~INPUT.delay;
 const INPUT_PLACEHOLDER = INPUT.placeholder;
 
 
+/**
+ * Wrapper around the input bar to contain the talk and suggest logic.
+ */
 class Input extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     onRequest: PropTypes.func.isRequired,
     onResponse: PropTypes.func.isRequired,
@@ -26,24 +30,55 @@ class Input extends React.PureComponent {
 
   state = {input: '', suggestions: []};
 
+  /**
+   * Update the input field with user's input and maybe trigger suggestions.
+   *
+   * @param {Object} event - DOM event.
+   * @public
+   */
   change = event => {
     this.setState({input: event.target.value}, INPUT_DELAY > 0 ? this.suggest : null);
   };
 
+  /**
+   * Prevent refresh of the page and run the debounced submit routine.
+   *
+   * @param {Object} event - DOM event.
+   * @returns {Promise}
+   * @public
+   */
   onSubmit = event => {
     event.preventDefault();
     return this.submit();
   };
 
+  /**
+   * Prevent refresh of the page and select a suggestion candidate.
+   *
+   * @param {Object} event - DOM event.
+   * @param {Object} data
+   * @param {string} data.suggestionValue - Selected text.
+   * @public
+   */
   onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();
     this.setState({input: suggestionValue}, this.submit);
   };
 
+  /**
+   * Empty the input field.
+   *
+   * @public
+   */
   reset = () => {
     this.setState({input: ''});
   };
 
+  /**
+   * Debounce-submit the user's input and handle its response.
+   *
+   * @public
+   */
   submit = debounce(() => {
     const text = this.state.input.trim();
     if (text) {
@@ -53,6 +88,11 @@ class Input extends React.PureComponent {
     }
   }, 200, {leading: true});
 
+  /**
+   * Debounce-fetch suggestions based on the user's input.
+   *
+   * @public
+   */
   suggest = debounce(() => {
     const text = this.state.input.trim();
     if (text) {

@@ -15,9 +15,14 @@ import { ACTIONS } from '../../tools/talk';
 const HEADER_TITLE = Configuration.get('header.title', null);
 
 
+/**
+ * Header of the chatbox. Typically placed on top and hold actions such as
+ * closing the chatbox or changing the current language.
+ */
 class Header extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
   };

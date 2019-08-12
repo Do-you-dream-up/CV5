@@ -9,14 +9,24 @@ import Configuration from '../../tools/configuration';
 import Cookie from '../../tools/cookie';
 
 
+/**
+ * Entry point of the application. Either render the chatbox or the teaser.
+ */
 class Application extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
   };
 
   state = {open: false};
 
+  /**
+   * Toggle between Teaser and Chatbox views.
+   *
+   * @param {boolean} [open]
+   * @public
+   */
   toggle = open => () => {
     open = open === undefined ? !this.state.open : !!open;
     this.setState(

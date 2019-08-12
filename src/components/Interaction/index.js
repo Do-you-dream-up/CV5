@@ -16,11 +16,18 @@ const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true
 const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
 
 
+/**
+ * Build an interaction to display content within the conversation. An
+ * interaction usually contains a single bubble but can contain one bubble
+ * depending on the content. Interactions are split after the horizontal rule
+ * HTML tag.
+ */
 class Interaction extends React.PureComponent {
 
   static contextType = DialogContext;
 
   static propTypes = {
+    /** @ignore  */
     classes: PropTypes.object.isRequired,
     secondary: PropTypes.object,
     secondaryOpen: PropTypes.bool,
@@ -31,6 +38,16 @@ class Interaction extends React.PureComponent {
 
   state = {bubbles: [], length: 0};
 
+  /**
+   * Push text into the conversation. If the delay between bubbles is enabled,
+   * then push bubbles in the conversation one at a time, otherwise pushy
+   * everything directly.
+   *
+   * @param {string[]} bubbles - Interaction's text.
+   * @param {function} callback - Function to call when all of the bubbles are pushed.
+   * @param {number=0} index - To keep track of the current delay.
+   * @public
+   */
   addBubble = (bubbles, callback, index=0) => {
     if (this.props.thinking) {
       setTimeout(function() {
@@ -45,6 +62,11 @@ class Interaction extends React.PureComponent {
     }
   };
 
+  /**
+   * Update secondary content and open it if relevant.
+   *
+   * @public
+   */
   addSecondary = () => {
     const { content, title } = this.props.secondary || {};
     if (content) {

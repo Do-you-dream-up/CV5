@@ -8,14 +8,24 @@ import Top from '../Top';
 import dydu from '../../tools/dydu';
 
 
+/**
+ * Container for the conversation and its interactions. Fetch the history on
+ * mount.
+ */
 class Dialog extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     interactions: PropTypes.array.isRequired,
     onAdd: PropTypes.func.isRequired,
   };
 
+  /**
+   * Fetch the history then push interactions in the conversation.
+   *
+   * @public
+   */
   fetch = () => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it, index) => (

@@ -5,6 +5,12 @@ import withStyles from 'react-jss';
 import styles from './styles';
 
 
+/**
+ * Re-usable button component.
+ *
+ * An icon button typically accepts an image as its child while the default
+ * variant is best used with text.
+ */
 export class Button extends React.PureComponent {
 
   static defaultProps = {
@@ -13,9 +19,11 @@ export class Button extends React.PureComponent {
   };
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     component: PropTypes.node,
     flat: PropTypes.bool,
+    /** @ignore */
     reference: PropTypes.object,
     variant: PropTypes.oneOf(['default', 'icon']),
   };

@@ -5,9 +5,17 @@ import withStyles from 'react-jss';
 import styles from './styles';
 
 
+/**
+ * Avatar to display in the conversation. Usually next to the conversation
+ * bubbles.
+ *
+ * A request avatar should be next to the user's input while a response avatar
+ * should be next to its response.
+ */
 class Avatar extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
     classes: PropTypes.object.isRequired,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
   };
