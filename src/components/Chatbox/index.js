@@ -79,7 +79,7 @@ class Chatbox extends React.PureComponent {
             </div>
             <Footer onRequest={addRequest} onResponse={addResponse} />
           </Onboarding>
-          <Header toggle={toggle} style={{order: -1}} />
+          <Header onClose={toggle(false)} style={{order: -1}} />
           {SECONDARY_MODE === 'side' && <Secondary mode={SECONDARY_MODE} />}
         </div>
       </TabProvider>

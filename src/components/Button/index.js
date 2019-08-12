@@ -5,7 +5,7 @@ import withStyles from 'react-jss';
 import styles from './styles';
 
 
-class Button extends React.PureComponent {
+export class Button extends React.PureComponent {
 
   static defaultProps = {
     component: 'button',
@@ -38,6 +38,6 @@ class Button extends React.PureComponent {
 }
 
 
-const forwardedButton = React.forwardRef((props, ref) => <Button {...props} reference={ref} />);
-forwardedButton.displayName = Button.displayName;
-export default withStyles(styles)(forwardedButton);
+const ForwardedButton = React.forwardRef((props, ref) => <Button {...props} reference={ref} />);
+ForwardedButton.displayName = Button.displayName;
+export default withStyles(styles)(ForwardedButton);

@@ -55,16 +55,12 @@ class Interaction extends React.PureComponent {
     }
   };
 
-  mount = () => {
+  componentDidMount() {
     const bubbles = sanitize(this.props.text).split('<hr>');
     this.setState(
       ({length: bubbles.length}),
       () => this.addBubble(bubbles, this.addSecondary),
     );
-  };
-
-  componentDidMount() {
-    this.mount();
   }
 
   render() {

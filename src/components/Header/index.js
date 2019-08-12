@@ -19,15 +19,11 @@ class Header extends React.PureComponent {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    toggle: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
   };
 
-  toggleMenu = event => (
-    this.setState({menuAnchor: event.currentTarget})
-  );
-
   render() {
-    const { classes, toggle, ...rest } = this.props;
+    const { classes, onClose, ...rest } = this.props;
     const menu = Object.keys(ACTIONS).map(it => ({
       onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),
       text: it,
@@ -40,13 +36,13 @@ class Header extends React.PureComponent {
             {menu.length > 0 && (
               <Onboarding>
                 <Menu items={menu}>
-                  <Button onClick={this.toggleMenu} variant="icon">
+                  <Button variant="icon">
                     <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
                   </Button>
                 </Menu>
               </Onboarding>
             )}
-            <Button onClick={toggle()} variant="icon">
+            <Button onClick={onClose} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
             </Button>
           </div>
