@@ -2,18 +2,10 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import styles from './styles';
 import Interaction from '../Interaction';
 import Top from '../Top';
 import dydu from '../../tools/dydu';
-
-
-const styles = {
-  root: {
-    flex: '1 1 auto',
-    overflowX: 'hidden',
-    padding: '1em',
-  },
-};
 
 
 class Dialog extends React.PureComponent {

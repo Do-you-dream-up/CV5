@@ -2,36 +2,13 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import styles from  './styles';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Loader from  '../Loader';
 import { DialogContext } from  '../../contexts/DialogContext';
 import Configuration from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
-
-
-const styles = theme => ({
-  base: {
-    display: 'flex',
-    '&:not(:first-child)': {
-      paddingTop: '1em',
-    },
-  },
-  bubbles: {
-    display: 'flex',
-    flex: '1',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  request: {
-    marginLeft: '2em',
-  },
-  response: {
-    [theme.breakpoints.up('sm')]: {
-      marginRight: '2em',
-    },
-  },
-});
 
 
 const { avatar: AVATAR={}, loader: LOADER } = Configuration.get('interaction');

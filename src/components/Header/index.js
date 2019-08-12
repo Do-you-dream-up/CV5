@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import styles from './styles';
 import Banner from '../Banner';
 import Button from '../Button';
 import Menu from '../Menu';
@@ -9,36 +10,6 @@ import Onboarding from '../Onboarding';
 import Tabs from '../Tabs';
 import Configuration from '../../tools/configuration';
 import { ACTIONS } from '../../tools/talk';
-
-
-const styles = theme => ({
-  actions: {
-    alignItems: 'center',
-    display: 'flex',
-    marginLeft: 'auto',
-    '& > *': {
-      marginLeft: '.5em',
-    },
-  },
-  body: {
-    alignItems: 'center',
-    display: 'flex',
-    padding: '.5em',
-  },
-  root: {
-    backgroundColor: theme.palette.primary.main,
-    borderTopLeftRadius: theme.shape.borderRadius,
-    borderTopRightRadius: theme.shape.borderRadius,
-    color: theme.palette.primary.text,
-    flex: '0 0 auto',
-    position: 'relative',
-    '&&': Configuration.getStyles('header'),
-    [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
-  },
-  title: {
-    padding: '.5em',
-  },
-});
 
 
 const HEADER_TITLE = Configuration.get('header.title', null);

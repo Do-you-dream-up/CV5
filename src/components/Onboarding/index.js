@@ -2,26 +2,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import styles from './styles';
 import Button from '../Button';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import Configuration from '../../tools/configuration';
 import sanitize from '../../tools/sanitize';
-
-
-const styles = {
-  buttons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: '1em',
-  },
-  root: {
-    flexBasis: 'auto',
-    flexGrow: '1',
-    flexShrink: '1',
-    overflowY: 'auto',
-    padding: '1em',
-  },
-};
 
 
 const ONBOARDING = Configuration.get('onboarding');

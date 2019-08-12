@@ -2,37 +2,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
+import styles from './styles';
 import Button from '../Button';
 import Configuration from '../../tools/configuration';
 import Cookie from '../../tools/cookie';
 import sanitize from '../../tools/sanitize';
-
-
-const styles = theme => ({
-  actions: {
-    display: 'flex',
-    float: 'right',
-    margin: '.5em',
-    '& > :not(:first-child)': {
-      marginLeft: '.5em',
-    },
-  },
-  body: {
-    padding: '1em',
-  },
-  root: {
-    backgroundColor: theme.palette.warning.main,
-    color: theme.palette.warning.text,
-    overflowY: 'hidden',
-    '@global': {
-      'a[href]': {
-        color: `${theme.palette.warning.text} !important`,
-        textDecoration: 'underline !important',
-      },
-    },
-    '&&': Configuration.getStyles('banner'),
-  },
-});
 
 
 const BANNER = Configuration.get('banner');
