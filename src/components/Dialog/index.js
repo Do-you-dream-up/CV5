@@ -17,7 +17,7 @@ class Dialog extends React.PureComponent {
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
-    interactions: PropTypes.array.isRequired,
+    interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
     onAdd: PropTypes.func.isRequired,
   };
 

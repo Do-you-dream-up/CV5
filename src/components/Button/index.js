@@ -24,7 +24,7 @@ export class Button extends React.PureComponent {
     component: PropTypes.node,
     flat: PropTypes.bool,
     /** @ignore */
-    reference: PropTypes.object,
+    reference: PropTypes.exact({current: PropTypes.object}),
     variant: PropTypes.oneOf(['default', 'icon']),
   };
 

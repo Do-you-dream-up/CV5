@@ -23,7 +23,10 @@ class Bubble extends React.PureComponent {
   };
 
   static propTypes = {
-    actions: PropTypes.array,
+    actions: PropTypes.arrayOf(PropTypes.shape({
+      action: PropTypes.func.isRequired,
+      text: PropTypes.string.isRequired,
+    })),
     /** @ignore */
     classes: PropTypes.object.isRequired,
     html: PropTypes.string.isRequired,
