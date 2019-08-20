@@ -45,7 +45,7 @@ class Interaction extends React.PureComponent {
    *
    * @param {string[]} bubbles - Interaction's text.
    * @param {function} callback - Function to call when all of the bubbles are pushed.
-   * @param {number=0} index - To keep track of the current delay.
+   * @param {number} [index=0] - To keep track of the current delay.
    * @public
    */
   addBubble = (bubbles, callback, index=0) => {

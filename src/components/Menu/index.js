@@ -112,7 +112,7 @@ class Menu extends React.PureComponent {
     const { children, classes, items } = this.props;
     const { geometry, open } = this.state;
     const node = document && document.getElementById(ROOT);
-    return (
+    return !!items.length && (
       <>
         {React.cloneElement(children, {onClick: this.toggle(), ref: this.anchor})}
         {open && (
