@@ -29,7 +29,12 @@ class Header extends React.PureComponent {
 
   render() {
     const { classes, onClose, ...rest } = this.props;
-    const menu = Object.keys(ACTIONS).map(it => ({
+    const languagesMenu = [
+      {onClick: () => window.dydu.setLanguage('en'), text: 'English'},
+      {onClick: () => window.dydu.setLanguage('es'), text: 'Español'},
+      {onClick: () => window.dydu.setLanguage('fr'), text: 'Français'},
+    ];
+    const settingsMenu = Object.keys(ACTIONS).map(it => ({
       onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),
       text: it,
     }));
@@ -39,7 +44,12 @@ class Header extends React.PureComponent {
           <div children={HEADER_TITLE} className={classNames('dydu-header-title', classes.title)} />
           <div className={classNames('dydu-header-actions', classes.actions)}>
             <Onboarding>
-              <Menu items={menu}>
+              <Menu items={languagesMenu}>
+                <Button variant="icon">
+                  <img alt="Languages" src="icons/flag.png" title="Languages" />
+                </Button>
+              </Menu>
+              <Menu items={settingsMenu}>
                 <Button variant="icon">
                   <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
                 </Button>

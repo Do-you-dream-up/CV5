@@ -13,6 +13,7 @@ import Tab from '../Tab';
 import { DialogContext } from '../../contexts/DialogContext';
 import { TabProvider } from '../../contexts/TabContext';
 import Configuration from '../../tools/configuration';
+import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import talk from '../../tools/talk';
 
@@ -55,6 +56,7 @@ class Chatbox extends React.PureComponent {
   componentDidMount() {
     window.dydu.ask = (text, options) => this.ask(text, options);
     window.dydu.empty = () => this.context.empty();
+    window.dydu.setLanguage = language => dydu.setLanguage(language, true);
     window.dydu.lorem = () => this.context.addResponse({text: LOREM_HTML});
     window.dydu.loremSplit = () => this.context.addResponse({text: LOREM_HTML_SPLIT});
     window.dydu.reply = text => this.context.addResponse({text: text});

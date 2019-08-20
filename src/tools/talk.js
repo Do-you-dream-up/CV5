@@ -18,7 +18,7 @@ const meta = () => {
       {label: 'Bot Name', value: '-'},
       {label: 'Bot Configuration', value: '-'},
       {label: 'Deployed On', value: '-'},
-      {label: 'Language', value: '-'},
+      {label: 'Language', value: dydu.language || '-'},
       {label: 'Space', value: '-'},
       {label: 'Operating System', value: `${os.name} ${os.versionName}`},
       {label: 'Browser', value: `${browser.name} ${browser.version}`},
