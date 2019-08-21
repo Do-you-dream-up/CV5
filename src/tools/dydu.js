@@ -85,6 +85,8 @@ class Dydu {
 
   /**
    * Save the provided context ID to the cookies.
+   *
+   * @param {string} value - Context ID to save.
    */
   setContextId = value => {
     if (value !== undefined) {
@@ -93,7 +95,7 @@ class Dydu {
   };
 
   /**
-   * Save the currently selected language when the cookie is not set. If forced,
+   * Save the currently selected locale when the cookie is not set. If forced,
    * refresh the cookie anyway.
    *
    * @param {string} language - Selected language.

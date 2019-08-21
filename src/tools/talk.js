@@ -39,11 +39,11 @@ export const ACTIONS = {
   '#feedback#':   null,
   '#host#':       () => dydu.whoami().then(text => window.dydu.reply(`<p>${text}</p>`)),
   '#iframe#':     null,
-  '#lorem#':      () => window.dydu.lorem(),
+  '#lorem#':      () => window.dydu.lorem.standard(),
   '#meta#':       meta,
   '#reset#':      null,
   '#secondary#':  () => window.dydu.toggleSecondary(true, {body: LOREM_HTML, title: 'Secondary'}),
-  '#split#':      () => window.dydu.loremSplit(),
+  '#split#':      () => window.dydu.lorem.split(),
   '#steps#':      null,
   '#template#':   null,
 };

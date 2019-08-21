@@ -60,7 +60,10 @@ class Header extends React.PureComponent {
             </Button>
           </div>
         </div>
-        <Onboarding children={<><Tabs /><Banner /></>} />
+        <Onboarding>
+          <Tabs />
+          <Banner />
+        </Onboarding>
       </header>
     );
   }
