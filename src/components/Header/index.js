@@ -30,9 +30,9 @@ class Header extends React.PureComponent {
   render() {
     const { classes, onClose, ...rest } = this.props;
     const languagesMenu = [
-      {onClick: () => window.dydu.setLanguage('en'), text: 'English'},
-      {onClick: () => window.dydu.setLanguage('es'), text: 'Español'},
-      {onClick: () => window.dydu.setLanguage('fr'), text: 'Français'},
+      {onClick: () => window.dydu.localization.set('en'), text: 'English'},
+      {onClick: () => window.dydu.localization.set('es'), text: 'Español'},
+      {onClick: () => window.dydu.localization.set('fr'), text: 'Français'},
     ];
     const settingsMenu = Object.keys(ACTIONS).map(it => ({
       onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),

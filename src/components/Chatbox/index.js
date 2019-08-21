@@ -56,12 +56,18 @@ class Chatbox extends React.PureComponent {
   componentDidMount() {
     window.dydu.ask = (text, options) => this.ask(text, options);
     window.dydu.empty = () => this.context.empty();
+    window.dydu.localization = {
+      get: () => dydu.getLocale(),
+      set: locale => dydu.setLocale(locale).then(
+        locale => this.context.addResponse({text: `New locale set: '${locale}'.`}),
+        response => this.context.addResponse({text: response}),
+      ),
+    };
     window.dydu.lorem = {
       standard: () => this.context.addResponse({text: LOREM_HTML}),
       split: () => this.context.addResponse({text: LOREM_HTML_SPLIT}),
     };
     window.dydu.reply = text => this.context.addResponse({text: text});
-    window.dydu.setLanguage = language => dydu.setLanguage(language, true);
     window.dydu.toggle = open => this.props.toggle(open)();
     window.dydu.toggleSecondary = (open, { body, title }) => (
       this.context.toggleSecondary(open, {body, title})()

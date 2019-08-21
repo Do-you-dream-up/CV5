@@ -10,7 +10,7 @@ export default class Cookie {
     banner: 'dydu.banner',
     client: 'dydu.client.id',
     context: 'dydu.context.id',
-    language: 'dydu.language',
+    locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
   };

@@ -34,10 +34,6 @@ const API = axios.create({
  */
 class Dydu {
 
-  constructor(language='en') {
-    this.language = Cookie.get(Cookie.cookies.language) || language;
-  }
-
   /**
    * Read the context ID from the cookies and return it.
    *
@@ -65,6 +61,19 @@ class Dydu {
     }
     return data;
   }), 100, {leading: true});
+
+  /**
+   * Self-regeneratively return the currently selected locale.
+   *
+   * @returns {string}
+   */
+  getLocale = () => {
+    const current = Cookie.get(Cookie.cookies.locale);
+    if (typeof current !== 'string' || !current) {
+      this.setLocale('en');
+    }
+    return this.locale;
+  };
 
   /**
    * Fetch previous conversations.
@@ -98,23 +107,20 @@ class Dydu {
    * Save the currently selected locale when the cookie is not set. If forced,
    * refresh the cookie anyway.
    *
-   * @param {string} language - Selected language.
-   * @param {boolean} [force=false] - Whether to ignore current cookie value.
+   * @param {string} locale - Selected locale.
+   * @returns {Promise}
    */
-  setLanguage = (language, force=false) => {
-    const languages = ['en', 'fr'];
-    const current = Cookie.get(Cookie.cookies.language);
-    if (force || !current || current !== language) {
-      if (languages.includes(language)) {
-        this.language = language;
-        Cookie.set(Cookie.cookies.language, language, Cookie.duration.long);
-      }
-      else {
-        // eslint-disable-next-line no-console
-        console.warn(`Setting an unknown language '${language}'. Possible values: [${languages}].`);
-      }
+  setLocale = locale => new Promise((resolve, reject) => {
+    const locales = ['en', 'fr'];
+    if (locales.includes(locale)) {
+      Cookie.set(Cookie.cookies.locale, locale, Cookie.duration.long);
+      this.locale = locale;
+      resolve(locale);
     }
-  };
+    else {
+      reject(`Setting an unknown locale '${locale}'. Possible values: [${locales}].`);
+    }
+  });
 
   /**
    * Fetch candidates for auto-completion.
@@ -123,7 +129,7 @@ class Dydu {
    * @returns {Promise}
    */
   suggest = text => {
-    const data = qs.stringify({language: this.language, search: text});
+    const data = qs.stringify({language: this.getLocale(), search: text});
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
@@ -137,7 +143,7 @@ class Dydu {
    */
   talk = (text, options) => {
     const data = qs.stringify({
-      language: this.language,
+      language: this.getLocale(),
       userInput: text,
       ...(options && {extraParameters: options}),
     });
@@ -153,7 +159,7 @@ class Dydu {
    * @returns {Promise}
    */
   top = size => {
-    const data = qs.stringify({language: this.language, maxKnowledge: size});
+    const data = qs.stringify({language: this.getLocale(), maxKnowledge: size});
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
