@@ -26,7 +26,7 @@ const meta = () => {
     ].map(it => `<dt>${it.label}</dt><dd>${it.value}</dd>`),
     '</dl>',
   ];
-  window.dydu.reply(html.join(''));
+  window.dydu.chat.reply(html.join(''));
 };
 
 
@@ -37,7 +37,7 @@ export const ACTIONS = {
   '#comment#':    null,
   '#context#':    null,
   '#feedback#':   null,
-  '#host#':       () => dydu.whoami().then(text => window.dydu.reply(`<p>${text}</p>`)),
+  '#host#':       () => dydu.whoami().then(window.dydu.chat.reply),
   '#iframe#':     null,
   '#lorem#':      () => window.dydu.lorem.standard(),
   '#meta#':       meta,

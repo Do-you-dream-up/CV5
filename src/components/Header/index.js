@@ -38,7 +38,7 @@ class Header extends React.PureComponent {
     ];
 
     const settingsMenu = Object.keys(ACTIONS).map(it => ({
-      onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),
+      onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
       text: it,
     }));
 

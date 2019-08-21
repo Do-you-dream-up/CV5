@@ -42,7 +42,7 @@ export default class Top extends React.PureComponent {
       TOP_TEXT,
       '<ol>',
       items.map(({ reword }) => {
-        const ask = `window.dydu.ask('${reword}')`;
+        const ask = `window.dydu.chat.ask('${reword}')`;
         return `<li><span class="dydu-link" onclick="${ask}">${reword}</span></li>`;
       }).join(''),
       '</ol>',
