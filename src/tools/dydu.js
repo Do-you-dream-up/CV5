@@ -68,8 +68,8 @@ class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    const current = Cookie.get(Cookie.cookies.locale);
-    if (typeof current !== 'string' || !current) {
+    this.locale = Cookie.get(Cookie.cookies.locale);
+    if (typeof this.locale !== 'string' || !this.locale) {
       this.setLocale('en');
     }
     return this.locale;
