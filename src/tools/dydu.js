@@ -50,7 +50,7 @@ class Dydu {
    *
    * @param {function} verb - A verb method to request with.
    * @param {string} path - Path to send the request to.
-   * @param {object} data - Data to send.
+   * @param {Object} data - Data to send.
    * @returns {Promise}
    */
   emit = debounce((verb, path, data) => verb(path, data).then(({ data={} }) => {

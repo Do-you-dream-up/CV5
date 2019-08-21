@@ -28,16 +28,20 @@ class Header extends React.PureComponent {
   };
 
   render() {
+
     const { classes, onClose, ...rest } = this.props;
+
     const languagesMenu = [
       {onClick: () => window.dydu.localization.set('en'), text: 'English'},
       {onClick: () => window.dydu.localization.set('es'), text: 'Español'},
       {onClick: () => window.dydu.localization.set('fr'), text: 'Français'},
     ];
+
     const settingsMenu = Object.keys(ACTIONS).map(it => ({
       onClick: ACTIONS[it] && (() => window.dydu.ask(it, {hide: true})),
       text: it,
     }));
+
     return (
       <header className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
