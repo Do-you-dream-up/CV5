@@ -27,6 +27,7 @@ export class Cookie {
 export class Local {
 
   static names = {
+    client: 'dydu.client',
     context: 'dydu.context',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
@@ -45,10 +46,16 @@ export class Local {
    * Retrieve a value stored in the local storage.
    *
    * @param {string} name - Name of the local storage variable to fetch.
+   * @param {function} [getValue] - Function returning the value to set if the
+   *                                name was not found.
    * @returns {*} Value of the variable that was found.
    */
-  static get = name => {
+  static get = (name, getValue) => {
     const value = localStorage.getItem(name);
+    if (!value && typeof getValue === 'function') {
+      this.set(name, getValue());
+      return this.get(name);
+    }
     try {
       return JSON.parse(value);
     }

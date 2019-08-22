@@ -18,7 +18,8 @@
     "react-dom": "^16.8.6",
     "react-jss": "^10.0.0-alpha.22",
     "react-portal": "^4.2.0",
-    "react-scripts": "^3.0.1"
+    "react-scripts": "^3.0.1",
+    "uuid4": "^1.1.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",

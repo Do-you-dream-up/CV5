@@ -1,6 +1,7 @@
 import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
+import uuid4 from 'uuid4';
 import { decode } from './cipher';
 import { Local } from './storage';
 import bot from '../bot';
@@ -35,6 +36,7 @@ const API = axios.create({
 export default new class Dydu {
 
   constructor() {
+    this.client = this.getClientId();
     this.locale = this.getLocale();
   }
 
@@ -55,6 +57,14 @@ export default new class Dydu {
     }
     return data;
   }), 100, {leading: true});
+
+  /**
+   * Read the client ID from the local storage and return it. Forge a new one
+   * using uuid4 if necessary.
+   *
+   * @returns {string} The client ID.
+   */
+  getClientId = () => Local.get(Local.names.client, uuid4);
 
   /**
    * Read the context ID from the local storage and return it.
@@ -142,6 +152,7 @@ export default new class Dydu {
    */
   talk = (text, options) => {
     const data = qs.stringify({
+      clientId: this.getClientId(),
       language: this.getLocale(),
       userInput: text,
       ...(options && {extraParameters: options}),
