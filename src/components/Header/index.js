@@ -31,6 +31,11 @@ class Header extends React.PureComponent {
 
     const { classes, onClose, ...rest } = this.props;
 
+    const gdprMenu = [
+      {onClick: () => window.dydu.gdpr.get(), text: 'Get'},
+      {onClick: () => window.dydu.gdpr.forget(), text: 'Forget'},
+    ];
+
     const languagesMenu = [
       {onClick: () => window.dydu.localization.set('en'), text: 'English'},
       {onClick: () => window.dydu.localization.set('es'), text: 'Español'},
@@ -51,6 +56,11 @@ class Header extends React.PureComponent {
               <Menu items={languagesMenu}>
                 <Button variant="icon">
                   <img alt="Languages" src="icons/flag.png" title="Languages" />
+                </Button>
+              </Menu>
+              <Menu items={gdprMenu}>
+                <Button variant="icon">
+                  <img alt="GDPR" src="icons/shield-lock.png" title="GDPR" />
                 </Button>
               </Menu>
               <Menu items={settingsMenu}>

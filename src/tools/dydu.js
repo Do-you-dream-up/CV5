@@ -59,6 +59,25 @@ export default new class Dydu {
   }), 100, {leading: true});
 
   /**
+   * File a GDPR request to be processed.
+   *
+   * @param {Object} options - Options.
+   * @param {email} options.email - The email address of the user to request for.
+   * @param {'Delete'|'Get'} options.method - Type of the request
+   * @returns {Promise}
+   */
+  gdpr = ({ email, method }) => {
+    const data = qs.stringify({
+      clientId: this.getClientId(),
+      language: this.getLocale(),
+      mail: email,
+      object: method,
+    });
+    const path = `chat/gdpr/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * Read the client ID from the local storage and return it. Forge a new one
    * using uuid4 if necessary.
    *

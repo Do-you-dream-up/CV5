@@ -59,6 +59,16 @@ class Chatbox extends React.PureComponent {
       empty: () => this.context.empty(),
       reply: text => this.context.addResponse({text: text}),
     };
+    window.dydu.gdpr = {
+      forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
+        () => window.dydu.chat.reply('Forget success'),
+        () => window.dydu.chat.reply('Forget error'),
+      ),
+      get: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Get'}).then(
+        () => window.dydu.chat.reply('Get success'),
+        () => window.dydu.chat.reply('Get error'),
+      ),
+    };
     window.dydu.localization = {
       get: () => dydu.getLocale(),
       set: locale => dydu.setLocale(locale).then(
