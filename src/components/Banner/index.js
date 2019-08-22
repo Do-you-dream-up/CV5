@@ -35,7 +35,7 @@ class Banner extends React.PureComponent {
    */
   dismiss = () => {
     if (BANNER.cookie) {
-      Cookie.set(Cookie.cookies.banner, new Date(), Cookie.duration.short);
+      Cookie.set(Cookie.names.banner, new Date(), Cookie.duration.short);
     }
   }
 
@@ -48,7 +48,7 @@ class Banner extends React.PureComponent {
 
   componentDidMount() {
     const show = !!BANNER.active;
-    const cookie = !BANNER.cookie || !Cookie.get(Cookie.cookies.banner);
+    const cookie = !BANNER.cookie || !Cookie.get(Cookie.names.banner);
     if (show && cookie) {
       this.setState({html: sanitize(BANNER.text), show}, BANNER.transient ? this.dismiss : null);
     }
