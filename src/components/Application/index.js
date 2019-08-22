@@ -6,7 +6,7 @@ import styles from './styles';
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
 import Configuration from '../../tools/configuration';
-import Cookie from '../../tools/cookie';
+import { Cookie } from '../../tools/storage';
 
 
 /**

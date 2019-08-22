@@ -2,7 +2,7 @@ import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import { decode, encode } from './cipher';
-import Cookie from './cookie';
+import { Cookie } from './storage';
 import bot from '../bot';
 
 

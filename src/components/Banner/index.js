@@ -5,8 +5,8 @@ import withStyles from 'react-jss';
 import styles from './styles';
 import Button from '../Button';
 import Configuration from '../../tools/configuration';
-import Cookie from '../../tools/cookie';
 import sanitize from '../../tools/sanitize';
+import { Cookie } from '../../tools/storage';
 
 
 const BANNER = Configuration.get('banner');

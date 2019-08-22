@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Configuration from '../tools/configuration';
-import Cookie from '../tools/cookie';
+import { Cookie } from '../tools/storage';
 
 
 const ONBOARDING = Configuration.get('onboarding');

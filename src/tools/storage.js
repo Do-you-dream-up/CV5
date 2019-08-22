@@ -4,7 +4,7 @@ import cookie from 'js-cookie';
 /**
  * Small wrapper featuring a getter and a setter for browser cookies.
  */
-export default class Cookie {
+export class Cookie {
 
   static cookies = {
     banner: 'dydu.banner',
