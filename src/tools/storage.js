@@ -9,7 +9,6 @@ export class Cookie {
 
   static names = {
     banner: 'dydu.banner',
-    client: 'dydu.client.id',
   };
 
   static duration = {
@@ -65,6 +64,7 @@ export class Local {
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
    */
   static set = (name, value) => {
-    localStorage.setItem(name, value === undefined ? moment().format('X') : value);
+    value = value === undefined ? moment().format('X') : value;
+    localStorage.setItem(name, value);
   };
 }

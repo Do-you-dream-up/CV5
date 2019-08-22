@@ -35,15 +35,8 @@ const API = axios.create({
 export default new class Dydu {
 
   constructor() {
-    this.locale = Local.get(Local.names.locale);
+    this.locale = this.getLocale();
   }
-
-  /**
-   * Read the context ID from the local storage and return it.
-   *
-   * @returns {string|undefined} The context ID or undefined.
-   */
-  getContextId = () => Local.get(Local.names.context);
 
   /**
    * Debounce-request against the provided path with the specified data. When
@@ -64,12 +57,19 @@ export default new class Dydu {
   }), 100, {leading: true});
 
   /**
+   * Read the context ID from the local storage and return it.
+   *
+   * @returns {string|undefined} The context ID or undefined.
+   */
+  getContextId = () => Local.get(Local.names.context);
+
+  /**
    * Self-regeneratively return the currently selected locale.
    *
    * @returns {string}
    */
   getLocale = () => {
-    if (typeof this.locale !== 'string' || !this.locale) {
+    if (!this.locale) {
       this.setLocale('en');
     }
     return this.locale;
