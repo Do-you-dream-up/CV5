@@ -31,12 +31,12 @@ class Application extends React.PureComponent {
     open = open === undefined ? !this.state.open : !!open;
     this.setState(
       {open: open},
-      () => Cookie.set(Cookie.cookies.open, open, Cookie.duration.long),
+      () => Cookie.set(Cookie.names.open, open, Cookie.duration.long),
     );
   };
 
   componentDidMount() {
-    const open = !!Cookie.get(Cookie.cookies.open);
+    const open = !!Cookie.get(Cookie.names.open);
     this.toggle(open === undefined ? !!Configuration.get('application.open') : open)();
   }
 

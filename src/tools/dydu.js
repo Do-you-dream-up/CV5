@@ -40,7 +40,7 @@ class Dydu {
    * @returns {string|undefined} The context ID or undefined.
    */
   getContextId = () => {
-    const contextId = Cookie.get(Cookie.cookies.context);
+    const contextId = Cookie.get(Cookie.names.context);
     return contextId !== undefined ? decode(contextId) : undefined;
   };
 
@@ -68,7 +68,7 @@ class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    this.locale = Cookie.get(Cookie.cookies.locale);
+    this.locale = Cookie.get(Cookie.names.locale);
     if (typeof this.locale !== 'string' || !this.locale) {
       this.setLocale('en');
     }
@@ -99,7 +99,7 @@ class Dydu {
    */
   setContextId = value => {
     if (value !== undefined) {
-      Cookie.set(Cookie.cookies.context, encode(value), Cookie.duration.short);
+      Cookie.set(Cookie.names.context, encode(value), Cookie.duration.short);
     }
   };
 
@@ -113,7 +113,7 @@ class Dydu {
   setLocale = locale => new Promise((resolve, reject) => {
     const locales = ['en', 'fr'];
     if (locales.includes(locale)) {
-      Cookie.set(Cookie.cookies.locale, locale, Cookie.duration.long);
+      Cookie.set(Cookie.names.locale, locale, Cookie.duration.long);
       this.locale = locale;
       resolve(locale);
     }

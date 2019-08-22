@@ -6,7 +6,7 @@ import cookie from 'js-cookie';
  */
 export class Cookie {
 
-  static cookies = {
+  static names = {
     banner: 'dydu.banner',
     client: 'dydu.client.id',
     context: 'dydu.context.id',

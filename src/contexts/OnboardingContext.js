@@ -16,7 +16,7 @@ export class OnboardingProvider extends React.Component {
   };
 
   state = {
-    active: !Cookie.get(Cookie.cookies.onboarding),
+    active: !Cookie.get(Cookie.names.onboarding),
     index: 0,
     step: ONBOARDING_STEPS[0],
   };
@@ -48,7 +48,7 @@ export class OnboardingProvider extends React.Component {
   end = () => {
     this.setState(
       {active: false, index: 0, step: ONBOARDING_STEPS[0]},
-      () => Cookie.set(Cookie.cookies.onboarding, new Date(), Cookie.duration.long),
+      () => Cookie.set(Cookie.names.onboarding, new Date(), Cookie.duration.long),
     );
   };
 
