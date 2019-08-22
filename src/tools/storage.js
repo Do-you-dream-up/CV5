@@ -10,10 +10,6 @@ export class Cookie {
   static names = {
     banner: 'dydu.banner',
     client: 'dydu.client.id',
-    context: 'dydu.context.id',
-    locale: 'dydu.locale',
-    onboarding: 'dydu.onboarding',
-    open: 'dydu.open',
   };
 
   static duration = {
@@ -32,7 +28,10 @@ export class Cookie {
 export class Local {
 
   static names = {
-    banner: 'dydu.banner',
+    context: 'dydu.context',
+    locale: 'dydu.locale',
+    onboarding: 'dydu.onboarding',
+    open: 'dydu.open',
   };
 
 

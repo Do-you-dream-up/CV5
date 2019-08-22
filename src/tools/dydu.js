@@ -1,8 +1,8 @@
 import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
-import { decode, encode } from './cipher';
-import { Cookie } from './storage';
+import { decode } from './cipher';
+import { Local } from './storage';
 import bot from '../bot';
 
 
@@ -34,15 +34,16 @@ const API = axios.create({
  */
 export default new class Dydu {
 
+  constructor() {
+    this.locale = Local.get(Local.names.locale);
+  }
+
   /**
-   * Read the context ID from the cookies and return it.
+   * Read the context ID from the local storage and return it.
    *
    * @returns {string|undefined} The context ID or undefined.
    */
-  getContextId = () => {
-    const contextId = Cookie.get(Cookie.names.context);
-    return contextId !== undefined ? decode(contextId) : undefined;
-  };
+  getContextId = () => Local.get(Local.names.context);
 
   /**
    * Debounce-request against the provided path with the specified data. When
@@ -68,7 +69,6 @@ export default new class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    this.locale = Cookie.get(Cookie.names.locale);
     if (typeof this.locale !== 'string' || !this.locale) {
       this.setLocale('en');
     }
@@ -93,19 +93,18 @@ export default new class Dydu {
   });
 
   /**
-   * Save the provided context ID to the cookies.
+   * Save the provided context ID in the local storage.
    *
    * @param {string} value - Context ID to save.
    */
   setContextId = value => {
     if (value !== undefined) {
-      Cookie.set(Cookie.names.context, encode(value), Cookie.duration.short);
+      Local.set(Local.names.context, value);
     }
   };
 
   /**
-   * Save the currently selected locale when the cookie is not set. If forced,
-   * refresh the cookie anyway.
+   * Save the currently selected locale in the local storage.
    *
    * @param {string} locale - Selected locale.
    * @returns {Promise}
@@ -113,7 +112,7 @@ export default new class Dydu {
   setLocale = locale => new Promise((resolve, reject) => {
     const locales = ['en', 'fr'];
     if (locales.includes(locale)) {
-      Cookie.set(Cookie.names.locale, locale, Cookie.duration.long);
+      Local.set(Local.names.locale, locale);
       this.locale = locale;
       resolve(locale);
     }

@@ -6,7 +6,7 @@ import styles from './styles';
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
 import Configuration from '../../tools/configuration';
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 
 
 /**
@@ -31,12 +31,12 @@ class Application extends React.PureComponent {
     open = open === undefined ? !this.state.open : !!open;
     this.setState(
       {open: open},
-      () => Cookie.set(Cookie.names.open, open, Cookie.duration.long),
+      () => Local.set(Local.names.open, open),
     );
   };
 
   componentDidMount() {
-    const open = !!Cookie.get(Cookie.names.open);
+    const open = !!Local.get(Local.names.open);
     this.toggle(open === undefined ? !!Configuration.get('application.open') : open)();
   }
 
