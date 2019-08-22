@@ -32,7 +32,7 @@ const API = axios.create({
  * Implement JavaScript bindings for Dydu's REST API.
  * https://uat.mars.doyoudreamup.com/servlet/api/doc3/index.html
  */
-class Dydu {
+export default new class Dydu {
 
   /**
    * Read the context ID from the cookies and return it.
@@ -173,7 +173,4 @@ class Dydu {
     const data = headers.find(it => it.hasOwnProperty('host'));
     return data && data.host;
   });
-}
-
-
-export default new Dydu();
+}();
