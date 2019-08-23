@@ -58,6 +58,6 @@ export default theme => ({
   suggestionsList: {
     listStyleType: 'none',
     margin: 0,
-    padding: 0,
+    padding: '0 !important',
   },
 });
