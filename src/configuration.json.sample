@@ -43,7 +43,7 @@
     "delay": 300,
     "placeholder": "Type here...",
     "suggestions": {
-      "shadow": true
+      "shadow": 6
     }
   },
   "interaction": {

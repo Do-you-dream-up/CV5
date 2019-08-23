@@ -4,7 +4,6 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from  './styles';
 import Button from  '../Button';
-import Scroll from '../Scroll';
 
 
 /**
@@ -20,6 +19,7 @@ class Bubble extends React.PureComponent {
 
   static defaultProps = {
     actions: [],
+    component: 'div',
   };
 
   static propTypes = {
@@ -29,14 +29,15 @@ class Bubble extends React.PureComponent {
     })),
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    component: PropTypes.elementType,
     html: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
   };
 
   render() {
-    const { actions, classes, html, type } = this.props;
-    return (
-      <Scroll className={classNames('dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type])}>
+    const { actions, classes, component, html, type } = this.props;
+    return React.createElement(component, {className: 'dydu-bubble'}, (
+      <div className={classNames(`dydu-bubble-${type}`, classes.base, classes[type])}>
         <div className="dydu-bubble-body" dangerouslySetInnerHTML={{__html: html}} />
         {actions.length > 0 && (
           <div className={classNames('dydu-bubble-actions', classes.actions)}>
@@ -45,8 +46,8 @@ class Bubble extends React.PureComponent {
             ))}
           </div>
         )}
-      </Scroll>
-    );
+      </div>
+    ));
   }
 }
 

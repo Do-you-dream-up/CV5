@@ -6,6 +6,7 @@ import styles from  './styles';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Loader from  '../Loader';
+import Scroll from  '../Scroll';
 import { DialogContext } from  '../../contexts/DialogContext';
 import Configuration from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
@@ -97,7 +98,7 @@ class Interaction extends React.PureComponent {
         <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
           {bubbles.map((it, index) => {
             const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
-            return <Bubble actions={actions} html={it} key={index} type={type} />;
+            return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
           })}
           {bubbles.length < length && <Loader />}
         </div>

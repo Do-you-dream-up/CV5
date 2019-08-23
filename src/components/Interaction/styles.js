@@ -1,8 +1,9 @@
 export default theme => ({
   base: {
     display: 'flex',
-    '&:not(:first-child)': {
-      paddingTop: '1em',
+    marginTop: '.5em',
+    '&:last-child': {
+      marginBottom: '1em',
     },
   },
   bubbles: {
@@ -10,6 +11,12 @@ export default theme => ({
     flex: '1',
     flexDirection: 'column',
     justifyContent: 'center',
+    '& > :first-child': {
+      paddingTop: '.5em',
+    },
+    '& > :not(:last-child)': {
+      marginBottom: '.5em',
+    },
   },
   request: {
     marginLeft: '2em',
