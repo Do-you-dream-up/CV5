@@ -41,8 +41,10 @@ class Interaction extends React.PureComponent {
 
   /**
    * Push text into the conversation. If the delay between bubbles is enabled,
-   * then push bubbles in the conversation one at a time, otherwise pushy
+   * then push bubbles in the conversation one at a time, otherwise push
    * everything directly.
+   *
+   * Bubbles are consumed and shifted out of the array.
    *
    * @param {string[]} bubbles - Interaction's text.
    * @param {function} callback - Function to call when all of the bubbles are pushed.
