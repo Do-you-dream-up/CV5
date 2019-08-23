@@ -80,10 +80,10 @@ class Chatbox extends React.PureComponent {
       standard: () => window.dydu.chat.reply(LOREM_HTML),
       split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
     };
-    window.dydu.toggle = open => this.props.toggle(open)();
-    window.dydu.toggleSecondary = (open, { body, title }) => (
-      this.context.toggleSecondary(open, {body, title})()
-    );
+    window.dydu.ui = {
+      secondary: (open, { body, title }) => this.context.toggleSecondary(open, {body, title})(),
+      toggle: open => this.props.toggle(open)(),
+    };
   }
 
   render() {
