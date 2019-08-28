@@ -51,7 +51,7 @@
       "request": false,
       "response": true
     },
-    "loader": [true, 250, 600, 300]
+    "loader": [250, 600]
   },
   "loader": {
     "shadow": true,
@@ -77,11 +77,11 @@
     "width": 500
   },
   "tabs": {
-    "selected": 0,
-    "values": [
+    "items": [
       {"text": "Dialog", "value": "dialog"},
       {"text": "Contacts", "value": "contacts"}
-    ]
+    ],
+    "selected": 0
   },
   "teaser": {
     "bottom": 16,

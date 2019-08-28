@@ -1,4 +1,4 @@
 build/
 node_modules/
+public/configuration.json
 src/bot.json
-src/configuration.json
