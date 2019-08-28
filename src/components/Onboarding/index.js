@@ -21,7 +21,7 @@ const ONBOARDING = Configuration.get('onboarding');
  * children, use the property `render` on this component. Ideally the `render`
  * property is utilized on only one instance of this component.
  */
-class Onboarding extends React.PureComponent {
+export default withStyles(styles)(class Onboarding extends React.PureComponent {
 
   static contextType = OnboardingContext;
 
@@ -53,7 +53,4 @@ class Onboarding extends React.PureComponent {
     }
     return content;
   }
-}
-
-
-export default withStyles(styles)(Onboarding);
+});

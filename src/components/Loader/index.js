@@ -13,7 +13,7 @@ import Configuration from  '../../tools/configuration';
  *
  * The loader size determines the number of bullets.
  */
-class Loader extends React.PureComponent {
+export default withStyles(styles)(class Loader extends React.PureComponent {
 
   static defaultProps = {
     size: 3,
@@ -38,7 +38,4 @@ class Loader extends React.PureComponent {
       </Scroll>
     );
   }
-}
-
-
-export default withStyles(styles)(Loader);
+});

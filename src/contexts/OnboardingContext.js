@@ -9,7 +9,7 @@ const ONBOARDING_STEPS = Array.isArray(ONBOARDING.steps) ? ONBOARDING.steps : [O
 
 
 export const OnboardingContext = React.createContext();
-export class OnboardingProvider extends React.Component {
+export const OnboardingProvider = class OnboardingProvider extends React.Component {
 
   static propTypes = {
     children: PropTypes.object,
@@ -62,4 +62,4 @@ export class OnboardingProvider extends React.Component {
       state: this.state,
     }} />;
   }
-}
+};

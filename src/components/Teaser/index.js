@@ -12,7 +12,7 @@ const TEASER_TITLE = Configuration.get('teaser.title', null);
 /**
  * Minified version of the chatbox.
  */
-class Teaser extends React.PureComponent {
+export default withStyles(styles)(class Teaser extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
@@ -27,7 +27,4 @@ class Teaser extends React.PureComponent {
                 className={classNames('dydu-teaser', classes.root, {[classes.hidden]: !open})}
                 onClick={toggle()} />;
   }
-}
-
-
-export default withStyles(styles)(Teaser);
+});

@@ -19,7 +19,7 @@ const BANNER = Configuration.get('banner');
  * The banner can persist through refresh of the page, can be dismissed manually
  * and its opening can be disabled in the presence of a cookie.
  */
-class Banner extends React.PureComponent {
+export default withStyles(styles)(class Banner extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
@@ -71,7 +71,4 @@ class Banner extends React.PureComponent {
       </div>
     );
   }
-}
-
-
-export default withStyles(styles)(Banner);
+});

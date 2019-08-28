@@ -12,7 +12,7 @@ import { Local } from '../../tools/storage';
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  */
-class Application extends React.PureComponent {
+export default withStyles(styles)(class Application extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
@@ -50,7 +50,4 @@ class Application extends React.PureComponent {
       </div>
     );
   }
-}
-
-
-export default withStyles(styles)(Application);
+});

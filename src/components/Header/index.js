@@ -19,7 +19,7 @@ const HEADER_TITLE = Configuration.get('header.title', null);
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-class Header extends React.PureComponent {
+export default withStyles(styles)(class Header extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
@@ -81,7 +81,4 @@ class Header extends React.PureComponent {
       </header>
     );
   }
-}
-
-
-export default withStyles(styles)(Header);
+});

@@ -24,7 +24,7 @@ const SECONDARY_MODE = Configuration.get('secondary.mode');
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-class Chatbox extends React.PureComponent {
+export default withStyles(styles)(class Chatbox extends React.PureComponent {
 
   static contextType = DialogContext;
 
@@ -107,7 +107,4 @@ class Chatbox extends React.PureComponent {
       </TabProvider>
     );
   }
-}
-
-
-export default withStyles(styles)(Chatbox);
+});

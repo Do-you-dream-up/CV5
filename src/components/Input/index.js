@@ -19,7 +19,7 @@ const INPUT_PLACEHOLDER = INPUT.placeholder;
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
-class Input extends React.PureComponent {
+export default withStyles(styles)(class Input extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
@@ -139,7 +139,4 @@ class Input extends React.PureComponent {
       </form>
     );
   }
-}
-
-
-export default withStyles(styles)(Input);
+});

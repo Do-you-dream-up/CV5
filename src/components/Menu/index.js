@@ -16,7 +16,7 @@ const SPACING = ~~Configuration.get('menu.spacing');
  * systems. The toggle has to be located in the menu children and its `onClick`
  * property will be overwritten.
  */
-class Menu extends React.PureComponent {
+export default withStyles(styles)(class Menu extends React.PureComponent {
 
   static propTypes = {
     children: PropTypes.element.isRequired,
@@ -134,7 +134,4 @@ class Menu extends React.PureComponent {
       </>
     );
   }
-}
-
-
-export default withStyles(styles)(Menu);
+});

@@ -6,11 +6,10 @@ import Configuration from '../tools/configuration';
 const TABS = Configuration.get('tabs');
 const TABS_SELECTED = TABS.selected || 0;
 const TABS_VALUES = Array.isArray(TABS.values) ? TABS.values : [TABS.values];
-const TABS_POSSIBLE_VALUES = TABS_VALUES.map(it => it.value);
 
 
 export const TabContext = React.createContext();
-export class TabProvider extends React.Component {
+export const TabProvider = class TabProvider extends React.Component {
 
   static propTypes = {
     children: PropTypes.object,
@@ -19,9 +18,7 @@ export class TabProvider extends React.Component {
   state = {current: (TABS_VALUES[TABS_SELECTED] || {}).value};
 
   select = value => () => {
-    if (TABS_POSSIBLE_VALUES.includes(value)) {
-      this.setState({current: value});
-    }
+    this.setState({current: value});
   };
 
   should = value => value === this.state.current;
@@ -33,4 +30,4 @@ export class TabProvider extends React.Component {
       state: this.state,
     }} />;
   }
-}
+};

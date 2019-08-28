@@ -23,7 +23,7 @@ const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-class Interaction extends React.PureComponent {
+export default withStyles(styles)(class Interaction extends React.PureComponent {
 
   static contextType = DialogContext;
 
@@ -107,7 +107,4 @@ class Interaction extends React.PureComponent {
       </div>
     );
   }
-}
-
-
-export default withStyles(styles)(Interaction);
+});
