@@ -3,63 +3,76 @@
     "open": false
   },
   "avatar": {
-    "shadow": true
+    "styles": {
+      "shadow": true
+    }
   },
   "banner": {
     "active": true,
     "cookie": true,
     "dismissable": true,
-    "maxHeight": 200,
+    "styles": {
+      "maxHeight": 200
+    },
     "text": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et <a href>odio pellentesque diam volutpat</a> commodo sed egestas egestas fringilla phasellus.</p>",
     "transient": false
   },
   "bubble": {
-    "shadow": true
+    "styles": {
+      "shadow": true
+    }
   },
   "chatbox": {
-    "bottom": 16,
-    "height": "unset",
-    "mobile": {
+    "styles": {
+      "bottom": 16,
+      "height": "unset",
+      "right": 16,
+      "shadow": 6,
+      "top": 16,
+      "width": 350
+    },
+    "stylesMobile": {
       "bottom": 0,
       "left": 0,
       "height": "unset",
       "right": 0,
       "top": 0,
       "width": "unset"
-    },
-    "right": 16,
-    "shadow": 6,
-    "top": 16,
-    "width": 350
+    }
   },
   "footer": {
-    "shadow": true
+    "styles": {
+      "shadow": true
+    }
   },
   "header": {
-    "shadow": true,
+    "styles": {
+      "shadow": true
+    },
     "title": "Header"
   },
   "input": {
     "delay": 300,
-    "placeholder": "Type here...",
-    "suggestions": {
-      "shadow": 6
-    }
+    "placeholder": "Type here..."
   },
   "interaction": {
     "avatar": {
       "request": false,
       "response": true
     },
-    "loader": [250, 600]
+    "loader": [2500, 6000]
   },
   "loader": {
-    "shadow": true,
-    "size": 3
+    "size": 3,
+    "styles": {
+      "shadow": true
+    }
   },
   "menu": {
-    "shadow": true,
-    "spacing": 4
+    "spacing": 4,
+    "styles": {
+      "shadow": true
+    }
   },
   "onboarding": {
     "next": "Suivant",
@@ -73,8 +86,15 @@
   "secondary": {
     "automatic": true,
     "mode": "side",
-    "shadow": 6,
-    "width": 500
+    "styles": {
+      "shadow": 6,
+      "width": 500
+    }
+  },
+  "suggestions": {
+    "styles": {
+      "shadow": 6
+    }
   },
   "tabs": {
     "items": [
@@ -84,9 +104,11 @@
     "selected": 0
   },
   "teaser": {
-    "bottom": 16,
-    "right": 16,
-    "shadow": 6,
+    "styles": {
+      "bottom": 16,
+      "right": 16,
+      "shadow": 6
+    },
     "title": "Teaser"
   },
   "top": {
