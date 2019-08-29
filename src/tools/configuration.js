@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react';
 import json from './configuration.json';
 import theme from '../styles/theme';
 
@@ -95,3 +96,13 @@ export const configuration = new class Configuration {
     return data;
   };
 }();
+
+
+/**
+ * High-order component to pass on configuration.
+ */
+export const withConfiguration = Component => class InnerComponent extends React.PureComponent {
+  render() {
+    return <Component configuration={configuration.configuration} {...this.props} />;
+  }
+};

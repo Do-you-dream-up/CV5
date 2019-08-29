@@ -5,17 +5,19 @@ import Application from './components/Application';
 import { DialogProvider } from './contexts/DialogContext';
 import { OnboardingProvider } from './contexts/OnboardingContext';
 import theme from './styles/theme';
-import Configuration from './tools/configuration';
+import { configuration } from './tools/configuration';
 
 
-const root = document.getElementById(Configuration.get('root'));
-if (root) {
-  window.dydu = {};
-  ReactDOM.render(
-    <DialogProvider>
-      <OnboardingProvider>
-        <ThemeProvider children={<Application />} theme={theme} />
-      </OnboardingProvider>
-    </DialogProvider> , root
-  );
-}
+configuration.initialize().then((data) => {
+  const anchor = document.getElementById(data.root);
+  if (anchor) {
+    window.dydu = {};
+    ReactDOM.render(
+      <DialogProvider>
+        <OnboardingProvider>
+          <ThemeProvider children={<Application />} theme={theme} />
+        </OnboardingProvider>
+      </DialogProvider> , anchor
+    );
+  }
+});
