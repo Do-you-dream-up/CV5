@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   actions: {
     display: 'flex',
@@ -10,12 +7,12 @@ export default theme => ({
       marginTop: '1em',
     },
   },
-  base: {
+  base: props => ({
     borderRadius: theme.shape.borderRadius,
     padding: '1em',
     wordBreak: 'break-word',
-    '&&': Configuration.getStyles('bubble'),
-  },
+    '&&': props.configuration.bubble.styles,
+  }),
   request: {
     backgroundColor: theme.palette.request.background,
     color: theme.palette.request.text,

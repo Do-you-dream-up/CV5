@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
 
   actions: {
@@ -35,7 +32,7 @@ export default theme => ({
     flex: 'auto',
   },
 
-  suggestions: {
+  suggestions: props => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.borderRadius,
     bottom: '100%',
@@ -44,8 +41,8 @@ export default theme => ({
     overflow: 'hidden',
     position: 'absolute',
     right: 0,
-    '&&': Configuration.getStyles('input.suggestions'),
-  },
+    '&&': props.configuration.suggestions.styles,
+  }),
 
   suggestionsCandidate: {
     color: theme.palette.text.primary,

@@ -8,13 +8,8 @@ import Bubble from  '../Bubble';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
 import { DialogContext } from  '../../contexts/DialogContext';
-import Configuration from  '../../tools/configuration';
+import { withConfiguration } from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
-
-
-const { avatar: AVATAR={}, loader: LOADER } = Configuration.get('interaction');
-const DELAYS = (Array.isArray(LOADER) ? LOADER : [LOADER]).map(it => it === true ? 1000 : ~~it);
-const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
 
 
 /**
@@ -23,13 +18,15 @@ const SECONDARY_AUTOMATIC = !!Configuration.get('secondary.automatic');
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default withStyles(styles)(class Interaction extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Interaction extends React.PureComponent {
 
   static contextType = DialogContext;
 
   static propTypes = {
     /** @ignore  */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     secondary: PropTypes.object,
     secondaryOpen: PropTypes.bool,
     text: PropTypes.string.isRequired,
@@ -48,17 +45,19 @@ export default withStyles(styles)(class Interaction extends React.PureComponent 
    *
    * @param {string[]} bubbles - Interaction's text.
    * @param {function} callback - Function to call when all of the bubbles are pushed.
-   * @param {number} [index=0] - To keep track of the current delay.
    * @public
    */
-  addBubble = (bubbles, callback, index=0) => {
+  addBubble = (bubbles, callback) => {
+    const { loader } = this.props.configuration.interaction;
+    const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
+    const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
     if (this.props.thinking) {
       setTimeout(function() {
         this.setState(
           state => ({bubbles: [...state.bubbles, bubbles.shift()]}),
-          () => bubbles.length ? this.addBubble(bubbles, callback, index + 1) : callback(),
+          () => bubbles.length ? this.addBubble(bubbles, callback) : callback(),
         );
-      }.bind(this), DELAYS[index % DELAYS.length]);
+      }.bind(this), delay);
     }
     else {
       this.setState(({bubbles: bubbles}), callback);
@@ -71,10 +70,11 @@ export default withStyles(styles)(class Interaction extends React.PureComponent 
    * @public
    */
   addSecondary = () => {
+    const { automatic } = this.props.configuration.secondary;
     const { content, title } = this.props.secondary || {};
     if (content) {
       this.context.toggleSecondary(
-        this.props.secondaryOpen && SECONDARY_AUTOMATIC,
+        this.props.secondaryOpen && automatic,
         {body: sanitize(content), title},
       )();
     }
@@ -90,13 +90,14 @@ export default withStyles(styles)(class Interaction extends React.PureComponent 
 
   render() {
     const { toggleSecondary } = this.context;
-    const { classes, secondary, type } = this.props;
+    const { classes, configuration, secondary, type } = this.props;
     const { bubbles, length } = this.state;
+    const avatar = !!configuration.interaction.avatar[type];
     return (
       <div className={classNames(
         'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
       )} ref={node => this.node = node}>
-        {!!AVATAR[type] && <Avatar type={type} />}
+        {avatar && <Avatar type={type} />}
         <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
           {bubbles.map((it, index) => {
             const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
@@ -107,4 +108,4 @@ export default withStyles(styles)(class Interaction extends React.PureComponent 
       </div>
     );
   }
-});
+}));

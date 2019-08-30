@@ -4,12 +4,9 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
 import Button from '../Button';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
-
-
-const BANNER = Configuration.get('banner');
 
 
 /**
@@ -19,11 +16,13 @@ const BANNER = Configuration.get('banner');
  * The banner can persist through refresh of the page, can be dismissed manually
  * and its opening can be disabled in the presence of a cookie.
  */
-export default withStyles(styles)(class Banner extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Banner extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
   };
 
   state = {html: null, show: false};
@@ -34,7 +33,8 @@ export default withStyles(styles)(class Banner extends React.PureComponent {
    * @public
    */
   dismiss = () => {
-    if (BANNER.cookie) {
+    const { cookie } = this.props.configuration.banner;
+    if (cookie) {
       Cookie.set(Cookie.names.banner, new Date(), Cookie.duration.short);
     }
   }
@@ -47,19 +47,20 @@ export default withStyles(styles)(class Banner extends React.PureComponent {
   onDismiss = () => this.setState({show: false}, this.dismiss);
 
   componentDidMount() {
-    const show = !!BANNER.active;
-    const cookie = !BANNER.cookie || !Cookie.get(Cookie.names.banner);
-    if (show && cookie) {
-      this.setState({html: sanitize(BANNER.text), show}, BANNER.transient ? this.dismiss : null);
+    const { active, cookie, text, transient } = this.props.configuration.banner;
+    const show = !!active && (!cookie || !Cookie.get(Cookie.names.banner));
+    if (show) {
+      this.setState({html: sanitize(text), show}, transient ? this.dismiss : null);
     }
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, configuration } = this.props;
     const { html, show } = this.state;
+    const dismissable = !!configuration.banner.dismissable;
     return html && show && (
       <div className={classNames('dydu-banner', classes.root)}>
-        {!!BANNER.dismissable && (
+        {dismissable && (
           <div className={classNames('dydu-banner-actions', classes.actions)}>
             <Button flat onClick={this.onDismiss} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
@@ -71,4 +72,4 @@ export default withStyles(styles)(class Banner extends React.PureComponent {
       </div>
     );
   }
-});
+}));

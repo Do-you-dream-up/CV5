@@ -1,11 +1,8 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   hidden: {
     '&&': {display: 'none'},
   },
-  root: {
+  root: props => ({
     alignItems: 'center',
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.shape.borderRadius,
@@ -17,6 +14,6 @@ export default theme => ({
     padding: '1em',
     position: 'absolute',
     right: 0,
-    '&&': Configuration.getStyles('teaser'),
-  },
+    '&&': props.configuration.teaser.styles,
+  }),
 });

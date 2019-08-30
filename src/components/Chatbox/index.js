@@ -12,25 +12,24 @@ import Secondary from '../Secondary';
 import Tab from '../Tab';
 import { DialogContext } from '../../contexts/DialogContext';
 import { TabProvider } from '../../contexts/TabContext';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import talk from '../../tools/talk';
 
 
-const SECONDARY_MODE = Configuration.get('secondary.mode');
-
-
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-export default withStyles(styles)(class Chatbox extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Chatbox extends React.PureComponent {
 
   static contextType = DialogContext;
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
   };
@@ -88,7 +87,8 @@ export default withStyles(styles)(class Chatbox extends React.PureComponent {
 
   render() {
     const { add, addRequest, addResponse, state: dialogState } = this.context;
-    const { classes, open, toggle } = this.props;
+    const { classes, configuration, open, toggle } = this.props;
+    const { secondary } = configuration;
     const { interactions } = dialogState;
     return (
       <TabProvider>
@@ -97,14 +97,14 @@ export default withStyles(styles)(class Chatbox extends React.PureComponent {
             <div className={classNames('dydu-chatbox-body', classes.body)}>
               <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
               <Tab component={Contacts} value="contacts" />
-              {SECONDARY_MODE === 'over' && <Secondary mode={SECONDARY_MODE} />}
+              {secondary.mode === 'over' && <Secondary mode={secondary.mode} />}
             </div>
             <Footer onRequest={addRequest} onResponse={addResponse} />
           </Onboarding>
           <Header onClose={toggle(false)} style={{order: -1}} />
-          {SECONDARY_MODE === 'side' && <Secondary mode={SECONDARY_MODE} />}
+          {secondary.mode === 'side' && <Secondary mode={secondary.mode} />}
         </div>
       </TabProvider>
     );
   }
-});
+}));

@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Configuration from '../tools/configuration';
-
-
-const TABS = Configuration.get('tabs');
-const TABS_SELECTED = TABS.selected || 0;
-const TABS_VALUES = Array.isArray(TABS.values) ? TABS.values : [TABS.values];
+import { withConfiguration } from '../tools/configuration';
 
 
 export const TabContext = React.createContext();
-export const TabProvider = class TabProvider extends React.Component {
+export const TabProvider = withConfiguration(class TabProvider extends React.Component {
 
   static propTypes = {
     children: PropTypes.object,
+    configuration: PropTypes.object.isRequired,
   };
 
-  state = {current: (TABS_VALUES[TABS_SELECTED] || {}).value};
+  constructor(props) {
+    super(props);
+    const { items, selected } = props.configuration.tabs;
+    this.state = {current: (items[selected] || {}).value};
+  }
+
 
   select = value => () => {
     this.setState({current: value});
@@ -30,4 +31,4 @@ export const TabProvider = class TabProvider extends React.Component {
       state: this.state,
     }} />;
   }
-};
+});

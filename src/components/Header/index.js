@@ -8,28 +8,28 @@ import Button from '../Button';
 import Menu from '../Menu';
 import Onboarding from '../Onboarding';
 import Tabs from '../Tabs';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import { ACTIONS } from '../../tools/talk';
-
-
-const HEADER_TITLE = Configuration.get('header.title', null);
 
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default withStyles(styles)(class Header extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Header extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
   };
 
   render() {
 
-    const { classes, onClose, ...rest } = this.props;
+    const { classes, configuration, onClose, ...rest } = this.props;
+    const { title } = configuration.header;
 
     const gdprMenu = [
       {onClick: () => window.dydu.gdpr.get(), text: 'Get'},
@@ -50,7 +50,9 @@ export default withStyles(styles)(class Header extends React.PureComponent {
     return (
       <header className={classNames('dydu-header', classes.root)} {...rest}>
         <div className={classNames('dydu-header-body', classes.body)}>
-          <div children={HEADER_TITLE} className={classNames('dydu-header-title', classes.title)} />
+          {title.length && (
+            <div children={title} className={classNames('dydu-header-title', classes.title)} />
+          )}
           <div className={classNames('dydu-header-actions', classes.actions)}>
             <Onboarding>
               <Menu items={languagesMenu}>
@@ -81,4 +83,4 @@ export default withStyles(styles)(class Header extends React.PureComponent {
       </header>
     );
   }
-});
+}));

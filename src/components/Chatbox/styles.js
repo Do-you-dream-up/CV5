@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   body: {
     flexGrow: 1,
@@ -10,7 +7,7 @@ export default theme => ({
   hidden: {
     '&&': {display: 'none'},
   },
-  root: {
+  root: props => ({
     backgroundColor: theme.palette.background.default,
     bottom: 0,
     display: 'flex',
@@ -19,7 +16,7 @@ export default theme => ({
     position: 'absolute',
     right: 0,
     width: 350,
-    '&&': Configuration.getStyles('chatbox'),
-    [theme.breakpoints.down('xs')]: {'&&': Configuration.getStyles('chatbox.mobile')},
-  },
+    '&&': props.configuration.chatbox.styles,
+    [theme.breakpoints.down('xs')]: {'&&': props.configuration.chatbox.stylesMobile},
+  }),
 });

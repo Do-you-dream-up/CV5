@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
+import { withConfiguration } from  '../../tools/configuration';
 
 
 /**
@@ -12,11 +13,13 @@ import styles from './styles';
  * A request avatar should be next to the user's input while a response avatar
  * should be next to its response.
  */
-export default withStyles(styles)(class Avatar extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Avatar extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
   };
 
@@ -26,4 +29,4 @@ export default withStyles(styles)(class Avatar extends React.PureComponent {
       <div className={classNames('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type])} />
     );
   }
-});
+}));

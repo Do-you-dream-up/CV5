@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   item: {
     paddingBottom: '.8em',
@@ -18,7 +15,7 @@ export default theme => ({
     color: theme.palette.text.disabled,
     cursor: 'not-allowed',
   },
-  root: {
+  root: props => ({
     backgroundColor: theme.palette.background.menu,
     color: theme.palette.text.primary,
     fontFamily: 'sans-serif',
@@ -27,6 +24,6 @@ export default theme => ({
     overflowY: 'auto',
     padding: 0,
     position: 'fixed',
-    '&&': Configuration.getStyles('menu'),
-  },
+    '&&': props.configuration.menu.styles,
+  }),
 });

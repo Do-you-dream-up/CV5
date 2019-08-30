@@ -1,8 +1,5 @@
-import Configuration from  '../../tools/configuration';
-
-
 export default theme => ({
-  bullet: {
+  bullet: props => ({
     animationDirection: 'alternate',
     animationDuration: '.5s',
     animationIterationCount: 'infinite',
@@ -14,8 +11,8 @@ export default theme => ({
     marginRight: '.25em',
     transform: 'scale(0)',
     width: '.75em',
-    '&&': Configuration.getStyles('loader'),
-  },
+    '&&': props.configuration.loader.styles,
+  }),
   root: {
     display: 'flex',
     marginLeft: '-.25em',

@@ -4,32 +4,31 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
 import { TabContext } from '../../contexts/TabContext';
-import Configuration from '../../tools/configuration';
-
-
-const TABS = Configuration.get('tabs');
-const TABS_VALUES = Array.isArray(TABS.values) ? TABS.values : [TABS.values];
+import { withConfiguration } from '../../tools/configuration';
 
 
 /**
  * Render clickable tabs to select the current tab content. The available tabs
  * are pulled from the configuration.
  */
-export default withStyles(styles)(class Tabs extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Tabs extends React.PureComponent {
 
   static contextType = TabContext;
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
   };
 
   render() {
     const { select, state: tabState } = this.context;
-    const { classes } = this.props;
+    const { classes, configuration } = this.props;
+    const { items } = configuration.tabs;
     return (
       <div className={classNames('dydu-tabs', classes.root)}>
-        {TABS_VALUES.map((it, index) => {
+        {items.map((it, index) => {
           const onClick = it.value ? select(it.value) : null;
           const names = classNames(
             'dydu-tab',
@@ -42,4 +41,4 @@ export default withStyles(styles)(class Tabs extends React.PureComponent {
       </div>
     );
   }
-});
+}));

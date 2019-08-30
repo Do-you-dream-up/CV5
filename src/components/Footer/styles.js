@@ -1,8 +1,5 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
-  root: {
+  root: props => ({
     backgroundColor: theme.palette.primary.main,
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
@@ -11,7 +8,7 @@ export default theme => ({
     flex: '0 0 auto',
     padding: '.5em',
     position: 'relative',
-    '&&': Configuration.getStyles('footer'),
+    '&&': props.configuration.footer.styles,
     [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
-  },
+  }),
 });

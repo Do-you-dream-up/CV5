@@ -4,6 +4,7 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
 import Input from '../Input';
+import { withConfiguration } from '../../tools/configuration';
 
 
 /**
@@ -13,11 +14,13 @@ import Input from '../Input';
  * It transports the function to call whenever input is submitted and a second
  * function to handle the response.
  */
-class Footer extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Footer extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     onRequest: PropTypes.func.isRequired,
     onResponse: PropTypes.func.isRequired,
   };
@@ -30,7 +33,4 @@ class Footer extends React.PureComponent {
       </footer>
     );
   }
-}
-
-
-export default withStyles(styles)(Footer);
+}));

@@ -4,11 +4,7 @@ import React from 'react';
 import withStyles from 'react-jss';
 import { Portal } from 'react-portal';
 import styles from './styles';
-import Configuration from '../../tools/configuration';
-
-
-const ROOT = Configuration.get('root');
-const SPACING = ~~Configuration.get('menu.spacing');
+import { withConfiguration } from '../../tools/configuration';
 
 
 /**
@@ -16,12 +12,14 @@ const SPACING = ~~Configuration.get('menu.spacing');
  * systems. The toggle has to be located in the menu children and its `onClick`
  * property will be overwritten.
  */
-export default withStyles(styles)(class Menu extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Menu extends React.PureComponent {
 
   static propTypes = {
     children: PropTypes.element.isRequired,
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     items: PropTypes.arrayOf(PropTypes.shape({
       onClick: PropTypes.func,
       text: PropTypes.string.isRequired,
@@ -67,13 +65,14 @@ export default withStyles(styles)(class Menu extends React.PureComponent {
    * @public
    */
   setGeometry = () => {
+    const spacing = ~~this.props.configuration.menu.spacing;
     if (this.menu.current) {
       const anchor = this.anchor.current.getBoundingClientRect();
       const left = anchor.left + anchor.width / 2 - this.menu.current.offsetWidth / 2;
       this.setState({geometry: {
-        left: Math.max(0, Math.min(left, window.innerWidth - this.menu.current.offsetWidth - SPACING)),
-        maxHeight: window.innerHeight - anchor.bottom - SPACING,
-        top: anchor.bottom + SPACING,
+        left: Math.max(0, Math.min(left, window.innerWidth - this.menu.current.offsetWidth - spacing)),
+        maxHeight: window.innerHeight - anchor.bottom - spacing,
+        top: anchor.bottom + spacing,
       }});
     }
   };
@@ -109,9 +108,9 @@ export default withStyles(styles)(class Menu extends React.PureComponent {
   });
 
   render() {
-    const { children, classes, items } = this.props;
+    const { children, classes, configuration, items } = this.props;
     const { geometry, open } = this.state;
-    const node = document && document.getElementById(ROOT);
+    const node = document && document.getElementById(configuration.root);
     return !!items.length && (
       <>
         {React.cloneElement(children, {onClick: this.toggle(), ref: this.anchor})}
@@ -134,4 +133,4 @@ export default withStyles(styles)(class Menu extends React.PureComponent {
       </>
     );
   }
-});
+}));

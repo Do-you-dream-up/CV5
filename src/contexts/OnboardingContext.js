@@ -1,35 +1,40 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Configuration from '../tools/configuration';
+import { withConfiguration } from '../tools/configuration';
 import { Local } from '../tools/storage';
 
 
-const ONBOARDING = Configuration.get('onboarding');
-const ONBOARDING_STEPS = Array.isArray(ONBOARDING.steps) ? ONBOARDING.steps : [ONBOARDING.steps];
-
-
 export const OnboardingContext = React.createContext();
-export const OnboardingProvider = class OnboardingProvider extends React.Component {
+export const OnboardingProvider = withConfiguration(class OnboardingProvider extends React.Component {
 
   static propTypes = {
     children: PropTypes.object,
+    configuration: PropTypes.object.isRequired,
   };
 
-  state = {
-    active: !Local.get(Local.names.onboarding),
-    index: 0,
-    step: ONBOARDING_STEPS[0],
-  };
+  constructor(props) {
+    super(props);
+    const { steps } = props.configuration.onboarding;
+    this.state = {
+      active: !Local.get(Local.names.onboarding),
+      index: 0,
+      step: steps[0],
+    };
+  }
 
   hasPrevious = () => this.state.index;
 
-  hasNext = () => this.state.index < ONBOARDING_STEPS.length - 1;
+  hasNext = () => {
+    const { steps } = this.props.configuration.onboarding;
+    return this.state.index < steps.length - 1;
+  };
 
   next = () => {
     if (this.hasNext()) {
+      const { steps } = this.props.configuration.onboarding;
       this.setState(state => ({
         index: state.index + 1,
-        step: ONBOARDING_STEPS[state.index + 1],
+        step: steps[state.index + 1],
       }));
     }
     else {
@@ -39,15 +44,17 @@ export const OnboardingProvider = class OnboardingProvider extends React.Compone
 
   previous = () => {
     const index = Math.max(this.state.index - 1, 0);
+    const { steps } = this.props.configuration.onboarding;
     this.setState({
       index: index,
-      step: ONBOARDING_STEPS[index],
+      step: steps[index],
     });
   };
 
   end = () => {
+    const { steps } = this.props.configuration.onboarding;
     this.setState(
-      {active: false, index: 0, step: ONBOARDING_STEPS[0]},
+      {active: false, index: 0, step: steps[0]},
       () => Local.set(Local.names.onboarding),
     );
   };
@@ -62,4 +69,4 @@ export const OnboardingProvider = class OnboardingProvider extends React.Compone
       state: this.state,
     }} />;
   }
-};
+});

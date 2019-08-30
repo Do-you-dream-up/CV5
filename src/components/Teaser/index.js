@@ -3,28 +3,28 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
-import Configuration from '../../tools/configuration';
-
-
-const TEASER_TITLE = Configuration.get('teaser.title', null);
+import { withConfiguration } from '../../tools/configuration';
 
 
 /**
  * Minified version of the chatbox.
  */
-export default withStyles(styles)(class Teaser extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Teaser extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
   };
 
   render() {
-    const { classes, open, toggle } = this.props;
-    return <div children={TEASER_TITLE}
+    const { classes, configuration, open, toggle } = this.props;
+    const { title } = configuration.teaser;
+    return <div children={title}
                 className={classNames('dydu-teaser', classes.root, {[classes.hidden]: !open})}
                 onClick={toggle()} />;
   }
-});
+}));

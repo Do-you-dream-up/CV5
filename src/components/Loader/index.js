@@ -4,7 +4,7 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
 import Scroll from '../Scroll';
-import Configuration from  '../../tools/configuration';
+import { withConfiguration } from  '../../tools/configuration';
 
 
 /**
@@ -13,7 +13,7 @@ import Configuration from  '../../tools/configuration';
  *
  * The loader size determines the number of bullets.
  */
-export default withStyles(styles)(class Loader extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Loader extends React.PureComponent {
 
   static defaultProps = {
     size: 3,
@@ -22,12 +22,14 @@ export default withStyles(styles)(class Loader extends React.PureComponent {
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     size: PropTypes.number,
   };
 
   render() {
-    const { classes, size: defaultSize } = this.props;
-    const { size=defaultSize } = Configuration.get('loader');
+    const { classes, configuration, size: defaultSize } = this.props;
+    const { size } = defaultSize || configuration.loader;
     return (
       <Scroll className={classNames('dydu-loader', classes.root)}>
         {[...Array(size)].map((it, index) => (
@@ -38,4 +40,4 @@ export default withStyles(styles)(class Loader extends React.PureComponent {
       </Scroll>
     );
   }
-});
+}));

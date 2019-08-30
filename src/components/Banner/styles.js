@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   actions: {
     display: 'flex',
@@ -13,7 +10,7 @@ export default theme => ({
   body: {
     padding: '1em',
   },
-  root: {
+  root: props => ({
     backgroundColor: theme.palette.warning.main,
     color: theme.palette.warning.text,
     overflowY: 'hidden',
@@ -23,6 +20,6 @@ export default theme => ({
         textDecoration: 'underline !important',
       },
     },
-    '&&': Configuration.getStyles('banner'),
-  },
+    '&&': props.configuration.banner.styles,
+  }),
 });

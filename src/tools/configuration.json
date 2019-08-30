@@ -60,7 +60,7 @@
       "request": false,
       "response": true
     },
-    "loader": [2500, 6000]
+    "loader": [250, 600]
   },
   "loader": {
     "size": 3,

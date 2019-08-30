@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   actions: {
     display: 'flex',
@@ -24,11 +21,11 @@ export default theme => ({
     top: 0,
     width: 'unset !important',
   },
-  base: {
+  base: props => ({
     backgroundColor: theme.palette.background.secondary,
     overflowY: 'auto',
-    '&&': Configuration.getStyles('secondary'),
-  },
+    '&&': props.configuration.secondary.styles,
+  }),
   body: {
     padding: '1em',
   },

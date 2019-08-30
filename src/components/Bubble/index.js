@@ -4,6 +4,7 @@ import React from 'react';
 import withStyles from 'react-jss';
 import styles from  './styles';
 import Button from  '../Button';
+import { withConfiguration } from  '../../tools/configuration';
 
 
 /**
@@ -15,7 +16,7 @@ import Button from  '../Button';
  *
  * The bubble can have clickable actions, appearing as buttons below its content.
  */
-class Bubble extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Bubble extends React.PureComponent {
 
   static defaultProps = {
     actions: [],
@@ -29,6 +30,8 @@ class Bubble extends React.PureComponent {
     })),
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     component: PropTypes.elementType,
     html: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['request', 'response']).isRequired,
@@ -49,7 +52,4 @@ class Bubble extends React.PureComponent {
       </div>
     ));
   }
-}
-
-
-export default withStyles(styles)(Bubble);
+}));

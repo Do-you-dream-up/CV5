@@ -5,11 +5,8 @@ import withStyles from 'react-jss';
 import styles from './styles';
 import Button from '../Button';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import sanitize from '../../tools/sanitize';
-
-
-const ONBOARDING = Configuration.get('onboarding');
 
 
 /**
@@ -21,7 +18,7 @@ const ONBOARDING = Configuration.get('onboarding');
  * children, use the property `render` on this component. Ideally the `render`
  * property is utilized on only one instance of this component.
  */
-export default withStyles(styles)(class Onboarding extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Onboarding extends React.PureComponent {
 
   static contextType = OnboardingContext;
 
@@ -29,18 +26,20 @@ export default withStyles(styles)(class Onboarding extends React.PureComponent {
     children: PropTypes.node,
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     render: PropTypes.bool,
   };
 
   render() {
     const { hasPrevious, next, previous, state: onboardingState } = this.context;
-    const { children, classes, render } = this.props;
+    const { children, classes, configuration, render } = this.props;
     const { active, step } = onboardingState;
     let content = !active && children;
     if (render && active && step) {
-      const previousText = step.previous || ONBOARDING.previous;
-      const nextText = step.next || ONBOARDING.next;
-      const body = sanitize(step.content || step);
+      const previousText = step.previous || configuration.previous;
+      const nextText = step.next || next;
+      const body = sanitize(step.content || configuration.step);
       content = (
         <div className={classNames('dydu-onboarding', classes.root)}>
           <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
@@ -53,4 +52,4 @@ export default withStyles(styles)(class Onboarding extends React.PureComponent {
     }
     return content;
   }
-});
+}));

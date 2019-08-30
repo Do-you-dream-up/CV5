@@ -5,6 +5,7 @@ import withStyles from 'react-jss';
 import styles from './styles';
 import Button from '../Button';
 import { DialogContext } from '../../contexts/DialogContext';
+import { withConfiguration } from '../../tools/configuration';
 
 
 /**
@@ -12,7 +13,7 @@ import { DialogContext } from '../../contexts/DialogContext';
  * of the chatbox by being placed over the conversation or less intrusive on a
  * side of the chatbox.
  */
-class Secondary extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Secondary extends React.PureComponent {
 
   static contextType = DialogContext;
 
@@ -47,7 +48,4 @@ class Secondary extends React.PureComponent {
       </div>
     ) : null;
   }
-}
-
-
-export default withStyles(styles)(Secondary);
+}));

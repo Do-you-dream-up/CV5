@@ -6,24 +6,21 @@ import Autosuggest from 'react-autosuggest';
 import withStyles from 'react-jss';
 import styles from './styles';
 import Button from '../Button';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
-
-
-const INPUT = Configuration.get('input');
-const INPUT_DELAY = INPUT.delay === true ? 1000 : ~~INPUT.delay;
-const INPUT_PLACEHOLDER = INPUT.placeholder;
 
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
-export default withStyles(styles)(class Input extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Input extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
     onRequest: PropTypes.func.isRequired,
     onResponse: PropTypes.func.isRequired,
   };
@@ -37,7 +34,8 @@ export default withStyles(styles)(class Input extends React.PureComponent {
    * @public
    */
   change = event => {
-    this.setState({input: event.target.value}, INPUT_DELAY > 0 ? this.suggest : null);
+    const { delay } = this.props.configuration.input;
+    this.setState({input: event.target.value}, delay > 0 ? this.suggest : null);
   };
 
   /**
@@ -102,10 +100,10 @@ export default withStyles(styles)(class Input extends React.PureComponent {
         }
       });
     }
-  }, INPUT_DELAY);
+  }, this.props.configuration.input.delay);
 
   render() {
-    const { classes } = this.props;
+    const { classes, configuration } = this.props;
     const { input, suggestions } = this.state;
     const theme = {
       container: classNames('dydu-input-container', classes.container),
@@ -118,7 +116,7 @@ export default withStyles(styles)(class Input extends React.PureComponent {
     const inputProps = {
       autoFocus: true,
       onChange: this.change,
-      placeholder: INPUT_PLACEHOLDER,
+      placeholder: configuration.input.placeholder,
       value: input,
     };
     return (
@@ -139,4 +137,4 @@ export default withStyles(styles)(class Input extends React.PureComponent {
       </form>
     );
   }
-});
+}));

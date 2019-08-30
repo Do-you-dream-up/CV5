@@ -5,18 +5,20 @@ import withStyles from 'react-jss';
 import styles from './styles';
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
-import Configuration from '../../tools/configuration';
+import { withConfiguration } from '../../tools/configuration';
 import { Local } from '../../tools/storage';
 
 
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  */
-export default withStyles(styles)(class Application extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Application extends React.PureComponent {
 
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    /** @ignore */
+    configuration: PropTypes.object.isRequired,
   };
 
   state = {open: false};
@@ -36,8 +38,9 @@ export default withStyles(styles)(class Application extends React.PureComponent 
   };
 
   componentDidMount() {
-    const open = !!Local.get(Local.names.open);
-    this.toggle(open === undefined ? !!Configuration.get('application.open') : open)();
+    const { open: defaultSetting } = this.props.configuration.application;
+    const customSetting = Local.get(Local.names.open);
+    this.toggle(customSetting === undefined ? !!defaultSetting : !!customSetting)();
   }
 
   render() {
@@ -50,4 +53,4 @@ export default withStyles(styles)(class Application extends React.PureComponent 
       </div>
     );
   }
-});
+}));

@@ -1,6 +1,3 @@
-import Configuration from '../../tools/configuration';
-
-
 export default theme => ({
   disabled: {
     cursor: 'not-allowed',
@@ -10,11 +7,11 @@ export default theme => ({
     cursor: 'pointer',
     '&:hover': {backgroundColor: theme.palette.action.hover},
   },
-  root: {
+  root: props => ({
     background: theme.palette.primary.dark,
     display: 'flex',
-    '&&': Configuration.getStyles('tabs'),
-  },
+    '&&': props.configuration.tabs.styles,
+  }),
   selected: {
     '&::after': {
       backgroundColor: theme.palette.secondary.main,
