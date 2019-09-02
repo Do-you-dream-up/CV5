@@ -25,7 +25,12 @@ export default withConfiguration(withStyles(styles)(class Input extends React.Pu
     onResponse: PropTypes.func.isRequired,
   };
 
-  state = {input: '', suggestions: []};
+  constructor(props) {
+    super(props);
+    this.state = {input: '', suggestions: []};
+    this.submit = debounce(this.submit, 200, {leading: true});
+    this.suggest = debounce(this.suggest, props.configuration.input.delay);
+  }
 
   /**
    * Update the input field with user's input and maybe trigger suggestions.
@@ -73,25 +78,25 @@ export default withConfiguration(withStyles(styles)(class Input extends React.Pu
   };
 
   /**
-   * Debounce-submit the user's input and handle its response.
+   * Submit the user's input and handle its response.
    *
    * @public
    */
-  submit = debounce(() => {
+  submit = () => {
     const text = this.state.input.trim();
     if (text) {
       this.reset();
       this.props.onRequest(text);
       talk(text).then(this.props.onResponse);
     }
-  }, 200, {leading: true});
+  };
 
   /**
-   * Debounce-fetch suggestions based on the user's input.
+   * Fetch suggestions based on the user's input.
    *
    * @public
    */
-  suggest = debounce(() => {
+  suggest = () => {
     const text = this.state.input.trim();
     if (text) {
       dydu.suggest(text).then(suggestions => {
@@ -100,7 +105,7 @@ export default withConfiguration(withStyles(styles)(class Input extends React.Pu
         }
       });
     }
-  }, this.props.configuration.input.delay);
+  };
 
   render() {
     const { classes, configuration } = this.props;

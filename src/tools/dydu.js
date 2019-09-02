@@ -37,11 +37,12 @@ export default new class Dydu {
 
   constructor() {
     this.client = this.getClientId();
+    this.emit = debounce(this.emit, 100, {leading: true});
     this.locale = this.getLocale();
   }
 
   /**
-   * Debounce-request against the provided path with the specified data. When
+   * Request against the provided path with the specified data. When
    * the response contains values, decode it and refresh the context ID.
    *
    * @param {function} verb - A verb method to request with.
@@ -49,14 +50,14 @@ export default new class Dydu {
    * @param {Object} data - Data to send.
    * @returns {Promise}
    */
-  emit = debounce((verb, path, data) => verb(path, data).then(({ data={} }) => {
-    if (data.hasOwnProperty('values')) {
+  emit = (verb, path, data) => verb(path, data).then(({ data={} }) => {
+    if (data.values) {
       data.values = decode(data.values);
       this.setContextId(data.values.contextId);
       return data.values;
     }
     return data;
-  }), 100, {leading: true});
+  });
 
   /**
    * File a GDPR request to be processed.
@@ -199,7 +200,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
-    const data = headers.find(it => it.hasOwnProperty('host'));
+    const data = headers.find(it => it && it.host);
     return data && data.host;
   });
 }();
