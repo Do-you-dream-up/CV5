@@ -48,7 +48,7 @@ export default withConfiguration(withStyles(styles)(class Application extends Re
   render() {
     const { classes } = this.props;
     const { open } = this.state;
-    const wizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).custom !== undefined;
+    const wizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
     return (
       <div className={classNames('dydu-application', classes.root)}>
         {wizard && <Wizard />}
