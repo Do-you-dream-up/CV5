@@ -1,10 +1,12 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import qs from 'qs';
 import React from 'react';
 import withStyles from 'react-jss';
 import styles from './styles';
 import Chatbox from '../Chatbox';
 import Teaser from '../Teaser';
+import Wizard from '../Wizard';
 import { withConfiguration } from '../../tools/configuration';
 import { Local } from '../../tools/storage';
 
@@ -46,8 +48,10 @@ export default withConfiguration(withStyles(styles)(class Application extends Re
   render() {
     const { classes } = this.props;
     const { open } = this.state;
+    const wizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).custom !== undefined;
     return (
       <div className={classNames('dydu-application', classes.root)}>
+        {wizard && <Wizard />}
         <Chatbox open={open} toggle={this.toggle} />
         <Teaser open={!open} toggle={this.toggle} />
       </div>
