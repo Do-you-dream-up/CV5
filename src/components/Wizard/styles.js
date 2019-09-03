@@ -10,7 +10,8 @@ export default theme => ({
     flexBasis: '50%',
     flexGrow: 1,
     flexShrink: 1,
-    [theme.breakpoints.up('md')]: {
+    maxWidth: '50%',
+    [theme.breakpoints.only('md')]: {
       flexBasis: '33%',
       maxWidth: '33%',
       '&:nth-child(3n+2)': {
