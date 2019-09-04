@@ -3,25 +3,27 @@ export default {
     display: 'flex',
   },
   input: {
-    width: '50%',
+    flexGrow: 1,
     '& > *': {
       boxSizing: 'border-box',
       display: 'block',
       margin: 0,
       padding: 0,
     },
+    '& input[type="number"], & input[type="text"], & textarea': {
+      minWidth: 200,
+    },
     '& input[type="number"], & input[type="text"]': {
       width: '100%',
     },
     '& textarea': {
+      minHeight: '6em',
       resize: 'vertical',
       whiteSpace: 'pre',
       width: '100%',
     },
   },
-  root: {
-  },
   text: {
-    flexBasis: '50%',
+    minWidth: 140,
   },
 };

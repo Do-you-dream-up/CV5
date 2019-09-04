@@ -7,22 +7,7 @@ export default theme => ({
     padding: '1.5em',
   },
   entryContainer: {
-    flexBasis: '50%',
     flexGrow: 1,
-    flexShrink: 1,
-    maxWidth: '50%',
-    [theme.breakpoints.only('md')]: {
-      flexBasis: '33%',
-      maxWidth: '33%',
-      '&:nth-child(3n+2)': {
-        flexBasis: '34%',
-        maxWidth: '34%',
-      },
-    },
-    [theme.breakpoints.up('lg')]: {
-      flexBasis: '25%',
-      maxWidth: '25%',
-    },
   },
   fields: {
     listStyleType: 'none',

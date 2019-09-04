@@ -34,7 +34,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
     const { component='input', ...attributes } = {
       boolean: {checked: value, type: 'checkbox'},
       number: {type: 'number', value: value},
-      object: {component: 'textarea', placeholder: label, rows: 5, value: JSON.stringify(value, null, 2)},
+      object: {component: 'textarea', placeholder: label, value: JSON.stringify(value, null, 2)},
       string: {type: 'text', value: value},
     }[typeof value] || {};
     return !!attributes && (
@@ -48,7 +48,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
   };
 
   render() {
-    const { classes, component, label, value } = this.props;
-    return React.createElement(component, {className: classes.root}, this.makeField(label, value));
+    const { component, label, value } = this.props;
+    return React.createElement(component, null, this.makeField(label, value));
   }
 });
