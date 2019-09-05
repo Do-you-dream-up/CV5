@@ -32,7 +32,7 @@ export default theme => ({
     flex: 'auto',
   },
 
-  suggestions: props => ({
+  suggestions: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.borderRadius,
     bottom: '100%',
@@ -41,7 +41,7 @@ export default theme => ({
     overflow: 'hidden',
     position: 'absolute',
     right: 0,
-    '&&': props.configuration.suggestions.styles,
+    '&&': configuration.suggestions.styles,
   }),
 
   suggestionsCandidate: {

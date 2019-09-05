@@ -15,7 +15,7 @@ export default theme => ({
     color: theme.palette.text.disabled,
     cursor: 'not-allowed',
   },
-  root: props => ({
+  root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.menu,
     color: theme.palette.text.primary,
     fontFamily: 'sans-serif',
@@ -24,6 +24,6 @@ export default theme => ({
     overflowY: 'auto',
     padding: 0,
     position: 'fixed',
-    '&&': props.configuration.menu.styles,
+    '&&': configuration.menu.styles,
   }),
 });

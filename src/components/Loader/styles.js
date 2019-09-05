@@ -1,5 +1,5 @@
 export default theme => ({
-  bullet: props => ({
+  bullet: ({ configuration }) => ({
     animationDirection: 'alternate',
     animationDuration: '.5s',
     animationIterationCount: 'infinite',
@@ -11,7 +11,7 @@ export default theme => ({
     marginRight: '.25em',
     transform: 'scale(0)',
     width: '.75em',
-    '&&': props.configuration.loader.styles,
+    '&&': configuration.loader.styles,
   }),
   root: {
     display: 'flex',

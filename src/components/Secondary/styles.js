@@ -21,10 +21,10 @@ export default theme => ({
     top: 0,
     width: 'unset !important',
   },
-  base: props => ({
+  base: ({ configuration }) => ({
     backgroundColor: theme.palette.background.secondary,
     overflowY: 'auto',
-    '&&': props.configuration.secondary.styles,
+    '&&': configuration.secondary.styles,
   }),
   body: {
     padding: '1em',

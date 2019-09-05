@@ -1,5 +1,5 @@
 export default theme => ({
-  root: props => ({
+  root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
@@ -8,7 +8,7 @@ export default theme => ({
     flex: '0 0 auto',
     padding: '.5em',
     position: 'relative',
-    '&&': props.configuration.footer.styles,
+    '&&': configuration.footer.styles,
     [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
   }),
 });

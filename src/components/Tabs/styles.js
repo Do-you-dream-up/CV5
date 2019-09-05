@@ -7,10 +7,10 @@ export default theme => ({
     cursor: 'pointer',
     '&:hover': {backgroundColor: theme.palette.action.hover},
   },
-  root: props => ({
+  root: ({ configuration }) => ({
     background: theme.palette.primary.dark,
     display: 'flex',
-    '&&': props.configuration.tabs.styles,
+    '&&': configuration.tabs.styles,
   }),
   selected: {
     '&::after': {

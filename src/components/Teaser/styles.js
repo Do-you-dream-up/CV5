@@ -2,7 +2,7 @@ export default theme => ({
   hidden: {
     '&&': {display: 'none'},
   },
-  root: props => ({
+  root: ({ configuration }) => ({
     alignItems: 'center',
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.shape.borderRadius,
@@ -14,6 +14,6 @@ export default theme => ({
     padding: '1em',
     position: 'absolute',
     right: 0,
-    '&&': props.configuration.teaser.styles,
+    '&&': configuration.teaser.styles,
   }),
 });

@@ -10,7 +10,7 @@ export default theme => ({
   body: {
     padding: '1em',
   },
-  root: props => ({
+  root: ({ configuration }) => ({
     backgroundColor: theme.palette.warning.main,
     color: theme.palette.warning.text,
     overflowY: 'hidden',
@@ -20,6 +20,6 @@ export default theme => ({
         textDecoration: 'underline !important',
       },
     },
-    '&&': props.configuration.banner.styles,
+    '&&': configuration.banner.styles,
   }),
 });

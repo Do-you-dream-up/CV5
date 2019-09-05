@@ -7,11 +7,11 @@ export default theme => ({
       marginTop: '1em',
     },
   },
-  base: props => ({
+  base: ({ configuration }) => ({
     borderRadius: theme.shape.borderRadius,
     padding: '1em',
     wordBreak: 'break-word',
-    '&&': props.configuration.bubble.styles,
+    '&&': configuration.bubble.styles,
   }),
   request: {
     backgroundColor: theme.palette.request.background,

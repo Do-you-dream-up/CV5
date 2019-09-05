@@ -7,7 +7,7 @@ export default theme => ({
   hidden: {
     '&&': {display: 'none'},
   },
-  root: props => ({
+  root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
     bottom: 0,
     display: 'flex',
@@ -16,7 +16,7 @@ export default theme => ({
     position: 'absolute',
     right: 0,
     width: 350,
-    '&&': props.configuration.chatbox.styles,
-    [theme.breakpoints.down('xs')]: {'&&': props.configuration.chatbox.stylesMobile},
+    '&&': configuration.chatbox.styles,
+    [theme.breakpoints.down('xs')]: {'&&': configuration.chatbox.stylesMobile},
   }),
 });
