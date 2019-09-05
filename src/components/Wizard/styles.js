@@ -14,15 +14,18 @@ export default theme => ({
     margin: 0,
     padding: '0 !important',
   },
-  root: {
-    bottom: 0,
-    display: 'flex',
-    flexWrap: 'wrap',
-    left: 0,
-    overflowY: 'auto',
-    padding: '.5em',
-    position: 'absolute',
-    right: 0,
-    top: 0,
+  root: ({ configuration }) => {
+    const { right, width } = configuration.chatbox.styles;
+    return {
+      bottom: 0,
+      display: 'flex',
+      flexWrap: 'wrap',
+      left: 0,
+      overflowY: 'auto',
+      padding: '.5em',
+      position: 'absolute',
+      right: right + width + right,
+      top: 0,
+    };
   },
 });
