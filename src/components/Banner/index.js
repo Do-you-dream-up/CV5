@@ -25,6 +25,8 @@ export default withConfiguration(withStyles(styles)(class Banner extends React.P
     configuration: PropTypes.object.isRequired,
   };
 
+  state = {show: false};
+
   /**
    * Save the date upon which the banner has been dimissed in a cookie.
    *
@@ -57,6 +59,7 @@ export default withConfiguration(withStyles(styles)(class Banner extends React.P
   componentDidMount() {
     const { transient } = this.props.configuration.banner;
     const show = this.shouldShow();
+    this.setState({show});
     if (show && !!transient) {
       this.dismiss();
     }
@@ -64,10 +67,10 @@ export default withConfiguration(withStyles(styles)(class Banner extends React.P
 
   render() {
     const { classes, configuration } = this.props;
+    const { show } = this.state;
     const { dismissable, text } = configuration.banner;
     const html = sanitize(text);
-    const show = this.shouldShow();
-    return show && html && (
+    return this.shouldShow() && show && html && (
       <div className={classNames('dydu-banner', classes.root)}>
         {!!dismissable && (
           <div className={classNames('dydu-banner-actions', classes.actions)}>
