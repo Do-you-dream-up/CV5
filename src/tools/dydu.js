@@ -51,7 +51,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   emit = (verb, path, data) => verb(path, data).then(({ data={} }) => {
-    if (data.values) {
+    if (Object.prototype.hasOwnProperty.call(data, 'values')) {
       data.values = decode(data.values);
       this.setContextId(data.values.contextId);
       return data.values;
