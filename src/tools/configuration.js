@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import json from './configuration.json';
 import theme from '../styles/theme';
+import { ConfigurationContext } from '../contexts/ConfigurationContext';
 
 
 /**
@@ -102,7 +103,8 @@ export const configuration = new class Configuration {
  * High-order component to pass on configuration.
  */
 export const withConfiguration = Component => class InnerComponent extends React.PureComponent {
+  static contextType = ConfigurationContext;
   render() {
-    return <Component configuration={configuration.configuration} {...this.props} />;
+    return <Component configuration={this.context.state.configuration} {...this.props} />;
   }
 };
