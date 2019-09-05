@@ -25,8 +25,6 @@ export default withConfiguration(withStyles(styles)(class Banner extends React.P
     configuration: PropTypes.object.isRequired,
   };
 
-  state = {html: null, show: false};
-
   /**
    * Save the date upon which the banner has been dimissed in a cookie.
    *
@@ -46,21 +44,32 @@ export default withConfiguration(withStyles(styles)(class Banner extends React.P
    */
   onDismiss = () => this.setState({show: false}, this.dismiss);
 
+  /**
+   * Return whether the banner should be displayed.
+   *
+   * @public
+   */
+  shouldShow = () => {
+    const { active, cookie } = this.props.configuration.banner;
+    return !!active && (!cookie || !Cookie.get(Cookie.names.banner));
+  };
+
   componentDidMount() {
-    const { active, cookie, text, transient } = this.props.configuration.banner;
-    const show = !!active && (!cookie || !Cookie.get(Cookie.names.banner));
-    if (show) {
-      this.setState({html: sanitize(text), show}, transient ? this.dismiss : null);
+    const { transient } = this.props.configuration.banner;
+    const show = this.shouldShow();
+    if (show && !!transient) {
+      this.dismiss();
     }
   }
 
   render() {
     const { classes, configuration } = this.props;
-    const { html, show } = this.state;
-    const dismissable = !!configuration.banner.dismissable;
-    return html && show && (
+    const { dismissable, text } = configuration.banner;
+    const html = sanitize(text);
+    const show = this.shouldShow();
+    return show && html && (
       <div className={classNames('dydu-banner', classes.root)}>
-        {dismissable && (
+        {!!dismissable && (
           <div className={classNames('dydu-banner-actions', classes.actions)}>
             <Button flat onClick={this.onDismiss} variant="icon">
               <img alt="Close" src="icons/close.png" title="Close" />
