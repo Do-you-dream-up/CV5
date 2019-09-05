@@ -41,7 +41,7 @@ export const ACTIONS = {
   '#iframe#':     null,
   '#lorem#':      () => window.dydu.lorem.standard(),
   '#meta#':       meta,
-  '#reset#':      null,
+  '#reset#':      () => dydu.reset().then(window.dydu.chat.empty),
   '#secondary#':  () => window.dydu.ui.secondary(true, {body: LOREM_HTML, title: 'Secondary'}),
   '#split#':      () => window.dydu.lorem.split(),
   '#steps#':      null,

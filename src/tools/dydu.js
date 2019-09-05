@@ -123,6 +123,23 @@ export default new class Dydu {
   });
 
   /**
+   * End the current conversation and reset the context ID.
+   *
+   * @returns {Promise}
+   */
+  reset = () => {
+    const data = qs.stringify({
+      clientId: this.getClientId(),
+      language: this.getLocale(),
+      space: true,
+    });
+    const path = `chat/context/${BOT.id}/`;
+    return this.emit(API.post, path, data).then(({ contextId }) => {
+      this.setContextId(contextId);
+    });
+  };
+
+  /**
    * Save the provided context ID in the local storage.
    *
    * @param {string} value - Context ID to save.
