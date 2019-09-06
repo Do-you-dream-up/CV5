@@ -37,9 +37,9 @@ export default withConfiguration(withStyles(styles)(class Onboarding extends Rea
     const { active, step } = onboardingState;
     let content = !active && children;
     if (render && active && step) {
-      const previousText = step.previous || configuration.previous;
-      const nextText = step.next || next;
-      const body = sanitize(step.content || configuration.step);
+      const previousText = step.previous || configuration.onboarding.previous;
+      const nextText = step.next || configuration.onboarding.next;
+      const body = sanitize(step.content || step);
       content = (
         <div className={classNames('dydu-onboarding', classes.root)}>
           <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
