@@ -25,6 +25,7 @@
     "react"
   ],
   "rules": {
+    "no-empty": ["error", {"allowEmptyCatch": true}],
     "no-unused-vars": ["error", {"ignoreRestSiblings": true}],
     "quotes": ["error", "single"],
     "react/jsx-indent": ["error", 2],

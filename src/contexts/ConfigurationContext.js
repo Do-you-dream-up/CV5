@@ -16,6 +16,10 @@ export class ConfigurationProvider extends React.Component {
   }
 
   update = (parent, key, value) => {
+    try {
+      value = JSON.parse(value);
+    }
+    catch {}
     this.setState(state => ({
       configuration: {
         ...state.configuration,
