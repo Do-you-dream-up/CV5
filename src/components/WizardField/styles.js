@@ -11,6 +11,7 @@ export default {
       padding: 0,
     },
     '& input[type="number"], & input[type="text"], & textarea': {
+      fontFamily: 'monospace',
       minWidth: 200,
     },
     '& input[type="number"], & input[type="text"]': {
