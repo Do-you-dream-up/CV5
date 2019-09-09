@@ -18,6 +18,10 @@ export default {
       secondary: '#FFFFFF',
     },
     divider: 'rgba(0, 0, 0, 0.12)',
+    error: {
+      main: '#FF8A65',
+      text: 'rgba(0, 0, 0, .87)',
+    },
     primary: {
       dark: '#0288D1',
       light: '#B3E5FC',
@@ -35,6 +39,10 @@ export default {
     secondary: {
       main: '#FF4081',
       text: '#FFFFFF',
+    },
+    success: {
+      main: '#81C784',
+      text: 'rgba(0, 0, 0, .87)',
     },
     text: {
       disabled: 'rgba(0, 0, 0, .38)',

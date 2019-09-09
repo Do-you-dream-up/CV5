@@ -16,19 +16,17 @@ export class ConfigurationProvider extends React.Component {
   }
 
   update = (parent, key, value) => {
-    try {
-      value = JSON.parse(value);
-    }
-    catch {}
-    this.setState(state => ({
-      configuration: {
-        ...state.configuration,
-        [parent]: {
-          ...state.configuration[parent],
-          [key]: value,
+    return new Promise(resolve => {
+      this.setState(state => ({
+        configuration: {
+          ...state.configuration,
+          [parent]: {
+            ...state.configuration[parent],
+            [key]: value,
+          },
         },
-      },
-    }));
+      }), resolve());
+    });
   };
 
   render() {

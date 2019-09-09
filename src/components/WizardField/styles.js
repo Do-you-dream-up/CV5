@@ -2,6 +2,9 @@ export default {
   field: {
     display: 'flex',
   },
+  icon: {
+    marginLeft: '1em',
+  },
   input: {
     flexGrow: 1,
     '& > *': {
