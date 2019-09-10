@@ -27,6 +27,7 @@ export default withConfiguration(withStyles(styles)(class Interaction extends Re
     classes: PropTypes.object.isRequired,
     /** @ignore */
     configuration: PropTypes.object.isRequired,
+    live: PropTypes.bool,
     secondary: PropTypes.object,
     secondaryOpen: PropTypes.bool,
     text: PropTypes.string.isRequired,
@@ -80,12 +81,27 @@ export default withConfiguration(withStyles(styles)(class Interaction extends Re
     }
   };
 
-  componentDidMount() {
+  /**
+   * Initialize the interaction content from the `text` property.
+   *
+   * @public
+   */
+  initialize = () => {
     const bubbles = sanitize(this.props.text).split('<hr>');
     this.setState(
       ({length: bubbles.length}),
       () => this.addBubble(bubbles, this.addSecondary),
     );
+  };
+
+  componentDidMount() {
+    this.initialize();
+  }
+
+  componentDidUpdate(previousProps) {
+    if (this.props.live && previousProps.text !== this.props.text) {
+      this.initialize();
+    }
   }
 
   render() {
