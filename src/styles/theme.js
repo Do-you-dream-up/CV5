@@ -50,6 +50,10 @@ export default {
       primary: 'rgba(0, 0, 0, .87)',
       secondary: 'rgba(0, 0, 0, .54)',
     },
+    tooltip: {
+      background: '#616161E6',
+      text: '#FFFFFF',
+    },
     warning: {
       main: '#FFB74D',
       text: 'rgba(0, 0, 0, .87)',

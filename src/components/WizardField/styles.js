@@ -1,9 +1,9 @@
 export default {
   field: {
     display: 'flex',
-  },
-  icon: {
-    marginLeft: '1em',
+    '& > :not(:first-child)': {
+      marginLeft: '1em',
+    },
   },
   input: {
     flexGrow: 1,
@@ -11,6 +11,7 @@ export default {
       boxSizing: 'border-box',
       display: 'block',
       margin: 0,
+      minHeight: 24,
       padding: 0,
     },
     '& input[type="number"], & input[type="text"], & textarea': {

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { mdiAlertCircleOutline, mdiCheck, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import PropTypes from 'prop-types';
@@ -14,16 +15,26 @@ export default withStyles(styles)(class WizardFieldStatus extends React.PureComp
   static propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
+    error: PropTypes.string,
     status: PropTypes.oneOf(['error', 'pending', 'success']),
   };
 
   render() {
-    const { classes, status } = this.props;
-    const { path, ...rest } = {
-      error: {path: mdiAlertCircleOutline},
-      pending: {path: mdiLoading, spin: 1},
-      success: {path: mdiCheck},
+    const { classes, error, status } = this.props;
+    const { path, title, ...rest } = {
+      error: {path: mdiAlertCircleOutline, title: 'Error'},
+      pending: {path: mdiLoading, spin: 1, title: 'Pending'},
+      success: {path: mdiCheck, title: 'Success'},
     }[status];
-    return <Icon {...rest} className={classes[status]} path={path} size={1} />;
+    return (
+      <div className={classes.root}>
+        <Icon {...rest}
+              className={classNames(classes.base, classes[status])}
+              path={path}
+              size={1}
+              title={title} />
+        {error && <div className={classes.tooltip} children={error} />}
+      </div>
+    );
   }
 });

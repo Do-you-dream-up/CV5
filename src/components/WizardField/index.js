@@ -35,7 +35,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
 
   constructor(props) {
     super(props);
-    this.state = {value: this.format(props.value), status: this.constructor.status.success};
+    this.state = {error: null, value: this.format(props.value), status: this.constructor.status.success};
     this.onUpdate = debounce(this.onUpdate, 300);
   }
 
@@ -65,7 +65,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
    */
   onChange = (parent, key) => event => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState({status: this.constructor.status.pending, value}, () => {
+    this.setState({error: null, status: this.constructor.status.pending, value}, () => {
       this.onUpdate(parent, key, value);
     });
   };
@@ -84,8 +84,10 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
       try {
         value = JSON.parse(value);
       }
-      catch {
-        this.setState({status: this.constructor.status.error});
+      catch ({ message, stack}) {
+        // eslint-disable-next-line no-console
+        console.warn(stack);
+        this.setState({error: message, status: this.constructor.status.error});
         return;
       }
     }
@@ -99,7 +101,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
 
   render() {
     const { classes, component, label, parent, value: configurationValue } = this.props;
-    const { status, value } = this.state;
+    const { error, status, value } = this.state;
     const onChange = this.onChange(parent, label);
     const { input='input', ...attributes } = {
       boolean: {checked: value, type: 'checkbox'},
@@ -113,7 +115,7 @@ export default withStyles(styles)(class WizardField extends React.PureComponent 
         <div children={label} className={classes.input}>
           {React.createElement(input, {name: label, onChange, ...attributes})}
         </div>
-        <div children={<WizardFieldStatus status={status} />} className={classes.icon}/>
+        <div children={<WizardFieldStatus error={error} status={status} />} />
       </label>
     ));
   }
