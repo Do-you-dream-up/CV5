@@ -34,9 +34,11 @@ export default withConfiguration(withStyles(styles)(class Onboarding extends Rea
   render() {
     const { hasPrevious, next, previous, state: onboardingState } = this.context;
     const { children, classes, configuration, render } = this.props;
-    const { active, step } = onboardingState;
+    const { steps } = configuration.onboarding;
+    const { active, index } = onboardingState;
     let content = !active && children;
-    if (render && active && step) {
+    if (render && active && index < steps.length) {
+      const step = steps[index];
       const previousText = step.previous || configuration.onboarding.previous;
       const nextText = step.next || configuration.onboarding.next;
       const body = sanitize(step.content || step);

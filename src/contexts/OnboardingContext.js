@@ -14,11 +14,9 @@ export const OnboardingProvider = withConfiguration(class OnboardingProvider ext
 
   constructor(props) {
     super(props);
-    const { steps } = props.configuration.onboarding;
     this.state = {
       active: !Local.get(Local.names.onboarding),
       index: 0,
-      step: steps[0],
     };
   }
 
@@ -31,11 +29,7 @@ export const OnboardingProvider = withConfiguration(class OnboardingProvider ext
 
   next = () => {
     if (this.hasNext()) {
-      const { steps } = this.props.configuration.onboarding;
-      this.setState(state => ({
-        index: state.index + 1,
-        step: steps[state.index + 1],
-      }));
+      this.setState(state => ({index: state.index + 1}));
     }
     else {
       this.end();
@@ -44,17 +38,12 @@ export const OnboardingProvider = withConfiguration(class OnboardingProvider ext
 
   previous = () => {
     const index = Math.max(this.state.index - 1, 0);
-    const { steps } = this.props.configuration.onboarding;
-    this.setState({
-      index: index,
-      step: steps[index],
-    });
+    this.setState({index: index});
   };
 
   end = () => {
-    const { steps } = this.props.configuration.onboarding;
     this.setState(
-      {active: false, index: 0, step: steps[0]},
+      {active: false, index: 0},
       () => Local.set(Local.names.onboarding),
     );
   };
