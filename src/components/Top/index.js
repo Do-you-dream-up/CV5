@@ -53,7 +53,7 @@ export default withConfiguration(class Top extends React.PureComponent {
     ].join('');
     return html && (
       <article>
-        <Interaction text={html} type="response" />
+        <Interaction live text={html} type="response" />
       </article>
     );
   }
