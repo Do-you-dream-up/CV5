@@ -1,4 +1,4 @@
-export default {
+export default theme => ({
   buttons: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -11,5 +11,6 @@ export default {
     overflowY: 'auto',
     padding: '1em',
     ...configuration.onboarding.styles,
+    [theme.breakpoints.down('xs')]: configuration.onboarding.stylesMobile,
   }),
-};
+});

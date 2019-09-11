@@ -9,6 +9,9 @@ export default theme => ({
     padding: '.5em',
     position: 'relative',
     ...configuration.footer.styles,
-    [theme.breakpoints.down('xs')]: {borderRadius: 0},
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: 0,
+      ...configuration.footer.stylesMobile
+    },
   }),
 });

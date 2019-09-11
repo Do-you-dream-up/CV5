@@ -12,6 +12,7 @@ export default theme => ({
     transform: 'scale(0)',
     width: '.75em',
     ...configuration.loader.styles,
+    [theme.breakpoints.down('xs')]: configuration.loader.stylesMobile,
   }),
   root: {
     display: 'flex',

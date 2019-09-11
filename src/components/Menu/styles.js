@@ -25,5 +25,6 @@ export default theme => ({
     padding: 0,
     position: 'fixed',
     ...configuration.menu.styles,
+    [theme.breakpoints.down('xs')]: configuration.menu.stylesMobile,
   }),
 });

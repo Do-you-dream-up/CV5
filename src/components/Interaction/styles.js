@@ -6,6 +6,7 @@ export default theme => ({
       marginBottom: '1em',
     },
     ...configuration.interaction.styles,
+    [theme.breakpoints.down('xs')]: configuration.interaction.stylesMobile,
   }),
   bubbles: {
     display: 'flex',

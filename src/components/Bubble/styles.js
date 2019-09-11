@@ -12,6 +12,7 @@ export default theme => ({
     padding: '1em',
     wordBreak: 'break-word',
     ...configuration.bubble.styles,
+    [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
   }),
   request: {
     backgroundColor: theme.palette.request.background,

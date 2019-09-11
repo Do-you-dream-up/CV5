@@ -15,5 +15,6 @@ export default theme => ({
     position: 'absolute',
     right: 0,
     ...configuration.teaser.styles,
+    [theme.breakpoints.down('xs')]: configuration.teaser.stylesMobile,
   }),
 });

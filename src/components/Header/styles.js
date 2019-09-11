@@ -20,7 +20,10 @@ export default theme => ({
     flex: '0 0 auto',
     position: 'relative',
     ...configuration.header.styles,
-    [theme.breakpoints.down('xs')]: {borderRadius: 0},
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: 0,
+      ...configuration.header.stylesMobile,
+    },
   }),
   title: {
     padding: '.5em',

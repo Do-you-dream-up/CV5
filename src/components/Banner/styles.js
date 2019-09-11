@@ -21,5 +21,6 @@ export default theme => ({
       },
     },
     ...configuration.banner.styles,
+    [theme.breakpoints.down('xs')]: configuration.banner.stylesMobile,
   }),
 });

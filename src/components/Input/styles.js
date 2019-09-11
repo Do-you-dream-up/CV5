@@ -31,6 +31,7 @@ export default theme => ({
     display: 'flex',
     flex: 'auto',
     ...configuration.input.styles,
+    [theme.breakpoints.down('xs')]: configuration.input.stylesMobile,
   }),
 
   suggestions: ({ configuration }) => ({
@@ -43,6 +44,7 @@ export default theme => ({
     position: 'absolute',
     right: 0,
     ...configuration.suggestions.styles,
+    [theme.breakpoints.down('xs')]: configuration.suggestions.stylesMobile,
   }),
 
   suggestionsCandidate: {

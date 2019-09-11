@@ -6,6 +6,7 @@ export default theme => ({
     minWidth: '3em',
     width: '3em',
     ...configuration.avatar.styles,
+    [theme.breakpoints.down('xs')]: configuration.avatar.stylesMobile,
   }),
   request: {
     backgroundColor: theme.palette.request.background,

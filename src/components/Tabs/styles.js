@@ -11,6 +11,7 @@ export default theme => ({
     background: theme.palette.primary.dark,
     display: 'flex',
     ...configuration.tabs.styles,
+    [theme.breakpoints.down('xs')]: configuration.tabs.stylesMobile,
   }),
   selected: {
     '&::after': {

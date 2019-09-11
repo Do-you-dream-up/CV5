@@ -25,6 +25,7 @@ export default theme => ({
     backgroundColor: theme.palette.background.secondary,
     overflowY: 'auto',
     ...configuration.secondary.styles,
+    [theme.breakpoints.down('xs')]: configuration.secondary.stylesMobile,
   }),
   body: {
     padding: '1em',
