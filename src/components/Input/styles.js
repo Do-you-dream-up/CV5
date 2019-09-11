@@ -27,10 +27,11 @@ export default theme => ({
     },
   },
 
-  root: {
+  root: ({ configuration }) => ({
     display: 'flex',
     flex: 'auto',
-  },
+    ...configuration.input.styles,
+  }),
 
   suggestions: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,

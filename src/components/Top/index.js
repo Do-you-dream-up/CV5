@@ -1,5 +1,8 @@
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import withStyles from 'react-jss';
+import styles from './styles';
 import Interaction from '../Interaction';
 import { withConfiguration } from '../../tools/configuration';
 import dydu from '../../tools/dydu';
@@ -8,9 +11,11 @@ import dydu from '../../tools/dydu';
 /**
  * Fetch the top-asked resources and display them in a numbered list.
  */
-export default withConfiguration(class Top extends React.PureComponent {
+export default withConfiguration(withStyles(styles)(class Top extends React.PureComponent {
 
   static propTypes = {
+    /** @ignore */
+    classes: PropTypes.object.isRequired,
     /** @ignore */
     configuration: PropTypes.object.isRequired,
   };
@@ -40,8 +45,9 @@ export default withConfiguration(class Top extends React.PureComponent {
   }
 
   render() {
+    const { classes, configuration } = this.props;
     const { items } = this.state;
-    const { text } = this.props.configuration.top;
+    const { text } = configuration.top;
     const html = !!items.length && [
       text,
       '<ol>',
@@ -52,9 +58,9 @@ export default withConfiguration(class Top extends React.PureComponent {
       '</ol>',
     ].join('');
     return html && (
-      <article>
+      <article className={classNames('dydu-top', classes.root)}>
         <Interaction live text={html} type="response" />
       </article>
     );
   }
-});
+}));

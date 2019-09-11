@@ -1,11 +1,12 @@
 export default theme => ({
-  base: {
+  base: ({ configuration }) => ({
     display: 'flex',
     marginTop: '.5em',
     '&:last-child': {
       marginBottom: '1em',
     },
-  },
+    ...configuration.interaction.styles,
+  }),
   bubbles: {
     display: 'flex',
     flex: '1',
