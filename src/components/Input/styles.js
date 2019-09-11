@@ -41,7 +41,7 @@ export default theme => ({
     overflow: 'hidden',
     position: 'absolute',
     right: 0,
-    '&&': configuration.suggestions.styles,
+    ...configuration.suggestions.styles,
   }),
 
   suggestionsCandidate: {

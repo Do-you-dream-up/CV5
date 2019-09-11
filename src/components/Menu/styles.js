@@ -24,6 +24,6 @@ export default theme => ({
     overflowY: 'auto',
     padding: 0,
     position: 'fixed',
-    '&&': configuration.menu.styles,
+    ...configuration.menu.styles,
   }),
 });

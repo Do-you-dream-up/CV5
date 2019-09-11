@@ -19,8 +19,8 @@ export default theme => ({
     color: theme.palette.primary.text,
     flex: '0 0 auto',
     position: 'relative',
-    '&&': configuration.header.styles,
-    [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
+    ...configuration.header.styles,
+    [theme.breakpoints.down('xs')]: {borderRadius: 0},
   }),
   title: {
     padding: '.5em',

@@ -11,7 +11,7 @@ export default theme => ({
     marginRight: '.25em',
     transform: 'scale(0)',
     width: '.75em',
-    '&&': configuration.loader.styles,
+    ...configuration.loader.styles,
   }),
   root: {
     display: 'flex',

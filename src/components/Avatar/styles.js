@@ -5,7 +5,7 @@ export default theme => ({
     margin: ['.5em', 0],
     minWidth: '3em',
     width: '3em',
-    '&&': configuration.avatar.styles,
+    ...configuration.avatar.styles,
   }),
   request: {
     backgroundColor: theme.palette.request.background,

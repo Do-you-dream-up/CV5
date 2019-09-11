@@ -1,6 +1,6 @@
 export default theme => ({
   hidden: {
-    '&&': {display: 'none'},
+    display: 'none !important',
   },
   root: ({ configuration }) => ({
     alignItems: 'center',
@@ -14,6 +14,6 @@ export default theme => ({
     padding: '1em',
     position: 'absolute',
     right: 0,
-    '&&': configuration.teaser.styles,
+    ...configuration.teaser.styles,
   }),
 });

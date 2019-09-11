@@ -24,7 +24,7 @@ export default theme => ({
   base: ({ configuration }) => ({
     backgroundColor: theme.palette.background.secondary,
     overflowY: 'auto',
-    '&&': configuration.secondary.styles,
+    ...configuration.secondary.styles,
   }),
   body: {
     padding: '1em',

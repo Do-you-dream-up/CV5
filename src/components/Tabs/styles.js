@@ -10,7 +10,7 @@ export default theme => ({
   root: ({ configuration }) => ({
     background: theme.palette.primary.dark,
     display: 'flex',
-    '&&': configuration.tabs.styles,
+    ...configuration.tabs.styles,
   }),
   selected: {
     '&::after': {

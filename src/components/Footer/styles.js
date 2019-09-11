@@ -8,7 +8,7 @@ export default theme => ({
     flex: '0 0 auto',
     padding: '.5em',
     position: 'relative',
-    '&&': configuration.footer.styles,
-    [theme.breakpoints.down('xs')]: {'&&': {borderRadius: 0}},
+    ...configuration.footer.styles,
+    [theme.breakpoints.down('xs')]: {borderRadius: 0},
   }),
 });

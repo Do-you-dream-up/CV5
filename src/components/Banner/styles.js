@@ -20,6 +20,6 @@ export default theme => ({
         textDecoration: 'underline !important',
       },
     },
-    '&&': configuration.banner.styles,
+    ...configuration.banner.styles,
   }),
 });

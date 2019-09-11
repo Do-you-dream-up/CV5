@@ -11,7 +11,7 @@ export default theme => ({
     borderRadius: theme.shape.borderRadius,
     padding: '1em',
     wordBreak: 'break-word',
-    '&&': configuration.bubble.styles,
+    ...configuration.bubble.styles,
   }),
   request: {
     backgroundColor: theme.palette.request.background,

@@ -5,7 +5,7 @@ export default theme => ({
     position: 'relative',
   },
   hidden: {
-    '&&': {display: 'none'},
+    display: 'none !important',
   },
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
@@ -16,7 +16,7 @@ export default theme => ({
     position: 'absolute',
     right: 0,
     width: 350,
-    '&&': configuration.chatbox.styles,
-    [theme.breakpoints.down('xs')]: {'&&': configuration.chatbox.stylesMobile},
+    ...configuration.chatbox.styles,
+    [theme.breakpoints.down('xs')]: configuration.chatbox.stylesMobile,
   }),
 });
