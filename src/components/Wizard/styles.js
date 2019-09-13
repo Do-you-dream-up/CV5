@@ -26,6 +26,9 @@ export default theme => ({
       position: 'absolute',
       right: right + width + right,
       top: 0,
+      [theme.breakpoints.down('xs')]: {
+        right: 0,
+      },
     };
   },
 });

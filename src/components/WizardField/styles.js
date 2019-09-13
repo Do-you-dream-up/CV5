@@ -6,6 +6,7 @@ export default {
     },
   },
   input: {
+    minWidth: 200,
     flexGrow: 1,
     '& > *': {
       boxSizing: 'border-box',
@@ -16,7 +17,6 @@ export default {
     },
     '& input[type="number"], & input[type="text"], & textarea': {
       fontFamily: 'monospace',
-      minWidth: 200,
     },
     '& input[type="number"], & input[type="text"]': {
       width: '100%',
@@ -29,6 +29,7 @@ export default {
     },
   },
   text: {
+    lineHeight: '24px',
     minWidth: 140,
   },
 };
