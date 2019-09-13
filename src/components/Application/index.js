@@ -52,8 +52,8 @@ export default withConfiguration(withStyles(styles)(class Application extends Re
     return (
       <div className={classNames('dydu-application', classes.root)}>
         {wizard && <Wizard />}
-        <Chatbox open={open} toggle={this.toggle} />
         <Teaser open={!open} toggle={this.toggle} />
+        <Chatbox open={open} toggle={this.toggle} />
       </div>
     );
   }

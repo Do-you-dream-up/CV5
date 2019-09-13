@@ -5,6 +5,11 @@ export default theme => ({
     boxShadow: theme.shadows[1],
     margin: '.5em',
     padding: '1.5em',
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: 0,
+      marginLeft: 0,
+      marginRight: 0,
+    },
   },
   entryContainer: {
     flexGrow: 1,
@@ -27,6 +32,7 @@ export default theme => ({
       right: right + width + right,
       top: 0,
       [theme.breakpoints.down('xs')]: {
+        padding: 0,
         right: 0,
       },
     };

@@ -1,4 +1,4 @@
-export default {
+export default theme => ({
   field: {
     display: 'flex',
     '& > :not(:first-child)': {
@@ -31,5 +31,8 @@ export default {
   text: {
     lineHeight: '24px',
     minWidth: 140,
+    [theme.breakpoints.down('xs')]: {
+      minWidth: 100,
+    },
   },
-};
+});
