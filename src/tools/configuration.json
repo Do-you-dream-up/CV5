@@ -5,7 +5,8 @@
   "avatar": {
     "styles": {
       "shadow": true
-    }
+    },
+    "stylesMobile": {}
   },
   "banner": {
     "active": true,
@@ -14,13 +15,15 @@
     "styles": {
       "maxHeight": 200
     },
+    "stylesMobile": {},
     "text": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et <a href>odio pellentesque diam volutpat</a> commodo sed egestas egestas fringilla phasellus.</p>",
     "transient": false
   },
   "bubble": {
     "styles": {
       "shadow": true
-    }
+    },
+    "stylesMobile": {}
   },
   "chatbox": {
     "styles": {
@@ -43,36 +46,44 @@
   "footer": {
     "styles": {
       "shadow": true
-    }
+    },
+    "stylesMobile": {}
   },
   "header": {
     "styles": {
       "shadow": true
     },
+    "stylesMobile": {},
     "title": "Header"
   },
   "input": {
     "delay": 300,
-    "placeholder": "Type here..."
+    "placeholder": "Type here...",
+    "styles": {},
+    "stylesMobile": {}
   },
   "interaction": {
     "avatar": {
       "request": false,
       "response": true
     },
-    "loader": [250, 600]
+    "loader": [250, 600],
+    "styles": {},
+    "stylesMobile": {}
   },
   "loader": {
     "size": 3,
     "styles": {
       "shadow": true
-    }
+    },
+    "stylesMobile": {}
   },
   "menu": {
     "spacing": 4,
     "styles": {
       "shadow": true
-    }
+    },
+    "stylesMobile": {}
   },
   "onboarding": {
     "next": "Suivant",
@@ -80,7 +91,9 @@
     "steps": [
       "<h1>Bonjour</h1><p>Préférez des phrases complètes à des mots clés.</p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
       {"content": "<h1>Bonjour</h1><p>Mes connaissances évoluent de jour en jour.</p><p>Je vous apporte mon aide en quelques minutes. Si je ne parviens pas à vous répondre ou vous aider, je vous redirigerai vers le bon interlocuteur.</p>", "next": "Terminer"}
-    ]
+    ],
+    "styles": {},
+    "stylesMobile": {}
   },
   "root": "dydu-root",
   "secondary": {
@@ -89,19 +102,23 @@
     "styles": {
       "shadow": 6,
       "width": 500
-    }
+    },
+    "stylesMobile": {}
   },
   "suggestions": {
     "styles": {
       "shadow": 6
-    }
+    },
+    "stylesMobile": {}
   },
   "tabs": {
     "items": [
       {"text": "Dialog", "value": "dialog"},
       {"text": "Contacts", "value": "contacts"}
     ],
-    "selected": 0
+    "selected": 0,
+    "styles": {},
+    "stylesMobile": {}
   },
   "teaser": {
     "styles": {
@@ -109,10 +126,13 @@
       "right": 16,
       "shadow": 6
     },
+    "stylesMobile": {},
     "title": "Teaser"
   },
   "top": {
     "size": 3,
+    "styles": {},
+    "stylesMobile": {},
     "text": "<p>Top-asked questions:</p>"
   }
 }
