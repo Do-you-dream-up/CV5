@@ -1,7 +1,7 @@
 import { createUseStyles } from 'react-jss';
 
 
-export default createUseStyles({
+export default createUseStyles(theme => ({
   field: {
     display: 'flex',
     '& > :not(:first-child)': {
@@ -9,6 +9,7 @@ export default createUseStyles({
     },
   },
   input: {
+    minWidth: 200,
     flexGrow: 1,
     '& > *': {
       boxSizing: 'border-box',
@@ -19,7 +20,6 @@ export default createUseStyles({
     },
     '& input[type="number"], & input[type="text"], & textarea': {
       fontFamily: 'monospace',
-      minWidth: 200,
     },
     '& input[type="number"], & input[type="text"]': {
       width: '100%',
@@ -32,6 +32,10 @@ export default createUseStyles({
     },
   },
   text: {
+    lineHeight: '24px',
     minWidth: 140,
+    [theme.breakpoints.down('xs')]: {
+      minWidth: 100,
+    },
   },
-});
+}));

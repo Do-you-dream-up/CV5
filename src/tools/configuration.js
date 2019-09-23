@@ -90,8 +90,11 @@ export const configuration = new class Configuration {
     });
     Object.keys(data).forEach(key => {
       if (data[key] instanceof Object) {
-        data[key].styles = forgeStyles(data[key].styles);
-        data[key].stylesMobile = forgeStyles(data[key].stylesMobile);
+        data[key] = {
+          ...data[key],
+          ...(data[key].styles && {styles: forgeStyles(data[key].styles)}),
+          ...(data[key].stylesMobile && {stylesMobile: forgeStyles(data[key].stylesMobile)}),
+        };
       }
     });
     return data;
