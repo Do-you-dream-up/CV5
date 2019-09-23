@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
 
   base: {
     alignItems: 'center',
@@ -39,4 +42,4 @@ export default theme => ({
     '&:hover:not(:disabled)': {backgroundColor: theme.palette.action.hover},
     '& img': {height: 20, width: 20},
   },
-});
+}));

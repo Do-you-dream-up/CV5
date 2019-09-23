@@ -12,7 +12,6 @@ import { configuration } from './tools/configuration';
 configuration.initialize().then(configuration => {
   const anchor = document.getElementById(configuration.root);
   if (anchor) {
-    window.dydu = {};
     ReactDOM.render(
       <ConfigurationProvider configuration={configuration}>
         <DialogProvider>

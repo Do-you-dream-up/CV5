@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   actions: {
     display: 'flex',
     float: 'right',
@@ -23,4 +26,4 @@ export default theme => ({
     ...configuration.banner.styles,
     [theme.breakpoints.down('xs')]: configuration.banner.stylesMobile,
   }),
-});
+}));

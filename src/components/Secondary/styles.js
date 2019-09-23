@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   actions: {
     display: 'flex',
     marginLeft: 'auto',
@@ -9,7 +12,7 @@ export default theme => ({
   header: {
     backgroundColor: `${theme.palette.background.secondary}CC`,
     display: 'flex',
-    padding: '1em',
+    padding: [['1.6em', '2em']],
     position: 'sticky',
     top: 0,
   },
@@ -28,7 +31,7 @@ export default theme => ({
     [theme.breakpoints.down('xs')]: configuration.secondary.stylesMobile,
   }),
   body: {
-    padding: '1em',
+    padding: '2em',
   },
   side: {
     borderRadius: theme.shape.borderRadius,
@@ -48,4 +51,4 @@ export default theme => ({
   title: {
     margin: 0,
   },
-});
+}));

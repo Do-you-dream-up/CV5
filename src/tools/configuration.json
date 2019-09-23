@@ -60,7 +60,7 @@
       "request": false,
       "response": true
     },
-    "loader": [250, 600]
+    "loader": [400, 600]
   },
   "loader": {
     "size": 3,
@@ -84,7 +84,6 @@
   },
   "root": "dydu-root",
   "secondary": {
-    "automatic": true,
     "mode": "side",
     "styles": {
       "shadow": 6,

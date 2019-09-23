@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   bullet: ({ configuration }) => ({
     animationDirection: 'alternate',
     animationDuration: '.5s',
@@ -23,4 +26,4 @@ export default theme => ({
     from: {transform: 'scale(0)'},
     to: {transform: 'scale(1)'},
   },
-});
+}));

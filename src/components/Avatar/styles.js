@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   base: ({ configuration }) => ({
     borderRadius: '50%',
     height: '3em',
@@ -19,4 +22,4 @@ export default theme => ({
     color: theme.palette.response.text,
     marginRight: '.5em !important',
   },
-});
+}));

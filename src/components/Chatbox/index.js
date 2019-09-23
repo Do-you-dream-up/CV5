@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
+import React, { useCallback, useContext, useEffect } from 'react';
+import useStyles from './styles';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
@@ -21,90 +20,87 @@ import talk from '../../tools/talk';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-export default withConfiguration(withStyles(styles)(class Chatbox extends React.PureComponent {
+function Chatbox({ configuration, open, toggle }) {
 
-  static contextType = DialogContext;
+  const dialog = useContext(DialogContext);
+  const classes = useStyles({configuration});
+  const secondaryMode = configuration.secondary.mode;
 
-  static propTypes = {
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    /** @ignore */
-    configuration: PropTypes.object.isRequired,
-    open: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired,
-  };
-
-  /**
-   * Send text to the bot and display the response after.
-   *
-   * @param {string} text - Text to send.
-   * @param {Object} [options] - Extra options, `hide` to hide the request.
-   * @public
-   */
-  ask = (text, options) => {
+  const ask = useCallback((text, options) => {
     text = text.trim();
     if (text) {
       options = Object.assign({hide: false}, options);
       if (!options.hide) {
-        this.context.addRequest(text);
+        dialog.addRequest(text);
       }
-      talk(text).then(this.context.addResponse);
+      talk(text).then(dialog.addResponse);
     }
-  };
+  }, [dialog]);
 
-  componentDidMount() {
-    window.dydu.chat = {
-      ask: (text, options) => this.ask(text, options),
-      empty: () => this.context.empty(),
-      reply: text => this.context.addResponse({text: text}),
-    };
-    window.dydu.gdpr = {
-      forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
-        () => window.dydu.chat.reply('Forget success'),
-        () => window.dydu.chat.reply('Forget error'),
-      ),
-      get: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Get'}).then(
-        () => window.dydu.chat.reply('Get success'),
-        () => window.dydu.chat.reply('Get error'),
-      ),
-    };
-    window.dydu.localization = {
-      get: () => dydu.getLocale(),
-      set: locale => dydu.setLocale(locale).then(
-        locale => window.dydu.chat.reply(`New locale set: '${locale}'.`),
-        response => window.dydu.chat.reply(response),
-      ),
-    };
-    window.dydu.lorem = {
-      standard: () => window.dydu.chat.reply(LOREM_HTML),
-      split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
-    };
-    window.dydu.ui = {
-      secondary: (open, { body, title }) => this.context.toggleSecondary(open, {body, title})(),
-      toggle: open => this.props.toggle(open)(),
-    };
-  }
+  useEffect(() => {
+    if (!window.dydu) {
+      window.dydu = {};
+      window.dydu.chat = {
+        ask: (text, options) => ask(text, options),
+        empty: () => dialog.empty(),
+        reply: text => dialog.addResponse({text: text}),
+      };
+      window.dydu.gdpr = {
+        forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
+          () => window.dydu.chat.reply('Forget success'),
+          () => window.dydu.chat.reply('Forget error'),
+        ),
+        get: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Get'}).then(
+          () => window.dydu.chat.reply('Get success'),
+          () => window.dydu.chat.reply('Get error'),
+        ),
+      };
+      window.dydu.localization = {
+        get: () => dydu.getLocale(),
+        set: locale => dydu.setLocale(locale).then(
+          locale => window.dydu.chat.reply(`New locale set: '${locale}'.`),
+          response => window.dydu.chat.reply(response),
+        ),
+      };
+      window.dydu.lorem = {
+        standard: () => window.dydu.chat.reply(LOREM_HTML),
+        split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
+      };
+      window.dydu.ui = {
+        secondary: (open, { body, title }) => dialog.toggleSecondary(open, {body, title})(),
+        toggle: open => toggle(open)(),
+      };
+    }
+  }, [ask, dialog, toggle]);
 
-  render() {
-    const { add, addRequest, addResponse, state: dialogState } = this.context;
-    const { classes, configuration, open, toggle } = this.props;
-    const { secondary } = configuration;
-    const { interactions } = dialogState;
-    return (
-      <TabProvider>
-        <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}>
-          <Onboarding render>
-            <div className={classNames('dydu-chatbox-body', classes.body)}>
-              <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
-              <Tab component={Contacts} value="contacts" />
-              {secondary.mode === 'over' && <Secondary mode={secondary.mode} />}
-            </div>
-            <Footer onRequest={addRequest} onResponse={addResponse} />
-          </Onboarding>
-          <Header onClose={toggle(false)} style={{order: -1}} />
-          {secondary.mode === 'side' && <Secondary mode={secondary.mode} />}
-        </div>
-      </TabProvider>
-    );
-  }
-}));
+  return (
+    <TabProvider>
+      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}>
+        <Onboarding render>
+          <div className={classNames('dydu-chatbox-body', classes.body)}>
+            <Tab component={Dialog}
+                 interactions={dialog.state.interactions}
+                 onAdd={dialog.add}
+                 render
+                 value="dialog" />
+            <Tab component={Contacts} value="contacts" />
+            {secondaryMode === 'over' && <Secondary mode={secondaryMode} />}
+          </div>
+          <Footer onRequest={dialog.addRequest} onResponse={dialog.addResponse} />
+        </Onboarding>
+        <Header onClose={toggle(false)} style={{order: -1}} />
+        {secondaryMode === 'side' && <Secondary mode={secondaryMode} />}
+      </div>
+    </TabProvider>
+  );
+}
+
+
+Chatbox.propTypes = {
+  configuration: PropTypes.object.isRequired,
+  open: PropTypes.bool.isRequired,
+  toggle: PropTypes.func.isRequired,
+};
+
+
+export default withConfiguration(Chatbox);

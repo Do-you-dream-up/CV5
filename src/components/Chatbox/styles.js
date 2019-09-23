@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   body: {
     flexGrow: 1,
     overflowY: 'auto',
@@ -19,4 +22,4 @@ export default theme => ({
     ...configuration.chatbox.styles,
     [theme.breakpoints.down('xs')]: configuration.chatbox.stylesMobile,
   }),
-});
+}));

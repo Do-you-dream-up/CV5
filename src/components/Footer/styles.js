@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
     borderBottomLeftRadius: theme.shape.borderRadius,
@@ -14,4 +17,4 @@ export default theme => ({
       ...configuration.footer.stylesMobile
     },
   }),
-});
+}));

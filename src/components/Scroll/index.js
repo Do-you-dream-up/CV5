@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 
 /**
@@ -8,23 +8,17 @@ import React from 'react';
  * Typically you would want to wrap all conversation bubbles with this
  * component.
  */
-export default class Scroll extends React.PureComponent {
+export default function Scroll({ ...rest }) {
 
-  /**
-   * Scroll children into view, that is until its upper edge is visible by the
-   * human eye.
-   *
-   * @public
-   */
-  scroll = () => {
-    this.node.scrollIntoView({behavior: 'smooth', block: 'start'});
+  const elementRef = useRef(null);
+
+  const scroll = () => {
+    elementRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
   };
 
-  componentDidMount() {
-    this.scroll();
-  }
+  useEffect(() => {
+    scroll();
+  }, []);
 
-  render() {
-    return <div {...this.props} ref={node => this.node = node} />;
-  }
+  return <div {...rest} ref={elementRef} />;
 }

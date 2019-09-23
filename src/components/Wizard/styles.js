@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   entry: {
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.borderRadius,
@@ -28,4 +31,4 @@ export default theme => ({
       top: 0,
     };
   },
-});
+}));

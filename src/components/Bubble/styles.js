@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   actions: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -24,4 +27,4 @@ export default theme => ({
     color: theme.palette.response.text,
     marginRight: 'auto',
   },
-});
+}));

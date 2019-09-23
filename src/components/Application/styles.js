@@ -1,11 +1,14 @@
+import { createUseStyles } from 'react-jss';
 import reset from '../../styles/reset';
 
 
-export default theme => ({
-  root: ({ configuration }) => ({
-    ...reset(theme),
-    fontFamily: 'sans-serif',
-    ...configuration.application.styles,
-    [theme.breakpoints.down('xs')]: configuration.application.stylesMobile,
-  }),
+export default createUseStyles(theme => {
+  return {
+    root: {
+      fontFamily: 'sans-serif',
+      ...reset(theme),
+      // ...configuration.application.styles,
+      // [theme.breakpoints.down('xs')]: configuration.application.stylesMobile,
+    },
+  };
 });

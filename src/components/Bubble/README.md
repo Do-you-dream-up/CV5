@@ -7,5 +7,5 @@ const html = '<p>Foo. Bar.</p>'
 ```
 
 ```jsx static
-<Bubble actions={actions} html={html} type="response" />
+<Bubble actions={actions} component="li" html={html} type="response" />
 ```

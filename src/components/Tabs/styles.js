@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   disabled: {
     cursor: 'not-allowed',
     opacity: .5,
@@ -35,4 +38,4 @@ export default theme => ({
     padding: '.5em',
     position: 'relative',
   },
-});
+}));

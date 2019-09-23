@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
+import useStyles from './styles';
 import Input from '../Input';
 import { withConfiguration } from '../../tools/configuration';
 
@@ -14,23 +13,21 @@ import { withConfiguration } from '../../tools/configuration';
  * It transports the function to call whenever input is submitted and a second
  * function to handle the response.
  */
-export default withConfiguration(withStyles(styles)(class Footer extends React.PureComponent {
+function Footer({ configuration, onRequest, onResponse, ...rest }) {
+  const classes = useStyles({configuration});
+  return (
+    <footer className={classNames('dydu-footer', classes.root)} {...rest}>
+      <Input onRequest={onRequest} onResponse={onResponse} />
+    </footer>
+  );
+}
 
-  static propTypes = {
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    /** @ignore */
-    configuration: PropTypes.object.isRequired,
-    onRequest: PropTypes.func.isRequired,
-    onResponse: PropTypes.func.isRequired,
-  };
 
-  render() {
-    const { classes, onRequest, onResponse, ...rest } = this.props;
-    return (
-      <footer className={classNames('dydu-footer', classes.root)} {...rest}>
-        <Input onRequest={onRequest} onResponse={onResponse} />
-      </footer>
-    );
-  }
-}));
+Footer.propTypes = {
+  configuration: PropTypes.object.isRequired,
+  onRequest: PropTypes.func.isRequired,
+  onResponse: PropTypes.func.isRequired,
+};
+
+
+export default withConfiguration(Footer);

@@ -1,4 +1,7 @@
-export default {
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles({
   field: {
     display: 'flex',
     '& > :not(:first-child)': {
@@ -31,4 +34,4 @@ export default {
   text: {
     minWidth: 140,
   },
-};
+});

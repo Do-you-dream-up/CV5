@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   actions: {
     alignItems: 'center',
     display: 'flex',
@@ -28,4 +31,4 @@ export default theme => ({
   title: {
     padding: '.5em',
   },
-});
+}));

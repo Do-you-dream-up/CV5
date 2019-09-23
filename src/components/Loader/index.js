@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
+import useStyles from './styles';
 import Scroll from '../Scroll';
 import { withConfiguration } from  '../../tools/configuration';
 
@@ -13,31 +12,30 @@ import { withConfiguration } from  '../../tools/configuration';
  *
  * The loader size determines the number of bullets.
  */
-export default withConfiguration(withStyles(styles)(class Loader extends React.PureComponent {
+function Loader({ configuration, size: defaultSize }) {
+  const classes = useStyles({configuration});
+  const size = defaultSize || configuration.loader.size;
+  return (
+    <Scroll className={classNames('dydu-loader', classes.root)}>
+      {[...Array(size)].map((it, index) => (
+        <div className={classNames('dydu-loader-bullet', classes.bullet)}
+             key={index}
+             style={{animationDelay: `${index / 10}s`}} />
+      ))}
+    </Scroll>
+  );
+}
 
-  static defaultProps = {
-    size: 3,
-  };
 
-  static propTypes = {
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    /** @ignore */
+Loader.defaultProps = {
+  size: 3,
+};
+
+
+Loader.propTypes = {
     configuration: PropTypes.object.isRequired,
     size: PropTypes.number,
   };
 
-  render() {
-    const { classes, configuration, size: defaultSize } = this.props;
-    const { size } = defaultSize || configuration.loader;
-    return (
-      <Scroll className={classNames('dydu-loader', classes.root)}>
-        {[...Array(size)].map((it, index) => (
-          <div className={classNames('dydu-loader-bullet', classes.bullet)}
-               key={index}
-               style={{animationDelay: `${index / 10}s`}} />
-        ))}
-      </Scroll>
-    );
-  }
-}));
+
+export default withConfiguration(Loader);

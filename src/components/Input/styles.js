@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
 
   actions: {
     alignItems: 'center',
@@ -66,4 +69,4 @@ export default theme => ({
     padding: ['.5em', 0],
     paddingLeft: '0 !important',
   },
-});
+}));

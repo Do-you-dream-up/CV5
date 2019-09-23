@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   hidden: {
     display: 'none !important',
   },
@@ -17,4 +20,4 @@ export default theme => ({
     ...configuration.teaser.styles,
     [theme.breakpoints.down('xs')]: configuration.teaser.stylesMobile,
   }),
-});
+}));

@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
+import React, { useContext } from 'react';
+import useStyles from './styles';
 import Button from '../Button';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import { withConfiguration } from '../../tools/configuration';
@@ -18,40 +17,37 @@ import sanitize from '../../tools/sanitize';
  * children, use the property `render` on this component. Ideally the `render`
  * property is utilized on only one instance of this component.
  */
-export default withConfiguration(withStyles(styles)(class Onboarding extends React.PureComponent {
+function Onboarding({ children, configuration, render }) {
 
-  static contextType = OnboardingContext;
+  const { hasPrevious, next, previous, state: onboardingState } = useContext(OnboardingContext);
+  const classes = useStyles({configuration});
+  const { steps } = configuration.onboarding;
 
-  static propTypes = {
-    children: PropTypes.node,
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    /** @ignore */
-    configuration: PropTypes.object.isRequired,
-    render: PropTypes.bool,
-  };
-
-  render() {
-    const { hasPrevious, next, previous, state: onboardingState } = this.context;
-    const { children, classes, configuration, render } = this.props;
-    const { steps } = configuration.onboarding;
-    const { active, index } = onboardingState;
-    let content = !active && children;
-    if (render && active && index < steps.length) {
-      const step = steps[index];
-      const previousText = step.previous || configuration.onboarding.previous;
-      const nextText = step.next || configuration.onboarding.next;
-      const body = sanitize(step.content || step);
-      content = (
-        <div className={classNames('dydu-onboarding', classes.root)}>
-          <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
-          <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
-            <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
-            <Button children={nextText} onClick={next} />
-          </div>
+  let content = !onboardingState.active && children;
+  if (render && onboardingState.active && onboardingState.index < steps.length) {
+    const step = steps[onboardingState.index];
+    const previousText = step.previous || configuration.onboarding.previous;
+    const nextText = step.next || configuration.onboarding.next;
+    const body = sanitize(step.content || step);
+    content = (
+      <div className={classNames('dydu-onboarding', classes.root)}>
+        <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
+        <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
+          <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
+          <Button children={nextText} onClick={next} />
         </div>
-      );
-    }
-    return content;
+      </div>
+    );
   }
-}));
+  return content;
+}
+
+
+Onboarding.propTypes = {
+  children: PropTypes.node,
+  configuration: PropTypes.object.isRequired,
+  render: PropTypes.bool,
+};
+
+
+export default withConfiguration(Onboarding);

@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   base: {
     display: 'block',
   },
@@ -35,4 +38,4 @@ export default theme => ({
     transitionProperty: 'opacity',
     whiteSpace: 'nowrap',
   },
-});
+}));

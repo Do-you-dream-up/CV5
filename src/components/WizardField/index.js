@@ -1,122 +1,112 @@
-import debounce from 'debounce-promise';
 import PropTypes from 'prop-types';
-import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import useStyles from './styles';
 import WizardFieldStatus from '../WizardFieldStatus';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import useDebounce from '../../tools/debounce';
+import usePrevious from '../../tools/previous';
 
 
 /**
  * A wizard field to live-edit the configuration.
  */
-export default withStyles(styles)(class WizardField extends React.PureComponent {
+function WizardField({ component, label, parent, value: oldValue }) {
 
-  static contextType = ConfigurationContext;
+  const { update } = useContext(ConfigurationContext);
+  const classes = useStyles();
+  const [ error, setError ] = useState(null);
+  const [ status, setStatus ] = useState(WizardField.status.success);
+  const [ value, setValue ] = useState(null);
+  const [ ready, setReady ] = useState(false);
+  const debouncedValue = useDebounce(value, 300);
+  const previousValue = usePrevious(debouncedValue);
 
-  static defaultProps = {
-    component: 'div',
-  };
-
-  static propTypes = {
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    component: PropTypes.elementType,
-    label: PropTypes.string.isRequired,
-    parent: PropTypes.string.isRequired,
-    value: PropTypes.any.isRequired,
-  };
-
-  static status = {
-    error: 'error',
-    pending: 'pending',
-    success: 'success',
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {error: null, value: this.format(props.value), status: this.constructor.status.success};
-    this.onUpdate = debounce(this.onUpdate, 300);
-  }
-
-  /**
-   * Format and add indent to object values.
-   *
-   * @param {*} value - Value to format.
-   * @returns {*}
-   * @public
-   */
-  format = value => {
-    if (typeof value === 'object') {
-      value = JSON.stringify(value, null, 2);
+  const format = newValue => {
+    if (typeof newValue === 'object') {
+      newValue = JSON.stringify(newValue, null, 2);
     }
-    return value;
+    return newValue;
   };
 
-  /**
-   * Field change handler.
-   *
-   * Set the field status to "pending" beforehand.
-   *
-   * @param {string} parent - Parent path within the configuration.
-   * @param {string} key - Sub-key path within the configuration.
-   * @param {Object} event - DOM event.
-   * @public
-   */
-  onChange = (parent, key) => event => {
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState({error: null, status: this.constructor.status.pending, value}, () => {
-      this.onUpdate(parent, key, value);
-    });
+  const onChange = event => {
+    const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    setError(null);
+    setStatus(WizardField.status.pending);
+    setValue(newValue);
   };
 
-
-  /**
-   * Update the configuration values.
-   *
-   * @param {string} parent - Parent path within the configuration.
-   * @param {string} key - Sub-key path within the configuration.
-   * @param {*} value - New value.
-   * @public
-   */
-  onUpdate = (parent, key, value) => {
-    if (typeof this.props.value === 'object') {
+  const onUpdate = useCallback(newValue => {
+    if (typeof oldValue === 'object') {
       try {
-        value = JSON.parse(value);
+        newValue = JSON.parse(newValue);
       }
       catch ({ message, stack}) {
         // eslint-disable-next-line no-console
         console.warn(stack);
-        this.setState({error: message, status: this.constructor.status.error});
+        setError(message);
+        setStatus(WizardField.status.error);
         return;
       }
     }
-    else if (typeof this.props.value === 'number') {
-      value = ~~value;
+    else if (typeof oldValue === 'number') {
+      newValue = ~~newValue;
     }
-    this.context.update(parent, key, value).then(
-      () => this.setState({status: this.constructor.status.success})
-    );
-  };
+    update(parent, label, newValue).then(() => setStatus(WizardField.status.success));
+  }, [label, oldValue, parent, update]);
 
-  render() {
-    const { classes, component, label, parent, value: configurationValue } = this.props;
-    const { error, status, value } = this.state;
-    const onChange = this.onChange(parent, label);
-    const { input='input', ...attributes } = {
-      boolean: {checked: value, type: 'checkbox'},
-      number: {type: 'number', value: value},
-      object: {input: 'textarea', placeholder: label, value: value},
-      string: {type: 'text', value: value},
-    }[typeof configurationValue] || {};
-    return React.createElement(component, null, !!attributes && (
-      <label className={classes.field}>
-        <div children={label} className={classes.text} />
-        <div children={label} className={classes.input}>
-          {React.createElement(input, {name: label, onChange, ...attributes})}
-        </div>
-        <div children={<WizardFieldStatus error={error} status={status} />} />
-      </label>
-    ));
-  }
-});
+  useEffect(() => {
+    if (ready && previousValue !== null && debouncedValue !== previousValue) {
+      onUpdate(debouncedValue);
+    }
+  }, [debouncedValue, onUpdate, previousValue, ready]);
+
+  useEffect(() => {
+    if (!ready) {
+      setValue(format(oldValue));
+    }
+  }, [oldValue, ready]);
+
+  useEffect(() => {
+    if (value !== null) {
+      setReady(true);
+    }
+  }, [value]);
+
+  const { input='input', ...attributes } = {
+    boolean: {checked: value, type: 'checkbox'},
+    number: {type: 'number', value},
+    object: {input: 'textarea', placeholder: label, value},
+    string: {type: 'text', value},
+  }[typeof oldValue] || {};
+  return ready && React.createElement(component, null, !!attributes && (
+    <label className={classes.field}>
+      <div children={label} className={classes.text} />
+      <div children={label} className={classes.input}>
+        {React.createElement(input, {name: label, onChange, ...attributes})}
+      </div>
+      <div children={<WizardFieldStatus error={error} status={status} />} />
+    </label>
+  ));
+}
+
+
+WizardField.defaultProps = {
+  component: 'div',
+};
+
+WizardField.propTypes = {
+  component: PropTypes.elementType,
+  label: PropTypes.string.isRequired,
+  parent: PropTypes.string.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+
+WizardField.status = {
+  error: 'error',
+  pending: 'pending',
+  success: 'success',
+};
+
+
+export default WizardField;

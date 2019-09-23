@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   item: {
     paddingBottom: '.8em',
     paddingLeft: '1.6em',
@@ -24,7 +27,8 @@ export default theme => ({
     overflowY: 'auto',
     padding: 0,
     position: 'fixed',
+    visibility: 'hidden',
     ...configuration.menu.styles,
     [theme.breakpoints.down('xs')]: configuration.menu.stylesMobile,
   }),
-});
+}));

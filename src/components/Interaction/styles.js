@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   base: ({ configuration }) => ({
     display: 'flex',
     marginTop: '.5em',
@@ -28,4 +31,4 @@ export default theme => ({
       marginRight: '2em',
     },
   },
-});
+}));

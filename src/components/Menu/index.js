@@ -1,9 +1,8 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
-import withStyles from 'react-jss';
+import React, { useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
-import styles from './styles';
+import useStyles from './styles';
 import { withConfiguration } from '../../tools/configuration';
 
 
@@ -12,125 +11,90 @@ import { withConfiguration } from '../../tools/configuration';
  * systems. The toggle has to be located in the menu children and its `onClick`
  * property will be overwritten.
  */
-export default withConfiguration(withStyles(styles)(class Menu extends React.PureComponent {
+function Menu({ children, configuration, items }) {
 
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    /** @ignore */
-    configuration: PropTypes.object.isRequired,
-    items: PropTypes.arrayOf(PropTypes.shape({
-      onClick: PropTypes.func,
-      text: PropTypes.string.isRequired,
-    })).isRequired,
-  };
+  const classes = useStyles({configuration});
+  const [ geometry, setGeometry ] = useState(null);
+  const [ open, setOpen ] = useState(false);
+  const anchorRef = useRef(null);
+  const menuRef = useRef(null);
+  const node = document && document.getElementById(configuration.root);
+  const spacing = ~~configuration.menu.spacing;
 
-  constructor(props) {
-    super(props);
-    this.anchor = React.createRef();
-    this.menu = React.createRef();
-    this.state = {geometry: null, open: false};
-  }
-
-  /**
-   * Handle clicks out of the menu pop-in. Clicks outside of the menu close it.
-   *
-   * @param {Object} event - DOM event.
-   * @public
-   */
-  onDocumentClick = event => {
-    if (!this.anchor.current.contains(event.target) && !this.menu.current.contains(event.target)) {
-      this.toggleClose();
+  const onDocumentClick = event => {
+    if (!anchorRef.current.contains(event.target) && !menuRef.current.contains(event.target)) {
+      setOpen(false);
     }
   };
 
-  /**
-   * Handle clicks on the menu items and close after calling the callback.
-   *
-   * @param {function} callback - Function to run when the item is selected.
-   * @public
-   */
-  onItemClick = callback => () => {
+  const onItemClick = callback => () => {
     if (callback) {
       callback();
-      this.toggleClose();
+      setOpen(false);
     }
   };
 
-  /**
-   * Set the menu position in the viewport. Leave a margin with respect to the
-   * limits of the viewport.
-   *
-   * @public
-   */
-  setGeometry = () => {
-    const spacing = ~~this.props.configuration.menu.spacing;
-    if (this.menu.current) {
-      const anchor = this.anchor.current.getBoundingClientRect();
-      const left = anchor.left + anchor.width / 2 - this.menu.current.offsetWidth / 2;
-      this.setState({geometry: {
-        left: Math.max(0, Math.min(left, window.innerWidth - this.menu.current.offsetWidth - spacing)),
-        maxHeight: window.innerHeight - anchor.bottom - spacing,
-        top: anchor.bottom + spacing,
-      }});
+  const toggle = value => () => {
+    value = value === undefined ? !open : value;
+    return value ? setOpen(true) : setOpen(false);
+  };
+
+  useEffect(() => {
+    if (open) {
+      const element = anchorRef.current.getBoundingClientRect();
+      const left = element.left + element.width / 2 - menuRef.current.offsetWidth / 2;
+      setGeometry({
+        left: Math.max(0, Math.min(left, window.innerWidth - menuRef.current.offsetWidth - spacing)),
+        maxHeight: window.innerHeight - element.bottom - spacing,
+        top: element.bottom + spacing,
+        visibility: 'visible',
+      });
     }
-  };
+    else {
+      setGeometry(null);
+    }
+  }, [open, spacing]);
 
-  /**
-   * Toggle open or closed the menu.
-   *
-   * @param {boolean} value - Use `true` to open or `false` to close.
-   * @public
-   */
-  toggle = value => () => {
-    value = value === undefined ? !this.state.open : value;
-    return value ? this.toggleOpen() : this.toggleClose();
-  };
 
-  /**
-   * Close the menu.
-   *
-   * @public
-   */
-  toggleClose = () => this.setState({open: false}, () => {
-    document.removeEventListener('mousedown', this.onDocumentClick);
-  });
+  useEffect(() => {
+    if (geometry) {
+      document.addEventListener('mousedown', onDocumentClick);
+    }
+    return () => document.removeEventListener('mousedown', onDocumentClick);
+  }, [geometry]);
 
-  /**
-   * Open the menu.
-   *
-   * @public
-   */
-  toggleOpen = () => this.setState({open: true}, () => {
-    this.setGeometry();
-    document.addEventListener('mousedown', this.onDocumentClick);
-  });
+  return (
+    <>
+      {React.cloneElement(children, {onClick: toggle(), ref: anchorRef})}
+      {open && (
+        <Portal node={node}>
+          <ul className={classNames('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
+            {items.map((it, index) => (
+              <li children={it.text}
+                  className={classNames(
+                    'dydu-menu-item',
+                    classes.item,
+                    it.onClick ? classes.itemEnabled : classes.itemDisabled
+                  )}
+                  key={index}
+                  onClick={onItemClick(it.onClick)} />
+            ))}
+          </ul>
+        </Portal>
+      )}
+    </>
+  );
+}
 
-  render() {
-    const { children, classes, configuration, items } = this.props;
-    const { geometry, open } = this.state;
-    const node = document && document.getElementById(configuration.root);
-    return !!items.length && (
-      <>
-        {React.cloneElement(children, {onClick: this.toggle(), ref: this.anchor})}
-        {open && (
-          <Portal node={node}>
-            <ul className={classNames('dydu-menu', classes.root)} ref={this.menu} style={geometry}>
-              {items.map((it, index) => (
-                <li children={it.text}
-                    className={classNames(
-                      'dydu-menu-item',
-                      classes.item,
-                      it.onClick ? classes.itemEnabled : classes.itemDisabled
-                    )}
-                    key={index}
-                    onClick={this.onItemClick(it.onClick)} />
-              ))}
-            </ul>
-          </Portal>
-        )}
-      </>
-    );
-  }
-}));
+
+Menu.propTypes = {
+  children: PropTypes.element.isRequired,
+  configuration: PropTypes.object.isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    onClick: PropTypes.func,
+    text: PropTypes.string.isRequired,
+  })).isRequired,
+};
+
+
+export default withConfiguration(Menu);

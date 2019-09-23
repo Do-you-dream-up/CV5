@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
-import withStyles from 'react-jss';
-import styles from './styles';
+import React, { useCallback, useEffect } from 'react';
+import useStyles from './styles';
 import Interaction from '../Interaction';
 import Top from '../Top';
 import dydu from '../../tools/dydu';
@@ -12,49 +11,41 @@ import dydu from '../../tools/dydu';
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-class Dialog extends React.PureComponent {
+function Dialog({ interactions, onAdd, ...rest}) {
 
-  static propTypes = {
-    /** @ignore */
-    classes: PropTypes.object.isRequired,
-    interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
-    onAdd: PropTypes.func.isRequired,
-  };
+  const classes = useStyles();
 
-  /**
-   * Fetch the history then push interactions in the conversation.
-   *
-   * @public
-   */
-  fetch = () => dydu.history().then(({ interactions }) => {
+  const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
-      interactions = interactions.reduce((accumulator, it, index) => (
+      interactions = interactions.reduce((accumulator, it, index) => {
+        const secondary = it.sidebar ? {...it.sidebar, open: index === interactions.length - 1} : null;
         accumulator.push(
           <Interaction text={it.user} type="request" />,
-          <Interaction text={it.text}
-                       secondary={it.sidebar}
-                       secondaryOpen={index === interactions.length - 1}
-                       type="response" />,
-        ) && accumulator
-      ), []);
-      this.props.onAdd(interactions);
+          <Interaction text={it.text} secondary={secondary} type="response" />,
+        );
+        return accumulator;
+      }, []);
+      onAdd(interactions);
     }
-  }, () => {});
+  }, () => {}), [onAdd]);
 
-  componentDidMount() {
-    this.fetch();
-  }
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
-  render() {
-    const { classes, interactions, onAdd, ...rest } = this.props;
-    return (
-      <div className={classNames('dydu-dialog', classes.root)} {...rest}>
-        <Top />
-        {interactions.map((it, index) => ({...it, key: index}))}
-      </div>
-    );
-  }
+  return (
+    <div className={classNames('dydu-dialog', classes.root)} {...rest}>
+      <Top />
+      {interactions.map((it, index) => ({...it, key: index}))}
+    </div>
+  );
 }
 
 
-export default withStyles(styles)(Dialog);
+Dialog.propTypes = {
+  interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
+  onAdd: PropTypes.func.isRequired,
+};
+
+
+export default Dialog;

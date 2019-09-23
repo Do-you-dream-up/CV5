@@ -1,4 +1,7 @@
-export default theme => ({
+import { createUseStyles } from 'react-jss';
+
+
+export default createUseStyles(theme => ({
   buttons: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -13,4 +16,4 @@ export default theme => ({
     ...configuration.onboarding.styles,
     [theme.breakpoints.down('xs')]: configuration.onboarding.stylesMobile,
   }),
-});
+}));
