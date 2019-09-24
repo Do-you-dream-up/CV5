@@ -23,7 +23,7 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
-  const [ status, setStatus ] = useState(false);
+  const [ ready, setReady ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
@@ -62,11 +62,11 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
   }, [addSecondary, secondary]);
 
   useEffect(() => {
-    if (!status || live) {
-      setStatus(true);
+    if (!ready || live) {
+      setReady(true);
       addBubbles(sanitize(text).split('<hr>'));
     }
-  }, [addBubbles, status, text]);
+  }, [addBubbles, live, ready, text]);
 
   return (bubbles.length || hasLoader) && (
     <div className={classNames(
