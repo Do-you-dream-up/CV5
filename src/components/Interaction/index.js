@@ -9,6 +9,7 @@ import Scroll from  '../Scroll';
 import { DialogContext } from  '../../contexts/DialogContext';
 import { withConfiguration } from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
+import usePrevious from  '../../tools/previous';
 
 
 /**
@@ -28,6 +29,7 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
+  const previousText = usePrevious(text);
   const bubblesRef = useRef(bubbles);
   bubblesRef.current = bubbles;
 
@@ -62,11 +64,11 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
   }, [addSecondary, secondary]);
 
   useEffect(() => {
-    if (!ready || live) {
+    if (text !== previousText && (!ready || live)) {
       setReady(true);
       addBubbles(sanitize(text).split('<hr>'));
     }
-  }, [addBubbles, live, ready, text]);
+  }, [addBubbles, live, previousText, ready, text]);
 
   return (bubbles.length || hasLoader) && (
     <div className={classNames(
