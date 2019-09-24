@@ -17,7 +17,7 @@ import sanitize from  '../../tools/sanitize';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-function Interaction({ configuration, secondary, text, thinking, type }) {
+function Interaction({ configuration, live, secondary, text, thinking, type }) {
 
   const { toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
@@ -62,7 +62,7 @@ function Interaction({ configuration, secondary, text, thinking, type }) {
   }, [addSecondary, secondary]);
 
   useEffect(() => {
-    if (!status) {
+    if (!status || live) {
       setStatus(true);
       addBubbles(sanitize(text).split('<hr>'));
     }
