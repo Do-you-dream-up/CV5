@@ -77,7 +77,7 @@ export const configuration = new class Configuration {
       position,
       shadow,
     }={}) => ({
-      ...(background !== undefined && {backgroundColor: background}),
+      ...(background !== undefined && {background}),
       ...(bottom !== undefined && {bottom}),
       ...(height !== undefined && {height}),
       ...(left !== undefined && {left}),
