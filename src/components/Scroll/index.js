@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 
 
@@ -8,7 +9,7 @@ import React, { useEffect, useRef } from 'react';
  * Typically you would want to wrap all conversation bubbles with this
  * component.
  */
-export default function Scroll({ ...rest }) {
+function Scroll({ component, ...rest }) {
 
   const elementRef = useRef(null);
 
@@ -20,5 +21,18 @@ export default function Scroll({ ...rest }) {
     scroll();
   }, []);
 
-  return <div {...rest} ref={elementRef} />;
+  return React.createElement(component, {...rest, ref: elementRef});
 }
+
+
+Scroll.defaultProps = {
+  component: 'div',
+};
+
+
+Scroll.propTypes = {
+  component: PropTypes.node,
+};
+
+
+export default Scroll;
