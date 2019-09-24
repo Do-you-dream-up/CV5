@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import useDebounce from '../../tools/debounce';
 
 
 /**
@@ -9,16 +10,24 @@ import React, { useEffect, useRef } from 'react';
  * Typically you would want to wrap all conversation bubbles with this
  * component.
  */
-function Scroll({ component, ...rest }) {
+function Scroll({ component, delay, ...rest }) {
 
   const elementRef = useRef(null);
+  const [ ready, setReady] = useState(false);
+  const debouncedReady = useDebounce(ready, delay);
 
   const scroll = () => {
     elementRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
   };
 
   useEffect(() => {
-    scroll();
+    if (debouncedReady) {
+      scroll();
+    }
+  }, [debouncedReady]);
+
+  useEffect(() => {
+    setReady(true);
   }, []);
 
   return React.createElement(component, {...rest, ref: elementRef});
@@ -27,11 +36,13 @@ function Scroll({ component, ...rest }) {
 
 Scroll.defaultProps = {
   component: 'div',
+  delay: 0,
 };
 
 
 Scroll.propTypes = {
-  component: PropTypes.node,
+  component: PropTypes.elementType,
+  delay: PropTypes.number,
 };
 
 
