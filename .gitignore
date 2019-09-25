@@ -2,3 +2,4 @@ build/
 node_modules/
 public/configuration.json
 src/bot.json
+styleguide/
