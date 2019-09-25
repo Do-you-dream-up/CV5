@@ -8,10 +8,10 @@ variables:
 
 build:
   script:
+    - apt-get update -qq && apt-get install -y -qq lftp
     - cp -n src/bot.json.sample src/bot.json
     - npm i
     - npm run build
-    - apt-get update -qq && apt-get install -y -qq lftp
     - lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; mirror -R build ./html/bliss/${CI_COMMIT_REF_NAME} --ignore-time --parallel=10; quit"
   only:
     - master
