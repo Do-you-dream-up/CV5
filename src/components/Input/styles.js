@@ -12,7 +12,7 @@ export default createUseStyles(theme => ({
   },
 
   container: {
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.background.highlight,
     borderRadius: theme.shape.borderRadius,
     display: 'flex',
     flex: 'auto',

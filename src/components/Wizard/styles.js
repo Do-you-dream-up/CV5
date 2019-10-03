@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   entry: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.primary.light,
     borderRadius: theme.shape.borderRadius,
     boxShadow: theme.shadows[1],
     margin: '.5em',

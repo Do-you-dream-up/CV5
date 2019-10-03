@@ -14,6 +14,7 @@ export default {
     },
     background: {
       default: '#FAFAFA',
+      highlight: 'rgba(255, 255, 255, .4)',
       menu: '#FFFFFF',
       secondary: '#FFFFFF',
     },

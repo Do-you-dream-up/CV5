@@ -19,7 +19,11 @@ export default createUseStyles(theme => ({
       padding: 0,
     },
     '& input[type="number"], & input[type="text"], & textarea': {
+      backgroundColor: theme.palette.background.highlight,
+      border: 0,
+      borderRadius: theme.shape.borderRadius,
       fontFamily: 'monospace',
+      padding: '.6em',
     },
     '& input[type="number"], & input[type="text"]': {
       width: '100%',
