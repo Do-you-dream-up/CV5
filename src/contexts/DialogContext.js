@@ -43,7 +43,7 @@ export class DialogProvider extends React.Component {
   toggleSecondary = (open, { body, title }={}) => () => {
     this.setState(state => ({
       secondaryActive: open === undefined ? !state.secondaryActive : open,
-      ...((body || title) && {secondaryContent: {body: body, title: title}}),
+      ...((body || title) && {secondaryContent: {body, title}}),
     }));
   };
 
