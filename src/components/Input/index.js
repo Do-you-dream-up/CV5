@@ -36,15 +36,15 @@ function Input({ configuration, onRequest, onResponse }) {
     event.preventDefault();
     setTyping(false);
     setInput(suggestionValue);
-    submit();
+    submit(suggestionValue);
   };
 
   const reset = () => {
     setInput('');
   };
 
-  const submit = () => {
-    const text = input.trim();
+  const submit = text => {
+    text = text.trim();
     if (text) {
       reset();
       onRequest(text);
