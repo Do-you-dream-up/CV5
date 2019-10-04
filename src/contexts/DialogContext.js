@@ -29,9 +29,6 @@ export class DialogProvider extends React.Component {
 
   addResponse = ({ text, sidebar }) => {
     if (text) {
-      if (sidebar) {
-        sidebar.open = true;
-      }
       this.add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
     }
   };
@@ -40,10 +37,10 @@ export class DialogProvider extends React.Component {
     this.setState({interactions: []});
   };
 
-  toggleSecondary = (open, { body, title }={}) => () => {
+  toggleSecondary = (open, { body, title, url }={}) => () => {
     this.setState(state => ({
       secondaryActive: open === undefined ? !state.secondaryActive : open,
-      ...((body || title) && {secondaryContent: {body, title}}),
+      ...((body || title || url) && {secondaryContent: {body, title, url}}),
     }));
   };
 

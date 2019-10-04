@@ -51,9 +51,9 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
     }
   }, [delay, thinking]);
 
-  const addSecondary = useCallback(({ content, open, title }) => {
-    if (content || title) {
-      toggleSecondary(open, {body: sanitize(content), title})();
+  const addSecondary = useCallback(({ content, title, url }) => {
+    if (content || title || url) {
+      toggleSecondary(true, {body: sanitize(content), title, url})();
     }
   }, [toggleSecondary]);
 

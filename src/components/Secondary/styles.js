@@ -9,6 +9,10 @@ export default createUseStyles(theme => ({
       marginLeft: '1em',
     },
   },
+  frame: {
+    border: 0,
+    flexGrow: 1,
+  },
   header: {
     backgroundColor: `${theme.palette.background.secondary}CC`,
     display: 'flex',

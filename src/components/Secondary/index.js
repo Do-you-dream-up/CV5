@@ -16,7 +16,7 @@ function Secondary({ configuration, mode}) {
 
   const { state: dialogState, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
-  const { body, title } = dialogState.secondaryContent || {};
+  const { body, title, url } = dialogState.secondaryContent || {};
 
   return dialogState.secondaryActive ? (
     <div className={classNames(
@@ -35,6 +35,13 @@ function Secondary({ configuration, mode}) {
       {body && (
         <div className={classNames('dydu-secondary-body', classes.body)}
              dangerouslySetInnerHTML={{__html: body}} />
+      )}
+      {url && (
+        <iframe allow="fullscreen"
+                className={classes.frame}
+                importance="low"
+                sandbox="allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-forms"
+                src={url} />
       )}
     </div>
   ) : null;
