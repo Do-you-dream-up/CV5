@@ -22,24 +22,21 @@ function Onboarding({ children, configuration, render }) {
   const { hasPrevious, next, previous, state: onboardingState } = useContext(OnboardingContext);
   const classes = useStyles({configuration});
   const { steps } = configuration.onboarding;
+  const should = render && onboardingState.active && onboardingState.index < steps.length;
+  const step = steps[onboardingState.index];
+  const previousText = step.previous || configuration.onboarding.previous;
+  const nextText = step.next || configuration.onboarding.next;
+  const body = sanitize(step.content || step);
 
-  let content = !onboardingState.active && children;
-  if (render && onboardingState.active && onboardingState.index < steps.length) {
-    const step = steps[onboardingState.index];
-    const previousText = step.previous || configuration.onboarding.previous;
-    const nextText = step.next || configuration.onboarding.next;
-    const body = sanitize(step.content || step);
-    content = (
-      <div className={classNames('dydu-onboarding', classes.root)}>
-        <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
-        <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
-          <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
-          <Button children={nextText} onClick={next} />
-        </div>
+  return should ? (
+    <div className={classNames('dydu-onboarding', classes.root)}>
+      <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
+      <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
+        <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
+        <Button children={nextText} onClick={next} />
       </div>
-    );
-  }
-  return content;
+    </div>
+  ) : !onboardingState.active && children;
 }
 
 
