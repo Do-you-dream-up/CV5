@@ -29,7 +29,7 @@ function Input({ configuration, onRequest, onResponse }) {
 
   const onSubmit = event => {
     event.preventDefault();
-    return submit();
+    return submit(input);
   };
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
