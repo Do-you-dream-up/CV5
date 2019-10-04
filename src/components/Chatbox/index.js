@@ -70,6 +70,7 @@ function Chatbox({ configuration, open, toggle }) {
         secondary: (open, { body, title }) => dialog.toggleSecondary(open, {body, title})(),
         toggle: open => toggle(open)(),
       };
+      window.reword = window.dydu.chat.ask;
     }
   }, [ask, dialog, toggle]);
 
