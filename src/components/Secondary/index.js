@@ -41,7 +41,8 @@ function Secondary({ configuration, mode}) {
                 className={classes.frame}
                 importance="low"
                 sandbox="allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-forms"
-                src={url} />
+                src={url}
+                title={url} />
       )}
     </div>
   ) : null;
