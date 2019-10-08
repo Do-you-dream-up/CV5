@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
 import useStyles from './styles';
+import MenuList from '../MenuList';
 import { withConfiguration } from '../../tools/configuration';
 
 
@@ -10,6 +11,9 @@ import { withConfiguration } from '../../tools/configuration';
  * Create a togglable menu, akin to the right-click contextual menu on various
  * systems. The toggle has to be located in the menu children and its `onClick`
  * property will be overwritten.
+ *
+ * Expect items as an array of arrays. This is useful to separate actions
+ * between categories.
  */
 function Menu({ children, configuration, items }) {
 
@@ -21,15 +25,10 @@ function Menu({ children, configuration, items }) {
   const node = document && document.getElementById(configuration.root);
   const spacing = ~~configuration.menu.spacing;
 
+  const onClose = () => setOpen(false);
+
   const onDocumentClick = event => {
     if (!anchorRef.current.contains(event.target) && !menuRef.current.contains(event.target)) {
-      setOpen(false);
-    }
-  };
-
-  const onItemClick = callback => () => {
-    if (callback) {
-      callback();
       setOpen(false);
     }
   };
@@ -68,18 +67,9 @@ function Menu({ children, configuration, items }) {
       {React.cloneElement(children, {onClick: toggle(), ref: anchorRef})}
       {open && (
         <Portal node={node}>
-          <ul className={classNames('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
-            {items.map((it, index) => (
-              <li children={it.text}
-                  className={classNames(
-                    'dydu-menu-item',
-                    classes.item,
-                    it.onClick ? classes.itemEnabled : classes.itemDisabled
-                  )}
-                  key={index}
-                  onClick={onItemClick(it.onClick)} />
-            ))}
-          </ul>
+          <div className={classNames('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
+            {items.map((it, index) => <MenuList items={it} key={index} onClose={onClose} />)}
+          </div>
         </Portal>
       )}
     </>
@@ -90,10 +80,7 @@ function Menu({ children, configuration, items }) {
 Menu.propTypes = {
   children: PropTypes.element.isRequired,
   configuration: PropTypes.object.isRequired,
-  items: PropTypes.arrayOf(PropTypes.shape({
-    onClick: PropTypes.func,
-    text: PropTypes.string.isRequired,
-  })).isRequired,
+  items: PropTypes.arrayOf(PropTypes.array).isRequired,
 };
 
 

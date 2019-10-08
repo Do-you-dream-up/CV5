@@ -1,8 +1,12 @@
 ```js static
 const menu = [
-  {onClick: onFoo, text: 'Foo'},
-  {onClick: onBar, text: 'Bar'},
-  {onClick: onBaz, text: 'Baz'},
+  [
+    {onClick: onFoo, text: 'Foo'},
+  ],
+  [
+    {onClick: onBar, text: 'Bar'},
+    {onClick: onBaz, text: 'Baz'},
+  ],
 ];
 ```
 

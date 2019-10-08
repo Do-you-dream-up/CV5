@@ -19,19 +19,19 @@ function Header({ configuration, onClose, ...rest }) {
 
   const classes = useStyles({configuration});
   const { title='' } = configuration.header;
-  const gdprMenu = [
+  const gdprMenu = [[
     {onClick: () => window.dydu.gdpr.get(), text: 'Get'},
     {onClick: () => window.dydu.gdpr.forget(), text: 'Forget'},
-  ];
-  const languagesMenu = [
+  ]];
+  const languagesMenu = [[
     {onClick: () => window.dydu.localization.set('en'), text: 'English'},
     {onClick: () => window.dydu.localization.set('es'), text: 'Español'},
     {onClick: () => window.dydu.localization.set('fr'), text: 'Français'},
-  ];
-  const settingsMenu = Object.keys(ACTIONS).map(it => ({
+  ]];
+  const moreMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,
-  }));
+  }))];
 
   return (
     <header className={classNames('dydu-header', classes.root)} {...rest}>
@@ -51,9 +51,9 @@ function Header({ configuration, onClose, ...rest }) {
                 <img alt="GDPR" src="icons/shield-lock.png" title="GDPR" />
               </Button>
             </Menu>
-            <Menu items={settingsMenu}>
+            <Menu items={moreMenu}>
               <Button variant="icon">
-                <img alt="Settings" src="icons/dots-vertical.png" title="Settings" />
+                <img alt="More" src="icons/dots-vertical.png" title="More" />
               </Button>
             </Menu>
           </Onboarding>
