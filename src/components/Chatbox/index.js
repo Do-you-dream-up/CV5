@@ -20,7 +20,7 @@ import talk from '../../tools/talk';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-function Chatbox({ configuration, open, toggle }) {
+function Chatbox({ configuration, open, toggle, ...rest }) {
 
   const dialog = useContext(DialogContext);
   const classes = useStyles({configuration});
@@ -76,7 +76,7 @@ function Chatbox({ configuration, open, toggle }) {
 
   return (
     <TabProvider>
-      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}>
+      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})} {...rest}>
         <Onboarding render>
           <div className={classNames('dydu-chatbox-body', classes.body)}>
             <Tab component={Dialog}

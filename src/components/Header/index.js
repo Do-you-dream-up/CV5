@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
 import Banner from '../Banner';
 import Button from '../Button';
 import Menu from '../Menu';
 import Onboarding from '../Onboarding';
 import Tabs from '../Tabs';
+import { DragonContext } from '../../contexts/DragonContext';
 import { withConfiguration } from '../../tools/configuration';
 import { ACTIONS } from '../../tools/talk';
 
@@ -15,8 +16,9 @@ import { ACTIONS } from '../../tools/talk';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-function Header({ configuration, onClose, ...rest }) {
+function Header({ configuration, onClose, style, ...rest }) {
 
+  const { onDragStart } = useContext(DragonContext);
   const classes = useStyles({configuration});
   const { title='' } = configuration.header;
   const gdprMenu = [[
@@ -33,8 +35,13 @@ function Header({ configuration, onClose, ...rest }) {
     text: it,
   }))];
 
+  const properties = onDragStart ? {
+    onMouseDown: onDragStart,
+    style: {...style, cursor: 'move'},
+  } : style;
+
   return (
-    <header className={classNames('dydu-header', classes.root)} {...rest}>
+    <header className={classNames('dydu-header', classes.root)} {...properties} {...rest}>
       <div className={classNames('dydu-header-body', classes.body)}>
         {title.length && (
           <div children={title} className={classNames('dydu-header-title', classes.title)} />
@@ -73,6 +80,7 @@ function Header({ configuration, onClose, ...rest }) {
 Header.propTypes = {
   configuration: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  style: PropTypes.object,
 };
 
 

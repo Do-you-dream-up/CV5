@@ -4,6 +4,7 @@ import qs from 'qs';
 import React, { useEffect, useState } from 'react';
 import useStyles from './styles';
 import Chatbox from '../Chatbox';
+import Dragon from '../Dragon';
 import Teaser from '../Teaser';
 import Wizard from '../Wizard';
 import { withConfiguration } from '../../tools/configuration';
@@ -34,7 +35,7 @@ function Application({ configuration }) {
   return (
     <div className={classNames('dydu-application', classes.root)}>
       {hasWizard && <Wizard />}
-      <Chatbox open={open} toggle={toggle} />
+      <Dragon component={Chatbox} open={open} toggle={toggle} />
       <Teaser open={!open} toggle={toggle} />
     </div>
   );
