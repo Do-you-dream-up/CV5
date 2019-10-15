@@ -3,8 +3,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import WizardFieldStatus from '../WizardFieldStatus';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import useDebounce from '../../tools/debounce';
-import usePrevious from '../../tools/previous';
+import useDebounce from '../../tools/hooks/debounce';
+import usePrevious from '../../tools/hooks/previous';
 
 
 /**

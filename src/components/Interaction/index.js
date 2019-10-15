@@ -9,7 +9,7 @@ import Scroll from  '../Scroll';
 import { DialogContext } from  '../../contexts/DialogContext';
 import { withConfiguration } from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
-import usePrevious from  '../../tools/previous';
+import usePrevious from  '../../tools/hooks/previous';
 
 
 /**

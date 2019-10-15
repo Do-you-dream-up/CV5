@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import useDebounce from '../../tools/debounce';
+import useDebounce from '../../tools/hooks/debounce';
 
 
 /**

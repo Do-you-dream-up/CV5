@@ -5,7 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import useStyles from './styles';
 import Button from '../Button';
 import { withConfiguration } from '../../tools/configuration';
-import useDebounce from '../../tools/debounce';
+import useDebounce from '../../tools/hooks/debounce';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
 

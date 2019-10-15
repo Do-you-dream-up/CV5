@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DragonProvider } from '../../contexts/DragonContext';
-import useEvent from '../../tools/event';
+import useEvent from '../../tools/hooks/event';
 
 
 /**
