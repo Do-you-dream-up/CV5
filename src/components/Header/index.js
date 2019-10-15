@@ -16,7 +16,7 @@ import { ACTIONS } from '../../tools/talk';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-function Header({ configuration, onClose, style, ...rest }) {
+function Header({ configuration, onClose, ...rest }) {
 
   const { onDragStart } = useContext(DragonContext);
   const classes = useStyles({configuration});
@@ -35,13 +35,10 @@ function Header({ configuration, onClose, style, ...rest }) {
     text: it,
   }))];
 
-  const properties = onDragStart ? {
-    onMouseDown: onDragStart,
-    style: {...style, cursor: 'move'},
-  } : style;
-
   return (
-    <header className={classNames('dydu-header', classes.root)} {...properties} {...rest}>
+    <header className={classNames('dydu-header', classes.root, {[classes.draggable]: onDragStart})}
+            onMouseDown={onDragStart}
+            {...rest}>
       <div className={classNames('dydu-header-body', classes.body)}>
         {title.length && (
           <div children={title} className={classNames('dydu-header-title', classes.title)} />

@@ -15,6 +15,9 @@ export default createUseStyles(theme => ({
     display: 'flex',
     padding: '.5em',
   },
+  draggable: {
+    cursor: 'move',
+  },
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.borderRadius,
