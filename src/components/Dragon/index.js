@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DragonProvider } from '../../contexts/DragonContext';
+import { withConfiguration } from '../../tools/configuration';
 import useEvent from '../../tools/hooks/event';
 
 
@@ -10,17 +11,24 @@ import useEvent from '../../tools/hooks/event';
  * This works by capturing the delta of the pointer position and applying a
  * `translate3d` CSS property.
  */
-export default function Dragon({ children, component, ...rest }) {
+function Dragon({ children, component, configuration, ...rest }) {
 
   const [ current, setCurrent ] = useState(null);
   const [ offset, setOffset ] = useState(null);
   const [ origin, setOrigin ] = useState(null);
   const [ moving, setMoving ] = useState(false);
+  const { active, factor=1 } = configuration.dragon;
 
   const onDrag = event => {
     if (moving && origin) {
       event.preventDefault();
-      setOffset({x: event.clientX - origin.x, y: event.clientY - origin.y});
+      let x = event.clientX - origin.x;
+      let y = event.clientY - origin.y;
+      if (factor > 1) {
+        x = Math.round(x / factor) * factor;
+        y = Math.round(y / factor) * factor;
+      }
+      setOffset({x, y});
     }
   };
 
@@ -49,7 +57,7 @@ export default function Dragon({ children, component, ...rest }) {
   useEvent('mouseup', onDragEnd);
 
   return !!current && (
-    <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={onDragStart}>
+    <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
       {React.createElement(component, {...rest, style: {
         transform: `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`,
       }})}
@@ -66,4 +74,8 @@ Dragon.defaultProps = {
 Dragon.propTypes = {
   children: PropTypes.element,
   component: PropTypes.elementType.isRequired,
+  configuration: PropTypes.object.isRequired,
 };
+
+
+export default withConfiguration(Dragon);

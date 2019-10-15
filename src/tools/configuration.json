@@ -43,6 +43,10 @@
       "width": "unset"
     }
   },
+  "dragon": {
+    "active": true,
+    "factor": 100
+  },
   "footer": {
     "styles": {
       "shadow": true
