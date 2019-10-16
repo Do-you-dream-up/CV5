@@ -1,13 +1,12 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import qs from 'qs';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import Chatbox from '../Chatbox';
 import Dragon from '../Dragon';
 import Teaser from '../Teaser';
 import Wizard from '../Wizard';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { Local } from '../../tools/storage';
 
 
@@ -16,8 +15,9 @@ import { Local } from '../../tools/storage';
  *
  * Optionally render the Wizard when the `wizard` URL parameter is found.
  */
-function Application({ configuration }) {
+export default function Application() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const isOpen = Local.get(Local.names.open);
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
@@ -40,11 +40,3 @@ function Application({ configuration }) {
     </div>
   );
 }
-
-
-Application.propTypes = {
-  configuration: PropTypes.object.isRequired,
-};
-
-
-export default withConfiguration(Application);

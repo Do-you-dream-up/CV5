@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
 import Button from '../Button';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
-import { withConfiguration } from '../../tools/configuration';
 import sanitize from '../../tools/sanitize';
 
 
@@ -17,8 +17,9 @@ import sanitize from '../../tools/sanitize';
  * children, use the property `render` on this component. Ideally the `render`
  * property is utilized on only one instance of this component.
  */
-function Onboarding({ children, configuration, render }) {
+export default function Onboarding({ children, render }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { hasPrevious, next, previous, state: onboardingState } = useContext(OnboardingContext);
   const classes = useStyles({configuration});
   const { steps } = configuration.onboarding;
@@ -42,9 +43,5 @@ function Onboarding({ children, configuration, render }) {
 
 Onboarding.propTypes = {
   children: PropTypes.node,
-  configuration: PropTypes.object.isRequired,
   render: PropTypes.bool,
 };
-
-
-export default withConfiguration(Onboarding);

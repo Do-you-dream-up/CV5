@@ -31,7 +31,7 @@ export class ConfigurationProvider extends React.Component {
 
   render() {
     return <ConfigurationContext.Provider children={this.props.children} value={{
-      state: this.state,
+      configuration: this.state.configuration,
       update: this.update,
     }} />;
   }

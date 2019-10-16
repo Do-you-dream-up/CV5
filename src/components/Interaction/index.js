@@ -6,8 +6,8 @@ import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import { DialogContext } from  '../../contexts/DialogContext';
-import { withConfiguration } from  '../../tools/configuration';
 import sanitize from  '../../tools/sanitize';
 import usePrevious from  '../../tools/hooks/previous';
 
@@ -18,8 +18,9 @@ import usePrevious from  '../../tools/hooks/previous';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-function Interaction({ configuration, live, secondary, text, thinking, type }) {
+export default function Interaction({ live, secondary, text, thinking, type }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
@@ -88,13 +89,9 @@ function Interaction({ configuration, live, secondary, text, thinking, type }) {
 
 
 Interaction.propTypes = {
-  configuration: PropTypes.object.isRequired,
   live: PropTypes.bool,
   secondary: PropTypes.object,
   text: PropTypes.string.isRequired,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
-
-
-export default withConfiguration(Interaction);

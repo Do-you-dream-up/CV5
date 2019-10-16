@@ -108,6 +108,6 @@ export const configuration = new class Configuration {
 export const withConfiguration = Component => class InnerComponent extends React.PureComponent {
   static contextType = ConfigurationContext;
   render() {
-    return <Component configuration={this.context.state.configuration} {...this.props} />;
+    return <Component configuration={this.context.configuration} {...this.props} />;
   }
 };

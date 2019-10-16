@@ -7,8 +7,8 @@ import Button from '../Button';
 import Menu from '../Menu';
 import Onboarding from '../Onboarding';
 import Tabs from '../Tabs';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
-import { withConfiguration } from '../../tools/configuration';
 import { ACTIONS } from '../../tools/talk';
 
 
@@ -16,8 +16,9 @@ import { ACTIONS } from '../../tools/talk';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-function Header({ configuration, onClose, ...rest }) {
+export default function Header({ onClose, ...rest }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext);
   const classes = useStyles({configuration});
   const { title='' } = configuration.header;
@@ -75,10 +76,6 @@ function Header({ configuration, onClose, ...rest }) {
 }
 
 Header.propTypes = {
-  configuration: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
-
-
-export default withConfiguration(Header);

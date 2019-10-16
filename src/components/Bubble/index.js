@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from  './styles';
 import Button from  '../Button';
-import { withConfiguration } from  '../../tools/configuration';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 
 
 /**
@@ -15,8 +15,9 @@ import { withConfiguration } from  '../../tools/configuration';
  *
  * The bubble can have clickable actions, appearing as buttons below its content.
  */
-function Bubble({ actions, component, configuration, html, type }) {
+export default function Bubble({ actions, component, html, type }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
 
   return React.createElement(component, {className: 'dydu-bubble'}, (
@@ -45,11 +46,7 @@ Bubble.propTypes = {
     action: PropTypes.func.isRequired,
     text: PropTypes.string.isRequired,
   })),
-  configuration: PropTypes.object.isRequired,
   component: PropTypes.elementType,
   html: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
-
-
-export default withConfiguration(Bubble);

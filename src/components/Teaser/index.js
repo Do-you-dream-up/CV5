@@ -1,15 +1,16 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
 
 /**
  * Minified version of the chatbox.
  */
-function Teaser({ configuration, open, toggle }) {
+export default function Teaser({ open, toggle }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
   const { title } = configuration.teaser;
 
@@ -22,10 +23,6 @@ function Teaser({ configuration, open, toggle }) {
 
 
 Teaser.propTypes = {
-    configuration: PropTypes.object.isRequired,
-    open: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired,
-  };
-
-
-export default withConfiguration(Teaser);
+  open: PropTypes.bool.isRequired,
+  toggle: PropTypes.func.isRequired,
+};

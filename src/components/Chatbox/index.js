@@ -9,9 +9,9 @@ import Header from '../Header';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { TabProvider } from '../../contexts/TabContext';
-import { withConfiguration } from '../../tools/configuration';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import talk from '../../tools/talk';
@@ -20,8 +20,9 @@ import talk from '../../tools/talk';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-function Chatbox({ configuration, open, toggle, ...rest }) {
+export default function Chatbox({ open, toggle, ...rest }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const dialog = useContext(DialogContext);
   const classes = useStyles({configuration});
   const secondaryMode = configuration.secondary.mode;
@@ -98,10 +99,6 @@ function Chatbox({ configuration, open, toggle, ...rest }) {
 
 
 Chatbox.propTypes = {
-  configuration: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
 };
-
-
-export default withConfiguration(Chatbox);

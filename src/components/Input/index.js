@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import useStyles from './styles';
 import Button from '../Button';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
@@ -13,8 +13,9 @@ import talk from '../../tools/talk';
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
-function Input({ configuration, onRequest, onResponse }) {
+export default function Input({ onRequest, onResponse }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
@@ -104,10 +105,6 @@ function Input({ configuration, onRequest, onResponse }) {
 
 
 Input.propTypes = {
-  configuration: PropTypes.object.isRequired,
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
 };
-
-
-export default withConfiguration(Input);

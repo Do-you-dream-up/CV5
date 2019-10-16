@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
-import { withConfiguration } from '../../tools/configuration';
 import WizardField from '../WizardField';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
 
 /**
  * Live-edit configuration widgets.
  */
-function Wizard({ configuration }) {
+export default function Wizard() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
 
   return (
@@ -29,11 +29,3 @@ function Wizard({ configuration }) {
     </div>
   );
 }
-
-
-Wizard.propTypes = {
-  configuration: PropTypes.object.isRequired,
-};
-
-
-export default withConfiguration(Wizard);

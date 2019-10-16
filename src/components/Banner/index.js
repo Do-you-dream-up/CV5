@@ -1,9 +1,8 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import Button from '../Button';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
 
@@ -15,8 +14,9 @@ import { Cookie } from '../../tools/storage';
  * The banner can persist through refresh of the page, can be dismissed manually
  * and its opening can be disabled in the presence of a cookie.
  */
-function Banner({ configuration }) {
+export default function Banner() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
   const { active, cookie, dismissable, text, transient } = configuration.banner;
@@ -55,11 +55,3 @@ function Banner({ configuration }) {
     </div>
   );
 }
-
-
-Banner.propTypes = {
-  configuration: PropTypes.object.isRequired,
-};
-
-
-export default withConfiguration(Banner);

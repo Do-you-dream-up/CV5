@@ -1,17 +1,17 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { TabContext } from '../../contexts/TabContext';
-import { withConfiguration } from '../../tools/configuration';
 
 
 /**
  * Render clickable tabs to select the current tab content. The available tabs
  * are pulled from the configuration.
  */
-function Tabs({ configuration }) {
+export default function Tabs() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { select, state: tabState } = useContext(TabContext);
   const classes = useStyles({configuration});
   const { items } = configuration.tabs;
@@ -31,11 +31,3 @@ function Tabs({ configuration }) {
     </div>
   );
 }
-
-
-Tabs.propTypes = {
-  configuration: PropTypes.object.isRequired,
-};
-
-
-export default withConfiguration(Tabs);

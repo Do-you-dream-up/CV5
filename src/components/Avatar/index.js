@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
-import { withConfiguration } from  '../../tools/configuration';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 
 
 /**
@@ -12,7 +12,8 @@ import { withConfiguration } from  '../../tools/configuration';
  * A request avatar should be next to the user's input while a response avatar
  * should be next to its response.
  */
-function Avatar({ configuration, type }) {
+export default function Avatar({ type }) {
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   return (
     <div className={classNames('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type])} />
@@ -21,9 +22,5 @@ function Avatar({ configuration, type }) {
 
 
 Avatar.propTypes = {
-  configuration: PropTypes.object.isRequired,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
-
-
-export default withConfiguration(Avatar);

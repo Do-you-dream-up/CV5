@@ -1,17 +1,17 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import Interaction from '../Interaction';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
 
 
 /**
  * Fetch the top-asked resources and display them in a numbered list.
  */
-function Top({ configuration }) {
+export default function Top() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
@@ -51,11 +51,3 @@ function Top({ configuration }) {
     </article>
   );
 }
-
-
-Top.propTypes = {
-  configuration: PropTypes.object.isRequired,
-};
-
-
-export default withConfiguration(Top);

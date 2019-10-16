@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
 import Input from '../Input';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
 
 /**
@@ -13,7 +13,8 @@ import { withConfiguration } from '../../tools/configuration';
  * It transports the function to call whenever input is submitted and a second
  * function to handle the response.
  */
-function Footer({ configuration, onRequest, onResponse, ...rest }) {
+export default function Footer({ onRequest, onResponse, ...rest }) {
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   return (
     <footer className={classNames('dydu-footer', classes.root)} {...rest}>
@@ -24,10 +25,6 @@ function Footer({ configuration, onRequest, onResponse, ...rest }) {
 
 
 Footer.propTypes = {
-  configuration: PropTypes.object.isRequired,
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
 };
-
-
-export default withConfiguration(Footer);

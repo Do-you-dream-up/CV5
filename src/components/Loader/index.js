@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import useStyles from './styles';
 import Scroll from '../Scroll';
-import { withConfiguration } from  '../../tools/configuration';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 
 
 /**
@@ -12,7 +12,8 @@ import { withConfiguration } from  '../../tools/configuration';
  *
  * The loader size determines the number of bullets.
  */
-function Loader({ configuration, size: defaultSize }) {
+export default function Loader({ size: defaultSize }) {
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const size = defaultSize || configuration.loader.size;
   return (
@@ -33,9 +34,5 @@ Loader.defaultProps = {
 
 
 Loader.propTypes = {
-    configuration: PropTypes.object.isRequired,
-    size: PropTypes.number,
-  };
-
-
-export default withConfiguration(Loader);
+  size: PropTypes.number,
+};

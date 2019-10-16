@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
-import { withConfiguration } from '../../tools/configuration';
 import useEvent from '../../tools/hooks/event';
 
 
@@ -11,13 +11,13 @@ import useEvent from '../../tools/hooks/event';
  * This works by capturing the delta of the pointer position and applying a
  * `translate3d` CSS property.
  */
-function Dragon({ children, component, configuration, ...rest }) {
+export default function Dragon({ children, component, ...rest }) {
 
+  const { active, factor=0 } = useContext(ConfigurationContext).configuration.dragon;
   const [ current, setCurrent ] = useState(null);
   const [ offset, setOffset ] = useState(null);
   const [ origin, setOrigin ] = useState(null);
   const [ moving, setMoving ] = useState(false);
-  const { active, factor=1 } = configuration.dragon;
 
   const onDrag = event => {
     if (moving && origin) {
@@ -74,8 +74,4 @@ Dragon.defaultProps = {
 Dragon.propTypes = {
   children: PropTypes.element,
   component: PropTypes.elementType.isRequired,
-  configuration: PropTypes.object.isRequired,
 };
-
-
-export default withConfiguration(Dragon);

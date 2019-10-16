@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
 import useStyles from './styles';
 import MenuList from '../MenuList';
-import { withConfiguration } from '../../tools/configuration';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
 
 /**
@@ -15,8 +15,9 @@ import { withConfiguration } from '../../tools/configuration';
  * Expect items as an array of arrays. This is useful to separate actions
  * between categories.
  */
-function Menu({ children, configuration, items }) {
+export default function Menu({ children, items }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ geometry, setGeometry ] = useState(null);
   const [ open, setOpen ] = useState(false);
@@ -79,9 +80,5 @@ function Menu({ children, configuration, items }) {
 
 Menu.propTypes = {
   children: PropTypes.element.isRequired,
-  configuration: PropTypes.object.isRequired,
   items: PropTypes.arrayOf(PropTypes.array).isRequired,
 };
-
-
-export default withConfiguration(Menu);

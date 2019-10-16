@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
 import Button from '../Button';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import { withConfiguration } from '../../tools/configuration';
 
 
 /**
@@ -12,8 +12,9 @@ import { withConfiguration } from '../../tools/configuration';
  * of the chatbox by being placed over the conversation or less intrusive on a
  * side of the chatbox.
  */
-function Secondary({ configuration, mode}) {
+export default function Secondary({ mode}) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { state: dialogState, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const { body, title, url } = dialogState.secondaryContent || {};
@@ -50,9 +51,5 @@ function Secondary({ configuration, mode}) {
 
 
 Secondary.propTypes = {
-  configuration: PropTypes.object.isRequired,
   mode: PropTypes.oneOf(['over', 'side']).isRequired,
 };
-
-
-export default withConfiguration(Secondary);
