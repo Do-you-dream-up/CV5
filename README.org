@@ -3,11 +3,10 @@
 
 * Installation
 
-Copy local sample files.
+Copy the bot configuration sample file.
 
 #+BEGIN_SRC sh
 cp src/bot.json.sample src/bot.json
-cp src/configuration.json.sample src/configuration.json
 #+END_SRC
 
 The below instructions assume you have a working setup with latest =npm=.
