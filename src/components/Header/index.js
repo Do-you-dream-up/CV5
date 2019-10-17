@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import useStyles from './styles';
 import Banner from '../Banner';
 import Button from '../Button';
@@ -20,6 +20,7 @@ export default function Header({ onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext);
+  const dragonZone = useRef();
   const classes = useStyles({configuration});
   const { title='' } = configuration.header;
   const gdprMenu = [[
@@ -37,10 +38,10 @@ export default function Header({ onClose, ...rest }) {
   }))];
 
   return (
-    <header className={classNames('dydu-header', classes.root, {[classes.draggable]: onDragStart})}
-            onMouseDown={onDragStart}
-            {...rest}>
-      <div className={classNames('dydu-header-body', classes.body)}>
+    <header className={classNames('dydu-header', classes.root)} {...rest}>
+      <div className={classNames('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
+           onMouseDown={onDragStart(dragonZone)}
+           ref={dragonZone}>
         {title.length && (
           <div children={title} className={classNames('dydu-header-title', classes.title)} />
         )}

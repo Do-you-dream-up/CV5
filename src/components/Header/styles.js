@@ -8,6 +8,7 @@ export default createUseStyles(theme => ({
     marginLeft: 'auto',
     '& > *': {
       marginLeft: '.5em',
+      pointerEvents: 'auto',
     },
   },
   body: {
@@ -17,6 +18,9 @@ export default createUseStyles(theme => ({
   },
   draggable: {
     cursor: 'move',
+    '& > *': {
+      pointerEvents: 'none',
+    },
   },
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,

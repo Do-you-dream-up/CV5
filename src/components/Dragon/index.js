@@ -49,11 +49,13 @@ export default function Dragon({ children, component, ...rest }) {
     setOrigin(null);
   };
 
-  const onDragStart = event => {
-    let { bottom, left, right, top } = root.current.getBoundingClientRect();
-    setBoundaries({bottom: window.innerHeight - bottom, left, right: window.innerWidth - right, top});
-    setMoving(true);
-    setOrigin({x: event.clientX + offset.x, y: event.clientY + offset.y});
+  const onDragStart = element => event => {
+    if (element.current === event.target) {
+      let { bottom, left, right, top } = root.current.getBoundingClientRect();
+      setBoundaries({bottom: window.innerHeight - bottom, left, right: window.innerWidth - right, top});
+      setMoving(true);
+      setOrigin({x: event.clientX + offset.x, y: event.clientY + offset.y});
+    }
   };
 
   const onReset = useCallback(({ x=0, y=0 }) => {
