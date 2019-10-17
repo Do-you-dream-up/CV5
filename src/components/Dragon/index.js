@@ -14,7 +14,8 @@ import useEvent from '../../tools/hooks/event';
 export default function Dragon({ children, component, ...rest }) {
 
   const root = useRef(null);
-  const { active, factor: defaultFactor=1 } = useContext(ConfigurationContext).configuration.dragon;
+  const { configuration } = useContext(ConfigurationContext);
+  const { active, boundaries: withBoundaries, factor: defaultFactor=1 } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const [ boundaries, setBoundaries ] = useState(null);
   const [ current, setCurrent ] = useState(null);
@@ -31,9 +32,11 @@ export default function Dragon({ children, component, ...rest }) {
         x = Math.round(x / factor) * factor;
         y = Math.round(y / factor) * factor;
       }
-      let { bottom, left, right, top } = boundaries;
-      x = Math.min(Math.max(x, -left), right);
-      y = Math.min(Math.max(y, -top), bottom);
+      if (withBoundaries) {
+        let { bottom, left, right, top } = boundaries;
+        x = Math.min(Math.max(x, -left), right);
+        y = Math.min(Math.max(y, -top), bottom);
+      }
       setOffset({x, y});
     }
   };
