@@ -20,7 +20,7 @@ import talk from '../../tools/talk';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-export default function Chatbox({ open, toggle, ...rest }) {
+const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   const { configuration } = useContext(ConfigurationContext);
   const dialog = useContext(DialogContext);
@@ -77,7 +77,9 @@ export default function Chatbox({ open, toggle, ...rest }) {
 
   return (
     <TabProvider>
-      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})} {...rest}>
+      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}
+           ref={root}
+           {...rest}>
         <Onboarding render>
           <div className={classNames('dydu-chatbox-body', classes.body)}>
             <Tab component={Dialog}
@@ -95,10 +97,13 @@ export default function Chatbox({ open, toggle, ...rest }) {
       </div>
     </TabProvider>
   );
-}
+});
 
 
 Chatbox.propTypes = {
   open: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
 };
+
+
+export default Chatbox;
