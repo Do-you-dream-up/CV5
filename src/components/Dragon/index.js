@@ -13,7 +13,8 @@ import useEvent from '../../tools/hooks/event';
  */
 export default function Dragon({ children, component, ...rest }) {
 
-  const { active, factor=0 } = useContext(ConfigurationContext).configuration.dragon;
+  const { active, factor: defaultFactor=1 } = useContext(ConfigurationContext).configuration.dragon;
+  const factor = Math.max(defaultFactor, 1);
   const [ current, setCurrent ] = useState(null);
   const [ offset, setOffset ] = useState(null);
   const [ origin, setOrigin ] = useState(null);
