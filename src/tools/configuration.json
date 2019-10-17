@@ -46,7 +46,8 @@
   "dragon": {
     "active": true,
     "boundaries": true,
-    "factor": 100
+    "factor": 100,
+    "persist": true
   },
   "footer": {
     "styles": {

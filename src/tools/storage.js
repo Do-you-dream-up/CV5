@@ -29,6 +29,7 @@ export class Local {
   static names = {
     client: 'dydu.client',
     context: 'dydu.context',
+    dragon: 'dydu.dragon',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',

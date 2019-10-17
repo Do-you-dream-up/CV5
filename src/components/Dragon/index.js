@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import useEvent from '../../tools/hooks/event';
+import { Local } from '../../tools/storage';
 
 
 /**
@@ -15,7 +16,7 @@ export default function Dragon({ children, component, ...rest }) {
 
   const root = useRef(null);
   const { configuration } = useContext(ConfigurationContext);
-  const { active, boundaries: withBoundaries, factor: defaultFactor=1 } = configuration.dragon;
+  const { active, boundaries: withBoundaries, factor: defaultFactor=1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const [ boundaries, setBoundaries ] = useState(null);
   const [ current, setCurrent ] = useState(null);
@@ -55,14 +56,21 @@ export default function Dragon({ children, component, ...rest }) {
     setOrigin({x: event.clientX + offset.x, y: event.clientY + offset.y});
   };
 
-  const onReset = useCallback(() => {
-    setCurrent({x: 0, y: 0});
+  const onReset = useCallback(({ x=0, y=0 }) => {
+    setCurrent({x, y});
     setOffset({x: 0, y: 0});
   }, []);
 
   useEffect(() => {
-    onReset();
-  }, [onReset]);
+    if (current && persist) {
+      Local.set(Local.names.dragon, current);
+    }
+  }, [current, persist]);
+
+  useEffect(() => {
+    const { x, y } = persist ? Local.get(Local.names.dragon) || {} : {x: 0, y: 0};
+    onReset({x, y});
+  }, [onReset, persist]);
 
   useEvent('mousemove', onDrag);
   useEvent('mouseup', onDragEnd);
