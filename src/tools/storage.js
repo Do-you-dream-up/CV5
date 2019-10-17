@@ -72,6 +72,9 @@ export class Local {
    */
   static set = (name, value) => {
     value = value === undefined ? moment().format('X') : value;
+    if (typeof value === 'object') {
+      value = JSON.stringify(value);
+    }
     localStorage.setItem(name, value);
   };
 }
