@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import useEvent from '../../tools/hooks/event';
+import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
 
 
@@ -16,13 +18,16 @@ export default function Dragon({ children, component, ...rest }) {
 
   const root = useRef(null);
   const { configuration } = useContext(ConfigurationContext);
-  const { active, boundaries: withBoundaries, factor: defaultFactor=1, persist } = configuration.dragon;
+  const { boundaries: withBoundaries, factor: defaultFactor=1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const [ boundaries, setBoundaries ] = useState(null);
   const [ current, setCurrent ] = useState(null);
   const [ offset, setOffset ] = useState(null);
   const [ origin, setOrigin ] = useState(null);
   const [ moving, setMoving ] = useState(false);
+  const theme = useTheme();
+  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const active = configuration.dragon.active && !isMobile;
 
   const onDrag = event => {
     if (moving && origin) {
