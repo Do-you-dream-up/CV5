@@ -19,10 +19,11 @@ import { ACTIONS } from '../../tools/talk';
 export default function Header({ onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { title='' } = configuration.header;
   const { onDragStart } = useContext(DragonContext);
   const dragonZone = useRef();
   const classes = useStyles({configuration});
-  const { title='' } = configuration.header;
+
   const gdprMenu = [[
     {onClick: () => window.dydu.gdpr.get(), text: 'Get'},
     {onClick: () => window.dydu.gdpr.forget(), text: 'Forget'},
@@ -40,7 +41,7 @@ export default function Header({ onClose, ...rest }) {
   return (
     <header className={classNames('dydu-header', classes.root)} {...rest}>
       <div className={classNames('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
-           onMouseDown={onDragStart(dragonZone)}
+           onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
         {title.length && (
           <div children={title} className={classNames('dydu-header-title', classes.title)} />
