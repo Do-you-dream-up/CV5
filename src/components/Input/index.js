@@ -30,7 +30,7 @@ export default function Input({ onRequest, onResponse }) {
 
   const onSubmit = event => {
     event.preventDefault();
-    return submit(input);
+    submit(input);
   };
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
