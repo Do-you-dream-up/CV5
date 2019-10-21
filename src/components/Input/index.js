@@ -28,6 +28,13 @@ export default function Input({ onRequest, onResponse }) {
     setInput(event.target.value);
   };
 
+  const onKeyDown = event => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      submit(input);
+    }
+  };
+
   const onSubmit = event => {
     event.preventDefault();
     submit(input);
@@ -39,6 +46,13 @@ export default function Input({ onRequest, onResponse }) {
     setInput(suggestionValue);
     submit(suggestionValue);
   };
+
+  const renderInputComponent = properties => (
+    <div className={classNames('dydu-input-field', classes.field)}>
+      <textarea {...properties} />
+      <div children={input} className={classes.fieldShadow} />
+    </div>
+  );
 
   const reset = () => {
     setInput('');
@@ -71,7 +85,7 @@ export default function Input({ onRequest, onResponse }) {
 
   const theme = {
     container: classNames('dydu-input-container', classes.container),
-    input: classNames('dydu-input-field', classes.field),
+    input: classNames('dydu-input-field-text', classes.fieldText),
     suggestionsContainer: classNames('dydu-suggestions', classes.suggestions),
     suggestionsList: classNames('dydu-suggestions-list', classes.suggestionsList),
     suggestion: classNames('dydu-suggestions-candidate', classes.suggestionsCandidate),
@@ -80,6 +94,7 @@ export default function Input({ onRequest, onResponse }) {
   const inputProps = {
     autoFocus: true,
     onChange,
+    onKeyDown,
     placeholder: placeholder.slice(0, 50),
     value: input,
   };
@@ -91,6 +106,7 @@ export default function Input({ onRequest, onResponse }) {
                    onSuggestionSelected={onSuggestionSelected}
                    onSuggestionsClearRequested={() => setSuggestions([])}
                    onSuggestionsFetchRequested={({ value }) => value}
+                   renderInputComponent={renderInputComponent}
                    renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
                    suggestions={suggestions}
                    theme={theme} />

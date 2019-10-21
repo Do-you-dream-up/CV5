@@ -19,11 +19,39 @@ export default createUseStyles(theme => ({
   },
 
   field: {
-    background: 'none',
+    height: '100%',
+    position: 'relative',
+    width: '100%',
+  },
+
+  fieldBase: {
+    boxSizing: 'border-box',
+    display: 'block',
+    fontFamily: 'inherit',
+    fontSize: '1em',
+    lineHeight: '1.7em',
+    overflow: 'hidden',
+    padding: [['.4em', '.6em']],
+    width: '100%',
+    wordBreak: 'break-word',
+  },
+
+  fieldShadow: {
+    extend: 'fieldBase',
+    minHeight: '100%',
+    visibility: 'hidden',
+    whiteSpace: 'pre-wrap',
+  },
+
+  fieldText: {
+    extend: 'fieldBase',
+    background: 0,
     border: 0,
-    flex: 'auto',
+    height: '100%',
     outline: 'none',
-    padding: '0 0 0 1em',
+    position: 'absolute',
+    resize: 'none',
+    whiteSpace: 'pre-wrap',
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
