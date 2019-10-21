@@ -17,7 +17,7 @@ export default function Teaser({ open, toggle }) {
   return (
     <div children={title}
          className={classNames('dydu-teaser', classes.root, {[classes.hidden]: !open})}
-         onClick={toggle()} />
+         onClick={toggle(2)} />
   );
 }
 

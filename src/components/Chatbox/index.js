@@ -69,7 +69,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       };
       window.dydu.ui = {
         secondary: (open, { body, title }) => dialog.toggleSecondary(open, {body, title})(),
-        toggle: open => toggle(open)(),
+        toggle: mode => toggle(mode)(),
       };
       window.reword = window.dydu.chat.ask;
     }
@@ -92,7 +92,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           </div>
           <Footer onRequest={dialog.addRequest} onResponse={dialog.addResponse} />
         </Onboarding>
-        <Header onClose={toggle(false)} style={{order: -1}} />
+        <Header onClose={toggle(1)} style={{order: -1}} />
         {secondaryMode === 'side' && <Secondary mode={secondaryMode} />}
       </div>
     </TabProvider>

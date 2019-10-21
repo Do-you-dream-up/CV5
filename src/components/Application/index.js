@@ -19,24 +19,23 @@ export default function Application() {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
-  const isOpen = Local.get(Local.names.open);
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
-  const [ open, setOpen ] = useState(isOpen === null ? !!configuration.application.open : !!isOpen);
+  const initialMode = Local.get(Local.names.open);
+  const defaultMode = configuration.application.open;
+  const [ mode, setMode ] = useState(initialMode !== null ? ~~initialMode : ~~defaultMode);
 
-  const toggle = value => () => {
-    value = value === undefined ? !open : !!value;
-    setOpen(value);
-  };
+  const toggle = value => () => setMode(~~value);
 
   useEffect(() => {
-    Local.set(Local.names.open, open);
-  }, [open]);
+    const value = ~~mode > 1 ? 2 : (~~mode > 0 ? 1 : 0);
+    Local.set(Local.names.open, value);
+  }, [mode]);
 
   return (
     <div className={classNames('dydu-application', classes.root)}>
       {hasWizard && <Wizard />}
-      <Dragon component={Chatbox} open={open} toggle={toggle} />
-      <Teaser open={!open} toggle={toggle} />
+      <Dragon component={Chatbox} open={mode > 1} toggle={toggle} />
+      <Teaser open={mode === 1} toggle={toggle} />
     </div>
   );
 }
