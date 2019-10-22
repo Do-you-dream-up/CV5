@@ -187,12 +187,12 @@ export default new class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  talk = (text, options) => {
+  talk = (text, options={}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
       language: this.getLocale(),
       userInput: text,
-      ...(options && {extraParameters: options}),
+      ...(options.extra && {extraParameters: options.extra}),
     });
     const contextId = this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
