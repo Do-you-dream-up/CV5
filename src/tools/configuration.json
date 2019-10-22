@@ -64,6 +64,7 @@
   },
   "input": {
     "delay": 300,
+    "maxLength": 100,
     "placeholder": "Type here...",
     "styles": {},
     "stylesMobile": {}

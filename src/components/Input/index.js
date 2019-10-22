@@ -20,7 +20,7 @@ export default function Input({ onRequest, onResponse }) {
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
-  const { delay, placeholder='' } = configuration.input;
+  const { delay, maxLength=100, placeholder='' } = configuration.input;
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {
@@ -93,6 +93,7 @@ export default function Input({ onRequest, onResponse }) {
   };
   const inputProps = {
     autoFocus: true,
+    maxLength,
     onChange,
     onKeyDown,
     placeholder: placeholder.slice(0, 50),
