@@ -191,6 +191,7 @@ export default new class Dydu {
     const data = qs.stringify({
       clientId: this.getClientId(),
       language: this.getLocale(),
+      qualificationMode: options.qualification,
       userInput: text,
       ...(options.extra && {extraParameters: options.extra}),
     });

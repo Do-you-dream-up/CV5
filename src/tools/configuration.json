@@ -1,6 +1,7 @@
 {
   "application": {
-    "open": 1
+    "open": 1,
+    "qualification": true
   },
   "avatar": {
     "styles": {

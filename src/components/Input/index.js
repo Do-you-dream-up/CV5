@@ -20,6 +20,7 @@ export default function Input({ onRequest, onResponse }) {
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
+  const qualification = !!configuration.application.qualification;
   const { delay, maxLength=100, placeholder='' } = configuration.input;
   const debouncedInput = useDebounce(input, delay);
 
@@ -63,7 +64,7 @@ export default function Input({ onRequest, onResponse }) {
     if (text) {
       reset();
       onRequest(text);
-      talk(text).then(onResponse);
+      talk(text, {qualification}).then(onResponse);
     }
     setTyping(false);
   };

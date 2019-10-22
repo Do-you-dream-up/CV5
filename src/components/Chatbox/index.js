@@ -25,6 +25,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
   const { configuration } = useContext(ConfigurationContext);
   const dialog = useContext(DialogContext);
   const classes = useStyles({configuration});
+  const qualification = !!configuration.application.qualification;
   const secondaryMode = configuration.secondary.mode;
 
   const ask = useCallback((text, options) => {
@@ -34,9 +35,9 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       if (!options.hide) {
         dialog.addRequest(text);
       }
-      talk(text).then(dialog.addResponse);
+      talk(text, {qualification}).then(dialog.addResponse);
     }
-  }, [dialog]);
+  }, [dialog, qualification]);
 
   useEffect(() => {
     if (!window.dydu) {
