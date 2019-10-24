@@ -105,12 +105,14 @@
   },
   "root": "dydu-root",
   "secondary": {
+    "automatic": true,
     "mode": "side",
     "styles": {
       "shadow": 6,
       "width": 500
     },
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "transient": true
   },
   "suggestions": {
     "styles": {

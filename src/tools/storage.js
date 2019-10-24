@@ -33,6 +33,7 @@ export class Local {
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
+    secondary: 'dydu.secondary',
   };
 
 

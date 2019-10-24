@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Interaction from '../components/Interaction';
+import { Local } from '../tools/storage';
 
 
 export const DialogContext = React.createContext();
@@ -38,10 +39,14 @@ export class DialogProvider extends React.Component {
   };
 
   toggleSecondary = (open, { body, title, url }={}) => () => {
-    this.setState(state => ({
-      secondaryActive: open === undefined ? !state.secondaryActive : open,
-      ...((body || title || url) && {secondaryContent: {body, title, url}}),
-    }));
+    this.setState(state => {
+      const should = open === undefined ? !state.secondaryActive : open;
+      Local.set(Local.names.secondary, should);
+      return {
+        secondaryActive: should,
+        ...((body || title || url) && {secondaryContent: {body, title, url}}),
+      };
+    });
   };
 
   render() {

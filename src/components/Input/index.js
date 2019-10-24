@@ -5,6 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import useStyles from './styles';
 import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import useDebounce from '../../tools/hooks/debounce';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
@@ -16,12 +17,14 @@ import talk from '../../tools/talk';
 export default function Input({ onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
   const qualification = !!configuration.application.qualification;
   const { delay, maxLength=100, placeholder='' } = configuration.input;
+  const { transient: dismissSecondary } = configuration.secondary;
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {
@@ -63,6 +66,7 @@ export default function Input({ onRequest, onResponse }) {
     text = text.trim();
     if (text) {
       reset();
+      toggleSecondary(!dismissSecondary)();
       onRequest(text);
       talk(text, {qualification}).then(onResponse);
     }

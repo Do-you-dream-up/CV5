@@ -10,6 +10,7 @@ import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import { DialogContext } from  '../../contexts/DialogContext';
 import sanitize from  '../../tools/sanitize';
 import usePrevious from  '../../tools/hooks/previous';
+import { Local } from '../../tools/storage';
 
 
 /**
@@ -28,6 +29,8 @@ export default function Interaction({ live, secondary, text, thinking, type }) {
   const [ ready, setReady ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
+  const automaticSecondary = !!configuration.secondary.automatic;
+  const hasSecondary = Local.get(Local.names.secondary);
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
   const previousText = usePrevious(text);
@@ -59,10 +62,10 @@ export default function Interaction({ live, secondary, text, thinking, type }) {
   }, [toggleSecondary]);
 
   useEffect(() => {
-    if (secondary) {
+    if (secondary && hasSecondary !== false && automaticSecondary) {
       addSecondary(secondary);
     }
-  }, [addSecondary, secondary]);
+  }, [addSecondary, automaticSecondary, hasSecondary, secondary]);
 
   useEffect(() => {
     if (text !== previousText && (!ready || live)) {
