@@ -15,19 +15,15 @@ export class ConfigurationProvider extends React.Component {
     this.state = {configuration: props.configuration};
   }
 
-  update = (parent, key, value) => {
-    return new Promise(resolve => {
-      this.setState(state => ({
-        configuration: {
-          ...state.configuration,
-          [parent]: {
-            ...state.configuration[parent],
-            [key]: value,
-          },
-        },
-      }), resolve());
-    });
-  };
+  update = (parent, key, value) => new Promise(resolve => this.setState(state => ({
+    configuration: {
+      ...state.configuration,
+      [parent]: {
+        ...state.configuration[parent],
+        [key]: value,
+      },
+    },
+  }), () => resolve(this.state.configuration)));
 
   render() {
     return <ConfigurationContext.Provider children={this.props.children} value={{
