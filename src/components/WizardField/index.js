@@ -10,7 +10,7 @@ import usePrevious from '../../tools/hooks/previous';
 /**
  * A wizard field to live-edit the configuration.
  */
-function WizardField({ component, label, parent, value: oldValue }) {
+function WizardField({ component, label, onSave, parent, value: oldValue }) {
 
   const { update } = useContext(ConfigurationContext);
   const classes = useStyles();
@@ -51,8 +51,13 @@ function WizardField({ component, label, parent, value: oldValue }) {
     else if (typeof oldValue === 'number') {
       newValue = ~~newValue;
     }
-    update(parent, label, newValue).then(() => setStatus(WizardField.status.success));
-  }, [label, oldValue, parent, update]);
+    update(parent, label, newValue).then(configuration => {
+      if (typeof onSave === 'function') {
+        onSave(configuration);
+      }
+      setStatus(WizardField.status.success);
+    });
+  }, [label, oldValue, onSave, parent, update]);
 
   useEffect(() => {
     if (ready && previousValue !== null && debouncedValue !== previousValue) {
@@ -97,6 +102,7 @@ WizardField.defaultProps = {
 WizardField.propTypes = {
   component: PropTypes.elementType,
   label: PropTypes.string.isRequired,
+  onSave: PropTypes.func,
   parent: PropTypes.string.isRequired,
   value: PropTypes.any.isRequired,
 };

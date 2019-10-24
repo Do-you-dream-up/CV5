@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import useStyles from './styles';
 import WizardField from '../WizardField';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { Local } from '../../tools/storage';
 
 
 /**
@@ -9,8 +10,16 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
  */
 export default function Wizard() {
 
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration, reset } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
+
+  const onSave = data => {
+    Local.set(Wizard.storage.data, data);
+  };
+
+  useEffect(() => {
+    reset(Local.get(Wizard.storage.data));
+  }, [reset]);
 
   return (
     <div className={classes.root}>
@@ -20,7 +29,12 @@ export default function Wizard() {
             <h3 children={parent} />
             <ul className={classes.fields}>
               {Object.entries(value).map(([ key, value ], index) => (
-                <WizardField component="li" key={index} label={key} parent={parent} value={value} />
+                <WizardField component="li"
+                             key={index}
+                             label={key}
+                             onSave={onSave}
+                             parent={parent}
+                             value={value} />
               ))}
             </ul>
           </div>
@@ -29,3 +43,8 @@ export default function Wizard() {
     </div>
   );
 }
+
+
+Wizard.storage = {
+  data: 'dydu.wizard.data',
+};
