@@ -33,7 +33,7 @@ export default function Input({ onRequest, onResponse }) {
   };
 
   const onKeyDown = event => {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !event.defaultPrevented) {
       event.preventDefault();
       submit(input);
     }
