@@ -7,9 +7,6 @@ export default createUseStyles(theme => ({
     overflowY: 'auto',
     position: 'relative',
   },
-  hidden: {
-    display: 'none !important',
-  },
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
     bottom: 0,
@@ -22,4 +19,7 @@ export default createUseStyles(theme => ({
     ...configuration.chatbox.styles,
     [theme.breakpoints.down('xs')]: configuration.chatbox.stylesMobile,
   }),
+  rootHidden: {
+    display: 'none !important',
+  },
 }));

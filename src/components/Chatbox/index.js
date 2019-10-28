@@ -78,7 +78,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   return (
     <TabProvider>
-      <div className={classNames('dydu-chatbox', classes.root, {[classes.hidden]: !open})}
+      <div className={classNames('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
            ref={root}
            {...rest}>
         <Onboarding render>
