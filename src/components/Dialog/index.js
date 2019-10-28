@@ -20,8 +20,8 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
       interactions = interactions.reduce((accumulator, it, index) => {
         const secondary = it.sidebar ? {...it.sidebar, open: index === interactions.length - 1} : null;
         accumulator.push(
-          <Interaction text={it.user} type="request" />,
-          <Interaction text={it.text} secondary={secondary} type="response" />,
+          <Interaction history text={it.user} type="request" />,
+          <Interaction history text={it.text} secondary={secondary} type="response" />,
         );
         return accumulator;
       }, []);

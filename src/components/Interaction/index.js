@@ -19,7 +19,7 @@ import { Local } from '../../tools/storage';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ live, secondary, text, thinking, type }) {
+export default function Interaction({ history, live, secondary, text, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { toggleSecondary } = useContext(DialogContext);
@@ -55,17 +55,17 @@ export default function Interaction({ live, secondary, text, thinking, type }) {
     }
   }, [delay, thinking]);
 
-  const addSecondary = useCallback(({ content, title, url }) => {
+  const addSecondary = useCallback((open, { content, title, url }) => {
     if (content || title || url) {
-      toggleSecondary(true, {body: sanitize(content), title, url})();
+      toggleSecondary(open, {body: sanitize(content), title, url})();
     }
   }, [toggleSecondary]);
 
   useEffect(() => {
-    if (secondary && hasSecondary !== false && automaticSecondary) {
-      addSecondary(secondary);
+    if (secondary) {
+      addSecondary(hasSecondary || (!history && automaticSecondary), secondary);
     }
-  }, [addSecondary, automaticSecondary, hasSecondary, secondary]);
+  }, [addSecondary, automaticSecondary, hasSecondary, history, secondary]);
 
   useEffect(() => {
     if (text !== previousText && (!ready || live)) {
@@ -92,6 +92,7 @@ export default function Interaction({ live, secondary, text, thinking, type }) {
 
 
 Interaction.propTypes = {
+  history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,
   text: PropTypes.string.isRequired,
