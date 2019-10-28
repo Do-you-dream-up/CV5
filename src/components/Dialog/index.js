@@ -11,7 +11,7 @@ import dydu from '../../tools/dydu';
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-function Dialog({ interactions, onAdd, ...rest}) {
+export default function Dialog({ interactions, onAdd, ...rest }) {
 
   const classes = useStyles();
 
@@ -46,6 +46,3 @@ Dialog.propTypes = {
   interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
   onAdd: PropTypes.func.isRequired,
 };
-
-
-export default Dialog;
