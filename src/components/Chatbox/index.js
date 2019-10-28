@@ -26,6 +26,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
   const dialog = useContext(DialogContext);
   const classes = useStyles({configuration});
   const qualification = !!configuration.application.qualification;
+  const { secondaryActive } = dialog.state;
   const secondaryMode = configuration.secondary.mode;
 
   const ask = useCallback((text, options) => {
@@ -82,15 +83,19 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
            ref={root}
            {...rest}>
         <Onboarding render>
-          <div className={classNames('dydu-chatbox-body', classes.body)}>
+          <div className={classNames(
+            'dydu-chatbox-body',
+            classes.body,
+            {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
+          )}>
             <Tab component={Dialog}
                  interactions={dialog.state.interactions}
                  onAdd={dialog.add}
                  render
                  value="dialog" />
             <Tab component={Contacts} value="contacts" />
-            {secondaryMode === 'over' && <Secondary mode={secondaryMode} />}
           </div>
+          {secondaryMode === 'over' && <Secondary mode={secondaryMode} />}
           <Footer onRequest={dialog.addRequest} onResponse={dialog.addResponse} />
         </Onboarding>
         <Header onClose={toggle(1)} style={{order: -1}} />

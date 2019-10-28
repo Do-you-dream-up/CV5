@@ -21,11 +21,7 @@ export default createUseStyles(theme => ({
     top: 0,
   },
   over: {
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    boxShadow: 'none !important',
     width: 'unset !important',
   },
   base: ({ configuration }) => ({

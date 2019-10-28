@@ -7,6 +7,9 @@ export default createUseStyles(theme => ({
     overflowY: 'auto',
     position: 'relative',
   },
+  bodyHidden: {
+    display: 'none',
+  },
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
     bottom: 0,
