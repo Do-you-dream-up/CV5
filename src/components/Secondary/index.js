@@ -20,9 +20,7 @@ export default function Secondary({ mode}) {
   const { body, title, url } = dialogState.secondaryContent || {};
 
   return dialogState.secondaryActive ? (
-    <div className={classNames(
-      'dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode],
-    )}>
+    <div className={classNames('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}>
       <div className={classNames('dydu-secondary-header', classes.header)}>
         {title && (
           <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />

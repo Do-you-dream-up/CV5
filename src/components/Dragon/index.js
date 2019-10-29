@@ -16,10 +16,10 @@ import { Local } from '../../tools/storage';
  */
 export default function Dragon({ children, component, ...rest }) {
 
-  const root = useRef(null);
   const { configuration } = useContext(ConfigurationContext);
   const { boundaries: withBoundaries, factor: defaultFactor=1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
+  const root = useRef(null);
   const [ boundaries, setBoundaries ] = useState(null);
   const [ current, setCurrent ] = useState(null);
   const [ offset, setOffset ] = useState(null);
@@ -39,7 +39,7 @@ export default function Dragon({ children, component, ...rest }) {
         y = Math.round(y / factor) * factor;
       }
       if (withBoundaries) {
-        let { bottom, left, right, top } = boundaries;
+        const { bottom, left, right, top } = boundaries;
         x = Math.min(Math.max(x, -left), right);
         y = Math.min(Math.max(y, -top), bottom);
       }

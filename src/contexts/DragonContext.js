@@ -11,11 +11,8 @@ export class DragonProvider extends React.Component {
     onDragStart: PropTypes.func,
   };
 
-  state = {x: 2, y: 3};
-
   render() {
     const { children, onDrag, onDragStart } = this.props;
-    const { x, y } = this.state;
-    return <DragonContext.Provider children={children} value={{onDrag, onDragStart, x, y}} />;
+    return <DragonContext.Provider children={children} value={{onDrag, onDragStart}} />;
   }
 }
