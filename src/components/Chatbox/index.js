@@ -95,11 +95,11 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
                  value="dialog" />
             <Tab component={Contacts} value="contacts" />
           </div>
-          {secondaryMode === 'over' && <Secondary mode={secondaryMode} />}
+          {secondaryMode === 'over' && <Secondary />}
           <Footer onRequest={dialog.addRequest} onResponse={dialog.addResponse} />
         </Onboarding>
         <Header onClose={toggle(1)} style={{order: -1}} />
-        {secondaryMode === 'side' && <Secondary mode={secondaryMode} />}
+        {secondaryMode !== 'over' && <Secondary anchor={root} />}
       </div>
     </TabProvider>
   );

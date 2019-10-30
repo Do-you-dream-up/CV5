@@ -1,3 +1,3 @@
 ```jsx static
-<Secondary mode="over" />
+<Secondary />
 ```

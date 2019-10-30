@@ -106,7 +106,7 @@
   "root": "dydu-root",
   "secondary": {
     "automatic": true,
-    "mode": "side",
+    "mode": "left",
     "styles": {
       "shadow": 6,
       "width": 500

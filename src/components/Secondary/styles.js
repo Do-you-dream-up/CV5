@@ -34,14 +34,22 @@ export default createUseStyles(theme => ({
     padding: '1.6em',
     paddingTop: 0,
   },
+  left: {
+    extend: 'side',
+    right: '100%',
+    marginRight: '.5em',
+  },
+  right: {
+    extend: 'side',
+    left: '100%',
+    marginLeft: '.5em',
+  },
   side: {
     borderRadius: theme.shape.borderRadius,
     bottom: 0,
     display: 'flex',
     flexDirection: 'column',
-    marginRight: '1em',
     position: 'absolute',
-    right: '100%',
     top: 0,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
