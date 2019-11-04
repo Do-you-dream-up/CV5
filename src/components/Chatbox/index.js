@@ -23,10 +23,18 @@ import talk from '../../tools/talk';
 const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   const { configuration } = useContext(ConfigurationContext);
-  const dialog = useContext(DialogContext);
+  const {
+    add,
+    addRequest,
+    addResponse,
+    empty,
+    interactions,
+    secondaryActive,
+    setSecondary,
+    toggleSecondary,
+  } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const qualification = !!configuration.application.qualification;
-  const { secondaryActive } = dialog.state;
   const secondaryMode = configuration.secondary.mode;
 
   const ask = useCallback((text, options) => {
@@ -34,19 +42,19 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     if (text) {
       options = Object.assign({hide: false}, options);
       if (!options.hide) {
-        dialog.addRequest(text);
+        addRequest(text);
       }
-      talk(text, {qualification}).then(dialog.addResponse);
+      talk(text, {qualification}).then(addResponse);
     }
-  }, [dialog, qualification]);
+  }, [addRequest, addResponse, qualification]);
 
   useEffect(() => {
     if (!window.dydu) {
       window.dydu = {};
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
-        empty: () => dialog.empty(),
-        reply: text => dialog.addResponse({text: text}),
+        empty: () => empty(),
+        reply: text => addResponse({text: text}),
       };
       window.dydu.gdpr = {
         forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
@@ -70,12 +78,15 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
       };
       window.dydu.ui = {
-        secondary: (open, { body, title }) => dialog.toggleSecondary(open, {body, title})(),
+        secondary: (open, { body, title }) => {
+          setSecondary({body, title})();
+          toggleSecondary(open)();
+        },
         toggle: mode => toggle(mode)(),
       };
       window.reword = window.dydu.chat.ask;
     }
-  }, [ask, dialog, toggle]);
+  }, [addResponse, ask, empty, setSecondary, toggle, toggleSecondary]);
 
   return (
     <TabProvider>
@@ -88,15 +99,11 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
             classes.body,
             {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
           )}>
-            <Tab component={Dialog}
-                 interactions={dialog.state.interactions}
-                 onAdd={dialog.add}
-                 render
-                 value="dialog" />
+            <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
             <Tab component={Contacts} value="contacts" />
           </div>
           {secondaryMode === 'over' && <Secondary />}
-          <Footer onRequest={dialog.addRequest} onResponse={dialog.addResponse} />
+          <Footer onRequest={addRequest} onResponse={addResponse} />
         </Onboarding>
         <Header onClose={toggle(1)} style={{order: -1}} />
         {secondaryMode !== 'over' && <Secondary anchor={root} />}

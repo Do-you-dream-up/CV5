@@ -15,11 +15,11 @@ import { DialogContext } from '../../contexts/DialogContext';
 export default function Secondary({ anchor }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { state: dialogState, toggleSecondary } = useContext(DialogContext);
+  const { secondaryActive, secondaryContent, toggleSecondary } = useContext(DialogContext);
   const root = useRef(null);
   const [ mode, setMode ] = useState(configuration.secondary.mode);
   const classes = useStyles({configuration});
-  const { body, title, url } = dialogState.secondaryContent || {};
+  const { body, title, url } = secondaryContent || {};
   const { boundaries } = configuration.dragon;
 
   if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {
@@ -35,13 +35,11 @@ export default function Secondary({ anchor }) {
     }
   }
 
-  return dialogState.secondaryActive ? (
+  return secondaryActive ? (
     <div className={classNames('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}
          ref={root}>
       <div className={classNames('dydu-secondary-header', classes.header)}>
-        {title && (
-          <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />
-        )}
+        {title && <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />}
         <div className={classNames('dydu-secondary-actions', classes.actions)}>
           <Button onClick={toggleSecondary(false)} type="button" variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />

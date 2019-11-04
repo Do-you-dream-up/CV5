@@ -22,7 +22,7 @@ import { Local } from '../../tools/storage';
 export default function Interaction({ history, live, secondary, text, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { toggleSecondary } = useContext(DialogContext);
+  const { setSecondary, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
@@ -30,7 +30,6 @@ export default function Interaction({ history, live, secondary, text, thinking, 
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const automaticSecondary = !!configuration.secondary.automatic;
-  const hasSecondary = Local.get(Local.names.secondary);
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
   const previousText = usePrevious(text);
@@ -55,17 +54,12 @@ export default function Interaction({ history, live, secondary, text, thinking, 
     }
   }, [delay, thinking]);
 
-  const addSecondary = useCallback((open, { content, title, url }) => {
-    if (content || title || url) {
-      toggleSecondary(open, {body: sanitize(content), title, url})();
-    }
-  }, [toggleSecondary]);
-
   useEffect(() => {
     if (secondary) {
-      addSecondary(hasSecondary || (!history && automaticSecondary), secondary);
+      setSecondary(secondary);
+      toggleSecondary(Local.get(Local.names.secondary) || (!history && automaticSecondary))();
     }
-  }, [addSecondary, automaticSecondary, hasSecondary, history, secondary]);
+  }, [automaticSecondary, history, secondary, setSecondary, toggleSecondary]);
 
   useEffect(() => {
     if (text !== previousText && (!ready || live)) {

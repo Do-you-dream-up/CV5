@@ -1,62 +1,69 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import Interaction from '../components/Interaction';
 import { Local } from '../tools/storage';
 
 
 export const DialogContext = React.createContext();
-export class DialogProvider extends React.Component {
+export function DialogProvider({ children }) {
 
-  static propTypes = {
-    children: PropTypes.object,
-  };
+  const [ interactions, setInteractions ] = useState([]);
+  const [ secondaryActive, setSecondaryActive ] = useState(false);
+  const [ secondaryContent, setSecondaryContent ] = useState(null);
 
-  state = {interactions: [], secondaryActive: false, secondaryContent: null};
+  const add = useCallback(interaction => {
+    setInteractions(previous => ([
+      ...previous,
+      ...(Array.isArray(interaction) ? interaction : [interaction]),
+    ]));
+  }, []);
 
-  add = interaction => {
-    this.setState(state => ({
-      interactions: [
-        ...state.interactions,
-        ...(Array.isArray(interaction) ? interaction : [interaction]),
-      ],
-    }));
-  };
-
-  addRequest = text => {
+  const addRequest = useCallback(text => {
     if (text) {
-      this.add(<Interaction text={text} type="request" />);
+      add(<Interaction text={text} type="request" />);
     }
-  };
+  }, [add]);
 
-  addResponse = ({ text, sidebar }) => {
+  const addResponse = useCallback(({ text, sidebar }) => {
     if (text) {
-      this.add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
+      add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
     }
-  };
+  }, [add]);
 
-  empty = () => {
-    this.setState({interactions: []});
-  };
+  const empty = useCallback(() => {
+    setInteractions([]);
+  }, []);
 
-  toggleSecondary = (open, { body, title, url }={}) => () => {
-    this.setState(state => {
-      const should = open === undefined ? !state.secondaryActive : open;
-      Local.set(Local.names.secondary, should);
-      return {
-        secondaryActive: should,
-        ...((body || title || url) && {secondaryContent: {body, title, url}}),
-      };
+  const setSecondary = useCallback(({ content, title, url }={}) => {
+    if (content || title || url) {
+      setSecondaryContent({body: content, title, url});
+    }
+  }, []);
+
+  const toggleSecondary = useCallback(open => () => {
+    setSecondaryActive(previous => {
+      const should = open === undefined ? !previous : open;
+      if (Local.get(Local.names.secondary) !== should) {
+        Local.set(Local.names.secondary, should);
+      }
+      return should;
     });
-  };
+  }, []);
 
-  render() {
-    return <DialogContext.Provider children={this.props.children} value={{
-      add: this.add,
-      addRequest: this.addRequest,
-      addResponse: this.addResponse,
-      empty: this.empty,
-      state: this.state,
-      toggleSecondary: this.toggleSecondary,
-    }} />;
-  }
+  return <DialogContext.Provider children={children} value={{
+    add,
+    addRequest,
+    addResponse,
+    empty,
+    interactions,
+    secondaryActive,
+    secondaryContent,
+    setSecondary,
+    toggleSecondary,
+  }} />;
 }
+
+
+DialogProvider.propTypes = {
+  children: PropTypes.object,
+};
