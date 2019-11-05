@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
+import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import { Local } from '../tools/storage';
+import useViewport from '../tools/hooks/viewport';
 import { ConfigurationContext } from './ConfigurationContext';
 
 
@@ -12,6 +14,8 @@ export function DialogProvider({ children }) {
   const [ interactions, setInteractions ] = useState([]);
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
+  const theme = useTheme();
+  const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
@@ -23,21 +27,23 @@ export function DialogProvider({ children }) {
 
   const addRequest = useCallback(text => {
     if (text) {
-      if (secondaryTransient) {
+      if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
       }
       add(<Interaction text={text} type="request" />);
     }
-  }, [add, secondaryTransient, toggleSecondary]);
+    // eslint-disable-next-line no-use-before-define
+  }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(({ text, sidebar }) => {
     if (text) {
-      if (secondaryTransient) {
+      if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
       }
       add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
     }
-  }, [add, secondaryTransient, toggleSecondary]);
+    // eslint-disable-next-line no-use-before-define
+  }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
