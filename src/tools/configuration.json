@@ -111,7 +111,8 @@
       "shadow": 6,
       "width": 500
     },
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "transient": true
   },
   "suggestions": {
     "styles": {

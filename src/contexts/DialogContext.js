@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import Interaction from '../components/Interaction';
 import { Local } from '../tools/storage';
+import { ConfigurationContext } from './ConfigurationContext';
 
 
 export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
+  const { configuration } = useContext(ConfigurationContext);
   const [ interactions, setInteractions ] = useState([]);
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
+  const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
     setInteractions(previous => ([
@@ -20,15 +23,21 @@ export function DialogProvider({ children }) {
 
   const addRequest = useCallback(text => {
     if (text) {
+      if (secondaryTransient) {
+        toggleSecondary(false)();
+      }
       add(<Interaction text={text} type="request" />);
     }
-  }, [add]);
+  }, [add, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(({ text, sidebar }) => {
     if (text) {
+      if (secondaryTransient) {
+        toggleSecondary(false)();
+      }
       add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
     }
-  }, [add]);
+  }, [add, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);

@@ -13,13 +13,15 @@ configuration.initialize().then(configuration => {
   const anchor = document.getElementById(configuration.root);
   if (anchor) {
     ReactDOM.render(
-      <ConfigurationProvider configuration={configuration}>
-        <DialogProvider>
-          <OnboardingProvider>
-            <ThemeProvider children={<Application />} theme={theme} />
-          </OnboardingProvider>
-        </DialogProvider>
-      </ConfigurationProvider>,
+      <ThemeProvider theme={theme}>
+        <ConfigurationProvider configuration={configuration}>
+          <DialogProvider>
+            <OnboardingProvider>
+              <Application />
+            </OnboardingProvider>
+          </DialogProvider>
+        </ConfigurationProvider>
+      </ThemeProvider>,
       anchor,
     );
   }
