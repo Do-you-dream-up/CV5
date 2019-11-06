@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import useStyles from  './styles';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
+import Feedback from  '../Feedback';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
@@ -19,7 +20,7 @@ import { Local } from '../../tools/storage';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ history, live, secondary, text, thinking, type }) {
+export default function Interaction({ hasFeedback, history, live, secondary, text, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext);
@@ -79,6 +80,7 @@ export default function Interaction({ history, live, secondary, text, thinking, 
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
         })}
         {hasLoader && <Loader />}
+        {!hasLoader && hasFeedback && <Feedback />}
       </div>
     </div>
   );
@@ -86,6 +88,7 @@ export default function Interaction({ history, live, secondary, text, thinking, 
 
 
 Interaction.propTypes = {
+  hasFeedback: PropTypes.bool,
   history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,

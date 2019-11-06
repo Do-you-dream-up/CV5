@@ -35,12 +35,18 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ text, sidebar }) => {
+  const addResponse = useCallback(({ askFeedback, sidebar, text }) => {
     if (text) {
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
       }
-      add(<Interaction text={text} type="response" secondary={sidebar} thinking />);
+      add(
+        <Interaction hasFeedback={!!askFeedback}
+                     text={text}
+                     type="response"
+                     secondary={sidebar}
+                     thinking />
+      );
     }
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);

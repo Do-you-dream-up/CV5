@@ -60,6 +60,22 @@ export default new class Dydu {
   });
 
   /**
+   * Send the user feedback.
+   *
+   * @param {true|false|undefined} value - Value of the feedback.
+   * @returns {Promise}
+   */
+  feedback = value => {
+    const data = qs.stringify({
+      contextUUID: this.getContextId(),
+      feedBack: {false: 'negative', true: 'positive'}[value] || 'withoutAnswer',
+      solutionUsed: 'ASSISTANT',
+    });
+    const path = `chat/feedback/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * File a GDPR request to be processed.
    *
    * @param {Object} options - Options.
