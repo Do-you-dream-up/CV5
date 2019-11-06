@@ -54,7 +54,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
         empty: () => empty(),
-        reply: text => addResponse({text: text}),
+        reply: text => addResponse({text}),
       };
       window.dydu.gdpr = {
         forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(

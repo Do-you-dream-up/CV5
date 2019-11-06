@@ -27,14 +27,14 @@ export default function Interaction({ history, live, secondary, text, thinking, 
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
   const [ ready, setReady ] = useState(false);
+  const previousText = usePrevious(text);
+  const bubblesRef = useRef(bubbles);
+  bubblesRef.current = bubbles;
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const automaticSecondary = !!configuration.secondary.automatic;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
-  const previousText = usePrevious(text);
-  const bubblesRef = useRef(bubbles);
-  bubblesRef.current = bubbles;
 
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
