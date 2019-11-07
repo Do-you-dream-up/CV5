@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
 
-  base: {
+  base: ({ color }) => ({
     alignItems: 'center',
     backgroundColor: 'inherit',
     border: 0,
@@ -12,6 +12,10 @@ export default createUseStyles(theme => ({
     outline: 'none',
     padding: 0,
     position: 'relative',
+    ...(color && {
+      backgroundColor: theme.palette[color].main,
+      color: theme.palette[color].text,
+    }),
     '& > *:not(:first-child)': {
       marginLeft: '.5em',
     },
@@ -28,7 +32,7 @@ export default createUseStyles(theme => ({
     '&:not(:disabled):hover:before': {
       backgroundColor: theme.palette.action.hover,
     },
-  },
+  }),
 
   default: {
     color: theme.palette.primary.main,
