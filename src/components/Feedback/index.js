@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import Button from '../Button';
+import useStyles from './styles';
 
 
 
@@ -13,6 +15,7 @@ export default function Feedback() {
 
   const { addResponse } = useContext(DialogContext);
   const [ show, setShow ] = useState(true);
+  const classes = useStyles();
 
   const onNegative = () => {
     dydu.feedback(false).then(() => {
@@ -29,9 +32,13 @@ export default function Feedback() {
   };
 
   return show && (
-    <div>
-      <button children="P" onClick={onPositive} />
-      <button children="N" onClick={onNegative} />
+    <div className={classes.root}>
+      <Button color="error" filled onClick={onNegative} variant="icon">
+        <img alt="Negative feedback" src="icons/thumb-down.png" title="Negative feedback" />
+      </Button>
+      <Button color="success" filled onClick={onPositive} variant="icon">
+        <img alt="Positive feedback" src="icons/thumb-up.png" title="Positive feedback" />
+      </Button>
     </div>
   );
 }
