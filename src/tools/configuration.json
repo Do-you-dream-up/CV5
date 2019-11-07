@@ -50,6 +50,9 @@
     "factor": 100,
     "persist": true
   },
+  "feedback": {
+    "active": true
+  },
   "footer": {
     "styles": {
       "shadow": true

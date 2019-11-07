@@ -16,6 +16,7 @@ export function DialogProvider({ children }) {
   const [ secondaryContent, setSecondaryContent ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { active: showFeedback } = configuration.feedback;
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
@@ -41,7 +42,7 @@ export function DialogProvider({ children }) {
         toggleSecondary(false)();
       }
       add(
-        <Interaction hasFeedback={!!askFeedback}
+        <Interaction hasFeedback={!!(showFeedback && askFeedback)}
                      text={text}
                      type="response"
                      secondary={sidebar}
