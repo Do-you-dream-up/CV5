@@ -4,18 +4,18 @@ Standard button
 <Button children="Standard Button" />
 ```
 
-Flat icon button
+Filled icon button
 
 ```jsx static
-<Button flat variant="icon">
+<Button filled variant="icon">
   <img alt="Close" src="icons/close.png" title="Close" />
 </Button>
 ```
 
-Flat icon button in a list
+Filled icon button in a list
 
 ```jsx static
-<Button component="li" flat variant="icon">
+<Button component="li" filled variant="icon">
   <img alt="Close" src="icons/close.png" title="Close" />
 </Button>
 ```

@@ -41,7 +41,7 @@ export default function Secondary({ anchor }) {
       <div className={classNames('dydu-secondary-header', classes.header)}>
         {title && <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />}
         <div className={classNames('dydu-secondary-actions', classes.actions)}>
-          <Button onClick={toggleSecondary(false)} type="button" variant="icon">
+          <Button filled onClick={toggleSecondary(false)} type="button" variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
         </div>

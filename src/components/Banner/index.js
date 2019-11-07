@@ -45,7 +45,7 @@ export default function Banner() {
     <div className={classNames('dydu-banner', classes.root)}>
       {!!dismissable && (
         <div className={classNames('dydu-banner-actions', classes.actions)}>
-          <Button flat onClick={onDismiss} variant="icon">
+          <Button onClick={onDismiss} variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
         </div>

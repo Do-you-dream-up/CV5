@@ -113,7 +113,7 @@ export default function Input({ onRequest, onResponse }) {
                    suggestions={suggestions}
                    theme={theme} />
       <div className={classNames('dydu-input-actions', classes.actions)}>
-        <Button flat type="submit" variant="icon">
+        <Button type="submit" variant="icon">
           <img alt="Send" src="icons/send.png" title="Send" />
         </Button>
       </div>
