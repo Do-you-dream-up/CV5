@@ -50,7 +50,7 @@ export function DialogProvider({ children }) {
       );
     }
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, toggleSecondary]);
+  }, [add, isMobile, secondaryTransient, showFeedback, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
