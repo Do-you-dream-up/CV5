@@ -7,14 +7,14 @@ export default createUseStyles(theme => ({
     alignItems: 'center',
     backgroundColor: 'inherit',
     border: 0,
+    color: theme.palette.text.primary,
     cursor: 'pointer',
     display: 'flex',
     outline: 'none',
     padding: 0,
     position: 'relative',
     ...(color && {
-      backgroundColor: theme.palette[color].main,
-      color: theme.palette[color].text,
+      color: theme.palette[color].main,
     }),
     '& > *:not(:first-child)': {
       marginLeft: '.5em',
@@ -43,9 +43,13 @@ export default createUseStyles(theme => ({
     },
   }),
 
-  filled: () => ({
+  filled: ({ color }) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.text,
+    ...(color && {
+      backgroundColor: theme.palette[color].main,
+      color: theme.palette[color].text,
+    }),
   }),
 
   icon: () => ({
