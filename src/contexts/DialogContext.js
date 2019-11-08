@@ -37,18 +37,16 @@ export function DialogProvider({ children }) {
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(({ askFeedback, sidebar, text }) => {
-    if (text) {
-      if (secondaryTransient || isMobile) {
-        toggleSecondary(false)();
-      }
-      add(
-        <Interaction hasFeedback={!!(showFeedback && askFeedback)}
-                     text={text}
-                     type="response"
-                     secondary={sidebar}
-                     thinking />
-      );
+    if (secondaryTransient || isMobile) {
+      toggleSecondary(false)();
     }
+    add(
+      <Interaction hasFeedback={!!(showFeedback && askFeedback)}
+                   text={text}
+                   type="response"
+                   secondary={sidebar}
+                   thinking />
+    );
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, showFeedback, toggleSecondary]);
 
@@ -56,9 +54,9 @@ export function DialogProvider({ children }) {
     setInteractions([]);
   }, []);
 
-  const setSecondary = useCallback(({ content, title, url }={}) => {
-    if (content || title || url) {
-      setSecondaryContent({body: content, title, url});
+  const setSecondary = useCallback(({ body, title, url }={}) => {
+    if (body || title || url) {
+      setSecondaryContent({body, title, url});
     }
   }, []);
 

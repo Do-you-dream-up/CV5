@@ -57,6 +57,7 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
 
   useEffect(() => {
     if (secondary) {
+      secondary.body = secondary.content;
       setSecondary(secondary);
       toggleSecondary(Local.get(Local.names.secondary) || (!history && automaticSecondary))();
     }
@@ -92,7 +93,7 @@ Interaction.propTypes = {
   history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

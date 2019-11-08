@@ -79,7 +79,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       };
       window.dydu.ui = {
         secondary: (open, { body, title }) => {
-          setSecondary({body, title})();
+          setSecondary({body, title});
           toggleSecondary(open)();
         },
         toggle: mode => toggle(mode)(),

@@ -17,11 +17,10 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
-      interactions = interactions.reduce((accumulator, it, index) => {
-        const secondary = it.sidebar ? {...it.sidebar, open: index === interactions.length - 1} : null;
+      interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction history text={it.user} type="request" />,
-          <Interaction history text={it.text} secondary={secondary} type="response" />,
+          <Interaction history text={it.text} secondary={it.sidebar} type="response" />,
         );
         return accumulator;
       }, []);
