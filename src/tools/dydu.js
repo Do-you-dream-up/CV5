@@ -229,6 +229,23 @@ export default new class Dydu {
   };
 
   /**
+   * Set a context variable by name.
+   *
+   * @param {string} name - Variable to set.
+   * @param {string} value - Value to use.
+   * @returns {Promise}
+   */
+  variable = (name, value) => {
+    const data = qs.stringify({
+      contextUuid: this.getContextId(),
+      name,
+      value,
+    });
+    const path = `chat/variable/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * Retrieve the bot identity.
    *
    * @returns {Promise}
