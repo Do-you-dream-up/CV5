@@ -34,21 +34,21 @@ export default createUseStyles(theme => ({
     },
   }),
 
-  default: {
+  default: () => ({
     color: theme.palette.primary.main,
     padding: '.5em 1em',
     textTransform: 'uppercase',
     '&, &:after, &:before': {
       borderRadius: 4,
     },
-  },
+  }),
 
-  filled: {
+  filled: () => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.text,
-  },
+  }),
 
-  icon: {
+  icon: () => ({
     height: 40,
     justifyContent: 'center',
     width: 40,
@@ -60,7 +60,7 @@ export default createUseStyles(theme => ({
       position: 'absolute',
       width: 20,
     },
-  },
+  }),
 
   overlay: {
     bottom: 0,
