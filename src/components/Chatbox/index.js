@@ -51,11 +51,13 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
   useEffect(() => {
     if (!window.dydu) {
       window.dydu = {};
+
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
         empty: () => empty(),
         reply: text => addResponse({text}),
       };
+
       window.dydu.gdpr = {
         forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
           () => window.dydu.chat.reply('Forget success'),
@@ -66,6 +68,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           () => window.dydu.chat.reply('Get error'),
         ),
       };
+
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: locale => dydu.setLocale(locale).then(
@@ -73,10 +76,12 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           response => window.dydu.chat.reply(response),
         ),
       };
+
       window.dydu.lorem = {
         standard: () => window.dydu.chat.reply(LOREM_HTML),
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
       };
+
       window.dydu.ui = {
         secondary: (open, { body, title }) => {
           setSecondary({body, title});
@@ -84,6 +89,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         },
         toggle: mode => toggle(mode)(),
       };
+
       window.reword = window.dydu.chat.ask;
     }
   }, [addResponse, ask, empty, setSecondary, toggle, toggleSecondary]);
