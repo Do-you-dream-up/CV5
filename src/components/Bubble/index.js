@@ -15,14 +15,17 @@ import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
  *
  * The bubble can have clickable actions, appearing as buttons below its content.
  */
-export default function Bubble({ actions, component, html, type }) {
+export default function Bubble({ actions, children, component, html, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
 
   return React.createElement(component, {className: 'dydu-bubble'}, (
     <div className={classNames(`dydu-bubble-${type}`, classes.base, classes[type])}>
-      {html && <div className="dydu-bubble-body" dangerouslySetInnerHTML={{__html: html}} />}
+      <div className="dydu-bubble-body">
+        {children}
+        {html && <div dangerouslySetInnerHTML={{__html: html}} />}
+      </div>
       {actions.length > 0 && (
         <div className={classNames('dydu-bubble-actions', classes.actions)}>
           {actions.map((it, index) => (
@@ -46,6 +49,7 @@ Bubble.propTypes = {
     action: PropTypes.func.isRequired,
     text: PropTypes.string.isRequired,
   })),
+  children: PropTypes.element,
   component: PropTypes.elementType,
   html: PropTypes.string,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
