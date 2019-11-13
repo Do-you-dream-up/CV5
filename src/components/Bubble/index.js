@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from  './styles';
 import Button from  '../Button';
+import Progress from  '../Progress';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 
 
@@ -15,13 +16,14 @@ import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
  *
  * The bubble can have clickable actions, appearing as buttons below its content.
  */
-export default function Bubble({ actions, children, component, html, type }) {
+export default function Bubble({ actions, children, component, html, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
 
   return React.createElement(component, {className: 'dydu-bubble'}, (
     <div className={classNames(`dydu-bubble-${type}`, classes.base, classes[type])}>
+      {thinking && <Progress className={classes.progress} />}
       <div className="dydu-bubble-body">
         {children}
         {html && <div dangerouslySetInnerHTML={{__html: html}} />}
@@ -52,5 +54,6 @@ Bubble.propTypes = {
   children: PropTypes.element,
   component: PropTypes.elementType,
   html: PropTypes.string,
+  thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
