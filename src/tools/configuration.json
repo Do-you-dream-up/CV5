@@ -51,7 +51,11 @@
     "persist": true
   },
   "feedback": {
-    "active": true
+    "active": true,
+    "askComment": true,
+    "commentHelp": "What went wrong?",
+    "commentThanks": "Thank you for your detailed feedback!",
+    "voteThanks": "Thank you for your feedback!"
   },
   "footer": {
     "styles": {

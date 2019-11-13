@@ -76,6 +76,22 @@ export default new class Dydu {
   };
 
   /**
+   * Send the user feedback comment.
+   *
+   * @param {string} comment - Comment to send.
+   * @returns {Promise}
+   */
+  feedbackComment = comment => {
+    const data = qs.stringify({
+      comment,
+      contextUUID: this.getContextId(),
+      solutionUsed: 'ASSISTANT',
+    });
+    const path = `chat/feedback/comment/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * File a GDPR request to be processed.
    *
    * @param {Object} options - Options.
