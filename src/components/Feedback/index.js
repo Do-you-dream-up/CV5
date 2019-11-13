@@ -22,6 +22,7 @@ export default function Feedback() {
   const [ comment, setComment ] = useState('');
   const [ showComment, setShowComment ] = useState(false);
   const [ showVote, setShowVote ] = useState(true);
+  const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
   const { askComment, commentHelp='', commentThanks='', voteThanks='' } = configuration.feedback;
 
@@ -32,13 +33,15 @@ export default function Feedback() {
   const onComment = () => {
     const value = comment.trim();
     if (value.length) {
-      dydu.feedbackComment(value).then(() => {
+      setThinking(true);
+      dydu.feedbackComment(value).then(() => setTimeout(() => {
         setComment('');
         setShowComment(false);
+        setThinking(false);
         if (commentThanks.length) {
           addResponse({text: commentThanks});
         }
-      });
+      }, 1000));
     }
   };
 
@@ -83,12 +86,13 @@ export default function Feedback() {
         </div>
       )}
       {showComment && (
-        <Bubble component={Scroll} type="response">
+        <Bubble component={Scroll} thinking={thinking} type="response">
           <form className="dydu-feedback-comment" onSubmit={onComment}>
             {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
             <div className={classNames('dydu-feedback-comment-field', classes.commentField)}>
               <textarea autoFocus
-                        className={classes.commentFieldText}
+                        className={classNames(classes.commentFieldText, {[classes.thinking]: thinking})}
+                        disabled={thinking}
                         maxLength={100}
                         onChange={onChange}
                         onKeyDown={onKeyDown}

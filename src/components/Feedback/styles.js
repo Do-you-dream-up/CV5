@@ -39,6 +39,9 @@ export default createUseStyles(theme => ({
       color: theme.palette.text.secondary,
     },
   },
+  thinking: {
+    cursor: 'wait',
+  },
   vote: {
     display: 'flex',
     '& > :not(:last-child)': {
