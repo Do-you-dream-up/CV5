@@ -17,14 +17,14 @@ export default function Feedback() {
   const [ show, setShow ] = useState(true);
   const classes = useStyles();
 
-  const onNegative = () => {
+  const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       addResponse({text: 'Negative'});
       setShow(false);
     });
   };
 
-  const onPositive = () => {
+  const onVotePositive = () => {
     dydu.feedback(true).then(() => {
       addResponse({text: 'Positive'});
       setShow(false);
@@ -33,10 +33,10 @@ export default function Feedback() {
 
   return show && (
     <div className={classes.root}>
-      <Button color="error" filled onClick={onNegative} variant="icon">
+      <Button color="error" filled onClick={onVoteNegative} variant="icon">
         <img alt="Negative feedback" src="icons/thumb-down.png" title="Negative feedback" />
       </Button>
-      <Button color="success" filled onClick={onPositive} variant="icon">
+      <Button color="success" filled onClick={onVotePositive} variant="icon">
         <img alt="Positive feedback" src="icons/thumb-up.png" title="Positive feedback" />
       </Button>
     </div>

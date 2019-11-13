@@ -22,7 +22,7 @@ export default function Bubble({ actions, component, html, type }) {
 
   return React.createElement(component, {className: 'dydu-bubble'}, (
     <div className={classNames(`dydu-bubble-${type}`, classes.base, classes[type])}>
-      <div className="dydu-bubble-body" dangerouslySetInnerHTML={{__html: html}} />
+      {html && <div className="dydu-bubble-body" dangerouslySetInnerHTML={{__html: html}} />}
       {actions.length > 0 && (
         <div className={classNames('dydu-bubble-actions', classes.actions)}>
           {actions.map((it, index) => (
@@ -47,6 +47,6 @@ Bubble.propTypes = {
     text: PropTypes.string.isRequired,
   })),
   component: PropTypes.elementType,
-  html: PropTypes.string.isRequired,
+  html: PropTypes.string,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

@@ -33,6 +33,7 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
     padding: [['.4em', '.6em']],
     width: '100%',
+    whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
 
@@ -40,7 +41,6 @@ export default createUseStyles(theme => ({
     extend: 'fieldBase',
     minHeight: '100%',
     visibility: 'hidden',
-    whiteSpace: 'pre-wrap',
   },
 
   fieldText: {
@@ -51,7 +51,6 @@ export default createUseStyles(theme => ({
     outline: 'none',
     position: 'absolute',
     resize: 'none',
-    whiteSpace: 'pre-wrap',
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
