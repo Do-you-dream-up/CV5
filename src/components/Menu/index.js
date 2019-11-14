@@ -45,7 +45,7 @@ export default function Menu({ children, items }) {
       const left = element.left + element.width / 2 - menuRef.current.offsetWidth / 2;
       setGeometry({
         left: Math.max(0, Math.min(left, window.innerWidth - menuRef.current.offsetWidth - spacing)),
-        maxHeight: window.innerHeight - element.bottom - spacing,
+        maxHeight: window.innerHeight - element.bottom - spacing * 2,
         top: element.bottom + spacing,
         visibility: 'visible',
       });
