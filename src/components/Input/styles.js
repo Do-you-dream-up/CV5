@@ -3,26 +3,26 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
 
-  actions: {
+  actions: () => ({
     alignItems: 'center',
     display: 'flex',
     '& > *': {
       marginLeft: '.5em',
     }
-  },
+  }),
 
-  container: {
+  container: () => ({
     backgroundColor: theme.palette.background.highlight,
     borderRadius: theme.shape.borderRadius,
     flexGrow: 1,
     overflow: 'hidden',
-  },
+  }),
 
-  field: {
+  field: () => ({
     height: '100%',
     position: 'relative',
     width: '100%',
-  },
+  }),
 
   fieldBase: {
     boxSizing: 'border-box',
@@ -37,13 +37,13 @@ export default createUseStyles(theme => ({
     wordBreak: 'break-word',
   },
 
-  fieldShadow: {
+  fieldShadow: () => ({
     extend: 'fieldBase',
     minHeight: '100%',
     visibility: 'hidden',
-  },
+  }),
 
-  fieldText: {
+  fieldText: () => ({
     extend: 'fieldBase',
     background: 0,
     border: 0,
@@ -54,7 +54,7 @@ export default createUseStyles(theme => ({
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
-  },
+  }),
 
   root: ({ configuration }) => ({
     display: 'flex',
@@ -76,23 +76,23 @@ export default createUseStyles(theme => ({
     [theme.breakpoints.down('xs')]: configuration.suggestions.stylesMobile,
   }),
 
-  suggestionsCandidate: {
+  suggestionsCandidate: () => ({
     color: theme.palette.text.primary,
     cursor: 'pointer',
     padding: ['1em', '1.4em'],
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
-  },
+  }),
 
-  suggestionsSelected: {
+  suggestionsSelected: () => ({
     backgroundColor: theme.palette.action.selected,
-  },
+  }),
 
-  suggestionsList: {
+  suggestionsList: () => ({
     listStyleType: 'none',
     margin: 0,
     padding: ['.5em', 0],
     paddingLeft: '0 !important',
-  },
+  }),
 }));

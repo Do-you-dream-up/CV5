@@ -11,6 +11,7 @@ export default createUseStyles(theme => ({
   },
   root: {
     height: 4,
+    overflowX: 'hidden',
   },
   segmentBase: {
     backgroundColor: theme.palette.secondary.main,
