@@ -72,6 +72,7 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
     position: 'absolute',
     right: 0,
+    zIndex: 1,
     ...configuration.suggestions.styles,
     [theme.breakpoints.down('xs')]: configuration.suggestions.stylesMobile,
   }),
