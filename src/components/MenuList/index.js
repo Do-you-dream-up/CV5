@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import useStyles from './styles';
@@ -19,10 +19,10 @@ export default function MenuList({ items, onClose }) {
   };
 
   return (
-    <ul className={classNames('dydu-menu-list', classes.root)}>
+    <ul className={c('dydu-menu-list', classes.root)}>
       {items.map((it, index) => (
         <li children={it.text}
-            className={classNames(
+            className={c(
               'dydu-menu-list-item',
               classes.item,
               it.onClick ? classes.itemEnabled : classes.itemDisabled

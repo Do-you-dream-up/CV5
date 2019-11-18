@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import React, { useContext } from 'react';
 import useStyles from './styles';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -17,10 +17,10 @@ export default function Tabs() {
   const { items } = configuration.tabs;
 
   return (
-    <div className={classNames('dydu-tabs', classes.root)}>
+    <div className={c('dydu-tabs', classes.root)}>
       {items.map((it, index) => {
         const onClick = it.value ? select(it.value) : null;
-        const names = classNames(
+        const names = c(
           'dydu-tab',
           classes.tab,
           onClick ? classes.enabled : classes.disabled,

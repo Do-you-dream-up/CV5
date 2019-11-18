@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import Interaction from '../Interaction';
@@ -46,7 +46,7 @@ export default function Top() {
   }, [fetch, ready]);
 
   return html && (
-    <article className={classNames('dydu-top', classes.root)}>
+    <article className={c('dydu-top', classes.root)}>
       <Interaction live text={html} type="response" />
     </article>
   );

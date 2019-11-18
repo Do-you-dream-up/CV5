@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import useStyles from './styles';
@@ -15,7 +15,7 @@ function Button({ color, component, filled, reference, variant, ...rest }) {
   const type = variant.toLowerCase();
   return React.createElement(component, {
     ...rest,
-    className: classNames(
+    className: c(
       'dydu-button',
       `dydu-button-${type}`,
       classes.base,

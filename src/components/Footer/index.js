@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
@@ -17,7 +17,7 @@ export default function Footer({ onRequest, onResponse, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   return (
-    <footer className={classNames('dydu-footer', classes.root)} {...rest}>
+    <footer className={c('dydu-footer', classes.root)} {...rest}>
       <Input onRequest={onRequest} onResponse={onResponse} />
     </footer>
   );

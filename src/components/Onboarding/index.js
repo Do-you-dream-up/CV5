@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
@@ -30,9 +30,9 @@ export default function Onboarding({ children, render }) {
   const body = sanitize(step.content || step);
 
   return should ? (
-    <div className={classNames('dydu-onboarding', classes.root)}>
+    <div className={c('dydu-onboarding', classes.root)}>
       <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
-      <div className={classNames('dydu-onboarding-buttons', classes.buttons)}>
+      <div className={c('dydu-onboarding-buttons', classes.buttons)}>
         <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
         <Button children={nextText} onClick={next} />
       </div>

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import React, { useContext, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -76,7 +76,7 @@ export default function Feedback() {
   return (
     <div className="dydu-feedback">
       {showVote && (
-        <div className={classNames('dydu-feedback-vote', classes.vote)}>
+        <div className={c('dydu-feedback-vote', classes.vote)}>
           <Button color="error" filled onClick={onVoteNegative} variant="icon">
             <img alt="Negative feedback" src="icons/thumb-down.png" title="Negative feedback" />
           </Button>
@@ -89,9 +89,9 @@ export default function Feedback() {
         <Bubble component={Scroll} thinking={thinking} type="response">
           <form className="dydu-feedback-comment" onSubmit={onComment}>
             {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
-            <div className={classNames('dydu-feedback-comment-field', classes.commentField)}>
+            <div className={c('dydu-feedback-comment-field', classes.commentField)}>
               <textarea autoFocus
-                        className={classNames(classes.commentFieldText, {[classes.thinking]: thinking})}
+                        className={c(classes.commentFieldText, {[classes.thinking]: thinking})}
                         disabled={thinking}
                         maxLength={100}
                         onChange={onChange}

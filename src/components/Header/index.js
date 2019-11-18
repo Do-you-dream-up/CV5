@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
 import useStyles from './styles';
@@ -39,14 +39,14 @@ export default function Header({ onClose, ...rest }) {
   }))];
 
   return (
-    <header className={classNames('dydu-header', classes.root)} {...rest}>
-      <div className={classNames('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
+    <header className={c('dydu-header', classes.root)} {...rest}>
+      <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
         {title.length && (
-          <div children={title} className={classNames('dydu-header-title', classes.title)} />
+          <div children={title} className={c('dydu-header-title', classes.title)} />
         )}
-        <div className={classNames('dydu-header-actions', classes.actions)}>
+        <div className={c('dydu-header-actions', classes.actions)}>
           <Onboarding>
             <Menu items={languagesMenu}>
               <Button variant="icon">

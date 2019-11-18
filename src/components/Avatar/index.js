@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
@@ -15,9 +15,7 @@ import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 export default function Avatar({ type }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
-  return (
-    <div className={classNames('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type])} />
-  );
+  return <div className={c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type])} />;
 }
 
 

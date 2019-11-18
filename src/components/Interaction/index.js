@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import useStyles from  './styles';
@@ -71,11 +71,9 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
   }, [addBubbles, live, previousText, ready, text]);
 
   return (bubbles.length || hasLoader) && (
-    <div className={classNames(
-      'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type],
-    )}>
+    <div className={c('dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type])}>
       {hasAvatar && <Avatar type={type} />}
-      <div className={classNames('dydu-interaction-bubbles', classes.bubbles)}>
+      <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
         {bubbles.map((it, index) => {
           const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;

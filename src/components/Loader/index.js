@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
@@ -17,9 +17,9 @@ export default function Loader({ size: defaultSize }) {
   const classes = useStyles({configuration});
   const size = defaultSize || configuration.loader.size;
   return (
-    <Scroll className={classNames('dydu-loader', classes.root)}>
+    <Scroll className={c('dydu-loader', classes.root)}>
       {[...Array(size)].map((it, index) => (
-        <div className={classNames('dydu-loader-bullet', classes.bullet)}
+        <div className={c('dydu-loader-bullet', classes.bullet)}
              key={index}
              style={{animationDelay: `${index / 10}s`}} />
       ))}

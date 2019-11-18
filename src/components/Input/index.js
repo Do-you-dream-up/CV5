@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
@@ -49,7 +49,7 @@ export default function Input({ onRequest, onResponse }) {
   };
 
   const renderInputComponent = properties => (
-    <div className={classNames('dydu-input-field', classes.field)}>
+    <div className={c('dydu-input-field', classes.field)}>
       <textarea {...properties} />
       <div children={input} className={classes.fieldShadow} />
     </div>
@@ -85,12 +85,12 @@ export default function Input({ onRequest, onResponse }) {
   }, [debouncedInput, suggest, typing]);
 
   const theme = {
-    container: classNames('dydu-input-container', classes.container),
-    input: classNames('dydu-input-field-text', classes.fieldText),
-    suggestionsContainer: classNames('dydu-suggestions', classes.suggestions),
-    suggestionsList: classNames('dydu-suggestions-list', classes.suggestionsList),
-    suggestion: classNames('dydu-suggestions-candidate', classes.suggestionsCandidate),
-    suggestionHighlighted: classNames('dydu-suggestions-selected', classes.suggestionsSelected),
+    container: c('dydu-input-container', classes.container),
+    input: c('dydu-input-field-text', classes.fieldText),
+    suggestionsContainer: c('dydu-suggestions', classes.suggestions),
+    suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
+    suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
+    suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
   };
   const inputProps = {
     autoFocus: true,
@@ -102,7 +102,7 @@ export default function Input({ onRequest, onResponse }) {
   };
 
   return (
-    <form className={classNames('dydu-input', classes.root)} onSubmit={onSubmit}>
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
       <Autosuggest getSuggestionValue={suggestion => suggestion.rootConditionReword || ''}
                    inputProps={inputProps}
                    onSuggestionSelected={onSuggestionSelected}
@@ -112,7 +112,7 @@ export default function Input({ onRequest, onResponse }) {
                    renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
                    suggestions={suggestions}
                    theme={theme} />
-      <div className={classNames('dydu-input-actions', classes.actions)}>
+      <div className={c('dydu-input-actions', classes.actions)}>
         <Button type="submit" variant="icon">
           <img alt="Send" src="icons/send.png" title="Send" />
         </Button>

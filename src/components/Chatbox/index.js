@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
 import useStyles from './styles';
@@ -97,11 +97,11 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   return (
     <TabProvider>
-      <div className={classNames('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
+      <div className={c('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
            ref={root}
            {...rest}>
         <Onboarding render>
-          <div className={classNames(
+          <div className={c(
             'dydu-chatbox-body',
             classes.body,
             {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},

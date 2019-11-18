@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
@@ -68,7 +68,7 @@ export default function Menu({ children, items }) {
       {React.cloneElement(children, {onClick: toggle(), ref: anchorRef})}
       {open && (
         <Portal node={node}>
-          <div className={classNames('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
+          <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
             {items.map((it, index) => <MenuList items={it} key={index} onClose={onClose} />)}
           </div>
         </Portal>

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
 import Button from '../Button';
@@ -42,16 +42,15 @@ export default function Banner() {
   }, [active, cookie, dismiss, transient]);
 
   return show && html && (
-    <div className={classNames('dydu-banner', classes.root)}>
+    <div className={c('dydu-banner', classes.root)}>
       {!!dismissable && (
-        <div className={classNames('dydu-banner-actions', classes.actions)}>
+        <div className={c('dydu-banner-actions', classes.actions)}>
           <Button onClick={onDismiss} variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
         </div>
       )}
-      <div className={classNames('dydu-banner-body', classes.body)}
-           dangerouslySetInnerHTML={{__html: html}} />
+      <div className={c('dydu-banner-body', classes.body)} dangerouslySetInnerHTML={{__html: html}} />
     </div>
   );
 }

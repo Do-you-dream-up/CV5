@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
 import useStyles from './styles';
@@ -36,18 +36,18 @@ export default function Secondary({ anchor }) {
   }
 
   return secondaryActive ? (
-    <div className={classNames('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}
+    <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}
          ref={root}>
-      <div className={classNames('dydu-secondary-header', classes.header)}>
-        {title && <h1 children={title} className={classNames('dydu-secondary-title', classes.title)} />}
-        <div className={classNames('dydu-secondary-actions', classes.actions)}>
+      <div className={c('dydu-secondary-header', classes.header)}>
+        {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
+        <div className={c('dydu-secondary-actions', classes.actions)}>
           <Button filled onClick={toggleSecondary(false)} type="button" variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
         </div>
       </div>
       {body && (
-        <div className={classNames('dydu-secondary-body', classes.body)}
+        <div className={c('dydu-secondary-body', classes.body)}
              dangerouslySetInnerHTML={{__html: body}} />
       )}
       {url && (

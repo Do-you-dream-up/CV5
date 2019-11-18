@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from './styles';
@@ -16,7 +16,7 @@ export default function Teaser({ open, toggle }) {
 
   return (
     <div children={title}
-         className={classNames('dydu-teaser', classes.root, {[classes.hidden]: !open})}
+         className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
          onClick={toggle(2)} />
   );
 }

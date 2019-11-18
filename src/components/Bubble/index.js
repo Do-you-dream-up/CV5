@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import useStyles from  './styles';
@@ -22,17 +22,15 @@ export default function Bubble({ actions, children, component, html, thinking, t
   const classes = useStyles({configuration});
 
   return React.createElement(component, {className: 'dydu-bubble'}, (
-    <div className={classNames(`dydu-bubble-${type}`, classes.base, classes[type])}>
+    <div className={c(`dydu-bubble-${type}`, classes.base, classes[type])}>
       {thinking && <Progress className={classes.progress} />}
       <div className="dydu-bubble-body">
         {children}
         {html && <div dangerouslySetInnerHTML={{__html: html}} />}
       </div>
       {actions.length > 0 && (
-        <div className={classNames('dydu-bubble-actions', classes.actions)}>
-          {actions.map((it, index) => (
-            <Button children={it.text} key={index} onClick={it.action} />
-          ))}
+        <div className={c('dydu-bubble-actions', classes.actions)}>
+          {actions.map((it, index) => <Button children={it.text} key={index} onClick={it.action} />)}
         </div>
       )}
     </div>

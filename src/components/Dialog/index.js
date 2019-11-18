@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
 import useStyles from './styles';
@@ -33,7 +33,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   }, [fetch]);
 
   return (
-    <div className={classNames('dydu-dialog', classes.root)} {...rest}>
+    <div className={c('dydu-dialog', classes.root)} {...rest}>
       <Top />
       {interactions.map((it, index) => ({...it, key: index}))}
     </div>

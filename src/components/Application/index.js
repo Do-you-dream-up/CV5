@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import c from 'classnames';
 import qs from 'qs';
 import React, { useContext, useEffect, useState } from 'react';
 import useStyles from './styles';
@@ -32,7 +32,7 @@ export default function Application() {
   }, [mode]);
 
   return (
-    <div className={classNames('dydu-application', classes.root)}>
+    <div className={c('dydu-application', classes.root)}>
       {hasWizard && <Wizard />}
       <Dragon component={Chatbox} open={mode > 1} toggle={toggle} />
       <Teaser open={mode === 1} toggle={toggle} />
