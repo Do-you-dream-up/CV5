@@ -133,7 +133,6 @@
   "top": {
     "size": 3,
     "styles": {},
-    "stylesMobile": {},
-    "text": "<p>Top-asked questions:</p>"
+    "stylesMobile": {}
   }
 }

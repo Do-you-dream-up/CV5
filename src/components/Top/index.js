@@ -1,5 +1,6 @@
 import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Interaction from '../Interaction';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -15,9 +16,10 @@ export default function Top() {
   const classes = useStyles({configuration});
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
-  const { size, text } = configuration.top;
+  const { t } = useTranslation('top');
+  const { size } = configuration.top;
   const html = !!items.length && [
-    text,
+    t('text'),
     '<ol>',
     items.map(({ reword }) => {
       const ask = `window.dydu.chat.ask('${reword}')`;
