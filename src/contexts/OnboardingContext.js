@@ -1,61 +1,52 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { withConfiguration } from '../tools/configuration';
+import React, { useCallback, useState } from 'react';
 import { Local } from '../tools/storage';
 
 
 export const OnboardingContext = React.createContext();
-export const OnboardingProvider = withConfiguration(class OnboardingProvider extends React.Component {
+export function OnboardingProvider({ children }) {
 
-  static propTypes = {
-    children: PropTypes.object,
-    configuration: PropTypes.object.isRequired,
-  };
+  const [ active, setActive ] = useState(!Local.get(Local.names.onboarding));
+  const [ index, setIndex ] = useState(0);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      active: !Local.get(Local.names.onboarding),
-      index: 0,
-    };
-  }
+  const hasPrevious = useCallback(() => !!index, [index]);
 
-  hasPrevious = () => this.state.index;
+  const hasNext = useCallback(() => {
+    const steps = [];
+    return index < steps.length - 1;
+  }, [index]);
 
-  hasNext = () => {
-    const { steps } = this.props.configuration.onboarding;
-    return this.state.index < steps.length - 1;
-  };
-
-  next = () => {
-    if (this.hasNext()) {
-      this.setState(state => ({index: state.index + 1}));
+  const next = useCallback(() => {
+    if (hasNext()) {
+      setIndex(previous => previous + 1);
     }
     else {
-      this.end();
+      end();
     }
-  };
+    // eslint-disable-next-line no-use-before-define
+  }, [end, hasNext]);
 
-  previous = () => {
-    const index = Math.max(this.state.index - 1, 0);
-    this.setState({index: index});
-  };
+  const previous = useCallback(() => {
+    setIndex(Math.max(index - 1, 0));
+  }, [index]);
 
-  end = () => {
-    this.setState(
-      {active: false, index: 0},
-      () => Local.set(Local.names.onboarding),
-    );
-  };
+  const end = useCallback(() => {
+    setActive(false);
+    setIndex(0);
+    Local.set(Local.names.onboarding);
+  }, []);
 
-  render() {
-    return <OnboardingContext.Provider children={this.props.children} value={{
-      hasNext: this.hasNext,
-      hasPrevious: this.hasPrevious,
-      end: this.end,
-      next: this.next,
-      previous: this.previous,
-      state: this.state,
-    }} />;
-  }
-});
+  return <OnboardingContext.Provider children={children} value={{
+    end,
+    hasNext,
+    hasPrevious,
+    next,
+    previous,
+    state: {active, index},
+  }} />;
+}
+
+
+OnboardingProvider.propTypes = {
+  children: PropTypes.object,
+};
