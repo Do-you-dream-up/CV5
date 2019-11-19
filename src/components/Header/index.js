@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Banner from '../Banner';
 import Button from '../Button';
@@ -19,19 +20,24 @@ import { ACTIONS } from '../../tools/talk';
 export default function Header({ onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { title='' } = configuration.header;
   const { onDragStart } = useContext(DragonContext);
   const dragonZone = useRef();
   const classes = useStyles({configuration});
+  const { t } = useTranslation('header');
+  const { title: hasTitle } = configuration.header;
+  const actionClose = t('actions.close');
+  const actionGdpr = t('actions.gdpr');
+  const actionMore = t('actions.more');
+  const actionRosetta = t('actions.rosetta');
 
   const gdprMenu = [[
-    {onClick: () => window.dydu.gdpr.get(), text: 'Get'},
-    {onClick: () => window.dydu.gdpr.forget(), text: 'Forget'},
+    {onClick: () => window.dydu.gdpr.get(), text: t('gdpr.get')},
+    {onClick: () => window.dydu.gdpr.forget(), text: t('gdpr.forget')},
   ]];
   const languagesMenu = [[
-    {onClick: () => window.dydu.localization.set('en'), text: 'English'},
-    {onClick: () => window.dydu.localization.set('es'), text: 'Español'},
-    {onClick: () => window.dydu.localization.set('fr'), text: 'Français'},
+    {onClick: () => window.dydu.localization.set('en'), text: t('rosetta.english')},
+    {onClick: () => window.dydu.localization.set('es'), text: t('rosetta.spanish')},
+    {onClick: () => window.dydu.localization.set('fr'), text: t('rosetta.french')},
   ]];
   const moreMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
@@ -43,29 +49,27 @@ export default function Header({ onClose, ...rest }) {
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
-        {title.length && (
-          <div children={title} className={c('dydu-header-title', classes.title)} />
-        )}
+        {!!hasTitle && <div children={t('title')} className={c('dydu-header-title', classes.title)} />}
         <div className={c('dydu-header-actions', classes.actions)}>
           <Onboarding>
             <Menu items={languagesMenu}>
               <Button variant="icon">
-                <img alt="Languages" src="icons/flag.png" title="Languages" />
+                <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
               </Button>
             </Menu>
             <Menu items={gdprMenu}>
               <Button variant="icon">
-                <img alt="GDPR" src="icons/shield-lock.png" title="GDPR" />
+                <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
               </Button>
             </Menu>
             <Menu items={moreMenu}>
               <Button variant="icon">
-                <img alt="More" src="icons/dots-vertical.png" title="More" />
+                <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />
               </Button>
             </Menu>
           </Onboarding>
           <Button onClick={onClose} variant="icon">
-            <img alt="Close" src="icons/close.png" title="Close" />
+            <img alt={actionClose} src="icons/close.png" title={actionClose} />
           </Button>
         </div>
       </div>

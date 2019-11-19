@@ -64,7 +64,7 @@
       "shadow": true
     },
     "stylesMobile": {},
-    "title": "Header"
+    "title": true
   },
   "input": {
     "delay": 300,

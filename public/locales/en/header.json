@@ -1,0 +1,18 @@
+{
+  "actions": {
+    "close": "Close",
+    "gdpr": "GDPR",
+    "more": "More",
+    "rosetta": "Languages"
+  },
+  "gdpr": {
+    "forget": "Forget",
+    "get": "Get"
+  },
+  "rosetta": {
+    "english": "English",
+    "french": "French",
+    "spanish": "Spanish"
+  },
+  "title": "Header"
+}

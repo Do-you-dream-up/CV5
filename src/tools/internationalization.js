@@ -8,7 +8,7 @@ i18n.use(initReactI18next).use(Backend).init({
   fallbackLng: 'en',
   interpolation: {escapeValue: false},
   lng: 'en',
-  ns: ['banner', 'feedback'],
+  ns: ['banner', 'feedback', 'header'],
   react: {useSuspense: false},
   returnObjects: true,
 });
