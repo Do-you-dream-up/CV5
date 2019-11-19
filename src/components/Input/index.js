@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Autosuggest from 'react-autosuggest';
 import useStyles from './styles';
 import Button from '../Button';
@@ -20,8 +21,10 @@ export default function Input({ onRequest, onResponse }) {
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
+  const { t } = useTranslation('input');
+  const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
-  const { delay, maxLength=100, placeholder='' } = configuration.input;
+  const { delay, maxLength=100 } = configuration.input;
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {
@@ -97,7 +100,7 @@ export default function Input({ onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: placeholder.slice(0, 50),
+    placeholder: t('placeholder').slice(0, 50),
     value: input,
   };
 
@@ -114,7 +117,7 @@ export default function Input({ onRequest, onResponse }) {
                    theme={theme} />
       <div className={c('dydu-input-actions', classes.actions)}>
         <Button type="submit" variant="icon">
-          <img alt="Send" src="icons/send.png" title="Send" />
+          <img alt={actionSend} src="icons/send.png" title={actionSend} />
         </Button>
       </div>
     </form>
