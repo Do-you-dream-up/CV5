@@ -38,7 +38,7 @@ export default function Feedback() {
         setComment('');
         setShowComment(false);
         setThinking(false);
-        if (commentThanks.length) {
+        if (commentThanks) {
           addResponse({text: commentThanks});
         }
       }, 1000));
@@ -58,7 +58,7 @@ export default function Feedback() {
       if (askComment) {
         setShowComment(true);
       }
-      else if (voteThanks.length) {
+      else if (voteThanks) {
         addResponse({text: voteThanks});
       }
     });
@@ -67,7 +67,7 @@ export default function Feedback() {
   const onVotePositive = () => {
     dydu.feedback(true).then(() => {
       setShowVote(false);
-      if (voteThanks.length) {
+      if (voteThanks) {
         addResponse({text: voteThanks});
       }
     });
