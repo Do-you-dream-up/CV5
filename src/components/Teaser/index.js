@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
@@ -12,7 +13,8 @@ export default function Teaser({ open, toggle }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
-  const { title } = configuration.teaser;
+  const { t } = useTranslation('teaser');
+  const title = t('title');
 
   return (
     <div children={title}
