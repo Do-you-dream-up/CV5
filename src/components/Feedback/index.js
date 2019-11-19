@@ -1,5 +1,6 @@
 import c from 'classnames';
 import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
@@ -24,7 +25,13 @@ export default function Feedback() {
   const [ showVote, setShowVote ] = useState(true);
   const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
-  const { askComment, commentHelp='', commentThanks='', voteThanks='' } = configuration.feedback;
+  const { t } = useTranslation('feedback');
+  const { askComment } = configuration.feedback;
+  const commentHelp = t('comment.help');
+  const commentThanks = t('comment.thanks');
+  const voteNegative = t('vote.negative');
+  const votePositive = t('vote.positive');
+  const voteThanks = t('vote.thanks');
 
   const onChange = event => {
     setComment(event.target.value);
@@ -78,10 +85,10 @@ export default function Feedback() {
       {showVote && (
         <div className={c('dydu-feedback-vote', classes.vote)}>
           <Button color="error" filled onClick={onVoteNegative} variant="icon">
-            <img alt="Negative feedback" src="icons/thumb-down.png" title="Negative feedback" />
+            <img alt={voteNegative} src="icons/thumb-down.png" title={voteNegative} />
           </Button>
           <Button color="success" filled onClick={onVotePositive} variant="icon">
-            <img alt="Positive feedback" src="icons/thumb-up.png" title="Positive feedback" />
+            <img alt={votePositive} src="icons/thumb-up.png" title={votePositive} />
           </Button>
         </div>
       )}
@@ -96,7 +103,7 @@ export default function Feedback() {
                         maxLength={100}
                         onChange={onChange}
                         onKeyDown={onKeyDown}
-                        placeholder="Comment here..."
+                        placeholder={t('comment.placeholder')}
                         value={comment} />
               <div children={comment} className={classes.commentFieldShadow} />
             </div>
