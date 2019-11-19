@@ -1,5 +1,6 @@
 import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -19,8 +20,10 @@ export default function Banner() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
-  const { active, cookie, dismissable, text, transient } = configuration.banner;
-  const html = sanitize(text);
+  const { t } = useTranslation('banner');
+  const { active, cookie, dismissable, transient } = configuration.banner;
+  const html = sanitize(t('html'));
+  const close = t('close');
 
   const dismiss = useCallback(() => {
     if (cookie) {
@@ -46,7 +49,7 @@ export default function Banner() {
       {!!dismissable && (
         <div className={c('dydu-banner-actions', classes.actions)}>
           <Button onClick={onDismiss} variant="icon">
-            <img alt="Close" src="icons/close.png" title="Close" />
+            <img alt={close} src="icons/close.png" title={close} />
           </Button>
         </div>
       )}

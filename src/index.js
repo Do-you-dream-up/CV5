@@ -7,6 +7,7 @@ import { DialogProvider } from './contexts/DialogContext';
 import { OnboardingProvider } from './contexts/OnboardingContext';
 import theme from './styles/theme';
 import { configuration } from './tools/configuration';
+import './tools/internationalization';
 
 
 configuration.initialize().then(configuration => {
