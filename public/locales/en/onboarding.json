@@ -1,0 +1,9 @@
+{
+  "next": "Next",
+  "previous": "Previous",
+  "steps": [
+    {"content": "<h1>Hello</h1><pA>Blah.</p>"},
+    {"content": "<h1>Hello</h1><pA>Blah. Blah.</p>"},
+    {"content": "<h1>Hello</h1><p>Blah. Blah. Blah.</p>", "next": "Finish"}
+  ]
+}

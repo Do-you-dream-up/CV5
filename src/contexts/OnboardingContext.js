@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Local } from '../tools/storage';
 
 
@@ -8,41 +9,43 @@ export function OnboardingProvider({ children }) {
 
   const [ active, setActive ] = useState(!Local.get(Local.names.onboarding));
   const [ index, setIndex ] = useState(0);
+  const { t } = useTranslation('onboarding');
 
   const hasPrevious = useCallback(() => !!index, [index]);
 
   const hasNext = useCallback(() => {
-    const steps = [];
+    const steps = t('steps') || [];
     return index < steps.length - 1;
-  }, [index]);
+  }, [index, t]);
 
-  const next = useCallback(() => {
+  const onNext = useCallback(() => {
     if (hasNext()) {
       setIndex(previous => previous + 1);
     }
     else {
-      end();
+      onEnd();
     }
     // eslint-disable-next-line no-use-before-define
-  }, [end, hasNext]);
+  }, [hasNext, onEnd]);
 
-  const previous = useCallback(() => {
+  const onPrevious = useCallback(() => {
     setIndex(Math.max(index - 1, 0));
   }, [index]);
 
-  const end = useCallback(() => {
+  const onEnd = useCallback(() => {
     setActive(false);
     setIndex(0);
     Local.set(Local.names.onboarding);
   }, []);
 
   return <OnboardingContext.Provider children={children} value={{
-    end,
+    active,
     hasNext,
     hasPrevious,
-    next,
-    previous,
-    state: {active, index},
+    index,
+    onEnd,
+    onNext,
+    onPrevious,
   }} />;
 }
 

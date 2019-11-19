@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -20,24 +21,22 @@ import sanitize from '../../tools/sanitize';
 export default function Onboarding({ children, render }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { hasPrevious, next, previous, state: onboardingState } = useContext(OnboardingContext);
+  const { active, hasPrevious, index, onNext, onPrevious } = useContext(OnboardingContext);
   const classes = useStyles({configuration});
-  const { steps } = configuration.onboarding;
-  const should = render && onboardingState.active && onboardingState.index < steps.length;
-  const step = steps[onboardingState.index];
-  const previousText = step.previous || configuration.onboarding.previous;
-  const nextText = step.next || configuration.onboarding.next;
-  const body = sanitize(step.content || step);
+  const { t } = useTranslation('onboarding');
+  const steps = t('steps');
+  const should = render && active && index < steps.length;
+  const { content, next=t('next'), previous=t('previous') } = steps[index] || {};
 
   return should ? (
     <div className={c('dydu-onboarding', classes.root)}>
-      <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: body}} />
+      <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: sanitize(content)}} />
       <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-        <Button children={previousText} disabled={!hasPrevious()} onClick={previous} />
-        <Button children={nextText} onClick={next} />
+        <Button children={previous} disabled={!hasPrevious()} onClick={onPrevious} />
+        <Button children={next} onClick={onNext} />
       </div>
     </div>
-  ) : !onboardingState.active && children;
+  ) : !active && children;
 }
 
 
