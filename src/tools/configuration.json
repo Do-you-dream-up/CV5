@@ -117,10 +117,7 @@
     "stylesMobile": {}
   },
   "tabs": {
-    "items": [
-      {"text": "Dialog", "value": "dialog"},
-      {"text": "Contacts", "value": "contacts"}
-    ],
+    "items": ["dialog", "contacts"],
     "selected": 0,
     "styles": {},
     "stylesMobile": {}
