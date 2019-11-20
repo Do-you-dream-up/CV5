@@ -52,21 +52,25 @@ export default function Header({ onClose, ...rest }) {
         {!!hasTitle && <div children={t('title')} className={c('dydu-header-title', classes.title)} />}
         <div className={c('dydu-header-actions', classes.actions)}>
           <Onboarding>
-            <Menu items={languagesMenu}>
-              <Button variant="icon">
-                <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
-              </Button>
-            </Menu>
+            {languagesMenu.flat().length > 1 && (
+              <Menu items={languagesMenu}>
+                <Button variant="icon">
+                  <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
+                </Button>
+              </Menu>
+            )}
             <Menu items={gdprMenu}>
               <Button variant="icon">
                 <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
               </Button>
             </Menu>
-            <Menu items={moreMenu}>
-              <Button variant="icon">
-                <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />
-              </Button>
-            </Menu>
+            {!!moreMenu.flat().length && (
+              <Menu items={moreMenu}>
+                <Button variant="icon">
+                  <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />
+                </Button>
+              </Menu>
+            )}
           </Onboarding>
           <Button onClick={onClose} variant="icon">
             <img alt={actionClose} src="icons/close.png" title={actionClose} />

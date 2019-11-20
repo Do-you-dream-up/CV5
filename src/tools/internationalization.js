@@ -6,6 +6,7 @@ import { Cookie, Local } from './storage';
 
 
 i.use(initReactI18next).use(Backend).use(BrowserLanguage).init({
+  cleanCode: true,
   debug: false,
   detection: {
     lookupCookie: Cookie.names.locale,
@@ -15,6 +16,8 @@ i.use(initReactI18next).use(Backend).use(BrowserLanguage).init({
   },
   fallbackLng: 'en',
   interpolation: {escapeValue: false},
+  load: 'languageOnly',
+  lowerCaseLng: true,
   ns: ['banner', 'feedback', 'header', 'input', 'onboarding', 'tabs', 'teaser', 'top'],
   react: {useSuspense: false},
   returnObjects: true,
