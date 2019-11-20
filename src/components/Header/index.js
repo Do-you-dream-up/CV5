@@ -24,6 +24,7 @@ export default function Header({ onClose, ...rest }) {
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const { t } = useTranslation('header');
+  const { languages=[] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
   const actionGdpr = t('actions.gdpr');
@@ -34,11 +35,10 @@ export default function Header({ onClose, ...rest }) {
     {onClick: () => window.dydu.gdpr.get(), text: t('gdpr.get')},
     {onClick: () => window.dydu.gdpr.forget(), text: t('gdpr.forget')},
   ]];
-  const languagesMenu = [[
-    {onClick: () => window.dydu.localization.set('en'), text: t('rosetta.english')},
-    {onClick: () => window.dydu.localization.set('es'), text: t('rosetta.spanish')},
-    {onClick: () => window.dydu.localization.set('fr'), text: t('rosetta.french')},
-  ]];
+  const languagesMenu = [languages.sort().map(id => ({
+    onClick: () => window.dydu.localization.set(id),
+    text: t(`rosetta.${id}`),
+  }))];
   const moreMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,

@@ -10,9 +10,8 @@
     "get": "Get"
   },
   "rosetta": {
-    "english": "English",
-    "french": "French",
-    "spanish": "Spanish"
+    "en": "English",
+    "fr": "French"
   },
   "title": "Header"
 }

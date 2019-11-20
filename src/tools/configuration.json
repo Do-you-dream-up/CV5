@@ -1,7 +1,8 @@
 {
   "application": {
     "open": 1,
-    "qualification": true
+    "qualification": true,
+    "languages": ["en", "fr"]
   },
   "avatar": {
     "styles": {
