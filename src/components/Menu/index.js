@@ -15,7 +15,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
  * Expect items as an array of arrays. This is useful to separate actions
  * between categories.
  */
-export default function Menu({ children, items }) {
+export default function Menu({ children, items, selected }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
@@ -69,7 +69,9 @@ export default function Menu({ children, items }) {
       {open && (
         <Portal node={node}>
           <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
-            {items.map((it, index) => <MenuList items={it} key={index} onClose={onClose} />)}
+            {items.map((it, index) => (
+              <MenuList items={it} key={index} onClose={onClose} selected={selected} />
+            ))}
           </div>
         </Portal>
       )}
@@ -81,4 +83,5 @@ export default function Menu({ children, items }) {
 Menu.propTypes = {
   children: PropTypes.element.isRequired,
   items: PropTypes.arrayOf(PropTypes.array).isRequired,
+  selected: PropTypes.string,
 };

@@ -27,4 +27,7 @@ export default createUseStyles(theme => ({
       borderBottomWidth: 1,
     },
   },
+  selected: {
+    backgroundColor: theme.palette.action.selected,
+  },
 }));

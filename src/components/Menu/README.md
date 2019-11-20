@@ -1,17 +1,17 @@
 ```js static
 const menu = [
   [
-    {onClick: onFoo, text: 'Foo'},
+    {id: 'foo', onClick: onFoo, text: 'Foo'},
   ],
   [
-    {onClick: onBar, text: 'Bar'},
-    {onClick: onBaz, text: 'Baz'},
+    {id: 'bar', onClick: onBar, text: 'Bar'},
+    {id: 'baz', onClick: onBaz, text: 'Baz'},
   ],
 ];
 ```
 
 ```jsx static
-<Menu items={menu}>
+<Menu items={menu} selected="baz">
   <Button children="Toggle" />
 </Menu>
 ```

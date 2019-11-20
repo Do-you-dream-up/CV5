@@ -7,7 +7,7 @@ import useStyles from './styles';
 /**
  * Form a list of actions within a menu as list elements.
  */
-export default function MenuList({ items, onClose }) {
+export default function MenuList({ items, onClose, selected }) {
 
   const classes = useStyles();
 
@@ -25,7 +25,8 @@ export default function MenuList({ items, onClose }) {
             className={c(
               'dydu-menu-list-item',
               classes.item,
-              it.onClick ? classes.itemEnabled : classes.itemDisabled
+              it.onClick ? classes.itemEnabled : classes.itemDisabled,
+              {[classes.selected]: selected && selected === it.id},
             )}
             key={index}
             onClick={onItemClick(it.onClick)} />
@@ -41,4 +42,5 @@ MenuList.propTypes = {
     text: PropTypes.string.isRequired,
   })).isRequired,
   onClose: PropTypes.func.isRequired,
+  selected: PropTypes.string,
 };
