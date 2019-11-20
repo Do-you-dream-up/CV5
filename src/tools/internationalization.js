@@ -1,18 +1,21 @@
-import i18n from 'i18next';
+import i from 'i18next';
+import BrowserLanguage from 'i18next-browser-languagedetector';
 import Backend from 'i18next-xhr-backend';
 import { initReactI18next } from 'react-i18next';
+import { Cookie, Local } from './storage';
 
 
-i18n.use(initReactI18next).use(Backend).init({
+i.use(initReactI18next).use(Backend).use(BrowserLanguage).init({
   debug: false,
+  detection: {
+    lookupCookie: Cookie.names.locale,
+    lookupLocalStorage: Local.names.locale,
+    lookupQuerystring: 'language',
+    order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+  },
   fallbackLng: 'en',
   interpolation: {escapeValue: false},
-  lng: 'en',
   ns: ['banner', 'feedback', 'header', 'input', 'onboarding', 'tabs', 'teaser', 'top'],
   react: {useSuspense: false},
   returnObjects: true,
-  saveMissing: true,
 });
-
-
-export default i18n;

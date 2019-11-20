@@ -132,7 +132,7 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      this.setLocale('en');
+      this.setLocale(Local.get(Local.names.locale, 'en'));
     }
     return this.locale;
   };

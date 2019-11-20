@@ -9,6 +9,7 @@ export class Cookie {
 
   static names = {
     banner: 'dydu.banner',
+    locale: 'dydu.locale',
   };
 
   static duration = {
