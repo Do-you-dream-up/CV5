@@ -47,15 +47,21 @@ export class Local {
   /**
    * Retrieve a value stored in the local storage.
    *
+   * If the value is not found in the local storage dictionary and a fallback is
+   * provided, set it before returning it.
+   *
+   * If the provided fallback is a function, call it to obtain the fallback
+   * value.
+   *
    * @param {string} name - Name of the local storage variable to fetch.
-   * @param {function} [getValue] - Function returning the value to set if the
-   *                                name was not found.
+   * @param {*} [fallback] - Value or function to fallback to if the name was
+   *                                       not found.
    * @returns {*} Value of the variable that was found.
    */
-  static get = (name, getValue) => {
+  static get = (name, fallback) => {
     const value = localStorage.getItem(name);
-    if (!value && typeof getValue === 'function') {
-      this.set(name, getValue());
+    if (!value && fallback) {
+      this.set(name, typeof fallback === 'function' ? fallback() : fallback);
       return this.get(name);
     }
     try {
