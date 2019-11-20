@@ -11,6 +11,7 @@ i18n.use(initReactI18next).use(Backend).init({
   ns: ['banner', 'feedback', 'header', 'input', 'onboarding', 'tabs', 'teaser', 'top'],
   react: {useSuspense: false},
   returnObjects: true,
+  saveMissing: true,
 });
 
 
