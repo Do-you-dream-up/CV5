@@ -23,7 +23,7 @@ export default function Header({ onClose, ...rest }) {
   const { onDragStart } = useContext(DragonContext);
   const dragonZone = useRef();
   const classes = useStyles({configuration});
-  const { t } = useTranslation('header');
+  const [ t, i ] = useTranslation('header');
   const { languages=[] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
@@ -36,6 +36,7 @@ export default function Header({ onClose, ...rest }) {
     {onClick: () => window.dydu.gdpr.forget(), text: t('gdpr.forget')},
   ]];
   const languagesMenu = [languages.sort().map(id => ({
+    id,
     onClick: () => window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
@@ -53,7 +54,7 @@ export default function Header({ onClose, ...rest }) {
         <div className={c('dydu-header-actions', classes.actions)}>
           <Onboarding>
             {languagesMenu.flat().length > 1 && (
-              <Menu items={languagesMenu}>
+              <Menu items={languagesMenu} selected={i.languages[0]}>
                 <Button variant="icon">
                   <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
                 </Button>

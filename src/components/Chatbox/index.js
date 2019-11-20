@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -34,6 +35,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     toggleSecondary,
   } = useContext(DialogContext);
   const classes = useStyles({configuration});
+  const [ , i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
   const secondaryMode = configuration.secondary.mode;
 
@@ -72,8 +74,8 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: locale => dydu.setLocale(locale).then(
-          locale => window.dydu.chat.reply(`New locale set: '${locale}'.`),
+        set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
+          ([ locale ]) => window.dydu.chat.reply(`New locale set: '${locale}'.`),
           response => window.dydu.chat.reply(response),
         ),
       };
@@ -93,7 +95,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, setSecondary, toggle, toggleSecondary]);
+  }, [addResponse, ask, empty, i, setSecondary, toggle, toggleSecondary]);
 
   return (
     <TabProvider>
