@@ -52,14 +52,14 @@ export default function Header({ onClose, ...rest }) {
            ref={dragonZone}>
         {!!hasTitle && <div children={t('title')} className={c('dydu-header-title', classes.title)} />}
         <div className={c('dydu-header-actions', classes.actions)}>
+          {languagesMenu.flat().length > 1 && (
+            <Menu items={languagesMenu} selected={i.languages[0]}>
+              <Button variant="icon">
+                <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
+              </Button>
+            </Menu>
+          )}
           <Onboarding>
-            {languagesMenu.flat().length > 1 && (
-              <Menu items={languagesMenu} selected={i.languages[0]}>
-                <Button variant="icon">
-                  <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
-                </Button>
-              </Menu>
-            )}
             <Menu items={gdprMenu}>
               <Button variant="icon">
                 <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
