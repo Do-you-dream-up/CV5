@@ -20,9 +20,8 @@ export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
-  const initialMode = Local.get(Local.names.open);
-  const defaultMode = configuration.application.open;
-  const [ mode, setMode ] = useState(initialMode !== null ? ~~initialMode : ~~defaultMode);
+  const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
+  const [ mode, setMode ] = useState(~~initialMode);
 
   const toggle = value => () => setMode(~~value);
 
