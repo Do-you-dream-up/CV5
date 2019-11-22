@@ -19,7 +19,6 @@ i.use(initReactI18next).use(Backend).use(BrowserLanguage).init({
   interpolation: {escapeValue: false},
   load: 'languageOnly',
   lowerCaseLng: true,
-  ns: ['banner', 'feedback', 'header', 'input', 'onboarding', 'tabs', 'teaser', 'top'],
   react: {useSuspense: false},
   returnObjects: true,
 });
