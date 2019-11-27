@@ -1,5 +1,6 @@
 import c from 'classnames';
 import React, { useContext } from 'react';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import Paper from '../Paper';
 import useStyles from './styles';
@@ -12,8 +13,9 @@ import useStyles from './styles';
  */
 export default function Modal() {
 
+  const { configuration } = useContext(ConfigurationContext);
   const { Component, onReject } = useContext(ModalContext);
-  const classes = useStyles();
+  const classes = useStyles({configuration});
 
   const onClick = event => {
     event.stopPropagation();

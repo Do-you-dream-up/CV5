@@ -2,11 +2,11 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  modal: {
-    maxWidth: '70%',
-    minWidth: '40%',
-  },
-  root: {
+  modal: ({ configuration }) => ({
+    maxWidth: configuration.modal.maxWidth,
+    minWidth: configuration.modal.minWidth,
+  }),
+  root: () => ({
     alignItems: 'center',
     backgroundColor: theme.palette.background.overlay,
     borderRadius: theme.shape.borderRadius,
@@ -17,5 +17,5 @@ export default createUseStyles(theme => ({
     position: 'absolute',
     right: 0,
     top: 0,
-  },
+  }),
 }));

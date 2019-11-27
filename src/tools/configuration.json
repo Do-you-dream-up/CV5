@@ -96,6 +96,10 @@
     },
     "stylesMobile": {}
   },
+  "modal": {
+    "maxWidth": "80%",
+    "minWidth": "50%"
+  },
   "onboarding": {
     "styles": {},
     "stylesMobile": {}
