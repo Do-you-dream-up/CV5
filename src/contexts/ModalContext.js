@@ -8,12 +8,14 @@ export function ModalProvider({ children }) {
   const [ Component, setComponent ] = useState(null);
   const [ onReject, setOnReject ] = useState(null);
   const [ onResolve, setOnResolve ] = useState(null);
+  const [ thinking, setThinking ] = useState(false);
 
   const modal = (Component, action) => new Promise((resolve, reject) => {
     setComponent(() => Component);
     setOnReject(() => onCleanup(reject));
     setOnResolve(() => data => {
       if (typeof action === 'function') {
+        setThinking(true);
         setTimeout(() => action(data).then(
           response => onCleanup(resolve)(response),
           response => onCleanup(reject)(response),
@@ -29,6 +31,7 @@ export function ModalProvider({ children }) {
     setComponent(null);
     setOnReject(null);
     setOnResolve(null);
+    setThinking(false);
     if (typeof callback === 'function') {
       callback(data);
     }
@@ -39,6 +42,7 @@ export function ModalProvider({ children }) {
     modal,
     onReject,
     onResolve,
+    thinking,
   }} />;
 }
 
