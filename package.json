@@ -30,7 +30,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",
     "copy-webpack-plugin": "^4.6.0",
-    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-react": "^7.16.0",
     "husky": "^1.2.1",
     "lint-staged": "^8.1.0",
     "react-styleguidist": "^9.1.13",
