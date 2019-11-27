@@ -86,7 +86,7 @@ function WizardField({ component, label, onSave, parent, value: oldValue }) {
   return ready && React.createElement(component, null, !!attributes && (
     <label className={classes.field}>
       <div children={label} className={classes.text} />
-      <div children={label} className={classes.input}>
+      <div className={classes.input}>
         {React.createElement(input, {name: label, onChange, ...attributes})}
       </div>
       <div children={<WizardFieldStatus error={error} status={status} />} />
