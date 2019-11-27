@@ -10,10 +10,10 @@ import useStyles from './styles';
  *
  * See Material design: https://material.io/.
  */
-export default function Paper({ actions, children, className, title, ...rest }) {
+export default function Paper({ actions, children, className, component, title, ...rest }) {
   const classes = useStyles();
-  return (
-    <div className={c('dydu-paper', classes.root, className)} {...rest}>
+  return React.createElement(component, {className: c('dydu-paper', classes.root, className), ...rest}, (
+    <>
       {title && <h3 children={title} className={c('dydu-paper-header', classes.header)} />}
       {children && <div children={children} className="dydu-paper-body" />}
       {actions.length > 0 && (
@@ -21,13 +21,14 @@ export default function Paper({ actions, children, className, title, ...rest }) 
           {actions.map((it, index) => <Button children={it.text} key={index} onClick={it.action} />)}
         </div>
       )}
-    </div>
-  );
+    </>
+  ));
 }
 
 
 Paper.defaultProps = {
   actions: [],
+  component: 'div',
 };
 
 
@@ -38,5 +39,6 @@ Paper.propTypes = {
   })),
   children: PropTypes.node,
   className: PropTypes.string,
+  component: PropTypes.elementType,
   title: PropTypes.string,
 };
