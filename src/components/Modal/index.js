@@ -6,7 +6,9 @@ import useStyles from './styles';
 
 
 /**
+ * Dock for child content to be displayed within modal UI.
  *
+ * The modal comes with an backdrop overlay that self-dismiss on click.
  */
 export default function Modal() {
 
