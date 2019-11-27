@@ -12,19 +12,16 @@ import useStyles from './styles';
  */
 export default function Modal() {
 
-  const { component, onReject } = useContext(ModalContext);
+  const { Component, onReject } = useContext(ModalContext);
   const classes = useStyles();
 
   const onClick = event => {
     event.stopPropagation();
   };
 
-  return !!component && (
+  return !!Component && (
     <div className={c('dydu-modal-overlay', classes.root)} onClick={onReject}>
-      <Paper children={component}
-             className={c('dydu-modal', classes.modal)}
-             onClick={onClick}
-             title="Some long title" />
+      <Component className={c('dydu-modal', classes.modal)} component={Paper} onClick={onClick}  />
     </div>
   );
 }

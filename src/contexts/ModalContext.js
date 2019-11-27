@@ -5,12 +5,12 @@ import React, { useState } from 'react';
 export const ModalContext = React.createContext();
 export function ModalProvider({ children }) {
 
-  const [ component, setComponent ] = useState(null);
+  const [ Component, setComponent ] = useState(null);
   const [ onReject, setOnReject ] = useState(null);
   const [ onResolve, setOnResolve ] = useState(null);
 
-  const modal = component => new Promise((resolve, reject) => {
-    setComponent(component);
+  const modal = Component => new Promise((resolve, reject) => {
+    setComponent(() => Component);
     setOnReject(() => onCleanup(reject));
     setOnResolve(() => onCleanup(resolve));
   });
@@ -25,7 +25,7 @@ export function ModalProvider({ children }) {
   };
 
   return <ModalContext.Provider children={children} value={{
-    component,
+    Component,
     modal,
     onReject,
     onResolve,
