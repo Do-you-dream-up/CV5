@@ -16,6 +16,7 @@ export default {
       default: '#FAFAFA',
       highlight: 'rgba(255, 255, 255, .4)',
       menu: '#FFFFFF',
+      overlay: 'rgba(0, 0, 0, .6)',
       secondary: '#FFFFFF',
     },
     divider: 'rgba(0, 0, 0, 0.12)',

@@ -7,6 +7,7 @@ import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
+import Modal from '../Modal';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
@@ -116,6 +117,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         </Onboarding>
         <Header onClose={toggle(1)} style={{order: -1}} />
         {secondaryMode !== 'over' && <Secondary anchor={root} />}
+        <Modal />
       </div>
     </TabProvider>
   );

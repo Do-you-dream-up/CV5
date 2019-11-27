@@ -4,6 +4,7 @@ import { ThemeProvider } from 'react-jss';
 import Application from './components/Application';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { DialogProvider } from './contexts/DialogContext';
+import { ModalProvider } from './contexts/ModalContext';
 import { OnboardingProvider } from './contexts/OnboardingContext';
 import theme from './styles/theme';
 import { configuration } from './tools/configuration';
@@ -18,7 +19,9 @@ configuration.initialize().then(configuration => {
         <ConfigurationProvider configuration={configuration}>
           <DialogProvider>
             <OnboardingProvider>
-              <Application />
+              <ModalProvider>
+                <Application />
+              </ModalProvider>
             </OnboardingProvider>
           </DialogProvider>
         </ConfigurationProvider>
