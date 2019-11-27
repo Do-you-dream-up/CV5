@@ -53,7 +53,7 @@ export default function Banner() {
           </Button>
         </div>
       )}
-      <div className={c('dydu-banner-body', classes.body)} dangerouslySetInnerHTML={{__html: html}} />
+      {html && <div className={c('dydu-banner-body', classes.body)} dangerouslySetInnerHTML={{__html: html}} />}
     </div>
   );
 }
