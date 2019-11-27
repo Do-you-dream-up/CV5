@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ModalContext } from '../../contexts/ModalContext';
+import sanitize from '../../tools/sanitize';
 import Actions from '../Actions';
 import useStyles from './styles';
 
@@ -35,20 +36,26 @@ export default function ModalGdpr({ className, component, ...rest }) {
     {text: t('form.submit'), type: 'submit'},
   ];
 
+  const help = sanitize(t('form.help'));
+
   return React.createElement(
     component,
-    {className: c('dydu-modal-gdpr', classes.root, className), component: 'form', onSubmit, ...rest},
+    {className: c('dydu-modal-gdpr', classes.root, className), title: t('form.title'), ...rest},
     (
       <>
-        <label className="dydu-modal-gdpr-field">
-          <div children={t('form.email.label')} />
-          <input className={classes.input}
-                 onChange={onChange}
-                 placeholder={t('form.email.placeholder')}
-                 type="email"
-                 value={email} />
-        </label>
-        <Actions actions={actions} className="dydu-modal-gdpr-actions" />
+        {help && <div className={c('dydu-modal-gdpr-help', classes.help)} dangerouslySetInnerHTML={{__html: help}} />}
+        <form className="dydu-modal-gdpr-form" onSubmit={onSubmit}>
+          <label className="dydu-modal-gdpr-form-field">
+            <div children={t('form.email.label')} />
+            <input className={classes.input}
+                   onChange={onChange}
+                   placeholder={t('form.email.placeholder')}
+                   required
+                   type="email"
+                   value={email} />
+          </label>
+          <Actions actions={actions} className="dydu-modal-gdpr-form-actions" />
+        </form>
       </>
     ),
   );

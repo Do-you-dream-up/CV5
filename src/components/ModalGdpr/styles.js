@@ -2,6 +2,9 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  help: {
+    marginBottom: '1em',
+  },
   input: {
     backgroundColor: theme.palette.primary.light,
     boxSizing: 'border-box',

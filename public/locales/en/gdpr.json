@@ -5,7 +5,9 @@
       "label": "Email",
       "placeholder": "Enter your address..."
     },
-    "submit": "Submit"
+    "help": "<p>Some <em>help</em> text.</p>",
+    "submit": "Submit",
+    "title": "GDPR"
   },
   "get": {
     "error": "Get error.",
