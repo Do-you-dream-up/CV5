@@ -1,0 +1,14 @@
+{
+  "form": {
+    "cancel": "Cancel",
+    "email": {
+      "label": "Email",
+      "placeholder": "Enter your address..."
+    },
+    "submit": "Submit"
+  },
+  "get": {
+    "error": "Get error.",
+    "success": "Get success."
+  }
+}

@@ -8,11 +8,13 @@ import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Header from '../Header';
 import Modal from '../Modal';
+import ModalGdpr from '../ModalGdpr';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import { ModalContext } from '../../contexts/ModalContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
@@ -35,8 +37,9 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const { modal } = useContext(ModalContext);
   const classes = useStyles({configuration});
-  const [ , i ] = useTranslation();
+  const [ t, i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
   const secondaryMode = configuration.secondary.mode;
 
@@ -67,10 +70,10 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           () => window.dydu.chat.reply('Forget success'),
           () => window.dydu.chat.reply('Forget error'),
         ),
-        get: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Get'}).then(
-          () => window.dydu.chat.reply('Get success'),
-          () => window.dydu.chat.reply('Get error'),
-        ),
+        get: () => modal(<ModalGdpr />).then(email => dydu.gdpr({email, method: 'Get'}).then(
+          () => window.dydu.chat.reply(t('gdpr:get.success')),
+          () => window.dydu.chat.reply(t('gdpr:get.error')),
+        ), () => {}),
       };
 
       window.dydu.localization = {
@@ -96,7 +99,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, i, setSecondary, toggle, toggleSecondary]);
+  }, [addResponse, ask, empty, i, modal, setSecondary, t, toggle, toggleSecondary]);
 
   return (
     <TabProvider>
