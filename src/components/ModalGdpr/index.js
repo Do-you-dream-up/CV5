@@ -40,7 +40,7 @@ export default function ModalGdpr({ className, component, ...rest }) {
 
   return React.createElement(
     component,
-    {className: c('dydu-modal-gdpr', classes.root, className), title: t('form.title'), ...rest},
+    {className: c('dydu-modal-gdpr', className), title: t('form.title'), ...rest},
     (
       <>
         {help && <div className={c('dydu-modal-gdpr-help', classes.help)} dangerouslySetInnerHTML={{__html: help}} />}

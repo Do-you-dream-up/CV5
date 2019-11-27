@@ -14,13 +14,14 @@ export default createUseStyles(theme => ({
       marginLeft: '.7em',
     },
   },
+  header: {
+    marginTop: 0,
+    textTransform: 'capitalize',
+  },
   root: {
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.borderRadius,
     boxShadow: theme.shadows[12],
     padding: '1.4em',
-  },
-  title: {
-    textTransform: 'capitalize',
   },
 }));

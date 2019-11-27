@@ -19,10 +19,4 @@ export default createUseStyles(theme => ({
       marginTop: '.5em',
     },
   },
-  root: {
-    '& > :not(:last-child)': {
-      display: 'block',
-      marginBottom: '1em',
-    },
-  },
 }));
