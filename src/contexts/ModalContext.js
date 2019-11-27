@@ -9,10 +9,20 @@ export function ModalProvider({ children }) {
   const [ onReject, setOnReject ] = useState(null);
   const [ onResolve, setOnResolve ] = useState(null);
 
-  const modal = Component => new Promise((resolve, reject) => {
+  const modal = (Component, action) => new Promise((resolve, reject) => {
     setComponent(() => Component);
     setOnReject(() => onCleanup(reject));
-    setOnResolve(() => onCleanup(resolve));
+    setOnResolve(() => data => {
+      if (typeof action === 'function') {
+        setTimeout(() => action(data).then(
+          response => onCleanup(resolve)(response),
+          response => onCleanup(reject)(response),
+        ), 1000);
+      }
+      else {
+        onCleanup(resolve)();
+      }
+    });
   });
 
   const onCleanup = callback => data => {

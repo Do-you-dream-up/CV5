@@ -70,10 +70,10 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           () => window.dydu.chat.reply('Forget success'),
           () => window.dydu.chat.reply('Forget error'),
         ),
-        get: () => modal(ModalGdpr).then(email => dydu.gdpr({email, method: 'Get'}).then(
+        get: () => modal(ModalGdpr, email => dydu.gdpr({email, method: 'Get'}).then(
           () => window.dydu.chat.reply(t('gdpr:get.success')),
           () => window.dydu.chat.reply(t('gdpr:get.error')),
-        ), () => {}),
+        )).then(() => {}, () => {}),
       };
 
       window.dydu.localization = {
