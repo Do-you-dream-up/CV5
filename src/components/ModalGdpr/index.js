@@ -43,7 +43,10 @@ export default function ModalGdpr({ className, component, ...rest }) {
     {className: c('dydu-modal-gdpr', className), title: t('form.title'), ...rest},
     (
       <>
-        {help && <div className={c('dydu-modal-gdpr-help', classes.help)} dangerouslySetInnerHTML={{__html: help}} />}
+        {help && (
+          <div className={c('dydu-modal-gdpr-help', classes.help)}
+               dangerouslySetInnerHTML={{__html: help}} />
+        )}
         <form className="dydu-modal-gdpr-form" onSubmit={onSubmit}>
           <label className="dydu-modal-gdpr-form-field">
             <div children={t('form.email.label')} />
