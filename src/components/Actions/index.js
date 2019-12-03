@@ -15,8 +15,8 @@ export default function Actions({ actions, className }) {
   const classes = useStyles();
   return !!actions.length && (
     <div className={c('dydu-actions', classes.root, className)}>
-      {actions.map((it, index) => (
-        <Button children={it.text} key={index} onClick={it.action} type={it.type || 'button'} />
+      {actions.map(({ action, text, type, ...rest }, index) => (
+        <Button children={text} key={index} onClick={action} type={type || 'button'} {...rest} />
       ))}
     </div>
   );
