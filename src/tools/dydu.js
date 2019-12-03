@@ -94,20 +94,27 @@ export default new class Dydu {
   /**
    * File a GDPR request to be processed.
    *
+   * Accepts an array of methods to call for. When multiple methods are
+   * provided, combine requests using `Promise.all`.
+   *
    * @param {Object} options - Options.
    * @param {email} options.email - The email address of the user to request for.
-   * @param {'Delete'|'Get'} options.method - Type of the request
+   * @param {'Delete'|'Get'|string[]} options.method - Type(s) of the request
    * @returns {Promise}
    */
   gdpr = ({ email, method }) => {
-    const data = qs.stringify({
+    const methods = Array.isArray(method) ? method : [method];
+    const data = {
       clientId: this.getClientId(),
       language: this.getLocale(),
       mail: email,
-      object: method,
-    });
+    };
     const path = `chat/gdpr/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return Promise.all(methods.map(it => this.emit(
+      API.post,
+      path,
+      qs.stringify({...data, object: it}),
+    )));
   };
 
   /**
