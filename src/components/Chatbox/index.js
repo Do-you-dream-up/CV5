@@ -65,16 +65,10 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         set: (name, value) => dydu.variable(name, value),
       };
 
-      window.dydu.gdpr = {
-        forget: () => dydu.gdpr({email: 'mmarques@dydu.ai', method: 'Delete'}).then(
-          () => window.dydu.chat.reply('Forget success'),
-          () => window.dydu.chat.reply('Forget error'),
-        ),
-        get: () => modal(ModalGdpr, email => dydu.gdpr({email, method: 'Get'}).then(
-          () => window.dydu.chat.reply(t('gdpr:get.success')),
-          () => window.dydu.chat.reply(t('gdpr:get.error')),
-        )).then(() => {}, () => {}),
-      };
+      window.dydu.gdpr = () => modal(ModalGdpr, ({ email, method }) => dydu.gdpr({email, method}).then(
+        () => window.dydu.chat.reply(t('gdpr:get.success')),
+        () => window.dydu.chat.reply(t('gdpr:get.error')),
+      )).then(() => {}, () => {});
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),

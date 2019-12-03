@@ -31,10 +31,6 @@ export default function Header({ onClose, ...rest }) {
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
 
-  const gdprMenu = [[
-    {onClick: () => window.dydu.gdpr.get(), text: t('gdpr.get')},
-    {onClick: () => window.dydu.gdpr.forget(), text: t('gdpr.forget')},
-  ]];
   const languagesMenu = [languages.sort().map(id => ({
     id,
     onClick: () => window.dydu.localization.set(id),
@@ -44,6 +40,7 @@ export default function Header({ onClose, ...rest }) {
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,
   }))];
+  const onGdpr = () => window.dydu.gdpr();
 
   return (
     <header className={c('dydu-header', classes.root)} {...rest}>
@@ -60,11 +57,9 @@ export default function Header({ onClose, ...rest }) {
             </Menu>
           )}
           <Onboarding>
-            <Menu items={gdprMenu}>
-              <Button variant="icon">
-                <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
-              </Button>
-            </Menu>
+            <Button onClick={onGdpr} variant="icon">
+              <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
+            </Button>
             {!!moreMenu.flat().length && (
               <Menu items={moreMenu}>
                 <Button variant="icon">

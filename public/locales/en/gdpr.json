@@ -5,6 +5,12 @@
       "label": "Email",
       "placeholder": "Enter your address..."
     },
+    "forget": {
+      "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    "get": {
+      "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+    },
     "help": "<p>Some <em>help</em> text.</p>",
     "submit": "Submit",
     "title": "GDPR"

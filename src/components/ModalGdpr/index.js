@@ -14,7 +14,7 @@ import useStyles from './styles';
 export default function ModalGdpr({ className, component, ...rest }) {
 
   const { onReject, onResolve } = useContext(ModalContext);
-  const [ email, setEmail ] = useState('');
+  const [ data, setData ] = useState({email: '', withForget: false, withGet: true});
   const classes = useStyles();
   const { t } = useTranslation('gdpr');
 
@@ -23,17 +23,19 @@ export default function ModalGdpr({ className, component, ...rest }) {
   };
 
   const onChange = event => {
-    setEmail(event.target.value);
+    const { checked, name, type, value } = event.target;
+    setData(previous => ({...previous, [name]: type === 'checkbox' ? checked : value}));
   };
 
   const onSubmit = event => {
     event.preventDefault();
-    onResolve(email);
+    const { email, withForget, withGet } = data;
+    onResolve({email, method: [withForget && 'Forget', withGet && 'Get'].filter(it => it)});
   };
 
   const actions = [
     {action: onCancel, text: t('form.cancel')},
-    {text: t('form.submit'), type: 'submit'},
+    {disabled: !data.withForget && !data.withGet, text: t('form.submit'), type: 'submit'},
   ];
 
   const help = sanitize(t('form.help'));
@@ -48,14 +50,23 @@ export default function ModalGdpr({ className, component, ...rest }) {
                dangerouslySetInnerHTML={{__html: help}} />
         )}
         <form className="dydu-modal-gdpr-form" onSubmit={onSubmit}>
-          <label className="dydu-modal-gdpr-form-field">
+          <label className={c('dydu-modal-gdpr-form-field', classes.field)}>
             <div children={t('form.email.label')} />
             <input className={classes.input}
+                   name="email"
                    onChange={onChange}
                    placeholder={t('form.email.placeholder')}
                    required
                    type="email"
-                   value={email} />
+                   value={data.email} />
+          </label>
+          <label className={c('dydu-modal-gdpr-form-field', classes.fieldCheckbox)}>
+            <input checked={data.withGet} name="withGet" onChange={onChange} type="checkbox" />
+            <div children={t('form.get.description')} />
+          </label>
+          <label className={c('dydu-modal-gdpr-form-field', classes.fieldCheckbox)}>
+            <input checked={data.withForget} name="withForget" onChange={onChange} type="checkbox" />
+            <div children={t('form.forget.description')} />
           </label>
           <Actions actions={actions} className="dydu-modal-gdpr-form-actions" />
         </form>
