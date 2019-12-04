@@ -9,6 +9,7 @@ export class Cookie {
 
   static names = {
     banner: 'dydu.banner',
+    gdpr: 'dydu.gdpr',
     locale: 'dydu.locale',
   };
 

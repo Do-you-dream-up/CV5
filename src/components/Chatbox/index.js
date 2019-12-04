@@ -1,12 +1,13 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
 import Gdpr from '../Gdpr';
+import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
 import Onboarding from '../Onboarding';
@@ -18,6 +19,7 @@ import { ModalContext } from '../../contexts/ModalContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
+import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 
 
@@ -38,6 +40,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     toggleSecondary,
   } = useContext(DialogContext);
   const { modal } = useContext(ModalContext);
+  const [ showGdprDisclaimer, setShowGdprDisclaimer ] = useState(false);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
@@ -94,6 +97,21 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       window.reword = window.dydu.chat.ask;
     }
   }, [addResponse, ask, empty, i, modal, setSecondary, t, toggle, toggleSecondary]);
+
+  useEffect(() => {
+    if (showGdprDisclaimer) {
+      setShowGdprDisclaimer(false);
+      modal(GdprDisclaimer, null, {dismissable: false}).then(() => {
+        Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+      });
+    }
+  }, [showGdprDisclaimer, modal]);
+
+  useEffect(() => {
+    if (!Cookie.get(Cookie.names.gdpr)) {
+      setShowGdprDisclaimer(true);
+    }
+  }, []);
 
   return (
     <TabProvider>
