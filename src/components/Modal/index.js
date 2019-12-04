@@ -14,15 +14,17 @@ import useStyles from './styles';
 export default function Modal() {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { Component, onReject, onResolve, thinking } = useContext(ModalContext);
+  const { Component, onReject, onResolve, options, thinking } = useContext(ModalContext);
   const classes = useStyles({configuration});
 
   const onClick = event => {
     event.stopPropagation();
   };
 
+  const onDismiss = options.dismissable ? onReject : null;
+
   return !!Component && (
-    <div className={c('dydu-modal-overlay', classes.root)} onClick={onReject}>
+    <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>
       <Component className={c('dydu-modal', classes.modal)}
                  component={Paper}
                  onClick={onClick}

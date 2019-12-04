@@ -2,12 +2,16 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 
+const OPTIONS = {dismissable: true};
+
+
 export const ModalContext = React.createContext();
 export function ModalProvider({ children }) {
 
   const [ Component, setComponent ] = useState(null);
   const [ onReject, setOnReject ] = useState(null);
   const [ onResolve, setOnResolve ] = useState(null);
+  const [ options, setOptions ] = useState(OPTIONS);
   const [ thinking, setThinking ] = useState(false);
 
   /**
@@ -19,9 +23,10 @@ export function ModalProvider({ children }) {
    *
    * @param {function} Component - The component to wrap with.
    * @param {action} [action] - Function returning a Promise object.
+   * @param {Object} [options] - Extra options to pass to the modal component.
    * @returns {Promise}
    */
-  const modal = (Component, action) => new Promise((resolve, reject) => {
+  const modal = (Component, action, options) => new Promise((resolve, reject) => {
     setComponent(() => Component);
     setOnReject(() => onCleanup(reject));
     setOnResolve(() => data => {
@@ -36,12 +41,14 @@ export function ModalProvider({ children }) {
         onCleanup(resolve)();
       }
     });
+    setOptions(previous => ({...previous, ...options}));
   });
 
   const onCleanup = callback => data => {
     setComponent(null);
     setOnReject(null);
     setOnResolve(null);
+    setOptions(OPTIONS);
     setThinking(false);
     if (typeof callback === 'function') {
       callback(data);
@@ -53,6 +60,7 @@ export function ModalProvider({ children }) {
     modal,
     onReject,
     onResolve,
+    options,
     thinking,
   }} />;
 }
