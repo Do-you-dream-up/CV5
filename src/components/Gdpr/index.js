@@ -11,7 +11,7 @@ import useStyles from './styles';
 /**
  * GDPR form. Basically prompt for an email.
  */
-export default function ModalGdpr({ className, component, ...rest }) {
+export default function Gdpr({ className, component, ...rest }) {
 
   const { onReject, onResolve } = useContext(ModalContext);
   const [ data, setData ] = useState({email: '', withForget: false, withGet: true});
@@ -42,15 +42,15 @@ export default function ModalGdpr({ className, component, ...rest }) {
 
   return React.createElement(
     component,
-    {className: c('dydu-modal-gdpr', className), title: t('form.title'), ...rest},
+    {className: c('dydu-gdpr', className), title: t('form.title'), ...rest},
     (
       <>
         {help && (
-          <div className={c('dydu-modal-gdpr-help', classes.help)}
+          <div className={c('dydu-gdpr-help', classes.help)}
                dangerouslySetInnerHTML={{__html: help}} />
         )}
-        <form className="dydu-modal-gdpr-form" onSubmit={onSubmit}>
-          <label className={c('dydu-modal-gdpr-form-field', classes.field)}>
+        <form className="dydu-gdpr-form" onSubmit={onSubmit}>
+          <label className={c('dydu-gdpr-form-field', classes.field)}>
             <div children={t('form.email.label')} />
             <input className={classes.input}
                    name="email"
@@ -60,15 +60,15 @@ export default function ModalGdpr({ className, component, ...rest }) {
                    type="email"
                    value={data.email} />
           </label>
-          <label className={c('dydu-modal-gdpr-form-field', classes.fieldCheckbox)}>
+          <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
             <input checked={data.withGet} name="withGet" onChange={onChange} type="checkbox" />
             <div children={t('form.get.description')} />
           </label>
-          <label className={c('dydu-modal-gdpr-form-field', classes.fieldCheckbox)}>
+          <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
             <input checked={data.withForget} name="withForget" onChange={onChange} type="checkbox" />
             <div children={t('form.forget.description')} />
           </label>
-          <Actions actions={actions} className="dydu-modal-gdpr-form-actions" />
+          <Actions actions={actions} className="dydu-gdpr-form-actions" />
         </form>
       </>
     ),
@@ -77,12 +77,12 @@ export default function ModalGdpr({ className, component, ...rest }) {
 
 
 
-ModalGdpr.defaultProps = {
+Gdpr.defaultProps = {
   component: 'div',
 };
 
 
-ModalGdpr.propTypes = {
+Gdpr.propTypes = {
   className: PropTypes.string,
   component: PropTypes.elementType,
 };

@@ -6,9 +6,9 @@ import useStyles from './styles';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
+import Gdpr from '../Gdpr';
 import Header from '../Header';
 import Modal from '../Modal';
-import ModalGdpr from '../ModalGdpr';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
@@ -65,7 +65,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         set: (name, value) => dydu.variable(name, value),
       };
 
-      window.dydu.gdpr = () => modal(ModalGdpr, ({ email, method }) => dydu.gdpr({email, method}).then(
+      window.dydu.gdpr = () => modal(Gdpr, ({ email, method }) => dydu.gdpr({email, method}).then(
         () => window.dydu.chat.reply(t('gdpr:get.success')),
         () => window.dydu.chat.reply(t('gdpr:get.error')),
       )).then(() => {}, () => {});

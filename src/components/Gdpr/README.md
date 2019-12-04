@@ -1,5 +1,5 @@
 ```js static
 const onError = () => {};
 const onSuccess = () => {};
-modal(<ModalGdpr />).then(onSuccess, onError);
+modal(<Gdpr />).then(onSuccess, onError);
 ```
