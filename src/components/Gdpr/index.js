@@ -1,8 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ModalContext } from '../../contexts/ModalContext';
 import sanitize from '../../tools/sanitize';
 import Actions from '../Actions';
 import useStyles from './styles';
@@ -11,9 +10,8 @@ import useStyles from './styles';
 /**
  * GDPR form. Basically prompt for an email.
  */
-export default function Gdpr({ className, component, ...rest }) {
+export default function Gdpr({ className, component, onReject, onResolve, ...rest }) {
 
-  const { onReject, onResolve } = useContext(ModalContext);
   const [ data, setData ] = useState({email: '', withForget: false, withGet: true});
   const classes = useStyles();
   const { t } = useTranslation('gdpr');
@@ -76,7 +74,6 @@ export default function Gdpr({ className, component, ...rest }) {
 }
 
 
-
 Gdpr.defaultProps = {
   component: 'div',
 };
@@ -85,4 +82,6 @@ Gdpr.defaultProps = {
 Gdpr.propTypes = {
   className: PropTypes.string,
   component: PropTypes.elementType,
+  onReject: PropTypes.func.isRequired,
+  onResolve: PropTypes.func.isRequired,
 };

@@ -10,6 +10,17 @@ export function ModalProvider({ children }) {
   const [ onResolve, setOnResolve ] = useState(null);
   const [ thinking, setThinking ] = useState(false);
 
+  /**
+   * Initialize values for a modal element. Values are further utilized by the
+   * <Modal /> component.
+   *
+   * If an action is provided, resolve the modal only after the promised
+   * returned by ACTION is fulfilled.
+   *
+   * @param {function} Component - The component to wrap with.
+   * @param {action} [action] - Function returning a Promise object.
+   * @returns {Promise}
+   */
   const modal = (Component, action) => new Promise((resolve, reject) => {
     setComponent(() => Component);
     setOnReject(() => onCleanup(reject));

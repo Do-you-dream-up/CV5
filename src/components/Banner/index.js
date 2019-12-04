@@ -27,7 +27,7 @@ export default function Banner() {
 
   const dismiss = useCallback(() => {
     if (cookie) {
-      Cookie.set(Cookie.names.banner, new Date(), Cookie.duration.short);
+      Cookie.set(Cookie.names.banner);
     }
   }, [cookie]);
 

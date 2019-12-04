@@ -13,12 +13,24 @@ export class Cookie {
   };
 
   static duration = {
-    long: {expires: 365},
-    short: {expires: 1 / 24 / 60 * 10},
+    long: 365,
+    short: 1 / 24 / 60 * 10,
   };
 
   static get = cookie.getJSON;
-  static set = cookie.set;
+
+  /**
+   * Upsert a value for the specified cookie.
+   *
+   * @param {string} name - Name of the cookie.
+   * @param {*} [value] - Value to set, default to the current Unix timestamp.
+   * @param {Object|number} [options] - Extra options or lifespan duration in days.
+   */
+  static set = (name, value, options={}) => {
+    value = typeof value === 'object' ? JSON.stringify(value) : value || moment().format('X');
+    options = {expires: typeof options === 'number' ? options : Cookie.duration.short, ...options};
+    cookie.set(name, value, options);
+  };
 }
 
 
@@ -78,12 +90,10 @@ export class Local {
    *
    * @param {string} name - Name of the local storage variable.
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
+   * @param {*} [rest] - Extra options to pass to `localStorage.setItem`.
    */
-  static set = (name, value) => {
-    value = value === undefined ? moment().format('X') : value;
-    if (typeof value === 'object') {
-      value = JSON.stringify(value);
-    }
-    localStorage.setItem(name, value);
+  static set = (name, value, ...rest) => {
+    value = typeof value === 'object' ? JSON.stringify(value) : value || moment().format('X');
+    localStorage.setItem(name, value, ...rest);
   };
 }
