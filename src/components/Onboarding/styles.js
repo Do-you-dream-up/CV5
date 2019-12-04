@@ -2,11 +2,11 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  buttons: {
+  buttons: () => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: '1em',
-  },
+  }),
   root: ({ configuration }) => ({
     flexBasis: 'auto',
     flexGrow: '1',
