@@ -30,7 +30,8 @@ export default function Onboarding({ children, render }) {
 
   return should ? (
     <div className={c('dydu-onboarding', classes.root)}>
-      <div className="dydu-onboarding-body" dangerouslySetInnerHTML={{__html: sanitize(content)}} />
+      <div className={c('dydu-onboarding-body', classes.body)}
+           dangerouslySetInnerHTML={{__html: sanitize(content)}} />
       <div className={c('dydu-onboarding-buttons', classes.buttons)}>
         <Button children={previous} disabled={!hasPrevious()} onClick={onPrevious} />
         <Button children={next} onClick={onNext} />
