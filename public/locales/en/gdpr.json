@@ -5,7 +5,6 @@
     "title": "GDPR Disclaimer"
   },
   "form": {
-    "cancel": "Cancel",
     "email": {
       "label": "Email",
       "placeholder": "Enter your address..."
@@ -17,7 +16,6 @@
       "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
     },
     "help": "<p>Some <em>help</em> text.</p>",
-    "submit": "Submit",
     "title": "GDPR"
   },
   "get": {
