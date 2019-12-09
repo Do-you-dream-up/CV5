@@ -1,4 +1,4 @@
-```jsx static
+```js static
 const open = false;
 ```
 
