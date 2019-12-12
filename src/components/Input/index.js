@@ -21,7 +21,7 @@ export default function Input({ onRequest, onResponse }) {
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
-  const { t } = useTranslation('input');
+  const { t, ready } = useTranslation('input');
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
   const { delay, maxLength=100 } = configuration.input;
@@ -100,7 +100,7 @@ export default function Input({ onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: t('placeholder').slice(0, 50),
+    placeholder: ready ? t('placeholder').slice(0, 50) : null,
     value: input,
   };
 

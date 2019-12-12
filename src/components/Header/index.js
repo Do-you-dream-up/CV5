@@ -7,6 +7,7 @@ import Banner from '../Banner';
 import Button from '../Button';
 import Menu from '../Menu';
 import Onboarding from '../Onboarding';
+import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
@@ -23,7 +24,7 @@ export default function Header({ onClose, ...rest }) {
   const { onDragStart } = useContext(DragonContext);
   const dragonZone = useRef();
   const classes = useStyles({configuration});
-  const [ t, i ] = useTranslation('header');
+  const [ t, i, ready ] = useTranslation('header');
   const { languages=[] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
@@ -47,7 +48,11 @@ export default function Header({ onClose, ...rest }) {
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
-        {!!hasTitle && <div children={t('title')} className={c('dydu-header-title', classes.title)} />}
+        {!!hasTitle && (
+          <div className={c('dydu-header-title', classes.title)}>
+            <Skeleton children={t('title')} hide={!ready} variant="text" width="6em" />
+          </div>
+        )}
         <div className={c('dydu-header-actions', classes.actions)}>
           {languagesMenu.flat().length > 1 && (
             <Menu items={languagesMenu} selected={i.languages[0]}>

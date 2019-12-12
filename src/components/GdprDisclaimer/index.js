@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import sanitize from '../../tools/sanitize';
 import Actions from '../Actions';
+import Skeleton from '../Skeleton';
 
 
 /**
@@ -11,7 +12,7 @@ import Actions from '../Actions';
  */
 export default function GdprDisclaimer({ className, component, onReject, onResolve, ...rest }) {
 
-  const { t } = useTranslation('gdpr');
+  const { t, ready } = useTranslation('gdpr');
 
   const actions = [{action: onResolve, text: t('disclaimer.ok')}];
   const body = sanitize(t('disclaimer.body'));
@@ -21,7 +22,13 @@ export default function GdprDisclaimer({ className, component, onReject, onResol
     {className: c('dydu-gdpr-disclaimer', className), title: t('disclaimer.title'), ...rest},
     (
       <>
-        {body && <div className="dydu-gdpr-disclaimer-body" dangerouslySetInnerHTML={{__html: body}} />}
+        {body && (
+          <div className="dydu-gdpr-disclaimer-body">
+            <Skeleton hide={!ready} height="18em" variant="paragraph" width="17em">
+              <div dangerouslySetInnerHTML={{__html: body}} />
+            </Skeleton>
+          </div>
+        )}
         <Actions actions={actions} className="dydu-gdpr-disclaimer-actions" />
       </>
     ),

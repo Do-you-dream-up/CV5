@@ -1,6 +1,7 @@
 import c from 'classnames';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import Skeleton from '../Skeleton';
 import useStyles from './styles';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { TabContext } from '../../contexts/TabContext';
@@ -15,7 +16,7 @@ export default function Tabs() {
   const { configuration } = useContext(ConfigurationContext);
   const { select, state: tabState } = useContext(TabContext);
   const classes = useStyles({configuration});
-  const { t } = useTranslation('tabs');
+  const { t, ready } = useTranslation('tabs');
   const { items=[] } = configuration.tabs;
 
   return !!items.length && (
@@ -29,11 +30,9 @@ export default function Tabs() {
           {[classes.selected]: tabState.current === it},
         );
         return (
-          <div children={t(`${it}.text`)}
-               className={names}
-               key={index}
-               onClick={onClick}
-               title={t(`${it}.title`)} />
+          <div className={names} key={index} onClick={onClick} title={t(`${it}.title`)}>
+            <Skeleton children={t(`${it}.text`)} hide={!ready} variant="text" width="4em" />
+          </div>
         );
       })}
     </div>

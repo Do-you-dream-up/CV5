@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import sanitize from '../../tools/sanitize';
 import Form from '../Form';
+import Skeleton from '../Skeleton';
 import useStyles from './styles';
 
 
@@ -13,7 +14,7 @@ import useStyles from './styles';
 export default function Gdpr({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('gdpr');
+  const { t, ready } = useTranslation('gdpr');
 
   const onSubmit = ({ email, withForget, withGet }) => {
     onResolve({email, method: [withForget && 'Forget', withGet && 'Get'].filter(it => it)});
@@ -25,7 +26,11 @@ export default function Gdpr({ className, component, onReject, onResolve, ...res
   return React.createElement(component, {className: c('dydu-gdpr', className), title, ...rest}, (
     <>
       {help && (
-        <div className={c('dydu-gdpr-help', classes.help)} dangerouslySetInnerHTML={{__html: help}} />
+        <div className={c('dydu-gdpr-help', classes.help)}>
+          <Skeleton hide={!ready} width="8em">
+            <div dangerouslySetInnerHTML={{__html: help}} />
+          </Skeleton>
+        </div>
       )}
       <Form className="dydu-gdpr-form"
             data={{email: '', withForget: false, withGet: true}}
@@ -34,22 +39,26 @@ export default function Gdpr({ className, component, onReject, onResolve, ...res
         {({ data, onChange }) => (
           <>
             <label className={c('dydu-gdpr-form-field', classes.field)}>
-              <div children={t('form.email.label')} />
+              <Skeleton children={t('form.email.label')} hide={!ready} width="6em" />
               <input className={classes.input}
                      name="email"
                      onChange={onChange}
-                     placeholder={t('form.email.placeholder')}
+                     placeholder={ready ? t('form.email.placeholder') : null}
                      required
                      type="email"
                      value={data.email} />
             </label>
             <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
               <input checked={data.withGet} name="withGet" onChange={onChange} type="checkbox" />
-              <div children={t('form.get.description')} />
+              <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
+                <div children={t('form.get.description')} />
+              </Skeleton>
             </label>
             <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
               <input checked={data.withForget} name="withForget" onChange={onChange} type="checkbox" />
-              <div children={t('form.forget.description')} />
+              <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
+                <div children={t('form.forget.description')} />
+              </Skeleton>
             </label>
           </>
         )}

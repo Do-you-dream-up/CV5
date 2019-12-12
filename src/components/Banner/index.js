@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import Button from '../Button';
+import Skeleton from '../Skeleton';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
@@ -20,7 +21,7 @@ export default function Banner() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
-  const { t } = useTranslation('banner');
+  const { t, ready } = useTranslation('banner');
   const { active, cookie, dismissable, transient } = configuration.banner;
   const html = sanitize(t('html'));
   const close = t('close');
@@ -53,7 +54,11 @@ export default function Banner() {
           </Button>
         </div>
       )}
-      {html && <div className={c('dydu-banner-body', classes.body)} dangerouslySetInnerHTML={{__html: html}} />}
+      <div className={c('dydu-banner-body', classes.body)}>
+        <Skeleton hide={!ready} height="6em" variant="paragraph">
+          <div dangerouslySetInnerHTML={{__html: html}} />
+        </Skeleton>
+      </div>
     </div>
   );
 }
