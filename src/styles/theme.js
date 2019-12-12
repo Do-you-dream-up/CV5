@@ -18,6 +18,7 @@ export default {
       menu: '#FFFFFF',
       overlay: 'rgba(0, 0, 0, .6)',
       secondary: '#FFFFFF',
+      skeleton: 'rgba(0, 0, 0, .08)',
     },
     divider: 'rgba(0, 0, 0, 0.12)',
     error: {
