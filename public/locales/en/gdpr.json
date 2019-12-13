@@ -6,7 +6,6 @@
   },
   "form": {
     "email": {
-      "label": "Email",
       "placeholder": "Enter your address..."
     },
     "forget": {

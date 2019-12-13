@@ -39,7 +39,6 @@ export default function Gdpr({ className, component, onReject, onResolve, ...res
         {({ data, onChange }) => (
           <>
             <label className={c('dydu-gdpr-form-field', classes.field)}>
-              <Skeleton children={t('form.email.label')} hide={!ready} width="6em" />
               <input className={classes.input}
                      name="email"
                      onChange={onChange}
