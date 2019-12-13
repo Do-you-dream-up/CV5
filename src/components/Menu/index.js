@@ -15,7 +15,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
  * Expect items as an array of arrays. This is useful to separate actions
  * between categories.
  */
-export default function Menu({ children, items, selected }) {
+export default function Menu({ component, items, selected, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
@@ -65,7 +65,7 @@ export default function Menu({ children, items, selected }) {
 
   return (
     <>
-      {React.cloneElement(children, {onClick: toggle(), ref: anchorRef})}
+      {React.createElement(component, {onClick: toggle(), ref: anchorRef, ...rest})}
       {open && (
         <Portal node={node}>
           <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
@@ -80,8 +80,12 @@ export default function Menu({ children, items, selected }) {
 }
 
 
+Menu.defaultProps = {
+  component: 'div',
+};
+
 Menu.propTypes = {
-  children: PropTypes.element.isRequired,
+  component: PropTypes.elementType,
   items: PropTypes.arrayOf(PropTypes.array).isRequired,
   selected: PropTypes.string,
 };

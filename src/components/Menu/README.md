@@ -11,7 +11,5 @@ const menu = [
 ```
 
 ```jsx static
-<Menu items={menu} selected="baz">
-  <Button children="Toggle" />
-</Menu>
+<Menu children="Toggle" component={Button} items={menu} selected="baz" />
 ```
