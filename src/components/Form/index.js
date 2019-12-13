@@ -33,8 +33,8 @@ export default function Form({ children, className, data: initialData, onReject,
   };
 
   const actions = [
-    {action: onCancel, text: t('cancel')},
-    {text: t('submit'), type: 'submit'},
+    {children: t('cancel'), onClick: onCancel},
+    {children: t('submit'), type: 'submit'},
   ];
 
   return (

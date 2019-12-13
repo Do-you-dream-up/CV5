@@ -2,14 +2,6 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  actions: () => ({
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    '& > *': {
-      marginTop: '1em',
-    },
-  }),
   base: ({ configuration }) => ({
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',

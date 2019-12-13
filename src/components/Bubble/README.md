@@ -1,14 +1,10 @@
-```js static
+```jsx static
 const [ thinking, setThinking ] = useState(false);
 const onFoo = () => {
   setThinking(true);
   api.foo().then(() => setThinking(false));
 };
-const onBar = () => {};
-const actions = [
-  {action: onFoo, text: 'Foo'},
-  {action: onBar, text: 'Bar'},
-];
+const actions = <Actions ... />
 const html = '<p>Foo. Bar.</p>'
 ```
 

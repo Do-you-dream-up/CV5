@@ -1,10 +1,12 @@
-```js static
+```jsx static
+const menuItems = []
 const onFoo = () => {};
 const onBar = () => {};
 const actions = [
-  {action: onFoo, text: 'Foo'},
-  {action: onBar, text: 'Bar'},
-  {text: 'Baz', type: 'submit'},
+  {children: 'Foo', onClick: onFoo, when: hasFoo},
+  {children: 'Bar', onClick: onBar, when: hasBar},
+  {children: 'Baz', type: 'submit'},
+  {children: <img ... />, getMenuItems: () => menuItems, variant: 'icon'},
 ];
 ```
 

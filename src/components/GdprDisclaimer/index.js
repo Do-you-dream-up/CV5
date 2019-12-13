@@ -14,7 +14,7 @@ export default function GdprDisclaimer({ className, component, onReject, onResol
 
   const { t, ready } = useTranslation('gdpr');
 
-  const actions = [{action: onResolve, text: t('disclaimer.ok')}];
+  const actions = [{children: t('disclaimer.ok'), onClick: onResolve}];
   const body = sanitize(t('disclaimer.body'));
 
   return React.createElement(

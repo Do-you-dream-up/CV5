@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Autosuggest from 'react-autosuggest';
 import useStyles from './styles';
-import Button from '../Button';
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import dydu from '../../tools/dydu';
@@ -95,6 +95,7 @@ export default function Input({ onRequest, onResponse }) {
     suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
     suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
   };
+
   const inputProps = {
     autoFocus: true,
     maxLength,
@@ -103,6 +104,12 @@ export default function Input({ onRequest, onResponse }) {
     placeholder: ready ? t('placeholder').slice(0, 50) : null,
     value: input,
   };
+
+  const actions = [{
+    children: <img alt={actionSend} src="icons/send.png" title={actionSend} />,
+    type: 'submit',
+    variant: 'icon',
+  }];
 
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
@@ -115,11 +122,7 @@ export default function Input({ onRequest, onResponse }) {
                    renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
                    suggestions={suggestions}
                    theme={theme} />
-      <div className={c('dydu-input-actions', classes.actions)}>
-        <Button type="submit" variant="icon">
-          <img alt={actionSend} src="icons/send.png" title={actionSend} />
-        </Button>
-      </div>
+      <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
     </form>
   );
 }

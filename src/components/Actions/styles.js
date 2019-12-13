@@ -6,12 +6,6 @@ export default createUseStyles({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-end',
-    '&:not(:first-child)': {
-      marginTop: '.7em',
-    },
-    '& > *': {
-      marginTop: '.7em',
-    },
     '& > :not(:first-child)': {
       marginLeft: '.7em',
     },

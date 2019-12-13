@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import useStyles from  './styles';
+import Actions from  '../Actions';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Feedback from  '../Feedback';
@@ -75,7 +76,8 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
       {hasAvatar && <Avatar type={type} />}
       <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
         {bubbles.map((it, index) => {
-          const actions = secondary ? [{action: toggleSecondary(), text: 'Plus'}] : [];
+          let actions = secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : [];
+          actions = <Actions actions={actions} />;
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
         })}
         {hasLoader && <Loader />}

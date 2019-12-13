@@ -1,7 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Button from '../Button';
 import Progress from '../Progress';
 import useStyles from './styles';
 
@@ -18,11 +17,7 @@ export default function Paper({ actions, children, className, component, thinkin
       {thinking && <Progress className={classes.progress} />}
       {title && <h3 children={title} className={c('dydu-paper-header', classes.header)} />}
       {children && <div children={children} className="dydu-paper-body" />}
-      {actions.length > 0 && (
-        <div className={c('dydu-paper-actions', classes.actions)}>
-          {actions.map((it, index) => <Button children={it.text} key={index} onClick={it.action} />)}
-        </div>
-      )}
+      {actions && <div children={actions} className={c('dydu-paper-actions', classes.actions)} />}
     </>
   ));
 }
@@ -35,10 +30,7 @@ Paper.defaultProps = {
 
 
 Paper.propTypes = {
-  actions: PropTypes.arrayOf(PropTypes.shape({
-    action: PropTypes.func.isRequired,
-    text: PropTypes.string.isRequired,
-  })),
+  actions: PropTypes.node,
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,

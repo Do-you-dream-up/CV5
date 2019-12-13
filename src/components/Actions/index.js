@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from '../Button';
+import Menu from '../Menu';
 import useStyles from './styles';
 
 
@@ -15,9 +16,15 @@ export default function Actions({ actions, className }) {
   const classes = useStyles();
   return !!actions.length && (
     <div className={c('dydu-actions', classes.root, className)}>
-      {actions.map(({ action, text, type, ...rest }, index) => (
-        <Button children={text} key={index} onClick={action} type={type || 'button'} {...rest} />
-      ))}
+      {actions.map(({ getMenuItems, getMenuSelected, type='button', when=true, ...rest }, index) => {
+        const items = typeof getMenuItems === 'function' ? getMenuItems() : null;
+        const selected = typeof getMenuSelected === 'function' ? getMenuSelected() : null;
+        return when ? React.createElement(items ? Menu : Button, {
+          key: index,
+          ...(items ? {component: Button, items, selected} : {type}),
+          ...rest,
+        }) : null;
+      })}
     </div>
   );
 }
@@ -30,9 +37,11 @@ Actions.defaultProps = {
 
 Actions.propTypes = {
   actions: PropTypes.arrayOf(PropTypes.shape({
-    action: PropTypes.func,
-    text: PropTypes.string.isRequired,
+    children: PropTypes.any,
+    getMenuItems: PropTypes.func,
+    getMenuSelected: PropTypes.func,
     type: PropTypes.string,
+    when: PropTypes.bool,
   })),
   className: PropTypes.string,
 };

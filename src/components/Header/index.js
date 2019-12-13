@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
+import Actions from '../Actions';
 import Banner from '../Banner';
-import Button from '../Button';
-import Menu from '../Menu';
 import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
+import { OnboardingContext } from '../../contexts/OnboardingContext';
 import { ACTIONS } from '../../tools/talk';
 
 
@@ -22,6 +22,7 @@ export default function Header({ onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext);
+  const { active: onboardingActive } = useContext(OnboardingContext);
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const [ t, i, ready ] = useTranslation('header');
@@ -43,6 +44,33 @@ export default function Header({ onClose, ...rest }) {
   }))];
   const onGdpr = () => window.dydu.gdpr();
 
+  const actions = [
+    {
+      children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
+      getMenuItems: () => languagesMenu,
+      getMenuSelected: () => i.languages[0],
+      variant: 'icon',
+      when: languagesMenu.flat().length > 1,
+    },
+    {
+      children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
+      onClick: onGdpr,
+      variant: 'icon',
+      when: !onboardingActive,
+    },
+    {
+      children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
+      getMenuItems: () => moreMenu,
+      variant: 'icon',
+      when: !onboardingActive && moreMenu.flat().length > 0,
+    },
+    {
+      children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
+      onClick: onClose,
+      variant: 'icon',
+    },
+  ];
+
   return (
     <header className={c('dydu-header', classes.root)} {...rest}>
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
@@ -53,30 +81,7 @@ export default function Header({ onClose, ...rest }) {
             <Skeleton children={t('title')} hide={!ready} variant="text" width="6em" />
           </div>
         )}
-        <div className={c('dydu-header-actions', classes.actions)}>
-          {languagesMenu.flat().length > 1 && (
-            <Menu items={languagesMenu} selected={i.languages[0]}>
-              <Button variant="icon">
-                <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />
-              </Button>
-            </Menu>
-          )}
-          <Onboarding>
-            <Button onClick={onGdpr} variant="icon">
-              <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />
-            </Button>
-            {!!moreMenu.flat().length && (
-              <Menu items={moreMenu}>
-                <Button variant="icon">
-                  <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />
-                </Button>
-              </Menu>
-            )}
-          </Onboarding>
-          <Button onClick={onClose} variant="icon">
-            <img alt={actionClose} src="icons/close.png" title={actionClose} />
-          </Button>
-        </div>
+        <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
       <Onboarding>
         <Tabs />
