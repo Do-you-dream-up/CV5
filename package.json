@@ -10,7 +10,7 @@
     "chalk": "^2.4.2",
     "classnames": "^2.2.6",
     "debounce-promise": "^3.1.2",
-    "i18next": "^19.0.0",
+    "i18next": "^19.0.2",
     "i18next-browser-languagedetector": "^4.0.1",
     "i18next-xhr-backend": "^3.2.2",
     "js-cookie": "^2.2.0",
@@ -21,7 +21,7 @@
     "react": "^16.8.6",
     "react-autosuggest": "^9.4.3",
     "react-dom": "^16.8.6",
-    "react-i18next": "^11.2.5",
+    "react-i18next": "^11.2.6",
     "react-jss": "^10.0.0-alpha.22",
     "react-portal": "^4.2.0",
     "react-scripts": "^3.3.0",
@@ -34,6 +34,7 @@
     "husky": "^1.2.1",
     "lint-staged": "^8.1.0",
     "react-styleguidist": "^9.1.13",
+    "source-map-explorer": "^2.1.2",
     "unminified-webpack-plugin": "^2.0.0",
     "webpack-cli": "^3.1.2"
   },
@@ -42,6 +43,7 @@
     "build:development": "rm -fr build/ && webpack --env development",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
     "eject": "react-scripts eject",
+    "map": "source-map-explorer build/bundle.min.js*",
     "start": "react-scripts start",
     "start:documentation": "styleguidist server --config .styleguide.config.js",
     "test": "react-scripts test"
