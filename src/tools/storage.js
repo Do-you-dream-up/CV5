@@ -1,5 +1,4 @@
 import cookie from 'js-cookie';
-import moment from 'moment';
 
 
 /**
@@ -28,7 +27,7 @@ export class Cookie {
    * @param {Object|number} [options] - Extra options or lifespan duration in days.
    */
   static set = (name, value, options={}) => {
-    value = typeof value === 'object' ? JSON.stringify(value) : value || moment().format('X');
+    value = typeof value === 'object' ? JSON.stringify(value) : value || Math.floor(Date.now() / 1000);
     options = {expires: typeof options === 'number' ? options : Cookie.duration.short, ...options};
     cookie.set(name, value, options);
   };
@@ -94,7 +93,7 @@ export class Local {
    * @param {*} [rest] - Extra options to pass to `localStorage.setItem`.
    */
   static set = (name, value, ...rest) => {
-    value = typeof value === 'object' ? JSON.stringify(value) : value || moment().format('X');
+    value = typeof value === 'object' ? JSON.stringify(value) : value || Math.floor(Date.now() / 1000);
     localStorage.setItem(name, value, ...rest);
   };
 }
