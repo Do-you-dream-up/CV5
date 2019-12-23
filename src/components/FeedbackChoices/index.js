@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 
 /**
@@ -7,7 +8,8 @@ import PropTypes from 'prop-types';
  */
 export default function FeedbackChoices ({ onSelect }) {
 
-  const choices = ['Je n\'ai pas compris votre question', 'Ma réponse n\'était pas claire', 'J\'ai bien compris mais la solution proposée ne vous satisfait pas'];
+  const { t } = useTranslation('feedback');
+  const choices = t('choices');
 
   return (
     <div className="dydu-feedback-insatisfaction">

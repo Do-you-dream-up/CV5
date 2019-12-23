@@ -1,4 +1,9 @@
 {
+  "choices": [
+    "We did not understand your question",
+    "The proposed solution did not satisfy you",
+    "Our answer was not clear enough"
+  ],
   "comment": {
     "help": "What went wrong?",
     "placeholder": "Comment here...",
