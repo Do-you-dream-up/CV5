@@ -29,7 +29,7 @@ export default function Feedback() {
 
   const classes = useStyles();
   const { t } = useTranslation('feedback');
-  const { askComment } = configuration.feedback;
+  const { askComment, askChoices } = configuration.feedback;
   const commentHelp = t('comment.help');
   const commentThanks = t('comment.thanks');
   const voteNegative = t('vote.negative');
@@ -65,8 +65,10 @@ export default function Feedback() {
   const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       setShowVote(false);
-      if (askComment) {
+      if (askChoices) {
         setShowChoices(true);
+      } else if(askComment){
+        setShowComment(true);
       }
       else if (voteThanks) {
         addResponse({text: voteThanks});
@@ -87,7 +89,11 @@ export default function Feedback() {
     setThinking(true);
     dydu.feedbackInsatisfaction(choiceKey).then(() => setTimeout(() => {
       setShowChoices(false);
-      setShowComment(true);
+      if(askComment){
+        setShowComment(true);
+      }else if (voteThanks) {
+        addResponse({text: voteThanks});
+      }
       setThinking(false);
     }, 1000));
   };

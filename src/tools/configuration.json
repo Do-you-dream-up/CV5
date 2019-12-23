@@ -52,7 +52,8 @@
   },
   "feedback": {
     "active": true,
-    "askComment": true
+    "askComment": true,
+    "askChoices": true
   },
   "footer": {
     "styles": {
