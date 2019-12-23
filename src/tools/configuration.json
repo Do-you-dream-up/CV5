@@ -52,8 +52,8 @@
   },
   "feedback": {
     "active": true,
-    "askComment": true,
-    "askChoices": true
+    "askChoices": true,
+    "askComment": true
   },
   "footer": {
     "styles": {

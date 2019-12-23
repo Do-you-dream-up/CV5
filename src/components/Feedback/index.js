@@ -11,7 +11,6 @@ import Scroll from '../Scroll';
 import useStyles from './styles';
 
 
-
 /**
  * Render handles for the user to submit feedback.
  *
@@ -22,14 +21,13 @@ export default function Feedback() {
   const { configuration } = useContext(ConfigurationContext);
   const { addResponse } = useContext(DialogContext);
   const [ comment, setComment ] = useState('');
+  const [ showChoices, setShowChoices ] = useState(false);
   const [ showComment, setShowComment ] = useState(false);
   const [ showVote, setShowVote ] = useState(true);
   const [ thinking, setThinking ] = useState(false);
-  const [ showChoices, setShowChoices ] = useState(false);
-
   const classes = useStyles();
   const { t } = useTranslation('feedback');
-  const { askComment, askChoices } = configuration.feedback;
+  const { askChoices, askComment } = configuration.feedback;
   const commentHelp = t('comment.help');
   const commentThanks = t('comment.thanks');
   const voteNegative = t('vote.negative');
@@ -67,7 +65,8 @@ export default function Feedback() {
       setShowVote(false);
       if (askChoices) {
         setShowChoices(true);
-      } else if(askComment){
+      } 
+      else if (askComment) {
         setShowComment(true);
       }
       else if (voteThanks) {
@@ -85,19 +84,19 @@ export default function Feedback() {
     });
   };
 
-  const onSelect = (choiceKey) => {
+  const onChoicesSelect = (choiceKey) => {
     setThinking(true);
     dydu.feedbackInsatisfaction(choiceKey).then(() => setTimeout(() => {
       setShowChoices(false);
-      if(askComment){
+      if (askComment) {
         setShowComment(true);
-      }else if (voteThanks) {
+      }
+      else if (voteThanks) {
         addResponse({text: voteThanks});
       }
       setThinking(false);
     }, 1000));
   };
-
 
   return (
     <div className="dydu-feedback">
@@ -113,7 +112,7 @@ export default function Feedback() {
       )}
       {showChoices && (
         <Bubble component={Scroll} thinking={thinking} type="response">
-          <FeedbackChoices onSelect={onSelect} />
+          <FeedbackChoices onSelect={onChoicesSelect} />
         </Bubble>
       )}
       {showComment && (

@@ -1,12 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 
 /**
- * Render handles for the user to submit feedback insatisfaction.
+ * Render choices for the user to submit feedback insatisfaction.
  */
-export default function FeedbackChoices ({ onSelect }) {
+export default function FeedbackChoices({ onSelect }) {
 
   const { t } = useTranslation('feedback');
   const choices = t('choices');
@@ -14,13 +14,13 @@ export default function FeedbackChoices ({ onSelect }) {
   return (
     <div className="dydu-feedback-insatisfaction">
       <ul>
-        {
-          choices.map((choice, index) => {
-            return (<li key={index}>
-              <span className="dydu-link" onClick={() => onSelect(index)}> {choice} </span>
-            </li>);
-          })
-        }
+        {choices.map((choice, index) => {
+            return ( 
+              <li key={index}>
+                <span className="dydu-link" onClick={() => onSelect(index)}> {choice} </span>
+              </li>
+            );
+        })}
       </ul>
     </div>
   );
