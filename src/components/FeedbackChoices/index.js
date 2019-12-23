@@ -17,7 +17,7 @@ export default function FeedbackChoices({ onSelect }) {
         {choices.map((choice, index) => {
             return ( 
               <li key={index}>
-                <span className="dydu-link" onClick={() => onSelect(index)}> {choice} </span>
+                <span children={choice} className="dydu-link" onClick={() => onSelect(index)} />
               </li>
             );
         })}
@@ -25,6 +25,7 @@ export default function FeedbackChoices({ onSelect }) {
     </div>
   );
 }
+
 
 FeedbackChoices.propTypes = {
   onSelect: PropTypes.func
