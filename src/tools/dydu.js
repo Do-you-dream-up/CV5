@@ -92,6 +92,22 @@ export default new class Dydu {
   };
 
   /**
+   * Send the user feedback insatisfaction.
+   *
+   * @param {string} choiceKey - Choice key to send.
+   * @returns {Promise}
+   */
+  feedbackInsatisfaction = choiceKey => {
+    const data = qs.stringify({
+      choiceKey,
+      contextUUID: this.getContextId(),
+      solutionUsed: 'ASSISTANT',
+    });
+    const path = `chat/feedback/insatisfaction/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * File a GDPR request to be processed.
    *
    * Accepts an array of methods to call for. When multiple methods are
