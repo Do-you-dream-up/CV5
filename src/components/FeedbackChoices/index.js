@@ -4,23 +4,23 @@ import { useTranslation } from 'react-i18next';
 
 
 /**
- * Render choices for the user to submit feedback insatisfaction.
+ * Render choices for the user to submit feedback.
  */
 export default function FeedbackChoices({ onSelect }) {
 
   const { t } = useTranslation('feedback');
   const choices = t('choices');
 
+  const onClick = index => () => onSelect(index);
+
   return (
-    <div className="dydu-feedback-insatisfaction">
+    <div className="dydu-feedback-choices">
       <ul>
-        {choices.map((choice, index) => {
-            return ( 
-              <li key={index}>
-                <span children={choice} className="dydu-link" onClick={() => onSelect(index)} />
-              </li>
-            );
-        })}
+        {choices.map((choice, index) => (
+          <li key={index}>
+            <span children={choice} className="dydu-link" onClick={onClick(index)} />
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -28,5 +28,5 @@ export default function FeedbackChoices({ onSelect }) {
 
 
 FeedbackChoices.propTypes = {
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
 };

@@ -13,7 +13,7 @@ export default theme => ({
       marginLeft: '2em',
       textTransform: 'capitalize',
     },
-    'dl, h1, h2, h3, h4, h5, h6, ol, p': {
+    'dl, h1, h2, h3, h4, h5, h6, ol, p, ul': {
       '&:first-child': {marginTop: 0},
       '&:last-child': {marginBottom: 0},
     },

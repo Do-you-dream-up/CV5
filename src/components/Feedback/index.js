@@ -12,9 +12,7 @@ import useStyles from './styles';
 
 
 /**
- * Render handles for the user to submit feedback.
- *
- * The component contains two buttons: positive and negative.
+ * Render interfaces for the user to submit feedback.
  */
 export default function Feedback() {
 
@@ -65,7 +63,7 @@ export default function Feedback() {
       setShowVote(false);
       if (askChoices) {
         setShowChoices(true);
-      } 
+      }
       else if (askComment) {
         setShowComment(true);
       }
@@ -84,9 +82,9 @@ export default function Feedback() {
     });
   };
 
-  const onChoicesSelect = (choiceKey) => {
+  const onChoicesSelect = value => {
     setThinking(true);
-    dydu.feedbackInsatisfaction(choiceKey).then(() => setTimeout(() => {
+    dydu.feedbackInsatisfaction(value).then(() => setTimeout(() => {
       setShowChoices(false);
       if (askComment) {
         setShowComment(true);
