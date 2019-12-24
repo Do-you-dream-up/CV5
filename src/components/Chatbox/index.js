@@ -2,7 +2,14 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
+import { ModalContext } from '../../contexts/ModalContext';
+import { TabProvider } from '../../contexts/TabContext';
+import dydu from '../../tools/dydu';
+import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
+import { Cookie } from '../../tools/storage';
+import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Footer from '../Footer';
@@ -13,14 +20,7 @@ import Modal from '../Modal';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
-import { ModalContext } from '../../contexts/ModalContext';
-import { TabProvider } from '../../contexts/TabContext';
-import dydu from '../../tools/dydu';
-import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie } from '../../tools/storage';
-import talk from '../../tools/talk';
+import useStyles from './styles';
 
 
 /**

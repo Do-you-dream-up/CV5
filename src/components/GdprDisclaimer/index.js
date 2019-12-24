@@ -12,7 +12,7 @@ import Skeleton from '../Skeleton';
  */
 export default function GdprDisclaimer({ className, component, onReject, onResolve, ...rest }) {
 
-  const { t, ready } = useTranslation('gdpr');
+  const { ready, t } = useTranslation('gdpr');
 
   const actions = [{children: t('disclaimer.ok'), onClick: onResolve}];
   const body = sanitize(t('disclaimer.body'));

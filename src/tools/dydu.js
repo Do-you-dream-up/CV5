@@ -2,9 +2,9 @@ import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
+import bot from '../bot';
 import { decode } from './cipher';
 import { Local } from './storage';
-import bot from '../bot';
 
 
 /**
@@ -50,7 +50,7 @@ export default new class Dydu {
    * @param {Object} data - Data to send.
    * @returns {Promise}
    */
-  emit = (verb, path, data) => verb(path, data).then(({ data={} }) => {
+  emit = (verb, path, data) => verb(path, data).then(({ data = {} }) => {
     if (Object.prototype.hasOwnProperty.call(data, 'values')) {
       data.values = decode(data.values);
       this.setContextId(data.values.contextId);
@@ -226,7 +226,7 @@ export default new class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  talk = (text, options={}) => {
+  talk = (text, options = {}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
       language: this.getLocale(),
@@ -273,7 +273,7 @@ export default new class Dydu {
    *
    * @returns {Promise}
    */
-  whoami = () => this.emit(API.get, 'whoami/').then(({ headers=[] }) => {
+  whoami = () => this.emit(API.get, 'whoami/').then(({ headers = [] }) => {
     const data = headers.find(it => it && it.host);
     return data && data.host;
   });

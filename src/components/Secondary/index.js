@@ -1,10 +1,10 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
-import useStyles from './styles';
-import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import Button from '../Button';
+import useStyles from './styles';
 
 
 /**

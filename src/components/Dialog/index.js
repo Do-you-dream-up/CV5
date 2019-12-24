@@ -1,10 +1,10 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
-import useStyles from './styles';
+import dydu from '../../tools/dydu';
 import Interaction from '../Interaction';
 import Top from '../Top';
-import dydu from '../../tools/dydu';
+import useStyles from './styles';
 
 
 /**

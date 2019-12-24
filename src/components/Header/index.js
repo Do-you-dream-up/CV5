@@ -2,16 +2,16 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DragonContext } from '../../contexts/DragonContext';
+import { OnboardingContext } from '../../contexts/OnboardingContext';
+import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
 import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DragonContext } from '../../contexts/DragonContext';
-import { OnboardingContext } from '../../contexts/OnboardingContext';
-import { ACTIONS } from '../../tools/talk';
+import useStyles from './styles';
 
 
 /**
@@ -26,7 +26,7 @@ export default function Header({ onClose, ...rest }) {
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const [ t, i, ready ] = useTranslation('header');
-  const { languages=[] } = configuration.application;
+  const { languages = [] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
   const actionGdpr = t('actions.gdpr');

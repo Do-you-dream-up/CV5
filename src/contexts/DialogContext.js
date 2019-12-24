@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
-import { Local } from '../tools/storage';
 import useViewport from '../tools/hooks/viewport';
+import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
 
 
@@ -54,7 +54,7 @@ export function DialogProvider({ children }) {
     setInteractions([]);
   }, []);
 
-  const setSecondary = useCallback(({ body, title, url }={}) => {
+  const setSecondary = useCallback(({ body, title, url } = {}) => {
     if (body || title || url) {
       setSecondaryContent({body, title, url});
     }

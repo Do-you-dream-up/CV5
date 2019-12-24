@@ -1,18 +1,18 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import useStyles from  './styles';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import { DialogContext } from  '../../contexts/DialogContext';
+import usePrevious from  '../../tools/hooks/previous';
+import sanitize from  '../../tools/sanitize';
+import { Local } from '../../tools/storage';
 import Actions from  '../Actions';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Feedback from  '../Feedback';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
-import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
-import { DialogContext } from  '../../contexts/DialogContext';
-import sanitize from  '../../tools/sanitize';
-import usePrevious from  '../../tools/hooks/previous';
-import { Local } from '../../tools/storage';
+import useStyles from  './styles';
 
 
 /**

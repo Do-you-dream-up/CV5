@@ -1,13 +1,13 @@
 import c from 'classnames';
 import qs from 'qs';
 import React, { useContext, useEffect, useState } from 'react';
-import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { Local } from '../../tools/storage';
 import Chatbox from '../Chatbox';
 import Dragon from '../Dragon';
 import Teaser from '../Teaser';
 import Wizard from '../Wizard';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { Local } from '../../tools/storage';
+import useStyles from './styles';
 
 
 /**

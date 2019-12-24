@@ -2,9 +2,9 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
-import useStyles from './styles';
-import MenuList from '../MenuList';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import MenuList from '../MenuList';
+import useStyles from './styles';
 
 
 /**
