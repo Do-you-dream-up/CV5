@@ -43,7 +43,7 @@ module.exports = environment => {
     },
     plugins: [
       new Copy([path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
-      new Html({template: path.resolve(__dirname, 'public/index.html')}),
+      new Html({hash: true, template: path.resolve(__dirname, 'public/index.html')}),
       new Unminified(),
     ],
   };
