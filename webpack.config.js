@@ -1,7 +1,7 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const path = require('path');
+const Copy = require('copy-webpack-plugin');
+const Html = require('html-webpack-plugin');
+const Unminified = require('unminified-webpack-plugin');
 
 
 module.exports = environment => {
@@ -42,9 +42,9 @@ module.exports = environment => {
       path: path.resolve(__dirname, 'build/'),
     },
     plugins: [
-      new CopyWebpackPlugin([path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
-      new HtmlWebpackPlugin({template: path.resolve(__dirname, 'public/index.html')}),
-      new UnminifiedWebpackPlugin(),
+      new Copy([path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
+      new Html({template: path.resolve(__dirname, 'public/index.html')}),
+      new Unminified(),
     ],
   };
 };
