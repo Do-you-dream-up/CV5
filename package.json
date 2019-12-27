@@ -43,28 +43,8 @@
     "build": "rm -fr build/ && webpack --env production",
     "build:development": "rm -fr build/ && webpack --env development",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
-    "eject": "react-scripts eject",
     "map": "source-map-explorer build/bundle.min.js*",
     "start": "react-scripts start",
-    "start:documentation": "styleguidist server --config .styleguide.config.js",
-    "test": "react-scripts test"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint --env HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+    "start:documentation": "styleguidist server --config .styleguide.config.js"
   }
 }
