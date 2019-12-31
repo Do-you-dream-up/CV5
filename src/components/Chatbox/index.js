@@ -40,6 +40,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     toggleSecondary,
   } = useContext(DialogContext);
   const { modal } = useContext(ModalContext);
+  const [ hasGdprDisclaimer, setHasGdprDisclaimer ] = useState(false);
   const [ showGdprDisclaimer, setShowGdprDisclaimer ] = useState(false);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
@@ -100,9 +101,11 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   useEffect(() => {
     if (showGdprDisclaimer) {
+      setHasGdprDisclaimer(true);
       setShowGdprDisclaimer(false);
       modal(GdprDisclaimer, null, {dismissable: false}).then(() => {
         Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+        setHasGdprDisclaimer(false);
       });
     }
   }, [showGdprDisclaimer, modal]);
@@ -130,9 +133,9 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           {secondaryMode === 'over' && <Secondary />}
           <Footer onRequest={addRequest} onResponse={addResponse} />
         </Onboarding>
-        <Header onClose={toggle(1)} style={{order: -1}} />
-        {secondaryMode !== 'over' && <Secondary anchor={root} />}
         <Modal />
+        <Header hasGdpr={hasGdprDisclaimer} onClose={toggle(1)} style={{order: -1}} />
+        {secondaryMode !== 'over' && <Secondary anchor={root} />}
       </div>
     </TabProvider>
   );
