@@ -8,6 +8,7 @@ module.exports = Merge.smart(common, {
     compress: true,
     contentBase: Path.resolve(__dirname, 'public/'),
     open: true,
+    openPage: '?wizard',
   },
   devtool: 'inline-source-map',
   mode: 'development',

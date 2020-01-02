@@ -1,4 +1,5 @@
 const Path = require('path');
+const Html = require('html-webpack-plugin');
 
 
 module.exports = {
@@ -19,4 +20,7 @@ module.exports = {
   performance: {
     hints: false,
   },
+  plugins: [
+    new Html({hash: true, template: Path.resolve(__dirname, 'public/index.html')}),
+  ],
 };
