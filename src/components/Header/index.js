@@ -18,7 +18,7 @@ import { ACTIONS } from '../../tools/talk';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  * 
- * The display of certain elements is conditioned by gdpr status.
+ * The display of certain elements is conditioned by GDPR status.
  */
 export default function Header({ hasGdpr, onClose, ...rest }) {
 
