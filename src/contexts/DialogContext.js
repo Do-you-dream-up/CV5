@@ -36,9 +36,12 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ askFeedback, sidebar, text }) => {
+  const addResponse = useCallback(({ askFeedback, sidebar, text, urlRedirect }) => {
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
+    }
+    if (urlRedirect) {
+      window.open(urlRedirect, '_blank');
     }
     add(
       <Interaction hasFeedback={!!(showFeedback && askFeedback)}
