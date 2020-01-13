@@ -139,5 +139,9 @@
     "size": 3,
     "styles": {},
     "stylesMobile": {}
+  },
+  "welcome": {
+    "enable": true,
+    "knowledgeName": "#welcome#"
   }
 }
