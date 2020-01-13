@@ -231,6 +231,7 @@ export default new class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       qualificationMode: options.qualification,
+      doNotRegisterInteraction: options.doNotSave,
       userInput: text,
       ...(options.extra && {extraParameters: options.extra}),
     });
