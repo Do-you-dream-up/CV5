@@ -44,7 +44,7 @@
   "scripts": {
     "build": "webpack --config webpack.production.js",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
-    "map": "source-map-explorer build/bundle.min.js*",
+    "map": "source-map-explorer build/*bundle.min.js*",
     "start": "webpack-dev-server --config webpack.development.js",
     "start:documentation": "styleguidist server --config .styleguide.config.js"
   }

@@ -3,10 +3,18 @@ import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { Local } from '../../tools/storage';
-import { ChatboxWrapper as Chatbox } from '../Chatbox';
 import Teaser from '../Teaser';
-import Wizard from '../Wizard';
 import useStyles from './styles';
+
+
+const Chatbox = React.lazy(() => import(
+  // webpackChunkName: "chatbox"
+  '../Chatbox'
+).then(module => ({default: module.ChatboxWrapper})));
+const Wizard = React.lazy(() => import(
+  // webpackChunkName: "wizard"
+  '../Wizard'
+));
 
 
 /**
