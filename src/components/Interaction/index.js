@@ -21,7 +21,7 @@ import useStyles from  './styles';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ hasFeedback, history, live, secondary, text, thinking, type }) {
+export default function Interaction({ askFeedback, history, live, secondary, text, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext);
@@ -81,7 +81,7 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
         })}
         {hasLoader && <Loader />}
-        {!hasLoader && hasFeedback && <Feedback />}
+        {!hasLoader && askFeedback && <Feedback />}
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
 
 
 Interaction.propTypes = {
-  hasFeedback: PropTypes.bool,
+  askFeedback: PropTypes.bool,
   history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,

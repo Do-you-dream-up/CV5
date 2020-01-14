@@ -25,7 +25,7 @@ export default function Feedback() {
   const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
   const { t } = useTranslation('feedback');
-  const { askChoices, askComment } = configuration.feedback;
+  const { active, askChoices, askComment } = configuration.feedback;
   const commentHelp = t('comment.help');
   const commentThanks = t('comment.thanks');
   const voteNegative = t('vote.negative');
@@ -96,7 +96,7 @@ export default function Feedback() {
     }, 1000));
   };
 
-  return (
+  return active && (
     <div className="dydu-feedback">
       {showVote && (
         <div className={c('dydu-feedback-vote', classes.vote)}>
