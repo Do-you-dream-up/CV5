@@ -17,12 +17,6 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette.warning.main,
     color: theme.palette.warning.text,
     overflowY: 'hidden',
-    '@global': {
-      'a[href]': {
-        color: `${theme.palette.warning.text} !important`,
-        textDecoration: 'underline !important',
-      },
-    },
     ...configuration.banner.styles,
     [theme.breakpoints.down('xs')]: configuration.banner.stylesMobile,
   }),
