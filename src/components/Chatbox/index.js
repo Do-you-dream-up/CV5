@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
-import { ModalContext } from '../../contexts/ModalContext';
+import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
+import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
+import { OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
@@ -12,6 +13,7 @@ import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
+import Dragon from '../Dragon';
 import Footer from '../Footer';
 import Gdpr from '../Gdpr';
 import GdprDisclaimer from '../GdprDisclaimer';
@@ -26,7 +28,7 @@ import useStyles from './styles';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
+export default function Chatbox({ open, root, toggle, ...rest}) {
 
   const { configuration } = useContext(ConfigurationContext);
   const {
@@ -40,6 +42,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     toggleSecondary,
   } = useContext(DialogContext);
   const { modal } = useContext(ModalContext);
+  const [ hasGdprDisclaimer, setHasGdprDisclaimer ] = useState(false);
   const [ showGdprDisclaimer, setShowGdprDisclaimer ] = useState(false);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
@@ -100,9 +103,11 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   useEffect(() => {
     if (showGdprDisclaimer) {
+      setHasGdprDisclaimer(true);
       setShowGdprDisclaimer(false);
       modal(GdprDisclaimer, null, {dismissable: false}).then(() => {
         Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+        setHasGdprDisclaimer(false);
       });
     }
   }, [showGdprDisclaimer, modal]);
@@ -130,19 +135,30 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
           {secondaryMode === 'over' && <Secondary />}
           <Footer onRequest={addRequest} onResponse={addResponse} />
         </Onboarding>
-        <Header onClose={toggle(1)} style={{order: -1}} />
-        {secondaryMode !== 'over' && <Secondary anchor={root} />}
         <Modal />
+        <Header hasGdpr={hasGdprDisclaimer} onClose={toggle(1)} style={{order: -1}} />
+        {secondaryMode !== 'over' && <Secondary anchor={root} />}
       </div>
     </TabProvider>
   );
-});
+}
 
 
 Chatbox.propTypes = {
   open: PropTypes.bool.isRequired,
+  root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default Chatbox;
+export function ChatboxWrapper(rest) {
+  return (
+    <DialogProvider>
+      <OnboardingProvider>
+        <ModalProvider>
+          <Dragon component={Chatbox} {...rest} />
+        </ModalProvider>
+      </OnboardingProvider>
+    </DialogProvider>
+  );
+}

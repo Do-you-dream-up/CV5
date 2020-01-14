@@ -84,7 +84,7 @@ export default function Dragon({ children, component, ...rest }) {
 
   return !!current && (
     <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-      {React.createElement(component, {...rest, ref: root, style: {
+      {React.createElement(component, {...rest, root: root, style: {
         transform: `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`,
       }})}
     </DragonProvider>

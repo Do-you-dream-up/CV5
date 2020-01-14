@@ -52,6 +52,7 @@
   },
   "feedback": {
     "active": true,
+    "askChoices": true,
     "askComment": true
   },
   "footer": {

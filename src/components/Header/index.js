@@ -17,8 +17,10 @@ import useStyles from './styles';
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
+ *
+ * The display of certain elements is conditioned by GDPR status.
  */
-export default function Header({ onClose, ...rest }) {
+export default function Header({ hasGdpr, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext);
@@ -56,13 +58,13 @@ export default function Header({ onClose, ...rest }) {
       children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
       onClick: onGdpr,
       variant: 'icon',
-      when: !onboardingActive,
+      when: !onboardingActive && !hasGdpr,
     },
     {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
       getMenuItems: () => moreMenu,
       variant: 'icon',
-      when: !onboardingActive && moreMenu.flat().length > 0,
+      when: !onboardingActive && !hasGdpr && moreMenu.flat().length > 0,
     },
     {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
@@ -83,15 +85,18 @@ export default function Header({ onClose, ...rest }) {
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
-      <Onboarding>
-        <Tabs />
-        <Banner />
-      </Onboarding>
+      {!hasGdpr && (
+        <Onboarding>
+          <Tabs />
+          <Banner />
+        </Onboarding>
+      )}
     </header>
   );
 }
 
 Header.propTypes = {
+  hasGdpr: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

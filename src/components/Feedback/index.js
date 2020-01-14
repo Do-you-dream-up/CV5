@@ -6,27 +6,26 @@ import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import Bubble from '../Bubble';
 import Button from '../Button';
+import FeedbackChoices from '../FeedbackChoices';
 import Scroll from '../Scroll';
 import useStyles from './styles';
 
 
-
 /**
- * Render handles for the user to submit feedback.
- *
- * The component contains two buttons: positive and negative.
+ * Render interfaces for the user to submit feedback.
  */
 export default function Feedback() {
 
   const { configuration } = useContext(ConfigurationContext);
   const { addResponse } = useContext(DialogContext);
   const [ comment, setComment ] = useState('');
+  const [ showChoices, setShowChoices ] = useState(false);
   const [ showComment, setShowComment ] = useState(false);
   const [ showVote, setShowVote ] = useState(true);
   const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
   const { t } = useTranslation('feedback');
-  const { askComment } = configuration.feedback;
+  const { active, askChoices, askComment } = configuration.feedback;
   const commentHelp = t('comment.help');
   const commentThanks = t('comment.thanks');
   const voteNegative = t('vote.negative');
@@ -62,7 +61,10 @@ export default function Feedback() {
   const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       setShowVote(false);
-      if (askComment) {
+      if (askChoices) {
+        setShowChoices(true);
+      }
+      else if (askComment) {
         setShowComment(true);
       }
       else if (voteThanks) {
@@ -80,7 +82,21 @@ export default function Feedback() {
     });
   };
 
-  return (
+  const onChoicesSelect = value => {
+    setThinking(true);
+    dydu.feedbackInsatisfaction(value).then(() => setTimeout(() => {
+      setShowChoices(false);
+      if (askComment) {
+        setShowComment(true);
+      }
+      else if (voteThanks) {
+        addResponse({text: voteThanks});
+      }
+      setThinking(false);
+    }, 1000));
+  };
+
+  return active && (
     <div className="dydu-feedback">
       {showVote && (
         <div className={c('dydu-feedback-vote', classes.vote)}>
@@ -91,6 +107,11 @@ export default function Feedback() {
             <img alt={votePositive} src="icons/thumb-up.png" title={votePositive} />
           </Button>
         </div>
+      )}
+      {showChoices && (
+        <Bubble component={Scroll} thinking={thinking} type="response">
+          <FeedbackChoices onSelect={onChoicesSelect} />
+        </Bubble>
       )}
       {showComment && (
         <Bubble component={Scroll} thinking={thinking} type="response">

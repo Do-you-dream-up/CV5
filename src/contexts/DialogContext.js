@@ -16,7 +16,6 @@ export function DialogProvider({ children }) {
   const [ secondaryContent, setSecondaryContent ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { active: showFeedback } = configuration.feedback;
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
@@ -44,14 +43,14 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     add(
-      <Interaction hasFeedback={!!(showFeedback && askFeedback)}
+      <Interaction askFeedback={askFeedback}
                    text={text}
                    type="response"
                    secondary={sidebar}
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, showFeedback, toggleSecondary]);
+  }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
