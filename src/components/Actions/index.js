@@ -16,7 +16,7 @@ export default function Actions({ actions, className }) {
   const classes = useStyles();
   return !!actions.length && (
     <div className={c('dydu-actions', classes.root, className)}>
-      {actions.map(({ getMenuItems, getMenuSelected, type='button', when=true, ...rest }, index) => {
+      {actions.map(({ getMenuItems, getMenuSelected, type = 'button', when = true, ...rest }, index) => {
         const items = typeof getMenuItems === 'function' ? getMenuItems() : null;
         const selected = typeof getMenuSelected === 'function' ? getMenuSelected() : null;
         return when ? React.createElement(items ? Menu : Button, {

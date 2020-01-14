@@ -8,10 +8,10 @@ import { LOREM_HTML } from './lorem';
  */
 const meta = () => {
   const { parsedResult: {
-    browser={},
-    os={},
-    platform={},
-  }={} } = Bowser.getParser(window.navigator.userAgent);
+    browser = {},
+    os = {},
+    platform = {},
+  } = {} } = Bowser.getParser(window.navigator.userAgent);
   const html = [
     '<dl>',
     ...[

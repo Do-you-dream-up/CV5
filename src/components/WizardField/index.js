@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import useStyles from './styles';
-import WizardFieldStatus from '../WizardFieldStatus';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import usePrevious from '../../tools/hooks/previous';
+import WizardFieldStatus from '../WizardFieldStatus';
+import useStyles from './styles';
 
 
 /**
@@ -77,7 +77,7 @@ function WizardField({ component, label, onSave, parent, value: oldValue }) {
     }
   }, [value]);
 
-  const { input='input', ...attributes } = {
+  const { input = 'input', ...attributes } = {
     boolean: {checked: value, type: 'checkbox'},
     number: {type: 'number', value},
     object: {input: 'textarea', placeholder: label, value},

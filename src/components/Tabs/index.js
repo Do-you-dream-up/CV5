@@ -1,10 +1,10 @@
 import c from 'classnames';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import Skeleton from '../Skeleton';
-import useStyles from './styles';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { TabContext } from '../../contexts/TabContext';
+import Skeleton from '../Skeleton';
+import useStyles from './styles';
 
 
 /**
@@ -16,8 +16,8 @@ export default function Tabs() {
   const { configuration } = useContext(ConfigurationContext);
   const { select, state: tabState } = useContext(TabContext);
   const classes = useStyles({configuration});
-  const { t, ready } = useTranslation('tabs');
-  const { items=[] } = configuration.tabs;
+  const { ready, t } = useTranslation('tabs');
+  const { items = [] } = configuration.tabs;
 
   return !!items.length && (
     <div className={c('dydu-tabs', classes.root)}>

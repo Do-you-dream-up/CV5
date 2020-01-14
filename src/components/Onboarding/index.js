@@ -2,11 +2,11 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
-import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import sanitize from '../../tools/sanitize';
+import Button from '../Button';
+import useStyles from './styles';
 
 
 /**
@@ -26,7 +26,7 @@ export default function Onboarding({ children, render }) {
   const { t } = useTranslation('onboarding');
   const steps = t('steps');
   const should = render && active && index < steps.length;
-  const { content, next=t('next'), previous=t('previous') } = steps[index] || {};
+  const { content, next = t('next'), previous = t('previous') } = steps[index] || {};
 
   return should ? (
     <div className={c('dydu-onboarding', classes.root)}>

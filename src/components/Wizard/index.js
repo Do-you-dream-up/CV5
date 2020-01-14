@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import useStyles from './styles';
-import WizardField from '../WizardField';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { Local } from '../../tools/storage';
+import WizardField from '../WizardField';
+import useStyles from './styles';
 
 
 /**

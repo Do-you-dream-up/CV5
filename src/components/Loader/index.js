@@ -1,9 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import useStyles from './styles';
-import Scroll from '../Scroll';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import Scroll from '../Scroll';
+import useStyles from './styles';
 
 
 /**

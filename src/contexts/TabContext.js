@@ -13,7 +13,7 @@ export const TabProvider = withConfiguration(class TabProvider extends React.Com
 
   constructor(props) {
     super(props);
-    const { items, selected=0 } = props.configuration.tabs;
+    const { items, selected = 0 } = props.configuration.tabs;
     this.state = {current: items[selected]};
   }
 

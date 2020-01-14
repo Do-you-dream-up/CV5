@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 
-export default function(event, handler, element=window) {
+export default function(event, handler, element = window) {
 
   const savedHandler = useRef();
 

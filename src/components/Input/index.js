@@ -1,14 +1,14 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Autosuggest from 'react-autosuggest';
-import useStyles from './styles';
-import Actions from '../Actions';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import useDebounce from '../../tools/hooks/debounce';
 import dydu from '../../tools/dydu';
+import useDebounce from '../../tools/hooks/debounce';
 import talk from '../../tools/talk';
+import Actions from '../Actions';
+import useStyles from './styles';
 
 
 /**
@@ -21,10 +21,10 @@ export default function Input({ onRequest, onResponse }) {
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
-  const { t, ready } = useTranslation('input');
+  const { ready, t } = useTranslation('input');
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
-  const { delay, maxLength=100 } = configuration.input;
+  const { delay, maxLength = 100 } = configuration.input;
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {

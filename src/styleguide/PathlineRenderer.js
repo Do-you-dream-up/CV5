@@ -13,14 +13,14 @@ export const styles = ({ color, fontFamily, fontSize }) => ({
 });
 
 
-export function PathlineRenderer({ classes, children }) {
+export function PathlineRenderer({ children, classes }) {
   return <div children={children} className={classes.pathline} />;
 }
 
 
 PathlineRenderer.propTypes = {
-    classes: PropTypes.object.isRequired,
-    children: PropTypes.string,
+  classes: PropTypes.object.isRequired,
+  children: PropTypes.string,
 };
 
 

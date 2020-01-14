@@ -1,12 +1,12 @@
 import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
-import Button from '../Button';
-import Skeleton from '../Skeleton';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
+import Button from '../Button';
+import Skeleton from '../Skeleton';
+import useStyles from './styles';
 
 
 /**
@@ -21,7 +21,7 @@ export default function Banner() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
-  const { t, ready } = useTranslation('banner');
+  const { ready, t } = useTranslation('banner');
   const { active, cookie, dismissable, transient } = configuration.banner;
   const html = sanitize(t('html'));
   const close = t('close');
