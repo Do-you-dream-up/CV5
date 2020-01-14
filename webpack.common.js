@@ -1,9 +1,10 @@
 const Path = require('path');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
+const version = require('./package').version;
 
 
-const branch = new GitRevision().branch();
+const hash = new GitRevision().commithash();
 
 
 module.exports = {
@@ -28,7 +29,7 @@ module.exports = {
     new Html({
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),
-      templateParameters: {branch},
+      templateParameters: {hash, version},
     }),
   ],
 };

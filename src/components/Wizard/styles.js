@@ -31,7 +31,7 @@ export default createUseStyles(theme => ({
       left: 0,
       overflowY: 'auto',
       padding: '.5em',
-      paddingTop: 'calc(1.5em + 20px)',
+      paddingTop: '2em',
       position: 'absolute',
       right: right + width + right,
       top: 0,
