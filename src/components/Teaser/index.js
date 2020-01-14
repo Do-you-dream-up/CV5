@@ -2,9 +2,9 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
-import Skeleton from '../Skeleton';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Skeleton from '../Skeleton';
+import useStyles from './styles';
 
 
 /**
@@ -14,7 +14,7 @@ export default function Teaser({ open, toggle }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
-  const { t, ready } = useTranslation('teaser');
+  const { ready, t } = useTranslation('teaser');
   const title = t('title');
 
   return (

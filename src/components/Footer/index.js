@@ -1,9 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import useStyles from './styles';
-import Input from '../Input';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Input from '../Input';
+import useStyles from './styles';
 
 
 /**

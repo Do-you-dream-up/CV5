@@ -17,7 +17,7 @@ import { Local } from '../../tools/storage';
 export default function Dragon({ children, component, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { boundaries: withBoundaries, factor: defaultFactor=1, persist } = configuration.dragon;
+  const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const root = useRef(null);
   const [ boundaries, setBoundaries ] = useState(null);
@@ -63,7 +63,7 @@ export default function Dragon({ children, component, ...rest }) {
     }
   };
 
-  const onReset = useCallback(({ x=0, y=0 }) => {
+  const onReset = useCallback(({ x = 0, y = 0 }) => {
     setCurrent({x, y});
     setOffset({x: 0, y: 0});
   }, []);
@@ -84,7 +84,7 @@ export default function Dragon({ children, component, ...rest }) {
 
   return !!current && (
     <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-      {React.createElement(component, {...rest, ref: root, style: {
+      {React.createElement(component, {...rest, root: root, style: {
         transform: `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`,
       }})}
     </DragonProvider>

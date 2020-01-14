@@ -1,18 +1,18 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import useStyles from  './styles';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import { DialogContext } from  '../../contexts/DialogContext';
+import usePrevious from  '../../tools/hooks/previous';
+import sanitize from  '../../tools/sanitize';
+import { Local } from '../../tools/storage';
 import Actions from  '../Actions';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Feedback from  '../Feedback';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
-import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
-import { DialogContext } from  '../../contexts/DialogContext';
-import sanitize from  '../../tools/sanitize';
-import usePrevious from  '../../tools/hooks/previous';
-import { Local } from '../../tools/storage';
+import useStyles from  './styles';
 
 
 /**
@@ -21,7 +21,7 @@ import { Local } from '../../tools/storage';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ hasFeedback, history, live, secondary, text, thinking, type }) {
+export default function Interaction({ askFeedback, history, live, secondary, text, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext);
@@ -81,7 +81,7 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
         })}
         {hasLoader && <Loader />}
-        {!hasLoader && hasFeedback && <Feedback />}
+        {!hasLoader && askFeedback && <Feedback />}
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
 
 
 Interaction.propTypes = {
-  hasFeedback: PropTypes.bool,
+  askFeedback: PropTypes.bool,
   history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,

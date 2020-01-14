@@ -26,7 +26,7 @@ export class Cookie {
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
    * @param {Object|number} [options] - Extra options or lifespan duration in days.
    */
-  static set = (name, value, options={}) => {
+  static set = (name, value, options = {}) => {
     value = typeof value === 'object' ? JSON.stringify(value) : value || Math.floor(Date.now() / 1000);
     options = {expires: typeof options === 'number' ? options : Cookie.duration.short, ...options};
     cookie.set(name, value, options);

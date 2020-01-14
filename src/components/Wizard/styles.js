@@ -31,11 +31,14 @@ export default createUseStyles(theme => ({
       left: 0,
       overflowY: 'auto',
       padding: '.5em',
+      paddingTop: 'calc(1.5em + 20px)',
       position: 'absolute',
       right: right + width + right,
       top: 0,
       [theme.breakpoints.down('xs')]: {
-        padding: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
         right: 0,
       },
     };

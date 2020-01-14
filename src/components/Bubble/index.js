@@ -1,9 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import useStyles from  './styles';
-import Progress from  '../Progress';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import Progress from  '../Progress';
+import useStyles from  './styles';
 
 
 /**

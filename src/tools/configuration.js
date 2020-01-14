@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React from 'react';
-import json from './configuration.json';
-import theme from '../styles/theme';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
+import theme from '../styles/theme';
+import json from './configuration.json';
 
 
 /**
@@ -20,7 +20,7 @@ export const configuration = new class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (path='/configuration.json') => {
+  initialize = (path = '/configuration.json') => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path).then(
       ({ data }) => this.sanitize(this.merge(data)),
@@ -72,11 +72,16 @@ export const configuration = new class Configuration {
   sanitize = data => {
     const forgeStyles = ({
       background,
-      bottom, left, right, top,
-      height, maxHeight, width,
+      bottom,
+      height,
+      left,
+      maxHeight,
       position,
+      right,
       shadow,
-    }={}) => ({
+      top,
+      width,
+    } = {}) => ({
       ...(background !== undefined && {background}),
       ...(bottom !== undefined && {bottom}),
       ...(height !== undefined && {height}),

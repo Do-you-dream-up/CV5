@@ -14,7 +14,7 @@ import useStyles from './styles';
 export default function Gdpr({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t, ready } = useTranslation('gdpr');
+  const { ready, t } = useTranslation('gdpr');
 
   const onSubmit = ({ email, withForget, withGet }) => {
     onResolve({email, method: [withForget && 'Forget', withGet && 'Get'].filter(it => it)});

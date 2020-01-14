@@ -1,10 +1,10 @@
 import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
-import Interaction from '../Interaction';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
+import Interaction from '../Interaction';
+import useStyles from './styles';
 
 
 /**

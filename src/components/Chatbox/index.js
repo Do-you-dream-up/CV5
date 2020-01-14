@@ -2,9 +2,18 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
+import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
+import { OnboardingProvider } from '../../contexts/OnboardingContext';
+import { TabProvider } from '../../contexts/TabContext';
+import dydu from '../../tools/dydu';
+import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
+import { Cookie } from '../../tools/storage';
+import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
+import Dragon from '../Dragon';
 import Footer from '../Footer';
 import Gdpr from '../Gdpr';
 import GdprDisclaimer from '../GdprDisclaimer';
@@ -13,20 +22,13 @@ import Modal from '../Modal';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
-import { ModalContext } from '../../contexts/ModalContext';
-import { TabProvider } from '../../contexts/TabContext';
-import dydu from '../../tools/dydu';
-import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie } from '../../tools/storage';
-import talk from '../../tools/talk';
+import useStyles from './styles';
 
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
+export default function Chatbox({ open, root, toggle, ...rest}) {
 
   const { configuration } = useContext(ConfigurationContext);
   const {
@@ -139,13 +141,24 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       </div>
     </TabProvider>
   );
-});
+}
 
 
 Chatbox.propTypes = {
   open: PropTypes.bool.isRequired,
+  root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default Chatbox;
+export function ChatboxWrapper(rest) {
+  return (
+    <DialogProvider>
+      <OnboardingProvider>
+        <ModalProvider>
+          <Dragon component={Chatbox} {...rest} />
+        </ModalProvider>
+      </OnboardingProvider>
+    </DialogProvider>
+  );
+}

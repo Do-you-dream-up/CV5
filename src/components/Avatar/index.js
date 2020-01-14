@@ -1,8 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import useStyles from './styles';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import useStyles from './styles';
 
 
 /**

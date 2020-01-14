@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
-import { Local } from '../tools/storage';
 import useViewport from '../tools/hooks/viewport';
+import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
 
 
@@ -16,7 +16,6 @@ export function DialogProvider({ children }) {
   const [ secondaryContent, setSecondaryContent ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { active: showFeedback } = configuration.feedback;
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
@@ -41,20 +40,20 @@ export function DialogProvider({ children }) {
       toggleSecondary(false)();
     }
     add(
-      <Interaction hasFeedback={!!(showFeedback && askFeedback)}
+      <Interaction askFeedback={askFeedback}
                    text={text}
                    type="response"
                    secondary={sidebar}
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, showFeedback, toggleSecondary]);
+  }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
   }, []);
 
-  const setSecondary = useCallback(({ body, title, url }={}) => {
+  const setSecondary = useCallback(({ body, title, url } = {}) => {
     if (body || title || url) {
       setSecondaryContent({body, title, url});
     }

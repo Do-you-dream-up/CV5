@@ -1,6 +1,6 @@
 import c from 'classnames';
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import useStyles from './styles';
 
 
