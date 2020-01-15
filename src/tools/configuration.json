@@ -1,8 +1,4 @@
 {
-  "spaces": {
-    "active": true,
-    "items": ["Foo", "Bar"]
-  },
   "application": {
     "open": 1,
     "qualification": true,
@@ -119,6 +115,10 @@
     },
     "stylesMobile": {},
     "transient": true
+  },
+  "spaces": {
+    "active": true,
+    "items": ["Foo", "Bar"]
   },
   "suggestions": {
     "styles": {
