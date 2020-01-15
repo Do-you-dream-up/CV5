@@ -25,6 +25,7 @@ export default function Menu({ component, items, selected, ...rest }) {
   const menuRef = useRef(null);
   const node = document && document.getElementById(configuration.root);
   const spacing = ~~configuration.menu.spacing;
+  items = typeof items === 'function' ? items() : items;
 
   const onClose = () => setOpen(false);
 
@@ -86,6 +87,6 @@ Menu.defaultProps = {
 
 Menu.propTypes = {
   component: PropTypes.elementType,
-  items: PropTypes.arrayOf(PropTypes.array).isRequired,
-  selected: PropTypes.string,
+  items: PropTypes.oneOfType([PropTypes.func, PropTypes.array]).isRequired,
+  selected: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 };

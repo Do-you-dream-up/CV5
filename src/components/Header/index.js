@@ -40,17 +40,19 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
     onClick: () => window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
+
   const moreMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,
   }))];
+
   const onGdpr = () => window.dydu.gdpr();
 
   const actions = [
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
-      getMenuItems: () => languagesMenu,
-      getMenuSelected: () => i.languages[0],
+      items: () => languagesMenu,
+      selected: () => i.languages[0],
       variant: 'icon',
       when: languagesMenu.flat().length > 1,
     },
@@ -62,7 +64,7 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
     },
     {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
-      getMenuItems: () => moreMenu,
+      items: () => moreMenu,
       variant: 'icon',
       when: !onboardingActive && !hasGdpr && moreMenu.flat().length > 0,
     },

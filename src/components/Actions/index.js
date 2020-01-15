@@ -16,15 +16,13 @@ export default function Actions({ actions, className }) {
   const classes = useStyles();
   return !!actions.length && (
     <div className={c('dydu-actions', classes.root, className)}>
-      {actions.map(({ getMenuItems, getMenuSelected, type = 'button', when = true, ...rest }, index) => {
-        const items = typeof getMenuItems === 'function' ? getMenuItems() : null;
-        const selected = typeof getMenuSelected === 'function' ? getMenuSelected() : null;
-        return when ? React.createElement(items ? Menu : Button, {
+      {actions.map(({ items, selected, type = 'button', when = true, ...rest }, index) => (
+        when ? React.createElement(items ? Menu : Button, {
           key: index,
           ...(items ? {component: Button, items, selected} : {type}),
           ...rest,
-        }) : null;
-      })}
+        }) : null
+      ))}
     </div>
   );
 }
@@ -38,8 +36,8 @@ Actions.defaultProps = {
 Actions.propTypes = {
   actions: PropTypes.arrayOf(PropTypes.shape({
     children: PropTypes.any,
-    getMenuItems: PropTypes.func,
-    getMenuSelected: PropTypes.func,
+    items: PropTypes.oneOfType([PropTypes.func, PropTypes.array]),
+    selected: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
     type: PropTypes.string,
     when: PropTypes.bool,
   })),

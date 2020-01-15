@@ -10,6 +10,8 @@ import useStyles from './styles';
 export default function MenuList({ items, onClose, selected }) {
 
   const classes = useStyles();
+  selected = typeof selected === 'function' ? selected() : selected;
+
 
   const onItemClick = callback => () => {
     if (callback) {
@@ -26,7 +28,7 @@ export default function MenuList({ items, onClose, selected }) {
               'dydu-menu-list-item',
               classes.item,
               it.onClick ? classes.itemEnabled : classes.itemDisabled,
-              {[classes.selected]: selected && selected === it.id},
+              {[classes.selected]: selected === it.id},
             )}
             key={index}
             onClick={onItemClick(it.onClick)} />
@@ -42,5 +44,5 @@ MenuList.propTypes = {
     text: PropTypes.string.isRequired,
   })).isRequired,
   onClose: PropTypes.func.isRequired,
-  selected: PropTypes.string,
+  selected: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 };
