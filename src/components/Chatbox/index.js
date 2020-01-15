@@ -89,6 +89,14 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
       };
 
+      window.dydu.space = {
+        get: () => dydu.getSpace(),
+        set: (space, { quiet } = {}) => dydu.setSpace(space).then(
+          space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
+          () => {},
+        ),
+      };
+
       window.dydu.ui = {
         secondary: (open, { body, title }) => {
           setSecondary({body, title});

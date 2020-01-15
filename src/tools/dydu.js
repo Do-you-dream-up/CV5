@@ -39,6 +39,7 @@ export default new class Dydu {
     this.client = this.getClientId();
     this.emit = debounce(this.emit, 100, {leading: true});
     this.locale = this.getLocale();
+    this.space = this.getSpace();
   }
 
   /**
@@ -161,6 +162,19 @@ export default new class Dydu {
   };
 
   /**
+   * Self-regeneratively return the currently selected space.
+   *
+   * @returns {string}
+   */
+  getSpace = () => {
+    if (!this.space) {
+      const space = Local.get(Local.names.space);
+      this.space = space || '';
+    }
+    return this.space;
+  };
+
+  /**
    * Fetch previous conversations.
    *
    * @returns {Promise}
@@ -224,6 +238,24 @@ export default new class Dydu {
   });
 
   /**
+   * Set the current space and save it in the local storage.
+   *
+   * @param {string} space - Selected space.
+   * @returns {Promise}
+   */
+  setSpace = space => new Promise((resolve, reject) => {
+    const value = String(space).trim().toLowerCase();
+    Local.set(Local.names.space, value);
+    if (this.space !== value) {
+      this.space = value;
+      resolve(value);
+    }
+    else {
+      reject(value);
+    }
+  });
+
+  /**
    * Fetch candidates for auto-completion.
    *
    * @param {string} text - Input to search against.
@@ -247,6 +279,7 @@ export default new class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       qualificationMode: options.qualification,
+      space: this.getSpace(),
       userInput: text,
       ...(options.extra && {extraParameters: options.extra}),
     });

@@ -48,6 +48,7 @@ export class Local {
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
     secondary: 'dydu.secondary',
+    space: 'dydu.space',
   };
 
 

@@ -1,4 +1,8 @@
 {
+  "spaces": {
+    "active": true,
+    "items": ["Foo", "Bar"]
+  },
   "application": {
     "open": 1,
     "qualification": true,
