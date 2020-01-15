@@ -1,10 +1,12 @@
 const Path = require('path');
+const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
 const version = require('./package').version;
 
 
 const hash = new GitRevision().commithash();
+const now = DayJs().format('YYYY-MM-DD HH:mm');
 
 
 module.exports = {
@@ -29,7 +31,7 @@ module.exports = {
     new Html({
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),
-      templateParameters: {hash, version},
+      templateParameters: {hash, now, version},
     }),
   ],
 };
