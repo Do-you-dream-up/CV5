@@ -3,7 +3,8 @@
 
 * Installation
 
-Copy the bot configuration sample file.
+Copy the bot configuration sample file and fill both the =id= and the =server=
+keys with a bot of your choice.
 
 #+BEGIN_SRC sh
 cp src/bot.json.sample src/bot.json
@@ -31,9 +32,13 @@ npm install -g babel-eslint eslint eslint-plugin-react
 
 Namespace branches according to their content. Use kebab-case to name branches.
 
-- =feature/=: Enhancement. You add a new feature to the code
-- =fix/=: Bug fix. You add a fix to existing features
-- =test/=: Tests. You add scenarii to the test suite
+- =build=    :: Build-related augments
+- =docs=     :: Documentation
+- =feat=     :: Enhancements
+- =fix=      :: Bug fixes
+- =refactor= :: Logic cleanup
+- =style=    :: Syntax cleanup
+- =test=     :: Tests
 
 ** Commit Changes
 
@@ -58,7 +63,7 @@ Good etiquette about committing in a shared environment:
 
 ** Pushing Changes
 
-1. Pull =:master= into a new branch with the corresponding prefix =:namespace/what-the-change-is-about=
+1. Pull =:master= into a new branch with the corresponding prefix eg. =:namespace/123/your-feature=
 1. Push your code to your branch
 1. Pull =:master= in your branch again
 1. Wait for the merge :-)
