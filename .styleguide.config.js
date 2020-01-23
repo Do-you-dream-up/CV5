@@ -1,5 +1,7 @@
 const path = require('path');
 const docgen = require('react-docgen');
+const styles = require('./src/styleguide/styles');
+
 
 module.exports = {
   ignore: [
@@ -10,16 +12,8 @@ module.exports = {
     '**/components/*/styles.js',
   ],
   styleguideComponents: {
-    PathlineRenderer: path.join(__dirname, 'src/styleguide/PathlineRenderer'),
+    'PathlineRenderer': path.join(__dirname, 'src/styleguide/components/PathlineRenderer'),
   },
-  styles: {
-    Table: {
-      table: {
-        '&:last-child': {
-          marginBottom: 0,
-        },
-      },
-    },
-  },
+  styles,
   usageMode: 'expand',
 };

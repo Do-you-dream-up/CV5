@@ -2,7 +2,7 @@ const Path = require('path');
 const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
-const version = require('./package').version;
+const { version } = require('./package');
 
 
 const hash = new GitRevision().commithash();
