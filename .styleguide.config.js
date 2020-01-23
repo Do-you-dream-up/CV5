@@ -1,5 +1,6 @@
 const path = require('path');
 const docgen = require('react-docgen');
+const { version } = require('./package');
 const styles = require('./src/styleguide/styles');
 
 
@@ -16,4 +17,5 @@ module.exports = {
   },
   styles,
   usageMode: 'expand',
+  version,
 };
