@@ -10,7 +10,7 @@ import useStyles from './styles';
  * An icon button typically accepts an image as its child while the default
  * variant is best used with text.
  */
-function Button({ color, component, reference, variant, ...rest }) {
+export function Button({ color, component, reference, variant, ...rest }) {
   const classes = useStyles({color: color === 'default' ? undefined : color});
   return React.createElement(component, {
     ...rest,

@@ -1,6 +1,6 @@
 Contained button (default)
 
-```jsx static
+```jsx
 <Button children="Button" />
 <Button children="Disabled" disabled />
 <Button children="Error" color="error" />
@@ -10,7 +10,7 @@ Contained button (default)
 
 Text button
 
-```jsx static
+```jsx
 <Button children="Button" variant="text" />
 <Button children="Disabled" disabled variant="text" />
 <Button children="Error" color="error" variant="text" />
@@ -20,7 +20,7 @@ Text button
 
 Icon button
 
-```jsx static
+```jsx {"props": {"style": {"backgroundColor": "#B3E5FC"}}}
 <Button variant="icon">
   <img src="public/icons/close.png" />
 </Button>
@@ -31,7 +31,7 @@ Icon button
 
 Icon-contained button
 
-```jsx static
+```jsx
 <Button variant="icon-contained">
   <img src="public/icons/close.png" />
 </Button>

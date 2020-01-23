@@ -6,6 +6,7 @@ const theme = require('./src/styleguide/theme');
 
 
 module.exports = {
+  exampleMode: 'expand',
   ignore: [
     '**/*.d.ts',
     '**/*.spec.{js,jsx,ts,tsx}',
@@ -19,6 +20,7 @@ module.exports = {
   },
   styleguideComponents: {
     'PathlineRenderer': path.join(__dirname, 'src/styleguide/components/PathlineRenderer'),
+    'Wrapper': path.join(__dirname, 'src/styleguide/components/Wrapper'),
     'slots/IsolateButton': path.join(__dirname, 'src/styleguide/components/IsolateButton'),
   },
   styles,
