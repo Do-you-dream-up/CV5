@@ -1,6 +1,41 @@
 import { createUseStyles } from 'react-jss';
 
 
+const contained = ({ color = 'primary', theme }) => ({
+  backgroundColor: theme.palette[color].main,
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette[color].text,
+  padding: '.5em 1em',
+  textTransform: 'uppercase',
+});
+
+
+const icon = () => ({
+  height: 40,
+  justifyContent: 'center',
+  width: 40,
+  '&, &:after, &:before': {
+    borderRadius: '50%',
+  },
+  '& > *': {
+    height: 20,
+    position: 'absolute',
+    width: 20,
+  },
+});
+
+
+const overlay = {
+  borderRadius: 'inherit',
+  bottom: 0,
+  content: '""',
+  left: 0,
+  position: 'absolute',
+  right: 0,
+  top: 0,
+};
+
+
 export default createUseStyles(theme => ({
 
   base: ({ color }) => ({
@@ -14,7 +49,7 @@ export default createUseStyles(theme => ({
     padding: 0,
     position: 'relative',
     ...(color && {
-      color: theme.palette[color].main,
+      color: theme.palette[color].text,
     }),
     '& > *:not(:first-child)': {
       marginLeft: '.5em',
@@ -23,55 +58,35 @@ export default createUseStyles(theme => ({
       cursor: 'not-allowed',
     },
     '&:disabled:after': {
-      extend: 'overlay',
+      ...overlay,
       backgroundColor: theme.palette.action.disabled,
     },
-    '&:not(:disabled):before': {
-      extend: 'overlay',
+    '&:before': {
+      ...overlay,
     },
-    '&:not(:disabled):hover:before': {
+    '&:hover:before': {
       backgroundColor: theme.palette.action.hover,
     },
   }),
 
-  default: () => ({
-    color: theme.palette.primary.main,
-    padding: '.5em 1em',
-    textTransform: 'uppercase',
-    '&, &:after, &:before': {
-      borderRadius: 4,
+  contained: ({ color }) => contained({color, theme}),
+
+  text: ({ color }) => ({
+    ...contained({color, theme}),
+    backgroundColor: 'transparent',
+    color: color ? theme.palette[color].main : theme.palette.text.primary,
+    '&:disabled': {
+      color: theme.palette.text.disabled,
+    },
+    '&:disabled:after, &:disabled:before': {
+      backgroundColor: 'transparent',
     },
   }),
 
-  filled: ({ color }) => ({
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.text,
-    ...(color && {
-      backgroundColor: theme.palette[color].main,
-      color: theme.palette[color].text,
-    }),
-  }),
+  icon: ({ color }) => icon({color, theme}),
 
-  icon: () => ({
-    height: 40,
-    justifyContent: 'center',
-    width: 40,
-    '&, &:after, &:before': {
-      borderRadius: '50%',
-    },
-    '& > *': {
-      height: 20,
-      position: 'absolute',
-      width: 20,
-    },
+  'icon-contained': ({ color = 'primary' }) => ({
+    ...icon({color, theme}),
+    backgroundColor: theme.palette[color].main,
   }),
-
-  overlay: {
-    bottom: 0,
-    content: '""',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
 }));

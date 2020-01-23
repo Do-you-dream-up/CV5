@@ -10,35 +10,28 @@ import useStyles from './styles';
  * An icon button typically accepts an image as its child while the default
  * variant is best used with text.
  */
-function Button({ color, component, filled, reference, variant, ...rest }) {
-  const classes = useStyles({color});
-  const type = variant.toLowerCase();
+function Button({ color, component, reference, variant, ...rest }) {
+  const classes = useStyles({color: color === 'default' ? undefined : color});
   return React.createElement(component, {
     ...rest,
-    className: c(
-      'dydu-button',
-      `dydu-button-${type}`,
-      classes.base,
-      classes[type],
-      {[classes.filled]: type === 'default' || filled},
-    ),
+    className: c('dydu-button', `dydu-button-${variant}`, classes.base, classes[variant]),
     ref: reference,
   });
 }
 
 
 Button.defaultProps = {
+  color: 'default',
   component: 'button',
-  variant: 'default',
+  variant: 'contained',
 };
 
 
 Button.propTypes = {
-  color: PropTypes.oneOf(['error', 'success', 'warning']),
+  color: PropTypes.oneOf(['default', 'error', 'success', 'warning']),
   component: PropTypes.node,
-  filled: PropTypes.bool,
   reference: PropTypes.exact({current: PropTypes.object}),
-  variant: PropTypes.oneOf(['default', 'icon']),
+  variant: PropTypes.oneOf(['contained', 'icon', 'icon-contained', 'text']),
 };
 
 
