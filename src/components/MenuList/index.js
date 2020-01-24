@@ -28,7 +28,7 @@ export default function MenuList({ items, onClose, selected }) {
               'dydu-menu-list-item',
               classes.item,
               it.onClick ? classes.itemEnabled : classes.itemDisabled,
-              {[classes.selected]: selected === it.id},
+              {[classes.selected]: selected && selected === it.id},
             )}
             key={index}
             onClick={onItemClick(it.onClick)} />

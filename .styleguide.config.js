@@ -19,6 +19,7 @@ module.exports = {
     text: 'Repository',
     url: 'https://git.nereide.dydu.ai/mmarques/bliss/',
   },
+  skipComponentsWithoutExample: true,
   styleguideComponents: {
     'PathlineRenderer': path.join(__dirname, 'src/styleguide/components/PathlineRenderer'),
     'Wrapper': path.join(__dirname, 'src/styleguide/components/Wrapper'),
