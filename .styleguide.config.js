@@ -6,6 +6,7 @@ const theme = require('./src/styleguide/theme');
 
 
 module.exports = {
+  assetsDir: path.join(__dirname, 'public/'),
   exampleMode: 'expand',
   ignore: [
     '**/*.d.ts',
