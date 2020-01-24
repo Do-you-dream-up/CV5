@@ -23,8 +23,8 @@ export default function Banner() {
   const [ show, setShow ] = useState(false);
   const { ready, t } = useTranslation('banner');
   const { active, cookie, dismissable, transient } = configuration.banner;
-  const html = sanitize(t('html'));
   const close = t('close');
+  const html = sanitize(t('html'));
 
   const dismiss = useCallback(() => {
     if (cookie) {
@@ -55,7 +55,7 @@ export default function Banner() {
         </div>
       )}
       <div className={c('dydu-banner-body', classes.body)}>
-        <Skeleton hide={!ready} height="6em" variant="paragraph">
+        <Skeleton hide={!ready} height="4em" variant="paragraph">
           <div dangerouslySetInnerHTML={{__html: html}} />
         </Skeleton>
       </div>
