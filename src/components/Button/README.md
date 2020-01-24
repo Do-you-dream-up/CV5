@@ -20,31 +20,26 @@ Text button
 
 Icon button
 
-```jsx {"props": {"style": {"backgroundColor": "#B3E5FC"}}}
-<Button variant="icon">
+```jsx
+<Button color="primary" variant="icon">
   <img src="public/icons/close.png" />
+</Button>
+<Button color="primary" disabled variant="icon">
+  <img src="public/icons/close.png" />
+</Button>
+<Button variant="icon">
+  <img src="public/icons/close.black.png" />
 </Button>
 <Button disabled variant="icon">
+  <img src="public/icons/close.black.png" />
+</Button>
+<Button color="error" variant="icon">
   <img src="public/icons/close.png" />
 </Button>
-```
-
-Icon-contained button
-
-```jsx
-<Button variant="icon-contained">
+<Button color="success" variant="icon">
   <img src="public/icons/close.png" />
 </Button>
-<Button disabled variant="icon-contained">
-  <img src="public/icons/close.png" />
-</Button>
-<Button color="error" variant="icon-contained">
-  <img src="public/icons/close.png" />
-</Button>
-<Button color="success" variant="icon-contained">
-  <img src="public/icons/close.png" />
-</Button>
-<Button color="warning" variant="icon-contained">
+<Button color="warning" variant="icon">
   <img src="public/icons/close.png" />
 </Button>
 ```

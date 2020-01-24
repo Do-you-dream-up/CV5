@@ -11,7 +11,7 @@ import useStyles from './styles';
  * variant is best used with text.
  */
 export function Button({ color, component, reference, variant, ...rest }) {
-  const classes = useStyles({color: color === 'default' ? undefined : color});
+  const classes = useStyles({color});
   return React.createElement(component, {
     ...rest,
     className: c('dydu-button', `dydu-button-${variant}`, classes.base, classes[variant]),
@@ -21,17 +21,16 @@ export function Button({ color, component, reference, variant, ...rest }) {
 
 
 Button.defaultProps = {
-  color: 'default',
   component: 'button',
   variant: 'contained',
 };
 
 
 Button.propTypes = {
-  color: PropTypes.oneOf(['default', 'error', 'success', 'warning']),
+  color: PropTypes.oneOf(['error', 'primary', 'success', 'warning']),
   component: PropTypes.node,
   reference: PropTypes.exact({current: PropTypes.object}),
-  variant: PropTypes.oneOf(['contained', 'icon', 'icon-contained', 'text']),
+  variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };
 
 
