@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeProvider, createUseStyles } from 'react-jss';
+import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
 import theme from '../../styles/theme';
+import { configuration } from '../../tools/configuration';
+import data from '../../tools/configuration.json';
 
 
 const useStyles = createUseStyles({
@@ -17,11 +20,16 @@ const useStyles = createUseStyles({
 });
 
 
+const json = configuration.sanitize(data);
+
+
 export default function Wrapper({ children }) {
   const classes = useStyles();
   return (
     <ThemeProvider theme={theme}>
-      <div children={children} className={classes.root} />
+      <ConfigurationProvider configuration={json}>
+        <div children={children} className={classes.root} />
+      </ConfigurationProvider>
     </ThemeProvider>
   );
 }
