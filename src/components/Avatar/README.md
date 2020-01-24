@@ -1,3 +1,4 @@
-```jsx static
+```jsx
+<Avatar type="request" />
 <Avatar type="response" />
 ```
