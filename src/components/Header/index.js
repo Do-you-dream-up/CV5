@@ -23,8 +23,8 @@ import useStyles from './styles';
 export default function Header({ hasGdpr, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { onDragStart } = useContext(DragonContext);
-  const { active: onboardingActive } = useContext(OnboardingContext);
+  const { onDragStart } = useContext(DragonContext) || {};
+  const { active: onboardingActive } = useContext(OnboardingContext) || {};
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const [ t, i, ready ] = useTranslation('header');
@@ -39,7 +39,7 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
 
   const languagesMenu = [languages.sort().map(id => ({
     id,
-    onClick: () => window.dydu.localization.set(id),
+    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
 
