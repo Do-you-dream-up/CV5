@@ -100,10 +100,10 @@ export default function Feedback() {
     <div className="dydu-feedback">
       {showVote && (
         <div className={c('dydu-feedback-vote', classes.vote)}>
-          <Button color="error" onClick={onVoteNegative} variant="icon-contained">
+          <Button color="error" onClick={onVoteNegative} variant="icon">
             <img alt={voteNegative} src="icons/thumb-down.png" title={voteNegative} />
           </Button>
-          <Button color="success" onClick={onVotePositive} variant="icon-contained">
+          <Button color="success" onClick={onVotePositive} variant="icon">
             <img alt={votePositive} src="icons/thumb-up.png" title={votePositive} />
           </Button>
         </div>
