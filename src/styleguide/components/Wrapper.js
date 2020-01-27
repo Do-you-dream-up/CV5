@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeProvider, createUseStyles } from 'react-jss';
 import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
+import { ModalProvider } from '../../contexts/ModalContext';
 import reset from '../../styles/reset';
 import theme from '../../styles/theme';
 import { configuration } from '../../tools/configuration';
@@ -31,7 +32,9 @@ export default function Wrapper({ children }) {
   return (
     <ThemeProvider theme={theme}>
       <ConfigurationProvider configuration={json}>
-        <div children={children} className={classes.root} />
+        <ModalProvider>
+          <div children={children} className={classes.root} />
+        </ModalProvider>
       </ConfigurationProvider>
     </ThemeProvider>
   );
