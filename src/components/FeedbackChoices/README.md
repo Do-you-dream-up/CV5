@@ -1,3 +1,3 @@
-```jsx static
-<FeedbackChoices onSelect={onSelect} />
+```jsx
+<FeedbackChoices />
 ```

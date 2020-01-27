@@ -1,15 +1,21 @@
-```js static
-const onCancel = () => {};
-const onSubmit = () => {};
-```
+```jsx
+const onCancel = data => alert('Canceled!');
+const onSubmit = data => alert(JSON.stringify(data));
 
-```jsx static
-<Form data={{bar: false, baz: false, foo: ''}} onReject={onCancel} onResolve={onSubmit}>
+<Form data={{bar: false, baz: false, foo: 'Foo'}} onReject={onCancel} onResolve={onSubmit}>
   {({ data, onChange }) => (
     <>
-      <input name="email" onChange={onChange} type="text" value={data.foo} />
-      <input checked={data.bar} name="bar" onChange={onChange} type="checkbox" />
-      <input checked={data.baz} name="baz" onChange={onChange} type="checkbox" />
+      <label>
+        <input name="foo" onChange={onChange} type="text" value={data.foo} />
+      </label>
+      <label>
+        Bar
+        <input checked={data.bar} name="bar" onChange={onChange} type="checkbox" />
+      </label>
+      <label>
+        Baz
+        <input checked={data.baz} name="baz" onChange={onChange} type="checkbox" />
+      </label>
     </>
   )}
 </Form>

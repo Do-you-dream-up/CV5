@@ -13,6 +13,12 @@ import useStyles from './styles';
 
 /**
  * Render interfaces for the user to submit feedback.
+ *
+ * In that order and optionally:
+ *
+ * 1. Vote
+ * 1. Choices
+ * 1. Comment
  */
 export default function Feedback() {
 

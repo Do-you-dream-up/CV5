@@ -1,3 +1,3 @@
-```jsx static
-<Loader size={3} />
+```jsx
+<Loader scroll={false} size={4} />
 ```

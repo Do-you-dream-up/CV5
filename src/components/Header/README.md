@@ -1,3 +1,5 @@
-```jsx static
-<Header toggle={onToggle} />
+```jsx
+const onClose = () => alert('Closing!');
+
+<Header hasGdpr={true} onClose={onClose} />
 ```

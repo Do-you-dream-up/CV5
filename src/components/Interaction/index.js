@@ -26,6 +26,7 @@ export default function Interaction({
   className,
   history,
   live,
+  scroll,
   secondary,
   text,
   thinking,
@@ -33,7 +34,7 @@ export default function Interaction({
 }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { setSecondary, toggleSecondary } = useContext(DialogContext);
+  const { setSecondary, toggleSecondary } = useContext(DialogContext) || {};
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
@@ -89,9 +90,15 @@ export default function Interaction({
         {bubbles.map((it, index) => {
           let actions = secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : null;
           actions = actions ? <Actions actions={actions} /> : null;
-          return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
+          return (
+            <Bubble actions={actions}
+                    component={scroll ? Scroll : undefined}
+                    html={it}
+                    key={index}
+                    type={type} />
+          );
         })}
-        {hasLoader && <Loader />}
+        {hasLoader && <Loader scroll={scroll} />}
         {!hasLoader && askFeedback && <Feedback />}
       </div>
     </div>
@@ -99,11 +106,17 @@ export default function Interaction({
 }
 
 
+Interaction.defaultProps = {
+  scroll: true,
+};
+
+
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   className: PropTypes.string,
   history: PropTypes.bool,
   live: PropTypes.bool,
+  scroll: PropTypes.bool,
   secondary: PropTypes.object,
   text: PropTypes.string,
   thinking: PropTypes.bool,

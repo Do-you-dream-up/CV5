@@ -7,7 +7,7 @@ import useStyles from './styles';
 
 
 /**
- * The footer typically contains the input field for the user to type text into
+ * The footer typically renders the input field for the user to type text into
  * the conversation.
  *
  * It transports the function to call whenever input is submitted and a second

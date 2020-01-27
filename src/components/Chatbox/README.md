@@ -1,7 +1,3 @@
-```jsx static
-<Chatbox open={false} toggle={onToggle} />
-```
-
 This component implements the exposed API through `window`:
 
 - `window.dydu.chat.ask`: Add a request to the conversation

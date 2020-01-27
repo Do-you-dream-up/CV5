@@ -18,7 +18,7 @@ export default function Form({ children, className, data: initialData, onReject,
 
   const onCancel = () => {
     if (typeof onReject === 'function') {
-      onReject();
+      onReject(data);
     }
   };
 
