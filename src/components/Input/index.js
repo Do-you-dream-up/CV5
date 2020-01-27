@@ -14,7 +14,7 @@ import useStyles from './styles';
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
-export default function Input({ onRequest, onResponse }) {
+export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
@@ -97,7 +97,7 @@ export default function Input({ onRequest, onResponse }) {
   };
 
   const inputProps = {
-    autoFocus: true,
+    autoFocus: focus,
     maxLength,
     onChange,
     onKeyDown,
@@ -128,7 +128,13 @@ export default function Input({ onRequest, onResponse }) {
 }
 
 
+Input.defaultProps = {
+  focus: true,
+};
+
+
 Input.propTypes = {
+  focus: PropTypes.bool,
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
 };
