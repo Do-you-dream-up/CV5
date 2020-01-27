@@ -17,6 +17,7 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette.warning.main,
     color: theme.palette.warning.text,
     overflowY: 'hidden',
+    width: '100%',
     ...configuration.banner.styles,
     [theme.breakpoints.down('xs')]: configuration.banner.stylesMobile,
   }),
