@@ -1,3 +1,3 @@
-```jsx static
+```jsx
 <Banner />
 ```
