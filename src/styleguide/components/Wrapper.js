@@ -6,6 +6,7 @@ import reset from '../../styles/reset';
 import theme from '../../styles/theme';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
+import '../../tools/internationalization';
 
 
 const useStyles = createUseStyles({
