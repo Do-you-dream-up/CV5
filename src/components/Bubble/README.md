@@ -1,13 +1,22 @@
-```jsx static
-const [ thinking, setThinking ] = useState(false);
-const onFoo = () => {
-  setThinking(true);
-  api.foo().then(() => setThinking(false));
-};
-const actions = <Actions ... />
-const html = '<p>Foo. Bar.</p>'
-```
+```jsx
+import { useState } from 'react';
+import Actions from '../Actions';
 
-```jsx static
-<Bubble actions={actions} component="li" html={html} thinking={thinking} type="response" />
+const [ thinking, setThinking ] = useState(false);
+const onThink = () => {
+  setThinking(true);
+  setTimeout(() => setThinking(false), 2000);
+};
+const actions = <Actions actions={[{children: 'Think', onClick: onThink}]} />;
+
+<>
+  <div>
+    <Bubble html="Lorem." type="request" />
+    <Bubble actions={actions}
+            html="<p>Sed ut perspiciatis unde <em>omnis iste natus</em> error sit.</p>"
+            thinking={thinking}
+            type="request" />
+  </div>
+  <Bubble html="Ut enim ad minima veniam." type="response" />
+</>
 ```
