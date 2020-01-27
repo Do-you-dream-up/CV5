@@ -2,6 +2,11 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  actions: () => ({
+    '&:not(:first-child)': {
+      marginTop: '1em',
+    },
+  }),
   base: ({ configuration }) => ({
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
@@ -26,5 +31,10 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette.response.background,
     color: theme.palette.response.text,
     marginRight: 'auto',
+  }),
+  root: () => ({
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
   }),
 }));

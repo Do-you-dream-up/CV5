@@ -1,10 +1,8 @@
-import c from 'classnames';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
 import Interaction from '../Interaction';
-import useStyles from './styles';
 
 
 /**
@@ -13,7 +11,6 @@ import useStyles from './styles';
 export default function Top() {
 
   const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({configuration});
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
   const { t } = useTranslation('top');
@@ -47,9 +44,5 @@ export default function Top() {
     }
   }, [fetch, ready]);
 
-  return html && (
-    <article className={c('dydu-top', classes.root)}>
-      <Interaction live text={html} type="response" />
-    </article>
-  );
+  return html && <Interaction className="dydu-top" live text={html} type="response" />;
 }

@@ -21,7 +21,16 @@ import useStyles from  './styles';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ askFeedback, history, live, secondary, text, thinking, type }) {
+export default function Interaction({
+  askFeedback,
+  className,
+  history,
+  live,
+  secondary,
+  text,
+  thinking,
+  type,
+}) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext);
@@ -72,12 +81,14 @@ export default function Interaction({ askFeedback, history, live, secondary, tex
   }, [addBubbles, live, previousText, ready, text]);
 
   return (bubbles.length || hasLoader) && (
-    <div className={c('dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type])}>
+    <div className={c(
+      'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type], className,
+    )}>
       {hasAvatar && <Avatar type={type} />}
       <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
         {bubbles.map((it, index) => {
-          let actions = secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : [];
-          actions = <Actions actions={actions} />;
+          let actions = secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : null;
+          actions = actions ? <Actions actions={actions} /> : null;
           return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
         })}
         {hasLoader && <Loader />}
@@ -90,6 +101,7 @@ export default function Interaction({ askFeedback, history, live, secondary, tex
 
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
+  className: PropTypes.string,
   history: PropTypes.bool,
   live: PropTypes.bool,
   secondary: PropTypes.object,
