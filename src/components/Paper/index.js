@@ -24,7 +24,6 @@ export default function Paper({ actions, children, className, component, thinkin
 
 
 Paper.defaultProps = {
-  actions: [],
   component: 'div',
 };
 

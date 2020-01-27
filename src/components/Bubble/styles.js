@@ -13,6 +13,9 @@ export default createUseStyles(theme => ({
     padding: '1em',
     position: 'relative',
     wordBreak: 'break-word',
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
     ...configuration.bubble.styles,
     [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
   }),
@@ -31,10 +34,5 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette.response.background,
     color: theme.palette.response.text,
     marginRight: 'auto',
-  }),
-  root: () => ({
-    '&:not(:last-child)': {
-      marginBottom: '.5em',
-    },
   }),
 }));

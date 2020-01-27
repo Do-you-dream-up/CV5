@@ -10,7 +10,7 @@ import Skeleton from '../Skeleton';
 /**
  * GDPR disclaimer. Prompt the user at first visit for clearance.
  */
-export default function GdprDisclaimer({ className, component, onReject, onResolve, ...rest }) {
+export default function GdprDisclaimer({ className, component, onResolve, ...rest }) {
 
   const { ready, t } = useTranslation('gdpr');
 
@@ -44,6 +44,5 @@ GdprDisclaimer.defaultProps = {
 GdprDisclaimer.propTypes = {
   className: PropTypes.string,
   component: PropTypes.elementType,
-  onReject: PropTypes.func.isRequired,
   onResolve: PropTypes.func.isRequired,
 };

@@ -13,18 +13,26 @@ import useStyles from './styles';
  * It transports the function to call whenever input is submitted and a second
  * function to handle the response.
  */
-export default function Footer({ onRequest, onResponse, ...rest }) {
+export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   return (
     <footer className={c('dydu-footer', classes.root)} {...rest}>
-      <Input onRequest={onRequest} onResponse={onResponse} />
+      <div className={classes.content}>
+        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
+      </div>
     </footer>
   );
 }
 
 
+Footer.defaultProps = {
+  focus: true,
+};
+
+
 Footer.propTypes = {
+  focus: PropTypes.bool,
   onRequest: PropTypes.func.isRequired,
   onResponse: PropTypes.func.isRequired,
 };
