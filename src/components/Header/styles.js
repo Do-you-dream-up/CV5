@@ -27,8 +27,8 @@ export default createUseStyles(theme => ({
     borderTopLeftRadius: theme.shape.borderRadius,
     borderTopRightRadius: theme.shape.borderRadius,
     color: theme.palette.primary.text,
-    flex: '0 0 auto',
     position: 'relative',
+    width: '100%',
     ...configuration.header.styles,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,

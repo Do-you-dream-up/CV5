@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Actions from '../Actions';
+import useStyles from './styles';
 
 
 /**
@@ -13,6 +14,7 @@ import Actions from '../Actions';
  */
 export default function Form({ children, className, data: initialData, onReject, onResolve }) {
 
+  const classes = useStyles();
   const [ data, setData ] = useState(initialData);
   const { t } = useTranslation('form');
 
@@ -38,9 +40,9 @@ export default function Form({ children, className, data: initialData, onReject,
   ];
 
   return (
-    <form className={c('dydu-form', className)} onSubmit={onSubmit}>
-      {children({data, onChange})}
-      <Actions actions={actions} className="dydu-form-actions" />
+    <form className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
+      <div children={children({data, onChange})} className={classes.body} />
+      <Actions actions={actions} className={c('dydu-form-actions', classes.actions)} />
     </form>
   );
 }
