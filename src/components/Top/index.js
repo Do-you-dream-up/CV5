@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -8,7 +9,7 @@ import Interaction from '../Interaction';
 /**
  * Fetch the top-asked resources and display them in a numbered list.
  */
-export default function Top() {
+export default function Top({ scroll }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const [ items, setItems ] = useState([]);
@@ -44,5 +45,15 @@ export default function Top() {
     }
   }, [fetch, ready]);
 
-  return html && <Interaction className="dydu-top" live text={html} type="response" />;
+  return html && <Interaction className="dydu-top" live scroll={scroll} text={html} type="response" />;
 }
+
+
+Top.defaultProps = {
+  scroll: true,
+};
+
+
+Top.propTypes = {
+  scroll: PropTypes.bool,
+};

@@ -13,6 +13,7 @@ export default createUseStyles(theme => ({
   root: ({ configuration }) => ({
     background: theme.palette.primary.dark,
     display: 'flex',
+    width: '100%',
     ...configuration.tabs.styles,
     [theme.breakpoints.down('xs')]: configuration.tabs.stylesMobile,
   }),
