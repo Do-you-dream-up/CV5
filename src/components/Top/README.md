@@ -1,3 +1,0 @@
-```jsx
-<Top scroll={false} />
-```
