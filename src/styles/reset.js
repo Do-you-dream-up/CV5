@@ -1,4 +1,5 @@
 export default theme => ({
+  fontFamily: 'sans-serif',
   '@global': {
     'a[href], .dydu-link': {
       color: theme.palette.text.link,
