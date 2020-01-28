@@ -9,14 +9,12 @@ const onThink = () => {
 };
 const actions = <Actions actions={[{children: 'Think', onClick: onThink}]} />;
 
-<>
-  <div>
-    <Bubble html="Lorem." type="request" />
-    <Bubble actions={actions}
-            html="<p>Sed ut perspiciatis unde <em>omnis iste natus</em> error sit.</p>"
-            thinking={thinking}
-            type="request" />
-  </div>
-  <Bubble html="Ut enim ad minima veniam." type="response" />
-</>
+<div style={{display: 'flex', flexDirection: 'column'}}>
+  <Bubble html="Lorem." type="request" />
+  <Bubble actions={actions}
+          html="<p>Sed ut perspiciatis unde <em>omnis iste natus</em> error sit.</p>"
+          thinking={thinking}
+          type="request" />
+          <Bubble html="Ut enim ad minima veniam." type="response" />
+</div>
 ```

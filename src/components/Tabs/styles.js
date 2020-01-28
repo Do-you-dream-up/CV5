@@ -2,21 +2,21 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  disabled: {
+  disabled: () => ({
     cursor: 'not-allowed',
     opacity: .5,
-  },
-  enabled: {
+  }),
+  enabled: () => ({
     cursor: 'pointer',
     '&:hover': {backgroundColor: theme.palette.action.hover},
-  },
+  }),
   root: ({ configuration }) => ({
     background: theme.palette.primary.dark,
     display: 'flex',
     ...configuration.tabs.styles,
     [theme.breakpoints.down('xs')]: configuration.tabs.stylesMobile,
   }),
-  selected: {
+  selected: () => ({
     '&::after': {
       backgroundColor: theme.palette.secondary.main,
       bottom: 0,
@@ -27,8 +27,8 @@ export default createUseStyles(theme => ({
       position: 'absolute',
       right: 0,
     },
-  },
-  tab: {
+  }),
+  tab: () => ({
     alignItems: 'center',
     color: theme.palette.primary.text,
     display: 'flex',
@@ -37,5 +37,5 @@ export default createUseStyles(theme => ({
     justifyContent: 'center',
     padding: '.5em',
     position: 'relative',
-  },
+  }),
 }));
