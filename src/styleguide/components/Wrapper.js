@@ -3,6 +3,7 @@ import React from 'react';
 import { ThemeProvider, createUseStyles } from 'react-jss';
 import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
 import { ModalProvider } from '../../contexts/ModalContext';
+import { TabProvider } from '../../contexts/TabContext';
 import reset from '../../styles/reset';
 import theme from '../../styles/theme';
 import { configuration } from '../../tools/configuration';
@@ -33,7 +34,9 @@ export default function Wrapper({ children }) {
     <ThemeProvider theme={theme}>
       <ConfigurationProvider configuration={json}>
         <ModalProvider>
-          <div children={children} className={classes.root} />
+          <TabProvider>
+            <div children={children} className={classes.root} />
+          </TabProvider>
         </ModalProvider>
       </ConfigurationProvider>
     </ThemeProvider>

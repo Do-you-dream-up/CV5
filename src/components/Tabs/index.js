@@ -14,7 +14,7 @@ import useStyles from './styles';
 export default function Tabs() {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { select, state: tabState } = useContext(TabContext);
+  const { select, state: tabState = {} } = useContext(TabContext) || {};
   const classes = useStyles({configuration});
   const { ready, t } = useTranslation('tabs');
   const { items = [] } = configuration.tabs;
@@ -22,7 +22,7 @@ export default function Tabs() {
   return !!items.length && (
     <div className={c('dydu-tabs', classes.root)}>
       {items.map((it, index) => {
-        const onClick = it ? select(it) : null;
+        const onClick = it && typeof select === 'function' ? select(it) : null;
         const names = c(
           'dydu-tab',
           classes.tab,

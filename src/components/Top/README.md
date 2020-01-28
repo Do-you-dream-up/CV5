@@ -1,3 +1,3 @@
-```jsx static
-<Top />
+```jsx
+<Top scroll={false} />
 ```
