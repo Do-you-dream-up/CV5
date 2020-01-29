@@ -5,7 +5,7 @@ const Html = require('html-webpack-plugin');
 const { version } = require('./package');
 
 
-const hash = new GitRevision().commithash();
+const hash = new GitRevision().commithash().substring(0, 7);
 const now = DayJs().format('YYYY-MM-DD HH:mm');
 
 
