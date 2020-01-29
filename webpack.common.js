@@ -13,11 +13,24 @@ module.exports = {
   bail: true,
   entry: Path.resolve(__dirname, 'src/index.js'),
   module: {
-    rules: [{
-      include: Path.resolve(__dirname, 'src/'),
-      loader: 'babel-loader',
-      test: /\.js$/,
-    }],
+    rules: [
+      {
+        include: Path.resolve(__dirname, 'src/'),
+        loader: 'babel-loader',
+        test: /\.js$/,
+      },
+      {
+        loader: ['style-loader', 'css-loader'],
+        test: /\.css$/,
+      },
+      {
+        loader: 'url-loader',
+        options: {
+          limit: 100000,
+        },
+        test: /\.(eot|png|svg|ttf|woff|woff2)$/,
+      },
+    ],
     strictExportPresence: true,
   },
   output: {

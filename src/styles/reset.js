@@ -1,5 +1,8 @@
+import 'typeface-assistant';
+
+
 export default theme => ({
-  fontFamily: 'sans-serif',
+  fontFamily: '"Assistant", sans-serif',
   '@global': {
     'a[href], .dydu-link': {
       color: theme.palette.text.link,
