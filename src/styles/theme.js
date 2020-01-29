@@ -22,13 +22,13 @@ export default {
     },
     divider: 'rgba(0, 0, 0, 0.12)',
     error: {
-      main: '#FF8A65',
+      main: '#FF5252',
       text: 'rgba(0, 0, 0, .87)',
     },
     primary: {
       dark: '#0288D1',
       light: '#B3E5FC',
-      main: '#03A9F4',
+      main: '#3636B9',
       text: '#FFFFFF',
     },
     request: {
@@ -44,7 +44,7 @@ export default {
       text: '#FFFFFF',
     },
     success: {
-      main: '#81C784',
+      main: '#2CBF87',
       text: 'rgba(0, 0, 0, .87)',
     },
     text: {
@@ -58,7 +58,7 @@ export default {
       text: '#FFFFFF',
     },
     warning: {
-      main: '#FFB74D',
+      main: '#F3B63B',
       text: 'rgba(0, 0, 0, .87)',
     },
   },
