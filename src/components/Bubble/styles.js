@@ -8,7 +8,7 @@ export default createUseStyles(theme => ({
     },
   }),
   base: ({ configuration }) => ({
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     overflow: 'hidden',
     padding: '1em',
     position: 'relative',

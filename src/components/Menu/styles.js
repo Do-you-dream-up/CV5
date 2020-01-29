@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.menu,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     color: theme.palette.text.primary,
     fontFamily: 'sans-serif',
     overflowY: 'auto',

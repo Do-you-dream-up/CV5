@@ -92,6 +92,9 @@ export default {
   ],
 
   shape: {
-    borderRadius: 4,
+    radius: {
+      inner: 4,
+      outer: 8,
+    },
   },
 };

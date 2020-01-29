@@ -13,7 +13,7 @@ export default createUseStyles(theme => ({
   }),
   button: () => ({
     backgroundColor: theme.palette.primary.main,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     padding: [['.5em', '1em']],
     position: 'relative',
     '&:hover:before': {

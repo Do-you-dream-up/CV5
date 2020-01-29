@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => {
 
   const contained = ({ color = 'primary' } = {}) => ({
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     padding: '.5em 1em',
     textTransform: 'uppercase',
     ...(color && {
@@ -35,9 +35,6 @@ export default createUseStyles(theme => {
       outline: 'none',
       padding: 0,
       position: 'relative',
-      '& > *:not(:first-child)': {
-        marginLeft: '.5em',
-      },
       '&:disabled': {
         cursor: 'not-allowed',
       },

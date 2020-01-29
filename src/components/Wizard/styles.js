@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
   entry: {
     backgroundColor: theme.palette.primary.light,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[1],
     margin: '.5em',
     padding: '1.5em',

@@ -26,7 +26,7 @@ export default createUseStyles(theme => ({
   },
   root: {
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[12],
     overflow: 'hidden',
     padding: '1.4em',

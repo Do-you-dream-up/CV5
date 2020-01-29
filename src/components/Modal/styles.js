@@ -9,7 +9,7 @@ export default createUseStyles(theme => ({
   root: () => ({
     alignItems: 'center',
     backgroundColor: theme.palette.background.overlay,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     bottom: 0,
     display: 'flex',
     justifyContent: 'center',

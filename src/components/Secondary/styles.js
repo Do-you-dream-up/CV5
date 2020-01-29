@@ -45,7 +45,7 @@ export default createUseStyles(theme => ({
     marginLeft: '.5em',
   },
   side: {
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     bottom: 0,
     display: 'flex',
     flexDirection: 'column',

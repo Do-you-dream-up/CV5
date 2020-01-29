@@ -23,7 +23,7 @@ export default createUseStyles(theme => ({
   },
   tooltip: {
     backgroundColor: theme.palette.tooltip.background,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     color: theme.palette.tooltip.text,
     fontSize: '.8em',
     marginRight: '.6em',
