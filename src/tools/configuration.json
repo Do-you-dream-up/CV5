@@ -5,9 +5,7 @@
     "languages": ["en", "fr"]
   },
   "avatar": {
-    "styles": {
-      "shadow": true
-    },
+    "styles": {},
     "stylesMobile": {}
   },
   "banner": {
@@ -21,9 +19,7 @@
     "transient": false
   },
   "bubble": {
-    "styles": {
-      "shadow": true
-    },
+    "styles": {},
     "stylesMobile": {}
   },
   "chatbox": {

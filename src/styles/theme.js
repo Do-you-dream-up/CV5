@@ -13,7 +13,7 @@ export default {
       selected: 'rgba(0, 0, 0, .08)',
     },
     background: {
-      default: '#FAFAFA',
+      default: '#F5F5F5',
       highlight: 'rgba(255, 255, 255, .4)',
       menu: '#FFFFFF',
       overlay: 'rgba(0, 0, 0, .6)',
@@ -32,11 +32,11 @@ export default {
       text: '#FFFFFF',
     },
     request: {
-      background: '#FFFFFF',
+      background: '#D3D3F7',
       text: 'rgba(0, 0, 0, .87)',
     },
     response: {
-      background: '#B3E5FC',
+      background: '#FFFFFF',
       text: 'rgba(0, 0, 0, .87)',
     },
     secondary: {
