@@ -135,8 +135,7 @@
   "teaser": {
     "styles": {
       "bottom": 16,
-      "right": 16,
-      "shadow": 6
+      "right": 16
     },
     "stylesMobile": {}
   },

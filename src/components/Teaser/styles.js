@@ -2,21 +2,20 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  hidden: {
-    display: 'none !important',
-  },
-  root: ({ configuration }) => ({
+  brand: () => ({
     alignItems: 'center',
+    display: 'flex',
+    height: 64,
+    justifyContent: 'center',
+    marginLeft: '.5em',
+    overflow: 'hidden',
+    width: 64,
+  }),
+  button: () => ({
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.shape.borderRadius,
-    bottom: 0,
-    color: theme.palette.primary.text,
-    cursor: 'pointer',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '1em',
-    position: 'absolute',
-    right: 0,
+    padding: [['.5em', '1em']],
+    position: 'relative',
     '&:hover:before': {
       backgroundColor: theme.palette.action.hover,
       bottom: 0,
@@ -26,6 +25,19 @@ export default createUseStyles(theme => ({
       right: 0,
       top: 0,
     },
+  }),
+  hidden: () => ({
+    display: 'none !important',
+  }),
+  root: ({ configuration }) => ({
+    alignItems: 'center',
+    bottom: 0,
+    color: theme.palette.primary.text,
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 0,
     ...configuration.teaser.styles,
     [theme.breakpoints.down('xs')]: configuration.teaser.stylesMobile,
   }),
