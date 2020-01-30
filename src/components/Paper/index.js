@@ -10,14 +10,13 @@ import useStyles from './styles';
  *
  * See Material design: https://material.io/.
  */
-export default function Paper({ actions, children, className, component, thinking, title, ...rest }) {
+export default function Paper({ children, className, component, thinking, title, ...rest }) {
   const classes = useStyles();
   return React.createElement(component, {className: c('dydu-paper', classes.root, className), ...rest}, (
     <>
       {thinking && <Progress className={classes.progress} />}
       {title && <h3 children={title} className={c('dydu-paper-header', classes.header)} />}
       {children && <div children={children} className="dydu-paper-body" />}
-      {actions && <div children={actions} className={c('dydu-paper-actions', classes.actions)} />}
     </>
   ));
 }
@@ -29,7 +28,6 @@ Paper.defaultProps = {
 
 
 Paper.propTypes = {
-  actions: PropTypes.node,
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,
