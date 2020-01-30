@@ -17,10 +17,8 @@ import useStyles from './styles';
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
- *
- * The display of certain elements is conditioned by GDPR status.
  */
-export default function Header({ hasGdpr, onClose, ...rest }) {
+export default function Header({ onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -62,7 +60,7 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
       items: () => spacesMenu,
       selected: () => window.dydu.space.get(),
       variant: 'icon',
-      when: spacesActive && !onboardingActive && !hasGdpr && spacesMenu.flat().length > 0,
+      when: spacesActive && !onboardingActive && spacesMenu.flat().length > 0,
     },
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
@@ -75,13 +73,13 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
       children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
       onClick: onGdpr,
       variant: 'icon',
-      when: !onboardingActive && !hasGdpr,
+      when: !onboardingActive,
     },
     {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
       items: () => moreMenu,
       variant: 'icon',
-      when: !onboardingActive && !hasGdpr && moreMenu.flat().length > 0,
+      when: !onboardingActive && moreMenu.flat().length > 0,
     },
     {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
@@ -102,18 +100,15 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
-      {!hasGdpr && (
-        <Onboarding>
-          <Tabs />
-          <Banner />
-        </Onboarding>
-      )}
+      <Onboarding>
+        <Tabs />
+        <Banner />
+      </Onboarding>
     </header>
   );
 }
 
 Header.propTypes = {
-  hasGdpr: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

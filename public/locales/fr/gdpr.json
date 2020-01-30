@@ -1,0 +1,7 @@
+{
+  "disclaimer": {
+    "body": "<p>En utilisant ce Chatbot vous consentez directement à ce que les données transmises soient exploitées à des fins de réponses automatisées et d'enrichissement du moteur de dialogue avant de faire l'objet d'une anonymisation les supprimant de manière irréversible.</p>",
+    "cancel": "Je refuse",
+    "ok": "J'accepte"
+  }
+}

@@ -42,8 +42,8 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     toggleSecondary,
   } = useContext(DialogContext);
   const { modal } = useContext(ModalContext);
-  const [ hasGdprDisclaimer, setHasGdprDisclaimer ] = useState(false);
-  const [ showGdprDisclaimer, setShowGdprDisclaimer ] = useState(false);
+  const [ gdprShowDisclaimer, setGdprShowDisclaimer ] = useState(false);
+  const [ gdprPassed, setGdprPassed ] = useState(false);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
@@ -110,19 +110,27 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
   }, [addResponse, ask, empty, i, modal, setSecondary, t, toggle, toggleSecondary]);
 
   useEffect(() => {
-    if (showGdprDisclaimer) {
-      setHasGdprDisclaimer(true);
-      setShowGdprDisclaimer(false);
-      modal(GdprDisclaimer, null, {dismissable: false}).then(() => {
-        Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
-        setHasGdprDisclaimer(false);
-      });
+    if (gdprShowDisclaimer) {
+      setGdprShowDisclaimer(false);
+      modal(GdprDisclaimer, null, {dismissable: false}).then(
+        () => {
+          Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+          setGdprPassed(true);
+        },
+        () => {
+          setGdprShowDisclaimer(true);
+          toggle(1)();
+        },
+      );
     }
-  }, [showGdprDisclaimer, modal]);
+  }, [gdprShowDisclaimer, modal]);
 
   useEffect(() => {
     if (!Cookie.get(Cookie.names.gdpr)) {
-      setShowGdprDisclaimer(true);
+      setGdprShowDisclaimer(true);
+    }
+    else {
+      setGdprPassed(true);
     }
   }, []);
 
@@ -131,20 +139,22 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       <div className={c('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
            ref={root}
            {...rest}>
-        <Onboarding render>
-          <div className={c(
-            'dydu-chatbox-body',
-            classes.body,
-            {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
-          )}>
-            <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
-            <Tab component={Contacts} value="contacts" />
-          </div>
-          {secondaryMode === 'over' && <Secondary />}
-          <Footer onRequest={addRequest} onResponse={addResponse} />
-        </Onboarding>
+        {gdprPassed && (
+          <Onboarding render>
+            <div className={c(
+              'dydu-chatbox-body',
+              classes.body,
+              {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
+            )}>
+              <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
+              <Tab component={Contacts} value="contacts" />
+            </div>
+            {secondaryMode === 'over' && <Secondary />}
+            <Footer onRequest={addRequest} onResponse={addResponse} />
+          </Onboarding>
+        )}
         <Modal />
-        <Header hasGdpr={hasGdprDisclaimer} onClose={toggle(1)} style={{order: -1}} />
+        <Header onClose={toggle(1)} style={{order: -1}} />
         {secondaryMode !== 'over' && <Secondary anchor={root} />}
       </div>
     </TabProvider>
