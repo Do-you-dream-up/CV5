@@ -23,7 +23,7 @@ export default {
     divider: 'rgba(0, 0, 0, 0.12)',
     error: {
       main: '#FF5252',
-      text: 'rgba(0, 0, 0, .87)',
+      text: '#FFFFFF',
     },
     primary: {
       dark: '#0288D1',
@@ -45,7 +45,7 @@ export default {
     },
     success: {
       main: '#2CBF87',
-      text: 'rgba(0, 0, 0, .87)',
+      text: '#FFFFFF',
     },
     text: {
       disabled: 'rgba(0, 0, 0, .38)',
@@ -57,9 +57,9 @@ export default {
       background: '#616161E6',
       text: '#FFFFFF',
     },
-    warning: {
+    warning:{
       main: '#F3B63B',
-      text: 'rgba(0, 0, 0, .87)',
+      text: '#FFFFFF',
     },
   },
 

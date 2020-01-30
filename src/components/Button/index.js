@@ -10,13 +10,13 @@ import useStyles from './styles';
  * An icon button typically accepts an image as its child while the default
  * variant is best used with text.
  */
-export function Button({ color, component, reference, variant, ...rest }) {
+export function Button({ children, color, component, reference, variant, ...rest }) {
   const classes = useStyles({color});
   return React.createElement(component, {
     ...rest,
     className: c('dydu-button', `dydu-button-${variant}`, classes.base, classes[variant]),
     ref: reference,
-  });
+  }, <div children={children} className={classes.children} />);
 }
 
 
@@ -27,6 +27,7 @@ Button.defaultProps = {
 
 
 Button.propTypes = {
+  children: PropTypes.node,
   color: PropTypes.oneOf(['error', 'primary', 'success', 'warning']),
   component: PropTypes.node,
   reference: PropTypes.exact({current: PropTypes.object}),
