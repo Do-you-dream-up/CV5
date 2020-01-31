@@ -123,10 +123,14 @@
     "stylesMobile": {}
   },
   "tabs": {
-    "items": ["dialog", "contacts"],
-    "selected": 0,
+    "items": [
+      {"icon": "icons/message-text.png", "key": "dialog"},
+      {"icon": "icons/account-box.png", "key": "contacts"}
+    ],
+    "selected": "dialog",
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "title": false
   },
   "teaser": {
     "styles": {
