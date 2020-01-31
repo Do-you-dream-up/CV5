@@ -25,7 +25,6 @@ export function OnboardingProvider({ children }) {
     else {
       onEnd();
     }
-    // eslint-disable-next-line no-use-before-define
   }, [hasNext, onEnd]);
 
   const onPrevious = useCallback(() => {

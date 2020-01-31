@@ -22,6 +22,9 @@ export default createUseStyles(theme => ({
       pointerEvents: 'none',
     },
   }),
+  flat: () => ({
+    boxShadow: 'none !important',
+  }),
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,

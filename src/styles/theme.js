@@ -17,6 +17,7 @@ export default {
       highlight: 'rgba(255, 255, 255, .4)',
       menu: '#FFFFFF',
       overlay: 'rgba(0, 0, 0, .6)',
+      paper: '#FFFFFF',
       secondary: '#FFFFFF',
       skeleton: 'rgba(0, 0, 0, .08)',
     },

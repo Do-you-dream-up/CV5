@@ -98,8 +98,10 @@
     "minWidth": "50%"
   },
   "onboarding": {
+    "skippable": true,
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "top": true
   },
   "root": "dydu-root",
   "secondary": {

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
-import { OnboardingProvider } from '../../contexts/OnboardingContext';
+import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
@@ -41,6 +41,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const { active: onboardingActive } = useContext(OnboardingContext);
   const { modal } = useContext(ModalContext);
   const [ gdprShowDisclaimer, setGdprShowDisclaimer ] = useState(false);
   const [ gdprPassed, setGdprPassed ] = useState(false);
@@ -154,7 +155,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
           </Onboarding>
         )}
         <Modal />
-        <Header onClose={toggle(1)} style={{order: -1}} />
+        <Header flat={onboardingActive} onClose={toggle(1)} style={{order: -1}} />
         {secondaryMode !== 'over' && <Secondary anchor={root} />}
       </div>
     </TabProvider>

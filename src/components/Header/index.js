@@ -18,7 +18,7 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ onClose, ...rest }) {
+export default function Header({ flat, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -89,7 +89,7 @@ export default function Header({ onClose, ...rest }) {
   ];
 
   return (
-    <header className={c('dydu-header', classes.root)} {...rest}>
+    <header className={c('dydu-header', classes.root, {[classes.flat]: flat})} {...rest}>
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
@@ -110,5 +110,6 @@ export default function Header({ onClose, ...rest }) {
 
 Header.propTypes = {
   onClose: PropTypes.func.isRequired,
+  flat: PropTypes.bool,
   style: PropTypes.object,
 };

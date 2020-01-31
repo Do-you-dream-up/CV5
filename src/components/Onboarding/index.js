@@ -6,6 +6,8 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import sanitize from '../../tools/sanitize';
 import Button from '../Button';
+import Paper from '../Paper';
+import Top from '../Top';
 import useStyles from './styles';
 
 
@@ -21,20 +23,37 @@ import useStyles from './styles';
 export default function Onboarding({ children, render }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { active, hasPrevious, index, onNext, onPrevious } = useContext(OnboardingContext);
+  const { active, onEnd } = useContext(OnboardingContext) || {};
   const classes = useStyles({configuration});
   const { t } = useTranslation('onboarding');
-  const steps = t('steps');
-  const should = render && active && index < steps.length;
-  const { content, next = t('next'), previous = t('previous') } = steps[index] || {};
+  const preamble = t('preamble', {defaultValue: ''});
+  const should = render && active;
+  const { skippable, top } = configuration.onboarding;
 
   return should ? (
     <div className={c('dydu-onboarding', classes.root)}>
-      <div className={c('dydu-onboarding-body', classes.body)}
-           dangerouslySetInnerHTML={{__html: sanitize(content)}} />
-      <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-        <Button children={previous} disabled={!hasPrevious()} onClick={onPrevious} />
-        <Button children={next} onClick={onNext} />
+      <div className={c('dydu-onboarding-body', classes.body)}>
+        {preamble && (
+          <div className={classes.preamble} dangerouslySetInnerHTML={{__html: sanitize(preamble)}} />
+        )}
+        {!!skippable && (
+          <Paper elevation={1} title={t('skip.title')}>
+            <div className={c(classes.actions, classes.actionsCentered)}>
+              <Button children={t('skip.button')} icon="icons/send.png" />
+            </div>
+          </Paper>
+        )}
+        <Paper elevation={1} title={t('carousel.title')}>
+          <div className={classes.carousel}
+               dangerouslySetInnerHTML={{__html: sanitize(t('carousel.body'))}} />
+          <div className={classes.actions}>
+            <Button children={t('carousel.previous')} disabled />
+            <Button children={t('carousel.next')} onClick={onEnd} />
+          </div>
+        </Paper>
+        {!!top && (
+          <Top component={Paper} elevation={1} title={t('top.title')} />
+        )}
       </div>
     </div>
   ) : !active && children;
