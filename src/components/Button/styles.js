@@ -6,7 +6,6 @@ export default createUseStyles(theme => {
   const contained = ({ color = 'primary' } = {}) => ({
     borderRadius: theme.shape.radius.inner,
     padding: [['.6em', '1.2em']],
-    textTransform: 'capitalize',
     ...(color && {
       backgroundColor: theme.palette[color].main,
       color: theme.palette[color].text,
@@ -46,7 +45,15 @@ export default createUseStyles(theme => {
     }),
 
     children: () => ({
+      alignItems: 'center',
+      display: 'flex',
       position: 'relative',
+      '& > *': {
+        height: '1.2em',
+      },
+      '& > :not(:last-child)': {
+        marginRight: '.5em',
+      },
     }),
 
     contained,
@@ -60,7 +67,7 @@ export default createUseStyles(theme => {
       '&, &:after, &:before': {
         borderRadius: '50%',
       },
-      '& $children > *': {
+      '& $children *': {
         display: 'block',
         height: 20,
         width: 20,

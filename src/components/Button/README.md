@@ -6,6 +6,7 @@
 <Button children="Error" color="error" />
 <Button children="Success" color="success" />
 <Button children="Warning" color="warning" />
+<Button children="Button" icon="icons/close.png" />
 ```
 
 ### Text Button
@@ -16,6 +17,7 @@
 <Button children="Error" color="error" variant="text" />
 <Button children="Success" color="success" variant="text" />
 <Button children="Warning" color="warning" variant="text" />
+<Button children="Button" icon="icons/close.black.png" variant="text" />
 ```
 
 ### Icon Button
