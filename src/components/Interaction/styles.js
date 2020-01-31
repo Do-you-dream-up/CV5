@@ -8,18 +8,18 @@ export default createUseStyles(theme => ({
     ...configuration.interaction.styles,
     [theme.breakpoints.down('xs')]: configuration.interaction.stylesMobile,
   }),
-  bubbles: {
+  bubbles: () => ({
     display: 'flex',
     flex: '1',
     flexDirection: 'column',
     justifyContent: 'center',
-  },
-  request: {
+  }),
+  request: () => ({
     marginLeft: '2em',
-  },
-  response: {
+  }),
+  response: () => ({
     [theme.breakpoints.up('sm')]: {
       marginRight: '2em',
     },
-  },
+  }),
 }));

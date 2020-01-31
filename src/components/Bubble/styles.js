@@ -10,7 +10,7 @@ export default createUseStyles(theme => ({
   base: ({ configuration }) => ({
     borderRadius: theme.shape.radius.inner,
     overflow: 'hidden',
-    padding: '1em',
+    padding: [['.8em', '1em']],
     position: 'relative',
     wordBreak: 'break-word',
     '&:not(:last-child)': {
