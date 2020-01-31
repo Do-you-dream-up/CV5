@@ -1,30 +1,19 @@
+import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
-import Interaction from '../Interaction';
 
 
 /**
  * Fetch the top-asked resources and display them in a numbered list.
  */
-export default function Top({ scroll }) {
+export default function Top({ className, component, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
-  const { t } = useTranslation('top');
   const { size } = configuration.top;
-  const html = !!items.length && [
-    t('text'),
-    '<ol>',
-    items.map(({ reword }) => {
-      const ask = `window.dydu.chat.ask('${reword}')`;
-      return `<li><span class="dydu-link" onclick="${ask}">${reword}</span></li>`;
-    }).join(''),
-    '</ol>',
-  ].join('');
 
   const fetch = useCallback(() => !!size && dydu.top(size).then(({ knowledgeArticles }) => {
     try {
@@ -45,15 +34,25 @@ export default function Top({ scroll }) {
     }
   }, [fetch, ready]);
 
-  return html && <Interaction className="dydu-top" live scroll={scroll} text={html} type="response" />;
+  return !!items.length && (
+    React.createElement(component, {className: c('dydu-top', className), ...rest}, (
+      <ol>
+        {items.map(({ reword }, index) => {
+          const onAsk = () => window.dydu.chat.ask(reword);
+          return <li key={index}><span children={reword} className="dydu-link" onClick={onAsk} /></li>;
+        })}
+      </ol>
+    ))
+  );
 }
 
 
 Top.defaultProps = {
-  scroll: true,
+  component: 'div',
 };
 
 
 Top.propTypes = {
-  scroll: PropTypes.bool,
+  className: PropTypes.string,
+  component: PropTypes.elementType,
 };
