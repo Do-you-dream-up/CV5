@@ -7,6 +7,7 @@
 <Button children="Success" color="success" />
 <Button children="Warning" color="warning" />
 <Button children="Button" icon="icons/close.png" />
+<Button children="Link" href="https://goo.gle" icon="icons/open-in-new.png" />
 ```
 
 ### Text Button
@@ -18,6 +19,7 @@
 <Button children="Success" color="success" variant="text" />
 <Button children="Warning" color="warning" variant="text" />
 <Button children="Button" icon="icons/close.black.png" variant="text" />
+<Button children="Link" href="https://goo.gle" icon="icons/open-in-new.black.png" variant="text" />
 ```
 
 ### Icon Button
@@ -43,5 +45,8 @@
 </Button>
 <Button color="warning" variant="icon">
   <img src="icons/close.png" />
+</Button>
+<Button color="primary" href="https://goo.gle" variant="icon">
+  <img src="icons/open-in-new.png" />
 </Button>
 ```
