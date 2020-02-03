@@ -5,6 +5,8 @@ export default {
 
   breakpoints,
 
+  fontFamily: '"Assistant", sans-serif',
+
   palette: {
     action: {
       hover: 'rgba(0, 0, 0, .14)',

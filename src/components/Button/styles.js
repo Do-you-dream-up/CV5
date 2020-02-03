@@ -24,6 +24,7 @@ export default createUseStyles(theme => {
       color: color ? theme.palette[color].text : theme.palette.text.primary,
       cursor: 'pointer',
       display: 'flex',
+      fontSize: '.9em',
       outline: 'none',
       padding: 0,
       position: 'relative',

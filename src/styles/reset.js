@@ -2,7 +2,7 @@ import 'typeface-assistant';
 
 
 export default theme => ({
-  fontFamily: '"Assistant", sans-serif',
+  fontFamily: theme.fontFamily,
   '@global': {
     'a[href], .dydu-link': {
       color: theme.palette.text.link,
@@ -11,6 +11,9 @@ export default theme => ({
       '&:hover': {
         textDecoration: 'underline',
       },
+    },
+    button: {
+      fontFamily: theme.fontFamily,
     },
     dd: {
       color: theme.palette.text.primary,
