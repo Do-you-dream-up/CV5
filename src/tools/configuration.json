@@ -14,9 +14,7 @@
     "dismissable": true,
     "more": true,
     "moreLink": "https://goo.gle",
-    "styles": {
-      "maxHeight": 160
-    },
+    "styles": {},
     "stylesMobile": {},
     "transient": false
   },
@@ -119,7 +117,7 @@
   },
   "spaces": {
     "active": true,
-    "items": ["Foo", "Bar"]
+    "items": ["Default", "Foo", "Bar"]
   },
   "suggestions": {
     "styles": {

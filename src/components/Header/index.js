@@ -1,7 +1,3 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
@@ -12,6 +8,10 @@ import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
+import c from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 /**
@@ -35,24 +35,27 @@ export default function Header({ flat, onClose, ...rest }) {
   const actionRosetta = t('actions.rosetta');
   const actionSpaces = t('actions.spaces');
 
+  const onGdpr = () => window.dydu.gdpr();
+
   const languagesMenu = [languages.sort().map(id => ({
     id,
     onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
 
-  const moreMenu = [Object.keys(ACTIONS).map(it => ({
-    onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
-    text: it,
-  }))];
+  const moreMenu = [
+    [{onClick: onGdpr, text: actionGdpr}],
+    Object.keys(ACTIONS).map(it => ({
+      onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
+      text: it,
+    })),
+  ];
 
   const spacesMenu = [spaces.map(it => ({
     id: it.toLowerCase(),
     onClick: () => window.dydu.space.set(it),
     text: it,
   }))];
-
-  const onGdpr = () => window.dydu.gdpr();
 
   const actions = [
     {
@@ -68,12 +71,6 @@ export default function Header({ flat, onClose, ...rest }) {
       selected: () => i.languages[0],
       variant: 'icon',
       when: languagesMenu.flat().length > 1,
-    },
-    {
-      children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
-      onClick: onGdpr,
-      variant: 'icon',
-      when: !onboardingActive,
     },
     {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,

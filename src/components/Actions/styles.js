@@ -6,7 +6,7 @@ export default createUseStyles({
     display: 'flex',
     justifyContent: 'flex-end',
     '& > :not(:last-child)': {
-      marginRight: '.8em',
+      marginRight: '.5em',
     },
   },
 });

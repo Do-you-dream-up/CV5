@@ -11,7 +11,7 @@ export default createUseStyles(theme => ({
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
-    maxHeight: 160,
+    maxHeight: 170,
     overflowY: 'auto',
     width: '100%',
     ...configuration.banner.styles,

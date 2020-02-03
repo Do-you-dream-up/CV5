@@ -12,7 +12,7 @@ export default createUseStyles(theme => ({
   }),
   body: () => ({
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     display: 'flex',
     padding: '.5em',
   }),
