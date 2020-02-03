@@ -13,7 +13,10 @@ export default createUseStyles(theme => ({
     justifyContent: 'center',
   }),
   body: () => ({
+    overflowY: 'auto',
+    padding: '1em',
     position: 'relative',
+    width: '100%',
     '& > :not(:last-child)': {
       marginBottom: '1em',
     },
@@ -27,12 +30,8 @@ export default createUseStyles(theme => ({
   }),
   root: ({ configuration }) => ({
     display: 'flex',
-    flexBasis: 'auto',
-    flexDirection: 'column',
     flexGrow: '1',
-    flexShrink: '1',
-    overflowY: 'auto',
-    padding: '1em',
+    height: 0,
     position: 'relative',
     '&:before': {
       backgroundColor: theme.palette.primary.main,

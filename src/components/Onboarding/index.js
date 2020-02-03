@@ -28,7 +28,7 @@ export default function Onboarding({ children, render }) {
   const { t } = useTranslation('onboarding');
   const preamble = t('preamble', {defaultValue: ''});
   const should = render && active;
-  const { skippable, top } = configuration.onboarding;
+  const { tips, top } = configuration.onboarding;
 
   return should ? (
     <div className={c('dydu-onboarding', classes.root)}>
@@ -36,21 +36,21 @@ export default function Onboarding({ children, render }) {
         {preamble && (
           <div className={classes.preamble} dangerouslySetInnerHTML={{__html: sanitize(preamble)}} />
         )}
-        {!!skippable && (
-          <Paper elevation={1} title={t('skip.title')}>
-            <div className={c(classes.actions, classes.actionsCentered)}>
-              <Button children={t('skip.button')} icon="icons/send.png" />
+        <Paper elevation={1} title={t('skip.title')}>
+          <div className={c(classes.actions, classes.actionsCentered)}>
+            <Button children={t('skip.button')} icon="icons/send.png" onClick={onEnd} />
+          </div>
+        </Paper>
+        {!!tips && (
+          <Paper elevation={1} title={t('carousel.title')}>
+            <div className={classes.carousel}
+                 dangerouslySetInnerHTML={{__html: sanitize(t('carousel.body'))}} />
+            <div className={classes.actions}>
+              <Button children={t('carousel.previous')} disabled />
+              <Button children={t('carousel.next')} onClick={onEnd} />
             </div>
           </Paper>
         )}
-        <Paper elevation={1} title={t('carousel.title')}>
-          <div className={classes.carousel}
-               dangerouslySetInnerHTML={{__html: sanitize(t('carousel.body'))}} />
-          <div className={classes.actions}>
-            <Button children={t('carousel.previous')} disabled />
-            <Button children={t('carousel.next')} onClick={onEnd} />
-          </div>
-        </Paper>
         {!!top && (
           <Top component={Paper} elevation={1} title={t('top.title')} />
         )}
