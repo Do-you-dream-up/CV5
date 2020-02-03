@@ -6,7 +6,7 @@ export default createUseStyles(theme => ({
     padding: '.5em',
   }),
   root: ({ configuration }) => ({
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     borderBottomLeftRadius: theme.shape.radius.outer,
     borderBottomRightRadius: theme.shape.radius.outer,
     color: theme.palette.primary.text,
