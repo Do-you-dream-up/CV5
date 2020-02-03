@@ -10,6 +10,7 @@ import React from 'react';
 export default function MenuList({ items, onClose, selected }) {
 
   const classes = useStyles();
+  items = items.filter(it => it.when === undefined || it.when);
   selected = typeof selected === 'function' ? selected() : selected;
 
   const onItemClick = callback => () => {

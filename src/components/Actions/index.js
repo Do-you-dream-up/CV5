@@ -1,9 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React from 'react';
 import Button from '../Button';
 import Menu from '../Menu';
 import useStyles from './styles';
+import c from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 
 /**
@@ -14,14 +14,15 @@ import useStyles from './styles';
  */
 export default function Actions({ actions, className }) {
   const classes = useStyles();
+  actions = actions.filter(it => it.when === undefined || it.when);
   return !!actions.length && (
     <div className={c('dydu-actions', classes.root, className)}>
-      {actions.map(({ items, selected, type = 'button', when = true, ...rest }, index) => (
-        when ? React.createElement(items ? Menu : Button, {
+      {actions.map(({ items, selected, type = 'button', when, ...rest }, index) => (
+        React.createElement(items ? Menu : Button, {
           key: index,
           ...(items ? {component: Button, items, selected} : {type}),
           ...rest,
-        }) : null
+        })
       ))}
     </div>
   );
