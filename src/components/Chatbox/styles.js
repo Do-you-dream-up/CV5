@@ -16,6 +16,7 @@ export default createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     height: 500,
+    minWidth: 320,
     position: 'absolute',
     right: 0,
     width: 350,
