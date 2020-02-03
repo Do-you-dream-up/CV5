@@ -23,6 +23,7 @@ import useStyles from  './styles';
  */
 export default function Interaction({
   askFeedback,
+  children,
   className,
   history,
   live,
@@ -33,6 +34,7 @@ export default function Interaction({
   type,
 }) {
 
+  text = text || children;
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext) || {};
   const classes = useStyles({configuration});
@@ -113,6 +115,7 @@ Interaction.defaultProps = {
 
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
+  children: PropTypes.string,
   className: PropTypes.string,
   history: PropTypes.bool,
   live: PropTypes.bool,

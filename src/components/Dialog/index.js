@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
 import dydu from '../../tools/dydu';
 import Interaction from '../Interaction';
-import Top from '../Top';
 import useStyles from './styles';
 
 
@@ -34,7 +33,6 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
-      <Top />
       {interactions.map((it, index) => ({...it, key: index}))}
     </div>
   );

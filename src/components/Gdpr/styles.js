@@ -28,7 +28,7 @@ export default createUseStyles(theme => ({
     display: 'block',
     fontFamily: 'monospace',
     border: 0,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     margin: 0,
     padding: '.6em',
     width: '100%',

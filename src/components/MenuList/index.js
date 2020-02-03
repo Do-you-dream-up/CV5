@@ -1,7 +1,7 @@
+import useStyles from './styles';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import useStyles from './styles';
 
 
 /**
@@ -10,8 +10,8 @@ import useStyles from './styles';
 export default function MenuList({ items, onClose, selected }) {
 
   const classes = useStyles();
+  items = items.filter(it => it.when === undefined || it.when);
   selected = typeof selected === 'function' ? selected() : selected;
-
 
   const onItemClick = callback => () => {
     if (callback) {
@@ -22,16 +22,16 @@ export default function MenuList({ items, onClose, selected }) {
 
   return (
     <ul className={c('dydu-menu-list', classes.root)}>
-      {items.map((it, index) => (
-        <li children={it.text}
+      {items.map(({ id, onClick, text }, index) => (
+        <li children={text}
             className={c(
               'dydu-menu-list-item',
               classes.item,
-              it.onClick ? classes.itemEnabled : classes.itemDisabled,
-              {[classes.selected]: selected && selected === it.id},
+              onClick ? classes.itemEnabled : classes.itemDisabled,
+              {[classes.selected]: selected && selected === id},
             )}
             key={index}
-            onClick={onItemClick(it.onClick)} />
+            onClick={onItemClick(onClick)} />
       ))}
     </ul>
   );

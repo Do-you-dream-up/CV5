@@ -8,9 +8,11 @@ export default createUseStyles(theme => ({
     },
   }),
   base: ({ configuration }) => ({
-    borderRadius: theme.shape.borderRadius,
+    alignItems: 'center',
+    borderRadius: theme.shape.radius.inner,
+    display: 'flex',
+    minHeight: '3em',
     overflow: 'hidden',
-    padding: '1em',
     position: 'relative',
     wordBreak: 'break-word',
     '&:not(:last-child)': {
@@ -18,6 +20,9 @@ export default createUseStyles(theme => ({
     },
     ...configuration.bubble.styles,
     [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
+  }),
+  content: () => ({
+    padding: [['.8em', '1em']],
   }),
   progress: () => ({
     position: 'absolute',

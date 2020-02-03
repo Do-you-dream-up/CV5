@@ -1,12 +1,12 @@
-import c from 'classnames';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
-import Button from '../Button';
+import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
+import c from 'classnames';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 /**
@@ -22,8 +22,7 @@ export default function Banner() {
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
   const { ready, t } = useTranslation('banner');
-  const { active, cookie, dismissable, transient } = configuration.banner;
-  const close = t('close');
+  const { active, cookie, dismissable, more, moreLink, transient } = configuration.banner;
   const html = sanitize(t('html'));
 
   const dismiss = useCallback(() => {
@@ -45,20 +44,19 @@ export default function Banner() {
     }
   }, [active, cookie, dismiss, transient]);
 
+  const actions = [
+    ...dismissable ? [{children: t('ok'), onClick: onDismiss}] : [],
+    ...more ? [{children: t('more'), icon: 'icons/open-in-new.png', href: moreLink}] : [],
+  ];
+
   return show && html && (
     <div className={c('dydu-banner', classes.root)}>
-      {!!dismissable && (
-        <div className={c('dydu-banner-actions', classes.actions)}>
-          <Button onClick={onDismiss} variant="icon">
-            <img alt={close} src="icons/close.png" title={close} />
-          </Button>
-        </div>
-      )}
       <div className={c('dydu-banner-body', classes.body)}>
-        <Skeleton hide={!ready} height="4em" variant="paragraph">
+        <Skeleton hide={!ready} height="2em" variant="paragraph">
           <div dangerouslySetInnerHTML={{__html: html}} />
         </Skeleton>
       </div>
+      <Actions actions={actions} className={c('dydu-banner-actions', classes.actions)} />
     </div>
   );
 }

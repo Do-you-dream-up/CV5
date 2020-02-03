@@ -1,9 +1,16 @@
 {
-  "next": "Next",
-  "previous": "Previous",
-  "steps": [
-    {"content": "<h1>Hello</h1><pA>Blah.</p>"},
-    {"content": "<h1>Hello</h1><pA>Blah. Blah.</p>"},
-    {"content": "<h1>Hello</h1><p>Blah. Blah. Blah.</p>", "next": "Finish"}
-  ]
+  "carousel": {
+    "body": "<p><strong>Prefer complete sentences</strong></p><p>That way I can provide you with better content.</p>",
+    "next": "Next",
+    "previous": "Previous",
+    "title": "Tips"
+  },
+  "preamble": "<p>Some tips before we begin</p>",
+  "skip": {
+    "button": "Chat with the bot",
+    "title": "Start a conversation"
+  },
+  "top": {
+    "title": "Here are the top-asked topics"
+  }
 }

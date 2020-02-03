@@ -1,7 +1,3 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
@@ -12,15 +8,17 @@ import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
+import c from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
- *
- * The display of certain elements is conditioned by GDPR status.
  */
-export default function Header({ hasGdpr, onClose, ...rest }) {
+export default function Header({ flat, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -37,16 +35,21 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
   const actionRosetta = t('actions.rosetta');
   const actionSpaces = t('actions.spaces');
 
+  const onGdpr = () => window.dydu.gdpr();
+
   const languagesMenu = [languages.sort().map(id => ({
     id,
     onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
 
-  const moreMenu = [Object.keys(ACTIONS).map(it => ({
-    onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
-    text: it,
-  }))];
+  const moreMenu = [
+    [{onClick: onGdpr, text: actionGdpr}],
+    Object.keys(ACTIONS).map(it => ({
+      onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
+      text: it,
+    })),
+  ];
 
   const spacesMenu = [spaces.map(it => ({
     id: it.toLowerCase(),
@@ -54,15 +57,13 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
     text: it,
   }))];
 
-  const onGdpr = () => window.dydu.gdpr();
-
   const actions = [
     {
       children: <img alt={actionSpaces} src="icons/database.png" title={actionSpaces} />,
       items: () => spacesMenu,
       selected: () => window.dydu.space.get(),
       variant: 'icon',
-      when: spacesActive && !onboardingActive && !hasGdpr && spacesMenu.flat().length > 0,
+      when: spacesActive && !onboardingActive && spacesMenu.flat().length > 0,
     },
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
@@ -72,16 +73,10 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
       when: languagesMenu.flat().length > 1,
     },
     {
-      children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
-      onClick: onGdpr,
-      variant: 'icon',
-      when: !onboardingActive && !hasGdpr,
-    },
-    {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
       items: () => moreMenu,
       variant: 'icon',
-      when: !onboardingActive && !hasGdpr && moreMenu.flat().length > 0,
+      when: !onboardingActive && moreMenu.flat().length > 0,
     },
     {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
@@ -91,7 +86,7 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
   ];
 
   return (
-    <header className={c('dydu-header', classes.root)} {...rest}>
+    <header className={c('dydu-header', classes.root, {[classes.flat]: flat})} {...rest}>
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
@@ -102,18 +97,16 @@ export default function Header({ hasGdpr, onClose, ...rest }) {
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
-      {!hasGdpr && (
-        <Onboarding>
-          <Tabs />
-          <Banner />
-        </Onboarding>
-      )}
+      <Onboarding>
+        <Tabs />
+        <Banner />
+      </Onboarding>
     </header>
   );
 }
 
 Header.propTypes = {
-  hasGdpr: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  flat: PropTypes.bool,
   style: PropTypes.object,
 };

@@ -5,25 +5,22 @@
     "languages": ["en", "fr"]
   },
   "avatar": {
-    "styles": {
-      "shadow": true
-    },
+    "background": false,
+    "styles": {},
     "stylesMobile": {}
   },
   "banner": {
     "active": true,
     "cookie": true,
     "dismissable": true,
-    "styles": {
-      "maxHeight": 200
-    },
+    "more": true,
+    "moreLink": "https://goo.gle",
+    "styles": {},
     "stylesMobile": {},
     "transient": false
   },
   "bubble": {
-    "styles": {
-      "shadow": true
-    },
+    "styles": {},
     "stylesMobile": {}
   },
   "chatbox": {
@@ -56,6 +53,7 @@
     "askComment": true
   },
   "footer": {
+    "more": false,
     "styles": {
       "shadow": true
     },
@@ -103,7 +101,9 @@
   },
   "onboarding": {
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "tips": true,
+    "top": true
   },
   "root": "dydu-root",
   "secondary": {
@@ -118,7 +118,7 @@
   },
   "spaces": {
     "active": true,
-    "items": ["Foo", "Bar"]
+    "items": ["Default", "Foo", "Bar"]
   },
   "suggestions": {
     "styles": {
@@ -127,16 +127,19 @@
     "stylesMobile": {}
   },
   "tabs": {
-    "items": ["dialog", "contacts"],
-    "selected": 0,
+    "items": [
+      {"icon": "icons/message-text.png", "key": "dialog"},
+      {"icon": "icons/account-box.png", "key": "contacts"}
+    ],
+    "selected": "dialog",
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "title": false
   },
   "teaser": {
     "styles": {
       "bottom": 16,
-      "right": 16,
-      "shadow": 6
+      "right": 16
     },
     "stylesMobile": {}
   },

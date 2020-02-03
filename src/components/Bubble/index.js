@@ -23,13 +23,15 @@ export default function Bubble({ actions, children, component, html, thinking, t
   )}, (
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
-      <div className="dydu-bubble-body">
-        {children}
-        {html && <div dangerouslySetInnerHTML={{__html: html}} />}
+      <div className={c('dydu-bubble-content', classes.content)}>
+        <div className="dydu-bubble-body">
+          {children}
+          {html && <div dangerouslySetInnerHTML={{__html: html}} />}
+        </div>
+        {actions && (
+          <div children={actions} className={c('dydu-bubble-actions', classes.actions)} />
+        )}
       </div>
-      {actions && (
-        <div children={actions} className={c('dydu-bubble-actions', classes.actions)} />
-      )}
     </>
   ));
 }

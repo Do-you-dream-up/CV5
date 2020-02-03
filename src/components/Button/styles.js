@@ -4,24 +4,16 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => {
 
   const contained = ({ color = 'primary' } = {}) => ({
-    borderRadius: theme.shape.borderRadius,
-    padding: '.5em 1em',
-    textTransform: 'uppercase',
+    borderRadius: theme.shape.radius.inner,
+    padding: [['.6em', '1.2em']],
     ...(color && {
       backgroundColor: theme.palette[color].main,
       color: theme.palette[color].text,
+      '&:disabled': {
+        backgroundColor: theme.palette.action.disabled,
+      },
     }),
   });
-
-  const overlay = {
-    borderRadius: 'inherit',
-    bottom: 0,
-    content: '""',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  };
 
   return {
 
@@ -32,24 +24,36 @@ export default createUseStyles(theme => {
       color: color ? theme.palette[color].text : theme.palette.text.primary,
       cursor: 'pointer',
       display: 'flex',
+      fontSize: '.9em',
       outline: 'none',
       padding: 0,
       position: 'relative',
-      '& > *:not(:first-child)': {
-        marginLeft: '.5em',
-      },
       '&:disabled': {
         cursor: 'not-allowed',
       },
-      '&:disabled:after': {
-        ...overlay,
-        backgroundColor: theme.palette.action.disabled,
+      '&:not(:disabled):before': {
+        borderRadius: 'inherit',
+        bottom: 0,
+        content: '""',
+        left: 0,
+        position: 'absolute',
+        right: 0,
+        top: 0,
       },
-      '&:before': {
-        ...overlay,
-      },
-      '&:hover:before': {
+      '&:not(:disabled):hover:before': {
         backgroundColor: theme.palette.action.hover,
+      },
+    }),
+
+    children: () => ({
+      alignItems: 'center',
+      display: 'flex',
+      position: 'relative',
+      '& > *': {
+        height: '1.2em',
+      },
+      '& > :not(:last-child)': {
+        marginRight: '.5em',
       },
     }),
 
@@ -59,20 +63,16 @@ export default createUseStyles(theme => {
       ...contained({color}),
       height: 40,
       justifyContent: 'center',
+      padding: 0,
       width: 40,
       '&, &:after, &:before': {
         borderRadius: '50%',
       },
-      '& > *': {
+      '& $children *': {
+        display: 'block',
         height: 20,
-        position: 'absolute',
         width: 20,
       },
-      ...(!color && {
-        '&:disabled:after, &:disabled:before': {
-          backgroundColor: 'transparent',
-        },
-      }),
     }),
 
     text: ({ color }) => ({
@@ -82,7 +82,7 @@ export default createUseStyles(theme => {
       '&:disabled': {
         color: theme.palette.text.disabled,
       },
-      '&:disabled:after, &:disabled:before': {
+      '&:disabled:after': {
         backgroundColor: 'transparent',
       },
     }),
