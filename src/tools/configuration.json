@@ -54,6 +54,7 @@
     "askComment": true
   },
   "footer": {
+    "more": false,
     "styles": {
       "shadow": true
     },
