@@ -5,6 +5,7 @@
     "languages": ["en", "fr"]
   },
   "avatar": {
+    "background": false,
     "styles": {},
     "stylesMobile": {}
   },
