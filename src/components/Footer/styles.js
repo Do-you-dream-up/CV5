@@ -7,8 +7,8 @@ export default createUseStyles(theme => ({
   }),
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
+    borderBottomLeftRadius: theme.shape.radius.outer,
+    borderBottomRightRadius: theme.shape.radius.outer,
     color: theme.palette.primary.text,
     position: 'relative',
     width: '100%',
