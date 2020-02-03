@@ -12,8 +12,10 @@
     "active": true,
     "cookie": true,
     "dismissable": true,
+    "more": true,
+    "moreLink": "https://goo.gle",
     "styles": {
-      "maxHeight": 200
+      "maxHeight": 160
     },
     "stylesMobile": {},
     "transient": false

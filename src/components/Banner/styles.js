@@ -2,21 +2,17 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  actions: {
-    display: 'flex',
-    float: 'right',
-    margin: '.5em',
-    '& > :not(:first-child)': {
-      marginLeft: '.5em',
-    },
-  },
-  body: {
-    padding: '1em',
-  },
+  actions: () => ({
+    margin: '1em',
+  }),
+  body: () => ({
+    margin: '1em',
+  }),
   root: ({ configuration }) => ({
-    backgroundColor: theme.palette.warning.main,
-    color: theme.palette.warning.text,
-    overflowY: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    maxHeight: 160,
+    overflowY: 'auto',
     width: '100%',
     ...configuration.banner.styles,
     [theme.breakpoints.down('xs')]: configuration.banner.stylesMobile,
