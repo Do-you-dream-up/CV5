@@ -1,10 +1,10 @@
+import bot from '../bot';
+import { decode } from './cipher';
+import { Local } from './storage';
 import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-import bot from '../bot';
-import { decode } from './cipher';
-import { Local } from './storage';
 
 
 /**
@@ -140,7 +140,7 @@ export default new class Dydu {
    *
    * @returns {string} The client ID.
    */
-  getClientId = () => Local.get(Local.names.client, uuid4);
+  getClientId = () => Local.get(Local.names.client, uuid4, true);
 
   /**
    * Read the context ID from the local storage and return it.
@@ -156,7 +156,8 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      this.setLocale(Local.get(Local.names.locale, 'en'));
+      const locale = Local.get(Local.names.locale, 'en').split('-')[0];
+      this.setLocale(locale);
     }
     return this.locale;
   };
@@ -168,8 +169,7 @@ export default new class Dydu {
    */
   getSpace = () => {
     if (!this.space) {
-      const space = Local.get(Local.names.space);
-      this.space = space || '';
+      this.space = Local.get(Local.names.space, '');
     }
     return this.space;
   };

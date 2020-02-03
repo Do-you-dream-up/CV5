@@ -71,13 +71,16 @@ export class Local {
    * @param {string} name - Name of the local storage variable to fetch.
    * @param {*} [fallback] - Value or function to fallback to if the name was
    *                         not found.
+   * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
    */
-  static get = (name, fallback) => {
-    const value = localStorage.getItem(name);
+  static get = (name, fallback, save) => {
+    let value = localStorage.getItem(name);
     if (!value && fallback !== undefined) {
-      this.set(name, typeof fallback === 'function' ? fallback() : fallback);
-      return this.get(name);
+      value = typeof fallback === 'function' ? fallback() : fallback;
+      if (save) {
+        this.set(name, value);
+      }
     }
     try {
       return JSON.parse(value);
