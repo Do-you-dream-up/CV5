@@ -60,6 +60,11 @@ export default createUseStyles(theme => {
 
     contained,
 
+    grow: () => ({
+      flexGrow: 1,
+      justifyContent: 'center',
+    }),
+
     icon: ({ color = '' }) => ({
       ...contained({color}),
       height: 40,

@@ -1,7 +1,7 @@
-import useStyles from './styles';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import useStyles from './styles';
 
 
 /**
@@ -14,6 +14,7 @@ export function Button({
   children,
   color,
   component,
+  grow,
   href,
   icon,
   onClick,
@@ -36,7 +37,12 @@ export function Button({
   return React.createElement(href ? 'a' : component, {
     ...rest,
     ...(href ? {href, target} : {onClick, type}),
-    className: c('dydu-button', `dydu-button-${variant}`, classes.base, classes[variant]),
+    className: c('dydu-button',
+                 `dydu-button-${variant}`,
+                 classes.base,
+                 classes[variant],
+                 {[classes.grow]: grow},
+                ),
     ref: reference,
   }, button);
 }
@@ -53,6 +59,7 @@ Button.propTypes = {
   children: PropTypes.node,
   color: PropTypes.oneOf(['error', 'primary', 'success', 'warning']),
   component: PropTypes.node,
+  grow: PropTypes.bool,
   href: PropTypes.string,
   icon: PropTypes.string,
   onClick: PropTypes.func,
