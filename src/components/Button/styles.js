@@ -5,7 +5,7 @@ export default createUseStyles(theme => {
 
   const contained = ({ color = 'primary' } = {}) => ({
     borderRadius: theme.shape.radius.inner,
-    padding: [['.6em', '1.2em']],
+    padding: [['.5em', '1.2em']],
     ...(color && {
       backgroundColor: theme.palette[color].main,
       color: theme.palette[color].text,
@@ -51,6 +51,7 @@ export default createUseStyles(theme => {
       position: 'relative',
       '& > *': {
         height: '1.2em',
+        lineHeight: '1.2em',
       },
       '& > :not(:last-child)': {
         marginRight: '.5em',
@@ -70,8 +71,8 @@ export default createUseStyles(theme => {
       },
       '& $children *': {
         display: 'block',
-        height: 20,
-        width: 20,
+        height: 24,
+        width: 24,
       },
     }),
 
