@@ -18,9 +18,10 @@ export default function Teaser({ open, toggle }) {
   const title = t('title');
 
   return (
-    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})} title={title}>
-      <div className={c('dydu-teaser-button', classes.button)}
-           onClick={toggle(2)}>
+    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
+         onClick={toggle(2)}
+         title={title}>
+      <div className={c('dydu-teaser-button', classes.button)}>
         <Skeleton children={title} hide={!ready} width="3em" />
       </div>
       <div className={c('dydu-teaser-brand', classes.brand)}>

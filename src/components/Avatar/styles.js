@@ -3,23 +3,19 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   background: ({ type }) => ({
-    alignItems: 'center',
     backgroundColor: theme.palette[type].background,
-    display: 'flex',
-    justifyContent: 'center',
-    '& > *': {
-      maxHeight: '75%',
-      maxWidth: '75%',
-    },
   }),
   base: ({ configuration }) => ({
+    alignItems: 'center',
     borderRadius: '50%',
+    display: 'flex',
     height: '3em',
+    justifyContent: 'center',
     minWidth: '3em',
     width: '3em',
     '& > *': {
-      height: '100%',
-      width: '100%',
+      height: '75%',
+      width: '75%',
     },
     ...configuration.avatar.styles,
     [theme.breakpoints.down('xs')]: configuration.avatar.stylesMobile,

@@ -7,8 +7,8 @@ export default createUseStyles(theme => ({
     opacity: .5,
   }),
   icon: () => ({
-    height: '1em',
-    width: '1em',
+    height: '1.3em',
+    width: '1.3em',
   }),
   label: () => ({
     bottom: 0,
@@ -60,7 +60,7 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
     justifyContent: 'center',
     overflowX: 'hidden',
-    padding: '.5em',
+    padding: '.6em',
     position: 'relative',
     whiteSpace: 'nowrap',
   }),

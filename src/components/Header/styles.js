@@ -14,7 +14,7 @@ export default createUseStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'flex-start',
     display: 'flex',
-    padding: '.5em',
+    padding: '.6em',
   }),
   draggable: () => ({
     cursor: 'move',
