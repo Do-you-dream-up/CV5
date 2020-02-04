@@ -1,7 +1,7 @@
-import useStyles from './styles';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import useStyles from './styles';
 
 
 /**
@@ -22,16 +22,19 @@ export default function MenuList({ items, onClose, selected }) {
 
   return (
     <ul className={c('dydu-menu-list', classes.root)}>
-      {items.map(({ id, onClick, text }, index) => (
-        <li children={text}
-            className={c(
+      {items.map(({ icon, id, onClick, text }, index) => (
+        <li className={c(
               'dydu-menu-list-item',
               classes.item,
               onClick ? classes.itemEnabled : classes.itemDisabled,
               {[classes.selected]: selected && selected === id},
             )}
             key={index}
-            onClick={onItemClick(onClick)} />
+            onClick={onItemClick(onClick)}
+            title={text}>
+          {!!icon && <img alt={text} className={classes.icon} src={icon} />}
+          {text}
+        </li>
       ))}
     </ul>
   );

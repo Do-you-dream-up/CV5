@@ -2,6 +2,12 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  icon: () => ({
+    height: '1em',
+    marginRight: '1em',
+    opacity: .5,
+    width: '1em',
+  }),
   item: () => ({
     alignItems: 'center',
     display: 'flex',
@@ -14,6 +20,9 @@ export default createUseStyles(theme => ({
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
+    },
+    '& $icon': {
+      opacity: 1,
     },
   }),
   itemDisabled: () => ({
