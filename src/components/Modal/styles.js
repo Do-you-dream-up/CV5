@@ -2,7 +2,18 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  modal: ({ configuration }) => ({
+  bottom: () => ({
+    bottom: 0,
+    borderBottomLeftRadius: theme.shape.radius.outer,
+    borderBottomRightRadius: theme.shape.radius.outer,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    boxShadow: 'none',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+  }),
+  center: ({ configuration }) => ({
     maxWidth: configuration.modal.maxWidth,
     minWidth: configuration.modal.minWidth,
   }),

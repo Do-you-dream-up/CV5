@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 
-const OPTIONS = {dismissable: true};
+const OPTIONS = {dismissable: true, variant: 'center'};
 
 
 export const ModalContext = React.createContext();
