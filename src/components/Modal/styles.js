@@ -9,7 +9,7 @@ export default createUseStyles(theme => ({
   root: () => ({
     alignItems: 'center',
     backgroundColor: theme.palette.background.overlay,
-    borderRadius: theme.shape.radius.inner,
+    borderRadius: theme.shape.radius.outer,
     bottom: 0,
     display: 'flex',
     justifyContent: 'center',
@@ -17,5 +17,8 @@ export default createUseStyles(theme => ({
     position: 'absolute',
     right: 0,
     top: 0,
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: 0,
+    },
   }),
 }));

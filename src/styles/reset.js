@@ -3,7 +3,7 @@ import 'typeface-assistant';
 
 export default theme => ({
   fontFamily: theme.fontFamily,
-  '@global': {
+  '@global': () => ({
     'a[href], .dydu-link': {
       color: theme.palette.text.link,
       cursor: 'pointer',
@@ -42,5 +42,5 @@ export default theme => ({
     'ol, ul': {
       paddingLeft: '1.4em',
     },
-  },
+  }),
 });

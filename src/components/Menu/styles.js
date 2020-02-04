@@ -10,6 +10,9 @@ export default createUseStyles(theme => ({
     overflowY: 'auto',
     position: 'fixed',
     visibility: 'hidden',
+    '& > :not(:last-child)': {
+      borderBottomWidth: 1,
+    },
     ...configuration.menu.styles,
     [theme.breakpoints.down('xs')]: configuration.menu.stylesMobile,
   }),

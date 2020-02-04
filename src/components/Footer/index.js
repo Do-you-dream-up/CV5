@@ -1,11 +1,11 @@
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import Actions from '../Actions';
-import Input from '../Input';
-import useStyles from './styles';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Actions from '../Actions';
+import Input from '../Input';
+import useStyles from './styles';
 
 
 /**
