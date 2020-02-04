@@ -4,13 +4,17 @@ import React from 'react';
 import useStyles from './styles';
 
 
+// eslint-disable-next-line react/display-name
+export default React.forwardRef((props, ref) => <ButtonBase {...props} reference={ref} />);
+
+
 /**
  * Re-usable button component.
  *
  * An icon button typically accepts an image as its child while the default
  * variant is best used with text.
  */
-export function Button({
+export function ButtonBase({
   children,
   color,
   component,
@@ -48,14 +52,14 @@ export function Button({
 }
 
 
-Button.defaultProps = {
+ButtonBase.defaultProps = {
   component: 'button',
   target: '_blank',
   variant: 'contained',
 };
 
 
-Button.propTypes = {
+ButtonBase.propTypes = {
   children: PropTypes.node,
   color: PropTypes.oneOf(['error', 'primary', 'success', 'warning']),
   component: PropTypes.node,
@@ -68,7 +72,3 @@ Button.propTypes = {
   type: PropTypes.string,
   variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };
-
-
-// eslint-disable-next-line react/display-name
-export default React.forwardRef((props, ref) => <Button {...props} reference={ref} />);

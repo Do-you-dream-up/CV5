@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { ModalContext } from '../../contexts/ModalContext';
 import Actions from '../Actions';
 import Input from '../Input';
+import ModalFooterMenu from '../ModalFooterMenu';
 import useStyles from './styles';
 
 
@@ -18,13 +20,19 @@ import useStyles from './styles';
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { modal } = useContext(ModalContext);
   const classes = useStyles({configuration});
   const { t } = useTranslation('footer');
   const { more } = configuration.footer;
   const actionExpand = t('expand');
 
+  const onExpand = () => {
+    modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
+  };
+
   const actions = [{
     children: <img alt={actionExpand} src="icons/chevron-up.black.png" title={actionExpand} />,
+    onClick: onExpand,
     variant: 'icon',
     when: more,
   }];

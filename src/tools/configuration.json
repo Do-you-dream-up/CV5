@@ -53,7 +53,7 @@
     "askComment": true
   },
   "footer": {
-    "more": false,
+    "more": true,
     "styles": {
       "shadow": true
     },
