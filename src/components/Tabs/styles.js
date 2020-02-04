@@ -8,6 +8,9 @@ export default createUseStyles(theme => ({
   }),
   icon: () => ({
     height: '1.3em',
+    opacity: .5,
+    transitionDuration: '.2s',
+    transitionProperty: 'opacity',
     width: '1.3em',
   }),
   label: () => ({
@@ -50,6 +53,9 @@ export default createUseStyles(theme => ({
   }),
   selected: () => ({
     bottom: '.3em',
+    '& $icon': {
+      opacity: 1,
+    },
   }),
   tab: () => ({
     alignItems: 'center',
