@@ -28,6 +28,7 @@ export default createUseStyles(theme => {
       outline: 'none',
       padding: 0,
       position: 'relative',
+      textDecoration: 'none',
       '&:disabled': {
         cursor: 'not-allowed',
       },
