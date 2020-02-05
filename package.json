@@ -1,6 +1,6 @@
 {
   "name": "dydu-bliss",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "private": true,
   "dependencies": {
     "@mdi/js": "^4.8.95",
