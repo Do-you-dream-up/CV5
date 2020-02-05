@@ -124,7 +124,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         },
       );
     }
-  }, [gdprShowDisclaimer, modal]);
+  }, [gdprShowDisclaimer, modal, toggle]);
 
   useEffect(() => {
     if (!Cookie.get(Cookie.names.gdpr)) {

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from './ConfigurationContext';
 
 
@@ -11,9 +11,11 @@ export function TabProvider({ children }) {
   const [ current, setCurrent ] = useState();
   const [ tabs, setTabs ] = useState();
 
-  const find = value => tabs.findIndex((it, index) => value === it.key || value === index);
+  const find = useCallback(value => (
+    tabs.findIndex((it, index) => value === it.key || value === index)
+  ), [tabs]);
 
-  const select = value => () => setCurrent(find(value));
+  const select = useCallback(value => () => setCurrent(find(value)), [find]);
 
   const should = value => find(value) === current;
 
@@ -27,7 +29,7 @@ export function TabProvider({ children }) {
     if (Array.isArray(tabs)) {
       select(selected)();
     }
-  }, [tabs]);
+  }, [select, selected, tabs]);
 
   return <TabContext.Provider children={children} value={{
     current,

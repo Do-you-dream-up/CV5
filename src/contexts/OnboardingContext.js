@@ -18,6 +18,12 @@ export function OnboardingProvider({ children }) {
     return index < steps.length - 1;
   }, [index, t]);
 
+  const onEnd = useCallback(() => {
+    setActive(false);
+    setIndex(0);
+    Local.set(Local.names.onboarding);
+  }, []);
+
   const onNext = useCallback(() => {
     if (hasNext()) {
       setIndex(previous => previous + 1);
@@ -30,12 +36,6 @@ export function OnboardingProvider({ children }) {
   const onPrevious = useCallback(() => {
     setIndex(Math.max(index - 1, 0));
   }, [index]);
-
-  const onEnd = useCallback(() => {
-    setActive(false);
-    setIndex(0);
-    Local.set(Local.names.onboarding);
-  }, []);
 
   return <OnboardingContext.Provider children={children} value={{
     active,
