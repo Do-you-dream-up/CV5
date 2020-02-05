@@ -22,7 +22,7 @@ export default createUseStyles(theme => ({
       backgroundColor: theme.palette.background.highlight,
       border: 0,
       borderRadius: theme.shape.radius.inner,
-      fontFamily: 'monospace',
+      fontFamily: theme.font.monospace,
       padding: '.6em',
     },
     '& input[type="number"], & input[type="text"]': {

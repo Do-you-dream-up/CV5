@@ -26,7 +26,7 @@ export default function Wizard() {
       {Object.entries(configuration).map(([ parent, value ], index) => value instanceof Object && (
         <article className={classes.entryContainer} key={index}>
           <div className={classes.entry} key={index}>
-            <h3 children={parent} />
+            <h2 className={classes.title} children={parent} />
             <ul className={classes.fields}>
               {Object.entries(value).map(([ key, value ], index) => (
                 <WizardField component="li"

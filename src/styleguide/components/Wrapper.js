@@ -4,7 +4,6 @@ import { ThemeProvider, createUseStyles } from 'react-jss';
 import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
 import { ModalProvider } from '../../contexts/ModalContext';
 import { TabProvider } from '../../contexts/TabContext';
-import reset from '../../styles/reset';
 import theme from '../../styles/theme';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
@@ -13,7 +12,6 @@ import '../../tools/internationalization';
 
 const useStyles = createUseStyles({
   root: {
-    ...reset(theme),
     justifyContent: 'center',
     display: 'flex',
     flexWrap: 'wrap',

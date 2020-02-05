@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import PrettyHtml from  '../PrettyHtml';
 import Progress from  '../Progress';
 import useStyles from  './styles';
 
@@ -23,14 +24,9 @@ export default function Bubble({ actions, children, component, html, thinking, t
   )}, (
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
-      <div className={c('dydu-bubble-content', classes.content)}>
-        <div className="dydu-bubble-body">
-          {children}
-          {html && <div dangerouslySetInnerHTML={{__html: html}} />}
-        </div>
-        {actions && (
-          <div children={actions} className={c('dydu-bubble-actions', classes.actions)} />
-        )}
+      <div className={c('dydu-bubble-body', classes.body)}>
+        {(children || html) && <PrettyHtml children={children} html={html} />}
+        {actions && <div children={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
     </>
   ));

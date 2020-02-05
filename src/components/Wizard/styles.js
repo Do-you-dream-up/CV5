@@ -7,7 +7,7 @@ export default createUseStyles(theme => ({
     borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[1],
     margin: '.5em',
-    padding: '1.5em',
+    padding: '1em',
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
       marginLeft: 0,
@@ -20,7 +20,10 @@ export default createUseStyles(theme => ({
   fields: () => ({
     listStyleType: 'none',
     margin: 0,
-    padding: '0 !important',
+    padding: 0,
+    '& > :not(:last-child)': {
+      marginBottom: '.5em',
+    },
   }),
   root: ({ configuration }) => {
     const { right, width } = configuration.chatbox.styles;
@@ -43,4 +46,9 @@ export default createUseStyles(theme => ({
       },
     };
   },
+  title: () => ({
+    fontWeight: 'normal',
+    marginTop: 0,
+    textTransform: 'capitalize',
+  }),
 }));
