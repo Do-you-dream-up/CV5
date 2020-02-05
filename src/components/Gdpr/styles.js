@@ -26,7 +26,7 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette.primary.light,
     boxSizing: 'border-box',
     display: 'block',
-    fontFamily: 'monospace',
+    fontFamily: theme.font.monospace,
     border: 0,
     borderRadius: theme.shape.radius.inner,
     margin: 0,

@@ -21,7 +21,7 @@ export default createUseStyles(theme => ({
     ...configuration.bubble.styles,
     [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
   }),
-  content: () => ({
+  body: () => ({
     padding: [['.8em', '1em']],
   }),
   progress: () => ({

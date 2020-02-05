@@ -4,6 +4,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
+import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
 
 
@@ -46,10 +47,7 @@ export default function Secondary({ anchor }) {
           </Button>
         </div>
       </div>
-      {body && (
-        <div className={c('dydu-secondary-body', classes.body)}
-             dangerouslySetInnerHTML={{__html: body}} />
-      )}
+      {body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />}
       {url && (
         <iframe allow="fullscreen"
                 className={classes.frame}

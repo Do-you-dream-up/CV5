@@ -1,3 +1,4 @@
+import 'typeface-assistant';
 import breakpoints from './breakpoints';
 
 
@@ -5,7 +6,11 @@ export default {
 
   breakpoints,
 
-  fontFamily: '"Assistant", sans-serif',
+  font: {
+    monospace: 'monospace',
+    sansSerif: '"Assistant", sans-serif',
+    serif: 'sans-serif',
+  },
 
   palette: {
     action: {

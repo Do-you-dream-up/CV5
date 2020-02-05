@@ -24,7 +24,8 @@ export default createUseStyles(theme => {
       color: color ? theme.palette[color].text : theme.palette.text.primary,
       cursor: 'pointer',
       display: 'flex',
-      fontSize: '.9em',
+      fontFamily: theme.font.sansSerif,
+      fontSize: '1em',
       outline: 'none',
       padding: 0,
       position: 'relative',
@@ -51,8 +52,8 @@ export default createUseStyles(theme => {
       display: 'flex',
       position: 'relative',
       '& > *': {
-        height: '1.2em',
-        lineHeight: '1.2em',
+        height: '1.1em',
+        lineHeight: '1.1em',
       },
       '& > :not(:last-child)': {
         marginRight: '.5em',

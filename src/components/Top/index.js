@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
+import PrettyHtml from  '../PrettyHtml';
 
 
 /**
@@ -36,12 +37,14 @@ export default function Top({ className, component, ...rest }) {
 
   return !!items.length && (
     React.createElement(component, {className: c('dydu-top', className), ...rest}, (
-      <ol>
-        {items.map(({ reword }, index) => {
-          const onAsk = () => window.dydu.chat.ask(reword);
-          return <li key={index}><span children={reword} className="dydu-link" onClick={onAsk} /></li>;
-        })}
-      </ol>
+      <PrettyHtml>
+        <ol>
+          {items.map(({ reword }, index) => {
+            const onAsk = () => window.dydu.chat.ask(reword);
+            return <li key={index}><span children={reword} className="dydu-link" onClick={onAsk} /></li>;
+          })}
+        </ol>
+      </PrettyHtml>
     ))
   );
 }
