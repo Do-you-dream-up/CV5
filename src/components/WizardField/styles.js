@@ -2,13 +2,13 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  field: {
+  field: () => ({
     display: 'flex',
     '& > :not(:first-child)': {
       marginLeft: '1em',
     },
-  },
-  input: {
+  }),
+  input: () => ({
     minWidth: 200,
     flexGrow: 1,
     '& > *': {
@@ -34,12 +34,12 @@ export default createUseStyles(theme => ({
       whiteSpace: 'pre',
       width: '100%',
     },
-  },
-  text: {
+  }),
+  text: () => ({
     lineHeight: '24px',
     minWidth: 140,
     [theme.breakpoints.down('xs')]: {
       minWidth: 100,
     },
-  },
+  }),
 }));

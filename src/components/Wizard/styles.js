@@ -2,7 +2,7 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  entry: {
+  entry: () => ({
     backgroundColor: theme.palette.primary.light,
     borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[1],
@@ -13,15 +13,15 @@ export default createUseStyles(theme => ({
       marginLeft: 0,
       marginRight: 0,
     },
-  },
-  entryContainer: {
+  }),
+  entryContainer: () => ({
     flexGrow: 1,
-  },
-  fields: {
+  }),
+  fields: () => ({
     listStyleType: 'none',
     margin: 0,
     padding: '0 !important',
-  },
+  }),
   root: ({ configuration }) => {
     const { right, width } = configuration.chatbox.styles;
     return {
