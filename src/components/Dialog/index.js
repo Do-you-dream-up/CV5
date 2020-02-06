@@ -1,8 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import dydu from '../../tools/dydu';
 import Interaction from '../Interaction';
+import Spaces from '../Spaces';
 import useStyles from './styles';
 
 
@@ -12,6 +13,7 @@ import useStyles from './styles';
  */
 export default function Dialog({ interactions, onAdd, ...rest }) {
 
+  const [ ready, setReady ] = useState(false);
   const classes = useStyles();
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
@@ -25,15 +27,16 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
       }, []);
       onAdd(interactions);
     }
-  }, () => {}), [onAdd]);
+  }), [onAdd]);
 
   useEffect(() => {
-    fetch();
+    fetch().finally(() => setReady(true));
   }, [fetch]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
       {interactions.map((it, index) => ({...it, key: index}))}
+      {ready && <Spaces />}
     </div>
   );
 }
