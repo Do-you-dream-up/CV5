@@ -1,12 +1,12 @@
+import c from 'classnames';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { Cookie } from '../../tools/storage';
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
-import c from 'classnames';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 
 /**

@@ -1,9 +1,9 @@
-import Button from '../Button';
-import Menu from '../Menu';
-import useStyles from './styles';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import Button from '../Button';
+import Menu from '../Menu';
+import useStyles from './styles';
 
 
 /**

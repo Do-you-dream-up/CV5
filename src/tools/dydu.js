@@ -1,10 +1,10 @@
-import bot from '../bot';
-import { decode } from './cipher';
-import { Local } from './storage';
 import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
+import bot from '../bot';
+import { decode } from './cipher';
+import { Local } from './storage';
 
 
 /**

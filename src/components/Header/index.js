@@ -1,3 +1,7 @@
+import c from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
@@ -8,10 +12,6 @@ import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 
 
 /**

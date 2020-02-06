@@ -26,6 +26,7 @@
   "plugins": [
     "import",
     "react",
+    "react-hooks",
     "sort-destructure-keys"
   ],
   "rules": {
@@ -35,7 +36,7 @@
     "brace-style": ["error", "stroustrup"],
     "import/order": ["error", {
       "alphabetize": {"order": "asc"},
-      "groups": ["builtin", "external", "parent", "sibling", "index"],
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
       "newlines-between": "never"
     }],
     "no-empty": ["error", {"allowEmptyCatch": true}],
@@ -46,6 +47,8 @@
     "react/jsx-indent": ["error", 2],
     "react/jsx-indent-props": ["error", "first"],
     "react/no-children-prop": 0,
+    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/rules-of-hooks": "error",
     "semi": ["error", "always"],
     "sort-destructure-keys/sort-destructure-keys": "error",
     "sort-imports": ["error", {"ignoreDeclarationSort": true}],

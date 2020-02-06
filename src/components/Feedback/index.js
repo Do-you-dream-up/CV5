@@ -102,7 +102,7 @@ export default function Feedback() {
     }, 1000));
   };
 
-  return active && (
+  return active && (showChoices || showComment || showVote) && (
     <div className="dydu-feedback">
       {showVote && (
         <div className={c('dydu-feedback-vote', classes.vote)}>
