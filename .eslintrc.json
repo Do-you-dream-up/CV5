@@ -36,7 +36,7 @@
     "brace-style": ["error", "stroustrup"],
     "import/order": ["error", {
       "alphabetize": {"order": "asc"},
-      "groups": ["builtin", "external", "parent", "sibling", "index"],
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
       "newlines-between": "never"
     }],
     "no-empty": ["error", {"allowEmptyCatch": true}],
