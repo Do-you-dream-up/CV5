@@ -18,11 +18,9 @@ export default function Form({ children, className, data: initialData, onReject,
   const [ data, setData ] = useState(initialData);
   const { t } = useTranslation('form');
 
-  const onCancel = () => {
-    if (typeof onReject === 'function') {
-      onReject(data);
-    }
-  };
+  const onCancel = typeof onReject === 'function' ? () => {
+    onReject(data);
+  } : null;
 
   const onChange = event => {
     const { checked, name, type, value } = event.target;
@@ -35,7 +33,7 @@ export default function Form({ children, className, data: initialData, onReject,
   };
 
   const actions = [
-    {children: t('cancel'), onClick: onCancel},
+    ...(onCancel ? [{children: t('cancel'), onClick: onCancel}] : []),
     {children: t('submit'), type: 'submit'},
   ];
 
@@ -48,10 +46,15 @@ export default function Form({ children, className, data: initialData, onReject,
 }
 
 
+Form.defaultProps = {
+  data: {},
+};
+
+
 Form.propTypes = {
   children: PropTypes.func.isRequired,
   className: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object,
   onReject: PropTypes.func,
   onResolve: PropTypes.func.isRequired,
 };
