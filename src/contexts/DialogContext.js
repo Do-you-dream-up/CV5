@@ -30,7 +30,7 @@ export function DialogProvider({ children }) {
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
       }
-      add(<Interaction text={text} type="request" />);
+      add(<Interaction children={text} type="request" />);
     }
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
@@ -44,7 +44,7 @@ export function DialogProvider({ children }) {
     }
     add(
       <Interaction askFeedback={askFeedback}
-                   text={text}
+                   children={text}
                    type="response"
                    secondary={sidebar}
                    thinking />
