@@ -118,7 +118,7 @@
   },
   "spaces": {
     "active": true,
-    "items": ["Default", "Foo", "Bar"]
+    "items": ["default", "foo", "bar"]
   },
   "suggestions": {
     "styles": {

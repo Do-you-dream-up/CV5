@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
 import Interaction from '../Interaction';
 import Spaces from '../Spaces';
@@ -13,8 +14,10 @@ import useStyles from './styles';
  */
 export default function Dialog({ interactions, onAdd, ...rest }) {
 
-  const [ ready, setReady ] = useState(false);
+  const { configuration } = useContext(ConfigurationContext);
+  const [ promptSpace, setPromptSpace ] = useState(false);
   const classes = useStyles();
+  const { active: spacesActive, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
@@ -30,13 +33,20 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   }), [onAdd]);
 
   useEffect(() => {
-    fetch().finally(() => setReady(true));
-  }, [fetch]);
+    fetch().finally(() => {
+      if (spacesActive) {
+        const space = window.dydu.space.get();
+        if (!space || spaces.indexOf(space) === -1) {
+          setPromptSpace(true);
+        }
+      }
+    });
+  }, [fetch, spaces, spacesActive]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
       {interactions.map((it, index) => ({...it, key: index}))}
-      {ready && <Spaces />}
+      {promptSpace && <Spaces />}
     </div>
   );
 }

@@ -28,12 +28,10 @@ export default function Header({ flat, onClose, ...rest }) {
   const [ t, i, ready ] = useTranslation('header');
   const { languages = [] } = configuration.application;
   const { title: hasTitle } = configuration.header;
-  const { active: spacesActive, items: spaces = [] } = configuration.spaces;
   const actionClose = t('actions.close');
   const actionGdpr = t('actions.gdpr');
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
-  const actionSpaces = t('actions.spaces');
 
   const onGdpr = () => window.dydu.gdpr();
 
@@ -51,20 +49,7 @@ export default function Header({ flat, onClose, ...rest }) {
     })),
   ];
 
-  const spacesMenu = [spaces.map(it => ({
-    id: it.toLowerCase(),
-    onClick: () => window.dydu.space.set(it),
-    text: it,
-  }))];
-
   const actions = [
-    {
-      children: <img alt={actionSpaces} src="icons/database.png" title={actionSpaces} />,
-      items: () => spacesMenu,
-      selected: () => window.dydu.space.get(),
-      variant: 'icon',
-      when: spacesActive && !onboardingActive && spacesMenu.flat().length > 0,
-    },
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
       items: () => languagesMenu,

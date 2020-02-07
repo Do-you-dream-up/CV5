@@ -1,22 +1,52 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Form from  '../Form';
 import Interaction from  '../Interaction';
+import useStyles from './styles';
 
 
 /**
  * Display a form and enable consulting space selection.
  */
-export default function Spaces() {
+export default function Spaces({ onResolve }) {
 
+  const { configuration } = useContext(ConfigurationContext);
+  const [ done, setDone ] = useState(false);
+  const classes = useStyles();
   const { ready, t } = useTranslation('spaces');
-  const welcome = t('welcome', {defaultValue: null});
+  const welcome = t('welcome', {defaultValue: ''});
+  const { items = [] } = configuration.spaces;
 
-  const form = 'Spaces';
+  const onSubmit = ({ space }) => {
+    setDone(true);
+    window.dydu.space.set(space);
+  };
 
-  const text = [...(welcome ? [welcome] : []), form].join('<hr />');
+  const form = !!items.length && (
+    <Form key="form" onResolve={onResolve || onSubmit}>
+      {({ data, onChange }) => items.map((it, index) => (
+        <label className={classes.item} key={index}>
+          <input checked={data.space === it}
+                 name="space"
+                 onChange={onChange}
+                 type="radio"
+                 value={it} />
+          {it}
+        </label>
+      ))}
+    </Form>
+  );
 
-  console.log(ready);
-  return ready && (
-    <Interaction className="dydu-interaction-spaces" text={text} thinking type="response" />
+  return !!ready && !done && (welcome || form) && (
+    <Interaction className="dydu-interaction-spaces" thinking type="response">
+      {[welcome, form]}
+    </Interaction>
   );
 }
+
+
+Spaces.propTypes = {
+  onResolve: PropTypes.func,
+};
