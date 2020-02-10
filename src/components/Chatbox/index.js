@@ -80,8 +80,8 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.lorem = {
-        standard: () => window.dydu.chat.reply(LOREM_HTML),
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
+        standard: () => window.dydu.chat.reply(LOREM_HTML),
       };
 
       window.dydu.space = {
