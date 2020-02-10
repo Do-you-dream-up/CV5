@@ -10,7 +10,7 @@ import useStyles from './styles';
 /**
  * Display a form and enable consulting space selection.
  */
-export default function Spaces({ onResolve }) {
+export default function Spaces({ onResolve, scroll, thinking }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const [ done, setDone ] = useState(false);
@@ -40,7 +40,7 @@ export default function Spaces({ onResolve }) {
   );
 
   return !!ready && !done && (welcome || form) && (
-    <Interaction className="dydu-interaction-spaces" thinking type="response">
+    <Interaction className="dydu-interaction-spaces" thinking={thinking} scroll={scroll} type="response">
       {[welcome, form]}
     </Interaction>
   );
@@ -49,4 +49,6 @@ export default function Spaces({ onResolve }) {
 
 Spaces.propTypes = {
   onResolve: PropTypes.func,
+  scroll: PropTypes.bool,
+  thinking: PropTypes.bool,
 };
