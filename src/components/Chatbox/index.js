@@ -15,7 +15,6 @@ import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import Dragon from '../Dragon';
 import Footer from '../Footer';
-import Gdpr from '../Gdpr';
 import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
@@ -71,11 +70,6 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         reply: text => addResponse({text}),
         set: (name, value) => dydu.variable(name, value),
       };
-
-      window.dydu.gdpr = () => modal(Gdpr, ({ email, method }) => dydu.gdpr({email, method}).then(
-        () => window.dydu.chat.reply(t('gdpr:get.success')),
-        () => window.dydu.chat.reply(t('gdpr:get.error')),
-      )).then(() => {}, () => {});
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),

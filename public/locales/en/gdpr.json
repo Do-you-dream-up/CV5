@@ -14,8 +14,7 @@
     "get": {
       "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
     },
-    "help": "<p>Some <em>help</em> text.</p>",
-    "title": "GDPR"
+    "help": "<p>Some <em>help</em> text.</p>"
   },
   "get": {
     "error": "Get error.",

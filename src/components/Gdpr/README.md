@@ -1,6 +1,7 @@
 ```jsx
-const onError = () => alert('Canceled!');
-const onSuccess = () => alert('Success!');
+const onSubmit = ({ email, withForget, withGet }) => (
+  alert(`Submitted: '${email}','${withGet}', '${withForget}'`)
+);
 
-<Gdpr onReject={onError} onResolve={onSuccess} />
+<Gdpr onResolve={onSubmit} scroll={false} />
 ```

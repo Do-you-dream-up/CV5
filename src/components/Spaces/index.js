@@ -39,8 +39,8 @@ export default function Spaces({ onResolve, scroll, thinking }) {
     </Form>
   );
 
-  return !!ready && !done && (welcome || form) && (
-    <Interaction className="dydu-interaction-spaces" thinking={thinking} scroll={scroll} type="response">
+  return !!ready && !done && !!(welcome || form) && (
+    <Interaction className="dydu-interaction-spaces" scroll={scroll} thinking={thinking} type="response">
       {[welcome, form]}
     </Interaction>
   );

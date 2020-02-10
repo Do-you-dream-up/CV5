@@ -29,11 +29,9 @@ export default function Header({ flat, onClose, ...rest }) {
   const { languages = [] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
-  const actionGdpr = t('actions.gdpr');
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
 
-  const onGdpr = () => window.dydu.gdpr();
 
   const languagesMenu = [languages.sort().map(id => ({
     id,
@@ -41,13 +39,10 @@ export default function Header({ flat, onClose, ...rest }) {
     text: t(`rosetta.${id}`),
   }))];
 
-  const moreMenu = [
-    [{onClick: onGdpr, text: actionGdpr}],
-    Object.keys(ACTIONS).map(it => ({
-      onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
-      text: it,
-    })),
-  ];
+  const moreMenu = [Object.keys(ACTIONS).map(it => ({
+    onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
+    text: it,
+  }))];
 
   const actions = [
     {
