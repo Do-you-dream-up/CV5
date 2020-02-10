@@ -82,10 +82,8 @@
     "stylesMobile": {}
   },
   "loader": {
-    "size": 3,
-    "styles": {
-      "shadow": true
-    },
+    "size": 5,
+    "styles": {},
     "stylesMobile": {}
   },
   "menu": {
