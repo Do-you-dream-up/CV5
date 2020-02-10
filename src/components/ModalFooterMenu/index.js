@@ -22,8 +22,8 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
 
   const items = [
     {icon: 'icons/email-send.black.png', onClick: null, text: email},
-    {icon: 'icons/database.black.png', onClick: null, text: spaces},
-    {icon: 'icons/shield-lock.black.png', onClick: null, text: gdpr},
+    {icon: 'icons/database.black.png', onClick: window.dydu.space.prompt, text: spaces},
+    {icon: 'icons/shield-lock.black.png', onClick: window.dydu.gdpr.prompt, text: gdpr},
   ];
 
   return React.createElement(

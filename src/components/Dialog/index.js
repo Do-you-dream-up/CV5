@@ -1,7 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
@@ -16,8 +17,7 @@ import useStyles from './styles';
 export default function Dialog({ interactions, onAdd, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const [ promptGdpr ] = useState(false);
-  const [ promptSpace, setPromptSpace ] = useState(false);
+  const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { active: spacesActive, items: spaces = [] } = configuration.spaces;
 
@@ -39,17 +39,17 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
       if (spacesActive) {
         const space = window.dydu.space.get();
         if (!space || spaces.indexOf(space) === -1) {
-          setPromptSpace(true);
+          setPrompt('spaces');
         }
       }
     });
-  }, [fetch, spaces, spacesActive]);
+  }, [fetch, setPrompt, spaces, spacesActive]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
       {interactions.map((it, index) => ({...it, key: index}))}
-      {promptGdpr && <Gdpr />}
-      {promptSpace && <Spaces />}
+      {prompt === 'gdpr' && <Gdpr />}
+      {prompt === 'spaces' && <Spaces />}
     </div>
   );
 }

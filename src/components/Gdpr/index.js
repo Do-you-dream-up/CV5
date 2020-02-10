@@ -1,7 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DialogContext} from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import sanitize from '../../tools/sanitize';
 import Form from '../Form';
@@ -15,13 +16,13 @@ import useStyles from './styles';
  */
 export default function Gdpr({ onResolve, scroll, thinking }) {
 
-  const [ done, setDone ] = useState(false);
+  const { setPromptGdpr } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('gdpr');
   const help = sanitize(t('form.help'));
 
   const onSubmit = ({ email, withForget, withGet }) => {
-    setDone(true);
+    setPromptGdpr(false);
     const method = [withForget && 'Forget', withGet && 'Get'].filter(it => it);
     dydu.gdpr({email, method}).then(
       () => window.dydu.chat.reply(t('get.success')),
@@ -29,7 +30,7 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
     );
   };
 
-  return !!ready && !done && (
+  return !!ready && (
     <Interaction className="dydu-interaction-gdpr" scroll={scroll} thinking={thinking} type="response">
       <>
         {help && (

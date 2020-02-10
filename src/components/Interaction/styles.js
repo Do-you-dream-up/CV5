@@ -14,6 +14,9 @@ export default createUseStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
   }),
+  loader: () => ({
+    marginLeft: '.2em',
+  }),
   request: () => ({
     marginLeft: '2em',
   }),

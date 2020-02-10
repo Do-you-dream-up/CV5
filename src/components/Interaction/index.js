@@ -96,7 +96,7 @@ export default function Interaction({
           };
           return <Bubble key={index} {...attributes} />;
         })}
-        {hasLoader && <Loader scroll={scroll} />}
+        {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
         {!hasLoader && askFeedback && <Feedback />}
       </div>
     </div>

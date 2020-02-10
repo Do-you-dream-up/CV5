@@ -37,6 +37,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     empty,
     interactions,
     secondaryActive,
+    setPrompt,
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
@@ -71,6 +72,10 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         set: (name, value) => dydu.variable(name, value),
       };
 
+      window.dydu.gdpr = {
+        prompt: () => setPrompt('gdpr'),
+      };
+
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
@@ -86,6 +91,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
       window.dydu.space = {
         get: () => dydu.getSpace(),
+        prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
           space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
           () => {},
@@ -102,7 +108,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, i, modal, setSecondary, t, toggle, toggleSecondary]);
+  }, [addResponse, ask, empty, i, modal, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 
   useEffect(() => {
     if (gdprShowDisclaimer) {

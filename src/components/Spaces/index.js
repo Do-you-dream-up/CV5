@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import Form from  '../Form';
 import Interaction from  '../Interaction';
 import useStyles from './styles';
@@ -13,14 +14,14 @@ import useStyles from './styles';
 export default function Spaces({ onResolve, scroll, thinking }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const [ done, setDone ] = useState(false);
+  const { setPromptSpace } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('spaces');
   const welcome = t('welcome', {defaultValue: ''});
   const { items = [] } = configuration.spaces;
 
   const onSubmit = ({ space }) => {
-    setDone(true);
+    setPromptSpace(false);
     window.dydu.space.set(space);
   };
 
@@ -31,6 +32,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
           <input checked={data.space === it}
                  name="space"
                  onChange={onChange}
+                 required
                  type="radio"
                  value={it} />
           {it}
@@ -39,7 +41,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
     </Form>
   );
 
-  return !!ready && !done && !!(welcome || form) && (
+  return !!ready && !!(welcome || form) && (
     <Interaction className="dydu-interaction-spaces" scroll={scroll} thinking={thinking} type="response">
       {[welcome, form]}
     </Interaction>
