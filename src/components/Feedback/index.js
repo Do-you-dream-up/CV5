@@ -7,6 +7,7 @@ import dydu from '../../tools/dydu';
 import Bubble from '../Bubble';
 import Button from '../Button';
 import FeedbackChoices from '../FeedbackChoices';
+import Form from  '../Form';
 import Scroll from '../Scroll';
 import useStyles from './styles';
 
@@ -24,7 +25,6 @@ export default function Feedback() {
 
   const { configuration } = useContext(ConfigurationContext);
   const { addResponse } = useContext(DialogContext);
-  const [ comment, setComment ] = useState('');
   const [ showChoices, setShowChoices ] = useState(false);
   const [ showComment, setShowComment ] = useState(false);
   const [ showVote, setShowVote ] = useState(true);
@@ -38,16 +38,11 @@ export default function Feedback() {
   const votePositive = t('vote.positive');
   const voteThanks = t('vote.thanks');
 
-  const onChange = event => {
-    setComment(event.target.value);
-  };
-
-  const onComment = () => {
+  const onComment = ({ comment }) => {
     const value = comment.trim();
     if (value.length) {
       setThinking(true);
       dydu.feedbackComment(value).then(() => setTimeout(() => {
-        setComment('');
         setShowComment(false);
         setThinking(false);
         if (commentThanks) {
@@ -120,21 +115,26 @@ export default function Feedback() {
         </Bubble>
       )}
       {showComment && (
-        <Bubble component={Scroll} thinking={thinking} type="response">
-          <form className="dydu-feedback-comment" onSubmit={onComment}>
-            {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
-            <div className={c('dydu-feedback-comment-field', classes.commentField)}>
-              <textarea autoFocus
-                        className={c(classes.commentFieldText, {[classes.thinking]: thinking})}
-                        disabled={thinking}
-                        maxLength={100}
-                        onChange={onChange}
-                        onKeyDown={onKeyDown}
-                        placeholder={t('comment.placeholder')}
-                        value={comment} />
-              <div children={comment} className={classes.commentFieldShadow} />
-            </div>
-          </form>
+        <Bubble component={Scroll} type="response">
+          <Form className="dydu-feedback-comment" data={{comment: ''}} onResolve={onComment} thinking={thinking}>
+            {({ data, onChange }) => (
+              <>
+                {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
+                <div className={c('dydu-feedback-comment-field', classes.commentField)}>
+                  <textarea autoFocus
+                            className={c(classes.commentFieldText, {[classes.thinking]: thinking})}
+                            disabled={thinking}
+                            maxLength={100}
+                            name="comment"
+                            onChange={onChange}
+                            onKeyDown={onKeyDown}
+                            placeholder={t('comment.placeholder')}
+                            value={data.comment} />
+                  <div children={data.comment} className={classes.commentFieldShadow} />
+                </div>
+              </>
+            )}
+          </Form>
         </Bubble>
       )}
     </div>

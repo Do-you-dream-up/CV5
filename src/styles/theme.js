@@ -22,7 +22,7 @@ export default {
     background: {
       default: '#F5F5F5',
       dim: 'rgba(0, 0, 0, .05)',
-      highlight: 'rgba(255, 255, 255, .4)',
+      highlight: 'rgba(0, 0, 0, .05)',
       menu: '#FFFFFF',
       overlay: 'rgba(0, 0, 0, .6)',
       paper: '#FFFFFF',
