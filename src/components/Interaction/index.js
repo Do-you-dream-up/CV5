@@ -33,7 +33,7 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
-  const { setSecondary, toggleSecondary } = useContext(DialogContext) || {};
+  const { setSecondary, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
