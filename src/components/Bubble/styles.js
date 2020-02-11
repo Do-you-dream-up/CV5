@@ -23,6 +23,7 @@ export default createUseStyles(theme => ({
   }),
   body: () => ({
     padding: [['.8em', '1em']],
+    width: '100%',
   }),
   progress: () => ({
     position: 'absolute',

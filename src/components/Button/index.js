@@ -20,9 +20,10 @@ export function ButtonBase({
   component,
   grow,
   href,
-  icon,
+  icon: getIcon,
   onClick,
   reference,
+  spin,
   target,
   type,
   variant,
@@ -30,10 +31,11 @@ export function ButtonBase({
 }) {
 
   const classes = useStyles({color});
+  const icon = typeof(getIcon) === 'function' ? getIcon() : getIcon;
 
   const button = (
     <div children={children} className={classes.children}>
-      {icon && <img alt={icon} src={icon} />}
+      {icon && <img alt={icon} src={icon} className={c({[classes.spin]: spin})} />}
       <span children={children} />
     </div>
   );
@@ -65,9 +67,10 @@ ButtonBase.propTypes = {
   component: PropTypes.node,
   grow: PropTypes.bool,
   href: PropTypes.string,
-  icon: PropTypes.string,
+  icon: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   onClick: PropTypes.func,
   reference: PropTypes.exact({current: PropTypes.object}),
+  spin: PropTypes.bool,
   target: PropTypes.string,
   type: PropTypes.string,
   variant: PropTypes.oneOf(['contained', 'icon', 'text']),

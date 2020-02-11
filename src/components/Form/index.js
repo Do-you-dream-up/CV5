@@ -12,11 +12,13 @@ import useStyles from './styles';
  * Children should be a callback which accepts the form data and the field
  * onchange callback as parameters.
  */
-export default function Form({ children, className, data: initialData, onReject, onResolve }) {
+export default function Form({ children, className, data: initialData, onReject, onResolve, thinking }) {
 
   const classes = useStyles();
   const [ data, setData ] = useState(initialData);
   const { t } = useTranslation('form');
+
+  const getSubmitIcon = () => thinking && 'icons/loading.png';
 
   const onCancel = typeof onReject === 'function' ? () => {
     onReject(data);
@@ -34,7 +36,7 @@ export default function Form({ children, className, data: initialData, onReject,
 
   const actions = [
     ...(onCancel ? [{children: t('cancel'), onClick: onCancel}] : []),
-    {children: t('submit'), type: 'submit'},
+    {children: t('submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'submit'},
   ];
 
   return (
@@ -57,4 +59,5 @@ Form.propTypes = {
   data: PropTypes.object,
   onReject: PropTypes.func,
   onResolve: PropTypes.func.isRequired,
+  thinking: PropTypes.bool,
 };
