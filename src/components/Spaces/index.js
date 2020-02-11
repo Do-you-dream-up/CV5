@@ -14,14 +14,14 @@ import useStyles from './styles';
 export default function Spaces({ onResolve, scroll, thinking }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { setPromptSpace } = useContext(DialogContext);
+  const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('spaces');
   const welcome = t('welcome', {defaultValue: ''});
   const { items = [] } = configuration.spaces;
 
   const onSubmit = ({ space }) => {
-    setPromptSpace(false);
+    setPrompt('');
     window.dydu.space.set(space);
   };
 

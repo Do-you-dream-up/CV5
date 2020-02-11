@@ -16,13 +16,13 @@ import useStyles from './styles';
  */
 export default function Gdpr({ onResolve, scroll, thinking }) {
 
-  const { setPromptGdpr } = useContext(DialogContext);
+  const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('gdpr');
   const help = sanitize(t('form.help'));
 
   const onSubmit = ({ email, withForget, withGet }) => {
-    setPromptGdpr(false);
+    setPrompt('');
     const method = [withForget && 'Forget', withGet && 'Get'].filter(it => it);
     dydu.gdpr({email, method}).then(
       () => window.dydu.chat.reply(t('get.success')),
