@@ -83,6 +83,13 @@ export default createUseStyles(theme => {
       },
     }),
 
+    spin: () => ({
+      animationDuration: '1.2s',
+      animationIterationCount: 'infinite',
+      animationName: '$spin',
+      animationTimingFunction: 'linear',
+    }),
+
     text: ({ color }) => ({
       ...contained(),
       backgroundColor: 'transparent',
@@ -94,5 +101,14 @@ export default createUseStyles(theme => {
         backgroundColor: 'transparent',
       },
     }),
+
+    '@keyframes spin': {
+      '0%': {
+        transform: 'rotate(0deg)',
+      },
+      '100%': {
+        transform: 'rotate(360deg)',
+      },
+    },
   };
 });
