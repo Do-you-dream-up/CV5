@@ -52,7 +52,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
   const ask = useCallback((text, options) => {
     text = text.trim();
-    if (text) {
+    if (text && ['redirection_newpage'].indexOf(options.type) === -1) {
       options = Object.assign({hide: false}, options);
       if (!options.hide) {
         addRequest(text);
