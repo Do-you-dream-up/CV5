@@ -113,6 +113,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
       window.reword = window.dydu.chat.ask;
       window.dyduCustomPlaceHolder = window.dydu.setPlaceholder;
+      window.dyduClearPreviousInteractions = window.dydu.chat.empty;
     }
   }, [addResponse, ask, empty, i, modal, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 
