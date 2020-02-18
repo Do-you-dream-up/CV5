@@ -12,6 +12,7 @@ export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const [ interactions, setInteractions ] = useState([]);
+  const [ placeholder, setPlaceholder ] = useState(null);
   const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
@@ -83,12 +84,14 @@ export function DialogProvider({ children }) {
     addResponse,
     empty,
     interactions,
+    placeholder,
     prompt,
     secondaryActive,
     secondaryContent,
-    setSecondary,
+    setPlaceholder,
     setPrompt,
-    toggleSecondary
+    setSecondary,
+    toggleSecondary,
   }} />;
 }
 

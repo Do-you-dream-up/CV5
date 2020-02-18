@@ -4,11 +4,13 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
+
 
 
 /**
@@ -26,6 +28,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const qualification = !!configuration.application.qualification;
   const { delay, maxLength = 100 } = configuration.input;
   const debouncedInput = useDebounce(input, delay);
+  const { placeholder } = useContext(DialogContext);
 
   const onChange = event => {
     setTyping(true);
@@ -101,7 +104,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ready ? t('placeholder').slice(0, 50) : null,
+    placeholder: ready && placeholder ? placeholder : t('placeholder').slice(0, 50),
     value: input,
   };
 
