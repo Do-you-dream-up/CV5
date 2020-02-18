@@ -36,13 +36,17 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ askFeedback, sidebar, text, urlRedirect }) => {
+  const addResponse = useCallback(({ askFeedback, guiAction,sidebar, text, urlRedirect }) => {
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }
     if (urlRedirect) {
       window.open(urlRedirect, '_blank');
     }
+    if(guiAction) {
+     eval(guiAction);
+    }
+
     add(
       <Interaction askFeedback={askFeedback}
                    children={text}
@@ -84,7 +88,7 @@ export function DialogProvider({ children }) {
     secondaryContent,
     setSecondary,
     setPrompt,
-    toggleSecondary,
+    toggleSecondary
   }} />;
 }
 
