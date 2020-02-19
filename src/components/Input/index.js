@@ -25,6 +25,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
   const { delay, maxLength = 100 } = configuration.input;
+  const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {
@@ -76,10 +77,11 @@ export default function Input({ focus, onRequest, onResponse }) {
     text = text.trim();
     if (text) {
       dydu.suggest(text).then(suggestions => {
-        setSuggestions(Array.isArray(suggestions) ? suggestions : [suggestions]);
+        suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
+        setSuggestions(suggestions.slice(0, suggestionsLimit));
       });
     }
-  }, []);
+  }, [suggestionsLimit]);
 
   useEffect(() => {
     if (typing) {
