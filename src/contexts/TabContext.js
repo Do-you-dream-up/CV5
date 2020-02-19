@@ -1,34 +1,45 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { withConfiguration } from '../tools/configuration';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ConfigurationContext } from './ConfigurationContext';
 
 
 export const TabContext = React.createContext();
-export const TabProvider = withConfiguration(class TabProvider extends React.Component {
+export function TabProvider({ children }) {
 
-  static propTypes = {
-    children: PropTypes.object,
-    configuration: PropTypes.object.isRequired,
-  };
+  const { configuration } = useContext(ConfigurationContext);
+  const { items, selected = 0 } = configuration.tabs;
+  const [ current, setCurrent ] = useState();
+  const [ tabs, setTabs ] = useState();
 
-  constructor(props) {
-    super(props);
-    const { items, selected = 0 } = props.configuration.tabs;
-    this.state = {current: items[selected]};
-  }
+  const find = useCallback(value => (
+    tabs.findIndex((it, index) => value === it.key || value === index)
+  ), [tabs]);
+
+  const select = useCallback(value => () => setCurrent(find(value)), [find]);
+
+  const should = value => find(value) === current;
+
+  useEffect(() => {
+    if (Array.isArray(items)) {
+      setTabs(items.filter(it => it.key));
+    }
+  }, [items]);
+
+  useEffect(() => {
+    if (Array.isArray(tabs)) {
+      select(selected)();
+    }
+  }, [select, selected, tabs]);
+
+  return <TabContext.Provider children={children} value={{
+    current,
+    select,
+    should,
+    tabs,
+  }} />;
+}
 
 
-  select = value => () => {
-    this.setState({current: value});
-  };
-
-  should = value => value === this.state.current;
-
-  render() {
-    return <TabContext.Provider children={this.props.children} value={{
-      select: this.select,
-      should: this.should,
-      state: this.state,
-    }} />;
-  }
-});
+TabProvider.propTypes = {
+  children: PropTypes.object,
+};

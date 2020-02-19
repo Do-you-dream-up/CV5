@@ -1,0 +1,10 @@
+{
+  "expand": "Ouvrir sous-menu",
+  "menu": {
+    "close": "Fermer",
+    "email": "Exporter la conversation par email",
+    "gdpr": "RGPD (export, suppression)",
+    "spaces": "Changer d'espace de consultation",
+    "title": "Vos fonctionnalités"
+  }
+}

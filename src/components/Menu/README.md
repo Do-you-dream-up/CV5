@@ -1,15 +1,14 @@
-```js static
+```jsx
+const onToggle = text => () => alert(text);
 const menu = [
   [
-    {id: 'foo', onClick: onFoo, text: 'Foo'},
+    {id: 'foo', onClick: onToggle('Foo!'), text: 'Do foo'},
   ],
   [
-    {id: 'bar', onClick: onBar, text: 'Bar'},
-    {id: 'baz', onClick: onBaz, text: 'Baz'},
+    {id: 'bar', onClick: onToggle('Bar!'), text: 'Or bar'},
+    {id: 'baz', onClick: onToggle('Baz!'), text: 'Maybe baz instead'},
   ],
 ];
-```
 
-```jsx static
-<Menu children="Toggle" component={Button} items={menu} selected="baz" />
+<Menu children="Toggle" component="button" items={menu} selected="baz" />
 ```

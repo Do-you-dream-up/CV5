@@ -4,8 +4,8 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
   base: ({ height, width }) => ({
     backgroundColor: theme.palette.background.skeleton,
-    height: height,
-    width: width,
+    height,
+    width,
   }),
   circle: ({ height, width }) => ({
     borderRadius: '50%',
@@ -17,7 +17,7 @@ export default createUseStyles(theme => ({
     width: width || '100%',
   }),
   text: ({ height, width }) => ({
-    height: height || '1.1em',
+    height: height || '1.3em',
     width: width || '70%',
   }),
 }));

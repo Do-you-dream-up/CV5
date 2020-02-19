@@ -99,6 +99,7 @@ WizardField.defaultProps = {
   component: 'div',
 };
 
+
 WizardField.propTypes = {
   component: PropTypes.elementType,
   label: PropTypes.string.isRequired,

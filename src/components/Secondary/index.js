@@ -4,6 +4,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
+import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
 
 
@@ -41,15 +42,12 @@ export default function Secondary({ anchor }) {
       <div className={c('dydu-secondary-header', classes.header)}>
         {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button filled onClick={toggleSecondary(false)} type="button" variant="icon">
+          <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
             <img alt="Close" src="icons/close.png" title="Close" />
           </Button>
         </div>
       </div>
-      {body && (
-        <div className={c('dydu-secondary-body', classes.body)}
-             dangerouslySetInnerHTML={{__html: body}} />
-      )}
+      {body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />}
       {url && (
         <iframe allow="fullscreen"
                 className={classes.frame}

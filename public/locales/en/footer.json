@@ -1,0 +1,10 @@
+{
+  "expand": "Expand menu",
+  "menu": {
+    "close": "Close",
+    "email": "Export the conversation by email",
+    "gdpr": "GDPR (export, delete)",
+    "spaces": "Switch consulting space",
+    "title": "Your features"
+  }
+}

@@ -2,13 +2,13 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  field: {
+  field: () => ({
     display: 'flex',
     '& > :not(:first-child)': {
       marginLeft: '1em',
     },
-  },
-  input: {
+  }),
+  input: () => ({
     minWidth: 200,
     flexGrow: 1,
     '& > *': {
@@ -21,8 +21,8 @@ export default createUseStyles(theme => ({
     '& input[type="number"], & input[type="text"], & textarea': {
       backgroundColor: theme.palette.background.highlight,
       border: 0,
-      borderRadius: theme.shape.borderRadius,
-      fontFamily: 'monospace',
+      borderRadius: theme.shape.radius.inner,
+      fontFamily: theme.font.monospace,
       padding: '.6em',
     },
     '& input[type="number"], & input[type="text"]': {
@@ -34,12 +34,12 @@ export default createUseStyles(theme => ({
       whiteSpace: 'pre',
       width: '100%',
     },
-  },
-  text: {
+  }),
+  text: () => ({
     lineHeight: '24px',
     minWidth: 140,
     [theme.breakpoints.down('xs')]: {
       minWidth: 100,
     },
-  },
+  }),
 }));

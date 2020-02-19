@@ -1,9 +1,12 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
-import Top from '../Top';
+import Spaces from '../Spaces';
 import Welcome from '../Welcome';
 import useStyles from './styles';
 
@@ -14,36 +17,47 @@ import useStyles from './styles';
  */
 export default function Dialog({ interactions, onAdd, ...rest }) {
 
+  const { configuration } = useContext(ConfigurationContext);
+  const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
+  const { active: spacesActive, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
-          <Interaction history text={it.user} type="request" />,
-          <Interaction history text={it.text} secondary={it.sidebar} type="response" />,
+          <Interaction children={it.user} history type="request" />,
+          <Interaction children={it.text} history secondary={it.sidebar} type="response" />,
         );
         return accumulator;
       }, []);
       onAdd(interactions);
     }
-  }, () => {}), [onAdd]);
+  }), [onAdd]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    fetch().finally(() => {
+      if (spacesActive) {
+        const space = window.dydu.space.get();
+        if (!space || spaces.indexOf(space) === -1) {
+          setPrompt('spaces');
+        }
+      }
+    });
+  }, [fetch, setPrompt, spaces, spacesActive]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
-      <Welcome/>
-      <Top />
-      {interactions.map((it, index) => ({...it, key: index}))}
-    </div>
+      <Welcome />
+      {interactions.map((it, index) => ({ ...it, key: index }))}
+      {prompt === 'gdpr' && <Gdpr />}
+      {prompt === 'spaces' && <Spaces />}
+    </div >
   );
 }
 
 
 Dialog.propTypes = {
-  interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
+  interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
 };

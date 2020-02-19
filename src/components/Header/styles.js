@@ -2,40 +2,43 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  actions: {
-    alignItems: 'center',
-    display: 'flex',
-    marginLeft: 'auto',
+  actions: () => ({
+    position: 'absolute',
+    right: 0,
+    marginRight: '.5em',
     '& > *': {
-      marginLeft: '.5em',
       pointerEvents: 'auto',
     },
-  },
-  body: {
+  }),
+  body: () => ({
     alignItems: 'center',
+    justifyContent: 'flex-start',
     display: 'flex',
-    padding: '.5em',
-  },
-  draggable: {
+    padding: '.6em',
+  }),
+  draggable: () => ({
     cursor: 'move',
     '& > *': {
       pointerEvents: 'none',
     },
-  },
+  }),
+  flat: () => ({
+    boxShadow: 'none !important',
+  }),
   root: ({ configuration }) => ({
     backgroundColor: theme.palette.primary.main,
-    borderTopLeftRadius: theme.shape.borderRadius,
-    borderTopRightRadius: theme.shape.borderRadius,
+    borderTopLeftRadius: theme.shape.radius.outer,
+    borderTopRightRadius: theme.shape.radius.outer,
     color: theme.palette.primary.text,
-    flex: '0 0 auto',
     position: 'relative',
+    width: '100%',
     ...configuration.header.styles,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
       ...configuration.header.stylesMobile,
     },
   }),
-  title: {
+  title: () => ({
     padding: '.5em',
-  },
+  }),
 }));

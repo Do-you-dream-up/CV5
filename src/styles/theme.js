@@ -1,9 +1,16 @@
+import 'typeface-assistant';
 import breakpoints from './breakpoints';
 
 
 export default {
 
   breakpoints,
+
+  font: {
+    monospace: 'monospace',
+    sansSerif: '"Assistant", sans-serif',
+    serif: 'sans-serif',
+  },
 
   palette: {
     action: {
@@ -13,30 +20,32 @@ export default {
       selected: 'rgba(0, 0, 0, .08)',
     },
     background: {
-      default: '#FAFAFA',
-      highlight: 'rgba(255, 255, 255, .4)',
+      default: '#F5F5F5',
+      dim: 'rgba(0, 0, 0, .05)',
+      highlight: 'rgba(0, 0, 0, .05)',
       menu: '#FFFFFF',
       overlay: 'rgba(0, 0, 0, .6)',
+      paper: '#FFFFFF',
       secondary: '#FFFFFF',
       skeleton: 'rgba(0, 0, 0, .08)',
     },
     divider: 'rgba(0, 0, 0, 0.12)',
     error: {
-      main: '#FF8A65',
-      text: 'rgba(0, 0, 0, .87)',
+      main: '#FF5252',
+      text: '#FFFFFF',
     },
     primary: {
       dark: '#0288D1',
       light: '#B3E5FC',
-      main: '#03A9F4',
+      main: '#3636B9',
       text: '#FFFFFF',
     },
     request: {
-      background: '#FFFFFF',
+      background: '#D3D3F7',
       text: 'rgba(0, 0, 0, .87)',
     },
     response: {
-      background: '#B3E5FC',
+      background: '#FFFFFF',
       text: 'rgba(0, 0, 0, .87)',
     },
     secondary: {
@@ -44,8 +53,8 @@ export default {
       text: '#FFFFFF',
     },
     success: {
-      main: '#81C784',
-      text: 'rgba(0, 0, 0, .87)',
+      main: '#2CBF87',
+      text: '#FFFFFF',
     },
     text: {
       disabled: 'rgba(0, 0, 0, .38)',
@@ -57,9 +66,9 @@ export default {
       background: '#616161E6',
       text: '#FFFFFF',
     },
-    warning: {
-      main: '#FFB74D',
-      text: 'rgba(0, 0, 0, .87)',
+    warning:{
+      main: '#F3B63B',
+      text: '#FFFFFF',
     },
   },
 
@@ -92,6 +101,9 @@ export default {
   ],
 
   shape: {
-    borderRadius: 4,
+    radius: {
+      inner: 4,
+      outer: 8,
+    },
   },
 };

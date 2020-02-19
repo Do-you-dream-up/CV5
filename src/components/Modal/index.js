@@ -16,16 +16,17 @@ export default function Modal() {
   const { configuration } = useContext(ConfigurationContext);
   const { Component, onReject, onResolve, options, thinking } = useContext(ModalContext);
   const classes = useStyles({configuration});
+  const { dismissable, variant } = options;
 
   const onClick = event => {
     event.stopPropagation();
   };
 
-  const onDismiss = options.dismissable ? onReject : null;
+  const onDismiss = dismissable ? onReject : null;
 
   return !!Component && (
     <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>
-      <Component className={c('dydu-modal', classes.modal)}
+      <Component className={c('dydu-modal', classes[variant])}
                  component={Paper}
                  onClick={onClick}
                  onReject={onReject}

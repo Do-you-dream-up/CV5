@@ -12,11 +12,11 @@ export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const [ interactions, setInteractions ] = useState([]);
+  const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { active: showFeedback } = configuration.feedback;
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback(interaction => {
@@ -31,24 +31,27 @@ export function DialogProvider({ children }) {
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
       }
-      add(<Interaction text={text} type="request" />);
+      add(<Interaction children={text} type="request" />);
     }
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ askFeedback, sidebar, text }) => {
+  const addResponse = useCallback(({ askFeedback, sidebar, text, urlRedirect }) => {
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }
+    if (urlRedirect) {
+      window.open(urlRedirect, '_blank');
+    }
     add(
-      <Interaction hasFeedback={!!(showFeedback && askFeedback)}
-                   text={text}
+      <Interaction askFeedback={askFeedback}
+                   children={text}
                    type="response"
                    secondary={sidebar}
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, showFeedback, toggleSecondary]);
+  }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
@@ -76,9 +79,11 @@ export function DialogProvider({ children }) {
     addResponse,
     empty,
     interactions,
+    prompt,
     secondaryActive,
     secondaryContent,
     setSecondary,
+    setPrompt,
     toggleSecondary,
   }} />;
 }

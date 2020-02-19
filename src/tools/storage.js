@@ -27,7 +27,8 @@ export class Cookie {
    * @param {Object|number} [options] - Extra options or lifespan duration in days.
    */
   static set = (name, value, options = {}) => {
-    value = typeof value === 'object' ? JSON.stringify(value) : value || Math.floor(Date.now() / 1000);
+    value = value === undefined ? Math.floor(Date.now() / 1000) : value;
+    value = typeof value === 'object' ? JSON.stringify(value) : value;
     options = {expires: typeof options === 'number' ? options : Cookie.duration.short, ...options};
     cookie.set(name, value, options);
   };
@@ -48,6 +49,7 @@ export class Local {
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
     secondary: 'dydu.secondary',
+    space: 'dydu.space',
   };
 
 
@@ -69,14 +71,17 @@ export class Local {
    *
    * @param {string} name - Name of the local storage variable to fetch.
    * @param {*} [fallback] - Value or function to fallback to if the name was
-   *                                       not found.
+   *                         not found.
+   * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
    */
-  static get = (name, fallback) => {
-    const value = localStorage.getItem(name);
-    if (!value && fallback) {
-      this.set(name, typeof fallback === 'function' ? fallback() : fallback);
-      return this.get(name);
+  static get = (name, fallback, save) => {
+    let value = localStorage.getItem(name);
+    if (!value && fallback !== undefined) {
+      value = typeof fallback === 'function' ? fallback() : fallback;
+      if (save) {
+        this.set(name, value);
+      }
     }
     try {
       return JSON.parse(value);
@@ -94,7 +99,8 @@ export class Local {
    * @param {*} [rest] - Extra options to pass to `localStorage.setItem`.
    */
   static set = (name, value, ...rest) => {
-    value = typeof value === 'object' ? JSON.stringify(value) : value || Math.floor(Date.now() / 1000);
+    value = value === undefined ? Math.floor(Date.now() / 1000) : value;
+    value = typeof value === 'object' ? JSON.stringify(value) : value;
     localStorage.setItem(name, value, ...rest);
   };
 }

@@ -2,28 +2,28 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  base: {
+  base: () => ({
     display: 'block',
-  },
-  error: {
+  }),
+  error: () => ({
     fill: theme.palette.error.main,
-  },
-  pending: {
+  }),
+  pending: () => ({
     fill: theme.palette.warning.main,
-  },
-  root: {
+  }),
+  root: () => ({
     position: 'relative',
     '&:hover $tooltip': {
       opacity: 1,
       pointerEvents: 'initial',
     },
-  },
-  success: {
+  }),
+  success: () => ({
     fill: theme.palette.success.main,
-  },
-  tooltip: {
+  }),
+  tooltip: () => ({
     backgroundColor: theme.palette.tooltip.background,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     color: theme.palette.tooltip.text,
     fontSize: '.8em',
     marginRight: '.6em',
@@ -37,5 +37,5 @@ export default createUseStyles(theme => ({
     transitionDuration: '.2s',
     transitionProperty: 'opacity',
     whiteSpace: 'nowrap',
-  },
+  }),
 }));

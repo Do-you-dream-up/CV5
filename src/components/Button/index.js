@@ -4,43 +4,74 @@ import React from 'react';
 import useStyles from './styles';
 
 
+// eslint-disable-next-line react/display-name
+export default React.forwardRef((props, ref) => <ButtonBase {...props} reference={ref} />);
+
+
 /**
  * Re-usable button component.
  *
  * An icon button typically accepts an image as its child while the default
  * variant is best used with text.
  */
-function Button({ color, component, filled, reference, variant, ...rest }) {
+export function ButtonBase({
+  children,
+  color,
+  component,
+  grow,
+  href,
+  icon: getIcon,
+  onClick,
+  reference,
+  spin,
+  target,
+  type,
+  variant,
+  ...rest
+}) {
+
   const classes = useStyles({color});
-  const type = variant.toLowerCase();
-  return React.createElement(component, {
+  const icon = typeof(getIcon) === 'function' ? getIcon() : getIcon;
+
+  const button = (
+    <div children={children} className={classes.children}>
+      {icon && <img alt={icon} src={icon} className={c({[classes.spin]: spin})} />}
+      <span children={children} />
+    </div>
+  );
+
+  return React.createElement(href ? 'a' : component, {
     ...rest,
-    className: c(
-      'dydu-button',
-      `dydu-button-${type}`,
-      classes.base,
-      classes[type],
-      {[classes.filled]: type === 'default' || filled},
-    ),
+    ...(href ? {href, target} : {onClick, type}),
+    className: c('dydu-button',
+                 `dydu-button-${variant}`,
+                 classes.base,
+                 classes[variant],
+                 {[classes.grow]: grow},
+                ),
     ref: reference,
-  });
+  }, button);
 }
 
 
-Button.defaultProps = {
+ButtonBase.defaultProps = {
   component: 'button',
-  variant: 'default',
+  target: '_blank',
+  variant: 'contained',
 };
 
 
-Button.propTypes = {
-  color: PropTypes.oneOf(['error', 'success', 'warning']),
+ButtonBase.propTypes = {
+  children: PropTypes.node,
+  color: PropTypes.oneOf(['error', 'primary', 'success', 'warning']),
   component: PropTypes.node,
-  filled: PropTypes.bool,
+  grow: PropTypes.bool,
+  href: PropTypes.string,
+  icon: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+  onClick: PropTypes.func,
   reference: PropTypes.exact({current: PropTypes.object}),
-  variant: PropTypes.oneOf(['default', 'icon']),
+  spin: PropTypes.bool,
+  target: PropTypes.string,
+  type: PropTypes.string,
+  variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };
-
-
-// eslint-disable-next-line react/display-name
-export default React.forwardRef((props, ref) => <Button {...props} reference={ref} />);

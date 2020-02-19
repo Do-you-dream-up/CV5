@@ -5,25 +5,22 @@
     "languages": ["en", "fr"]
   },
   "avatar": {
-    "styles": {
-      "shadow": true
-    },
+    "background": false,
+    "styles": {},
     "stylesMobile": {}
   },
   "banner": {
     "active": true,
     "cookie": true,
     "dismissable": true,
-    "styles": {
-      "maxHeight": 200
-    },
+    "more": true,
+    "moreLink": "https://goo.gle",
+    "styles": {},
     "stylesMobile": {},
     "transient": false
   },
   "bubble": {
-    "styles": {
-      "shadow": true
-    },
+    "styles": {},
     "stylesMobile": {}
   },
   "chatbox": {
@@ -52,9 +49,11 @@
   },
   "feedback": {
     "active": true,
+    "askChoices": true,
     "askComment": true
   },
   "footer": {
+    "more": true,
     "styles": {
       "shadow": true
     },
@@ -83,10 +82,8 @@
     "stylesMobile": {}
   },
   "loader": {
-    "size": 3,
-    "styles": {
-      "shadow": true
-    },
+    "size": 5,
+    "styles": {},
     "stylesMobile": {}
   },
   "menu": {
@@ -102,7 +99,9 @@
   },
   "onboarding": {
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "tips": true,
+    "top": true
   },
   "root": "dydu-root",
   "secondary": {
@@ -115,23 +114,31 @@
     "stylesMobile": {},
     "transient": true
   },
+  "spaces": {
+    "active": true,
+    "items": ["default", "foo", "bar"]
+  },
   "suggestions": {
+    "limit": 3,
     "styles": {
       "shadow": 6
     },
     "stylesMobile": {}
   },
   "tabs": {
-    "items": ["dialog", "contacts"],
-    "selected": 0,
+    "items": [
+      {"icon": "icons/message-text.png", "key": "dialog"},
+      {"icon": "icons/account-box.png", "key": "contacts"}
+    ],
+    "selected": "dialog",
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "title": false
   },
   "teaser": {
     "styles": {
       "bottom": 16,
-      "right": 16,
-      "shadow": 6
+      "right": 16
     },
     "stylesMobile": {}
   },

@@ -12,8 +12,8 @@ export default createUseStyles(theme => ({
   }),
 
   container: () => ({
-    backgroundColor: theme.palette.background.highlight,
-    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.dim,
+    borderRadius: theme.shape.radius.inner,
     flexGrow: 1,
     overflow: 'hidden',
   }),
@@ -65,7 +65,7 @@ export default createUseStyles(theme => ({
 
   suggestions: ({ configuration }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     bottom: '100%',
     left: 0,
     margin: 8,

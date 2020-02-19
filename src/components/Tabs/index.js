@@ -14,24 +14,26 @@ import useStyles from './styles';
 export default function Tabs() {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { select, state: tabState } = useContext(TabContext);
-  const classes = useStyles({configuration});
+  const { current, select, tabs = [] } = useContext(TabContext) || {};
+  const classes = useStyles({configuration, current, length: tabs.length});
   const { ready, t } = useTranslation('tabs');
-  const { items = [] } = configuration.tabs;
+  const { title: hasTitle } = configuration.tabs;
 
-  return !!items.length && (
+  return !!tabs.length && (
     <div className={c('dydu-tabs', classes.root)}>
-      {items.map((it, index) => {
-        const onClick = it ? select(it) : null;
-        const names = c(
-          'dydu-tab',
-          classes.tab,
-          onClick ? classes.enabled : classes.disabled,
-          {[classes.selected]: tabState.current === it},
-        );
+      <div className={classes.indicator} />
+      {tabs.map(({ icon, key }, index) => {
+        const label = t(key);
         return (
-          <div className={names} key={index} onClick={onClick} title={t(`${it}.title`)}>
-            <Skeleton children={t(`${it}.text`)} hide={!ready} variant="text" width="4em" />
+          <div className={c('dydu-tab', classes.tab)} key={index} onClick={select(key)} title={label}>
+            <div className={c('dydu-tab-label', classes.label, {[classes.selected]: current === index})}>
+              {!!icon && <img alt={label} className={classes.icon} src={icon} />}
+              {!!hasTitle && (
+                <Skeleton hide={!ready} variant="text" width="4em">
+                  <span children={label} />
+                </Skeleton>
+              )}
+            </div>
           </div>
         );
       })}

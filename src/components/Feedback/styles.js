@@ -30,7 +30,7 @@ export default createUseStyles(theme => ({
     extend: 'commentFieldBase',
     backgroundColor: theme.palette.background.highlight,
     border: 0,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     height: '100%',
     outline: 'none',
     position: 'absolute',

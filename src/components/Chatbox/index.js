@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
-import { ModalContext } from '../../contexts/ModalContext';
+import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
+import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
+import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
@@ -12,8 +13,8 @@ import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
+import Dragon from '../Dragon';
 import Footer from '../Footer';
-import Gdpr from '../Gdpr';
 import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
@@ -26,7 +27,7 @@ import useStyles from './styles';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
+export default function Chatbox({ open, root, toggle, ...rest}) {
 
   const { configuration } = useContext(ConfigurationContext);
   const {
@@ -36,11 +37,14 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
     empty,
     interactions,
     secondaryActive,
+    setPrompt,
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const { active: onboardingActive } = useContext(OnboardingContext);
   const { modal } = useContext(ModalContext);
-  const [ showGdprDisclaimer, setShowGdprDisclaimer ] = useState(false);
+  const [ gdprShowDisclaimer, setGdprShowDisclaimer ] = useState(false);
+  const [ gdprPassed, setGdprPassed ] = useState(false);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
@@ -48,7 +52,7 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
   const ask = useCallback((text, options) => {
     text = text.trim();
-    if (text) {
+    if (text && ['redirection_newpage'].indexOf(options.type) === -1) {
       options = Object.assign({hide: false}, options);
       if (!options.hide) {
         addRequest(text);
@@ -68,10 +72,9 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
         set: (name, value) => dydu.variable(name, value),
       };
 
-      window.dydu.gdpr = () => modal(Gdpr, ({ email, method }) => dydu.gdpr({email, method}).then(
-        () => window.dydu.chat.reply(t('gdpr:get.success')),
-        () => window.dydu.chat.reply(t('gdpr:get.error')),
-      )).then(() => {}, () => {});
+      window.dydu.gdpr = {
+        prompt: () => setPrompt('gdpr'),
+      };
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
@@ -82,8 +85,17 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       };
 
       window.dydu.lorem = {
-        standard: () => window.dydu.chat.reply(LOREM_HTML),
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
+        standard: () => window.dydu.chat.reply(LOREM_HTML),
+      };
+
+      window.dydu.space = {
+        get: () => dydu.getSpace(),
+        prompt: () => setPrompt('spaces'),
+        set: (space, { quiet } = {}) => dydu.setSpace(space).then(
+          space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
+          () => {},
+        ),
       };
 
       window.dydu.ui = {
@@ -96,20 +108,30 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
 
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, i, modal, setSecondary, t, toggle, toggleSecondary]);
+  }, [addResponse, ask, empty, i, modal, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 
   useEffect(() => {
-    if (showGdprDisclaimer) {
-      setShowGdprDisclaimer(false);
-      modal(GdprDisclaimer, null, {dismissable: false}).then(() => {
-        Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
-      });
+    if (gdprShowDisclaimer) {
+      setGdprShowDisclaimer(false);
+      modal(GdprDisclaimer, null, {dismissable: false, variant: 'full'}).then(
+        () => {
+          Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+          setGdprPassed(true);
+        },
+        () => {
+          setGdprShowDisclaimer(true);
+          toggle(1)();
+        },
+      );
     }
-  }, [showGdprDisclaimer, modal]);
+  }, [gdprShowDisclaimer, modal, toggle]);
 
   useEffect(() => {
     if (!Cookie.get(Cookie.names.gdpr)) {
-      setShowGdprDisclaimer(true);
+      setGdprShowDisclaimer(true);
+    }
+    else {
+      setGdprPassed(true);
     }
   }, []);
 
@@ -118,31 +140,46 @@ const Chatbox = React.forwardRef(({ open, toggle, ...rest }, root) => {
       <div className={c('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
            ref={root}
            {...rest}>
-        <Onboarding render>
-          <div className={c(
-            'dydu-chatbox-body',
-            classes.body,
-            {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
-          )}>
-            <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
-            <Tab component={Contacts} value="contacts" />
-          </div>
-          {secondaryMode === 'over' && <Secondary />}
-          <Footer onRequest={addRequest} onResponse={addResponse} />
-        </Onboarding>
-        <Header onClose={toggle(1)} style={{order: -1}} />
-        {secondaryMode !== 'over' && <Secondary anchor={root} />}
+        {gdprPassed && (
+          <>
+            <Onboarding render>
+              <div className={c(
+                'dydu-chatbox-body',
+                classes.body,
+                {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
+              )}>
+                <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
+                <Tab component={Contacts} value="contacts" />
+              </div>
+              {secondaryMode === 'over' && <Secondary />}
+              <Footer onRequest={addRequest} onResponse={addResponse} />
+            </Onboarding>
+            {secondaryMode !== 'over' && <Secondary anchor={root} />}
+          </>
+        )}
         <Modal />
+        <Header minimal={!gdprPassed || onboardingActive} onClose={toggle(1)} style={{order: -1}} />
       </div>
     </TabProvider>
   );
-});
+}
 
 
 Chatbox.propTypes = {
   open: PropTypes.bool.isRequired,
+  root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
   toggle: PropTypes.func.isRequired,
 };
 
 
-export default Chatbox;
+export function ChatboxWrapper(rest) {
+  return (
+    <DialogProvider>
+      <OnboardingProvider>
+        <ModalProvider>
+          <Dragon component={Chatbox} {...rest} />
+        </ModalProvider>
+      </OnboardingProvider>
+    </DialogProvider>
+  );
+}

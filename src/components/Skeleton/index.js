@@ -19,6 +19,7 @@ SkeletonCircle.propTypes = {
 function SkeletonParagraph({ height, width }) {
   return (
     <div style={{width: '100%'}}>
+      <SkeletonText width="80%" />
       <SkeletonRectangle height={height} width={width} />
       <SkeletonText width="60%" />
     </div>

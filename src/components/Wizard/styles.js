@@ -2,26 +2,29 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
-  entry: {
+  entry: () => ({
     backgroundColor: theme.palette.primary.light,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[1],
     margin: '.5em',
-    padding: '1.5em',
+    padding: '1em',
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
       marginLeft: 0,
       marginRight: 0,
     },
-  },
-  entryContainer: {
+  }),
+  entryContainer: () => ({
     flexGrow: 1,
-  },
-  fields: {
+  }),
+  fields: () => ({
     listStyleType: 'none',
     margin: 0,
-    padding: '0 !important',
-  },
+    padding: 0,
+    '& > :not(:last-child)': {
+      marginBottom: '.5em',
+    },
+  }),
   root: ({ configuration }) => {
     const { right, width } = configuration.chatbox.styles;
     return {
@@ -31,7 +34,7 @@ export default createUseStyles(theme => ({
       left: 0,
       overflowY: 'auto',
       padding: '.5em',
-      paddingTop: 'calc(1.5em + 20px)',
+      paddingTop: '2em',
       position: 'absolute',
       right: right + width + right,
       top: 0,
@@ -43,4 +46,9 @@ export default createUseStyles(theme => ({
       },
     };
   },
+  title: () => ({
+    fontWeight: 'normal',
+    marginTop: 0,
+    textTransform: 'capitalize',
+  }),
 }));

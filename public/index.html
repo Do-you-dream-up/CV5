@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style type="text/css">body { margin: 1em; }</style>
+    <style type="text/css">body { font-family: monospace; margin: 1.2em; }</style>
     <title>Dydu Chatbox</title>
   </head>
   <body>
-    <a href="https://git.nereide.dydu.ai/mmarques/bliss/commits/<%= branch %>/" style="text-decoration: none">
-      <img alt="Pipeline Status" src="https://git.nereide.dydu.ai/mmarques/bliss/badges/<%= branch %>/pipeline.svg" />
-    </a>
-    <a href="https://git.nereide.dydu.ai/mmarques/bliss/commits/<%= branch %>/" style="text-decoration: none">
-      <img alt="Coverage Report" src="https://git.nereide.dydu.ai/mmarques/bliss/badges/<%= branch %>/coverage.svg" />
-    </a>
+    <div>
+      <span style="color: #FF4081">v<%= version %></span>
+      <span style="color: #03A9F4"><%= now %></span>
+      <span><%= hash %></span>
+    </div>
     <div id="dydu-root"></div>
   </body>
 </html>

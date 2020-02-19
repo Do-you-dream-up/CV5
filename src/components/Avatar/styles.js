@@ -2,24 +2,31 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  background: ({ type }) => ({
+    backgroundColor: theme.palette[type].background,
+  }),
   base: ({ configuration }) => ({
+    alignItems: 'center',
     borderRadius: '50%',
+    display: 'flex',
     height: '3em',
-    margin: ['.5em', 0],
+    justifyContent: 'center',
     minWidth: '3em',
     width: '3em',
+    '& > *': {
+      height: '75%',
+      width: '75%',
+    },
     ...configuration.avatar.styles,
     [theme.breakpoints.down('xs')]: configuration.avatar.stylesMobile,
   }),
-  request: {
-    backgroundColor: theme.palette.request.background,
+  request: () => ({
     color: theme.palette.request.text,
-    marginLeft: '.5em !important',
+    marginLeft: '.5em',
     order: 2,
-  },
-  response: {
-    backgroundColor: theme.palette.response.background,
+  }),
+  response: () => ({
     color: theme.palette.response.text,
-    marginRight: '.5em !important',
-  },
+    marginRight: '.5em',
+  }),
 }));

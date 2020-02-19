@@ -21,7 +21,12 @@ export default function Teaser({ open, toggle }) {
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
          onClick={toggle(2)}
          title={title}>
-      <Skeleton children={title} hide={!ready} width="3em" />
+      <div className={c('dydu-teaser-button', classes.button)}>
+        <Skeleton children={title} hide={!ready} width="3em" />
+      </div>
+      <div className={c('dydu-teaser-brand', classes.brand)}>
+        <img alt={title} src="assets/dydu.png" />
+      </div>
     </div>
   );
 }

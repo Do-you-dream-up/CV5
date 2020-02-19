@@ -1,9 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import { DialogContext } from  '../../contexts/DialogContext';
-import usePrevious from  '../../tools/hooks/previous';
 import sanitize from  '../../tools/sanitize';
 import { Local } from '../../tools/storage';
 import Actions from  '../Actions';
@@ -21,17 +20,24 @@ import useStyles from  './styles';
  * depending on the content. Interactions are split after the horizontal rule
  * HTML tag.
  */
-export default function Interaction({ hasFeedback, history, live, secondary, text, thinking, type }) {
+export default function Interaction({
+  askFeedback,
+  children,
+  className,
+  history,
+  scroll,
+  secondary,
+  thinking,
+  type,
+}) {
 
+  children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
   const { setSecondary, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
   const [ ready, setReady ] = useState(false);
-  const previousText = usePrevious(text);
-  const bubblesRef = useRef(bubbles);
-  bubblesRef.current = bubbles;
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const automaticSecondary = !!configuration.secondary.automatic;
@@ -41,7 +47,8 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
-        setBubbles([...bubblesRef.current, newBubbles.shift()]);
+        const newBubble = newBubbles.shift();
+        setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
         if (newBubbles.length) {
           addBubbles(newBubbles);
         }
@@ -58,42 +65,57 @@ export default function Interaction({ hasFeedback, history, live, secondary, tex
 
   useEffect(() => {
     if (secondary) {
-      secondary.body = secondary.content;
-      setSecondary(secondary);
+      setSecondary({body: secondary.content, ...secondary});
       toggleSecondary(Local.get(Local.names.secondary) || (!history && automaticSecondary))();
     }
   }, [automaticSecondary, history, secondary, setSecondary, toggleSecondary]);
 
   useEffect(() => {
-    if (text !== previousText && (!ready || live)) {
+    if (!ready && children) {
       setReady(true);
-      addBubbles(sanitize(text).split('<hr>'));
+      const content = children.reduce((accumulator, it) => (
+        typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
+      ), []);
+      addBubbles(content.filter(it => it));
     }
-  }, [addBubbles, live, previousText, ready, text]);
+  }, [addBubbles, children, ready]);
 
   return (bubbles.length || hasLoader) && (
-    <div className={c('dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type])}>
+    <div className={c(
+      'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type], className,
+    )}>
       {hasAvatar && <Avatar type={type} />}
       <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
         {bubbles.map((it, index) => {
-          let actions = secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : [];
-          actions = <Actions actions={actions} />;
-          return <Bubble actions={actions} component={Scroll} html={it} key={index} type={type} />;
+          const actions = [...(secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : [])];
+          const attributes = {
+            actions: !!actions.length && <Actions actions={actions} />,
+            component: scroll ? Scroll : undefined,
+            type: type,
+            [typeof it === 'string' ? 'html' : 'children']: it,
+          };
+          return <Bubble key={index} {...attributes} />;
         })}
-        {hasLoader && <Loader />}
-        {!hasLoader && hasFeedback && <Feedback />}
+        {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
+        {!hasLoader && askFeedback && <Feedback />}
       </div>
     </div>
   );
 }
 
 
+Interaction.defaultProps = {
+  scroll: true,
+};
+
+
 Interaction.propTypes = {
-  hasFeedback: PropTypes.bool,
+  askFeedback: PropTypes.bool,
+  children: PropTypes.node,
+  className: PropTypes.string,
   history: PropTypes.bool,
-  live: PropTypes.bool,
+  scroll: PropTypes.bool,
   secondary: PropTypes.object,
-  text: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

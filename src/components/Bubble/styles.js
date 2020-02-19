@@ -2,14 +2,28 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  actions: () => ({
+    '&:not(:first-child)': {
+      marginTop: '1em',
+    },
+  }),
   base: ({ configuration }) => ({
-    borderRadius: theme.shape.borderRadius,
+    alignItems: 'center',
+    borderRadius: theme.shape.radius.inner,
+    display: 'flex',
+    minHeight: '3em',
     overflow: 'hidden',
-    padding: '1em',
     position: 'relative',
     wordBreak: 'break-word',
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
     ...configuration.bubble.styles,
     [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
+  }),
+  body: () => ({
+    padding: [['.8em', '1em']],
+    width: '100%',
   }),
   progress: () => ({
     position: 'absolute',

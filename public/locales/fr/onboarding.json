@@ -1,0 +1,16 @@
+{
+  "carousel": {
+    "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "title": "Quelques astuces"
+  },
+  "preamble": "<p>Quelques informations avant de commencer</p>",
+  "skip": {
+    "button": "Dialoguer avec le Chatbot",
+    "title": "Démarrez une conversation"
+  },
+  "top": {
+    "title": "Voici les questions les plus posées"
+  }
+}

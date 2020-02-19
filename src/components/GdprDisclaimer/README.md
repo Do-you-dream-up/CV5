@@ -1,5 +1,5 @@
-```js static
-const onError = () => {};
-const onSuccess = () => {};
-modal(GdprDisclaimer).then(onSuccess, onError);
+```jsx
+const onDismiss = () => alert('Dismissed!');
+
+<GdprDisclaimer onResolve={onDismiss} />
 ```

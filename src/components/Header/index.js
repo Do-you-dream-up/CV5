@@ -8,7 +8,6 @@ import { OnboardingContext } from '../../contexts/OnboardingContext';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
-import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
@@ -18,49 +17,43 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ onClose, ...rest }) {
+export default function Header({ minimal, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { onDragStart } = useContext(DragonContext);
-  const { active: onboardingActive } = useContext(OnboardingContext);
+  const { onDragStart } = useContext(DragonContext) || {};
+  const { active: onboardingActive } = useContext(OnboardingContext) || {};
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const [ t, i, ready ] = useTranslation('header');
   const { languages = [] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
-  const actionGdpr = t('actions.gdpr');
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
 
+
   const languagesMenu = [languages.sort().map(id => ({
     id,
-    onClick: () => window.dydu.localization.set(id),
+    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
+
   const moreMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,
   }))];
-  const onGdpr = () => window.dydu.gdpr();
 
   const actions = [
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
-      getMenuItems: () => languagesMenu,
-      getMenuSelected: () => i.languages[0],
+      items: () => languagesMenu,
+      selected: () => i.languages[0],
       variant: 'icon',
       when: languagesMenu.flat().length > 1,
     },
     {
-      children: <img alt={actionGdpr} src="icons/shield-lock.png" title={actionGdpr} />,
-      onClick: onGdpr,
-      variant: 'icon',
-      when: !onboardingActive,
-    },
-    {
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
-      getMenuItems: () => moreMenu,
+      items: () => moreMenu,
       variant: 'icon',
       when: !onboardingActive && moreMenu.flat().length > 0,
     },
@@ -72,7 +65,7 @@ export default function Header({ onClose, ...rest }) {
   ];
 
   return (
-    <header className={c('dydu-header', classes.root)} {...rest}>
+    <header className={c('dydu-header', classes.root, {[classes.flat]: minimal})} {...rest}>
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
@@ -83,15 +76,18 @@ export default function Header({ onClose, ...rest }) {
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
-      <Onboarding>
-        <Tabs />
-        <Banner />
-      </Onboarding>
+      {!minimal && (
+        <>
+          <Tabs />
+          <Banner />
+        </>
+      )}
     </header>
   );
 }
 
 Header.propTypes = {
+  minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

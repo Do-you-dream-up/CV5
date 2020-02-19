@@ -12,27 +12,37 @@ import useStyles from './styles';
  *
  * The loader size determines the number of bullets.
  */
-export default function Loader({ size: defaultSize }) {
+export default function Loader({ className, scroll, size, variant }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
-  const size = defaultSize || configuration.loader.size;
-  return (
-    <Scroll className={c('dydu-loader', classes.root)}>
-      {[...Array(size)].map((it, index) => (
-        <div className={c('dydu-loader-bullet', classes.bullet)}
-             key={index}
-             style={{animationDelay: `${index / 10}s`}} />
-      ))}
-    </Scroll>
+  const { size: defaultSize } = configuration.loader;
+  return React.createElement(
+    scroll ? Scroll : 'div',
+    {className: c('dydu-loader', classes.root, className)},
+    (
+      <>
+        {[...Array(size || defaultSize)].map((it, index) => (
+          <div className={c('dydu-loader-bullet', classes.item, classes[variant])}
+               key={index}
+               style={{animationDelay: `${index / 10}s`}} />
+        ))}
+      </>
+    ),
   );
 }
 
 
 Loader.defaultProps = {
-  size: 3,
+  component: 'div',
+  scroll: true,
+  variant: 'bars',
 };
 
 
 Loader.propTypes = {
+  className: PropTypes.string,
+  component: PropTypes.elementType,
+  scroll: PropTypes.bool,
   size: PropTypes.number,
+  variant: PropTypes.oneOf(['bars', 'bubbles']),
 };

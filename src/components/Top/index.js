@@ -1,32 +1,20 @@
 import c from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import dydu from '../../tools/dydu';
-import Interaction from '../Interaction';
-import useStyles from './styles';
+import PrettyHtml from  '../PrettyHtml';
 
 
 /**
  * Fetch the top-asked resources and display them in a numbered list.
  */
-export default function Top() {
+export default function Top({ className, component, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({configuration});
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
-  const { t } = useTranslation('top');
   const { size } = configuration.top;
-  const html = !!items.length && [
-    t('text'),
-    '<ol>',
-    items.map(({ reword }) => {
-      const ask = `window.dydu.chat.ask('${reword}')`;
-      return `<li><span class="dydu-link" onclick="${ask}">${reword}</span></li>`;
-    }).join(''),
-    '</ol>',
-  ].join('');
 
   const fetch = useCallback(() => !!size && dydu.top(size).then(({ knowledgeArticles }) => {
     try {
@@ -47,9 +35,27 @@ export default function Top() {
     }
   }, [fetch, ready]);
 
-  return html && (
-    <article className={c('dydu-top', classes.root)}>
-      <Interaction live text={html} type="response" />
-    </article>
+  return !!items.length && (
+    React.createElement(component, {className: c('dydu-top', className), ...rest}, (
+      <PrettyHtml>
+        <ol>
+          {items.map(({ reword }, index) => {
+            const onAsk = () => window.dydu.chat.ask(reword);
+            return <li key={index}><span children={reword} className="dydu-link" onClick={onAsk} /></li>;
+          })}
+        </ol>
+      </PrettyHtml>
+    ))
   );
 }
+
+
+Top.defaultProps = {
+  component: 'div',
+};
+
+
+Top.propTypes = {
+  className: PropTypes.string,
+  component: PropTypes.elementType,
+};
