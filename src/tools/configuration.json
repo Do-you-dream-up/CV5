@@ -119,6 +119,7 @@
     "items": ["default", "foo", "bar"]
   },
   "suggestions": {
+    "limit": 3,
     "styles": {
       "shadow": 6
     },
