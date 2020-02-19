@@ -8,7 +8,6 @@ import { OnboardingContext } from '../../contexts/OnboardingContext';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
-import Onboarding from '../Onboarding';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
@@ -18,7 +17,7 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ flat, onClose, ...rest }) {
+export default function Header({ minimal, onClose, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -66,7 +65,7 @@ export default function Header({ flat, onClose, ...rest }) {
   ];
 
   return (
-    <header className={c('dydu-header', classes.root, {[classes.flat]: flat})} {...rest}>
+    <header className={c('dydu-header', classes.root, {[classes.flat]: minimal})} {...rest}>
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
@@ -77,16 +76,18 @@ export default function Header({ flat, onClose, ...rest }) {
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
-      <Onboarding>
-        <Tabs />
-        <Banner />
-      </Onboarding>
+      {!minimal && (
+        <>
+          <Tabs />
+          <Banner />
+        </>
+      )}
     </header>
   );
 }
 
 Header.propTypes = {
+  minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  flat: PropTypes.bool,
   style: PropTypes.object,
 };

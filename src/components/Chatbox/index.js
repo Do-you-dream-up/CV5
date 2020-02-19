@@ -141,22 +141,24 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
            ref={root}
            {...rest}>
         {gdprPassed && (
-          <Onboarding render>
-            <div className={c(
-              'dydu-chatbox-body',
-              classes.body,
-              {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
-            )}>
-              <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
-              <Tab component={Contacts} value="contacts" />
-            </div>
-            {secondaryMode === 'over' && <Secondary />}
-            <Footer onRequest={addRequest} onResponse={addResponse} />
-          </Onboarding>
+          <>
+            <Onboarding render>
+              <div className={c(
+                'dydu-chatbox-body',
+                classes.body,
+                {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
+              )}>
+                <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
+                <Tab component={Contacts} value="contacts" />
+              </div>
+              {secondaryMode === 'over' && <Secondary />}
+              <Footer onRequest={addRequest} onResponse={addResponse} />
+            </Onboarding>
+            {secondaryMode !== 'over' && <Secondary anchor={root} />}
+          </>
         )}
         <Modal />
-        <Header flat={onboardingActive} onClose={toggle(1)} style={{order: -1}} />
-        {secondaryMode !== 'over' && <Secondary anchor={root} />}
+        <Header minimal={!gdprPassed || onboardingActive} onClose={toggle(1)} style={{order: -1}} />
       </div>
     </TabProvider>
   );
