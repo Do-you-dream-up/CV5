@@ -113,7 +113,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
   useEffect(() => {
     if (gdprShowDisclaimer) {
       setGdprShowDisclaimer(false);
-      modal(GdprDisclaimer, null, {dismissable: false}).then(
+      modal(GdprDisclaimer, null, {dismissable: false, variant: 'full'}).then(
         () => {
           Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
           setGdprPassed(true);

@@ -17,6 +17,17 @@ export default createUseStyles(theme => ({
     maxWidth: configuration.modal.maxWidth,
     minWidth: configuration.modal.minWidth,
   }),
+  full: () => ({
+    alignItems: 'center',
+    bottom: 0,
+    boxShadow: 'none',
+    display: 'flex',
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  }),
   root: () => ({
     alignItems: 'center',
     backgroundColor: theme.palette.background.overlay,

@@ -25,6 +25,7 @@ const onOpen = ({ variant } = {}) => () => {
 <div style={{height: 250, position: 'relative', width: '100%'}}>
   <button children="Center" onClick={onOpen()} />
   <button children="Bottom" onClick={onOpen({variant: 'bottom'})} />
+  <button children="Full" onClick={onOpen({variant: 'full'})} />
   <Modal />
 </div>
 ```
