@@ -49,9 +49,9 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
       <Welcome />
-      {interactions.map((it, index) => ({ ...it, key: index }))}
-      {prompt === 'gdpr' && <Gdpr />}
-      {prompt === 'spaces' && <Spaces />}
+      { interactions.map((it, index) => ({ ...it, key: index })) }
+      { prompt === 'gdpr' && <Gdpr /> }
+      { prompt === 'spaces' && <Spaces /> }
     </div >
   );
 }

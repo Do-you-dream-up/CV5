@@ -26,8 +26,8 @@ export default function Welcome() {
   }, []);
 
   return  enable && welcomeText && (
-    <article className={c('dydu-top')}>
-      <Interaction live text={welcomeText} type="response" />
-    </article>
+    <Interaction live type="response" className={c('dydu-top')}>
+      {[welcomeText]}
+    </Interaction>
   );
 }
