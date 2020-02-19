@@ -3,8 +3,8 @@ import { useContext } from 'react';
 import { ModalContext } from '../../contexts/ModalContext';
 import Paper from '../Paper';
 
-const ModalComponent = ({ onReject, onResolve }) => (
-  <Paper>
+const ModalComponent = ({ className, onReject, onResolve }) => (
+  <Paper className={className}>
     <p children="Some prompt component." />
     <button children="Reject" onClick={onReject} />
     <button children="Resolve" onClick={onResolve} />
@@ -15,15 +15,16 @@ const { modal } = useContext(ModalContext);
 const task = () => new Promise(resolve => {
   setTimeout(resolve, 1000);
 });
-const onOpen = () => {
-  modal(ModalComponent, null, {dismissable: false}).then(
+const onOpen = ({ variant } = {}) => () => {
+  modal(ModalComponent, null, {dismissable: false, variant}).then(
     () => alert('Resolved!'),
     () => alert('Rejected!'),
   );
 };
 
-<div style={{height: 150, position: 'relative', width: '100%'}}>
-  <button children="Open" onClick={onOpen} />
+<div style={{height: 250, position: 'relative', width: '100%'}}>
+  <button children="Center" onClick={onOpen()} />
+  <button children="Bottom" onClick={onOpen({variant: 'bottom'})} />
   <Modal />
 </div>
 ```
