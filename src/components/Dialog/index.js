@@ -19,7 +19,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
-  const { active: spacesActive, items: spaces = [] } = configuration.spaces;
+  const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
@@ -37,13 +37,12 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   useEffect(() => {
     fetch().finally(() => {
       if (spacesActive) {
-        const space = window.dydu.space.get();
-        if (!space || spaces.indexOf(space) === -1) {
+        if (!window.dydu.space.get(spacesDetection)) {
           setPrompt('spaces');
         }
       }
     });
-  }, [fetch, setPrompt, spaces, spacesActive]);
+  }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>

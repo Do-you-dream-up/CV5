@@ -90,7 +90,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.space = {
-        get: () => dydu.getSpace(),
+        get: strategy => dydu.getSpace(strategy),
         prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
           space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
