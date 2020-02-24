@@ -116,6 +116,38 @@
   },
   "spaces": {
     "active": true,
+    "detection": [
+      {
+        "active": false,
+        "mode": "cookie",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "localstorage",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "urlparameter",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "global",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "route",
+        "value": {"/": "dydu"}
+      },
+      {
+        "active": false,
+        "mode": "hostname",
+        "value": {"doyoudreamup.com": "dydu"}
+      }
+    ],
     "items": ["default", "foo", "bar"]
   },
   "suggestions": {
