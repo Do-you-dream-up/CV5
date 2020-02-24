@@ -100,6 +100,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.ui = {
+        placeholder: value => setPlaceholder(value),
         secondary: (open, { body, title }) => {
           setSecondary({body, title});
           toggleSecondary(open)();
@@ -107,13 +108,9 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         toggle: mode => toggle(mode)(),
       };
 
-      window.dydu.setPlaceholder = (placeholder) => {
-        setPlaceholder(placeholder);
-      };
-
-      window.reword = window.dydu.chat.ask;
-      window.dyduCustomPlaceHolder = window.dydu.setPlaceholder;
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
+      window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
+      window.reword = window.dydu.chat.ask;
     }
   }, [addResponse, ask, empty, i, modal, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 

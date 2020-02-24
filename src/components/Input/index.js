@@ -19,6 +19,7 @@ import useStyles from './styles';
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
@@ -29,7 +30,6 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
-  const { placeholder } = useContext(DialogContext);
 
   const onChange = event => {
     setTyping(true);
@@ -106,7 +106,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ready && placeholder ? placeholder : t('placeholder').slice(0, 50),
+    placeholder: ready && (placeholder || t('placeholder')).slice(0, 50),
     value: input,
   };
 

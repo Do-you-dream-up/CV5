@@ -47,7 +47,6 @@ export function DialogProvider({ children }) {
     if(guiAction) {
      eval(guiAction);
     }
-
     add(
       <Interaction askFeedback={askFeedback}
                    children={text}
