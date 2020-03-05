@@ -106,7 +106,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ready && (placeholder || t('placeholder')).slice(0, 50),
+    placeholder: (ready && placeholder || t('placeholder')).slice(0, 50),
     value: input,
   };
 
