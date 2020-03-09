@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
-import dydu from '../tools/dydu';
 import Interaction from '../components/Interaction';
+import { parseGuiAction } from '../tools/actions';
 import useViewport from '../tools/hooks/viewport';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
@@ -45,8 +45,10 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     if (guiAction) {
-      const {action, parameter} = dydu.parseGuiAction(guiAction);
-      window[action](parameter);
+      const guiActions = parseGuiAction(guiAction);
+      guiActions.map( ({action, parameters}) => {
+        parameters ? window[action](parameters.toString()) : window[action]();
+      });
     }
     add(
       <Interaction askFeedback={askFeedback}
