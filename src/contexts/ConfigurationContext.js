@@ -15,6 +15,10 @@ export class ConfigurationProvider extends React.Component {
     this.state = {configuration: props.configuration};
   }
 
+  reset = configuration => new Promise((resolve) => this.setState(state => ({
+    configuration: {...state.configuration, ...configuration}
+  }), () => resolve(this.state.configuration)));
+
   update = (parent, key, value) => new Promise(resolve => this.setState(state => ({
     configuration: {
       ...state.configuration,
@@ -25,15 +29,11 @@ export class ConfigurationProvider extends React.Component {
     },
   }), () => resolve(this.state.configuration)));
 
-  reset = configuration => new Promise((resolve) => this.setState(state => ({
-    configuration: {...state.configuration, ...configuration}
-  }), () => resolve(this.state.configuration)));
-
   render() {
     return <ConfigurationContext.Provider children={this.props.children} value={{
       configuration: this.state.configuration,
-      update: this.update,
       reset: this.reset,
+      update: this.update,
     }} />;
   }
 }

@@ -12,7 +12,6 @@ import Actions from '../Actions';
 import useStyles from './styles';
 
 
-
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
@@ -95,10 +94,10 @@ export default function Input({ focus, onRequest, onResponse }) {
   const theme = {
     container: c('dydu-input-container', classes.container),
     input: c('dydu-input-field-text', classes.fieldText),
-    suggestionsContainer: c('dydu-suggestions', classes.suggestions),
-    suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
     suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
     suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
+    suggestionsContainer: c('dydu-suggestions', classes.suggestions),
+    suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
 
   const inputProps = {

@@ -212,19 +212,6 @@ export default new class Dydu {
   });
 
   /**
-   * Parse guiAction to return action and parameter
-   */
-  parseGuiAction = guiAction => {
-    guiAction = guiAction.replace('javascript:', '');
-    guiAction = guiAction.replace(';', '');
-    let parameter = guiAction.match(/\(.*\)/g);
-    guiAction = guiAction.replace(parameter[0], '');
-    parameter[0] = parameter[0].replace('(', '');
-    parameter[0] = parameter[0].replace(')', '');
-    return { action: guiAction, parameter: parameter[0] };
-  }
-
-  /**
    * End the current conversation and reset the context ID.
    *
    * @returns {Promise}

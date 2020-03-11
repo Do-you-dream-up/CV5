@@ -4,11 +4,11 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
 
   actions: () => ({
-    alignItems: 'center',
-    display: 'flex',
     '& > *': {
       marginLeft: '.5em',
-    }
+    },
+    alignItems: 'center',
+    display: 'flex',
   }),
 
   container: () => ({
@@ -32,8 +32,8 @@ export default createUseStyles(theme => ({
     lineHeight: '1.7em',
     overflow: 'hidden',
     padding: [['.4em', '.6em']],
-    width: '100%',
     whiteSpace: 'pre-wrap',
+    width: '100%',
     wordBreak: 'break-word',
   },
 
@@ -44,16 +44,16 @@ export default createUseStyles(theme => ({
   }),
 
   fieldText: () => ({
-    extend: 'fieldBase',
+    '&::placeholder': {
+      color: theme.palette.text.secondary,
+    },
     background: 0,
     border: 0,
+    extend: 'fieldBase',
     height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
-    '&::placeholder': {
-      color: theme.palette.text.secondary,
-    },
   }),
 
   root: ({ configuration }) => ({
@@ -80,16 +80,12 @@ export default createUseStyles(theme => ({
   }),
 
   suggestionsCandidate: () => ({
-    color: theme.palette.text.primary,
-    cursor: 'pointer',
-    padding: ['1em', '1.4em'],
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
-  }),
-
-  suggestionsSelected: () => ({
-    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.text.primary,
+    cursor: 'pointer',
+    padding: ['1em', '1.4em'],
   }),
 
   suggestionsList: () => ({
@@ -97,5 +93,9 @@ export default createUseStyles(theme => ({
     margin: 0,
     padding: ['.5em', 0],
     paddingLeft: '0 !important',
+  }),
+
+  suggestionsSelected: () => ({
+    backgroundColor: theme.palette.action.selected,
   }),
 }));

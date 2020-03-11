@@ -2,20 +2,21 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
-import { parseGuiAction } from '../tools/actions';
+import parseActions from '../tools/actions';
 import useViewport from '../tools/hooks/viewport';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
+
 
 export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const [interactions, setInteractions] = useState([]);
-  const [placeholder, setPlaceholder] = useState(null);
-  const [prompt, setPrompt] = useState('');
-  const [secondaryActive, setSecondaryActive] = useState(false);
-  const [secondaryContent, setSecondaryContent] = useState(null);
+  const [ interactions, setInteractions ] = useState([]);
+  const [ placeholder, setPlaceholder ] = useState(null);
+  const [ prompt, setPrompt ] = useState('');
+  const [ secondaryActive, setSecondaryActive ] = useState(false);
+  const [ secondaryContent, setSecondaryContent ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
@@ -45,17 +46,17 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     if (guiAction) {
-      const guiActions = parseGuiAction(guiAction);
-      guiActions.map( ({action, parameters}) => {
-        parameters ? window[action](parameters.toString()) : window[action]();
-      });
+      const actions = parseActions(guiAction);
+      actions.map(({ action, parameters }) => (
+        parameters ? window[action](parameters.toString()) : window[action]()
+      ));
     }
     add(
       <Interaction askFeedback={askFeedback}
-        children={text}
-        type="response"
-        secondary={sidebar}
-        thinking />
+                   children={text}
+                   type="response"
+                   secondary={sidebar}
+                   thinking />
     );
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
@@ -66,7 +67,7 @@ export function DialogProvider({ children }) {
 
   const setSecondary = useCallback(({ body, title, url } = {}) => {
     if (body || title || url) {
-      setSecondaryContent({ body, title, url });
+      setSecondaryContent({body, title, url});
     }
   }, []);
 

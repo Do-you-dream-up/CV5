@@ -112,7 +112,19 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, i, modal, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
+  }, [
+    addResponse,
+    ask,
+    empty,
+    i,
+    modal,
+    setPlaceholder,
+    setPrompt,
+    setSecondary,
+    t,
+    toggle,
+    toggleSecondary,
+  ]);
 
   useEffect(() => {
     if (gdprShowDisclaimer) {
