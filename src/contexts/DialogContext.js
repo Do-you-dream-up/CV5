@@ -48,9 +48,11 @@ export function DialogProvider({ children }) {
     }
     if (guiAction) {
       const actions = parseActions(guiAction);
-      actions.map(({ action, parameters }) => (
-        parameters ? window[action](parameters.toString()) : window[action]()
-      ));
+      actions.forEach(({ action, parameters }) => {
+        if (typeof window[action] === 'function') {
+          return parameters ? window[action](parameters.toString()) : window[action]();
+        }
+      });
     }
     add(
       <Interaction askFeedback={askFeedback}
