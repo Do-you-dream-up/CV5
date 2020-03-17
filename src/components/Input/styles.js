@@ -47,6 +47,9 @@ export default createUseStyles(theme => ({
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
+    '&[disabled]': {
+      cursor: 'not-allowed',
+    },
     background: 0,
     border: 0,
     extend: 'fieldBase',

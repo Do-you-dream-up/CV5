@@ -18,7 +18,7 @@ import useStyles from './styles';
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { placeholder } = useContext(DialogContext);
+  const { disabled, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
@@ -102,6 +102,7 @@ export default function Input({ focus, onRequest, onResponse }) {
 
   const inputProps = {
     autoFocus: focus,
+    disabled,
     maxLength,
     onChange,
     onKeyDown,

@@ -12,5 +12,7 @@ This component implements the exposed API through `window`:
 - `window.dydu.space.get`: Get the current consulting space
 - `window.dydu.space.prompt`: Prompt for consulting spaces actions
 - `window.dydu.space.set`: Set the consulting space to use
+- `window.dydu.ui.disable`: Disable the input
+- `window.dydu.ui.enable`: Enable the input
 - `window.dydu.ui.secondary`: Toggle the secondary panel
 - `window.dydu.ui.toggle`: Toggle the application between chatbox and teaser

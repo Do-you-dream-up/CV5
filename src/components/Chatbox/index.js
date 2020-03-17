@@ -37,6 +37,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     empty,
     interactions,
     secondaryActive,
+    setDisabled,
     setPlaceholder,
     setPrompt,
     setSecondary,
@@ -100,6 +101,8 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.ui = {
+        disable: () => setDisabled(true),
+        enable: () => setDisabled(false),
         placeholder: value => setPlaceholder(value),
         secondary: (open, { body, title }) => {
           setSecondary({body, title});
@@ -118,6 +121,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     empty,
     i,
     modal,
+    setDisabled,
     setPlaceholder,
     setPrompt,
     setSecondary,

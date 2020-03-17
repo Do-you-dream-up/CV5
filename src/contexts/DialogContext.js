@@ -12,6 +12,7 @@ export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const [ disabled, setDisabled ] = useState(false);
   const [ interactions, setInteractions ] = useState([]);
   const [ placeholder, setPlaceholder ] = useState(null);
   const [ prompt, setPrompt ] = useState('');
@@ -85,12 +86,14 @@ export function DialogProvider({ children }) {
     add,
     addRequest,
     addResponse,
+    disabled,
     empty,
     interactions,
     placeholder,
     prompt,
     secondaryActive,
     secondaryContent,
+    setDisabled,
     setPlaceholder,
     setPrompt,
     setSecondary,
