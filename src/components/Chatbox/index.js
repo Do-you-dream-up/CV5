@@ -37,6 +37,8 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     empty,
     interactions,
     secondaryActive,
+    setDisabled,
+    setPlaceholder,
     setPrompt,
     setSecondary,
     toggleSecondary,
@@ -90,7 +92,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.space = {
-        get: () => dydu.getSpace(),
+        get: strategy => dydu.getSpace(strategy),
         prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
           space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
@@ -99,6 +101,9 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
       };
 
       window.dydu.ui = {
+        disable: () => setDisabled(true),
+        enable: () => setDisabled(false),
+        placeholder: value => setPlaceholder(value),
         secondary: (open, { body, title }) => {
           setSecondary({body, title});
           toggleSecondary(open)();
@@ -106,9 +111,24 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
         toggle: mode => toggle(mode)(),
       };
 
+      window.dyduClearPreviousInteractions = window.dydu.chat.empty;
+      window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
     }
-  }, [addResponse, ask, empty, i, modal, setPrompt, setSecondary, t, toggle, toggleSecondary]);
+  }, [
+    addResponse,
+    ask,
+    empty,
+    i,
+    modal,
+    setDisabled,
+    setPlaceholder,
+    setPrompt,
+    setSecondary,
+    t,
+    toggle,
+    toggleSecondary,
+  ]);
 
   useEffect(() => {
     if (gdprShowDisclaimer) {

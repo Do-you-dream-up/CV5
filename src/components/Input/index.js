@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 import talk from '../../tools/talk';
@@ -17,6 +18,7 @@ import useStyles from './styles';
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { disabled, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
@@ -92,18 +94,19 @@ export default function Input({ focus, onRequest, onResponse }) {
   const theme = {
     container: c('dydu-input-container', classes.container),
     input: c('dydu-input-field-text', classes.fieldText),
-    suggestionsContainer: c('dydu-suggestions', classes.suggestions),
-    suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
     suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
     suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
+    suggestionsContainer: c('dydu-suggestions', classes.suggestions),
+    suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
 
   const inputProps = {
     autoFocus: focus,
+    disabled,
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ready ? t('placeholder').slice(0, 50) : null,
+    placeholder: (ready && placeholder || t('placeholder')).slice(0, 50),
     value: input,
   };
 

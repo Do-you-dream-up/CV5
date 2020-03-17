@@ -4,7 +4,7 @@ import qs from 'qs';
 import uuid4 from 'uuid4';
 import bot from '../bot';
 import { decode } from './cipher';
-import { Local } from './storage';
+import { Cookie, Local } from './storage';
 
 
 /**
@@ -163,13 +163,33 @@ export default new class Dydu {
   };
 
   /**
-   * Self-regeneratively return the currently selected space.
+   * Return the currently selected space.
    *
+   * @param {Object[]} strategy - Order in which space should be detected.
+   * @param {boolean} strategy.active - Whether the strategy should be applied.
+   * @param {string} strategy.mode - The type of strategy.
+   * @param {string|Object} strategy.value - Data needed to extract the space value.
    * @returns {string}
    */
-  getSpace = () => {
-    if (!this.space) {
+  getSpace = strategy => {
+    if (!this.space || strategy) {
       this.space = Local.get(Local.names.space, '');
+      if (Array.isArray(strategy)) {
+        const get = mode => ({
+          cookie: value => Cookie.get(value),
+          global: value => window[value],
+          hostname: value => value[window.location.hostname],
+          localstorage: value => Local.get(value),
+          route: value => value[window.location.pathname],
+          urlparameter: value => qs.parse(window.location.search, {ignoreQueryPrefix: true})[value],
+        }[mode]);
+        strategy.reverse().map(({ active, mode, value }) => {
+          if (active) {
+            const _get = get(mode);
+            this.space = typeof _get === 'function' ? _get(value) || this.space : this.space;
+          }
+        });
+      }
     }
     return this.space;
   };

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
+import parseActions from '../tools/actions';
 import useViewport from '../tools/hooks/viewport';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
@@ -11,7 +12,9 @@ export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const [ disabled, setDisabled ] = useState(false);
   const [ interactions, setInteractions ] = useState([]);
+  const [ placeholder, setPlaceholder ] = useState(null);
   const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
@@ -36,12 +39,18 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ askFeedback, sidebar, text, urlRedirect }) => {
+  const addResponse = useCallback(({ askFeedback, guiAction, sidebar, text, urlRedirect }) => {
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }
     if (urlRedirect) {
       window.open(urlRedirect, '_blank');
+    }
+    if (guiAction) {
+      const actions = parseActions(guiAction);
+      actions.map(({ action, parameters }) => (
+        parameters ? window[action](parameters.toString()) : window[action]()
+      ));
     }
     add(
       <Interaction askFeedback={askFeedback}
@@ -77,13 +86,17 @@ export function DialogProvider({ children }) {
     add,
     addRequest,
     addResponse,
+    disabled,
     empty,
     interactions,
+    placeholder,
     prompt,
     secondaryActive,
     secondaryContent,
-    setSecondary,
+    setDisabled,
+    setPlaceholder,
     setPrompt,
+    setSecondary,
     toggleSecondary,
   }} />;
 }
