@@ -47,12 +47,9 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     if (guiAction) {
-      const actions = parseActions(guiAction);
-      actions.forEach(({ action, parameters }) => {
-        if (typeof window[action] === 'function') {
-          return parameters ? window[action](parameters.toString()) : window[action]();
-        }
-      });
+      parseActions(guiAction).forEach(({ action, parameters }) => (
+        typeof window[action] === 'function' ? window[action](...parameters) : null
+      ));
     }
     add(
       <Interaction askFeedback={askFeedback}

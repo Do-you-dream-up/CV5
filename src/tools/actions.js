@@ -1,6 +1,7 @@
 const RE_ACTION = /javascript:\s*(\w+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\))(?:\s*;+\s*(\w+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\)))*/g;
 const RE_ACTION_NAME = /(\w+)\s*\(\s*(.+)?\)/;
 const RE_ACTION_PARAMETERS = /(?:^|,)\s*((('|").*?(?<!\\)(\3))|(\d?\.?\d+))/g;
+const RE_ACTION_SANITIZE_STRING = /^('|")(.+)(\1)$/;
 
 
 /**
@@ -15,14 +16,17 @@ export default data => {
     actions = [...actions, ...matches.filter(it => it)];
   }
   actions.map(it => {
-    let [ , action, parameters ] = it.match(RE_ACTION_NAME);
-    if (parameters) {
-      parameters = parameters.match(RE_ACTION_PARAMETERS);
-      response = [...response, {action, parameters}] ;
+    let [ , action, values ] = it.match(RE_ACTION_NAME);
+    let parameters = [];
+    let match = null;
+    while ((match = RE_ACTION_PARAMETERS.exec(values))) {
+      parameters = [...parameters, match[1]];
     }
-    else {
-      response = [...response, {action}] ;
-    }
+    parameters = parameters.map(it => {
+      const match = it.match(RE_ACTION_SANITIZE_STRING);
+      return match ? match[2] : it;
+    });
+    response = [...response, {action, parameters}];
   });
   return response;
 };
