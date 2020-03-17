@@ -47,9 +47,8 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     if (guiAction) {
-      const actions = parseActions(guiAction);
-      actions.map(({ action, parameters }) => (
-        parameters ? window[action](parameters.toString()) : window[action]()
+      parseActions(guiAction).forEach(({ action, parameters }) => (
+        typeof window[action] === 'function' ? window[action](...parameters) : null
       ));
     }
     add(
