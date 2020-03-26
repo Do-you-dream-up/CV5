@@ -35,6 +35,7 @@ export function DialogProvider({ children }) {
         toggleSecondary(false)();
       }
       add(<Interaction children={text} type="request" />);
+      setPlaceholder(null);
     }
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
