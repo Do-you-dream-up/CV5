@@ -1,5 +1,5 @@
-const RE_ACTION = /javascript:\s*(\w+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\))(?:\s*;+\s*(\w+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\)))*/g;
-const RE_ACTION_NAME = /(\w+)\s*\(\s*(.+)?\)/;
+const RE_ACTION = /javascript:\s*([\w.]+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\))(?:\s*;+\s*([\w.]+\s*\(\s*(?:'.*?'|".*?"|[^;]*)?(?:,\s*.*)*\)))*/g;
+const RE_ACTION_NAME = /^(\w+(?:.\w+)*)\s*\(\s*(.+)?\)/;
 const RE_ACTION_PARAMETERS = /(?:^|,)\s*((('|").*?(?<!\\)(\3))|(\d?\.?\d+))/g;
 const RE_ACTION_SANITIZE_STRING = /^('|")(.+)(\1)$/;
 
