@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
+import dotget from '../tools/dotget';
 import useViewport from '../tools/hooks/viewport';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
@@ -48,9 +49,15 @@ export function DialogProvider({ children }) {
       window.open(urlRedirect, '_blank');
     }
     if (guiAction) {
-      parseActions(guiAction).forEach(({ action, parameters }) => (
-        typeof window[action] === 'function' ? window[action](...parameters) : null
-      ));
+      parseActions(guiAction).forEach(({ action, parameters }) => {
+        const f = dotget(window, action);
+        if (typeof f === 'function') {
+          f(...parameters);
+        }
+        else {
+          console.warn(`Action '${action}' was not found in 'window' object.`);
+        }
+      });
     }
     add(
       <Interaction askFeedback={askFeedback}
