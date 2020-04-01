@@ -186,7 +186,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
 
 Chatbox.propTypes = {
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.bool,
   root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
   toggle: PropTypes.func.isRequired,
 };

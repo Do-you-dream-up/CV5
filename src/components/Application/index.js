@@ -34,9 +34,8 @@ export default function Application() {
   const toggle = value => () => setMode(~~value);
 
   useEffect(() => {
-    const value = ~~mode > 1 ? 2 : (~~mode > 0 ? 1 : 0);
-    setOpen(previous => previous || value > 1);
-    Local.set(Local.names.open, value);
+    setOpen(mode > 1);
+    Local.set(Local.names.open, mode);
   }, [mode]);
 
   return (

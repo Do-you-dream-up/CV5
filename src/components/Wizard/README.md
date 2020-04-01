@@ -4,7 +4,7 @@ import configuration from '../../tools/configuration.json';
 const documentation = {
 
   application: {
-    open: ['Initial open state of the chatbox', 'Boolean'],
+    open: ['0: Minimized - 1: Teaser - 2: Open', 'Boolean'],
     qualification: ['Whether requests should carry the `qualificationMode` option', 'Boolean'],
     languages: ['Enabled languages', 'Array'],
   },
