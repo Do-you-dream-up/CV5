@@ -4,7 +4,7 @@ import configuration from '../../tools/configuration.json';
 const documentation = {
 
   application: {
-    open: ['0: Minimized - 1: Teaser - 2: Open', 'Boolean'],
+    open: ['0: Minimized - 1: Teaser - 2: Open - 3: Maximized', 'Boolean'],
     qualification: ['Whether requests should carry the `qualificationMode` option', 'Boolean'],
     languages: ['Enabled languages', 'Array'],
   },
@@ -20,6 +20,11 @@ const documentation = {
     more: ['Display the custom link', 'Boolean'],
     moreLink: ['Custom link', 'String'],
     transient: ['Consider the banner as seen as soon as rendered', 'Boolean'],
+  },
+
+  chatbox: {
+    expandable: ['Allow maximizing the chatbox', 'Boolean'],
+    margin: ['Margins to the viewport', 'Number'],
   },
 
   dragon: {

@@ -43,7 +43,7 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       {open && (
         <Suspense fallback={null}>
-          <Chatbox open={mode > 1} toggle={toggle} />
+          <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
         </Suspense>
       )}
       <Teaser open={mode === 1} toggle={toggle} />

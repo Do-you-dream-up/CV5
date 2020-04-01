@@ -2,9 +2,11 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
+import useViewport from '../../tools/hooks/viewport';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
@@ -17,19 +19,23 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ minimal, onClose, ...rest }) {
+export default function Header({ extended, minimal, onClose, onExpand, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
   const dragonZone = useRef();
   const classes = useStyles({configuration});
+  const theme = useTheme();
   const [ t, i, ready ] = useTranslation('header');
+  const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { languages = [] } = configuration.application;
   const { title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
+  const actionExpand = t('actions.expand');
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
+  const actionShrink = t('actions.shrink');
 
 
   const languagesMenu = [languages.sort().map(id => ({
@@ -56,6 +62,18 @@ export default function Header({ minimal, onClose, ...rest }) {
       items: () => moreMenu,
       variant: 'icon',
       when: !onboardingActive && moreMenu.flat().length > 0,
+    },
+    {
+      children: <img alt={actionExpand} src="icons/arrow-expand.png" title={actionExpand} />,
+      onClick: () => onExpand(true)(),
+      variant: 'icon',
+      when: !isMobile && onExpand && !extended,
+    },
+    {
+      children: <img alt={actionShrink} src="icons/arrow-collapse.png" title={actionShrink} />,
+      onClick: () => onExpand(false)(),
+      variant: 'icon',
+      when: !isMobile && onExpand && extended,
     },
     {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
@@ -87,7 +105,9 @@ export default function Header({ minimal, onClose, ...rest }) {
 }
 
 Header.propTypes = {
+  extended: PropTypes.bool,
   minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  onExpand: PropTypes.func,
   style: PropTypes.object,
 };
