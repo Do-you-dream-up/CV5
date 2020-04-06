@@ -171,7 +171,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                   <div className={c(
                     'dydu-chatbox-body',
                     classes.body,
-                    {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
+                    {[classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended)},
                   )}>
                     <Tab component={Dialog}
                          interactions={interactions}
@@ -180,10 +180,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                          value="dialog" />
                     <Tab component={Contacts} value="contacts" />
                   </div>
-                  {secondaryMode === 'over' && <Secondary />}
+                  {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
                   <Footer onRequest={addRequest} onResponse={addResponse} />
                 </Onboarding>
-                {secondaryMode !== 'over' && <Secondary anchor={root} />}
               </>
             )}
             <Modal />
@@ -192,6 +191,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                     onClose={toggle(1)}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
                     style={{order: -1}} />
+            {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
           </div>
         </div>
       </div>

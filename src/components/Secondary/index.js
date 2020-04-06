@@ -13,12 +13,13 @@ import useStyles from './styles';
  * of the chatbox by being placed over the conversation or less intrusive on a
  * side of the chatbox.
  */
-export default function Secondary({ anchor }) {
+export default function Secondary({ anchor, mode }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { secondaryActive, secondaryContent, toggleSecondary } = useContext(DialogContext);
   const root = useRef(null);
-  const [ mode, setMode ] = useState(configuration.secondary.mode);
+  const [ initialMode, setMode ] = useState(configuration.secondary.mode);
+  mode = mode || initialMode;
   const classes = useStyles({configuration});
   const { body, title, url } = secondaryContent || {};
   const { boundaries } = configuration.dragon;
@@ -63,4 +64,5 @@ export default function Secondary({ anchor }) {
 
 Secondary.propTypes = {
   anchor: PropTypes.object,
+  mode: PropTypes.string,
 };
