@@ -34,9 +34,8 @@ export default function Application() {
   const toggle = value => () => setMode(~~value);
 
   useEffect(() => {
-    const value = ~~mode > 1 ? 2 : (~~mode > 0 ? 1 : 0);
-    setOpen(previous => previous || value > 1);
-    Local.set(Local.names.open, value);
+    setOpen(mode > 1);
+    Local.set(Local.names.open, mode);
   }, [mode]);
 
   return (
@@ -44,7 +43,7 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       {open && (
         <Suspense fallback={null}>
-          <Chatbox open={mode > 1} toggle={toggle} />
+          <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
         </Suspense>
       )}
       <Teaser open={mode === 1} toggle={toggle} />

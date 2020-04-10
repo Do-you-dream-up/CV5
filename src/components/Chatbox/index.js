@@ -27,7 +27,7 @@ import useStyles from './styles';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-export default function Chatbox({ open, root, toggle, ...rest}) {
+export default function Chatbox({ extended, open, root, toggle, ...rest}) {
 
   const { configuration } = useContext(ConfigurationContext);
   const {
@@ -50,6 +50,7 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation();
   const qualification = !!configuration.application.qualification;
+  const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
 
   const ask = useCallback((text, options) => {
@@ -155,30 +156,44 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
     }
   }, []);
 
+  const classnames = c('dydu-chatbox', classes.root, {
+    [classes.rootExtended]: extended,
+    [classes.rootHidden]: !open,
+  });
   return (
     <TabProvider>
-      <div className={c('dydu-chatbox', classes.root, {[classes.rootHidden]: !open})}
-           ref={root}
-           {...rest}>
-        {gdprPassed && (
-          <>
-            <Onboarding render>
-              <div className={c(
-                'dydu-chatbox-body',
-                classes.body,
-                {[classes.bodyHidden]: secondaryActive && secondaryMode === 'over'},
-              )}>
-                <Tab component={Dialog} interactions={interactions} onAdd={add} render value="dialog" />
-                <Tab component={Contacts} value="contacts" />
-              </div>
-              {secondaryMode === 'over' && <Secondary />}
-              <Footer onRequest={addRequest} onResponse={addResponse} />
-            </Onboarding>
-            {secondaryMode !== 'over' && <Secondary anchor={root} />}
-          </>
-        )}
-        <Modal />
-        <Header minimal={!gdprPassed || onboardingActive} onClose={toggle(1)} style={{order: -1}} />
+      <div className={classnames} ref={root} {...rest}>
+        <div>
+          <div className={classes.container}>
+            {gdprPassed && (
+              <>
+                <Onboarding render>
+                  <div className={c(
+                    'dydu-chatbox-body',
+                    classes.body,
+                    {[classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended)},
+                  )}>
+                    <Tab component={Dialog}
+                         interactions={interactions}
+                         onAdd={add}
+                         render
+                         value="dialog" />
+                    <Tab component={Contacts} value="contacts" />
+                  </div>
+                  {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+                  <Footer onRequest={addRequest} onResponse={addResponse} />
+                </Onboarding>
+              </>
+            )}
+            <Modal />
+            <Header extended={extended}
+                    minimal={!gdprPassed || onboardingActive}
+                    onClose={toggle(1)}
+                    onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                    style={{order: -1}} />
+            {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
+          </div>
+        </div>
       </div>
     </TabProvider>
   );
@@ -186,7 +201,8 @@ export default function Chatbox({ open, root, toggle, ...rest}) {
 
 
 Chatbox.propTypes = {
-  open: PropTypes.bool.isRequired,
+  extended: PropTypes.bool,
+  open: PropTypes.bool,
   root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
   toggle: PropTypes.func.isRequired,
 };
@@ -197,7 +213,7 @@ export function ChatboxWrapper(rest) {
     <DialogProvider>
       <OnboardingProvider>
         <ModalProvider>
-          <Dragon component={Chatbox} {...rest} />
+          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
         </ModalProvider>
       </OnboardingProvider>
     </DialogProvider>

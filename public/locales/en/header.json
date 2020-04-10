@@ -1,8 +1,10 @@
 {
   "actions": {
     "close": "Close",
+    "expand": "Expand",
     "more": "More",
-    "rosetta": "Languages"
+    "rosetta": "Languages",
+    "shrink": "Shrink"
   },
   "rosetta": {
     "en": "English",

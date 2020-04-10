@@ -24,22 +24,12 @@
     "stylesMobile": {}
   },
   "chatbox": {
+    "expandable": true,
+    "margin": 16,
     "styles": {
-      "bottom": 16,
-      "height": "unset",
-      "right": 16,
-      "shadow": 6,
-      "top": 16,
-      "width": 350
+      "shadow": 6
     },
-    "stylesMobile": {
-      "bottom": 0,
-      "left": 0,
-      "height": "unset",
-      "right": 0,
-      "top": 0,
-      "width": "unset"
-    }
+    "stylesMobile": {}
   },
   "dragon": {
     "active": true,

@@ -14,7 +14,7 @@ import { Local } from '../../tools/storage';
  * This works by capturing the delta of the pointer position and applying a
  * `translate3d` CSS property.
  */
-export default function Dragon({ children, component, ...rest }) {
+export default function Dragon({ children, component, reset, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
@@ -27,7 +27,7 @@ export default function Dragon({ children, component, ...rest }) {
   const [ moving, setMoving ] = useState(false);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const active = configuration.dragon.active && !isMobile;
+  const active = !reset && configuration.dragon.active && !isMobile;
 
   const onDrag = event => {
     if (moving && origin) {
@@ -48,6 +48,7 @@ export default function Dragon({ children, component, ...rest }) {
   };
 
   const onDragEnd = () => {
+    root.current.style.transitionDuration = '';
     setCurrent(previous => ({x: previous.x + offset.x, y: previous.y + offset.y}));
     setMoving(false);
     setOffset({x: 0, y: 0});
@@ -56,6 +57,7 @@ export default function Dragon({ children, component, ...rest }) {
 
   const onDragStart = element => event => {
     if (element.current === event.target) {
+      root.current.style.transitionDuration = '0s';
       let { bottom, left, right, top } = root.current.getBoundingClientRect();
       setBoundaries({bottom: window.innerHeight - bottom, left, right: window.innerWidth - right, top});
       setMoving(true);
@@ -82,11 +84,14 @@ export default function Dragon({ children, component, ...rest }) {
   useEvent('mousemove', onDrag);
   useEvent('mouseup', onDragEnd);
 
+  const transform = (
+    !!current && !reset
+      ? `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`
+      : 'translate3d(0, 0, 0)'
+  );
   return !!current && (
     <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-      {React.createElement(component, {...rest, root: root, style: {
-        transform: `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`,
-      }})}
+      {React.createElement(component, {...rest, root, style: {transform}})}
     </DragonProvider>
   );
 }
@@ -100,4 +105,5 @@ Dragon.defaultProps = {
 Dragon.propTypes = {
   children: PropTypes.element,
   component: PropTypes.elementType.isRequired,
+  reset: PropTypes.bool,
 };
