@@ -21,11 +21,11 @@ export default createUseStyles(theme => {
 
   return {
     actions: () => ({
-      display: 'flex',
-      marginLeft: 'auto',
       '& > :not(:first-child)': {
         marginLeft: '1em',
       },
+      display: 'flex',
+      marginLeft: 'auto',
     }),
     base: ({ configuration }) => ({
       backgroundColor: theme.palette.background.secondary,
@@ -50,11 +50,12 @@ export default createUseStyles(theme => {
     }),
     left: () => ({
       ...side,
-      right: '100%',
       marginRight: '.5em',
+      right: '100%',
     }),
     over: () => ({
       boxShadow: 'none',
+      flexGrow: 1,
       width: 'unset',
     }),
     right: () => ({
