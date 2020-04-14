@@ -20,6 +20,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { configuration } = useContext(ConfigurationContext);
   const { disabled, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
+  const [ counter, setCounter ] = useState(configuration.input.maxLength);
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
@@ -33,6 +34,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const onChange = event => {
     setTyping(true);
     setInput(event.target.value);
+    setCounter(maxLength - event.target.value.length);
   };
 
   const onKeyDown = event => {
@@ -58,10 +60,12 @@ export default function Input({ focus, onRequest, onResponse }) {
     <div className={c('dydu-input-field', classes.field)}>
       <textarea {...properties} />
       <div children={input} className={classes.fieldShadow} />
+      <span className={classes.counter}>{counter}</span>
     </div>
   );
 
   const reset = () => {
+    setCounter(configuration.input.maxLength);
     setInput('');
   };
 

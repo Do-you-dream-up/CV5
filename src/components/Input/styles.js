@@ -18,6 +18,24 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
   }),
 
+  counter: () => ({
+    background: '#FFFFFF',
+    borderRadius: '4px',
+    boxSizing: 'border-box',
+    color: '#46525F',
+    fontSize: '12px',
+    fontWeight: 300,
+    height: '24px',
+    lineHeight: '24px',
+    maxWidth: '37px',
+    position: 'absolute',
+    right: '5px',
+    textAlign: 'center',
+    top: 'calc(50% - 12px)',
+    width: '100%',
+    zIndex: 0,
+  }),
+
   field: () => ({
     height: '100%',
     position: 'relative',
@@ -31,7 +49,7 @@ export default createUseStyles(theme => ({
     fontSize: '1em',
     lineHeight: '1.7em',
     overflow: 'hidden',
-    padding: [['.4em', '.6em']],
+    padding: [['.4em', '3em', '.4em', '.6em']],
     whiteSpace: 'pre-wrap',
     width: '100%',
     wordBreak: 'break-word',
