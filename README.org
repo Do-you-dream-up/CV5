@@ -40,6 +40,9 @@ Namespace branches according to their content. Use kebab-case to name branches.
 - =style=    :: Syntax cleanup
 - =test=     :: Tests
 
+Do not push directly to =:master=, use feature branches and merge them into
+=:master= instead.
+
 ** Commit Changes
 
 Make sure the code you stage to commit passes ESLint before committing. There's
@@ -67,3 +70,29 @@ Good etiquette about committing in a shared environment:
 1. Push your code to your branch
 1. Pull =:master= in your branch again
 1. Wait for the merge :-)
+
+Repeat steps 3 and 4 as often as necessary. Having your feature branches up to
+date with =:master= is paramount.
+
+** Deploying to Production
+
+/This is the current workflow. Subject to change later./
+
+To deploy to the =:production= branch, merge from =:master= only.
+
+First, merge the feature branches into =:master=.
+
+1. Checkout the feature branch
+1. Review the changes
+1. Checkout =:master=
+1. Pull to ensure your local copy of the branch is up to date
+1. Merge the feature branch
+1. Bump the version: =npm version patch|minor=
+1. Push the changes
+
+Then merge into =:production=.
+
+1. Checkout =:production=
+1. Pull to ensure your local copy of the branch is up to date
+1. Merge =:master=
+1. Push the changes
