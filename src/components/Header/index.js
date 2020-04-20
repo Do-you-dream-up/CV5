@@ -51,17 +51,17 @@ export default function Header({ extended, minimal, onClose, onExpand, ...rest }
 
   const actions = [
     {
+      children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
+      items: () => moreMenu,
+      variant: 'icon',
+      when: !onboardingActive && moreMenu.flat().length > 0,
+    },
+    {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
       items: () => languagesMenu,
       selected: () => i.languages[0],
       variant: 'icon',
       when: languagesMenu.flat().length > 1,
-    },
-    {
-      children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
-      items: () => moreMenu,
-      variant: 'icon',
-      when: !onboardingActive && moreMenu.flat().length > 0,
     },
     {
       children: <img alt={actionExpand} src="icons/arrow-expand.png" title={actionExpand} />,
