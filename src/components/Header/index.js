@@ -30,7 +30,7 @@ export default function Header({ extended, minimal, onClose, onExpand, ...rest }
   const [ t, i, ready ] = useTranslation('header');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { languages = [] } = configuration.application;
-  const { title: hasTitle } = configuration.header;
+  const { actions: hasActions = {}, title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
   const actionExpand = t('actions.expand');
   const actionMore = t('actions.more');
@@ -54,31 +54,32 @@ export default function Header({ extended, minimal, onClose, onExpand, ...rest }
       children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
       items: () => moreMenu,
       variant: 'icon',
-      when: !onboardingActive && moreMenu.flat().length > 0,
+      when: !!hasActions.more && !onboardingActive && moreMenu.flat().length > 0,
     },
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
       items: () => languagesMenu,
       selected: () => i.languages[0],
       variant: 'icon',
-      when: languagesMenu.flat().length > 1,
+      when: !!hasActions.translate && languagesMenu.flat().length > 1,
     },
     {
       children: <img alt={actionExpand} src="icons/arrow-expand.png" title={actionExpand} />,
       onClick: () => onExpand(true)(),
       variant: 'icon',
-      when: !isMobile && onExpand && !extended,
+      when: !!hasActions.expand && !isMobile && onExpand && !extended,
     },
     {
       children: <img alt={actionShrink} src="icons/arrow-collapse.png" title={actionShrink} />,
       onClick: () => onExpand(false)(),
       variant: 'icon',
-      when: !isMobile && onExpand && extended,
+      when: !!hasActions.expand && !isMobile && onExpand && extended,
     },
     {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
       onClick: onClose,
       variant: 'icon',
+      when: !!hasActions.close,
     },
   ];
 
