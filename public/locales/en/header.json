@@ -2,6 +2,7 @@
   "actions": {
     "close": "Close",
     "expand": "Expand",
+    "minimize": "Minimize",
     "more": "More",
     "rosetta": "Languages",
     "shrink": "Shrink"

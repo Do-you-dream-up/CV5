@@ -18,6 +18,7 @@ import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
+import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
@@ -63,6 +64,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       talk(text, {qualification}).then(addResponse);
     }
   }, [addRequest, addResponse, qualification]);
+
+  const onClose = () => modal(ModalClose).then(toggle(0), () => {});
+
+  const onMinimize = () => toggle(1)();
 
   useEffect(() => {
     if (!window.dydu) {
@@ -187,8 +192,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
             )}
             <Header extended={extended}
                     minimal={!gdprPassed || onboardingActive}
-                    onClose={toggle(1)}
+                    onClose={onClose}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                    onMinimize={onMinimize}
                     style={{order: -1}} />
             <Modal />
             {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}

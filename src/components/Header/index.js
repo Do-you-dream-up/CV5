@@ -19,7 +19,7 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ extended, minimal, onClose, onExpand, ...rest }) {
+export default function Header({ extended, minimal, onClose, onExpand, onMinimize, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -33,6 +33,7 @@ export default function Header({ extended, minimal, onClose, onExpand, ...rest }
   const { actions: hasActions = {}, title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
   const actionExpand = t('actions.expand');
+  const actionMinimize = t('actions.minimize');
   const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
   const actionShrink = t('actions.shrink');
@@ -76,6 +77,12 @@ export default function Header({ extended, minimal, onClose, onExpand, ...rest }
       when: !!hasActions.expand && !isMobile && onExpand && extended,
     },
     {
+      children: <img alt={actionMinimize} src="icons/window-minimize.png" title={actionMinimize} />,
+      onClick: onMinimize,
+      variant: 'icon',
+      when: !!hasActions.minimize,
+    },
+    {
       children: <img alt={actionClose} src="icons/close.png" title={actionClose} />,
       onClick: onClose,
       variant: 'icon',
@@ -110,5 +117,6 @@ Header.propTypes = {
   minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onExpand: PropTypes.func,
+  onMinimize: PropTypes.func.isRequired,
   style: PropTypes.object,
 };

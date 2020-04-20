@@ -35,7 +35,7 @@ export default function Application() {
 
   useEffect(() => {
     setOpen(mode > 1);
-    Local.set(Local.names.open, mode);
+    Local.set(Local.names.open, Math.max(mode, 1));
   }, [mode]);
 
   return (
