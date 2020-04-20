@@ -185,12 +185,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                 </Onboarding>
               </>
             )}
-            <Modal />
             <Header extended={extended}
                     minimal={!gdprPassed || onboardingActive}
                     onClose={toggle(1)}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
                     style={{order: -1}} />
+            <Modal />
             {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
           </div>
         </div>
