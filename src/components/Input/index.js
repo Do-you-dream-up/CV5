@@ -19,11 +19,11 @@ export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { disabled, placeholder } = useContext(DialogContext);
-  const classes = useStyles({configuration});
   const [ counter, setCounter ] = useState(configuration.input.maxLength);
   const [ input, setInput ] = useState('');
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
+  const classes = useStyles({configuration});
   const { ready, t } = useTranslation('input');
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
@@ -32,9 +32,9 @@ export default function Input({ focus, onRequest, onResponse }) {
   const debouncedInput = useDebounce(input, delay);
 
   const onChange = event => {
+    setCounter(maxLength - event.target.value.length);
     setTyping(true);
     setInput(event.target.value);
-    setCounter(maxLength - event.target.value.length);
   };
 
   const onKeyDown = event => {
@@ -60,7 +60,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     <div className={c('dydu-input-field', classes.field)}>
       <textarea {...properties} />
       <div children={input} className={classes.fieldShadow} />
-      <span className={classes.counter}>{counter}</span>
+      <span children={counter} className={classes.counter} />
     </div>
   );
 
