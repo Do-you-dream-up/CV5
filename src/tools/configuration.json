@@ -50,6 +50,13 @@
     "stylesMobile": {}
   },
   "header": {
+    "actions": {
+      "close": true,
+      "expand": true,
+      "minimize": true,
+      "more": false,
+      "translate": true
+    },
     "styles": {
       "shadow": true
     },

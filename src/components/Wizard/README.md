@@ -45,6 +45,7 @@ const documentation = {
   },
 
   header: {
+    actions: ['Toggles for the optional header actions', 'Object'],
     title: ['Display the header title', 'Boolean'],
   },
 

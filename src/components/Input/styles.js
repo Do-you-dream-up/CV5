@@ -18,6 +18,26 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
   }),
 
+  counter: () => ({
+    // DEBT: The below font size, font weight and spacings are not dynamic. This
+    //       is difficult to maintain and will cause bugs and/or misalignment.
+    background: theme.palette.background.menu,
+    borderRadius: '0.25em',
+    boxSizing: 'border-box',
+    color: theme.palette.response.text,
+    fontSize: '12px',
+    fontWeight: 300,
+    height: '1.5em',
+    lineHeight: '1.5em',
+    maxWidth: '2.31em',
+    position: 'absolute',
+    right: '0.31em',
+    textAlign: 'center',
+    top: 'calc(50% - 0.75em)',
+    width: '100%',
+    zIndex: 0,
+  }),
+
   field: () => ({
     height: '100%',
     position: 'relative',
@@ -31,7 +51,7 @@ export default createUseStyles(theme => ({
     fontSize: '1em',
     lineHeight: '1.7em',
     overflow: 'hidden',
-    padding: [['.4em', '.6em']],
+    padding: [['.4em', '3em', '.4em', '.6em']],  // DEBT
     whiteSpace: 'pre-wrap',
     width: '100%',
     wordBreak: 'break-word',
