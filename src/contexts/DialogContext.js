@@ -89,23 +89,25 @@ export function DialogProvider({ children }) {
     });
   }, []);
 
-  return <DialogContext.Provider children={children} value={{
-    add,
-    addRequest,
-    addResponse,
-    disabled,
-    empty,
-    interactions,
-    placeholder,
-    prompt,
-    secondaryActive,
-    secondaryContent,
-    setDisabled,
-    setPlaceholder,
-    setPrompt,
-    setSecondary,
-    toggleSecondary,
-  }} />;
+  return (
+    <DialogContext.Provider children={children} value={{
+      add,
+      addRequest,
+      addResponse,
+      disabled,
+      empty,
+      interactions,
+      placeholder,
+      prompt,
+      secondaryActive,
+      secondaryContent,
+      setDisabled,
+      setPlaceholder,
+      setPrompt,
+      setSecondary,
+      toggleSecondary,
+    }} />
+  );
 }
 
 
