@@ -110,10 +110,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
         placeholder: value => setPlaceholder(value),
-        secondary: (open, { body, title }) => {
-          setSecondary({body, title});
-          toggleSecondary(open)();
-        },
+        secondary: (open, { body, title }) => toggleSecondary(open, {body, title})(),
         toggle: mode => toggle(mode)(),
       };
 

@@ -79,7 +79,10 @@ export function DialogProvider({ children }) {
     }
   }, []);
 
-  const toggleSecondary = useCallback(open => () => {
+  const toggleSecondary = useCallback((open, { body, title, url } = {}) => () => {
+    if (body !== undefined || title !== undefined || url !== undefined ) {
+      setSecondaryContent({body, title, url});
+    }
     setSecondaryActive(previous => {
       const should = open === undefined ? !previous : open;
       if (Local.get(Local.names.secondary) !== should) {

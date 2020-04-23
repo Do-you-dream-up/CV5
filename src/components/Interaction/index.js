@@ -33,7 +33,7 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
-  const { setSecondary, toggleSecondary } = useContext(DialogContext);
+  const { toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
@@ -63,12 +63,15 @@ export default function Interaction({
     }
   }, [delay, thinking]);
 
+  const onToggle = useCallback(open => {
+    toggleSecondary(open, {body: secondary.content, ...secondary})();
+  }, [secondary, toggleSecondary]);
+
   useEffect(() => {
     if (secondary) {
-      setSecondary({body: secondary.content, ...secondary});
-      toggleSecondary(Local.get(Local.names.secondary) || (!history && automaticSecondary))();
+      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
     }
-  }, [automaticSecondary, history, secondary, setSecondary, toggleSecondary]);
+  }, [automaticSecondary, history, onToggle, secondary]);
 
   useEffect(() => {
     if (!ready && children) {
@@ -87,7 +90,7 @@ export default function Interaction({
       {hasAvatar && <Avatar type={type} />}
       <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
         {bubbles.map((it, index) => {
-          const actions = [...(secondary ? [{children: 'Plus', onClick: toggleSecondary()}] : [])];
+          const actions = [...(secondary ? [{children: 'Plus', onClick: () => onToggle()}] : [])];
           const attributes = {
             actions: !!actions.length && <Actions actions={actions} />,
             component: scroll ? Scroll : undefined,
