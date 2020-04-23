@@ -18,6 +18,7 @@ import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
+import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
@@ -64,6 +65,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
     }
   }, [addRequest, addResponse, qualification]);
 
+  const onClose = () => modal(ModalClose).then(toggle(0), () => {});
+
+  const onMinimize = () => toggle(1)();
+
   useEffect(() => {
     if (!window.dydu) {
       window.dydu = {};
@@ -105,10 +110,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
         placeholder: value => setPlaceholder(value),
-        secondary: (open, { body, title }) => {
-          setSecondary({body, title});
-          toggleSecondary(open)();
-        },
+        secondary: (open, { body, title }) => toggleSecondary(open, {body, title})(),
         toggle: mode => toggle(mode)(),
       };
 
@@ -185,12 +187,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                 </Onboarding>
               </>
             )}
-            <Modal />
             <Header extended={extended}
                     minimal={!gdprPassed || onboardingActive}
-                    onClose={toggle(1)}
+                    onClose={onClose}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                    onMinimize={onMinimize}
                     style={{order: -1}} />
+            <Modal />
             {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
           </div>
         </div>
