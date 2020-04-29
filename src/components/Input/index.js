@@ -30,6 +30,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
+  const showCounter = !!configuration.input.counter;
 
   const onChange = event => {
     setTyping(true);
@@ -60,7 +61,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     <div className={c('dydu-input-field', classes.field)}>
       <textarea {...properties} />
       <div children={input} className={classes.fieldShadow} />
-      <span className={classes.counter}>{counter}</span>
+      { showCounter && <span className={classes.counter}>{counter}</span> }
     </div>
   );
 
