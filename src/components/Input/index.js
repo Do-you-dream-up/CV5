@@ -27,10 +27,9 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { ready, t } = useTranslation('input');
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
-  const { delay, maxLength = 100 } = configuration.input;
+  const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
-  const showCounter = !!configuration.input.counter;
 
   const onChange = event => {
     setTyping(true);
@@ -61,7 +60,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     <div className={c('dydu-input-field', classes.field)}>
       <textarea {...properties} />
       <div children={input} className={classes.fieldShadow} />
-      { showCounter && <span className={classes.counter}>{counter}</span> }
+      {!!showCounter && <span children={counter} className={classes.counter} />}
     </div>
   );
 
