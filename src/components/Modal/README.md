@@ -12,9 +12,6 @@ const ModalComponent = ({ className, onReject, onResolve }) => (
 );
 
 const { modal } = useContext(ModalContext);
-const task = () => new Promise(resolve => {
-  setTimeout(resolve, 1000);
-});
 const onOpen = ({ variant } = {}) => () => {
   modal(ModalComponent, null, {dismissable: false, variant}).then(
     () => alert('Resolved!'),

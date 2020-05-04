@@ -64,6 +64,7 @@
     "title": true
   },
   "input": {
+    "counter": true,
     "delay": 300,
     "maxLength": 100,
     "styles": {},

@@ -6,8 +6,6 @@ export default createUseStyles(theme => {
   const side = {
     borderRadius: theme.shape.radius.outer,
     bottom: 0,
-    display: 'flex',
-    flexDirection: 'column',
     position: 'absolute',
     top: 0,
     [theme.breakpoints.down('xs')]: {
@@ -29,6 +27,8 @@ export default createUseStyles(theme => {
     }),
     base: ({ configuration }) => ({
       backgroundColor: theme.palette.background.secondary,
+      display: 'flex',
+      flexDirection: 'column',
       overflowY: 'auto',
       ...configuration.secondary.styles,
       [theme.breakpoints.down('xs')]: configuration.secondary.stylesMobile,
