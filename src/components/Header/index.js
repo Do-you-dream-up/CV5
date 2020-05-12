@@ -34,9 +34,9 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const actionClose = t('actions.close');
   const actionExpand = t('actions.expand');
   const actionMinimize = t('actions.minimize');
-  const actionMore = t('actions.more');
   const actionRosetta = t('actions.rosetta');
   const actionShrink = t('actions.shrink');
+  const actionTests = t('actions.tests');
 
 
   const languagesMenu = [languages.sort().map(id => ({
@@ -45,17 +45,17 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
     text: t(`rosetta.${id}`),
   }))];
 
-  const moreMenu = [Object.keys(ACTIONS).map(it => ({
+  const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
     text: it,
   }))];
 
   const actions = [
     {
-      children: <img alt={actionMore} src="icons/dots-vertical.png" title={actionMore} />,
-      items: () => moreMenu,
+      children: <img alt={actionTests} src="icons/dots-vertical.png" title={actionTests} />,
+      items: () => testsMenu,
       variant: 'icon',
-      when: !!hasActions.more && !onboardingActive && moreMenu.flat().length > 0,
+      when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
     },
     {
       children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,

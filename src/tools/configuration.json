@@ -54,7 +54,7 @@
       "close": true,
       "expand": true,
       "minimize": true,
-      "more": false,
+      "tests": false,
       "translate": true
     },
     "styles": {

@@ -3,9 +3,9 @@
     "close": "Close",
     "expand": "Expand",
     "minimize": "Minimize",
-    "more": "More",
     "rosetta": "Languages",
-    "shrink": "Shrink"
+    "shrink": "Shrink",
+    "tests": "Tests"
   },
   "rosetta": {
     "en": "English",
