@@ -6,5 +6,10 @@
     "gdpr": "GDPR (export, delete)",
     "spaces": "Switch consulting space",
     "title": "Your features"
-  }
+  },
+  "rosetta": {
+    "en": "English",
+    "fr": "French"
+  },
+  "translate": "Languages"
 }

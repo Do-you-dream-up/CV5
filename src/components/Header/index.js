@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonContext } from '../../contexts/DragonContext';
+import { ModalContext } from '../../contexts/ModalContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import useViewport from '../../tools/hooks/viewport';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
+import ModalFooterMenu from '../ModalFooterMenu';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
@@ -23,27 +25,24 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
+  const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const theme = useTheme();
-  const [ t, i, ready ] = useTranslation('header');
+  const { ready, t } = useTranslation('header');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { languages = [] } = configuration.application;
   const { actions: hasActions = {}, title: hasTitle } = configuration.header;
   const actionClose = t('actions.close');
   const actionExpand = t('actions.expand');
   const actionMinimize = t('actions.minimize');
-  const actionRosetta = t('actions.rosetta');
+  const actionMore = t('actions.more');
   const actionShrink = t('actions.shrink');
   const actionTests = t('actions.tests');
 
-
-  const languagesMenu = [languages.sort().map(id => ({
-    id,
-    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
-    text: t(`rosetta.${id}`),
-  }))];
+  const onToggleMore = () => {
+    modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
+  };
 
   const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
@@ -58,11 +57,10 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
     },
     {
-      children: <img alt={actionRosetta} src="icons/flag.png" title={actionRosetta} />,
-      items: () => languagesMenu,
-      selected: () => i.languages[0],
+      children: <img alt={actionMore} src="icons/cog.png" title={actionMore} />,
+      onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.translate && languagesMenu.flat().length > 1,
+      when: !!hasActions.more && !onboardingActive,
     },
     {
       children: <img alt={actionExpand} src="icons/arrow-expand.png" title={actionExpand} />,
