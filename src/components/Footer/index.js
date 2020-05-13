@@ -25,13 +25,14 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const actionTranslate = t('translate');
 
   const languagesMenu = [languages.sort().map(id => ({
+    icon: `flags/${id}.png`,
     id,
     onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
     text: t(`rosetta.${id}`),
   }))];
 
   const actions = [{
-    children: <img alt={actionTranslate} src="icons/flag.png" title={actionTranslate} />,
+    children: <img alt={actionTranslate} src={`flags/${i.languages[0]}.png`} title={actionTranslate} />,
     items: () => languagesMenu,
     selected: () => i.languages[0],
     variant: 'icon',

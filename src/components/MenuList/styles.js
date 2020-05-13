@@ -3,10 +3,11 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   icon: () => ({
-    height: '1em',
     marginRight: '1em',
+    maxHeight: '1em',
     opacity: .5,
-    width: '1em',
+    overflow: 'hidden',
+    width: '1.2em',
   }),
   item: () => ({
     alignItems: 'center',
@@ -16,23 +17,23 @@ export default createUseStyles(theme => ({
     paddingRight: '1.6em',
     paddingTop: '.8em',
   }),
-  itemEnabled: () => ({
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '& $icon': {
-      opacity: 1,
-    },
-  }),
   itemDisabled: () => ({
     color: theme.palette.text.disabled,
     cursor: 'not-allowed',
   }),
+  itemEnabled: () => ({
+    '& $icon': {
+      opacity: 1,
+    },
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    cursor: 'pointer',
+  }),
   root: () => ({
     borderColor: theme.palette.divider,
-    borderWidth: 0,
     borderStyle: 'solid',
+    borderWidth: 0,
     listStyleType: 'none',
     margin: 0,
     padding: [['.5em', 0]],

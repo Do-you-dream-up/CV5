@@ -58,8 +58,8 @@ export default createUseStyles(theme => {
 
     children: () => ({
       '& > *': {
-        height: '1.1em',
         lineHeight: '1.1em',
+        maxHeight: '1.1em',
       },
       '& > :not(:last-child)': {
         marginRight: '.5em',
@@ -80,7 +80,7 @@ export default createUseStyles(theme => {
       ...contained({color}),
       '& $children *': {
         display: 'block',
-        height: 24,
+        maxHeight: 24,
         width: 24,
       },
       '&, &:after, &:before': {
