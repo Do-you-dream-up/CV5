@@ -46,6 +46,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   } = useContext(DialogContext);
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { modal } = useContext(ModalContext);
+  const [ ready, setReady ] = useState(false);
   const [ gdprShowDisclaimer, setGdprShowDisclaimer ] = useState(false);
   const [ gdprPassed, setGdprPassed ] = useState(false);
   const classes = useStyles({configuration});
@@ -70,7 +71,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   const onMinimize = () => toggle(1)();
 
   useEffect(() => {
-    if (!window.dydu) {
+    if (!ready) {
       window.dydu = {};
 
       window.dydu.chat = {
@@ -118,12 +119,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
     }
+    setReady(true);
   }, [
     addResponse,
     ask,
     empty,
     i,
     modal,
+    ready,
     setDisabled,
     setPlaceholder,
     setPrompt,
