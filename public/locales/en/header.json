@@ -4,12 +4,8 @@
     "expand": "Expand",
     "minimize": "Minimize",
     "more": "More",
-    "rosetta": "Languages",
-    "shrink": "Shrink"
-  },
-  "rosetta": {
-    "en": "English",
-    "fr": "French"
+    "shrink": "Shrink",
+    "tests": "Tests"
   },
   "title": "Need help?"
 }

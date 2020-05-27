@@ -43,7 +43,7 @@
     "askComment": true
   },
   "footer": {
-    "more": true,
+    "translate": true,
     "styles": {
       "shadow": true
     },
@@ -54,8 +54,8 @@
       "close": true,
       "expand": true,
       "minimize": true,
-      "more": false,
-      "translate": true
+      "more": true,
+      "tests": false
     },
     "styles": {
       "shadow": true

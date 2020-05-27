@@ -43,6 +43,7 @@ export default function MenuList({ items, onClose, selected }) {
 
 MenuList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
+    icon: PropTypes.string,
     onClick: PropTypes.func,
     text: PropTypes.string.isRequired,
   })).isRequired,

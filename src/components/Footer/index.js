@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { ModalContext } from '../../contexts/ModalContext';
 import Actions from '../Actions';
 import Input from '../Input';
-import ModalFooterMenu from '../ModalFooterMenu';
 import useStyles from './styles';
 
 
@@ -20,21 +18,25 @@ import useStyles from './styles';
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { modal } = useContext(ModalContext);
   const classes = useStyles({configuration});
-  const { t } = useTranslation('footer');
-  const { more } = configuration.footer;
-  const actionExpand = t('expand');
+  const [ t, i ] = useTranslation('footer');
+  const { languages = [] } = configuration.application;
+  const { translate: hasTranslate } = configuration.footer;
+  const actionTranslate = t('translate');
 
-  const onExpand = () => {
-    modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
-  };
+  const languagesMenu = [languages.sort().map(id => ({
+    icon: `flags/${id}.png`,
+    id,
+    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
+    text: t(`rosetta.${id}`),
+  }))];
 
   const actions = [{
-    children: <img alt={actionExpand} src="icons/chevron-up.black.png" title={actionExpand} />,
-    onClick: onExpand,
+    children: <img alt={actionTranslate} src={`flags/${i.languages[0]}.png`} title={actionTranslate} />,
+    items: () => languagesMenu,
+    selected: () => i.languages[0],
     variant: 'icon',
-    when: more,
+    when: hasTranslate && languagesMenu.flat().length > 1,
   }];
 
   return (
