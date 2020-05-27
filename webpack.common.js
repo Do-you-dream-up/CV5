@@ -32,7 +32,7 @@ module.exports = {
   },
   output: {
     filename: 'bundle.min.js',
-    jsonpFunction: 'dydu',
+    jsonpFunction: 'dydu.bliss',
     path: Path.resolve(__dirname, 'build/'),
   },
   performance: {
