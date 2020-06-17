@@ -15,6 +15,7 @@ export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const [ disabled, setDisabled ] = useState(false);
   const [ interactions, setInteractions ] = useState([]);
+  const [ lockTextField, setLockTextField ] = useState(false);
   const [ placeholder, setPlaceholder ] = useState(null);
   const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
@@ -37,6 +38,7 @@ export function DialogProvider({ children }) {
       }
       add(<Interaction children={text} type="request" />);
       setPlaceholder(null);
+      setLockTextField(false);
     }
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
@@ -100,11 +102,13 @@ export function DialogProvider({ children }) {
       disabled,
       empty,
       interactions,
+      lockTextField,
       placeholder,
       prompt,
       secondaryActive,
       secondaryContent,
       setDisabled,
+      setLockTextField,
       setPlaceholder,
       setPrompt,
       setSecondary,
