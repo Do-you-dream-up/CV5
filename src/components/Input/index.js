@@ -18,7 +18,7 @@ import useStyles from './styles';
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { disabled, lockTextField, placeholder } = useContext(DialogContext);
+  const { disabled, locked, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ counter = 100, setCounter ] = useState(configuration.input.maxLength);
   const [ input, setInput ] = useState('');
@@ -59,7 +59,7 @@ export default function Input({ focus, onRequest, onResponse }) {
 
   const renderInputComponent = properties => (
     <div className={c('dydu-input-field', classes.field)}>
-      <textarea {...properties} disabled={ prompt || lockTextField }/>
+      <textarea {...properties} disabled={prompt || locked}/>
       <div children={input} className={classes.fieldShadow} />
       {!!showCounter && <span children={counter} className={classes.counter} />}
     </div>

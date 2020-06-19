@@ -39,7 +39,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
     interactions,
     secondaryActive,
     setDisabled,
-    setLockTextField,
+    setLocked,
     setPlaceholder,
     setPrompt,
     setSecondary,
@@ -111,7 +111,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       window.dydu.ui = {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
-        lockTextField: () => setLockTextField(true),
+        lock: () => setLocked(true),
         placeholder: value => setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary(open, {body, title})(),
         toggle: mode => toggle(mode)(),
@@ -120,7 +120,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
-      window._dydu_lockTextField =  window.dydu.ui.lockTextField;
+      window._dydu_lockTextField =  window.dydu.ui.lock;
     }
     setReady(true);
   }, [
@@ -131,7 +131,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
     modal,
     ready,
     setDisabled,
-    setLockTextField,
+    setLocked,
     setPlaceholder,
     setPrompt,
     setSecondary,
