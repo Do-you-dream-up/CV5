@@ -8,11 +8,19 @@ export default createUseStyles(theme => ({
     ...configuration.interaction.styles,
     [theme.breakpoints.down('xs')]: configuration.interaction.stylesMobile,
   }),
+  bubble: () => ({
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
+  }),
   bubbles: () => ({
+    '&:not(:last-child)': {
+      marginBottom: '.5em',
+    },
     display: 'flex',
-    flex: '1',
     flexDirection: 'column',
-    justifyContent: 'center',
+    flexGrow: '1',
+    overflowX: 'hidden',
   }),
   loader: () => ({
     marginLeft: '.2em',
@@ -24,5 +32,11 @@ export default createUseStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       marginRight: '2em',
     },
+  }),
+  wrapper: () => ({
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    justifyContent: 'center',
   }),
 }));

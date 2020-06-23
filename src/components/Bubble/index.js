@@ -14,13 +14,13 @@ import useStyles from  './styles';
  * request should be displayed on the right of the conversation while its
  * response should appear in front, on the left.
  */
-export default function Bubble({ actions, children, component, html, thinking, type }) {
+export default function Bubble({ actions, children, className, component, html, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
 
   return React.createElement(component, {className: c(
-    'dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type],
+    'dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type], className,
   )}, (
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
@@ -41,6 +41,7 @@ Bubble.defaultProps = {
 Bubble.propTypes = {
   actions: PropTypes.node,
   children: PropTypes.element,
+  className: PropTypes.string,
   component: PropTypes.elementType,
   html: PropTypes.string,
   thinking: PropTypes.bool,

@@ -5,6 +5,7 @@ import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
 import dotget from '../tools/dotget';
 import useViewport from '../tools/hooks/viewport';
+import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
 
@@ -43,7 +44,10 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line no-use-before-define
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
-  const addResponse = useCallback(({ askFeedback, guiAction, sidebar, text, urlRedirect }) => {
+  const addResponse = useCallback(response => {
+    const { askFeedback, guiAction, sidebar, urlRedirect } = response;
+    const steps = parseSteps(response);
+    console.log('DialogContext.addResponse', steps);
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }
@@ -63,7 +67,8 @@ export function DialogProvider({ children }) {
     }
     add(
       <Interaction askFeedback={askFeedback}
-                   children={text}
+                   carousel={steps.length > 1}
+                   children={steps.map(({ text }) => text)}
                    type="response"
                    secondary={sidebar}
                    thinking />

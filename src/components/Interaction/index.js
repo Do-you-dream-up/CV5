@@ -8,6 +8,7 @@ import { Local } from '../../tools/storage';
 import Actions from  '../Actions';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
+import Carousel from  '../Carousel';
 import Feedback from  '../Feedback';
 import Loader from  '../Loader';
 import Scroll from  '../Scroll';
@@ -22,6 +23,7 @@ import useStyles from  './styles';
  */
 export default function Interaction({
   askFeedback,
+  carousel,
   children,
   className,
   history,
@@ -47,13 +49,19 @@ export default function Interaction({
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
-        const newBubble = newBubbles.shift();
-        setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
-        if (newBubbles.length) {
-          addBubbles(newBubbles);
+        if (carousel) {
+          setBubbles(previous => [...previous, ...newBubbles]);
+          setHasLoader(false);
         }
         else {
-          setHasLoader(false);
+          const newBubble = newBubbles.shift();
+          setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
+          if (newBubbles.length) {
+            addBubbles(newBubbles);
+          }
+          else {
+            setHasLoader(false);
+          }
         }
       }, delay);
     }
@@ -61,7 +69,7 @@ export default function Interaction({
       setBubbles(newBubbles);
       setHasLoader(false);
     }
-  }, [delay, thinking]);
+  }, [carousel, delay, thinking]);
 
   const onToggle = useCallback(open => {
     toggleSecondary(open, {body: secondary.content, ...secondary})();
@@ -76,29 +84,43 @@ export default function Interaction({
   useEffect(() => {
     if (!ready && children) {
       setReady(true);
-      const content = children.reduce((accumulator, it) => (
-        typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
-      ), []);
+      let content = children;
+      if (!carousel) {
+        content = content.reduce((accumulator, it) => (
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
+        ), []);
+      }
+      if (carousel) {
+        content = content.reduce((accumulator, it) => (
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
+        ), []);
+      }
       addBubbles(content.filter(it => it));
     }
-  }, [addBubbles, children, ready]);
+  }, [addBubbles, carousel, children, ready]);
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
       'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type], className,
     )}>
-      {hasAvatar && <Avatar type={type} />}
-      <div className={c('dydu-interaction-bubbles', classes.bubbles)}>
-        {bubbles.map((it, index) => {
-          const actions = [...(secondary ? [{children: 'Plus', onClick: () => onToggle()}] : [])];
-          const attributes = {
-            actions: !!actions.length && <Actions actions={actions} />,
-            component: scroll ? Scroll : undefined,
-            type: type,
-            [typeof it === 'string' ? 'html' : 'children']: it,
-          };
-          return <Bubble key={index} {...attributes} />;
-        })}
+      {hasAvatar && (hasLoader || !carousel) && <Avatar type={type} />}
+      <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        {bubbles.length > 0 && React.createElement(
+          carousel ? Carousel : 'div',
+          {
+            children: bubbles.map((it, index) => {
+              const actions = [...(secondary ? [{children: 'Plus', onClick: () => onToggle()}] : [])];
+              const attributes = {
+                actions: !!actions.length && <Actions actions={actions} />,
+                component: scroll && !index ? Scroll : undefined,
+                type: type,
+                [typeof it === 'string' ? 'html' : 'children']: it,
+              };
+              return <Bubble className={classes.bubble} key={index} {...attributes} />;
+            }),
+            className: c('dydu-interaction-bubbles', classes.bubbles),
+          },
+        )}
         {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
         {!hasLoader && askFeedback && <Feedback />}
       </div>
@@ -108,13 +130,15 @@ export default function Interaction({
 
 
 Interaction.defaultProps = {
+  carousel: false,
   scroll: true,
 };
 
 
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
-  children: PropTypes.node,
+  carousel: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
