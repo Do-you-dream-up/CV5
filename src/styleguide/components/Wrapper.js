@@ -13,13 +13,13 @@ import '../../tools/internationalization';
 
 const useStyles = createUseStyles({
   root: {
-    justifyContent: 'center',
-    display: 'flex',
-    flexWrap: 'wrap',
-    margin: -8,
     '& > *': {
       margin: 8,
     },
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    margin: -8,
   },
 });
 
