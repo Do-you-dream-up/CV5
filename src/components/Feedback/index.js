@@ -100,14 +100,14 @@ export default function Feedback() {
   return active && (showChoices || showComment || showVote) && (
     <div className="dydu-feedback">
       {showVote && (
-        <div className={c('dydu-feedback-vote', classes.vote)}>
+        <Scroll className={c('dydu-feedback-vote', classes.vote)}>
           <Button color="error" onClick={onVoteNegative} variant="icon">
             <img alt={voteNegative} src="icons/thumb-down.png" title={voteNegative} />
           </Button>
           <Button color="success" onClick={onVotePositive} variant="icon">
             <img alt={votePositive} src="icons/thumb-up.png" title={votePositive} />
           </Button>
-        </div>
+        </Scroll>
       )}
       {showChoices && (
         <Bubble component={Scroll} thinking={thinking} type="response">

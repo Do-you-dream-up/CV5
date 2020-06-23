@@ -1,0 +1,3 @@
+```jsx static
+<Welcome />
+```

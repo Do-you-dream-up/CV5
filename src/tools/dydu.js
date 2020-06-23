@@ -12,9 +12,9 @@ import { Cookie, Local } from './storage';
  * the bot configuration.
  */
 const BOT = Object.assign({}, bot, (({ bot: id, server }) => ({
-  ...id && {id},
-  ...server && {server},
-}))(qs.parse(window.location.search, {ignoreQueryPrefix: true})));
+  ...id && { id },
+  ...server && { server },
+}))(qs.parse(window.location.search, { ignoreQueryPrefix: true })));
 
 
 /**
@@ -37,7 +37,7 @@ export default new class Dydu {
 
   constructor() {
     this.client = this.getClientId();
-    this.emit = debounce(this.emit, 100, {leading: true});
+    this.emit = debounce(this.emit, 100, { leading: true });
     this.locale = this.getLocale();
     this.space = this.getSpace();
   }
@@ -69,7 +69,7 @@ export default new class Dydu {
   feedback = value => {
     const data = qs.stringify({
       contextUUID: this.getContextId(),
-      feedBack: {false: 'negative', true: 'positive'}[value] || 'withoutAnswer',
+      feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: 'ASSISTANT',
     });
     const path = `chat/feedback/${BOT.id}/`;
@@ -130,7 +130,7 @@ export default new class Dydu {
     return Promise.all(methods.map(it => this.emit(
       API.post,
       path,
-      qs.stringify({...data, object: it}),
+      qs.stringify({ ...data, object: it }),
     )));
   };
 
@@ -202,7 +202,7 @@ export default new class Dydu {
   history = () => new Promise((resolve, reject) => {
     const contextId = this.getContextId();
     if (contextId) {
-      const data = qs.stringify({contextUuid: contextId});
+      const data = qs.stringify({ contextUuid: contextId });
       const path = `chat/history/${BOT.id}/`;
       resolve(this.emit(API.post, path, data));
     }
@@ -282,7 +282,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   suggest = text => {
-    const data = qs.stringify({language: this.getLocale(), search: text});
+    const data = qs.stringify({ language: this.getLocale(), search: text });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
@@ -299,9 +299,10 @@ export default new class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       qualificationMode: options.qualification,
+      doNotRegisterInteraction: options.doNotSave,
       space: this.getSpace(),
       userInput: text,
-      ...(options.extra && {extraParameters: options.extra}),
+      ...(options.extra && { extraParameters: options.extra }),
     });
     const contextId = this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -315,7 +316,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   top = size => {
-    const data = qs.stringify({language: this.getLocale(), maxKnowledge: size});
+    const data = qs.stringify({ language: this.getLocale(), maxKnowledge: size });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };

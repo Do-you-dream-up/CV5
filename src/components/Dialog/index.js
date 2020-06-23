@@ -7,6 +7,7 @@ import dydu from '../../tools/dydu';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Spaces from '../Spaces';
+import Welcome from '../Welcome';
 import useStyles from './styles';
 
 
@@ -46,15 +47,16 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
-      {interactions.map((it, index) => ({...it, key: index}))}
-      {prompt === 'gdpr' && <Gdpr />}
-      {prompt === 'spaces' && <Spaces />}
-    </div>
+      <Welcome />
+      { interactions.map((it, index) => ({ ...it, key: index })) }
+      { prompt === 'gdpr' && <Gdpr /> }
+      { prompt === 'spaces' && <Spaces /> }
+    </div >
   );
 }
 
 
 Dialog.propTypes = {
-  interactions: PropTypes.arrayOf(PropTypes.shape({type: PropTypes.oneOf([Interaction])})).isRequired,
+  interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
 };
