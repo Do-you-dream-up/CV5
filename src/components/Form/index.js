@@ -12,7 +12,7 @@ import useStyles from './styles';
  * Children should be a callback which accepts the form data and the field
  * onchange callback as parameters.
  */
-export default function Form({ children, className, data: initialData, onReject, onResolve, thinking }) {
+export default function Form({ children, className, data: initialData, onDismiss, onReject, onResolve, thinking }) {
 
   const classes = useStyles();
   const [ data, setData ] = useState(initialData);
@@ -36,6 +36,7 @@ export default function Form({ children, className, data: initialData, onReject,
 
   const actions = [
     ...(onCancel ? [{children: t('cancel'), onClick: onCancel}] : []),
+    {children: t('cancel'), disabled: thinking, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
     {children: t('submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'submit'},
   ];
 
@@ -57,6 +58,7 @@ Form.propTypes = {
   children: PropTypes.func.isRequired,
   className: PropTypes.string,
   data: PropTypes.object,
+  onDismiss: PropTypes.func,
   onReject: PropTypes.func,
   onResolve: PropTypes.func.isRequired,
   thinking: PropTypes.bool,

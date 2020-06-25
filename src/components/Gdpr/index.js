@@ -30,6 +30,10 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
     );
   };
 
+  const onDismiss = () => {
+    setPrompt('');
+  };
+
   return !!ready && (
     <Interaction className="dydu-interaction-gdpr" scroll={scroll} thinking={thinking} type="response">
       <>
@@ -42,7 +46,8 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
         )}
         <Form className="dydu-gdpr-form"
               data={{email: '', withForget: false, withGet: true}}
-              onResolve={onResolve || onSubmit}>
+              onResolve={onResolve || onSubmit}
+              onDismiss={onDismiss}>
           {({ data, onChange }) => (
             <>
               <label className={c('dydu-gdpr-form-field', classes.field)}>
