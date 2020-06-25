@@ -58,7 +58,7 @@ export function DialogProvider({ children }) {
           f(...parameters);
         }
         else {
-          console.warn(`Action '${action}' was not found in 'window' object.`);
+          console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
         }
       });
     }

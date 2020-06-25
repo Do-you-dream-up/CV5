@@ -26,7 +26,7 @@ export const configuration = new class Configuration {
       ({ data }) => this.sanitize(this.merge(data)),
       ({ request }) => {
         // eslint-disable-next-line no-console
-        console.warn(`Configuration file not found at '${request.responseURL}'.`);
+        console.warn(`[Dydu] Configuration file not found at '${request.responseURL}'.`);
         return this.sanitize(this.configuration);
       },
     );
@@ -42,7 +42,7 @@ export const configuration = new class Configuration {
     data = JSON.parse(JSON.stringify(data));
     if (typeof data !== 'object') {
       // eslint-disable-next-line no-console
-      console.warn('Invalid configuration file. Fallback to default values.');
+      console.warn('[Dydu] Invalid configuration file. Fallback to default values.');
     }
     const merge = (target, source) => {
       if (target instanceof Object && source instanceof Object) {
