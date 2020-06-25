@@ -2,12 +2,21 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+
+  '@keyframes growBackward': {
+    from: {height: '100%'},
+    to: {height: '50%'},
+  },
+  '@keyframes growForward': {
+    from: {height: '50%'},
+    to: {height: '100%'},
+  },
+  '@keyframes pulse': {
+    from: {transform: 'scale(0)'},
+    to: {transform: 'scale(1)'},
+  },
+
   bars: () => ({
-    alignItems: 'center',
-    display: 'flex',
-    height: '1.2em',
-    margin: [[0, 2]],
-    width: 4,
     '&:after': {
       animationDirection: 'alternate',
       animationDuration: '.2s',
@@ -19,12 +28,17 @@ export default createUseStyles(theme => ({
       content: '""',
       display: 'block',
       height: '50%',
-     width: '100%',
+      width: '100%',
     },
     '&:nth-child(2n+1):after': {
       animationName: '$growBackward',
       height: '100%',
     },
+    alignItems: 'center',
+    display: 'flex',
+    height: '1.2em',
+    margin: [[0, 2]],
+    width: 4,
   }),
   bubbles: () => ({
     animationName: '$pulse',
@@ -47,16 +61,4 @@ export default createUseStyles(theme => ({
     ...configuration.loader.styles,
     [theme.breakpoints.down('xs')]: configuration.loader.stylesMobile,
   }),
-  '@keyframes growBackward': {
-    from: {height: '100%'},
-    to: {height: '50%'},
-  },
-  '@keyframes growForward': {
-    from: {height: '50%'},
-    to: {height: '100%'},
-  },
-  '@keyframes pulse': {
-    from: {transform: 'scale(0)'},
-    to: {transform: 'scale(1)'},
-  },
 }));

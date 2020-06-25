@@ -41,6 +41,6 @@ export default function Carousel({ children, className, ...rest }) {
 
 
 Carousel.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.arrayOf(PropTypes.node),
   className: PropTypes.string,
 };

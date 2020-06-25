@@ -45,7 +45,6 @@ export function DialogProvider({ children }) {
   const addResponse = useCallback(response => {
     const { askFeedback, guiAction, sidebar, urlRedirect } = response;
     const steps = parseSteps(response);
-    console.log('DialogContext.addResponse', steps);
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }

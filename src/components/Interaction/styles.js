@@ -4,7 +4,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
   base: ({ configuration }) => ({
     display: 'flex',
-    margin: [['1em']],
+    margin: '1em',
     ...configuration.interaction.styles,
     [theme.breakpoints.down('xs')]: configuration.interaction.stylesMobile,
   }),
