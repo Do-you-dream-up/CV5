@@ -22,6 +22,11 @@ const documentation = {
     transient: ['Consider the banner as seen as soon as rendered', 'Boolean'],
   },
 
+  carousel: {
+    offset: ['Left offset of the first step, in percentage', 'Number'],
+    width: ['Total width of a step in the conversation area, in percentage', 'Number'],
+  },
+
   chatbox: {
     expandable: ['Allow maximizing the chatbox', 'Boolean'],
     margin: ['Margins to the viewport', 'Number'],

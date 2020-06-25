@@ -101,7 +101,12 @@ export default function Interaction({
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
-      'dydu-interaction', `dydu-interaction-${type}`, classes.base, classes[type], className,
+      'dydu-interaction',
+      `dydu-interaction-${type}`,
+      classes.base,
+      classes[type],
+      {[classes.barf]: carousel && bubbles.length},
+      className,
     )}>
       {hasAvatar && (hasLoader || !carousel) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>

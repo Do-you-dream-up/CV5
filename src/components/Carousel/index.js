@@ -1,7 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import Button from  '../Button';
 import useStyles from  './styles';
 
@@ -13,7 +14,9 @@ import useStyles from  './styles';
  */
 export default function Carousel({ children, className, ...rest }) {
 
-  const classes = useStyles();
+  const { configuration } = useContext(ConfigurationContext);
+  const { offset, width } = configuration.carousel;
+  const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
   const { t } = useTranslation('carousel');
   const length = React.Children.count(children);
@@ -27,8 +30,12 @@ export default function Carousel({ children, className, ...rest }) {
   return (
     <div className={c('dydu-carousel', classes.root), className} {...rest}>
       <div children={children}
-           className={c('dydu-carousel-content', classes.content)}
-           style={{transform: `translateX(${index * -100}%)`}} />
+           className={c('dydu-carousel-steps', classes.steps)}
+           style={{transform: `translateX(${index * width * -1 + offset}%)`}}>
+        {children.map((it, i) => (
+          <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
+        ))}
+      </div>
       {length > 0 && (
         <div className={c('dydu-carousel-controls', classes.controls)}>
           <Button children={t('previous')} disabled={!hasPrevious()} onClick={onPrevious} />

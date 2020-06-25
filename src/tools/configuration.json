@@ -23,6 +23,10 @@
     "styles": {},
     "stylesMobile": {}
   },
+  "carousel": {
+    "offset": 5,
+    "width": 90
+  },
   "chatbox": {
     "expandable": true,
     "margin": 16,
