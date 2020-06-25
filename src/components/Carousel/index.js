@@ -16,6 +16,7 @@ export default function Carousel({ children, className, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { offset, width } = configuration.carousel;
+  const hasBullets = !!configuration.carousel.bullets;
   const hasControls = !!configuration.carousel.controls;
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
@@ -37,6 +38,15 @@ export default function Carousel({ children, className, ...rest }) {
           <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
       </div>
+      {!!hasBullets && length > 0 && (
+        <div className={c('dydu-carousel-bullets', classes.bullets)}>
+          {children.map((it, i) => (
+            <div className={c('dydu-carousel-bullet', {[classes.active]: i === index})}
+                 key={i}
+                 onClick={() => setIndex(i)} />
+          ))}
+        </div>
+      )}
       {!!hasControls && length > 0 && (
         <div className={c('dydu-carousel-controls', classes.controls)}>
           <Button children={t('previous')} disabled={!hasPrevious()} onClick={onPrevious} />

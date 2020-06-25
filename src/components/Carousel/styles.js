@@ -1,7 +1,29 @@
 import { createUseStyles } from 'react-jss';
 
 
-export default createUseStyles({
+export default createUseStyles(theme => ({
+  active: {},
+  bullets: () => ({
+    '& > *': {
+      '&$active:after': {
+        backgroundColor: theme.palette.action.active,
+        borderRadius: '50%',
+        content: '""',
+        display: 'block',
+        height: '100%',
+        width: '100%',
+      },
+      backgroundColor: theme.palette.background.bullet,
+      borderRadius: '50%',
+      cursor: 'pointer',
+      height: '.4em',
+      margin: [[0, '.15em']],
+      width: '.4em',
+    },
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '.5em',
+  }),
   controls: ({ offset }) => ({
     alignItems: 'center',
     display: 'flex',
@@ -28,4 +50,4 @@ export default createUseStyles({
     transitionDuration: '.25s',
     transitionProperty: 'transform',
   }),
-});
+}));

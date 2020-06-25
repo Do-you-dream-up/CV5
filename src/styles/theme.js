@@ -14,12 +14,14 @@ export default {
 
   palette: {
     action: {
+      active: 'rgba(0, 0, 0, .4)',
       disabled: 'rgba(0, 0, 0, .26)',
       disabledBackground: 'rgba(0, 0, 0, .12)',
       hover: 'rgba(0, 0, 0, .14)',
       selected: 'rgba(0, 0, 0, .08)',
     },
     background: {
+      bullet: '#A4A4A4',
       default: '#F5F5F5',
       dim: 'rgba(0, 0, 0, .05)',
       highlight: 'rgba(0, 0, 0, .05)',
