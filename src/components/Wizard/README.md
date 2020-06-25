@@ -41,6 +41,11 @@ const documentation = {
     persist: ['Save the position through refreshes', 'Boolean'],
   },
 
+  events: {
+    active: ['Enable event tracking', 'Boolean'],
+    log: ['Enable logs withint he console', 'Boolean'],
+  },
+
   feedback: {
     active: ['Enable the feedback prompts', 'Boolean'],
     askChoices: ['Enable the prompt for choices', 'Boolean'],

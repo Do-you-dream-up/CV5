@@ -1,4 +1,8 @@
 {
+  "events": {
+    "active": true,
+    "log": true
+  },
   "application": {
     "open": 1,
     "qualification": true,
