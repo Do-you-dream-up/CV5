@@ -1,7 +1,7 @@
 {
   "events": {
     "active": true,
-    "log": true
+    "verbosity": 2
   },
   "application": {
     "open": 1,

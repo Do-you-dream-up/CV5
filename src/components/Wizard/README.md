@@ -43,7 +43,7 @@ const documentation = {
 
   events: {
     active: ['Enable event tracking', 'Boolean'],
-    log: ['Enable logs withint he console', 'Boolean'],
+    verbosity: ['Log level, the higher the more verbose', 'Number'],
   },
 
   feedback: {
