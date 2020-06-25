@@ -16,6 +16,7 @@ export default function Carousel({ children, className, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { offset, width } = configuration.carousel;
+  const hasControls = !!configuration.carousel.controls;
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
   const { t } = useTranslation('carousel');
@@ -36,7 +37,7 @@ export default function Carousel({ children, className, ...rest }) {
           <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
       </div>
-      {length > 0 && (
+      {!!hasControls && length > 0 && (
         <div className={c('dydu-carousel-controls', classes.controls)}>
           <Button children={t('previous')} disabled={!hasPrevious()} onClick={onPrevious} />
           <Button children={t('next')} disabled={!hasNext()} onClick={onNext} />

@@ -23,6 +23,7 @@ const documentation = {
   },
 
   carousel: {
+    controls: ['Whether to display controls beneath the carousel', 'Boolean'],
     offset: ['Left offset of the first step, in percentage', 'Number'],
     width: ['Total width of a step in the conversation area, in percentage', 'Number'],
   },

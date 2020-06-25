@@ -24,6 +24,7 @@
     "stylesMobile": {}
   },
   "carousel": {
+    "controls": true,
     "offset": 5,
     "width": 90
   },
