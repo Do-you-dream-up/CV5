@@ -1,6 +1,11 @@
 {
   "events": {
     "active": true,
+    "features": {
+      "teaser": {
+        "onClick": ["foo", "bar"]
+      }
+    },
     "verbosity": 2
   },
   "application": {

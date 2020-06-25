@@ -8,11 +8,11 @@ export const EventsContext = React.createContext();
 export function EventsProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { active, verbosity = 0 } = configuration.events;
+  const { active, features = {}, verbosity = 0 } = configuration.events;
 
   const onEvent = feature => (event, ...rest) => {
     if (active) {
-      const actions = (configuration.events[feature] || {})[event];
+      const actions = (features[feature] || {})[event];
       if (Array.isArray(actions)) {
         actions.forEach(action => {
           if (verbosity > 1) {

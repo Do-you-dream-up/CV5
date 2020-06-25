@@ -43,6 +43,7 @@ const documentation = {
 
   events: {
     active: ['Enable event tracking', 'Boolean'],
+    features: ['All supported features with arrays containing actions to track', 'Object'],
     verbosity: ['Log level, the higher the more verbose', 'Number'],
   },
 
