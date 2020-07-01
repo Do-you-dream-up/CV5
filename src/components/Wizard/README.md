@@ -41,6 +41,12 @@ const documentation = {
     persist: ['Save the position through refreshes', 'Boolean'],
   },
 
+  events: {
+    active: ['Enable event tracking', 'Boolean'],
+    features: ['All supported features with arrays containing actions to track', 'Object'],
+    verbosity: ['Log level, the higher the more verbose', 'Number'],
+  },
+
   feedback: {
     active: ['Enable the feedback prompts', 'Boolean'],
     askChoices: ['Enable the prompt for choices', 'Boolean'],

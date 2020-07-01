@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabProvider } from '../../contexts/TabContext';
@@ -45,6 +46,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { modal } = useContext(ModalContext);
   const [ ready, setReady ] = useState(false);
@@ -69,7 +71,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
 
   const onClose = () => modal(ModalClose).then(toggle(0), () => {});
 
-  const onMinimize = () => toggle(1)();
+  const onMinimize = () => {
+    event('onMinimize', 'params', 'params2');
+    toggle(1)();
+  };
 
   useEffect(() => {
     if (!ready) {

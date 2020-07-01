@@ -43,6 +43,18 @@
     "factor": 100,
     "persist": true
   },
+  "events": {
+    "active": true,
+    "features": {
+      "chatbox": {
+        "onMinimize": ["minimize"]
+      },
+      "teaser": {
+        "onClick": ["foo", "bar"]
+      }
+    },
+    "verbosity": 2
+  },
   "feedback": {
     "active": true,
     "askChoices": true,
