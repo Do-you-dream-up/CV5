@@ -7,6 +7,7 @@ export const TabContext = React.createContext();
 export function TabProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  console.log('icic cest mon context', configuration);
   const { items, selected = 0 } = configuration.tabs;
   const [ current, setCurrent ] = useState();
   const [ tabs, setTabs ] = useState();
