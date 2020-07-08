@@ -100,6 +100,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
         ),
       };
 
+      document.documentElement.lang = window.dydu.localization.get();
+
       window.dydu.lorem = {
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
         standard: () => window.dydu.chat.reply(LOREM_HTML),
