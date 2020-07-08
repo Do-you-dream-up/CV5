@@ -25,6 +25,7 @@ export function ButtonBase({
   reference,
   spin,
   target,
+  title,
   type,
   variant,
   ...rest
@@ -42,7 +43,7 @@ export function ButtonBase({
 
   return React.createElement(href ? 'a' : component, {
     ...rest,
-    ...(href ? {href, target} : {onClick, type}),
+    ...(href ? {href, target, title} : {onClick, type}),
     className: c('dydu-button',
                  `dydu-button-${variant}`,
                  classes.base,
@@ -72,6 +73,7 @@ ButtonBase.propTypes = {
   reference: PropTypes.exact({current: PropTypes.object}),
   spin: PropTypes.bool,
   target: PropTypes.string,
+  title: PropTypes.string,
   type: PropTypes.string,
   variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };
