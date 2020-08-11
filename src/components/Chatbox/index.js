@@ -96,8 +96,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
         set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
           ([ locale ]) => window.dydu.chat.reply(`New locale set: '${locale}'.`),
           response => window.dydu.chat.reply(response),
+          document.documentElement.lang = locale,
         ),
       };
+
+      document.documentElement.lang = window.dydu.localization.get();
 
       window.dydu.lorem = {
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
