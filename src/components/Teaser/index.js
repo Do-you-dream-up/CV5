@@ -27,7 +27,10 @@ export default function Teaser({ open, toggle }) {
   return (
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
          onClick={onClick}
-         title={title}>
+         title={title}
+         role='button'
+         tabIndex='0.2'
+         aria-pressed={!open}>
       <div className={c('dydu-teaser-button', classes.button)}>
         <Skeleton children={title} hide={!ready} width="3em" />
       </div>
