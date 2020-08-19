@@ -86,6 +86,10 @@ export default createUseStyles(theme => {
       '&, &:after, &:before': {
         borderRadius: '50%',
       },
+      '&:disabled': {
+        cursor: 'not-allowed',
+        opacity: 0.5,
+      },
       height: 40,
       justifyContent: 'center',
       padding: 0,
