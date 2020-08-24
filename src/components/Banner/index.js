@@ -46,7 +46,7 @@ export default function Banner() {
 
   const actions = [
     ...dismissable ? [{children: t('ok'), onClick: onDismiss}] : [],
-    ...more ? [{children: t('more'), href: moreLink, icon: 'icons/open-in-new.png', title: moreLink}] : [],
+    ...more ? [{children: t('more'), href: moreLink, icon: `icons/${configuration.banner.moreIcon}`}] : [],
   ];
 
   return show && html && (
