@@ -69,14 +69,17 @@ export default createUseStyles(theme => {
       position: 'relative',
     }),
 
-    contained,
+    contained: ({ color = 'primary', configuration}) => ({
+      ...contained({color}),
+      ...configuration.button_contained[color],
+    }),
 
     grow: () => ({
       flexGrow: 1,
       justifyContent: 'center',
     }),
 
-    icon: ({ color = '' }) => ({
+    icon: ({ color = 'primary', configuration}) => ({
       ...contained({color}),
       '& $children *': {
         display: 'block',
@@ -90,6 +93,7 @@ export default createUseStyles(theme => {
       justifyContent: 'center',
       padding: 0,
       width: 40,
+      ...configuration.button_icon[color],
     }),
 
     spin: () => ({
