@@ -15,6 +15,7 @@
     "cookie": true,
     "dismissable": true,
     "more": true,
+    "moreIcon": "open-in-new.png",
     "moreLink": "https://goo.gle",
     "styles": {},
     "stylesMobile": {},
@@ -89,6 +90,13 @@
       "minimize": true,
       "more": true,
       "tests": false
+    },
+    "icons" : {
+      "close": "close.png",
+      "collapse": "arrow-collapse.png",
+      "expand": "arrow-expand.png",
+      "minimize": "window-minimize.png",
+      "more": "cog.png"
     },
     "styles": {
       "shadow": true
