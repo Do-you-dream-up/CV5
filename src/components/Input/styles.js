@@ -18,7 +18,7 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
   }),
 
-  counter: () => ({
+  counter: ({configuration}) => ({
     // DEBT: The below font size, font weight and spacings are not dynamic. This
     //       is difficult to maintain and will cause bugs and/or misalignment.
     background: theme.palette.background.menu,
@@ -36,6 +36,7 @@ export default createUseStyles(theme => ({
     top: 'calc(50% - 0.75em)',
     width: '100%',
     zIndex: 0,
+    ...configuration.input.counterColor,
   }),
 
   field: () => ({
@@ -63,7 +64,7 @@ export default createUseStyles(theme => ({
     visibility: 'hidden',
   }),
 
-  fieldText: () => ({
+  fieldText: ({configuration}) => ({
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
@@ -72,11 +73,13 @@ export default createUseStyles(theme => ({
     },
     background: 0,
     border: 0,
+    color: theme.palette.text.primary,
     extend: 'fieldBase',
     height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
+    ...configuration.input.styles,
   }),
 
   root: ({ configuration }) => ({

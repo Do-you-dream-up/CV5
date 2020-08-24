@@ -31,14 +31,16 @@ export default createUseStyles(theme => ({
     right: 0,
     top: 0,
   }),
-  request: () => ({
+  request: ({configuration}) => ({
     backgroundColor: theme.palette.request.background,
     color: theme.palette.request.text,
     marginLeft: 'auto',
+    ...configuration.bubble.requestColor,
   }),
-  response: () => ({
+  response: ({configuration}) => ({
     backgroundColor: theme.palette.response.background,
     color: theme.palette.response.text,
     marginRight: 'auto',
+    ...configuration.bubble.responseColor,
   }),
 }));

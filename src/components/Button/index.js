@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 
@@ -31,7 +32,8 @@ export function ButtonBase({
   ...rest
 }) {
 
-  const classes = useStyles({color});
+  const { configuration } = useContext(ConfigurationContext);
+  const classes = useStyles({color, configuration});
   const icon = typeof(getIcon) === 'function' ? getIcon() : getIcon;
 
   const button = (

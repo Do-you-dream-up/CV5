@@ -22,7 +22,21 @@
   },
   "bubble": {
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "requestColor": {},
+    "responseColor": {}
+  },
+  "button_icon": {
+    "primary": {},
+    "success": {},
+    "warning": {},
+    "error": {}
+  },
+  "button_contained": {
+    "primary": {},
+    "success": {},
+    "warning": {},
+    "error": {}
   },
   "carousel": {
     "bullets": true,
@@ -87,7 +101,8 @@
     "delay": 300,
     "maxLength": 100,
     "styles": {},
-    "stylesMobile": {}
+    "stylesMobile": {},
+    "counterColor": {}
   },
   "interaction": {
     "avatar": {
