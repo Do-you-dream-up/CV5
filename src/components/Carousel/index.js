@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
-import Button from  '../Button';
+import Actions from '../Actions';
 import useStyles from  './styles';
 
 
@@ -21,6 +21,8 @@ export default function Carousel({ children, className, ...rest }) {
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
   const { t } = useTranslation('carousel');
+  const previous = t('previous');
+  const next = t('next');
   const length = React.Children.count(children);
 
   const hasNext = () => index < length - 1;
@@ -28,6 +30,20 @@ export default function Carousel({ children, className, ...rest }) {
 
   const onNext = () => setIndex(previous => Math.min(length - 1, previous + 1));
   const onPrevious = () => setIndex(previous => Math.max(0, previous - 1));
+
+  const previousAction = [{
+    children: <img alt={previous} src="icons/chevron-left.black.png" title={previous} />,
+    disabled: !hasPrevious(),
+    onClick: onPrevious,
+    variant: 'icon',
+  }];
+
+  const nextAction = [{
+    children: <img alt={next} src="icons/chevron-right.black.png" title={next} />,
+    disabled: !hasNext(),
+    onClick: onNext,
+    variant: 'icon',
+  }];
 
   return (
     <div className={c('dydu-carousel', classes.root), className} {...rest}>
@@ -49,8 +65,8 @@ export default function Carousel({ children, className, ...rest }) {
       )}
       {!!hasControls && length > 0 && (
         <div className={c('dydu-carousel-controls', classes.controls)}>
-          <Button children={t('previous')} disabled={!hasPrevious()} onClick={onPrevious} />
-          <Button children={t('next')} disabled={!hasNext()} onClick={onNext} />
+          <Actions actions={previousAction} />
+          <Actions actions={nextAction} />
         </div>
       )}
     </div>

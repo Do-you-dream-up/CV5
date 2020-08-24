@@ -35,7 +35,7 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
-  const { toggleSecondary } = useContext(DialogContext);
+  const { secondaryActive, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
@@ -114,7 +114,7 @@ export default function Interaction({
           carousel ? Carousel : 'div',
           {
             children: bubbles.map((it, index) => {
-              const actions = [...(secondary ? [{children: 'Plus', onClick: () => onToggle()}] : [])];
+              const actions = [...(secondary ? [{children: secondaryActive ? 'Less' : 'More', onClick: () => onToggle()}] : [])];
               const attributes = {
                 actions: !!actions.length && <Actions actions={actions} />,
                 component: scroll && !index ? Scroll : undefined,
