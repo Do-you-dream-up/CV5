@@ -35,7 +35,7 @@ export default function Teaser({ open, toggle }) {
         <Skeleton children={title} hide={!ready} width="3em" />
       </div>
       <div className={c('dydu-teaser-brand', classes.brand)}>
-        <img alt={title} src="assets/dydu.png" />
+        <img alt={title} src={`assets/${configuration.avatar.icon}`} />
       </div>
     </div>
   );
