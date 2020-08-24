@@ -76,6 +76,9 @@
     "askChoices": true,
     "askComment": true
   },
+  "font": {
+    "url": ""
+  },
   "footer": {
     "translate": true,
     "styles": {

@@ -31,6 +31,11 @@ export default function Application() {
   const [ mode, setMode ] = useState(~~initialMode);
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
+  let customFont = configuration.font.url;
+  if (customFont && customFont !== document.getElementById('font').href) {
+    document.getElementById('font').href = customFont;
+  }
+
   const toggle = value => () => setMode(~~value);
 
   useEffect(() => {
