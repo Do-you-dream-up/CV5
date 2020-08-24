@@ -1,12 +1,15 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
+import Paper from '../Paper';
 import Spaces from '../Spaces';
+import Top from '../Top';
 import Welcome from '../Welcome';
 import useStyles from './styles';
 
@@ -20,6 +23,8 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
+  const { top } = configuration.dialog;
+  const { t } = useTranslation('top');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
@@ -47,6 +52,9 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
 
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
+      {!!top && (
+        <Top component={Paper} elevation={1} title={t('title')}/>
+      )}
       <Welcome />
       { interactions.map((it, index) => ({ ...it, key: index })) }
       { prompt === 'gdpr' && <Gdpr /> }
