@@ -5,12 +5,12 @@ export default createUseStyles(theme => ({
   root: {
     '@global': {
       'a[href], .dydu-link': {
-        color: theme.palette.text.link,
-        cursor: 'pointer',
-        textDecoration: 'none',
         '&:hover': {
           textDecoration: 'underline',
         },
+        color: theme.palette.text.link,
+        cursor: 'pointer',
+        textDecoration: 'none',
       },
       button: {
         fontFamily: theme.fontFamily,
@@ -43,5 +43,16 @@ export default createUseStyles(theme => ({
         paddingLeft: '1.4em',
       },
     },
+  },
+  srOnly: {
+    'border': 0,
+    'clip': 'rect(0, 0, 0, 0)',
+    'height': '1px',
+    'margin': '-1px',
+    'overflow': 'hidden',
+    'padding': 0,
+    'position': 'absolute',
+    'white-space': 'nowrap',
+    'width': '1px',
   },
 }));
