@@ -179,13 +179,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   });
   return (
     <TabProvider>
-      <div className={classnames} ref={root} {...rest}>
+      <div className={classnames} ref={root} {...rest} role='region' aria-label='chatbot window'>
+        <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
         <div>
           <div className={classes.container}>
             {gdprPassed && (
               <>
                 <Onboarding render>
-                  <div className={c(
+                  <div tabIndex='0' className={c(
                     'dydu-chatbox-body',
                     classes.body,
                     {[classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended)},
