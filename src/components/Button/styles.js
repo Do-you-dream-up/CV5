@@ -79,7 +79,7 @@ export default createUseStyles(theme => {
       justifyContent: 'center',
     }),
 
-    icon: ({ color = 'primary', configuration}) => ({
+    icon: ({ color = '', configuration}) => ({
       ...contained({color}),
       '& $children *': {
         display: 'block',
