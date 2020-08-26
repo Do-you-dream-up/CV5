@@ -53,6 +53,9 @@
     },
     "stylesMobile": {}
   },
+  "dialog": {
+    "top": true
+  },
   "dragon": {
     "active": true,
     "boundaries": true,
