@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import { UserActionContext } from '../../contexts/UserActionContext';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
 
@@ -17,6 +18,7 @@ export default function Teaser({ open, toggle }) {
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('teaser');
+  const { tabbing } = useContext(UserActionContext);
   const title = t('title');
 
   const onClick = () => {
@@ -24,12 +26,20 @@ export default function Teaser({ open, toggle }) {
     toggle(2)();
   };
 
+  const onKeyDown = (event) => {
+    if (event.keyCode === 32 || event.keyCode === 13) {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
+    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open}, {[classes.hideOutline]: !tabbing})}
          onClick={onClick}
+         onKeyDown={onKeyDown}
          title={title}
          role='button'
-         tabIndex='0.2'
+         tabIndex='0'
          aria-pressed={!open}>
       <div className={c('dydu-teaser-button', classes.button)}>
         <Skeleton children={title} hide={!ready} width="3em" />
