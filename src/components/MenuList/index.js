@@ -20,6 +20,13 @@ export default function MenuList({ items, onClose, selected }) {
     }
   };
 
+  const onKeyDown = callback => (event) => {
+    if (event.keyCode === 13 && callback) {
+      callback();
+      onClose();
+    }
+  };
+
   return (
     <ul className={c('dydu-menu-list', classes.root)}>
       {items.map(({ icon, id, onClick, text }, index) => (
@@ -31,6 +38,8 @@ export default function MenuList({ items, onClose, selected }) {
             )}
             key={index}
             onClick={onItemClick(onClick)}
+            onKeyDown={onKeyDown(onClick)}
+            tabIndex='0'
             title={text}>
           {!!icon && <img alt={text} className={classes.icon} src={icon} />}
           {text}
