@@ -26,13 +26,13 @@ export default function Modal() {
 
   useEffect(() => {
     const keyListener = e => {
-      if (e.keyCode === 27) {
+      if (!!Component && e.keyCode === 27) {
         onDismiss();
       }
     };
     document.addEventListener('keydown', keyListener);
     return () => document.removeEventListener('keydown', keyListener);
-  });
+  }, [onDismiss, Component]);
 
 
   return !!Component && (
