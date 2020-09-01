@@ -36,6 +36,11 @@ export default createUseStyles(theme => ({
         fontWeight: 'normal',
         textTransform: 'capitalize',
       },
+      'img': {
+        display: 'block',
+        height: 'auto',
+        maxWidth: '100%',
+      },
       'li:not(:last-child)': {
         marginBottom: '.5em',
       },
