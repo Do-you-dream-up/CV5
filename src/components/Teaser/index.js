@@ -18,6 +18,7 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('teaser');
   const title = t('title');
+  const mouseover = t('mouseover');
   const hideTeaser = configuration.teaser.hide;
 
   const onClick = () => {
@@ -28,7 +29,7 @@ export default function Teaser({ open, toggle }) {
   return ( !hideTeaser &&
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
          onClick={onClick}
-         title={title}
+         title={mouseover}
          role='button'
          tabIndex='0.2'
          aria-pressed={!open}>
