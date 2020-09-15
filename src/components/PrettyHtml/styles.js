@@ -3,6 +3,9 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   root: {
+    'alignItems': 'center',
+    'display': 'flex',
+    'flexDirection': 'row',
     '@global': {
       'a[href], .dydu-link': {
         '&:hover': {
@@ -43,6 +46,13 @@ export default createUseStyles(theme => ({
         paddingLeft: '1.4em',
       },
     },
+  },
+  externalLink: {
+    'borderRadius': '4px',
+    'height': '1em',
+    'marginLeft': '0.8em',
+    'padding': '0.1em',
+    'width': '1em',
   },
   srOnly: {
     'border': 0,

@@ -10,7 +10,7 @@ import useStyles from './styles';
  *
  * Basically an opinionated reset.
  */
-export default function PrettyHtml({ children, className, component, html, type, ...rest }) {
+export default function PrettyHtml({ children, className, component, hasExternalLink, html, type, ...rest }) {
 
   const classes = useStyles();
   const { t } = useTranslation('screenReader');
@@ -21,6 +21,7 @@ export default function PrettyHtml({ children, className, component, html, type,
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
       {html && <div dangerouslySetInnerHTML={{__html: html}} />}
+      {hasExternalLink && <img className={classes.externalLink} src='icons/open-in-new.black.png' />}
     </>
   ));
 }
@@ -34,6 +35,7 @@ PrettyHtml.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,
+  hasExternalLink: PropTypes.bool,
   html: PropTypes.string,
   type: PropTypes.string,
 };
