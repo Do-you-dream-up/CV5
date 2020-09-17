@@ -186,7 +186,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
             {gdprPassed && (
               <>
                 <Onboarding render>
-                  <div tabIndex='0' className={c(
+                  <div className={c(
                     'dydu-chatbox-body',
                     classes.body,
                     {[classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended)},

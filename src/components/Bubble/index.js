@@ -24,7 +24,7 @@ export default function Bubble({ actions, children, className, component, html, 
   )}, (
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
-      <div tabIndex='-1' className={c('dydu-bubble-body', classes.body)}>
+      <div className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && <PrettyHtml children={children} html={html} />}
         {actions && <div children={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
