@@ -24,6 +24,9 @@ export default createUseStyles(theme => ({
   body: () => ({
     padding: [['.8em', '1em']],
     width: '100%',
+    '&:focus': {
+      outline: 'none'
+    }
   }),
   progress: () => ({
     position: 'absolute',
