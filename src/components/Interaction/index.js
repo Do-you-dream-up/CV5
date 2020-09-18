@@ -96,7 +96,7 @@ export default function Interaction({
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
         ), []);
       }
-      if (children[0].includes('<a href="https://www.dydu.ai/" target="_blank"')) {
+      if (children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
       }
       addBubbles(content.filter(it => it));

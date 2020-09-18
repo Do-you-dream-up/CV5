@@ -47,11 +47,9 @@ export default createUseStyles(theme => ({
       },
     },
   },
-  externalLink: {
-    'borderRadius': '4px',
+  externalLinkIcon: {
     'height': '1em',
-    'marginLeft': '0.8em',
-    'padding': '0.1em',
+    'marginLeft': '0.5em',
     'width': '1em',
   },
   srOnly: {
