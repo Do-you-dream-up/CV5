@@ -19,14 +19,13 @@ export default function Teaser({ open, toggle }) {
   const { ready, t } = useTranslation('teaser');
   const title = t('title');
   const mouseover = t('mouseover');
-  const hideTeaser = configuration.teaser.hide;
 
   const onClick = () => {
     event('onClick', 1, 2, 4, 'asdf');
     toggle(2)();
   };
 
-  return ( !hideTeaser &&
+  return (
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}
          onClick={onClick}
          title={mouseover}

@@ -214,7 +214,6 @@
     "title": false
   },
   "teaser": {
-    "hide": false,
     "styles": {
       "bottom": 16,
       "right": 16
