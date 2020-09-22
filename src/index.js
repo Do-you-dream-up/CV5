@@ -4,6 +4,7 @@ import { JssProvider, ThemeProvider } from 'react-jss';
 import Application from './components/Application';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
+import { UserActionProvider } from './contexts/UserActionContext';
 import theme from './styles/theme';
 import { configuration } from './tools/configuration';
 import './tools/internationalization';
@@ -17,7 +18,9 @@ configuration.initialize().then(configuration => {
         <ThemeProvider theme={theme}>
           <ConfigurationProvider configuration={configuration}>
             <EventsProvider>
-              <Application />
+              <UserActionProvider>
+                <Application />
+              </UserActionProvider>
             </EventsProvider>
           </ConfigurationProvider>
         </ThemeProvider>

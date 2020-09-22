@@ -1,5 +1,5 @@
 import c from 'classnames';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import Paper from '../Paper';
@@ -23,6 +23,17 @@ export default function Modal() {
   };
 
   const onDismiss = dismissable ? onReject : null;
+
+  useEffect(() => {
+    const keyListener = e => {
+      if (!!Component && e.keyCode === 27) {
+        onDismiss();
+      }
+    };
+    document.addEventListener('keydown', keyListener);
+    return () => document.removeEventListener('keydown', keyListener);
+  }, [onDismiss, Component]);
+
 
   return !!Component && (
     <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>

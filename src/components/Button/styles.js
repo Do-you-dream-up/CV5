@@ -50,7 +50,6 @@ export default createUseStyles(theme => {
       display: 'flex',
       fontFamily: theme.font.sansSerif,
       fontSize: '1em',
-      outline: 'none',
       padding: 0,
       position: 'relative',
       textDecoration: 'none',
@@ -77,6 +76,10 @@ export default createUseStyles(theme => {
     grow: () => ({
       flexGrow: 1,
       justifyContent: 'center',
+    }),
+
+    hideOutline: () => ({
+      outline : 'none',
     }),
 
     icon: ({ color = '', configuration}) => ({

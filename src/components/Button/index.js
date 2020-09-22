@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { UserActionContext } from '../../contexts/UserActionContext';
 import useStyles from './styles';
 
 
@@ -33,6 +34,7 @@ export function ButtonBase({
 }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const { tabbing } = useContext(UserActionContext);
   const classes = useStyles({color, configuration});
   const icon = typeof(getIcon) === 'function' ? getIcon() : getIcon;
 
@@ -50,9 +52,11 @@ export function ButtonBase({
                  `dydu-button-${variant}`,
                  classes.base,
                  classes[variant],
+                 {[classes.hideOutline]: !tabbing},
                  {[classes.grow]: grow},
                 ),
     ref: reference,
+    tabIndex: '0',
   }, button);
 }
 

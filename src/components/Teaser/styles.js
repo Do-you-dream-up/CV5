@@ -29,6 +29,9 @@ export default createUseStyles(theme => ({
   hidden: () => ({
     display: 'none !important',
   }),
+  hideOutline: () => ({
+    outline : 'none',
+  }),
   root: ({ configuration }) => ({
     alignItems: 'center',
     bottom: 0,
