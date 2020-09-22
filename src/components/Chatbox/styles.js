@@ -14,6 +14,9 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
     overflowY: 'auto',
     position: 'relative',
+    '&:focus': {
+      outline: 'none'
+    }
   }),
   bodyHidden: () => ({
     display: 'none',
