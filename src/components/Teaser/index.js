@@ -20,6 +20,7 @@ export default function Teaser({ open, toggle }) {
   const { ready, t } = useTranslation('teaser');
   const { tabbing } = useContext(UserActionContext);
   const title = t('title');
+  const mouseover = t('mouseover');
 
   const onClick = () => {
     event('onClick', 1, 2, 4, 'asdf');
@@ -37,7 +38,7 @@ export default function Teaser({ open, toggle }) {
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open}, {[classes.hideOutline]: !tabbing})}
          onClick={onClick}
          onKeyDown={onKeyDown}
-         title={title}
+         title={mouseover}
          role='button'
          tabIndex='0'
          aria-pressed={!open}>

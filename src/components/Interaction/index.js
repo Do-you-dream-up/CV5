@@ -40,6 +40,7 @@ export default function Interaction({
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
   const [ ready, setReady ] = useState(false);
+  const [ hasExternalLink, setHasExternalLink ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const automaticSecondary = !!configuration.secondary.automatic;
@@ -95,6 +96,9 @@ export default function Interaction({
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
         ), []);
       }
+      if (children[0].includes('target="_blank"')) {
+        setHasExternalLink(true);
+      }
       addBubbles(content.filter(it => it));
     }
   }, [addBubbles, carousel, children, ready]);
@@ -121,7 +125,7 @@ export default function Interaction({
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };
-              return <Bubble className={classes.bubble} key={index} {...attributes} />;
+              return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} {...attributes} />;
             }),
             className: c('dydu-interaction-bubbles', classes.bubbles),
           },

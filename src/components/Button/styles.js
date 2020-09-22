@@ -82,7 +82,7 @@ export default createUseStyles(theme => {
       outline : 'none',
     }),
 
-    icon: ({ color = 'primary', configuration}) => ({
+    icon: ({ color = '', configuration}) => ({
       ...contained({color}),
       '& $children *': {
         display: 'block',

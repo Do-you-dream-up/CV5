@@ -9,7 +9,11 @@
   },
   "rosetta": {
     "en": "English",
-    "fr": "French"
+    "fr": "French",
+    "es": "Spanish",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese"
   },
   "translate": "Languages"
 }
