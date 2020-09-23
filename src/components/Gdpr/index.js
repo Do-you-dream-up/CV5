@@ -23,7 +23,7 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
 
   const onSubmit = ({ email, withForget, withGet }) => {
     setPrompt('');
-    const method = [withForget && 'Forget', withGet && 'Get'].filter(it => it);
+    const method = [withForget && 'Delete', withGet && 'Get'].filter(it => it);
     dydu.gdpr({email, method}).then(
       () => window.dydu.chat.reply(t('get.success')),
       () => window.dydu.chat.reply(t('get.error')),
