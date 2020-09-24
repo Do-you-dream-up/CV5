@@ -3,6 +3,7 @@ import React from 'react';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import theme from '../styles/theme';
 import json from './configuration.json';
+import { Local } from './storage';
 
 
 /**
@@ -23,43 +24,19 @@ export const configuration = new class Configuration {
   initialize = (path = '/configuration.json') => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path).then(
-      ({ data }) => this.sanitize(this.merge(data)),
+      ({ data }) => this.sanitize(JSON.parse(JSON.stringify(data))),
       ({ request }) => {
         // eslint-disable-next-line no-console
         console.warn(`[Dydu] Configuration file not found at '${request.responseURL}'.`);
+        // Fetch configuration from local storage
+        const data = Local.get('dydu.wizard.data');
+        if (data) {
+          return this.sanitize(JSON.parse(JSON.stringify(data)));
+        }
+        //Return default configuration
         return this.sanitize(this.configuration);
       },
     );
-  };
-
-  /**
-   * Merge the custom configuration with the default one.
-   *
-   * @param {Object} [data] - Configuration object to sanitize.
-   * @returns {Object}
-   */
-  merge = data => {
-    data = JSON.parse(JSON.stringify(data));
-    if (typeof data !== 'object') {
-      // eslint-disable-next-line no-console
-      console.warn('[Dydu] Invalid configuration file. Fallback to default values.');
-    }
-    const merge = (target, source) => {
-      if (target instanceof Object && source instanceof Object) {
-        Object.keys(source).forEach(key => {
-          const targetValue = target[key];
-          const sourceValue = source[key];
-          if (targetValue instanceof Object && sourceValue instanceof Object) {
-            target[key] = this.merge(Object.assign({}, targetValue), sourceValue);
-          }
-          else {
-            target[key] = sourceValue;
-          }
-        });
-      }
-      return target;
-    };
-    return merge(this.configuration, data);
   };
 
   /**

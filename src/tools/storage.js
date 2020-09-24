@@ -45,11 +45,11 @@ export class Local {
     context: 'dydu.context',
     dragon: 'dydu.dragon',
     locale: 'dydu.locale',
-    welcome: 'dydu.welcome',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
     secondary: 'dydu.secondary',
     space: 'dydu.space',
+    welcome: 'dydu.welcome',
   };
 
 

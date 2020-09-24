@@ -37,5 +37,5 @@ export function UserActionProvider({ children }) {
 
 
 UserActionProvider.propTypes = {
-    children: PropTypes.object,
-  };
+  children: PropTypes.object,
+};
