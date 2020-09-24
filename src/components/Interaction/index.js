@@ -96,7 +96,7 @@ export default function Interaction({
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
         ), []);
       }
-      if (typeof(children) === String && children[0].includes('target="_blank"')) {
+      if (typeof(children[0]) === 'string' && children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
       }
       addBubbles(content.filter(it => it));

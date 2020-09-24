@@ -3,9 +3,6 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   root: {
-    'alignItems': 'center',
-    'display': 'flex',
-    'flexDirection': 'row',
     '@global': {
       'a[href], .dydu-link': {
         '&:hover': {
@@ -51,6 +48,11 @@ export default createUseStyles(theme => ({
         paddingLeft: '1.4em',
       },
     },
+  },
+  externalLink: {
+    'alignItems': 'center',
+    'display': 'flex',
+    'flexDirection': 'row',
   },
   externalLinkIcon: {
     'height': '1em',

@@ -16,7 +16,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const { t } = useTranslation('screenReader');
 
   const interactionType = type === 'response' ? t('chatbot') : t('me');
-  return React.createElement(component, {className: c(classes.root, className), ...rest}, (
+  return React.createElement(component, {className: c(classes.root, {[classes.externalLink]: hasExternalLink}, className), ...rest}, (
     <>
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
