@@ -127,6 +127,12 @@
     "styles": {},
     "stylesMobile": {}
   },
+  "keycloak": {
+    "enable": false,
+    "realm": "front",
+    "url": "https://keycloak.security.dydu-priv.com/auth/",
+    "clientId": "v5"
+  },
   "loader": {
     "size": 5,
     "styles": {},

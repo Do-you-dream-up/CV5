@@ -16,6 +16,7 @@
     "i18next-xhr-backend": "^3.2.2",
     "js-cookie": "^2.2.0",
     "jss-plugin-global": "^10.0.4",
+    "keycloak-js": "^11.0.2",
     "node-sass": "^4.13.1",
     "qs": "^6.7.0",
     "react": "^16.8.6",
