@@ -6,6 +6,18 @@ import Keycloak from 'keycloak-js';
  * @param onAuthenticatedCallback
  */
 const initKeycloak = (onAuthenticatedCallback, configuration) => {
+  if (!configuration.clientId) {
+    console.error('[Dydu - keycloak] clientId is missing ');
+    return;
+  }
+  if (!configuration.realm) {
+    console.error('[Dydu - keycloak] Real is missing ');
+    return;
+  }
+  if (!configuration.url) {
+    console.error('[Dydu - keycloak] url is missing ');
+    return;
+  }
   const _kc = new Keycloak({
     'clientId': configuration.clientId,
     'realm': configuration.realm,
