@@ -16,7 +16,7 @@ export default function Avatar({ background, path, type }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration, type});
   background = background !== undefined ? background : configuration.avatar.background;
-  path = path !== undefined ? path : {response: `assets/${configuration.avatar.icon}`}[type];
+  path = path !== undefined ? path : {request: `assets/${configuration.avatar.request}`, response: `assets/${configuration.avatar.response}`}[type];
   return (
     <div children={!!path && <img alt={path} src={path} />}
          className={c(

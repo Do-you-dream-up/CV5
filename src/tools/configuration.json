@@ -6,7 +6,8 @@
   },
   "avatar": {
     "background": false,
-    "icon": "dydu.png",
+    "request": "",
+    "response": "dydu.png",
     "styles": {},
     "stylesMobile": {}
   },
