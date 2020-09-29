@@ -18,7 +18,7 @@ export default function Avatar({ background, path, type }) {
   background = background !== undefined ? background : configuration.avatar.background;
   path = path !== undefined ? path : {request: `assets/${configuration.avatar.request}`, response: `assets/${configuration.avatar.response}`}[type];
   return (
-    <div children={!!path && <img alt={path} src={path} />}
+    <div children={!!path && <img alt={`${type} avatar`} src={path} />}
          className={c(
            'dydu-avatar',
            `dydu-avatar-${type}`,
