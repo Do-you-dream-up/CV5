@@ -53,6 +53,11 @@
     },
     "stylesMobile": {}
   },
+  "contacts": {
+    "phone": true,
+    "email": true,
+    "socialNetwork": true
+  },
   "dialog": {
     "top": true
   },
