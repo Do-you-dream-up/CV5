@@ -20,7 +20,7 @@ export default function Contacts() {
 
   return !!ready && (
     <div className={classes.root}>
-      <Paper elevation='4'>
+      <Paper elevation={4}>
         <ContactsList id='phone' title={phoneTitle} list={phones} icon={'icons/phone.png'} />
         <ContactsList id='email' title={emailTitle} list={emails} icon={'icons/email.png'} />
         <ContactsList id='social' title={socialTitle} list={socialNetworks} icon={'icons/account.png'} />
