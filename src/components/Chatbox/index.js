@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext, DialogProvider } from '../../contexts/DialogContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
@@ -29,7 +29,7 @@ import useStyles from './styles';
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
-export default function Chatbox({ extended, open, root, toggle, ...rest}) {
+export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const {
@@ -49,11 +49,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { modal } = useContext(ModalContext);
-  const [ ready, setReady ] = useState(false);
-  const [ gdprShowDisclaimer, setGdprShowDisclaimer ] = useState(false);
-  const [ gdprPassed, setGdprPassed ] = useState(false);
-  const classes = useStyles({configuration});
-  const [ t, i ] = useTranslation();
+  const [ready, setReady] = useState(false);
+  const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
+  const [gdprPassed, setGdprPassed] = useState(false);
+  const classes = useStyles({ configuration });
+  const [t, i] = useTranslation();
   const qualification = !!configuration.application.qualification;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
@@ -61,15 +61,15 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   const ask = useCallback((text, options) => {
     text = text.trim();
     if (text && ['redirection_newpage'].indexOf(options.type) === -1) {
-      options = Object.assign({hide: false}, options);
+      options = Object.assign({ hide: false }, options);
       if (!options.hide) {
         addRequest(text);
       }
-      talk(text, {qualification}).then(addResponse);
+      talk(text, { qualification }).then(addResponse);
     }
   }, [addRequest, addResponse, qualification]);
 
-  const onClose = () => modal(ModalClose).then(toggle(0), () => {});
+  const onClose = () => modal(ModalClose).then(toggle(0), () => { });
 
   const onMinimize = () => {
     event('onMinimize', 'params', 'params2');
@@ -83,7 +83,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
         empty: () => empty(),
-        reply: text => addResponse({text}),
+        reply: text => addResponse({ text }),
         set: (name, value) => dydu.variable(name, value),
       };
 
@@ -94,7 +94,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
-          ([ locale ]) => window.dydu.chat.reply(`New locale set: '${locale}'.`),
+          ([locale]) => window.dydu.chat.reply(`New locale set: '${locale}'.`),
           response => window.dydu.chat.reply(response),
           document.documentElement.lang = locale,
         ),
@@ -112,23 +112,23 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
         prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
           space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
-          () => {},
+          () => { },
         ),
       };
 
       window.dydu.ui = {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
-        lock: () => setLocked(true),
+        lock: (value = true) => setLocked(value),
         placeholder: value => setPlaceholder(value),
-        secondary: (open, { body, title }) => toggleSecondary(open, {body, title})(),
+        secondary: (open, { body, title }) => toggleSecondary(open, { body, title })(),
         toggle: mode => toggle(mode)(),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
-      window._dydu_lockTextField =  window.dydu.ui.lock;
+      window._dydu_lockTextField = window.dydu.ui.lock;
     }
     setReady(true);
   }, [
@@ -151,7 +151,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
   useEffect(() => {
     if (gdprShowDisclaimer) {
       setGdprShowDisclaimer(false);
-      modal(GdprDisclaimer, null, {dismissable: false, variant: 'full'}).then(
+      modal(GdprDisclaimer, null, { dismissable: false, variant: 'full' }).then(
         () => {
           Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
           setGdprPassed(true);
@@ -189,7 +189,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                   <div tabIndex='0' className={c(
                     'dydu-chatbox-body',
                     classes.body,
-                    {[classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended)},
+                    { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
                   )}>
                     <Tab component={Dialog}
                          interactions={interactions}
@@ -208,7 +208,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
                     onClose={onClose}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
                     onMinimize={onMinimize}
-                    style={{order: -1}} />
+                    style={{ order: -1 }} />
             <Modal />
             {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
           </div>
@@ -222,19 +222,17 @@ export default function Chatbox({ extended, open, root, toggle, ...rest}) {
 Chatbox.propTypes = {
   extended: PropTypes.bool,
   open: PropTypes.bool,
-  root: PropTypes.shape({current: PropTypes.instanceOf(Element)}),
+  root: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   toggle: PropTypes.func.isRequired,
 };
 
 
 export function ChatboxWrapper(rest) {
   return (
-    <DialogProvider>
-      <OnboardingProvider>
-        <ModalProvider>
-          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
-        </ModalProvider>
-      </OnboardingProvider>
-    </DialogProvider>
+    <OnboardingProvider>
+      <ModalProvider>
+        <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+      </ModalProvider>
+    </OnboardingProvider>
   );
 }
