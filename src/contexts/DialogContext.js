@@ -21,6 +21,7 @@ export function DialogProvider({ children }) {
   const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
+  const [ text, setText ] = useState('');
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
@@ -45,8 +46,9 @@ export function DialogProvider({ children }) {
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(response => {
-    const { askFeedback, guiAction, sidebar, urlRedirect } = response;
+    const { askFeedback, guiAction, sidebar, text, urlRedirect } = response;
     const steps = parseSteps(response);
+    setText(text);
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
     }
@@ -116,6 +118,8 @@ export function DialogProvider({ children }) {
       setPlaceholder,
       setPrompt,
       setSecondary,
+      setText,
+      text,
       toggleSecondary,
     }} />
   );
