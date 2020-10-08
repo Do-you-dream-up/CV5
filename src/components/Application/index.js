@@ -2,10 +2,11 @@ import c from 'classnames';
 import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogProvider } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
+import Voice from '../Voice';
 import useStyles from './styles';
-
 
 const Chatbox = React.lazy(() => import(
   // webpackChunkName: "chatbox"
@@ -46,11 +47,15 @@ export default function Application() {
   return (
     <div className={c('dydu-application', classes.root)}>
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
-      {open && (
-        <Suspense fallback={null}>
-          <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
-        </Suspense>
-      )}
+      <DialogProvider>
+        {open ?
+          <Suspense fallback={null}>
+            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
+          </Suspense>
+          :
+          <Voice />
+        }
+      </DialogProvider>
       <Teaser open={mode === 1} toggle={toggle} />
     </div>
   );
