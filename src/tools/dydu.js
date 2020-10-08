@@ -10,7 +10,7 @@ import { Cookie, Local } from './storage';
  * Read the bot ID and the API server from URL parameters when found. Default to
  * the bot configuration.
  */
-const BOT = Object.assign({}, bot, (({ bot: id, server, backUpServer }) => ({
+const BOT = Object.assign({}, bot, (({ backUpServer, bot: id, server }) => ({
   ...id && { id },
   ...server && { server },
   ...backUpServer && { backUpServer }
@@ -45,12 +45,12 @@ export default new class Dydu {
   /**
    * Request against the provided path with the specified data. When
    * the response contains values, decode it and refresh the context ID.
-   * if the request fail several times the request will be failover to back-up server. 
+   * if the request fail several times the request will be failover to back-up server.
    *
    * @param {function} verb - A verb method to request with.
    * @param {string} path - Path to send the request to.
    * @param {Object} data - Data to send.
-   * @param {number} tries - number of tries to send the request.  
+   * @param {number} tries - number of tries to send the request.
    * @returns {Promise}
    */
   emit = (verb, path, data, tries = 0) => verb(path, data).then(({ data = {} }) => {
@@ -60,10 +60,10 @@ export default new class Dydu {
       return data.values;
     }
     return data;
-  }).catch((error) => {
-    if(BOT.backUpServer){
+  }).catch(() => {
+    if (BOT.backUpServer) {
       tries++;
-      if(tries < 3)
+      if (tries < 3)
         this.emit(verb, path, data, tries);
       else if (tries < 6) {
         API.defaults.baseURL = `https://${BOT.backUpServer}/servlet/api/`;
@@ -309,9 +309,9 @@ export default new class Dydu {
   talk = (text, options = {}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
+      doNotRegisterInteraction: options.doNotSave,
       language: this.getLocale(),
       qualificationMode: options.qualification,
-      doNotRegisterInteraction: options.doNotSave,
       space: this.getSpace(),
       userInput: text,
       ...(options.extra && { extraParameters: options.extra }),
