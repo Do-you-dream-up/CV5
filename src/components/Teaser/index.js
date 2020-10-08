@@ -6,6 +6,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import Skeleton from '../Skeleton';
+import Voice from '../Voice';
 import useStyles from './styles';
 
 
@@ -21,6 +22,7 @@ export default function Teaser({ open, toggle }) {
   const { tabbing } = useContext(UserActionContext);
   const title = t('title');
   const mouseover = t('mouseover');
+  const voice = configuration.SpeechToText.enable;
 
   const onClick = () => {
     event('onClick', 1, 2, 4, 'asdf');
@@ -35,18 +37,24 @@ export default function Teaser({ open, toggle }) {
   };
 
   return (
-    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open}, {[classes.hideOutline]: !tabbing})}
-         onClick={onClick}
-         onKeyDown={onKeyDown}
-         title={mouseover}
-         role='button'
-         tabIndex='0'
-         aria-pressed={!open}>
-      <div className={c('dydu-teaser-button', classes.button)}>
-        <Skeleton children={title} hide={!ready} width="3em" />
-      </div>
-      <div className={c('dydu-teaser-brand', classes.brand)}>
-        <img alt={title} src={`assets/${configuration.avatar.icon}`} />
+    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open}, {[classes.hideOutline]: !tabbing})}>
+      <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
+
+        <div onClick={onClick}
+             onKeyDown={onKeyDown}
+             title={mouseover}
+             role='button'
+             tabIndex='0'
+             aria-pressed={!open}
+             className={c('dydu-teaser-title', classes.dyduTeaserTitle)}>
+          <div className={c('dydu-teaser-button', classes.button)}>
+            <Skeleton children={title} hide={!ready} width="3em" />
+          </div>
+          <div className={c('dydu-teaser-brand', classes.brand)}>
+            <img alt={title} src={`assets/${configuration.avatar.icon}`} />
+          </div>
+        </div>
+        { open && voice && <Voice /> }
       </div>
     </div>
   );

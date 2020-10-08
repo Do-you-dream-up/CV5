@@ -5,7 +5,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
-import Voice from '../Voice';
 import useStyles from './styles';
 
 const Chatbox = React.lazy(() => import(
@@ -48,15 +47,15 @@ export default function Application() {
     <div className={c('dydu-application', classes.root)}>
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
-        {open ?
-          <Suspense fallback={null}>
-            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
-          </Suspense>
-          :
-          <Voice />
-        }
+        <>
+          {open && (
+            <Suspense fallback={null}>
+              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
+            </Suspense>
+          )}
+          <Teaser open={mode === 1} toggle={toggle} />
+        </>
       </DialogProvider>
-      <Teaser open={mode === 1} toggle={toggle} />
     </div>
   );
 }
