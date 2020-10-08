@@ -1,0 +1,10 @@
+{
+  "actions": {
+    "send": "Send",
+    "record": {
+      "start": "Record start",
+      "stop": "Record stop"
+    }
+  },
+  "placeholder": "Type here..."
+}
