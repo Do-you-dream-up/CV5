@@ -232,7 +232,7 @@
     "stylesMobile": {}
   },
   "SpeechToText": {
-    "enable": true,
+    "enable": false,
     "sttServerUrl": "https://proxima.doyoudreamup.com:444",
     "ttsServerUrl": "https://proxima.doyoudreamup.com:444/tts",
     "voice": "Damien",
