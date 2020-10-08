@@ -232,6 +232,6 @@ export default function Voice() {
   };
 
   return (
-    <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+    <Actions actions={actions} className={c('dydu-input-actions', classes.root, classes.actions)} />
   );
 }
