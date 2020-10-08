@@ -9,8 +9,8 @@ import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
+import Voice from '../Voice';
 import useStyles from './styles';
-
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
@@ -28,6 +28,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { ready, t } = useTranslation('input');
   const actionSend = t('actions.send');
   const qualification = !!configuration.application.qualification;
+  const voice = configuration.SpeechToText.enable;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -132,7 +133,9 @@ export default function Input({ focus, onRequest, onResponse }) {
                    renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
                    suggestions={suggestions}
                    theme={theme} />
-      <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+      { voice && counter === maxLength ?
+        <Voice /> :
+        <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
     </form>
   );
 }
