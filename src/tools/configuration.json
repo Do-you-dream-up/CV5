@@ -236,13 +236,13 @@
     "styles": {},
     "stylesMobile": {}
   },
-  "SpeechToText": {
-    "enable": false,
+  "Voice": {
+    "enable": true,
+    "ssml": "true",
     "sttServerUrl": "https://proxima.doyoudreamup.com:444",
     "ttsServerUrl": "https://proxima.doyoudreamup.com:444/tts",
     "voice": "Damien",
-    "ssml": "true"
-
+    "voiceSpace": "default"
   },
   "welcome": {
     "enable": true,

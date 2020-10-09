@@ -4,13 +4,17 @@ import { useTranslation } from 'react-i18next';
 import io from 'socket.io-client';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import Dydu from '../../tools/dydu';
+import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import { getAudioFromText } from '../../tools/tts';
 import Actions from '../Actions';
 import useStyles from './styles';
 
 /**
- *
+ * TTS / STT
+ * Speech-to-Text allows to convert sound to text by applying powerful neural network models via an API,
+ * it is the reverse of Text-to-Speech that convert streaming sound to a text via API.
  */
 export default function Voice() {
 
@@ -30,10 +34,10 @@ export default function Voice() {
 
   const { configuration } = useContext(ConfigurationContext);
   const { addRequest, addResponse, setLocked, setText, text } = useContext(DialogContext);
+  const { ssml, sttServerUrl, ttsServerUrl, voice, voiceSpace } = configuration.Voice;
   const qualification = !!configuration.application.qualification;
   const classes = useStyles({ configuration });
   const { t } = useTranslation('input');
-  const { ssml, sttServerUrl, ttsServerUrl, voice } = configuration.SpeechToText;
   const actionStart = t('actions.record.start');
   const actionStop = t('actions.record.stop');
   const constraints = { audio: true };
@@ -42,22 +46,6 @@ export default function Voice() {
   const minDecibels = -100;
   const action  = { type: 'button', variant: 'icon' };
   const [audio] = useState(new Audio());
-
-  useEffect(() => {
-    if (text.trim()) {
-      getAudioFromText(text, voice, ssml, ttsServerUrl).then(response => {
-        audio.src = response;
-        play();
-      });
-      setText('');
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
-
-  audio.onended = () => {
-    stop();
-    audio.currentTime = 0.0;
-  };
 
   const startRecordButton = {
     ...action,
@@ -85,6 +73,24 @@ export default function Voice() {
   };
 
   const [actions, setActions] = useState([startRecordButton]);
+  const [handelVoice, setHandelVoice] = useState(false);
+
+  useEffect(() => {
+    if (text.trim() !== '' && handelVoice) {
+      getAudioFromText(text, voice, ssml, ttsServerUrl).then(response => {
+        audio.src = response;
+        play();
+      });
+      setText('');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handelVoice, text]);
+
+  audio.onended = () => {
+    stop();
+    audio.currentTime = 0.0;
+  };
+
 
   // ================= RECORDING ======================
   const startRecording = () => {
@@ -103,15 +109,17 @@ export default function Voice() {
 
       if (dataFinal === false) {
         resultText = data.results[0].alternatives[0].transcript;
-        console.log(resultText);
       }
       else if (dataFinal === true) {
+        const space = Dydu.getSpace();
         resultText = data.results[0].alternatives[0].transcript;
-        console.log('last', resultText);
+        Dydu.setSpace(voiceSpace);
         addRequest(resultText);
         talk(resultText, {qualification}).then(addResponse);
         stopRecording();
         socket.disconnect();
+        setHandelVoice(true);
+        Dydu.setSpace(space);
       }
     });
 
@@ -181,6 +189,8 @@ export default function Voice() {
     audio.currentTime = 0.0;
     setActions([startRecordButton]);
     setLocked(false);
+    setHandelVoice(false);
+
   };
 
   // ================= SANTAS HELPERS =================
@@ -232,6 +242,6 @@ export default function Voice() {
   };
 
   return (
-    <Actions actions={actions} className={c('dydu-input-actions', classes.root, classes.actions)} />
+    !!Cookie.get(Cookie.names.gdpr) && <Actions actions={actions} className={c('dydu-input-actions', classes.root, classes.actions)} />
   );
 }

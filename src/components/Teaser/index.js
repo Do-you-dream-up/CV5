@@ -22,7 +22,7 @@ export default function Teaser({ open, toggle }) {
   const { tabbing } = useContext(UserActionContext);
   const title = t('title');
   const mouseover = t('mouseover');
-  const voice = configuration.SpeechToText.enable;
+  const voice = configuration.Voice.enable;
 
   const onClick = () => {
     event('onClick', 1, 2, 4, 'asdf');
