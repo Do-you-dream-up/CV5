@@ -14,12 +14,12 @@ import useStyles from './styles';
 export default function ModalFooterMenu({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('footer');
-  const close = t('menu.close');
-  const email = t('menu.email');
-  const gdpr = t('menu.gdpr');
-  const title = t('menu.title', {defaultValue: ''});
-  const spaces = t('menu.spaces');
+  const { t } = useTranslation('globalConfig');
+  const close = t('footer.menu.close');
+  const email = t('footer.menu.email');
+  const gdpr = t('footer.menu.gdpr');
+  const title = t('footer.menu.title', {defaultValue: ''});
+  const spaces = t('footer.menu.spaces');
 
   const items = [
     {icon: 'icons/email-send.black.png', onClick: null, text: email},

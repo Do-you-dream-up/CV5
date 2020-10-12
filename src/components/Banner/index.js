@@ -21,9 +21,9 @@ export default function Banner() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
-  const { ready, t } = useTranslation('banner');
+  const { ready, t } = useTranslation('globalConfig');
   const { active, cookie, dismissable, more, moreLink, transient } = configuration.banner;
-  const html = sanitize(t('html'));
+  const html = sanitize(t('banner.html'));
 
   const dismiss = useCallback(() => {
     if (cookie) {
@@ -45,8 +45,8 @@ export default function Banner() {
   }, [active, cookie, dismiss, transient]);
 
   const actions = [
-    ...dismissable ? [{children: t('ok'), onClick: onDismiss}] : [],
-    ...more ? [{children: t('more'), href: moreLink, icon: `icons/${configuration.banner.moreIcon}`}] : [],
+    ...dismissable ? [{children: t('banner.ok'), onClick: onDismiss}] : [],
+    ...more ? [{children: t('banner.more'), href: moreLink, icon: `icons/${configuration.banner.moreIcon}`}] : [],
   ];
 
   return show && html && (

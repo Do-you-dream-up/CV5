@@ -30,13 +30,13 @@ export default function Feedback() {
   const [ showVote, setShowVote ] = useState(true);
   const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
-  const { t } = useTranslation('feedback');
+  const { t } = useTranslation('globalConfig');
   const { active, askChoices, askComment } = configuration.feedback;
-  const commentHelp = t('comment.help');
-  const commentThanks = t('comment.thanks');
-  const voteNegative = t('vote.negative');
-  const votePositive = t('vote.positive');
-  const voteThanks = t('vote.thanks');
+  const commentHelp = t('feedback.comment.help');
+  const commentThanks = t('feedback.comment.thanks');
+  const voteNegative = t('feedback.vote.negative');
+  const votePositive = t('feedback.vote.positive');
+  const voteThanks = t('feedback.vote.thanks');
 
   const onComment = ({ comment }) => {
     const value = comment.trim();
@@ -128,7 +128,7 @@ export default function Feedback() {
                             name="comment"
                             onChange={onChange}
                             onKeyDown={onKeyDown}
-                            placeholder={t('comment.placeholder')}
+                            placeholder={t('feedback.comment.placeholder')}
                             value={data.comment} />
                   <div children={data.comment} className={classes.commentFieldShadow} />
                 </div>

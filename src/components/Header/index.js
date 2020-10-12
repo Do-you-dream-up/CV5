@@ -30,15 +30,15 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const theme = useTheme();
-  const { ready, t } = useTranslation('header');
+  const { ready, t } = useTranslation('globalConfig');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {}, title: hasTitle } = configuration.header;
-  const actionClose = t('actions.close');
-  const actionExpand = t('actions.expand');
-  const actionMinimize = t('actions.minimize');
-  const actionMore = t('actions.more');
-  const actionShrink = t('actions.shrink');
-  const actionTests = t('actions.tests');
+  const actionClose = t('header.actions.close');
+  const actionExpand = t('header.actions.expand');
+  const actionMinimize = t('header.actions.minimize');
+  const actionMore = t('header.actions.more');
+  const actionShrink = t('header.actions.shrink');
+  const actionTests = t('header.actions.tests');
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
@@ -95,7 +95,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
            ref={dragonZone}>
         {!!hasTitle && (
           <div className={c('dydu-header-title', classes.title)}>
-            <Skeleton children={t('title')} hide={!ready} variant="text" width="6em" />
+            <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
           </div>
         )}
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />

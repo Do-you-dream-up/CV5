@@ -15,13 +15,13 @@ export default function Contacts() {
   const showEmail = configuration.contacts.email;
   const showSocial = configuration.contacts.socialNetwork;
   const classes = useStyles();
-  const { ready, t } = useTranslation('contacts');
-  const phoneTitle = t('phone.title');
-  const phones = t('phone.list');
-  const emailTitle = t('email.title');
-  const emails = t('email.list');
-  const socialTitle = t('socialNetwork.title');
-  const socialNetworks = t('socialNetwork.list');
+  const { ready, t } = useTranslation('globalConfig');
+  const phoneTitle = t('contacts.phone.title');
+  const phones = t('contacts.phone.list');
+  const emailTitle = t('contacts.email.title');
+  const emails = t('contacts.email.list');
+  const socialTitle = t('contacts.socialNetwork.title');
+  const socialNetworks = t('contacts.socialNetwork.list');
 
   return !!ready && (
     <div className={classes.root}>

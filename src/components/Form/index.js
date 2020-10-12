@@ -16,7 +16,7 @@ export default function Form({ children, className, data: initialData, onDismiss
 
   const classes = useStyles();
   const [ data, setData ] = useState(initialData);
-  const { t } = useTranslation('form');
+  const { t } = useTranslation('globalConfig');
 
   const getSubmitIcon = () => thinking && 'icons/loading.png';
 
@@ -35,9 +35,9 @@ export default function Form({ children, className, data: initialData, onDismiss
   };
 
   const actions = [
-    ...(onCancel ? [{children: t('cancel'), onClick: onCancel}] : []),
-    {children: t('cancel'), disabled: thinking, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
-    {children: t('submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'submit'},
+    ...(onCancel ? [{children: t('form.cancel'), onClick: onCancel}] : []),
+    {children: t('form.cancel'), disabled: thinking, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
+    {children: t('form.submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'form.submit'},
   ];
 
   return (

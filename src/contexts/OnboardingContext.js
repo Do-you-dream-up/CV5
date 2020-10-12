@@ -9,12 +9,12 @@ export function OnboardingProvider({ children }) {
 
   const [ active, setActive ] = useState(!Local.get(Local.names.onboarding));
   const [ index, setIndex ] = useState(0);
-  const { t } = useTranslation('onboarding');
+  const { t } = useTranslation('globalConfig');
 
   const hasPrevious = useCallback(() => !!index, [index]);
 
   const hasNext = useCallback(() => {
-    const steps = t('steps') || [];
+    const steps = t('onboarding.steps') || [];
     return index < steps.length - 1;
   }, [index, t]);
 

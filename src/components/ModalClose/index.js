@@ -12,11 +12,11 @@ import useStyles from './styles';
 export default function ModalClose({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('close');
-  const body = t('body', {defaultValue: ''});
-  const no = t('no');
-  const title = t('title', {defaultValue: ''});
-  const yes = t('yes');
+  const { t } = useTranslation('globalConfig');
+  const body = t('close.body', {defaultValue: ''});
+  const no = t('close.no');
+  const title = t('close.title', {defaultValue: ''});
+  const yes = t('close.yes');
 
   return React.createElement(component, {className: c('dydu-close', className), ...rest}, (
     <>

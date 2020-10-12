@@ -14,13 +14,13 @@ import useStyles from './styles';
 export default function GdprDisclaimer({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { ready, t } = useTranslation('gdpr');
+  const { ready, t } = useTranslation('globalConfig');
 
   const actions = [
-    {children: t('disclaimer.cancel'), onClick: onReject},
-    {children: t('disclaimer.ok'), onClick: onResolve},
+    {children: t('gdpr.disclaimer.cancel'), onClick: onReject},
+    {children: t('gdpr.disclaimer.ok'), onClick: onResolve},
   ];
-  const body = sanitize(t('disclaimer.body'));
+  const body = sanitize(t('gdpr.disclaimer.body'));
 
   return React.createElement(
     component,

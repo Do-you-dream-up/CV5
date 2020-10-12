@@ -18,10 +18,10 @@ export default function Teaser({ open, toggle }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
-  const { ready, t } = useTranslation('teaser');
+  const { ready, t } = useTranslation('globalConfig');
   const { tabbing } = useContext(UserActionContext);
-  const title = t('title');
-  const mouseover = t('mouseover');
+  const title = t('teaser.title');
+  const mouseover = t('teaser.mouseover');
   const voice = configuration.Voice.enable;
 
   const onClick = () => {
@@ -51,7 +51,7 @@ export default function Teaser({ open, toggle }) {
             <Skeleton children={title} hide={!ready} width="3em" />
           </div>
           <div className={c('dydu-teaser-brand', classes.brand)}>
-            <img alt={title} src={`assets/${configuration.avatar.icon}`} />
+            <img alt={title} src={`assets/${configuration.avatar.response}`} />
           </div>
         </div>
         { open && voice && <Voice /> }

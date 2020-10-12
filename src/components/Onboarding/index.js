@@ -25,8 +25,8 @@ export default function Onboarding({ children, render }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active, onEnd } = useContext(OnboardingContext) || {};
   const classes = useStyles({configuration});
-  const { t } = useTranslation('onboarding');
-  const preamble = t('preamble', {defaultValue: ''});
+  const { t } = useTranslation('globalConfig');
+  const preamble = t('onboarding.preamble', {defaultValue: ''});
   const should = render && active;
   const { tips, top } = configuration.onboarding;
 
@@ -36,23 +36,23 @@ export default function Onboarding({ children, render }) {
         {preamble && (
           <div className={classes.preamble} dangerouslySetInnerHTML={{__html: sanitize(preamble)}} />
         )}
-        <Paper elevation={1} title={t('skip.title')}>
+        <Paper elevation={1} title={t('onboarding.skip.title')}>
           <div className={c(classes.actions, classes.actionsCentered)}>
-            <Button children={t('skip.button')} icon="icons/send.png" onClick={onEnd} />
+            <Button children={t('onboarding.skip.button')} icon="icons/send.png" onClick={onEnd} />
           </div>
         </Paper>
         {!!tips && (
-          <Paper elevation={1} title={t('carousel.title')}>
+          <Paper elevation={1} title={t('onboarding.carousel.title')}>
             <div className={classes.carousel}
-                 dangerouslySetInnerHTML={{__html: sanitize(t('carousel.body'))}} />
+                 dangerouslySetInnerHTML={{__html: sanitize(t('onboarding.carousel.body'))}} />
             <div className={classes.actions}>
-              <Button children={t('carousel.previous')} disabled />
-              <Button children={t('carousel.next')} onClick={onEnd} />
+              <Button children={t('onboarding.carousel.previous')} disabled />
+              <Button children={t('onboarding.carousel.next')} onClick={onEnd} />
             </div>
           </Paper>
         )}
         {!!top && (
-          <Top component={Paper} elevation={1} title={t('top.title')} />
+          <Top component={Paper} elevation={1} title={t('onboarding.top.title')} />
         )}
       </div>
     </div>
