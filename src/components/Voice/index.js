@@ -37,9 +37,9 @@ export default function Voice() {
   const { ssml, sttServerUrl, ttsServerUrl, voice, voiceSpace } = configuration.Voice;
   const qualification = !!configuration.application.qualification;
   const classes = useStyles({ configuration });
-  const { t } = useTranslation('input');
-  const actionStart = t('actions.record.start');
-  const actionStop = t('actions.record.stop');
+  const { t } = useTranslation('globalConfig');
+  const actionStart = t('input.actions.record.start');
+  const actionStop = t('input.actions.record.stop');
   const constraints = { audio: true };
   const silenceDelay = 2500;
   const bufferSize = 2048;

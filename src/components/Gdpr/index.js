@@ -18,15 +18,15 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
 
   const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
-  const { ready, t } = useTranslation('gdpr');
-  const help = sanitize(t('form.help'));
+  const { ready, t } = useTranslation('globalConfig');
+  const help = sanitize(t('gdpr.form.help'));
 
   const onSubmit = ({ email, withForget, withGet }) => {
     setPrompt('');
     const method = [withForget && 'Delete', withGet && 'Get'].filter(it => it);
     dydu.gdpr({email, method}).then(
-      () => window.dydu.chat.reply(t('get.success')),
-      () => window.dydu.chat.reply(t('get.error')),
+      () => window.dydu.chat.reply(t('gdpr.get.success')),
+      () => window.dydu.chat.reply(t('gdpr.get.error')),
     );
   };
 
@@ -54,7 +54,7 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
                 <input className={classes.input}
                        name="email"
                        onChange={onChange}
-                       placeholder={ready ? t('form.email.placeholder') : null}
+                       placeholder={ready ? t('gdpr.form.email.placeholder') : null}
                        required
                        type="email"
                        value={data.email} />
@@ -62,13 +62,13 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
               <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
                 <input checked={data.withGet} name="withGet" onChange={onChange} type="checkbox" />
                 <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
-                  <div children={t('form.get.description')} />
+                  <div children={t('gdpr.form.get.description')} />
                 </Skeleton>
               </label>
               <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
                 <input checked={data.withForget} name="withForget" onChange={onChange} type="checkbox" />
                 <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
-                  <div children={t('form.forget.description')} />
+                  <div children={t('gdpr.form.forget.description')} />
                 </Skeleton>
               </label>
             </>

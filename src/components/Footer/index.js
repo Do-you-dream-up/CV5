@@ -19,16 +19,16 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
-  const [ t, i ] = useTranslation('footer');
+  const [ t, i ] = useTranslation('globalConfig');
   const { languages = [] } = configuration.application;
   const { translate: hasTranslate } = configuration.footer;
-  const actionTranslate = t('translate');
+  const actionTranslate = t('footer.translate');
 
   const languagesMenu = [languages.sort().map(id => ({
     icon: `flags/${id}.png`,
     id,
     onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
-    text: t(`rosetta.${id}`),
+    text: t(`footer.rosetta.${id}`),
   }))];
 
   const actions = [{

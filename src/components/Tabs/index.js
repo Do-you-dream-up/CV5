@@ -16,14 +16,14 @@ export default function Tabs() {
   const { configuration } = useContext(ConfigurationContext);
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({configuration, current, length: tabs.length});
-  const { ready, t } = useTranslation('tabs');
+  const { ready, t } = useTranslation('globalConfig');
   const { title: hasTitle } = configuration.tabs;
 
   return !!tabs.length && (
     <div className={c('dydu-tabs', classes.root)}>
       <div className={classes.indicator} />
       {tabs.map(({ icon, key }, index) => {
-        const label = t(key);
+        const label = t(`tabs.${key}`);
         return (
           <div className={c('dydu-tab', classes.tab)} key={index} onClick={select(key)} title={label} role='navigation'>
             <div className={c('dydu-tab-label', classes.label, {[classes.selected]: current === index})}>

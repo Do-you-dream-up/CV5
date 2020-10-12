@@ -20,9 +20,9 @@ export default function Carousel({ children, className, ...rest }) {
   const hasControls = !!configuration.carousel.controls;
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
-  const { t } = useTranslation('carousel');
-  const previous = t('previous');
-  const next = t('next');
+  const { t } = useTranslation('globalConfig');
+  const previous = t('carousel.previous');
+  const next = t('carousel.next');
   const length = React.Children.count(children);
 
   const hasNext = () => index < length - 1;

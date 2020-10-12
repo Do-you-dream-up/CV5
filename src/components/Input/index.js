@@ -25,8 +25,8 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { prompt } = useContext(DialogContext);
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
-  const { ready, t } = useTranslation('input');
-  const actionSend = t('actions.send');
+  const { ready, t } = useTranslation('globalConfig');
+  const actionSend = t('input.actions.send');
   const qualification = !!configuration.application.qualification;
   const voice = configuration.Voice.enable;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
@@ -112,7 +112,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: (ready && placeholder || t('placeholder')).slice(0, 50),
+    placeholder: (ready && placeholder || t('input.placeholder')).slice(0, 50),
     value: input,
   };
 
