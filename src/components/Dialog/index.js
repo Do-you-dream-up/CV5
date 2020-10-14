@@ -24,7 +24,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
-  const { t } = useTranslation('top');
+  const { t } = useTranslation('globalConfig');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
@@ -53,7 +53,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   return (
     <div className={c('dydu-dialog', classes.root)} {...rest}>
       {!!top && (
-        <Top component={Paper} elevation={1} title={t('title')}/>
+        <Top component={Paper} elevation={1} title={t('top.title')}/>
       )}
       <Welcome />
       { interactions.map((it, index) => ({ ...it, key: index })) }
