@@ -1,6 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import { DialogContext } from  '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
@@ -22,10 +23,13 @@ export default function Bubble({ children, className, component, hasExternalLink
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
+  const { t } = useTranslation('globalConfig');
+  const more = t('bubble.sidebar.more');
+  const less = t('bubble.sidebar.less');
   const automaticSecondary = !!configuration.secondary.automatic;
   const secondary = step ? step.sidebar : undefined;
 
-  const actions = [...(secondary ? [{children: secondaryActive ? 'Less' : 'More', onClick: () => onToggle()}] : [])];
+  const actions = [...(secondary ? [{children: secondaryActive ? less : more, onClick: () => onToggle()}] : [])];
 
   const onToggle = useCallback(open => {
     toggleSecondary(open, {body: secondary.content, ...secondary})();
