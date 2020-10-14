@@ -32,7 +32,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
-          <Interaction children={it.text} history secondary={it.sidebar} type="response" />,
+          <Interaction children={it.text} history type="response" />,
         );
         return accumulator;
       }, []);
