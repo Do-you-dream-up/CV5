@@ -25,6 +25,7 @@ export default function Interaction({
   className,
   history,
   scroll,
+  secondary,
   steps,
   thinking,
   type,
@@ -106,6 +107,7 @@ export default function Interaction({
               const attributes = {
                 component: scroll && !index ? Scroll : undefined,
                 history: history,
+                secondary: secondary,
                 step: steps ? steps[index] : undefined,
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
@@ -138,6 +140,7 @@ Interaction.propTypes = {
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
+  secondary: PropTypes.object,
   steps: PropTypes.array,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,

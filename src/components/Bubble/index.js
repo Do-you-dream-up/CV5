@@ -18,7 +18,7 @@ import useStyles from  './styles';
  * request should be displayed on the right of the conversation while its
  * response should appear in front, on the left.
  */
-export default function Bubble({ children, className, component, hasExternalLink, history, html, step, thinking, type }) {
+export default function Bubble({ children, className, component, hasExternalLink, history, html, secondary, step, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
@@ -27,19 +27,20 @@ export default function Bubble({ children, className, component, hasExternalLink
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
   const automaticSecondary = !!configuration.secondary.automatic;
-  const secondary = step ? step.sidebar : undefined;
 
-  const actions = [...(secondary ? [{children: secondaryActive ? less : more, onClick: () => onToggle()}] : [])];
+  const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
+
+  const actions = [...(sidebar ? [{children: secondaryActive ? less : more, onClick: () => onToggle()}] : [])];
 
   const onToggle = useCallback(open => {
-    toggleSecondary(open, {body: secondary.content, ...secondary})();
-  }, [secondary, toggleSecondary]);
+    toggleSecondary(open, {body: sidebar.content, ...sidebar})();
+  }, [sidebar, toggleSecondary]);
 
   useEffect(() => {
-    if (secondary) {
+    if (sidebar) {
       onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
     }
-  }, [automaticSecondary, history, onToggle, secondary]);
+  }, [automaticSecondary, history, onToggle, sidebar]);
 
   return React.createElement(component, {className: c(
     'dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type], className,
@@ -68,6 +69,7 @@ Bubble.propTypes = {
   hasExternalLink: PropTypes.bool,
   history: PropTypes.bool,
   html: PropTypes.string,
+  secondary: PropTypes.object,
   step: PropTypes.object,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,

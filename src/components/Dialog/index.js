@@ -28,11 +28,12 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
+    console.log('interactions', interactions);
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
-          <Interaction children={it.text} history type="response" />,
+          <Interaction children={it.text} history secondary={it.sidebar} type="response" />,
         );
         return accumulator;
       }, []);
