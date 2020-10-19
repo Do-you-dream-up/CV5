@@ -123,9 +123,17 @@
         "actions": {
             "send": "Envoie",
             "record": {
-              "start": "Record start",
-              "stop": "Record stop"
-            }
+                "start": "Record start",
+                "stop": "Record stop",
+                "start": "Start",
+                "stop": "Stop"
+              },
+              "media": {
+                "start": "Start",
+                "stop": "Stop",
+                "pause": "Pause"
+              }
+          
           },
           "placeholder": "Ecrivez ici..."
     },

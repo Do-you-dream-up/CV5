@@ -1,8 +1,34 @@
 import axios from 'axios';
+import React from 'react';
 
-const  getAudioFromText = ( text, voice, ssml, url ) => {
+
+export default new class Tts {
+
+  /**
+   * Return action buton
+   * @param {*} tite
+   * @param {*} iconName
+   * @param {*} action
+   */
+  getButtonAction = (tite, iconName, action) => {
+     const button = {
+         children: <img alt={tite} src={`icons/${iconName}.png`} title={tite} onClick={() => action()} />,
+         type: 'button',
+         variant: 'icon',
+     };
+     return  button;
+   }
+
+   /**
+    * Text to Audio transformation API
+    * @param {*} text
+    * @param {*} voice
+    * @param {*} ssml
+    * @param {*} url
+    */
+   getAudioFromText = ( text, voice, ssml, url ) => {
     return axios({
-        data: {text: cleantext(text)},
+        data: {text: this.cleantext(text)},
         headers: {
           'Content-Type': 'application/json'
         },
@@ -15,8 +41,11 @@ const  getAudioFromText = ( text, voice, ssml, url ) => {
       .catch(function (error) {
         console.error('[Dydu - TTS] : ' + error);
       });
+  };
+  /**
+   * Clean up text befor audio transformation
+   * @param {*} text
+   */
+  cleantext = (text) => text.replace(/(<([^>]+)>)/ig, '');
+
 };
-
-const cleantext = (text) => text.replace(/(<([^>]+)>)/ig, '');
-
-export { getAudioFromText };
