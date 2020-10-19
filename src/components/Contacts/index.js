@@ -15,7 +15,7 @@ export default function Contacts() {
   const showEmail = configuration.contacts.email;
   const showSocial = configuration.contacts.socialNetwork;
   const classes = useStyles();
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const phoneTitle = t('contacts.phone.title');
   const phones = t('contacts.phone.list');
   const emailTitle = t('contacts.email.title');

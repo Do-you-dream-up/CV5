@@ -14,7 +14,7 @@ import useStyles from './styles';
 export default function GdprDisclaimer({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
 
   const actions = [
     {children: t('gdpr.disclaimer.cancel'), onClick: onReject},

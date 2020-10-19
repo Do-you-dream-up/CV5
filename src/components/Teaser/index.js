@@ -18,7 +18,7 @@ export default function Teaser({ open, toggle }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext);
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');

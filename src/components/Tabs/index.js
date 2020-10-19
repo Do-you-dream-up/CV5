@@ -16,7 +16,7 @@ export default function Tabs() {
   const { configuration } = useContext(ConfigurationContext);
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({configuration, current, length: tabs.length});
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const { title: hasTitle } = configuration.tabs;
 
   return !!tabs.length && (

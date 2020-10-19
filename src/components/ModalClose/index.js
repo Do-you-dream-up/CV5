@@ -12,7 +12,7 @@ import useStyles from './styles';
 export default function ModalClose({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const body = t('close.body', {defaultValue: ''});
   const no = t('close.no');
   const title = t('close.title', {defaultValue: ''});

@@ -1,12 +1,18 @@
 {
     "banner": {
         "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
-        "more": "En savoir plus",
-        "ok": "Merci"
+        "more": "More information",
+        "ok": "Thanks"
+    },
+    "bubble": {
+        "sidebar": {
+            "more": "More",
+            "less": "Less"
+        }
     },
     "carousel": {
-        "next": "Précédent",
-        "previous": "Prochain"
+        "next": "Next",
+        "previous": "Previous"
     },
     "close": {
         "body": "If you would like to re-open the chatbox, please refresh the page.",
@@ -16,28 +22,28 @@
     },
     "contacts": {
         "phone": {
-            "title": "Téléphones",
+            "title": "Phone Numbers",
             "list": [{
-                    "title": "Support Commerciale",
-                    "phone": "08.00.50.00.94"
+                    "title": "Business Support",
+                    "phone": "06.00.00.00.34"
                 },
                 {
-                    "title": "Support Clientèle",
-                    "phone": "02.78.49.06.28"
+                    "title": "Client Support",
+                    "phone": "08.12.44.56.28"
                 }
             ]
         },
         "email": {
             "title": "Emails",
             "list": [{
-                "title": "Une question? Une réclamation?",
-                "email": "support@chatbot.com"
+                "title": "A question?",
+                "email": "support@chatbox.com"
             }]
         },
         "socialNetwork": {
-            "title": "Réseaux Sociaux",
+            "title": "Social Networks",
             "list": [{
-                "title": "Linkedin",
+                "title": "Instagram",
                 "socialText": "linkedin.com/company/dydu/",
                 "socialUrl": "https://www.linkedin.com/company/dydu/"
             }]
@@ -61,17 +67,21 @@
         }
     },
     "footer": {
-        "expand": "Ouvrir sous-menu",
+        "expand": "Expand menu",
         "menu": {
-            "close": "Fermer",
-            "email": "Exporter la conversation par email",
-            "gdpr": "RGPD (export, suppression)",
-            "spaces": "Changer d'espace de consultation",
-            "title": "Vos fonctionnalités"
+            "close": "Close",
+            "email": "Export the conversation by email",
+            "gdpr": "GDPR (export, delete)",
+            "spaces": "Switch consulting space",
+            "title": "Your features"
         },
         "rosetta": {
             "en": "English",
-            "fr": "French"
+            "fr": "French",
+            "es": "Spanish",
+            "de": "German",
+            "it": "Italian",
+            "pt": "Portuguese"
         },
         "translate": "Languages"
     },
@@ -81,9 +91,9 @@
     },
     "gdpr": {
         "disclaimer": {
-            "body": "<p>En utilisant ce Chatbot vous consentez directement à ce que les données transmises soient exploitées à des fins de réponses automatisées et d'enrichissement du moteur de dialogue avant de faire l'objet d'une anonymisation les supprimant de manière irréversible.</p>",
-            "cancel": "Je refuse",
-            "ok": "J'accepte"
+            "body": "<p>Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed? Elit, at imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis urna, id volutpat lacus laoreet non curabitur gravida!</p><p>Purus ut faucibus pulvinar elementum integer enim neque, volutpat ac tincidunt vitae, semper quis lectus. At augue eget arcu dictum varius duis at consectetur lorem donec massa sapien, faucibus et?</p><p>Amet, consectetur adipiscing elit pellentesque habitant morbi tristique senectus.</p>",
+            "cancel": "Cancel",
+            "ok": "Ok"
         },
         "form": {
             "email": {
@@ -104,18 +114,18 @@
     },
     "header": {
         "actions": {
-            "close": "Fermer",
+            "close": "Close",
             "expand": "Expand",
-            "minimize": "Réduire",
+            "minimize": "Minimize",
             "more": "More",
             "shrink": "Shrink",
             "tests": "Tests"
         },
-        "title": "Besoin d'aide ?"
+        "title": "Need help?"
     },
     "input": {
         "actions": {
-            "send": "Envoie",
+            "send": "Send",
             "record": {
                 "start": "Record start",
                 "stop": "Record stop",
@@ -129,40 +139,40 @@
               }
           
           },
-          "placeholder": "Ecrivez ici..."
+          "placeholder": "Type here..."
     },
     "onboarding": {
         "carousel": {
-            "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
-            "next": "Suivant",
-            "previous": "Précédent",
-            "title": "Quelques astuces"
+            "body": "<p><strong>Prefer complete sentences</strong></p><p>That way I can provide you with better content.</p>",
+            "next": "Next",
+            "previous": "Previous",
+            "title": "Tips"
         },
-        "preamble": "<p>Quelques informations avant de commencer</p>",
+        "preamble": "<p>Some tips before we begin</p>",
         "skip": {
-            "button": "Dialoguer avec le Chatbot",
-            "title": "Démarrez une conversation"
+            "button": "Chat with the bot",
+            "title": "Start a conversation"
         },
         "top": {
-            "title": "Voici les questions les plus posées"
+            "title": "Here are the top-asked topics"
         }
     },
-    "screenReader":{
-        "chatbot":  "chatbot dit",
-        "me": "moi dit"
+    "screenReader": {
+        "chatbot":  "chatbot says",
+        "me": "me says"
     },
     "spaces": {
-        "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
+        "welcome": "Welcome to the chatbot, please select a space before chatting :"
     },
     "tabs": {
         "contacts": "Contacts",
-        "dialog": "Conversation"
+        "dialog": "Dialog"
     },
     "teaser": {
-        "title": "Besoin d'aide ?",
-        "mouseover": "Aide ici"
+        "mouseover": "Heeelp here",
+        "title": "Need help?"
     },
     "top": {
-        "title": "Questions les plus posées:"
+        "title": "Top-asked questions:"
     }
 }

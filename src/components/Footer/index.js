@@ -19,7 +19,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
-  const [ t, i ] = useTranslation('globalConfig');
+  const [ t, i ] = useTranslation('translation');
   const { languages = [] } = configuration.application;
   const { translate: hasTranslate } = configuration.footer;
   const actionTranslate = t('footer.translate');
