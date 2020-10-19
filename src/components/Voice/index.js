@@ -6,8 +6,9 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dydu from '../../tools/dydu';
 import { Cookie } from '../../tools/storage';
+import Stt from '../../tools/stt';
 import talk from '../../tools/talk';
-import { getAudioFromText } from '../../tools/tts';
+import Tts from '../../tools/tts';
 import Actions from '../Actions';
 import useStyles from './styles';
 
@@ -33,68 +34,52 @@ export default function Voice() {
     triggered;
 
   const { configuration } = useContext(ConfigurationContext);
-  const { addRequest, addResponse, setLocked, setText, text } = useContext(DialogContext);
+  const { addRequest, addResponse, setLocked, text } = useContext(DialogContext);
   const { ssml, sttServerUrl, ttsServerUrl, voice, voiceSpace } = configuration.Voice;
   const qualification = !!configuration.application.qualification;
   const classes = useStyles({ configuration });
-  const { t } = useTranslation('globalConfig');
-  const actionStart = t('input.actions.record.start');
-  const actionStop = t('input.actions.record.stop');
+  const { t } = useTranslation('input');
+  const recordStart = t('actions.record.start');
+  const recordStop = t('actions.record.stop');
+  const mediaPlay = t('actions.media.play');
+  const mediaStop = t('actions.meida.stop');
+  const mediaPause = t('actions.media.pause');
   const constraints = { audio: true };
   const silenceDelay = 2500;
   const bufferSize = 2048;
   const minDecibels = -100;
-  const action  = { type: 'button', variant: 'icon' };
   const [audio] = useState(new Audio());
-
-  const startRecordButton = {
-    ...action,
-    children: <img alt={actionStart} src="icons/micro.black.png" title={actionStart} onClick={() => startRecording()} />,
-  };
-
-  const stopRecordButton = {
-    ...action,
-    children: <img alt={actionStop} src="icons/stop.black.png" title={actionStop} onClick={() => stopRecording()} />,
-  };
-
-  const pauseAudioButton = {
-    ...action,
-    children: <img alt={actionStop} src="icons/pause.black.png" title={actionStop} onClick={() => pause()} />,
-  };
-
-  const playAudioButton = {
-    ...action,
-    children: <img alt={actionStop} src="icons/play.black.png" title={actionStop} onClick={() => play()} />,
-  };
-
-  const stopAudioButton = {
-    ...action,
-    children: <img alt={actionStop} src="icons/stop.black.png" title={actionStop} onClick={() => stop()} />,
-  };
-
+  const startRecordButton = Tts.getButtonAction(recordStart, 'micro.black', () => startRecording());
+  const stopRecordButton = Tts.getButtonAction(recordStop, 'stop.black', () => stopRecording());
+  const pauseMediaButton = Stt.getButtonAction(mediaPause, 'pause.black', () => pause());
+  const playMediaButton = Stt.getButtonAction(mediaPlay, 'play.black', () => play());
+  const stopMediaButton = Stt.getButtonAction(mediaStop, 'stop.black', () => stop());
   const [actions, setActions] = useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = useState(false);
 
   useEffect(() => {
     if (text.trim() !== '' && handelVoice) {
-      getAudioFromText(text, voice, ssml, ttsServerUrl).then(response => {
+      Tts.getAudioFromText(text, voice, ssml, ttsServerUrl).then(response => {
         audio.src = response;
         play();
       });
-      setText('');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handelVoice, text]);
 
   audio.onended = () => {
     stop();
-    audio.currentTime = 0.0;
   };
 
 
-  // ================= RECORDING ======================
+  /**
+   * Start recording voice and open socket connection
+   */
   const startRecording = () => {
+
+    //connection to the socket
     socket = io.connect(sttServerUrl);
+
     socket.on('connect', () => {
       socket.emit('join', 'Server Connected to Client');
     });
@@ -103,6 +88,7 @@ export default function Voice() {
       console.log(`[Dydu] STT : '${data}'`);
     });
 
+    // when socket recieve data from server
     socket.on('speechData', (data) => {
       silenceStart = window.performance.now();
       const dataFinal = data.results[0].isFinal;
@@ -115,17 +101,17 @@ export default function Voice() {
         resultText = data.results[0].alternatives[0].transcript;
         Dydu.setSpace(voiceSpace);
         addRequest(resultText);
+        Dydu.setSpace(space);
         talk(resultText, {qualification}).then(addResponse);
         stopRecording();
         socket.disconnect();
         setHandelVoice(true);
-        Dydu.setSpace(space);
       }
     });
 
     setActions([stopRecordButton]);
     setLocked(true);
-    socket.emit('startGoogleCloudStream', ''); //init socket Google Speech Connection
+    socket.emit('startGoogleCloudStream', '');
     AudioContext = window.AudioContext || window.webkitAudioContext;
     context = new AudioContext({
       latencyHint: 'interactive',
@@ -152,6 +138,9 @@ export default function Voice() {
     });
   };
 
+  /**
+   * Stop recording audio and close the socket connection
+   */
   const stopRecording = () => {
     if (input) {
       // waited for FinalWord
@@ -173,27 +162,37 @@ export default function Voice() {
   };
 
   // ================= AUDIO ==========================
+  /**
+   * Play audio media and show stop action
+   */
   const play = () => {
     audio.play();
-    setActions([pauseAudioButton, stopAudioButton]);
+    setActions([pauseMediaButton, stopMediaButton]);
     setLocked(true);
   };
 
+  /***
+   * Pause audio media and show play and stop actions
+   */
   const pause = () => {
     audio.pause();
-    setActions([playAudioButton, stopAudioButton]);
+    setActions([playMediaButton, stopMediaButton]);
   };
-
+  /**
+   * Stop audio media and show the record action
+   */
   const stop = () => {
     audio.pause();
-    audio.currentTime = 0.0;
+    audio.remove();
     setActions([startRecordButton]);
     setLocked(false);
     setHandelVoice(false);
-
   };
 
   // ================= SANTAS HELPERS =================
+  /**
+   * Convert buffer to 16Array
+   */
   const downsampleBuffer = (buffer, sampleRate, outSampleRate) => {
     if (outSampleRate == sampleRate) {
       return buffer;
@@ -221,6 +220,10 @@ export default function Voice() {
     return result.buffer;
   };
 
+  /**
+   * Detect silence function
+   * @param {*} time
+   */
   const recordingUntilSilence = (time) => {
     window.requestAnimationFrame(recordingUntilSilence); // we'll loop every 60th of a second to check
     analyser.getByteFrequencyData(data); // get current data
@@ -233,15 +236,12 @@ export default function Voice() {
     }
 
     if (!triggered && time - silenceStart > silenceDelay) {
-        if (resultText && resultText.length !== '') {
-          console.log('onSilence', resultText);
-        }
         stopRecording();
         triggered = true;
       }
   };
 
   return (
-    !!Cookie.get(Cookie.names.gdpr) && <Actions actions={actions} className={c('dydu-input-actions', classes.root, classes.actions)} />
+    !!Cookie.get(Cookie.names.gdpr) && <Actions actions={actions} className={c('dydu-voice-actions', classes.root, classes.actions)} />
   );
 }

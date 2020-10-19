@@ -121,9 +121,17 @@
         "actions": {
             "send": "Send",
             "record": {
-              "start": "Record start",
-              "stop": "Record stop"
-            }
+                "start": "Record start",
+                "stop": "Record stop",
+                "start": "Start",
+                "stop": "Stop"
+              },
+              "media": {
+                "start": "Start",
+                "stop": "Stop",
+                "pause": "Pause"
+              }
+          
           },
           "placeholder": "Type here..."
     },
