@@ -4,6 +4,12 @@
         "more": "En savoir plus",
         "ok": "Merci"
     },
+    "bubble": {
+        "sidebar": {
+            "more": "Plus",
+            "less": "Moins"
+        }
+    },
     "carousel": {
         "next": "Précédent",
         "previous": "Prochain"

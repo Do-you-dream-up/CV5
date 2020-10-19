@@ -13,9 +13,9 @@ import useStyles from './styles';
 export default function PrettyHtml({ children, className, component, hasExternalLink, html, type, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('screenReader');
+  const { t } = useTranslation('globalConfig');
 
-  const interactionType = type === 'response' ? t('chatbot') : t('me');
+  const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
   return React.createElement(component, {className: c(classes.root, className), ...rest}, (
     <>
       {children}

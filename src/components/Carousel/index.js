@@ -1,8 +1,10 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import { DialogContext } from  '../../contexts/DialogContext';
+import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import useStyles from  './styles';
 
@@ -12,7 +14,7 @@ import useStyles from  './styles';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({ children, className, ...rest }) {
+export default function Carousel({ children, className, history, steps, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { offset, width } = configuration.carousel;
@@ -20,10 +22,13 @@ export default function Carousel({ children, className, ...rest }) {
   const hasControls = !!configuration.carousel.controls;
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
+  const [ step, setStep ] = useState(steps[index]);
   const { t } = useTranslation('globalConfig');
   const previous = t('carousel.previous');
   const next = t('carousel.next');
   const length = React.Children.count(children);
+  const automaticSecondary = !!configuration.secondary.automatic;
+  const { secondaryActive, toggleSecondary } = useContext(DialogContext);
 
   const hasNext = () => index < length - 1;
   const hasPrevious = () => index > 0;
@@ -44,6 +49,19 @@ export default function Carousel({ children, className, ...rest }) {
     onClick: onNext,
     variant: 'icon',
   }];
+
+  const onToggle = useCallback(open => {
+    if (secondaryActive) {
+      toggleSecondary(open, {body: step.sidebar.content, ...step.sidebar})();
+    }
+  }, [secondaryActive, step, toggleSecondary]);
+
+  useEffect(() => {
+    if (step.sidebar) {
+      setStep(steps[index]);
+      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
+    }
+  }, [history, index, steps, step, automaticSecondary, onToggle]);
 
   return (
     <div className={c('dydu-carousel', classes.root), className} {...rest}>
@@ -77,4 +95,6 @@ export default function Carousel({ children, className, ...rest }) {
 Carousel.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
   className: PropTypes.string,
+  history: PropTypes.bool,
+  steps: PropTypes.array,
 };

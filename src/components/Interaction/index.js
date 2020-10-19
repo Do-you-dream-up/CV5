@@ -2,10 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
-import { DialogContext } from  '../../contexts/DialogContext';
 import sanitize from  '../../tools/sanitize';
-import { Local } from '../../tools/storage';
-import Actions from  '../Actions';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Carousel from  '../Carousel';
@@ -29,13 +26,13 @@ export default function Interaction({
   history,
   scroll,
   secondary,
+  steps,
   thinking,
   type,
 }) {
 
   children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
-  const { secondaryActive, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ bubbles, setBubbles ] = useState([]);
   const [ hasLoader, setHasLoader ] = useState(!!thinking);
@@ -43,7 +40,6 @@ export default function Interaction({
   const [ hasExternalLink, setHasExternalLink ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
-  const automaticSecondary = !!configuration.secondary.automatic;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
@@ -71,16 +67,6 @@ export default function Interaction({
       setHasLoader(false);
     }
   }, [carousel, delay, thinking]);
-
-  const onToggle = useCallback(open => {
-    toggleSecondary(open, {body: secondary.content, ...secondary})();
-  }, [secondary, toggleSecondary]);
-
-  useEffect(() => {
-    if (secondary) {
-      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
-    }
-  }, [automaticSecondary, history, onToggle, secondary]);
 
   useEffect(() => {
     if (!ready && children) {
@@ -118,16 +104,19 @@ export default function Interaction({
           carousel ? Carousel : 'div',
           {
             children: bubbles.map((it, index) => {
-              const actions = [...(secondary ? [{children: secondaryActive ? 'Less' : 'More', onClick: () => onToggle()}] : [])];
               const attributes = {
-                actions: !!actions.length && <Actions actions={actions} />,
                 component: scroll && !index ? Scroll : undefined,
+                history: history,
+                secondary: secondary,
+                step: steps ? steps[index] : undefined,
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };
               return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} {...attributes} />;
             }),
             className: c('dydu-interaction-bubbles', classes.bubbles),
+            history: history,
+            steps: steps,
           },
         )}
         {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
@@ -152,6 +141,7 @@ Interaction.propTypes = {
   history: PropTypes.bool,
   scroll: PropTypes.bool,
   secondary: PropTypes.object,
+  steps: PropTypes.array,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
