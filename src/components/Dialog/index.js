@@ -28,7 +28,6 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
-    console.log('interactions', interactions);
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(

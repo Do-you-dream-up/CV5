@@ -115,7 +115,6 @@ export default function Interaction({
               return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} {...attributes} />;
             }),
             className: c('dydu-interaction-bubbles', classes.bubbles),
-            history: history,
             steps: steps,
           },
         )}

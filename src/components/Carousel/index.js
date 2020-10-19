@@ -14,7 +14,7 @@ import useStyles from  './styles';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({ children, className, history, steps, ...rest }) {
+export default function Carousel({ children, className, steps, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { offset, width } = configuration.carousel;
@@ -59,9 +59,9 @@ export default function Carousel({ children, className, history, steps, ...rest 
   useEffect(() => {
     if (step.sidebar) {
       setStep(steps[index]);
-      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
+      onToggle(Local.get(Local.names.secondary) || (automaticSecondary));
     }
-  }, [history, index, steps, step, automaticSecondary, onToggle]);
+  }, [index, steps, step, automaticSecondary, onToggle]);
 
   return (
     <div className={c('dydu-carousel', classes.root), className} {...rest}>
@@ -95,6 +95,5 @@ export default function Carousel({ children, className, history, steps, ...rest 
 Carousel.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
   className: PropTypes.string,
-  history: PropTypes.bool,
   steps: PropTypes.array,
 };
