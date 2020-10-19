@@ -24,7 +24,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {

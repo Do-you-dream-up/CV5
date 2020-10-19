@@ -30,7 +30,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const theme = useTheme();
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {}, title: hasTitle } = configuration.header;
   const actionClose = t('header.actions.close');

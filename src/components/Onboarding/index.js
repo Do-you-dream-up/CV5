@@ -25,7 +25,7 @@ export default function Onboarding({ children, render }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active, onEnd } = useContext(OnboardingContext) || {};
   const classes = useStyles({configuration});
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const preamble = t('onboarding.preamble', {defaultValue: ''});
   const should = render && active;
   const { tips, top } = configuration.onboarding;

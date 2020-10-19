@@ -23,7 +23,7 @@ export default function Carousel({ children, className, history, steps, ...rest 
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
   const [ step, setStep ] = useState(steps[index]);
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const previous = t('carousel.previous');
   const next = t('carousel.next');
   const length = React.Children.count(children);

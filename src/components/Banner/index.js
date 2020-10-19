@@ -21,7 +21,7 @@ export default function Banner() {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const { active, cookie, dismissable, more, moreLink, transient } = configuration.banner;
   const html = sanitize(t('banner.html'));
 

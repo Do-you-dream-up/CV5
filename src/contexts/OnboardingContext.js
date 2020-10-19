@@ -9,7 +9,7 @@ export function OnboardingProvider({ children }) {
 
   const [ active, setActive ] = useState(!Local.get(Local.names.onboarding));
   const [ index, setIndex ] = useState(0);
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
 
   const hasPrevious = useCallback(() => !!index, [index]);
 

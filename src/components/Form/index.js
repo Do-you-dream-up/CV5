@@ -16,7 +16,7 @@ export default function Form({ children, className, data: initialData, onDismiss
 
   const classes = useStyles();
   const [ data, setData ] = useState(initialData);
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
 
   const getSubmitIcon = () => thinking && 'icons/loading.png';
 

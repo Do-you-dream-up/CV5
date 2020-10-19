@@ -37,7 +37,7 @@ export default function Voice() {
   const { ssml, sttServerUrl, ttsServerUrl, voice, voiceSpace } = configuration.Voice;
   const qualification = !!configuration.application.qualification;
   const classes = useStyles({ configuration });
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const actionStart = t('input.actions.record.start');
   const actionStop = t('input.actions.record.stop');
   const constraints = { audio: true };

@@ -23,7 +23,7 @@ export default function Bubble({ children, className, component, hasExternalLink
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
   const automaticSecondary = !!configuration.secondary.automatic;

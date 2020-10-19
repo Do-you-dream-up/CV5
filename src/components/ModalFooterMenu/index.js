@@ -14,7 +14,7 @@ import useStyles from './styles';
 export default function ModalFooterMenu({ className, component, onReject, onResolve, ...rest }) {
 
   const classes = useStyles();
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const close = t('footer.menu.close');
   const email = t('footer.menu.email');
   const gdpr = t('footer.menu.gdpr');

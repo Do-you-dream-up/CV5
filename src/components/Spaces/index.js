@@ -16,7 +16,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
   const { configuration } = useContext(ConfigurationContext);
   const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const welcome = t('spaces.welcome', {defaultValue: ''});
   const { items = [] } = configuration.spaces;
 

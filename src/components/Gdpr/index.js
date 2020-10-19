@@ -18,7 +18,7 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
 
   const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
-  const { ready, t } = useTranslation('globalConfig');
+  const { ready, t } = useTranslation('translation');
   const help = sanitize(t('gdpr.form.help'));
 
   const onSubmit = ({ email, withForget, withGet }) => {

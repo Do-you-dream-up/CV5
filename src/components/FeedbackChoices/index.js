@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function FeedbackChoices({ onSelect }) {
 
-  const { t }  = useTranslation('globalConfig');
+  const { t }  = useTranslation('translation');
   const choices = t('feedback.choices', {defaultValue: []});
 
   const onClick = index => () => onSelect(index);

@@ -30,7 +30,7 @@ export default function Feedback() {
   const [ showVote, setShowVote ] = useState(true);
   const [ thinking, setThinking ] = useState(false);
   const classes = useStyles();
-  const { t } = useTranslation('globalConfig');
+  const { t } = useTranslation('translation');
   const { active, askChoices, askComment } = configuration.feedback;
   const commentHelp = t('feedback.comment.help');
   const commentThanks = t('feedback.comment.thanks');
