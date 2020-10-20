@@ -25,7 +25,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { prompt } = useContext(DialogContext);
   const [ suggestions, setSuggestions ] = useState([]);
   const [ typing, setTyping ] = useState(false);
-  const { ready, t } = useTranslation('translation');
+  const { ready, t } = useTranslation('globalConfig');
   const actionSend = t('input.actions.send');
   const qualification = !!configuration.application.qualification;
   const voice = configuration.Voice.enable;
