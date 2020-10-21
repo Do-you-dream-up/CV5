@@ -12,7 +12,7 @@ module.exports = Merge.strategy({plugins: 'prepend'})(common, {
   output: {
     filename: 'bundle.min.js',
     jsonpFunction: 'dydu.bliss',
-    path: Path.resolve(__dirname, 'v5/'),
+    path: Path.resolve(__dirname, 'build/v5'),
     publicPath: './v5/'
   },
   plugins: [

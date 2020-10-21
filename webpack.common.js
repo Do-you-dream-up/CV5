@@ -35,6 +35,7 @@ module.exports = {
   },
   plugins: [
     new Html({
+      filename: Path.resolve(__dirname, './build/index.html'),
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),
       templateParameters: {hash, now, version},
