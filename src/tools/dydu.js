@@ -4,7 +4,9 @@ import qs from 'qs';
 import uuid4 from 'uuid4';
 import bot from '../bot';
 import { decode } from './cipher';
+import configuration from './configuration.json';
 import { Cookie, Local } from './storage';
+
 
 /**
  * Read the bot ID and the API server from URL parameters when found. Default to
@@ -15,7 +17,6 @@ const BOT = Object.assign({}, bot, (({ backUpServer, bot: id, server }) => ({
   ...server && { server },
   ...backUpServer && { backUpServer }
 }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })));
-
 
 /**
  * Prefix the API and add generic headers.
@@ -168,7 +169,8 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const locale = Local.get(Local.names.locale, 'en').split('-')[0];
+      const defaultLanguage = configuration.application.defaultLanguage;
+      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
       this.setLocale(locale);
     }
     return this.locale;
