@@ -30,11 +30,6 @@ module.exports = {
     ],
     strictExportPresence: true,
   },
-  output: {
-    filename: 'bundle.min.js',
-    jsonpFunction: 'dydu.bliss',
-    path: Path.resolve(__dirname, 'build/'),
-  },
   performance: {
     hints: false,
   },

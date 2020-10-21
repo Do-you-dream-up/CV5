@@ -34,7 +34,7 @@ export function ButtonBase({
 }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { tabbing } = useContext(UserActionContext);
+  const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles({color, configuration});
   const icon = typeof(getIcon) === 'function' ? getIcon() : getIcon;
 

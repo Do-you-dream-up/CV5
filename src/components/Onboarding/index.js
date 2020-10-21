@@ -38,7 +38,7 @@ export default function Onboarding({ children, render }) {
         )}
         <Paper elevation={1} title={t('onboarding.skip.title')}>
           <div className={c(classes.actions, classes.actionsCentered)}>
-            <Button children={t('onboarding.skip.button')} icon="icons/send.png" onClick={onEnd} />
+            <Button children={t('onboarding.skip.button')} icon={`${process.env.PUBLIC_URL}/icons/send.png`} onClick={onEnd} />
           </div>
         </Paper>
         {!!tips && (

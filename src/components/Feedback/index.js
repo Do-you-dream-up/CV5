@@ -102,10 +102,10 @@ export default function Feedback() {
       {showVote && (
         <Scroll className={c('dydu-feedback-vote', classes.vote)}>
           <Button color="error" onClick={onVoteNegative} variant="icon">
-            <img alt={voteNegative} src="icons/thumb-down.png" title={voteNegative} />
+            <img alt={voteNegative} src={`${process.env.PUBLIC_URL}/icons/thumb-down.png`} title={voteNegative} />
           </Button>
           <Button color="success" onClick={onVotePositive} variant="icon">
-            <img alt={votePositive} src="icons/thumb-up.png" title={votePositive} />
+            <img alt={votePositive} src={`${process.env.PUBLIC_URL}/icons/thumb-up.png`} title={votePositive} />
           </Button>
         </Scroll>
       )}

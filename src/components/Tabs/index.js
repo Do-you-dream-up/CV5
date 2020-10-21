@@ -27,7 +27,7 @@ export default function Tabs() {
         return (
           <div className={c('dydu-tab', classes.tab)} key={index} onClick={select(key)} title={label} role='navigation'>
             <div className={c('dydu-tab-label', classes.label, {[classes.selected]: current === index})}>
-              {!!icon && <img alt={label} className={classes.icon} src={icon} />}
+              {!!icon && <img alt={label} className={classes.icon} src={`${process.env.PUBLIC_URL}/${icon}`} />}
               {!!hasTitle && (
                 <Skeleton hide={!ready} variant="text" width="4em">
                   <span children={label} />

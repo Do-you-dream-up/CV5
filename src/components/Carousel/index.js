@@ -37,14 +37,14 @@ export default function Carousel({ children, className, steps, ...rest }) {
   const onPrevious = () => setIndex(previous => Math.max(0, previous - 1));
 
   const previousAction = [{
-    children: <img alt={previous} src="icons/chevron-left.black.png" title={previous} />,
+    children: <img alt={previous} src={`${process.env.PUBLIC_URL}/icons/chevron-left.black.png`} title={previous} />,
     disabled: !hasPrevious(),
     onClick: onPrevious,
     variant: 'icon',
   }];
 
   const nextAction = [{
-    children: <img alt={next} src="icons/chevron-right.black.png" title={next} />,
+    children: <img alt={next} src={`${process.env.PUBLIC_URL}/icons/chevron-right.black.png`} title={next} />,
     disabled: !hasNext(),
     onClick: onNext,
     variant: 'icon',

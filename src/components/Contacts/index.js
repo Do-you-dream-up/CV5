@@ -26,9 +26,9 @@ export default function Contacts() {
   return !!ready && (
     <div className={classes.root}>
       <Paper elevation={4}>
-        {showPhone && <ContactsList id='phone' title={phoneTitle} list={phones} icon={'icons/phone.png'} />}
-        {showEmail && <ContactsList id='email' title={emailTitle} list={emails} icon={'icons/email.png'} />}
-        {showSocial && <ContactsList id='social' title={socialTitle} list={socialNetworks} icon={'icons/account.png'} />}
+        {showPhone && <ContactsList id='phone' title={phoneTitle} list={phones} icon="icons/phone.png" />}
+        {showEmail && <ContactsList id='email' title={emailTitle} list={emails} icon="icons/email.png" />}
+        {showSocial && <ContactsList id='social' title={socialTitle} list={socialNetworks} icon="icons/account.png" />}
       </Paper>
     </div>
   );

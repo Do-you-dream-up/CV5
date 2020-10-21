@@ -44,7 +44,7 @@ export default function Secondary({ anchor, mode }) {
         {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
           <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
-            <img alt="Close" src="icons/close.png" title="Close" />
+            <img alt="Close" src={`${process.env.PUBLIC_URL}/icons/close.png`} title="Close" />
           </Button>
         </div>
       </div>
