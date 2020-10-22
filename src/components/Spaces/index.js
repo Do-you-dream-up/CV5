@@ -19,8 +19,6 @@ export default function Spaces({ onResolve, scroll, thinking }) {
   const { ready, t } = useTranslation('translation');
   const welcome = t('spaces.welcome', {defaultValue: ''});
   const { items = [] } = configuration.spaces;
-  // const { currentSpace, setCurrentSpace } = useState(window.dydu.space.get());
-  // console.log('space', currentSpace);
 
   const onSubmit = ({ space }) => {
     setPrompt('');
