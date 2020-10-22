@@ -2,7 +2,8 @@
   "application": {
     "open": 1,
     "qualification": true,
-    "languages": ["en", "fr"]
+    "languages": ["en", "fr"],
+    "defaultLanguage": ["fr"]
   },
   "avatar": {
     "background": false,
