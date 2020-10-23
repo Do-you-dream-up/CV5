@@ -17,13 +17,15 @@ export default function Welcome() {
 
   useEffect(() => {
      if (Local.get(Local.names.welcome)) {
-      setWelcomeText(Local.get(Local.names.welcome));
+      setWelcomeText((Local.get(Local.names.welcome)).text);
+      setWelcomeSidebar((Local.get(Local.names.welcome)).sidebar);
       return;
      }
       dydu.talk(knowledgeName, {hide: true, doNotSave: true}).then(response => {
         setWelcomeText(response.text);
         setWelcomeSidebar(response.sidebar);
-        Local.set(Local.names.welcome, response.text);
+        const localWelcome = {text : response.text, sidebar: response.sidebar};
+        Local.set(Local.names.welcome, localWelcome);
       });
   }, []);
 
