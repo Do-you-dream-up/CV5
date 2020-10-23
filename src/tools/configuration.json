@@ -239,7 +239,7 @@
     "stylesMobile": {}
   },
   "Voice": {
-    "enable": true,
+    "enable": false,
     "ssml": "true",
     "sttServerUrl": "https://proxima.doyoudreamup.com:444",
     "ttsServerUrl": "https://proxima.doyoudreamup.com:444/tts",
