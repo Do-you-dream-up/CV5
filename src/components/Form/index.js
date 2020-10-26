@@ -12,10 +12,11 @@ import useStyles from './styles';
  * Children should be a callback which accepts the form data and the field
  * onchange callback as parameters.
  */
-export default function Form({ children, className, data: initialData, onDismiss, onReject, onResolve, thinking }) {
+export default function Form({ children, className, onDismiss, onReject, onResolve, thinking }) {
 
   const classes = useStyles();
-  const [ data, setData ] = useState(initialData);
+  const currentSpace = window.dydu.space.get();
+  const [ data, setData ] = useState({space: currentSpace});
   const { t } = useTranslation('translation');
 
   const getSubmitIcon = () => thinking && `${process.env.PUBLIC_URL}/icons/loading.png`;
@@ -36,7 +37,7 @@ export default function Form({ children, className, data: initialData, onDismiss
 
   const actions = [
     ...(onCancel ? [{children: t('form.cancel'), onClick: onCancel}] : []),
-    {children: t('form.cancel'), disabled: thinking, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
+    {children: t('form.cancel'), disabled: thinking || !currentSpace, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
     {children: t('form.submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'form.submit'},
   ];
 

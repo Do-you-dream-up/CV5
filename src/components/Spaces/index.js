@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -25,8 +25,12 @@ export default function Spaces({ onResolve, scroll, thinking }) {
     window.dydu.space.set(space);
   };
 
+  const onDismiss = () => {
+    setPrompt('');
+  };
+
   const form = !!items.length && (
-    <Form key="form" onResolve={onResolve || onSubmit}>
+    <Form key="form" onResolve={onResolve || onSubmit} onDismiss={onDismiss}>
       {({ data, onChange }) => items.map((it, index) => (
         <label className={classes.item} key={index}>
           <input checked={data.space === it}
