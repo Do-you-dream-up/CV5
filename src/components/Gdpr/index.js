@@ -4,7 +4,6 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContext} from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
-import sanitize from '../../tools/sanitize';
 import Form from '../Form';
 import Interaction from '../Interaction';
 import Skeleton from '../Skeleton';
@@ -19,7 +18,6 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
   const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
-  const help = sanitize(t('gdpr.form.help'));
 
   const onSubmit = ({ email, withForget, withGet }) => {
     setPrompt('');
@@ -37,13 +35,6 @@ export default function Gdpr({ onResolve, scroll, thinking }) {
   return !!ready && (
     <Interaction className="dydu-interaction-gdpr" scroll={scroll} thinking={thinking} type="response">
       <>
-        {help && (
-          <div className={c('dydu-gdpr-help', classes.help)}>
-            <Skeleton hide={!ready} width="8em">
-              <div dangerouslySetInnerHTML={{__html: help}} />
-            </Skeleton>
-          </div>
-        )}
         <Form className="dydu-gdpr-form"
               data={{email: '', withForget: false, withGet: true}}
               onResolve={onResolve || onSubmit}

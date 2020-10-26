@@ -19,9 +19,6 @@ export default createUseStyles(theme => ({
       marginLeft: '1em',
     },
   },
-  help: {
-    marginBottom: '1em',
-  },
   input: {
     backgroundColor: theme.palette.primary.light,
     boxSizing: 'border-box',
