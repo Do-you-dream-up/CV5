@@ -37,7 +37,7 @@ export default function Teaser({ open, toggle }) {
   };
 
   return (
-    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open}, {[classes.hideOutline]: !tabbing})}>
+    <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}>
       <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
 
         <div onClick={onClick}
@@ -46,7 +46,7 @@ export default function Teaser({ open, toggle }) {
              role='button'
              tabIndex='0'
              aria-pressed={!open}
-             className={c('dydu-teaser-title', classes.dyduTeaserTitle)}>
+             className={c('dydu-teaser-title', classes.dyduTeaserTitle, {[classes.hideOutline]: !tabbing})}>
           <div className={c('dydu-teaser-button', classes.button)}>
             <Skeleton children={title} hide={!ready} width="3em" />
           </div>
