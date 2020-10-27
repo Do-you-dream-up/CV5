@@ -48,11 +48,13 @@ export default function Dragon({ children, component, reset, ...rest }) {
   };
 
   const onDragEnd = () => {
-    root.current.style.transitionDuration = '';
-    setCurrent(previous => ({x: previous.x + offset.x, y: previous.y + offset.y}));
-    setMoving(false);
-    setOffset({x: 0, y: 0});
-    setOrigin(null);
+    if (moving) {
+      root.current.style.transitionDuration = '';
+      setCurrent(previous => ({x: previous.x + offset.x, y: previous.y + offset.y}));
+      setMoving(false);
+      setOffset({x: 0, y: 0});
+      setOrigin(null);
+    }
   };
 
   const onDragStart = element => event => {
