@@ -49,7 +49,7 @@
     "webpack-merge": "^4.2.2"
   },
   "scripts": {
-    "build": "webpack --env --config webpack.production.js",
+    "build": "webpack --config webpack.production.js",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
     "map": "source-map-explorer build/*bundle.min.js*",
     "start": "webpack-dev-server --config webpack.development.js",
