@@ -31,10 +31,10 @@ export const configuration = new class Configuration {
         console.warn(`[Dydu] Configuration file not found at '${request.responseURL}'.`);
         // Fetch configuration from local storage
         const data = Local.get('dydu.wizard.data');
-        // const overrideData = overrideData;
         if (data) {
           return this.sanitize(JSON.parse(JSON.stringify(data)));
         }
+        // Return overrideJson configuration
         else if (overrideJson) {
           return this.sanitize(JSON.parse(JSON.stringify(overrideJson)));
         }
