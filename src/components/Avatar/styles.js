@@ -5,7 +5,7 @@ export default createUseStyles(theme => ({
   background: ({ type }) => ({
     backgroundColor: theme.palette[type].background,
   }),
-  base: ({ configuration }) => ({
+  base: () => ({
     alignItems: 'center',
     borderRadius: '50%',
     display: 'flex',
@@ -17,8 +17,6 @@ export default createUseStyles(theme => ({
       height: '75%',
       width: '75%',
     },
-    ...configuration.avatar.styles,
-    [theme.breakpoints.down('xs')]: configuration.avatar.stylesMobile,
   }),
   request: () => ({
     color: theme.palette.request.text,

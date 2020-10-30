@@ -25,8 +25,7 @@ export default createUseStyles(theme => ({
       marginBottom: '.5em',
     },
   }),
-  root: ({ configuration }) => {
-    const { right, width } = configuration.chatbox.styles;
+  root: () => {
     return {
       bottom: 0,
       display: 'flex',
@@ -36,7 +35,6 @@ export default createUseStyles(theme => ({
       padding: '.5em',
       paddingTop: '2em',
       position: 'absolute',
-      right: right + width + right,
       top: 0,
       [theme.breakpoints.down('xs')]: {
         paddingBottom: 0,

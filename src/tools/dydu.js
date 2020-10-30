@@ -2,6 +2,7 @@ import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
+import override from '../../override/configuration.json';
 import bot from '../bot';
 import { decode } from './cipher';
 import configuration from './configuration.json';
@@ -35,6 +36,7 @@ const API = axios.create({
  * https://uat.mars.doyoudreamup.com/servlet/api/doc3/index.html
  */
 export default new class Dydu {
+
 
   constructor() {
     this.client = this.getClientId();
@@ -169,7 +171,7 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const defaultLanguage = configuration.application.defaultLanguage;
+      const { defaultLanguage } = override.application ? override.application : configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
       this.setLocale(locale);
     }
@@ -260,14 +262,14 @@ export default new class Dydu {
    * @returns {Promise}
    */
   setLocale = locale => new Promise((resolve, reject) => {
-    const locales = configuration.application.languages;
-    if (locales.includes(locale)) {
+    const { languages } = override.application ? override.application : configuration.application;
+    if (languages.includes(locale)) {
       Local.set(Local.names.locale, locale);
       this.locale = locale;
       resolve(locale);
     }
     else {
-      reject(`Setting an unknown locale '${locale}'. Possible values: [${locales}].`);
+      reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
     }
   });
 

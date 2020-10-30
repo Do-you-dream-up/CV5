@@ -6,11 +6,9 @@ export default createUseStyles(theme => ({
     marginLeft: [[0], '!important'],
     marginRight: [[0], '!important'],
   },
-  base: ({ configuration }) => ({
+  base: () => ({
     display: 'flex',
     margin: '1em',
-    ...configuration.interaction.styles,
-    [theme.breakpoints.down('xs')]: configuration.interaction.stylesMobile,
   }),
   bubble: () => ({
     '&:not(:last-child)': {

@@ -25,17 +25,16 @@ export default createUseStyles(theme => ({
   flat: () => ({
     boxShadow: 'none !important',
   }),
-  root: ({ configuration }) => ({
+  root: () => ({
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,
     borderTopRightRadius: theme.shape.radius.outer,
+    boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
     position: 'relative',
     width: '100%',
-    ...configuration.header.styles,
     [theme.breakpoints.down('xs')]: {
-      borderRadius: 0,
-      ...configuration.header.stylesMobile,
+      borderRadius: 0
     },
   }),
   title: () => ({

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import overrideJson from '../../override/configuration.json';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import theme from '../styles/theme';
 import json from './configuration.json';
@@ -30,8 +31,12 @@ export const configuration = new class Configuration {
         console.warn(`[Dydu] Configuration file not found at '${request.responseURL}'.`);
         // Fetch configuration from local storage
         const data = Local.get('dydu.wizard.data');
+        // const overrideData = overrideData;
         if (data) {
           return this.sanitize(JSON.parse(JSON.stringify(data)));
+        }
+        else if (overrideJson) {
+          return this.sanitize(JSON.parse(JSON.stringify(overrideJson)));
         }
         //Return default configuration
         return this.sanitize(this.configuration);

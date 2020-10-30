@@ -6,6 +6,8 @@ import { DialogProvider } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import useStyles from './styles';
+import '../../../override/style.css';
+
 
 const Chatbox = React.lazy(() => import(
   // webpackChunkName: "chatbox"

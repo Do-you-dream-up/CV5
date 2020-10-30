@@ -10,6 +10,7 @@ import { configuration } from './tools/configuration';
 import './tools/internationalization';
 import keycloak from './tools/keycloak';
 
+
 let _configuration;
 let anchor;
 

@@ -28,7 +28,7 @@ export default createUseStyles(theme => ({
     color: theme.palette.primary.text,
     textAlign: 'center',
   }),
-  root: ({ configuration }) => ({
+  root: () => ({
     display: 'flex',
     flexGrow: '1',
     height: 0,
@@ -43,7 +43,5 @@ export default createUseStyles(theme => ({
       right: 0,
       top: 0,
     },
-    ...configuration.onboarding.styles,
-    [theme.breakpoints.down('xs')]: configuration.onboarding.stylesMobile,
   }),
 }));
