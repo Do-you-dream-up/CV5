@@ -48,6 +48,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
+  const onboardingAbsent = configuration.onboarding.deactivated;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
   const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
@@ -57,6 +58,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const qualification = !!configuration.application.qualification;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
+
 
   const ask = useCallback((text, options) => {
     text = text.trim();
@@ -204,7 +206,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               </>
             )}
             <Header extended={extended}
-                    minimal={!gdprPassed || onboardingActive}
+                    minimal={!gdprPassed || (onboardingActive && !onboardingAbsent)}
                     onClose={onClose}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
                     onMinimize={onMinimize}
