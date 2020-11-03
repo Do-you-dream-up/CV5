@@ -2,7 +2,6 @@ import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-import override from '../../override/configuration.json';
 import bot from '../bot';
 import { decode } from './cipher';
 import configuration from './configuration.json';
@@ -171,7 +170,7 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const { defaultLanguage } = override.application ? override.application : configuration.application;
+      const { defaultLanguage } = configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
       this.setLocale(locale);
     }
@@ -262,7 +261,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   setLocale = locale => new Promise((resolve, reject) => {
-    const { languages } = override.application ? override.application : configuration.application;
+    const { languages } = configuration.application;
     if (languages.includes(locale)) {
       Local.set(Local.names.locale, locale);
       this.locale = locale;

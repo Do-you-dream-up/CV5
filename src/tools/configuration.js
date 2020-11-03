@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React from 'react';
-import overrideJson from '../../override/configuration.json';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import theme from '../styles/theme';
 import json from './configuration.json';
@@ -22,7 +21,7 @@ export const configuration = new class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (path = `${process.env.PUBLIC_URL}/configuration.json`) => {
+  initialize = (path = `${process.env.PUBLIC_URL}/override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path).then(
       ({ data }) => this.sanitize(JSON.parse(JSON.stringify(data))),
@@ -33,10 +32,6 @@ export const configuration = new class Configuration {
         const data = Local.get('dydu.wizard.data');
         if (data) {
           return this.sanitize(JSON.parse(JSON.stringify(data)));
-        }
-        // Return overrideJson configuration
-        else if (overrideJson) {
-          return this.sanitize(JSON.parse(JSON.stringify(overrideJson)));
         }
         //Return default configuration
         return this.sanitize(this.configuration);
