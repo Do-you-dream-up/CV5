@@ -112,6 +112,7 @@
     "minWidth": "50%"
   },
   "onboarding": {
+    "enable": false,
     "tips": true,
     "top": true
   },
