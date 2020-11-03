@@ -157,6 +157,7 @@
     "minWidth": "50%"
   },
   "onboarding": {
+    "enable": false,
     "styles": {},
     "stylesMobile": {},
     "tips": true,
