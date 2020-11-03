@@ -6,7 +6,7 @@ const Merge = require('webpack-merge');
 const common = require('./webpack.common');
 
 module.exports = (env) => {
-  const ASSET =  env && env.ASSET_PATH ? env.ASSET_PATH : '.';
+  const ASSET =  env && env.ASSET_PATH ? env.ASSET_PATH : './';
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',
