@@ -13,13 +13,6 @@ export default createUseStyles(theme => ({
     width: 64,
   }),
   button: () => ({
-    backgroundColor: theme.palette.primary.main,
-    borderRadius: theme.shape.radius.inner,
-    boxSizing: 'border-box',
-    height: '37px',
-    padding: [['.5em', '1em']],
-    position: 'relative',
-    // eslint-disable-next-line sort-keys
     '&:hover:before': {
       backgroundColor: theme.palette.action.hover,
       bottom: 0,
@@ -29,6 +22,12 @@ export default createUseStyles(theme => ({
       right: 0,
       top: 0,
     },
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: theme.shape.radius.inner,
+    boxSizing: 'border-box',
+    height: '37px',
+    padding: [['.5em', '1em']],
+    position: 'relative',
   }),
   dyduTeaserContainer: () => ({
     display: 'flex'

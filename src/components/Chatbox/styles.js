@@ -11,12 +11,12 @@ const extendedStyles = {
 
 export default createUseStyles(theme => ({
   body: () => ({
+    '&:focus': {
+      outline: 'none'
+    },
     flexGrow: 1,
     overflowY: 'auto',
     position: 'relative',
-    '&:focus': {
-      outline: 'none'
-    }
   }),
   bodyHidden: () => ({
     display: 'none',

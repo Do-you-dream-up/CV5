@@ -8,11 +8,11 @@ export default createUseStyles({
     },
   },
   body: {
-    display: 'flex',
-    flexDirection: 'column',
     '& > :not(:last-child)': {
       marginBottom: '.5em',
     },
+    display: 'flex',
+    flexDirection: 'column',
   },
   root: {
     width: '100%',

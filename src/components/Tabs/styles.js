@@ -13,18 +13,16 @@ export default createUseStyles(theme => ({
     transitionProperty: 'opacity',
     width: '1.3em',
   }),
-  label: () => ({
-    bottom: 0,
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
-    transitionDuration: '.2s',
-    transitionProperty: 'bottom',
-    '& > :not(:last-child)': {
-      marginRight: '.5em',
-    },
-  }),
   indicator: ({ current, length }) => ({...(length && current > -1 && {
+    '&:after': {
+      backgroundColor: theme.palette.primary.text,
+      borderRadius: '50%',
+      content: '""',
+      display: 'block',
+      height: '.3em',
+      marginBottom: '.3em',
+      width: '.3em',
+    },
     bottom: 0,
     display: 'flex',
     justifyContent: 'center',
@@ -33,16 +31,18 @@ export default createUseStyles(theme => ({
     transitionDuration: '.2s',
     transitionProperty: 'left',
     width: `${100 / length}%`,
-    '&:after': {
-      backgroundColor: theme.palette.primary.text,
-      borderRadius: '50%',
-      content: '""',
-      display: 'block',
-      marginBottom: '.3em',
-      height: '.3em',
-      width: '.3em',
-    },
   })}),
+  label: () => ({
+    '& > :not(:last-child)': {
+      marginRight: '.5em',
+    },
+    alignItems: 'center',
+    bottom: 0,
+    display: 'flex',
+    position: 'relative',
+    transitionDuration: '.2s',
+    transitionProperty: 'bottom',
+  }),
   root: () => ({
     background: theme.palette.primary.main,
     display: 'flex',
@@ -50,10 +50,10 @@ export default createUseStyles(theme => ({
     width: '100%',
   }),
   selected: () => ({
-    bottom: '.3em',
     '& $icon': {
       opacity: 1,
     },
+    bottom: '.3em',
   }),
   tab: () => ({
     alignItems: 'center',

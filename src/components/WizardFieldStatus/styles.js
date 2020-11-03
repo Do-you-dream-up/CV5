@@ -12,11 +12,11 @@ export default createUseStyles(theme => ({
     fill: theme.palette.warning.main,
   }),
   root: () => ({
-    position: 'relative',
     '&:hover $tooltip': {
       opacity: 1,
       pointerEvents: 'initial',
     },
+    position: 'relative',
   }),
   success: () => ({
     fill: theme.palette.success.main,

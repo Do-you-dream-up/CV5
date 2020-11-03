@@ -18,12 +18,12 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
   }),
   fields: () => ({
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0,
     '& > :not(:last-child)': {
       marginBottom: '.5em',
     },
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
   }),
   root: () => {
     return {

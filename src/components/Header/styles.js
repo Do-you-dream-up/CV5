@@ -3,24 +3,24 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   actions: () => ({
-    position: 'absolute',
-    right: 0,
-    marginRight: '.5em',
     '& > *': {
       pointerEvents: 'auto',
     },
+    marginRight: '.5em',
+    position: 'absolute',
+    right: 0,
   }),
   body: () => ({
     alignItems: 'center',
-    justifyContent: 'flex-start',
     display: 'flex',
+    justifyContent: 'flex-start',
     padding: '.6em',
   }),
   draggable: () => ({
-    cursor: 'move',
     '& > *': {
       pointerEvents: 'none',
     },
+    cursor: 'move',
   }),
   flat: () => ({
     boxShadow: 'none !important',

@@ -3,23 +3,23 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   actions: () => ({
-    display: 'flex',
-    justifyContent: 'space-between',
     '&:not(:first-child)': {
       marginTop: '1em',
     },
+    display: 'flex',
+    justifyContent: 'space-between',
   }),
   actionsCentered: () => ({
     justifyContent: 'center',
   }),
   body: () => ({
+    '& > :not(:last-child)': {
+      marginBottom: '1em',
+    },
     overflowY: 'auto',
     padding: '1em',
     position: 'relative',
     width: '100%',
-    '& > :not(:last-child)': {
-      marginBottom: '1em',
-    },
   }),
   carousel: () => ({
     textAlign: 'center',
@@ -29,10 +29,6 @@ export default createUseStyles(theme => ({
     textAlign: 'center',
   }),
   root: () => ({
-    display: 'flex',
-    flexGrow: '1',
-    height: 0,
-    position: 'relative',
     '&:before': {
       backgroundColor: theme.palette.primary.main,
       content: '""',
@@ -43,5 +39,9 @@ export default createUseStyles(theme => ({
       right: 0,
       top: 0,
     },
+    display: 'flex',
+    flexGrow: '1',
+    height: 0,
+    position: 'relative',
   }),
 }));

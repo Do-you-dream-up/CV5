@@ -2,10 +2,12 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  externalLinkIcon: {
+    'height': '1em',
+    'marginLeft': '0.5em',
+    'width': '1em',
+  },
   root: {
-    'alignItems': 'center',
-    'display': 'flex',
-    'flexDirection': 'row',
     '@global': {
       'a[href], .dydu-link': {
         '&:hover': {
@@ -51,11 +53,9 @@ export default createUseStyles(theme => ({
         paddingLeft: '1.4em',
       },
     },
-  },
-  externalLinkIcon: {
-    'height': '1em',
-    'marginLeft': '0.5em',
-    'width': '1em',
+    'alignItems': 'center',
+    'display': 'flex',
+    'flexDirection': 'row',
   },
   srOnly: {
     'border': 0,

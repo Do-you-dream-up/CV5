@@ -15,20 +15,21 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
     position: 'relative',
     wordBreak: 'break-word',
+    // eslint-disable-next-line sort-keys
     '&:not(:last-child)': {
       marginBottom: '.5em',
     },
   }),
   body: () => ({
-    padding: [['.8em', '1em']],
-    width: '100%',
     '&:focus': {
       outline: 'none'
-    }
+    },
+    padding: [['.8em', '1em']],
+    width: '100%',
   }),
   progress: () => ({
-    position: 'absolute',
     left: 0,
+    position: 'absolute',
     right: 0,
     top: 0,
   }),

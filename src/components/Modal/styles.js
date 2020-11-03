@@ -3,11 +3,11 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   bottom: () => ({
-    bottom: 0,
     borderBottomLeftRadius: theme.shape.radius.outer,
     borderBottomRightRadius: theme.shape.radius.outer,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
+    bottom: 0,
     boxShadow: 'none',
     left: 0,
     position: 'absolute',

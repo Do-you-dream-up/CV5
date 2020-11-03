@@ -17,8 +17,8 @@ export default createUseStyles(theme => ({
     lineHeight: '1.7em',
     overflow: 'hidden',
     padding: [['.2em', '.6em']],
-    width: '100%',
     whiteSpace: 'pre-wrap',
+    width: '100%',
     wordBreak: 'break-word',
   },
   commentFieldShadow: {
@@ -27,25 +27,25 @@ export default createUseStyles(theme => ({
     visibility: 'hidden',
   },
   commentFieldText: {
-    extend: 'commentFieldBase',
+    '&::placeholder': {
+      color: theme.palette.text.secondary,
+    },
     backgroundColor: theme.palette.background.highlight,
     border: 0,
     borderRadius: theme.shape.radius.inner,
+    extend: 'commentFieldBase',
     height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
-    '&::placeholder': {
-      color: theme.palette.text.secondary,
-    },
   },
   thinking: {
     cursor: 'wait',
   },
   vote: {
-    display: 'flex',
     '& > :not(:last-child)': {
       marginRight: '.5em',
     },
+    display: 'flex',
   },
 }));

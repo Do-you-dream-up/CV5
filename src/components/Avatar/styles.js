@@ -6,6 +6,10 @@ export default createUseStyles(theme => ({
     backgroundColor: theme.palette[type].background,
   }),
   base: () => ({
+    '& > *': {
+      height: '75%',
+      width: '75%',
+    },
     alignItems: 'center',
     borderRadius: '50%',
     display: 'flex',
@@ -13,10 +17,6 @@ export default createUseStyles(theme => ({
     justifyContent: 'center',
     minWidth: '3em',
     width: '3em',
-    '& > *': {
-      height: '75%',
-      width: '75%',
-    },
   }),
   request: () => ({
     color: theme.palette.request.text,
