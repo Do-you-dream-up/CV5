@@ -43,13 +43,11 @@ export default createUseStyles(theme => ({
       width: '.3em',
     },
   })}),
-  root: ({ configuration }) => ({
+  root: () => ({
     background: theme.palette.primary.main,
     display: 'flex',
     position: 'relative',
     width: '100%',
-    ...configuration.tabs.styles,
-    [theme.breakpoints.down('xs')]: configuration.tabs.stylesMobile,
   }),
   selected: () => ({
     bottom: '.3em',

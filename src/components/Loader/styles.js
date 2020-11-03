@@ -54,11 +54,9 @@ export default createUseStyles(theme => ({
     animationDuration: '.5s',
     animationIterationCount: 'infinite',
   }),
-  root: ({ configuration }) => ({
+  root: () => ({
     display: 'flex',
     marginLeft: '-.25em',
     marginRight: '-.25em',
-    ...configuration.loader.styles,
-    [theme.breakpoints.down('xs')]: configuration.loader.stylesMobile,
   }),
 }));

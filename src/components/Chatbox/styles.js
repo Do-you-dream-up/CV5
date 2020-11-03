@@ -21,14 +21,13 @@ export default createUseStyles(theme => ({
   bodyHidden: () => ({
     display: 'none',
   }),
-  container: ({ configuration }) => ({
+  container: () => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.radius.outer,
+    boxShadow: theme.shadows[6],
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    ...configuration.chatbox.styles,
-    [theme.breakpoints.down('xs')]: configuration.chatbox.stylesMobile,
   }),
   root: ({ configuration }) => ({
     '& > *': {

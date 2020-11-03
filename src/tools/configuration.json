@@ -8,9 +8,7 @@
   "avatar": {
     "background": false,
     "request": "",
-    "response": "dydu.png",
-    "styles": {},
-    "stylesMobile": {}
+    "response": "dydu.png"
   },
   "banner": {
     "active": true,
@@ -19,27 +17,7 @@
     "more": true,
     "moreIcon": "open-in-new.png",
     "moreLink": "https://goo.gle",
-    "styles": {},
-    "stylesMobile": {},
     "transient": false
-  },
-  "bubble": {
-    "styles": {},
-    "stylesMobile": {},
-    "requestColor": {},
-    "responseColor": {}
-  },
-  "button_icon": {
-    "primary": {},
-    "success": {},
-    "warning": {},
-    "error": {}
-  },
-  "button_contained": {
-    "primary": {},
-    "success": {},
-    "warning": {},
-    "error": {}
   },
   "carousel": {
     "bullets": true,
@@ -49,11 +27,7 @@
   },
   "chatbox": {
     "expandable": true,
-    "margin": 16,
-    "styles": {
-      "shadow": 6
-    },
-    "stylesMobile": {}
+    "margin": 16
   },
   "contacts": {
     "phone": true,
@@ -90,11 +64,7 @@
     "url": ""
   },
   "footer": {
-    "translate": true,
-    "styles": {
-      "shadow": true
-    },
-    "stylesMobile": {}
+    "translate": true
   },
   "header": {
     "actions": {
@@ -111,28 +81,19 @@
       "minimize": "window-minimize.png",
       "more": "cog.png"
     },
-    "styles": {
-      "shadow": true
-    },
-    "stylesMobile": {},
     "title": true
   },
   "input": {
     "counter": true,
     "delay": 300,
-    "maxLength": 100,
-    "styles": {},
-    "stylesMobile": {},
-    "counterColor": {}
+    "maxLength": 100
   },
   "interaction": {
     "avatar": {
       "request": false,
       "response": true
     },
-    "loader": [400, 600],
-    "styles": {},
-    "stylesMobile": {}
+    "loader": [400, 600]
   },
   "keycloak": {
     "enable": false,
@@ -141,16 +102,10 @@
     "clientId": "v5"
   },
   "loader": {
-    "size": 5,
-    "styles": {},
-    "stylesMobile": {}
+    "size": 5
   },
   "menu": {
-    "spacing": 4,
-    "styles": {
-      "shadow": true
-    },
-    "stylesMobile": {}
+    "spacing": 4
   },
   "modal": {
     "maxWidth": "80%",
@@ -158,8 +113,6 @@
   },
   "onboarding": {
     "enable": false,
-    "styles": {},
-    "stylesMobile": {},
     "tips": true,
     "top": true
   },
@@ -167,11 +120,7 @@
   "secondary": {
     "automatic": true,
     "mode": "left",
-    "styles": {
-      "shadow": 6,
-      "width": 500
-    },
-    "stylesMobile": {},
+    "width": 500,
     "transient": true
   },
   "spaces": {
@@ -211,11 +160,7 @@
     "items": ["default", "foo", "bar"]
   },
   "suggestions": {
-    "limit": 3,
-    "styles": {
-      "shadow": 6
-    },
-    "stylesMobile": {}
+    "limit": 3
   },
   "tabs": {
     "items": [
@@ -223,21 +168,14 @@
       {"icon": "icons/account-box.png", "key": "contacts"}
     ],
     "selected": "dialog",
-    "styles": {},
-    "stylesMobile": {},
     "title": false
   },
   "teaser": {
-    "styles": {
-      "bottom": 16,
-      "right": 16
-    },
-    "stylesMobile": {}
+    "bottom": 16,
+    "right": 16
   },
   "top": {
-    "size": 3,
-    "styles": {},
-    "stylesMobile": {}
+    "size": 3
   },
   "Voice": {
     "enable": false,

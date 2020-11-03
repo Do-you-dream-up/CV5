@@ -21,7 +21,7 @@ export const configuration = new class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (path = `${process.env.PUBLIC_URL}/configuration.json`) => {
+  initialize = (path = `${process.env.PUBLIC_URL}/override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path).then(
       ({ data }) => this.sanitize(JSON.parse(JSON.stringify(data))),

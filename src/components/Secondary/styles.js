@@ -27,11 +27,11 @@ export default createUseStyles(theme => {
     }),
     base: ({ configuration }) => ({
       backgroundColor: theme.palette.background.secondary,
+      boxShadow: theme.shadows[1],
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'auto',
-      ...configuration.secondary.styles,
-      [theme.breakpoints.down('xs')]: configuration.secondary.stylesMobile,
+      width: configuration.secondary.width,
     }),
     body: () => ({
       padding: '1.6em',

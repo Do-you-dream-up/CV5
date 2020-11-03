@@ -10,18 +10,17 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
     padding: '.5em',
   }),
-  root: ({ configuration }) => ({
+  root: () => ({
     backgroundColor: theme.palette.background.paper,
     borderBottomLeftRadius: theme.shape.radius.outer,
     borderBottomRightRadius: theme.shape.radius.outer,
+    boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
     display: 'flex',
     position: 'relative',
     width: '100%',
-    ...configuration.footer.styles,
     [theme.breakpoints.down('xs')]: {
-      borderRadius: 0,
-      ...configuration.footer.stylesMobile
+      borderRadius: 0
     },
   }),
 }));

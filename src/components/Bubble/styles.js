@@ -7,7 +7,7 @@ export default createUseStyles(theme => ({
       marginTop: '1em',
     },
   }),
-  base: ({ configuration }) => ({
+  base: () => ({
     alignItems: 'center',
     borderRadius: theme.shape.radius.inner,
     display: 'flex',
@@ -18,8 +18,6 @@ export default createUseStyles(theme => ({
     '&:not(:last-child)': {
       marginBottom: '.5em',
     },
-    ...configuration.bubble.styles,
-    [theme.breakpoints.down('xs')]: configuration.bubble.stylesMobile,
   }),
   body: () => ({
     padding: [['.8em', '1em']],
@@ -34,16 +32,14 @@ export default createUseStyles(theme => ({
     right: 0,
     top: 0,
   }),
-  request: ({configuration}) => ({
+  request: () => ({
     backgroundColor: theme.palette.request.background,
     color: theme.palette.request.text,
     marginLeft: 'auto',
-    ...configuration.bubble.requestColor,
   }),
-  response: ({configuration}) => ({
+  response: () => ({
     backgroundColor: theme.palette.response.background,
     color: theme.palette.response.text,
     marginRight: 'auto',
-    ...configuration.bubble.responseColor,
   }),
 }));

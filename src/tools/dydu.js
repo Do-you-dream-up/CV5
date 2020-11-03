@@ -36,6 +36,7 @@ const API = axios.create({
  */
 export default new class Dydu {
 
+
   constructor() {
     this.client = this.getClientId();
     this.emit = debounce(this.emit, 100, { leading: true });
@@ -169,7 +170,7 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const defaultLanguage = configuration.application.defaultLanguage;
+      const { defaultLanguage } = configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
       this.setLocale(locale);
     }
@@ -260,14 +261,14 @@ export default new class Dydu {
    * @returns {Promise}
    */
   setLocale = locale => new Promise((resolve, reject) => {
-    const locales = configuration.application.languages;
-    if (locales.includes(locale)) {
+    const { languages } = configuration.application;
+    if (languages.includes(locale)) {
       Local.set(Local.names.locale, locale);
       this.locale = locale;
       resolve(locale);
     }
     else {
-      reject(`Setting an unknown locale '${locale}'. Possible values: [${locales}].`);
+      reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
     }
   });
 

@@ -18,7 +18,7 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
   }),
 
-  counter: ({configuration}) => ({
+  counter: () => ({
     // DEBT: The below font size, font weight and spacings are not dynamic. This
     //       is difficult to maintain and will cause bugs and/or misalignment.
     background: theme.palette.background.menu,
@@ -36,7 +36,6 @@ export default createUseStyles(theme => ({
     top: 'calc(50% - 0.75em)',
     width: '100%',
     zIndex: 0,
-    ...configuration.input.counterColor,
   }),
 
   field: () => ({
@@ -64,7 +63,7 @@ export default createUseStyles(theme => ({
     visibility: 'hidden',
   }),
 
-  fieldText: ({configuration}) => ({
+  fieldText: () => ({
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
@@ -79,20 +78,18 @@ export default createUseStyles(theme => ({
     outline: 'none',
     position: 'absolute',
     resize: 'none',
-    ...configuration.input.styles,
   }),
 
-  root: ({ configuration }) => ({
+  root: () => ({
     display: 'flex',
     flex: 'auto',
-    ...configuration.input.styles,
-    [theme.breakpoints.down('xs')]: configuration.input.stylesMobile,
   }),
 
-  suggestions: ({ configuration }) => ({
+  suggestions: () => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.radius.inner,
     bottom: '100%',
+    boxShadow: theme.shadows[6],
     left: 0,
     margin: 8,
     maxHeight: '70vh',
@@ -101,8 +98,6 @@ export default createUseStyles(theme => ({
     position: 'absolute',
     right: 0,
     zIndex: 1,
-    ...configuration.suggestions.styles,
-    [theme.breakpoints.down('xs')]: configuration.suggestions.stylesMobile,
   }),
 
   suggestionsCandidate: () => ({

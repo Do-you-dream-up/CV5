@@ -45,14 +45,12 @@ export default createUseStyles(theme => ({
   }),
   root: ({ configuration }) => ({
     alignItems: 'center',
-    bottom: 0,
+    bottom: configuration.teaser.bottom,
     color: theme.palette.primary.text,
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
     position: 'absolute',
-    right: 0,
-    ...configuration.teaser.styles,
-    [theme.breakpoints.down('xs')]: configuration.teaser.stylesMobile,
+    right: configuration.teaser.right,
   }),
 }));
