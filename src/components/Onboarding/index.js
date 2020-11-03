@@ -28,9 +28,9 @@ export default function Onboarding({ children, render }) {
   const { t } = useTranslation('translation');
   const preamble = t('onboarding.preamble', {defaultValue: ''});
   const should = render && active;
-  const { tips, top } = configuration.onboarding;
+  const { enable, tips, top } = configuration.onboarding;
 
-  return should ? (
+  return !enable ? children : should ? (
     <div className={c('dydu-onboarding', classes.root)}>
       <div className={c('dydu-onboarding-body', classes.body)}>
         {preamble && (

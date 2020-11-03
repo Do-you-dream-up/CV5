@@ -27,6 +27,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
+  const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const theme = useTheme();
@@ -60,7 +61,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.more}`} title={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.more && !onboardingActive,
+      when: !!hasActions.more && (!onboardingActive || !onboardingEnable),
     },
     {
       children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.expand}`} title={actionExpand} />,

@@ -5,24 +5,26 @@ const webpack = require('webpack');
 const Merge = require('webpack-merge');
 const common = require('./webpack.common');
 
-
-module.exports = Merge.strategy({plugins: 'prepend'})(common, {
-  devtool: 'source-map',
-  mode: 'production',
-  output: {
-    filename: 'bundle.min.js',
-    jsonpFunction: 'dydu.bliss',
-    path: Path.resolve(__dirname, 'build/v5'),
-    publicPath: './v5/'
-  },
-  plugins: [
-    new Clean(),
-    new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
-    new webpack.DefinePlugin({
-      'process.env': {
-        PUBLIC_URL: JSON.stringify('./v5'),
-        }
-    })
-  ],
-  stats: 'verbose',
-});
+module.exports = (env) => {
+  const ASSET =  env && env.ASSET_PATH ? env.ASSET_PATH : './';
+  return Merge.strategy({plugins: 'prepend'})(common, {
+    devtool: 'source-map',
+    mode: 'production',
+    output: {
+      filename: 'bundle.min.js',
+      jsonpFunction: 'dydu.bliss',
+      path: Path.resolve(__dirname, 'build'),
+      publicPath:  ASSET
+    },
+    plugins: [
+      new Clean(),
+      new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
+      new webpack.DefinePlugin({
+        'process.env': {
+          PUBLIC_URL: JSON.stringify(ASSET),
+          }
+      })
+    ],
+    stats: 'verbose',
+  });
+};
