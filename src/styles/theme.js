@@ -1,111 +1,112 @@
 import 'typeface-assistant';
+import theme from '../../public/override/theme.json';
 import breakpoints from './breakpoints';
-
 
 export default {
 
   breakpoints,
 
   font: {
-    monospace: 'monospace',
-    sansSerif: '"Assistant", sans-serif',
-    serif: 'sans-serif',
+    monospace: theme.font.monospace,
+    sansSerif: theme.font.sansSerif,
+    serif: theme.font.serif,
   },
 
   palette: {
     action: {
-      active: 'rgba(0, 0, 0, .4)',
-      disabled: 'rgba(0, 0, 0, .26)',
-      disabledBackground: 'rgba(0, 0, 0, .12)',
-      hover: 'rgba(0, 0, 0, .14)',
-      selected: 'rgba(0, 0, 0, .08)',
+      active: theme.palette.action.active,
+      disabled: theme.palette.action.disabled,
+      disabledBackground: theme.palette.action.disabledBackground,
+      hover: theme.palette.action.hover,
+      selected: theme.palette.action.selected
     },
     background: {
-      bullet: '#A4A4A4',
-      default: '#F5F5F5',
-      dim: 'rgba(0, 0, 0, .05)',
-      highlight: 'rgba(0, 0, 0, .05)',
-      menu: '#FFFFFF',
-      overlay: 'rgba(0, 0, 0, .6)',
-      paper: '#FFFFFF',
-      secondary: '#FFFFFF',
-      skeleton: 'rgba(0, 0, 0, .08)',
+      bullet: theme.palette.background.bullet,
+      default: theme.palette.background.default,
+      dim: theme.palette.background.dim,
+      highlight: theme.palette.background.highlight,
+      menu: theme.palette.background.menu,
+      overlay: theme.palette.background.overlay,
+      paper: theme.palette.background.paper,
+      secondary: theme.palette.background.secondary,
+      skeleton: theme.palette.background.skeleton,
     },
-    divider: 'rgba(0, 0, 0, 0.12)',
+    divider: theme.palette.divider,
     error: {
-      main: '#FF5252',
-      text: '#FFFFFF',
+      main: theme.palette.error.main,
+      text: theme.palette.error.text,
     },
     primary: {
-      dark: '#0288D1',
-      light: '#B3E5FC',
-      main: '#3636B9',
-      text: '#FFFFFF',
+      dark: theme.palette.primary.dark,
+      light: theme.palette.primary.light,
+      main: theme.palette.primary.main,
+      text: theme.palette.primary.text
     },
     request: {
-      background: '#D3D3F7',
-      text: 'rgba(0, 0, 0, .87)',
+      background: theme.palette.request.background,
+      text: theme.palette.request.text
     },
     response: {
-      background: '#FFFFFF',
-      text: 'rgba(0, 0, 0, .87)',
+      background: theme.palette.response.background,
+      text: theme.palette.response.text
     },
     secondary: {
-      main: '#FF4081',
-      text: '#FFFFFF',
+      main: theme.palette.secondary.main,
+      text: theme.palette.secondary.text
     },
     success: {
-      main: '#2CBF87',
-      text: '#FFFFFF',
+      main: theme.palette.success.main,
+      text: theme.palette.success.text
     },
     text: {
-      disabled: 'rgba(0, 0, 0, .38)',
-      link: '#FF4081',
-      primary: 'rgba(0, 0, 0, .87)',
-      secondary: 'rgba(0, 0, 0, .54)',
+      disabled: theme.palette.text.disabled,
+      link: theme.palette.text.link,
+      primary: theme.palette.text.primary,
+      secondary: theme.palette.text.secondary
     },
     tooltip: {
-      background: '#616161E6',
-      text: '#FFFFFF',
+      background: theme.palette.tooltip.background,
+      text: theme.palette.tooltip.text
     },
     warning:{
-      main: '#F3B63B',
-      text: '#FFFFFF',
+      main: theme.palette.warning.main,
+      text: theme.palette.warning.text
     },
   },
 
   shadows: [
-    'none',
-    '0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)',
-    '0px 1px 5px 0px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 3px 1px -2px rgba(0,0,0,0.12)',
-    '0px 1px 8px 0px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 3px 3px -2px rgba(0,0,0,0.12)',
-    '0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)',
-    '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
-    '0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)',
-    '0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12)',
-    '0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)',
-    '0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)',
-    '0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12)',
-    '0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12)',
-    '0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12)',
-    '0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12)',
-    '0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12)',
-    '0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12)',
-    '0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12)',
-    '0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12)',
-    '0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12)',
-    '0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12)',
-    '0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12)',
-    '0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12)',
-    '0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)',
-    '0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)',
-    '0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)',
+    theme.shadows[0],
+    theme.shadows[1],
+    theme.shadows[2],
+    theme.shadows[3],
+    theme.shadows[4],
+    theme.shadows[5],
+    theme.shadows[6],
+    theme.shadows[7],
+    theme.shadows[8],
+    theme.shadows[9],
+    theme.shadows[10],
+    theme.shadows[11],
+    theme.shadows[12],
+    theme.shadows[13],
+    theme.shadows[14],
+    theme.shadows[15],
+    theme.shadows[16],
+    theme.shadows[17],
+    theme.shadows[18],
+    theme.shadows[19],
+    theme.shadows[20],
+    theme.shadows[21],
+    theme.shadows[22],
+    theme.shadows[23],
+    theme.shadows[24],
+    theme.shadows[25],
   ],
 
   shape: {
     radius: {
-      inner: 4,
-      outer: 8,
+      inner: theme.shape.radius.inner,
+      outer: theme.shape.radius.outer,
     },
   },
 };
