@@ -52,37 +52,37 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
 
   const actions = [
     {
-      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}/icons/dots-vertical.png`} title={actionTests} />,
+      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}icons/dots-vertical.png`} title={actionTests} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
     },
     {
-      children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.more}`} title={actionMore} />,
+      children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} title={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
       when: !!hasActions.more && (!onboardingActive || !onboardingEnable),
     },
     {
-      children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.expand}`} title={actionExpand} />,
+      children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} title={actionExpand} />,
       onClick: () => onExpand(true)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
     },
     {
-      children: <img alt={actionShrink} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.collapse}`} title={actionShrink} />,
+      children: <img alt={actionShrink} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.collapse}`} title={actionShrink} />,
       onClick: () => onExpand(false)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
     },
     {
-      children: <img alt={actionMinimize} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.minimize}`} title={actionMinimize} />,
+      children: <img alt={actionMinimize} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.minimize}`} title={actionMinimize} />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
     },
     {
-      children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}/icons/${configuration.header.icons.close}`} title={actionClose} />,
+      children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`} title={actionClose} />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,

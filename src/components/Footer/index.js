@@ -32,7 +32,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   }))];
 
   const actions = [{
-    children: <img alt={actionTranslate} src={`${process.env.PUBLIC_URL}/flags/${i.languages[0]}.png`} title={actionTranslate} />,
+    children: <img alt={actionTranslate} src={`${process.env.PUBLIC_URL}flags/${i.languages[0]}.png`} title={actionTranslate} />,
     items: () => languagesMenu,
     selected: () => i.languages[0],
     variant: 'icon',

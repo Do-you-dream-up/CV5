@@ -41,7 +41,7 @@ export default function MenuList({ items, onClose, selected }) {
             onKeyDown={onKeyDown(onClick)}
             tabIndex='0'
             title={text}>
-          {!!icon && <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}/${icon}`} />}
+          {!!icon && <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
           {text}
         </li>
       ))}

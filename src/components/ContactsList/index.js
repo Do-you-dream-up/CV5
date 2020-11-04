@@ -13,7 +13,7 @@ export default function ContactsList({ icon, id, list, title }) {
   return (
     <div className={classes.root}>
       <div className={classes.title}>
-        <img alt={icon} src={`${process.env.PUBLIC_URL}/${icon}`}></img>
+        <img alt={icon} src={`${process.env.PUBLIC_URL}${icon}`}></img>
         <h4>{title}</h4>
       </div>
       {list.map((item, index) => (
@@ -24,7 +24,7 @@ export default function ContactsList({ icon, id, list, title }) {
           {id === 'social' && (
             <div>
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">{item.socialText}</a>
-              <img alt="icons/open-in-new.black.png" src={`${process.env.PUBLIC_URL}/icons/open-in-new.black.png`} />
+              <img alt="icons/open-in-new.black.png" src={`${process.env.PUBLIC_URL}icons/open-in-new.black.png`} />
             </div>
           )}
         </div>

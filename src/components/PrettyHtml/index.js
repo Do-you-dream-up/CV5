@@ -21,7 +21,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
       {html && <div dangerouslySetInnerHTML={{__html: html}} />}
-      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}/icons/open-in-new.black.png`} />}
+      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/open-in-new.black.png`} />}
     </>
   ));
 }

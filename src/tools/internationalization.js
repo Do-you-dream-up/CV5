@@ -6,7 +6,7 @@ import { Cookie, Local } from './storage';
 
 
 i.use(initReactI18next).use(Backend).use(BrowserLanguage).init({
-  backend: {loadPath: `${process.env.PUBLIC_URL}/locales/{{lng}}/{{ns}}.json`},
+  backend: {loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json`},
   cleanCode: true,
   debug: false,
   detection: {

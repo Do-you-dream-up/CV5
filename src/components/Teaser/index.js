@@ -51,7 +51,7 @@ export default function Teaser({ open, toggle }) {
             <Skeleton children={title} hide={!ready} width="3em" />
           </div>
           <div className={c('dydu-teaser-brand', classes.brand)}>
-            <img alt={title} src={`${process.env.PUBLIC_URL}/assets/${configuration.avatar.response}`} />
+            <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
         { open && voice && <Voice /> }
