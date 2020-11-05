@@ -57,7 +57,7 @@ export default function Carousel({ children, className, steps, ...rest }) {
   }, [secondaryActive, step, toggleSecondary]);
 
   useEffect(() => {
-    if (step.sidebar) {
+    if (step && step.sidebar) {
       setStep(steps[index]);
       onToggle(Local.get(Local.names.secondary) || (automaticSecondary));
     }

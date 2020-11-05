@@ -1,6 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Actions from '../Actions';
@@ -20,9 +20,15 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
   const [ t, i ] = useTranslation('translation');
-  const { languages = [] } = configuration.application;
+  const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
+  const { languages } = configuration.application;
   const { translate: hasTranslate } = configuration.footer;
   const actionTranslate = t('footer.translate');
+
+  useEffect(() => {
+    if (i.languages)
+      setSelectedLanguage(i.languages[0]);
+  }, [i, t]);
 
   const languagesMenu = [languages.sort().map(id => ({
     icon: `flags/${id}.png`,
@@ -32,9 +38,9 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   }))];
 
   const actions = [{
-    children: <img alt={actionTranslate} src={`${process.env.PUBLIC_URL}flags/${i.languages[0]}.png`} title={actionTranslate} />,
+    children: <img alt={actionTranslate} src={`${process.env.PUBLIC_URL}flags/${selectedLanguage}.png`} title={actionTranslate} />,
     items: () => languagesMenu,
-    selected: () => i.languages[0],
+    selected: () => selectedLanguage,
     variant: 'icon',
     when: hasTranslate && languagesMenu.flat().length > 1,
   }];
