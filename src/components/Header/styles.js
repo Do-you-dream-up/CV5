@@ -14,6 +14,7 @@ export default createUseStyles(theme => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'flex-start',
+    minHeight: '40px',
     padding: '.6em',
   }),
   draggable: () => ({
