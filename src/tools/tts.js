@@ -27,6 +27,10 @@ export default new class Tts {
     * @param {*} url
     */
    getAudioFromText = ( text, voice, ssml, url ) => {
+     if (!url) {
+      console.error('[Dydu - TTS] : Url undifined');
+      return;
+     }
     return axios({
         data: {text: this.cleantext(text)},
         headers: {
