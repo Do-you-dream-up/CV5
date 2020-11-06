@@ -13,7 +13,7 @@ export default createUseStyles(theme => ({
   body: () => ({
     alignItems: 'center',
     display: 'flex',
-    minHeight: '40px',
+    minHeight: '2.8em',
     padding: '.6em',
   }),
   draggable: () => ({

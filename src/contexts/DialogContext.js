@@ -48,7 +48,6 @@ export function DialogProvider({ children }) {
 
   const addResponse = useCallback(response => {
     const { askFeedback, guiAction, text, typeResponse, urlRedirect } = response;
-    console.log('resss', typeResponse);
     const steps = parseSteps(response);
     setText(text);
     setTypeResponse(typeResponse);
