@@ -1,0 +1,107 @@
+#+TITLE: Dydu Bliss
+#+AUTHOR: Mathieu Marques
+
+* Installation
+
+Copy the bot configuration sample files 
+Fill both the =id= and the =server= keys with a bot of your choice in src/bot.json.
+
+#+BEGIN_SRC sh
+cp src/bot.json.sample src/bot.json
+cp public/override/configuration.json.sample public/override/configuration.json
+cp public/override/style.css.sample public/override/style.css
+cp public/override/theme.json.sample public/override/theme.json
+#+END_SRC
+
+The below instructions assume you have a working setup with latest =npm=.
+
+#+BEGIN_SRC sh
+npm install
+npm start
+#+END_SRC
+
+* Contributing
+
+** Setup
+
+Install the following dependencies globally when working outside of =npm=. This
+lets your editor know about ESLint dependencies.
+
+#+BEGIN_SRC emacs-lisp
+npm install -g babel-eslint eslint eslint-plugin-react
+#+END_SRC
+
+** Branches
+
+Namespace branches according to their content. Use kebab-case to name branches.
+
+- =build=    :: Build-related augments
+- =docs=     :: Documentation
+- =feat=     :: Enhancements
+- =fix=      :: Bug fixes
+- =refactor= :: Logic cleanup
+- =style=    :: Syntax cleanup
+- =test=     :: Tests
+
+Do not push directly to =:master=, use feature branches and merge them into
+=:master= instead.
+
+** Commit Changes
+
+Make sure the code you stage to commit passes ESLint before committing. There's
+a pre-commit hook that won't let your pass through in the presence of ESLint
+errors or a malformed commit message.
+
+[[http://www.commitstrip.com/en/2012/03/06/pre-commit-hook-irl/][http://www.commitstrip.com/wp-content/uploads/2012/03/Strip-SVN-English800-final.jpg]]
+
+Use English in your commit messages.
+
+Good etiquette about committing in a shared environment:
+[[https://chris.beams.io/posts/git-commit/]]. Here is the gist of it:
+
+- [[https://chris.beams.io/posts/git-commit/#separate][Separate subject from body with a blank line]]
+- [[https://chris.beams.io/posts/git-commit/#limit-50][Limit the subject line to 50 characters]]
+- [[https://chris.beams.io/posts/git-commit/#capitalize][Capitalize the subject line]]
+- [[https://chris.beams.io/posts/git-commit/#end][Do not end the subject line with a period]]
+- [[https://chris.beams.io/posts/git-commit/#imperative][Use the imperative mood in the subject line]]
+- [[https://chris.beams.io/posts/git-commit/#wrap-72][Wrap the body at 72 characters]]
+- [[https://chris.beams.io/posts/git-commit/#why-not-how][Use the body to explain what and why vs. how]]
+
+** Pushing Changes
+
+1. Pull =:master= into a new branch with the corresponding prefix eg. =:namespace/123/your-feature=
+1. Push your code to your branch
+1. Pull =:master= in your branch again
+1. Wait for the merge :-)
+
+Repeat steps 3 and 4 as often as necessary. Having your feature branches up to
+date with =:master= is paramount.
+
+** Deploying to Production
+
+/This is the current workflow. Subject to change later./
+
+To deploy to the =:production= branch, merge from =:master= only.
+
+First, merge the feature branches into =:master=.
+
+1. Checkout the feature branch
+1. Review the changes
+1. Checkout =:master=
+1. Pull to ensure your local copy of the branch is up to date
+1. Merge the feature branch
+1. Bump the version: =npm version patch|minor=
+1. Push the changes
+
+Then merge into =:production=.
+
+1. Checkout =:production=
+1. Pull to ensure your local copy of the branch is up to date
+1. Merge =:master=
+1. Push the changes
+
+** Deploying to CDN
+1. Checkout the feature branch
+1. Check publicPath in public/override/configuration.json
+1. Run npm run build
+1. Copy build folder in CDN
