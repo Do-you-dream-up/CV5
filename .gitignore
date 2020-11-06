@@ -1,0 +1,7 @@
+/build/
+/node_modules/
+/src/bot.json
+/styleguide/
+/public/override/configuration.json
+/public/override/style.css
+/public/override/theme.json

@@ -1,0 +1,177 @@
+{
+    "banner": {
+        "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
+        "more": "More information",
+        "ok": "Thanks"
+    },
+    "bubble": {
+        "sidebar": {
+            "more": "More",
+            "less": "Less"
+        }
+    },
+    "carousel": {
+        "next": "Next",
+        "previous": "Previous"
+    },
+    "close": {
+        "body": "If you would like to re-open the chatbox, please refresh the page.",
+        "no": "Cancel",
+        "title": "Close the chatbox?",
+        "yes": "Close"
+    },
+    "contacts": {
+        "phone": {
+            "title": "Phone Numbers",
+            "list": [{
+                    "title": "Business Support",
+                    "phone": "06.00.00.00.34"
+                },
+                {
+                    "title": "Client Support",
+                    "phone": "08.12.44.56.28"
+                }
+            ]
+        },
+        "email": {
+            "title": "Emails",
+            "list": [{
+                "title": "A question?",
+                "email": "support@chatbox.com"
+            }]
+        },
+        "socialNetwork": {
+            "title": "Social Networks",
+            "list": [{
+                "title": "Instagram",
+                "socialText": "linkedin.com/company/dydu/",
+                "socialUrl": "https://www.linkedin.com/company/dydu/"
+            }]
+        }
+    },
+    "feedback": {
+        "choices": [
+            "We did not understand your question",
+            "The proposed solution did not satisfy you",
+            "Our answer was not clear enough"
+        ],
+        "comment": {
+            "help": "What went wrong?",
+            "placeholder": "Comment here...",
+            "thanks": "Thank you for your detailed feedback!"
+        },
+        "vote": {
+            "negative": "Negative feedback",
+            "positive": "Positive feedback",
+            "thanks": "Thank you for your feedback!"
+        }
+    },
+    "footer": {
+        "expand": "Expand menu",
+        "menu": {
+            "close": "Close",
+            "email": "Export the conversation by email",
+            "gdpr": "GDPR (export, delete)",
+            "spaces": "Switch consulting space",
+            "title": "Your features"
+        },
+        "rosetta": {
+            "en": "English",
+            "fr": "French",
+            "es": "Spanish",
+            "de": "German",
+            "it": "Italian",
+            "pt": "Portuguese"
+        },
+        "translate": "Languages"
+    },
+    "form": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+    },
+    "gdpr": {
+        "disclaimer": {
+            "body": "<p>Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed? Elit, at imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis urna, id volutpat lacus laoreet non curabitur gravida!</p><p>Purus ut faucibus pulvinar elementum integer enim neque, volutpat ac tincidunt vitae, semper quis lectus. At augue eget arcu dictum varius duis at consectetur lorem donec massa sapien, faucibus et?</p><p>Amet, consectetur adipiscing elit pellentesque habitant morbi tristique senectus.</p>",
+            "cancel": "Cancel",
+            "ok": "Ok"
+        },
+        "form": {
+            "email": {
+                "placeholder": "Enter your address..."
+            },
+            "forget": {
+                "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            },
+            "get": {
+                "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+            }
+        },
+        "get": {
+            "error": "Get error.",
+            "success": "Get success."
+        }
+    },
+    "header": {
+        "actions": {
+            "close": "Close",
+            "expand": "Expand",
+            "minimize": "Minimize",
+            "more": "More",
+            "shrink": "Shrink",
+            "tests": "Tests"
+        },
+        "title": "Need help?"
+    },
+    "input": {
+        "actions": {
+            "send": "Send",
+            "record": {
+                "start": "Record start",
+                "stop": "Record stop",
+                "start": "Start",
+                "stop": "Stop"
+              },
+              "media": {
+                "start": "Start",
+                "stop": "Stop",
+                "pause": "Pause"
+              }
+          
+          },
+          "placeholder": "Type here..."
+    },
+    "onboarding": {
+        "carousel": {
+            "body": "<p><strong>Prefer complete sentences</strong></p><p>That way I can provide you with better content.</p>",
+            "next": "Next",
+            "previous": "Previous",
+            "title": "Tips"
+        },
+        "preamble": "<p>Some tips before we begin</p>",
+        "skip": {
+            "button": "Chat with the bot",
+            "title": "Start a conversation"
+        },
+        "top": {
+            "title": "Here are the top-asked topics"
+        }
+    },
+    "screenReader": {
+        "chatbot":  "chatbot says",
+        "me": "me says"
+    },
+    "spaces": {
+        "welcome": "Welcome to the chatbot, please select a space before chatting :"
+    },
+    "tabs": {
+        "contacts": "Contacts",
+        "dialog": "Dialog"
+    },
+    "teaser": {
+        "mouseover": "Heeelp here",
+        "title": "Need help?"
+    },
+    "top": {
+        "title": "Top-asked questions:"
+    }
+}

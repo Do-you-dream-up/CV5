@@ -1,0 +1,173 @@
+{
+    "banner": {
+        "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
+        "more": "En savoir plus",
+        "ok": "Merci"
+    },
+    "bubble": {
+        "sidebar": {
+            "more": "Plus",
+            "less": "Moins"
+        }
+    },
+    "carousel": {
+        "next": "Précédent",
+        "previous": "Prochain"
+    },
+    "close": {
+        "body": "If you would like to re-open the chatbox, please refresh the page.",
+        "no": "Cancel",
+        "title": "Close the chatbox?",
+        "yes": "Close"
+    },
+    "contacts": {
+        "phone": {
+            "title": "Téléphones",
+            "list": [{
+                    "title": "Support Commerciale",
+                    "phone": "08.00.50.00.94"
+                },
+                {
+                    "title": "Support Clientèle",
+                    "phone": "02.78.49.06.28"
+                }
+            ]
+        },
+        "email": {
+            "title": "Emails",
+            "list": [{
+                "title": "Une question? Une réclamation?",
+                "email": "support@chatbot.com"
+            }]
+        },
+        "socialNetwork": {
+            "title": "Réseaux Sociaux",
+            "list": [{
+                "title": "Linkedin",
+                "socialText": "linkedin.com/company/dydu/",
+                "socialUrl": "https://www.linkedin.com/company/dydu/"
+            }]
+        }
+    },
+    "feedback": {
+        "choices": [
+            "We did not understand your question",
+            "The proposed solution did not satisfy you",
+            "Our answer was not clear enough"
+        ],
+        "comment": {
+            "help": "What went wrong?",
+            "placeholder": "Comment here...",
+            "thanks": "Thank you for your detailed feedback!"
+        },
+        "vote": {
+            "negative": "Negative feedback",
+            "positive": "Positive feedback",
+            "thanks": "Thank you for your feedback!"
+        }
+    },
+    "footer": {
+        "expand": "Ouvrir sous-menu",
+        "menu": {
+            "close": "Fermer",
+            "email": "Exporter la conversation par email",
+            "gdpr": "RGPD (export, suppression)",
+            "spaces": "Changer d'espace de consultation",
+            "title": "Vos fonctionnalités"
+        },
+        "rosetta": {
+            "en": "English",
+            "fr": "French"
+        },
+        "translate": "Languages"
+    },
+    "form": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+    },
+    "gdpr": {
+        "disclaimer": {
+            "body": "<p>En utilisant ce Chatbot vous consentez directement à ce que les données transmises soient exploitées à des fins de réponses automatisées et d'enrichissement du moteur de dialogue avant de faire l'objet d'une anonymisation les supprimant de manière irréversible.</p>",
+            "cancel": "Je refuse",
+            "ok": "J'accepte"
+        },
+        "form": {
+            "email": {
+                "placeholder": "Enter your address..."
+            },
+            "forget": {
+                "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            },
+            "get": {
+                "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+            }
+        },
+        "get": {
+            "error": "Get error.",
+            "success": "Get success."
+        }
+    },
+    "header": {
+        "actions": {
+            "close": "Fermer",
+            "expand": "Expand",
+            "minimize": "Réduire",
+            "more": "More",
+            "shrink": "Shrink",
+            "tests": "Tests"
+        },
+        "title": "Besoin d'aide ?"
+    },
+    "input": {
+        "actions": {
+            "send": "Envoie",
+            "record": {
+                "start": "Record start",
+                "stop": "Record stop",
+                "start": "Start",
+                "stop": "Stop"
+              },
+              "media": {
+                "start": "Start",
+                "stop": "Stop",
+                "pause": "Pause"
+              }
+          
+          },
+          "placeholder": "Ecrivez ici..."
+    },
+    "onboarding": {
+        "carousel": {
+            "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+            "next": "Suivant",
+            "previous": "Précédent",
+            "title": "Quelques astuces"
+        },
+        "preamble": "<p>Quelques informations avant de commencer</p>",
+        "skip": {
+            "button": "Dialoguer avec le Chatbot",
+            "title": "Démarrez une conversation"
+        },
+        "top": {
+            "title": "Voici les questions les plus posées"
+        }
+    },
+    "screenReader":{
+        "chatbot":  "chatbot dit",
+        "me": "moi dit"
+    },
+    "spaces": {
+        "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
+    },
+    "tabs": {
+        "contacts": "Contacts",
+        "dialog": "Conversation"
+    },
+    "teaser": {
+        "title": "Besoin d'aide ?",
+        "mouseover": "Aide ici"
+    },
+    "top": {
+        "title": "Questions les plus posées:"
+    }
+}
