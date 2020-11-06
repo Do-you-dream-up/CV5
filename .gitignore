@@ -3,6 +3,6 @@
 /node_modules/
 /src/bot.json
 /styleguide/
-/public/configuration.json
-/public/style.css
-/public/theme.json
+/public/override/configuration.json
+/public/override/style.css
+/public/override/theme.json
