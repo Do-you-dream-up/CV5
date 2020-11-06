@@ -3,7 +3,8 @@
     "open": 1,
     "qualification": true,
     "languages": ["en", "fr"],
-    "defaultLanguage": ["fr"]
+    "defaultLanguage": ["fr"],
+    "publicPath": "./"
   },
   "avatar": {
     "background": false,
