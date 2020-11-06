@@ -98,9 +98,9 @@
   },
   "keycloak": {
     "enable": false,
-    "realm": "front",
-    "url": "https://keycloak.security.dydu-priv.com/auth/",
-    "clientId": "v5"
+    "realm": "",
+    "url": "",
+    "clientId": ""
   },
   "loader": {
     "size": 5
@@ -181,8 +181,8 @@
   "Voice": {
     "enable": false,
     "ssml": "true",
-    "sttServerUrl": "https://proxima.doyoudreamup.com:444",
-    "ttsServerUrl": "https://proxima.doyoudreamup.com:444/tts",
+    "sttServerUrl": "",
+    "ttsServerUrl": "",
     "voice": "Damien",
     "voiceSpace": "default"
   },
