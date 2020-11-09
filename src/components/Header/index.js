@@ -108,7 +108,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt={`${imageType}`} src={`assets/${imageType}`} />
+              <img alt={`${imageType}`} src={`${process.env.PUBLIC_URL}assets/${imageType}`} />
             </div>
           )}
           {!!hasTitle && (
