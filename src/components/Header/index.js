@@ -36,7 +36,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
-  const { image: hasImage, imageLink, title: hasTitle } = configuration.header.display;
+  const { image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
   const actionMinimize = t('header.actions.minimize');

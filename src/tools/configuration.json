@@ -82,7 +82,7 @@
       "minimize": "window-minimize.png",
       "more": "cog.png"
     },
-    "display": {
+    "logo": {
       "title": true,
       "image": true,
       "imageLink": {
