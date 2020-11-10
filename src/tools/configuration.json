@@ -73,14 +73,23 @@
       "expand": true,
       "minimize": true,
       "more": true,
-      "tests": false
+      "tests": false,
+      "fontIncrease": false,
+      "fontDecrease": false
+    },
+    "fontSizeChange": {
+      "factor": 0.1,
+      "maxFontSize": 1.3,
+      "minFontSize": 0.75
     },
     "icons" : {
       "close": "close.png",
       "collapse": "arrow-collapse.png",
       "expand": "arrow-expand.png",
       "minimize": "window-minimize.png",
-      "more": "cog.png"
+      "more": "cog.png",
+      "fontIncrease": "fontsize-increase.svg",
+      "fontDecrease": "fontsize-decrease.svg"
     },
     "title": true
   },

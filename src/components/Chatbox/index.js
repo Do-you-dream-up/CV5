@@ -1,6 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -58,6 +58,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const qualification = !!configuration.application.qualification;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
+  const dialogRef = useRef();
 
 
   const ask = useCallback((text, options) => {
@@ -194,6 +195,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                     { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
                   )}>
                     <Tab component={Dialog}
+                         dialogRef={dialogRef}
                          interactions={interactions}
                          onAdd={add}
                          render
@@ -205,7 +207,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                 </Onboarding>
               </>
             )}
-            <Header extended={extended}
+            <Header dialogRef={dialogRef}
+                    extended={extended}
                     minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
                     onClose={onClose}
                     onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
