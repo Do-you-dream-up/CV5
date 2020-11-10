@@ -49,12 +49,13 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   };
 
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
+  const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 
-  const imageType = (typeResponse === 'GBMisunderstoodQuestion' || typeResponse === 'GBTooManyMisunderstoodQuestions') ?
-                imageLink.misunderstood :
-                typeResponse && typeResponse.match(RE_REWORD) ?
-                imageLink.reword :
-                imageLink.default;
+  const imageType = typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
+                    imageLink.misunderstood :
+                    typeResponse && typeResponse.match(RE_REWORD) ?
+                    imageLink.reword :
+                    imageLink.default;
 
   const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
