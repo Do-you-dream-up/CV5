@@ -40,6 +40,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
   const actionMore = t('header.actions.more');
   const actionShrink = t('header.actions.shrink');
   const actionTests = t('header.actions.tests');
+  const singleTab = configuration.tabs.items.length === 1 ? true : false;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
@@ -103,7 +104,7 @@ export default function Header({ extended, minimal, onClose, onExpand, onMinimiz
       </div>
       {!minimal && (
         <>
-          <Tabs />
+          {!singleTab && <Tabs />}
           <Banner />
         </>
       )}
