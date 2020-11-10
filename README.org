@@ -3,11 +3,14 @@
 
 * Installation
 
-Copy the bot configuration sample file and fill both the =id= and the =server=
-keys with a bot of your choice.
+Copy the bot configuration sample files 
+Fill both the =id= and the =server= keys with a bot of your choice in src/bot.json.
 
 #+BEGIN_SRC sh
 cp src/bot.json.sample src/bot.json
+cp public/override/configuration.json.sample public/override/configuration.json
+cp public/override/style.css.sample public/override/style.css
+cp public/override/theme.json.sample public/override/theme.json
 #+END_SRC
 
 The below instructions assume you have a working setup with latest =npm=.
@@ -96,3 +99,9 @@ Then merge into =:production=.
 1. Pull to ensure your local copy of the branch is up to date
 1. Merge =:master=
 1. Push the changes
+
+** Deploying to CDN
+1. Checkout the feature branch
+1. Check publicPath in public/override/configuration.json
+1. Run npm run build
+1. Copy build folder in CDN

@@ -3,10 +3,11 @@ const { CleanWebpackPlugin: Clean  } = require('clean-webpack-plugin');
 const Copy = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
+const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
-module.exports = (env) => {
-  const ASSET =  env && env.ASSET_PATH ? env.ASSET_PATH : './';
+module.exports = () => {
+  const ASSET =  configuration.application.publicPath || './';
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',

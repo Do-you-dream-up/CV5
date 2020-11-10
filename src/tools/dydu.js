@@ -2,7 +2,7 @@ import axios from 'axios';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-import bot from '../bot';
+import bot from '../../public/override/bot';
 import { decode } from './cipher';
 import configuration from './configuration.json';
 import { Cookie, Local } from './storage';

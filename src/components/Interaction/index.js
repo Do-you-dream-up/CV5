@@ -74,12 +74,12 @@ export default function Interaction({
       let content = children;
       if (!carousel) {
         content = content.reduce((accumulator, it) => (
-          typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
         ), []);
       }
       if (carousel) {
         content = content.reduce((accumulator, it) => (
-          typeof it === 'string' ? [...accumulator, ...sanitize(it).split('<hr>')] : [...accumulator, it]
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
         ), []);
       }
       if (typeof(children) === String && children[0].includes('target="_blank"')) {

@@ -28,7 +28,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const qualification = !!configuration.application.qualification;
-  const voice = configuration.Voice.enable;
+  const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);

@@ -78,6 +78,10 @@ export default function Voice() {
   const startRecording = () => {
 
     //connection to the socket
+    if (!sttServerUrl) {
+      console.error('[Dydu - TTS] : Url undifined');
+      return;
+    }
     socket = io.connect(sttServerUrl);
 
     socket.on('connect', () => {

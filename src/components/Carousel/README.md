@@ -8,6 +8,6 @@ const items = [
 ];
 
 <div style={{width: '100%'}}>
-  <Interaction carousel children={items} scroll={false} type="response" />
+  <Interaction carousel children={items} scroll={false} steps={[]} type="response" />
 </div>
 ```
