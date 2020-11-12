@@ -44,6 +44,7 @@ export class Local {
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',
+    fontSize: 'dydu.fontSize',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',

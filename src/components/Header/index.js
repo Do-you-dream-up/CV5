@@ -8,6 +8,7 @@ import { DragonContext } from '../../contexts/DragonContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import useViewport from '../../tools/hooks/viewport';
+import { Local } from '../../tools/storage';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
@@ -62,8 +63,16 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   useEffect(() => {
     if (dialogRef && (fontSize !== 1 )) {
       dialogRef.current.style.fontSize = `${fontSize}em`;
+      Local.set(Local.names.fontSize, fontSize);
+
     }
   }, [dialogRef, fontSize, changeFontSize]);
+
+  useEffect(() => {
+    if (Local.get(Local.names.fontSize)) {
+      setFontSize(Local.get(Local.names.fontSize));
+    }
+  }, []);
 
   const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
