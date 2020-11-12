@@ -19,7 +19,7 @@ module.exports = () => {
     },
     plugins: [
       new Clean(),
-      new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html']}),
+      new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
       new webpack.DefinePlugin({
         'process.env': {
           PUBLIC_URL: JSON.stringify(ASSET),
