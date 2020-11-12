@@ -16,8 +16,8 @@ build:
     - npm i
     - npm run build
     - lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/; mirror --reverse build ./html/bliss/${CI_COMMIT_REF_NAME} --ignore-time --parallel=10; quit"
-    - npm run build:documentation
-    - lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/documentation/; mirror --reverse styleguide ./html/bliss/${CI_COMMIT_REF_NAME}/documentation --ignore-time --parallel=10; quit"
+    #- npm run build:documentation
+    #- lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/documentation/; mirror --reverse styleguide ./html/bliss/${CI_COMMIT_REF_NAME}/documentation --ignore-time --parallel=10; quit"
   only:
     - master
     - production
