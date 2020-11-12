@@ -123,9 +123,7 @@
             "send": "Envoie",
             "record": {
                 "start": "Record start",
-                "stop": "Record stop",
-                "start": "Start",
-                "stop": "Stop"
+                "stop": "Record stop"
               },
               "media": {
                 "start": "Start",
