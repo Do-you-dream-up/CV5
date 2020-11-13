@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
@@ -28,13 +29,15 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
+  const { typeResponse } = useContext(DialogContext);
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({configuration});
   const theme = useTheme();
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { actions: hasActions = {}, title: hasTitle } = configuration.header;
+  const { actions: hasActions = {} } = configuration.header;
+  const { image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
@@ -45,7 +48,7 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
   const [fontSize, setFontSize] = useState(1);
-
+  const singleTab = configuration.tabs.items.length === 1 ? true : false;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
@@ -73,6 +76,15 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
       setFontSize(Local.get(Local.names.fontSize));
     }
   }, []);
+
+  const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
+  const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
+
+  const imageType = typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
+                    imageLink.misunderstood :
+                    typeResponse && typeResponse.match(RE_REWORD) ?
+                    imageLink.reword :
+                    imageLink.default;
 
   const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
@@ -137,16 +149,23 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
       <div className={c('dydu-header-body', classes.body, {[classes.draggable]: onDragStart})}
            onMouseDown={onDragStart && onDragStart(dragonZone)}
            ref={dragonZone}>
-        {!!hasTitle && (
-          <div className={c('dydu-header-title', classes.title)}>
-            <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
-          </div>
-        )}
+        <div className={c('dydu-header-logo', classes.logo)}>
+          {!!hasImage && (
+            <div className={c('dydu-header-image', classes.image)}>
+              <img alt={`${imageType}`} src={`${process.env.PUBLIC_URL}assets/${imageType}`} />
+            </div>
+          )}
+          {!!hasTitle && (
+            <div className={c('dydu-header-title', classes.title)}>
+              <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
+            </div>
+          )}
+        </div>
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
       {!minimal && (
         <>
-          <Tabs />
+          {!singleTab && <Tabs />}
           <Banner />
         </>
       )}

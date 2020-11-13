@@ -91,7 +91,15 @@
       "fontIncrease": "fontsize-increase.svg",
       "fontDecrease": "fontsize-decrease.svg"
     },
-    "title": true
+    "logo": {
+      "title": true,
+      "image": true,
+      "imageLink": {
+        "default": "dydu.png",
+        "misunderstood": "dydu-misunderstood.svg",
+        "reword": "dydu-reword.svg"
+      } 
+    }
   },
   "input": {
     "counter": true,
