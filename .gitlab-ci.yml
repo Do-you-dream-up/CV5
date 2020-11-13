@@ -11,7 +11,7 @@ build:
     - apt-get update -qq && apt-get install -y -qq lftp
     - cp -n public/override/bot.json.sample public/override/bot.json
     - cp -n public/override/configuration.json.sample public/override/configuration.json
-    - cp -n public/override/bot.theme.sample public/override/theme.json
+    - cp -n public/override/theme.sample public/override/theme.json
     - cp -n public/override/style.css.sample public/override/style.css
     - npm i
     - npm run build
