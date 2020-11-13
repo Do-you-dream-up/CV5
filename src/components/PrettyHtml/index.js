@@ -16,9 +16,12 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const { t } = useTranslation('translation');
 
   const RE_EMAIL = /(.+)(<a href="mailto:\S+@\S+\.\S+").*(>.+<\/a>)(.+)/g;
+  const RE_LINK = /(<a href="(http(s)?:\/\/)?(www.)\S+\.\S+").*(>.+<\/a>)/g;
   const RE_ONCLICK = /onclick=".+"/gm;
 
-  const htmlCleanup = html && html.match(RE_EMAIL) ? html.replace(RE_ONCLICK, '') : html;
+  const htmlCleanup = html && html.match(RE_EMAIL) || html && html.match(RE_LINK) ?
+                      html.replace(RE_ONCLICK, '') :
+                      html;
 
   const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
   return React.createElement(component, {className: c(classes.root, className), ...rest}, (
