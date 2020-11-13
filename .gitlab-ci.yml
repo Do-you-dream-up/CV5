@@ -9,10 +9,10 @@ variables:
 build:
   script:
     - apt-get update -qq && apt-get install -y -qq lftp
-    - cp -n public/overide/bot.json.sample public/overide/bot.json
-    - cp -n public/overide/configuration.json.sample public/overide/configuration.json
-    - cp -n public/overide/bot.theme.sample public/overide/theme.json
-    - cp -n public/overide/style.css.sample public/overide/style.css
+    - cp -n public/override/bot.json.sample public/override/bot.json
+    - cp -n public/override/configuration.json.sample public/override/configuration.json
+    - cp -n public/override/bot.theme.sample public/override/theme.json
+    - cp -n public/override/style.css.sample public/override/style.css
     - npm i
     - npm run build
     - lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/; mirror --reverse build ./html/bliss/${CI_COMMIT_REF_NAME} --ignore-time --parallel=10; quit"
