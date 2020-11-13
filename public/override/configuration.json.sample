@@ -71,6 +71,7 @@
     "actions": {
       "close": true,
       "expand": true,
+      "fontChange": false,
       "minimize": true,
       "more": true,
       "tests": false
@@ -79,6 +80,8 @@
       "close": "close.png",
       "collapse": "arrow-collapse.png",
       "expand": "arrow-expand.png",
+      "fontIncrease": "fontsize-increase.svg",
+      "fontDecrease": "fontsize-decrease.svg",
       "minimize": "window-minimize.png",
       "more": "cog.png"
     },

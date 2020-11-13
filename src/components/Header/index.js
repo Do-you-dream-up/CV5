@@ -109,14 +109,14 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
-      when: !!hasActions.fontIncrease,
+      when: !!hasActions.fontChange,
     },
     {
       children: <img alt={actionFontDecrease} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontDecrease}`} title={actionFontDecrease} />,
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
-      when: !!hasActions.fontDecrease,
+      when: !!hasActions.fontChange,
     },
     {
       children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} title={actionExpand} />,
