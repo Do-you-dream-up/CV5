@@ -47,7 +47,7 @@ export default createUseStyles(theme => ({
     bottom: 0,
     height: 520,
     minWidth: 320,
-    position: 'absolute',
+    position: 'fixed',
     right: 0,
     transitionDuration: '.2s',
     transitionProperty: 'bottom, height, right, transform, width',
