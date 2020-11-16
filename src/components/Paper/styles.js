@@ -23,7 +23,7 @@ export default createUseStyles(theme => ({
     borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[elevation],
     overflow: 'hidden',
-    padding: [['.6em', '1.2em', '1.2em']],
+    padding: [['1em']],
     position: 'relative',
   }),
 }));
