@@ -18,7 +18,7 @@ import useStyles from './styles';
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ interactions, onAdd, ...rest }) {
+export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { prompt, setPrompt } = useContext(DialogContext);
@@ -51,7 +51,7 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
   }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
 
   return (
-    <div className={c('dydu-dialog', classes.root)} {...rest}>
+    <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
       {!!top && (
         <Top component={Paper} elevation={1} title={t('top.title')}/>
       )}
@@ -65,6 +65,10 @@ export default function Dialog({ interactions, onAdd, ...rest }) {
 
 
 Dialog.propTypes = {
+  dialogRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
   interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
 };

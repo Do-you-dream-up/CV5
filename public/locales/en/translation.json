@@ -118,7 +118,9 @@
             "minimize": "Minimize",
             "more": "More",
             "shrink": "Shrink",
-            "tests": "Tests"
+            "tests": "Tests",
+            "fontDecrease": "Decrease font",
+            "fontIncrease": "Increase font"
         },
         "title": "Need help?"
     },

@@ -114,7 +114,9 @@
             "minimize": "Réduire",
             "more": "More",
             "shrink": "Shrink",
-            "tests": "Tests"
+            "tests": "Tests",
+            "fontDecrease": "Réduire police",
+            "fontIncrease": "Agrandir police"
         },
         "title": "Besoin d'aide ?"
     },
