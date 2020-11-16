@@ -42,18 +42,18 @@ export default function Voice() {
   const recordStart = t('input.actions.record.start');
   const recordStop = t('input.actions.record.stop');
   const mediaPlay = t('input.actions.media.play');
-  const mediaStop = t('input.actions.meida.stop');
+  const mediaStop = t('input.actions.media.stop');
   const mediaPause = t('input.actions.media.pause');
   const constraints = { audio: true };
   const silenceDelay = 2500;
   const bufferSize = 2048;
   const minDecibels = -100;
   const [audio] = useState(new Audio());
-  const startRecordButton = Tts.getButtonAction(recordStart, 'micro.black', () => startRecording());
-  const stopRecordButton = Tts.getButtonAction(recordStop, 'stop.black', () => stopRecording());
-  const pauseMediaButton = Stt.getButtonAction(mediaPause, 'pause.black', () => pause());
-  const playMediaButton = Stt.getButtonAction(mediaPlay, 'play.black', () => play());
-  const stopMediaButton = Stt.getButtonAction(mediaStop, 'stop.black', () => stop());
+  const startRecordButton = Tts.getButtonAction(recordStart, 'micro.svg', () => startRecording());
+  const stopRecordButton = Tts.getButtonAction(recordStop, 'stop.svg', () => stopRecording());
+  const pauseMediaButton = Stt.getButtonAction(mediaPause, 'pause.svg', () => pause());
+  const playMediaButton = Stt.getButtonAction(mediaPlay, 'play.svg', () => play());
+  const stopMediaButton = Stt.getButtonAction(mediaStop, 'stop.svg', () => stop());
   const [actions, setActions] = useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = useState(false);
 
