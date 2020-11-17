@@ -107,8 +107,8 @@
             }
         },
         "get": {
-            "error": "Get error.",
-            "success": "Get success."
+            "error": "We apologize, there was an error with your GDPR request.",
+            "success": "Your GDPR request has been submitted successfully."
         }
     },
     "header": {
@@ -139,6 +139,10 @@
           
           },
           "placeholder": "Type here..."
+    },
+    "interaction": {
+        "languageChange": "You are using this language:",
+        "spaceChange": "You are on this space:"
     },
     "onboarding": {
         "carousel": {
