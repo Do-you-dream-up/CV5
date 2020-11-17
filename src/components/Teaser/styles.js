@@ -49,7 +49,7 @@ export default createUseStyles(theme => ({
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
-    position: 'absolute',
+    position: 'fixed',
     right: configuration.teaser.right,
   }),
 }));
