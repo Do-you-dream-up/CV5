@@ -48,7 +48,7 @@ export default createUseStyles(theme => ({
     height: 'calc(100% - 20px)',
     maxHeight: 520,
     minWidth: 320,
-    position: 'absolute',
+    position: 'fixed',
     right: 0,
     transitionDuration: '.2s',
     transitionProperty: 'bottom, height, right, transform, width',
