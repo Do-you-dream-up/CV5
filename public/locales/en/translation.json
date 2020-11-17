@@ -14,6 +14,10 @@
         "next": "Next",
         "previous": "Previous"
     },
+    "chatbot": {
+        "languageChange": "You are using this language:",
+        "spaceChange": "You are on this space:"
+    },
     "close": {
         "body": "If you would like to re-open the chatbox, please refresh the page.",
         "no": "Cancel",
@@ -107,8 +111,8 @@
             }
         },
         "get": {
-            "error": "Get error.",
-            "success": "Get success."
+            "error": "We apologize, there was an error with your GDPR request.",
+            "success": "Your GDPR request has been submitted successfully."
         }
     },
     "header": {

@@ -14,11 +14,15 @@
         "next": "Précédent",
         "previous": "Prochain"
     },
+    "chatbot": {
+        "languageChange": "Vous utilisez cette langue:",
+        "spaceChange": "Vous êtes sur cet espace de consultation:"
+    },
     "close": {
-        "body": "If you would like to re-open the chatbox, please refresh the page.",
-        "no": "Cancel",
-        "title": "Close the chatbox?",
-        "yes": "Close"
+        "body": "Si vous souhaitez ré-ouvrir la chatbot, veuillez s'il vous plaît rafraîchir la page.",
+        "no": "Annuler",
+        "title": "Fermer la chatbot?",
+        "yes": "Fermer"
     },
     "contacts": {
         "phone": {
@@ -51,19 +55,19 @@
     },
     "feedback": {
         "choices": [
-            "We did not understand your question",
-            "The proposed solution did not satisfy you",
-            "Our answer was not clear enough"
+            "Nous n'avons pas compris votre question",
+            "La solution proposée ne me convient pas",
+            "La réponse n'était pas assez claire"
         ],
         "comment": {
-            "help": "What went wrong?",
-            "placeholder": "Comment here...",
-            "thanks": "Thank you for your detailed feedback!"
+            "help": "Qu'est ce qu'il ne va pas?",
+            "placeholder": "Ecrivez ici...",
+            "thanks": "Merci pour votre retour détaillé!"
         },
         "vote": {
-            "negative": "Negative feedback",
-            "positive": "Positive feedback",
-            "thanks": "Thank you for your feedback!"
+            "negative": "Retour négatif",
+            "positive": "Retour positif",
+            "thanks": "Merci pour votre retour!"
         }
     },
     "footer": {
@@ -76,14 +80,14 @@
             "title": "Vos fonctionnalités"
         },
         "rosetta": {
-            "en": "English",
-            "fr": "French"
+            "en": "Anglais",
+            "fr": "Français"
         },
         "translate": "Languages"
     },
     "form": {
-        "cancel": "Cancel",
-        "submit": "Submit"
+        "cancel": "Annuler",
+        "submit": "Envoyer"
     },
     "gdpr": {
         "disclaimer": {
@@ -93,7 +97,7 @@
         },
         "form": {
             "email": {
-                "placeholder": "Enter your address..."
+                "placeholder": "Entrez votre email..."
             },
             "forget": {
                 "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
@@ -103,17 +107,17 @@
             }
         },
         "get": {
-            "error": "Get error.",
-            "success": "Get success."
+            "error": "Veuillez nous excuser, il y a malheureusement eu une erreur avec votre requête RGPD.",
+            "success": "Votre demande RGPD a été soumis avec succès."
         }
     },
     "header": {
         "actions": {
             "close": "Fermer",
-            "expand": "Expand",
-            "minimize": "Réduire",
-            "more": "More",
-            "shrink": "Shrink",
+            "expand": "Agrandir",
+            "minimize": "Minimiser",
+            "more": "Plus d'infos",
+            "shrink": "Réduire",
             "tests": "Tests",
             "fontDecrease": "Réduire police",
             "fontIncrease": "Agrandir police"
