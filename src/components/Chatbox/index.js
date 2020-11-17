@@ -96,7 +96,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
-          ([locale]) => window.dydu.chat.reply(`${t('chatbot.languageChange')} '${locale}'.`),
+          ([locale]) => window.dydu.chat.reply(`${t('interaction.languageChange')} '${locale}'.`),
           response => window.dydu.chat.reply(response),
           document.documentElement.lang = locale,
         ),
@@ -113,7 +113,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         get: strategy => dydu.getSpace(strategy),
         prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
-          space => !quiet && window.dydu.chat.reply(`${t('chatbot.spaceChange')} '${space}'.`),
+          space => !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`),
           () => { },
         ),
       };

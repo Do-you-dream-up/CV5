@@ -14,10 +14,6 @@
         "next": "Next",
         "previous": "Previous"
     },
-    "chatbot": {
-        "languageChange": "You are using this language:",
-        "spaceChange": "You are on this space:"
-    },
     "close": {
         "body": "If you would like to re-open the chatbox, please refresh the page.",
         "no": "Cancel",
@@ -143,6 +139,10 @@
           
           },
           "placeholder": "Type here..."
+    },
+    "interaction": {
+        "languageChange": "You are using this language:",
+        "spaceChange": "You are on this space:"
     },
     "onboarding": {
         "carousel": {

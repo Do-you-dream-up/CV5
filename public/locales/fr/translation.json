@@ -14,10 +14,6 @@
         "next": "Précédent",
         "previous": "Prochain"
     },
-    "chatbot": {
-        "languageChange": "Vous utilisez cette langue:",
-        "spaceChange": "Vous êtes sur cet espace de consultation:"
-    },
     "close": {
         "body": "Si vous souhaitez ré-ouvrir la chatbot, veuillez s'il vous plaît rafraîchir la page.",
         "no": "Annuler",
@@ -139,6 +135,10 @@
           
           },
           "placeholder": "Ecrivez ici..."
+    },
+    "interaction": {
+        "languageChange": "Vous utilisez cette langue:",
+        "spaceChange": "Vous êtes sur cet espace de consultation:"
     },
     "onboarding": {
         "carousel": {
