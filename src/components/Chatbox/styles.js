@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss';
 const extendedStyles = {
   bottom: 0,
   height: '100%',
+  maxHeight: 'inherit',
   right: 0,
   width: '100%',
 };
