@@ -12,7 +12,7 @@ export default new class Tts {
    */
   getButtonAction = (tite, iconName, action) => {
      const button = {
-         children: <img alt={tite} src={`${process.env.PUBLIC_URL}icons/${iconName}.png`} title={tite} onClick={() => action()} />,
+         children: <img alt={tite} src={`${process.env.PUBLIC_URL}icons/${iconName}`} title={tite} onClick={() => action()} />,
          type: 'button',
          variant: 'icon',
      };
