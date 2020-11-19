@@ -65,12 +65,11 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   }, [factor, fontSize, maxFontSize, minFontSize]);
 
   useEffect(() => {
-    if (dialogRef && gdprPassed && (fontSize !== 1 )) {
+    if (dialogRef.current && gdprPassed && !!hasActions.fontChange) {
       dialogRef.current.style.fontSize = `${fontSize}em`;
       Local.set(Local.names.fontSize, fontSize);
-
     }
-  }, [dialogRef, gdprPassed, fontSize, changeFontSize]);
+  }, [dialogRef, gdprPassed, fontSize, changeFontSize, hasActions.fontChange]);
 
   useEffect(() => {
     if (Local.get(Local.names.fontSize)) {
