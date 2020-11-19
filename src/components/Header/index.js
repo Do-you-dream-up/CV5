@@ -9,7 +9,7 @@ import { DragonContext } from '../../contexts/DragonContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import useViewport from '../../tools/hooks/viewport';
-import { Local } from '../../tools/storage';
+import { Cookie, Local } from '../../tools/storage';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
@@ -48,6 +48,7 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
   const [fontSize, setFontSize] = useState(1);
+  const gdprPassed = Cookie.get(Cookie.names.gdpr);
   const singleTab = configuration.tabs.items.length === 1 ? true : false;
 
   const onToggleMore = () => {
@@ -64,12 +65,12 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
   }, [factor, fontSize, maxFontSize, minFontSize]);
 
   useEffect(() => {
-    if (dialogRef && (fontSize !== 1 )) {
+    if (dialogRef && gdprPassed && (fontSize !== 1 )) {
       dialogRef.current.style.fontSize = `${fontSize}em`;
       Local.set(Local.names.fontSize, fontSize);
 
     }
-  }, [dialogRef, fontSize, changeFontSize]);
+  }, [dialogRef, gdprPassed, fontSize, changeFontSize]);
 
   useEffect(() => {
     if (Local.get(Local.names.fontSize)) {
