@@ -69,11 +69,11 @@
   },
   "header": {
     "actions": {
-      "close": true,
-      "expand": true,
-      "fontChange": false,
+      "close": false,
+      "expand": false,
+      "fontChange": true,
       "minimize": true,
-      "more": true,
+      "more": false,
       "tests": false
     },
     "fontSizeChange": {
