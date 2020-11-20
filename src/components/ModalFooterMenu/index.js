@@ -25,13 +25,13 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const { active: spaceChangeActive } = configuration.spaces;
 
   const items = [
-    {icon: 'icons/email-send.black.png', onClick: null, text: email},
+    {icon: 'icons/dydu-email-send-black.svg', onClick: null, text: email},
     {
-      icon: 'icons/database.black.png',
+      icon: 'icons/dydu-database-black.svg',
       onClick: spaceChangeActive ? () => window.dydu.space.prompt() : null,
       text: [spaces, dydu.getSpace()].filter(it => it).join(': '),
     },
-    {icon: 'icons/shield-lock.black.png', onClick: () => window.dydu.gdpr.prompt(), text: gdpr},
+    {icon: 'icons/dydu-shield-lock-black.svg', onClick: () => window.dydu.gdpr.prompt(), text: gdpr},
   ];
 
   return React.createElement(

@@ -49,11 +49,11 @@ export default function Voice() {
   const bufferSize = 2048;
   const minDecibels = -100;
   const [audio] = useState(new Audio());
-  const startRecordButton = Tts.getButtonAction(recordStart, 'micro.svg', () => startRecording());
-  const stopRecordButton = Tts.getButtonAction(recordStop, 'stop.svg', () => stopRecording());
-  const pauseMediaButton = Stt.getButtonAction(mediaPause, 'pause.svg', () => pause());
-  const playMediaButton = Stt.getButtonAction(mediaPlay, 'play.svg', () => play());
-  const stopMediaButton = Stt.getButtonAction(mediaStop, 'stop.svg', () => stop());
+  const startRecordButton = Tts.getButtonAction(recordStart, 'dydu-microphone-black.svg', () => startRecording());
+  const stopRecordButton = Tts.getButtonAction(recordStop, 'dydu-stop-black.svg', () => stopRecording());
+  const pauseMediaButton = Stt.getButtonAction(mediaPause, 'dydu-pause-black.svg', () => pause());
+  const playMediaButton = Stt.getButtonAction(mediaPlay, 'dydu-play-black.svg', () => play());
+  const stopMediaButton = Stt.getButtonAction(mediaStop, 'dydu-stop-black.svg', () => stop());
   const [actions, setActions] = useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = useState(false);
 

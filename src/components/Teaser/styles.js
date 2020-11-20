@@ -11,6 +11,9 @@ export default createUseStyles(theme => ({
     marginLeft: '.5em',
     overflow: 'hidden',
     width: 64,
+    '& img' : {
+      height: '100%'
+    },
   }),
   button: () => ({
     '&:hover:before': {

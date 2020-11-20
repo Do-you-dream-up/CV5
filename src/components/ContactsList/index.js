@@ -24,7 +24,7 @@ export default function ContactsList({ icon, id, list, title }) {
           {id === 'social' && (
             <div>
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">{item.socialText}</a>
-              <img alt="icons/open-in-new.black.png" src={`${process.env.PUBLIC_URL}icons/open-in-new.black.png`} />
+              <img alt="icons/dydu-open-in-new-black.svg" src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />
             </div>
           )}
         </div>
