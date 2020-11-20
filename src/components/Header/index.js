@@ -93,7 +93,7 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
 
   const actions = [
     {
-      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}icons/dots-vertical.png`} title={actionTests} />,
+      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}icons/dydu-dots-vertical-white.svg`} title={actionTests} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,

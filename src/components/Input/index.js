@@ -117,7 +117,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   };
 
   const actions = [{
-    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/send.black.png`} title={actionSend} />,
+    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />,
     type: 'submit',
     variant: 'icon',
   }];

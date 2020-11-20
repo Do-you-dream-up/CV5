@@ -26,17 +26,15 @@ export default createUseStyles(theme => ({
     boxShadow: 'none !important',
   }),
   image: () => ({
-    '& > img': {
-      height: '75%',
-      width: '75%',
-    },
-    alignItems: 'center',
     display: 'flex',
-    height: '2.8em',
     justifyContent: 'center',
-    maxWidth: '2.8em',
-    minWidth: '2.8em',
-    width: '2.8em',
+    alignItems: 'center',
+    height: '2.5em',
+    width: '2.5em',
+    marginRight: '0.6em',
+    '& img' : {
+      height: '100%',
+    },
   }),
   logo: () => ({
     '& > .dydu-header-title:only-child': {
