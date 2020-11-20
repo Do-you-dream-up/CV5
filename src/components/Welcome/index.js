@@ -14,6 +14,7 @@ export default function Welcome() {
   const [ welcomeText, setWelcomeText ] = useState(null);
   const [ welcomeSidebar, setWelcomeSidebar ] = useState(null);
   const { enable, knowledgeName } = configuration.welcome;
+  console.log(welcomeText);
 
   useEffect(() => {
      if (Local.get(Local.names.welcome)) {
@@ -27,11 +28,11 @@ export default function Welcome() {
         const localWelcome = {text : response.text, sidebar: response.sidebar};
         Local.set(Local.names.welcome, localWelcome);
       });
-  }, []);
+  }, [knowledgeName, welcomeText]);
 
-  return  enable && welcomeText && (
+  return (enable && welcomeText) ? (
     <Interaction live type="response" secondary={welcomeSidebar} className={c('dydu-top')}>
       {[welcomeText]}
     </Interaction>
-  );
+  ) : null;
 }

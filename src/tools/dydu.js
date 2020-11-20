@@ -61,6 +61,7 @@ export default new class Dydu {
       this.setContextId(data.values.contextId);
       return data.values;
     }
+    console.log('dataaa', data);
     return data;
   }).catch(() => {
     if (BOT.backUpServer) {
@@ -350,6 +351,23 @@ export default new class Dydu {
       value,
     });
     const path = `chat/variable/${BOT.id}/`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
+   * Register user visit.
+   *
+   * @returns {Promise}
+   */
+  welcomeCall = (options = {}) => {
+    const data = qs.stringify({
+      contextUuid: this.getContextId(),
+      language: this.getLocale(),
+      qualificationMode: options.qualification,
+      solutionUsed: 'ASSISTANT',
+      space: this.getSpace()
+    });
+    const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
   };
 
