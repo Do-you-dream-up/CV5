@@ -3,9 +3,6 @@ image: node:latest
 services:
   - docker:dind
 
-env:
-  - NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
 variables:
   DOCKER_DRIVER: overlay2
 
