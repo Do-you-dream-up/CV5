@@ -61,7 +61,6 @@ export default new class Dydu {
       this.setContextId(data.values.contextId);
       return data.values;
     }
-    console.log('dataaa', data);
     return data;
   }).catch(() => {
     if (BOT.backUpServer) {

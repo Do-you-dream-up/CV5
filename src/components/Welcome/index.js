@@ -14,7 +14,6 @@ export default function Welcome() {
   const [ welcomeText, setWelcomeText ] = useState(null);
   const [ welcomeSidebar, setWelcomeSidebar ] = useState(null);
   const { enable, knowledgeName } = configuration.welcome;
-  console.log(welcomeText);
 
   useEffect(() => {
      if (Local.get(Local.names.welcome)) {
