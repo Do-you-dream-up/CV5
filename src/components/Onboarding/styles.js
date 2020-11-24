@@ -3,45 +3,69 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
   actions: () => ({
-    '&:not(:first-child)': {
-      marginTop: '1em',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '20%',
+    justifyContent: 'space-around',
+  }),
+  active: {},
+  bullets: () => ({
+    '& > *': {
+      '&$active:after': {
+        backgroundColor: theme.palette.action.active,
+        borderRadius: '50%',
+        content: '""',
+        display: 'block',
+        height: '100%',
+        width: '100%',
+      },
+      backgroundColor: theme.palette.background.bullet,
+      borderRadius: '50%',
+      cursor: 'pointer',
+      height: '.4em',
+      margin: [[0, '.15em']],
+      width: '.4em',
     },
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '.5em',
+  }),
+  buttons: () => ({
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  actionsCentered: () => ({
-    justifyContent: 'center',
-  }),
-  body: () => ({
+  carousel: () => ({
     '& > :not(:last-child)': {
       marginBottom: '1em',
     },
+    '& > a': {
+      color: theme.palette.text.link
+    },
+    height: '80%',
     overflowY: 'auto',
-    padding: '1em',
     position: 'relative',
-    width: '100%',
-  }),
-  carousel: () => ({
     textAlign: 'center',
+    width: '100%'
   }),
-  preamble: () => ({
-    color: theme.palette.primary.text,
-    textAlign: 'center',
+  image: () => ({
+    '& img': {
+      height: 'auto',
+      margin: '0 auto',
+      maxWidth: '50%'
+    },
+    display: 'block',
+    textAlign: 'center'
   }),
   root: () => ({
-    '&:before': {
-      backgroundColor: theme.palette.primary.main,
-      content: '""',
-      display: 'block',
-      height: '25%',
-      left: 0,
-      position: 'absolute',
-      right: 0,
-      top: 0,
-    },
     display: 'flex',
+    flexDirection: 'column',
     flexGrow: '1',
     height: 0,
+    padding: '1em',
     position: 'relative',
   }),
+  title: () => ({
+    fontSize: '1.2em',
+    fontWeight: 'bold'
+  })
 }));

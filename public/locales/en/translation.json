@@ -145,20 +145,25 @@
         "spaceChange": "You are on this space:"
     },
     "onboarding": {
-        "carousel": {
-            "body": "<p><strong>Prefer complete sentences</strong></p><p>That way I can provide you with better content.</p>",
-            "next": "Next",
-            "previous": "Previous",
-            "title": "Tips"
-        },
-        "preamble": "<p>Some tips before we begin</p>",
-        "skip": {
-            "button": "Chat with the bot",
-            "title": "Start a conversation"
-        },
-        "top": {
-            "title": "Here are the top-asked topics"
-        }
+        "next": "Next",
+        "previous": "Previous",
+        "skip": "Skip Onboarding",
+        "steps": [{
+                "body": "<p>That way I can provide you with better content.</p>",
+                "image": "dydu-onboarding-1.svg",
+                "title": "Préférez des phrases complètes"
+            },
+            {
+                "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus pellentesque.</p>",
+                "image": "dydu-onboarding-2.svg",
+                "title": "Tips 2"
+            },
+            {
+                "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante ipsum primis.</p>",
+                "image": "dydu-onboarding-3.svg",
+                "title": "Tips 3"
+            }
+        ]
     },
     "screenReader": {
         "chatbot":  "chatbot says",
