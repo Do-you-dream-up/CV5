@@ -9,14 +9,14 @@
   "avatar": {
     "background": false,
     "request": "",
-    "response": "dydu.png"
+    "response": "dydu-logo.svg"
   },
   "banner": {
     "active": true,
     "cookie": true,
     "dismissable": true,
     "more": true,
-    "moreIcon": "open-in-new.png",
+    "moreIcon": "dydu-open-in-new-white.svg",
     "moreLink": "https://goo.gle",
     "transient": false
   },
@@ -82,21 +82,21 @@
       "minFontSize": 0.75
     },
     "icons": {
-      "close": "close.png",
-      "collapse": "arrow-collapse.png",
-      "expand": "arrow-expand.png",
-      "fontIncrease": "fontsize-increase.svg",
-      "fontDecrease": "fontsize-decrease.svg",
-      "minimize": "window-minimize.png",
-      "more": "cog.png"
+      "close": "dydu-close-white.svg",
+      "collapse": "dydu-arrow-collapse-white.svg",
+      "expand": "dydu-arrow-expand-white.svg",
+      "fontIncrease": "dydu-font-plus-white.svg",
+      "fontDecrease": "dydu-font-minus-white.svg",
+      "minimize": "dydu-minimize-white.svg",
+      "more": "dydu-cog-white.svg"
     },
     "logo": {
       "title": true,
       "image": true,
       "imageLink": {
-        "default": "dydu.png",
-        "misunderstood": "dydu-misunderstood.svg",
-        "reword": "dydu-reword.svg"
+        "default": "dydu-logo.svg",
+        "misunderstood": "dydu-misunderstood-white.svg",
+        "reword": "dydu-reword-white.svg"
       } 
     }
   },
@@ -179,8 +179,8 @@
   },
   "tabs": {
     "items": [
-      {"icon": "icons/message-text.png", "key": "dialog"},
-      {"icon": "icons/account-box.png", "key": "contacts"}
+      {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
+      {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}
     ],
     "selected": "dialog",
     "title": false

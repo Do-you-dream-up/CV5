@@ -1,3 +1,4 @@
+import Voice from '@dydu_ai/voice-module';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -7,11 +8,10 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
+import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
-import Voice from '../Voice';
 import useStyles from './styles';
-
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
@@ -117,7 +117,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   };
 
   const actions = [{
-    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/send.black.png`} title={actionSend} />,
+    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />,
     type: 'submit',
     variant: 'icon',
   }];
@@ -134,7 +134,7 @@ export default function Input({ focus, onRequest, onResponse }) {
                    suggestions={suggestions}
                    theme={theme} />
       { voice && counter === maxLength ?
-        <Voice /> :
+        <Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} /> :
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
     </form>
   );

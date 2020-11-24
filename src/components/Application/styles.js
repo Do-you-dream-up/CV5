@@ -8,7 +8,6 @@ export default createUseStyles(theme => ({
     },
     '& img' : {
       display:'block',
-      height: 'auto',
       maxWidth: '100%'
     },
     fontFamily: theme.font.sansSerif,

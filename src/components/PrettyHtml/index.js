@@ -29,7 +29,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
       <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />
-      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/open-in-new.black.png`} />}
+      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />}
     </>
   ));
 }

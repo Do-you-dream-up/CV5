@@ -1,14 +1,16 @@
+import Voice from '@dydu_ai/voice-module';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
+import { Cookie } from '../../tools/storage';
+import Actions from '../Actions';
 import Skeleton from '../Skeleton';
-import Voice from '../Voice';
 import useStyles from './styles';
-
 
 /**
  * Minified version of the chatbox.
@@ -54,7 +56,7 @@ export default function Teaser({ open, toggle }) {
             <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
-        { open && voice && <Voice /> }
+        { open && voice && <Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} /> }
       </div>
     </div>
   );

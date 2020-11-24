@@ -21,7 +21,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
   const [ data, setData ] = useState({space: currentSpace});
   const { t } = useTranslation('translation');
 
-  const getSubmitIcon = () => thinking && `${process.env.PUBLIC_URL}icons/loading.png`;
+  const getSubmitIcon = () => thinking && `${process.env.PUBLIC_URL}icons/dydu-loading-white.svg`;
 
   const onCancel = typeof onReject === 'function' ? () => {
     onReject(data);
