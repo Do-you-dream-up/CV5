@@ -360,11 +360,11 @@ export default new class Dydu {
    */
   welcomeCall = (options = {}) => {
     const data = qs.stringify({
-      contextUuid: this.getContextId(),
+      contextUuid: null,
       language: this.getLocale(),
       qualificationMode: options.qualification,
       solutionUsed: 'ASSISTANT',
-      space: this.getSpace()
+      space: this.getSpace() || 'default'
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
