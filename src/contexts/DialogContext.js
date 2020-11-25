@@ -89,9 +89,9 @@ export function DialogProvider({ children }) {
     }
   }, []);
 
-  const toggleSecondary = useCallback((open, { body, title, url } = {}) => () => {
+  const toggleSecondary = useCallback((open, { body, height, title, url, width } = {}) => () => {
     if (body !== undefined || title !== undefined || url !== undefined ) {
-      setSecondaryContent({body, title, url});
+      setSecondaryContent({body, height, title, url, width});
     }
     setSecondaryActive(previous => {
       const should = open === undefined ? !previous : open;
