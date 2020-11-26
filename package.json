@@ -48,7 +48,6 @@
     "source-map-explorer": "^2.2.2",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
-    "webpack-shell-plugin": "^0.5.0",
     "webpack-shell-plugin-next": "^1.2.0"
   },
   "scripts": {

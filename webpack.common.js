@@ -2,7 +2,6 @@ const Path = require('path');
 const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
-const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 const { version } = require('./package');
 const hash = new GitRevision().commithash().substring(0, 7);
 const now = DayJs().format('YYYY-MM-DD HH:mm');
@@ -26,7 +25,7 @@ module.exports = {
         loader: 'file-loader',
         test: /\.(eot|png|svg|ttf|woff|woff2)$/,
       },
-      configuration.Voice.enable ? {
+      configuration.Voice && configuration.Voice.enable ? {
         include: Path.resolve(__dirname, 'src/'),
         loader: 'string-replace-loader',
         options: {
@@ -44,13 +43,6 @@ module.exports = {
     hints: false,
   },
   plugins: [
-    configuration.Voice.enable ? new WebpackShellPluginNext({
-      onBuildStart:{
-        blocking: true,
-        parallel: false,
-        scripts: ['npm install @dydu_ai/voice-module --no-save'],
-      }
-    }) : null,
     new Html({
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),
