@@ -12,7 +12,7 @@ import useStyles from './styles';
 /**
  * GDPR disclaimer. Prompt the user at first visit for clearance.
  */
-export default function GdprDisclaimer({ children, className, component, ...rest }) {
+export default function GdprDisclaimer({ children, className, component, gdprRef, ...rest }) {
 
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
@@ -27,7 +27,7 @@ export default function GdprDisclaimer({ children, className, component, ...rest
 
   return !gdprPassed ? React.createElement(
     component,
-    {className: c('dydu-gdpr-disclaimer', className, classes.root), ...rest},
+    {className: c('dydu-gdpr-disclaimer', className, classes.root), ref: gdprRef, ...rest},
     (
       <>
         {body && (

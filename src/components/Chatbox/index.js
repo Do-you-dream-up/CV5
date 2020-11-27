@@ -52,14 +52,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
-  // const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
-  // const [gdprPassed, setGdprPassed] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const qualification = !!configuration.application.qualification;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
+  const gdprRef = useRef();
 
   const ask = useCallback((text, options) => {
     text = text.trim();
@@ -163,7 +162,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         <div>
           <div className={classes.container}>
             <>
-              <GdprDisclaimer>
+              <GdprDisclaimer gdprRef={gdprRef}>
                 <Onboarding render>
                   <div tabIndex='0' className={c(
                     'dydu-chatbox-body',
@@ -184,6 +183,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               </GdprDisclaimer>
             </>
             <Header dialogRef={dialogRef}
+                    gdprRef={gdprRef}
                     extended={extended}
                     minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
                     onClose={onClose}
