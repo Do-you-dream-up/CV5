@@ -33,6 +33,10 @@ export function OnboardingProvider({ children }) {
     }
   }, [hasNext, onEnd]);
 
+  const onStep = useCallback((index) => {
+    setIndex(index);
+  }, []);
+
   const onPrevious = useCallback(() => {
     setIndex(Math.max(index - 1, 0));
   }, [index]);
@@ -45,6 +49,7 @@ export function OnboardingProvider({ children }) {
     onEnd,
     onNext,
     onPrevious,
+    onStep,
   }} />;
 }
 

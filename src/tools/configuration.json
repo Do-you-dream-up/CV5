@@ -129,9 +129,7 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": false,
-    "tips": true,
-    "top": true
+    "enable": false
   },
   "root": "dydu-root",
   "secondary": {
