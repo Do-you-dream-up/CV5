@@ -108,7 +108,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} title={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.more && (!onboardingActive || !onboardingEnable),
+      when: !!hasActions.more && !!gdprPassed && (!onboardingActive || !onboardingEnable),
     },
     {
       children: <img alt={actionFontIncrease} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontIncrease}`} title={actionFontIncrease} />,
