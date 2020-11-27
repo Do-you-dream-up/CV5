@@ -134,7 +134,11 @@ export default function Input({ focus, onRequest, onResponse }) {
                    suggestions={suggestions}
                    theme={theme} />
       { voice && counter === maxLength ?
-        <Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} /> :
+        <Voice DialogContext={DialogContext}
+               configuration={configuration}
+               Actions={Actions}
+               show={!!Cookie.get(Cookie.names.gdpr)}
+               t={t('input.actions.record')} /> :
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
     </form>
   );

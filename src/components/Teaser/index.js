@@ -56,7 +56,11 @@ export default function Teaser({ open, toggle }) {
             <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
-        { open && voice && <Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} /> }
+        { open && voice && <Voice DialogContext={DialogContext}
+                                  configuration={configuration}
+                                  Actions={Actions}
+                                  show={!!Cookie.get(Cookie.names.gdpr)}
+                                  t={t('input.actions.record')} /> }
       </div>
     </div>
   );
