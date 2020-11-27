@@ -35,7 +35,7 @@ module.exports = {
          ]
         },
         test: /\.js$/
-      } : null,
+      } : {},
     ],
     strictExportPresence: true,
   },
