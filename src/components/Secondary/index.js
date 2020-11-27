@@ -20,8 +20,8 @@ export default function Secondary({ anchor, mode }) {
   const root = useRef(null);
   const [ initialMode, setMode ] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
-  const classes = useStyles({configuration});
-  const { body, title, url } = secondaryContent || {};
+  const { body, height, title, url, width } = secondaryContent || {};
+  const classes = useStyles({configuration, height, width});
   const { boundaries } = configuration.dragon;
 
   if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {

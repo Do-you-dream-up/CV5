@@ -354,6 +354,23 @@ export default new class Dydu {
   };
 
   /**
+   * Register user visit.
+   *
+   * @returns {Promise}
+   */
+  welcomeCall = (options = {}) => {
+    const data = qs.stringify({
+      contextUuid: null,
+      language: this.getLocale(),
+      qualificationMode: options.qualification,
+      solutionUsed: 'ASSISTANT',
+      space: this.getSpace() || 'default'
+    });
+    const path = `chat/welcomecall/${BOT.id}`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * Retrieve the bot identity.
    *
    * @returns {Promise}
