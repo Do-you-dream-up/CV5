@@ -1,13 +1,16 @@
-import Voice from '@dydu_ai/voice-module';
+//import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+// eslint-disable-next-line no-unused-vars
 import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
+// eslint-disable-next-line no-unused-vars
 import { Cookie } from '../../tools/storage';
+// eslint-disable-next-line no-unused-vars
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
@@ -16,7 +19,6 @@ import useStyles from './styles';
  * Minified version of the chatbox.
  */
 export default function Teaser({ open, toggle }) {
-
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
@@ -56,11 +58,7 @@ export default function Teaser({ open, toggle }) {
             <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
-        { open && voice && <Voice DialogContext={DialogContext}
-                                  configuration={configuration}
-                                  Actions={Actions}
-                                  show={!!Cookie.get(Cookie.names.gdpr)}
-                                  t={t('input.actions.record')} /> }
+        { open && voice && <voice/> }
       </div>
     </div>
   );
