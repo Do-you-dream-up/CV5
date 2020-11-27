@@ -200,7 +200,8 @@
     "sttServerUrl": "",
     "ttsServerUrl": "",
     "voice": "Damien",
-    "voiceSpace": "default"
+    "voiceSpace": "default",
+    "color": "black"
   },
   "welcome": {
     "enable": true,
