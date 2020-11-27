@@ -25,7 +25,7 @@ module.exports = () => {
           parallel: false,
           scripts: ['npm install @dydu_ai/voice-module --no-save'],
         }
-      }) : null,
+      }) : () => {},
       new Clean(),
       new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
       new webpack.DefinePlugin({
