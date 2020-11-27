@@ -151,6 +151,15 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   ]);
 
 
+  useEffect(() => {
+    if (gdprPassed && !Cookie.get(Cookie.names.visitor)) {
+      dydu.welcomeCall({ qualification }).then(
+        () => Cookie.set(Cookie.names.visitor, undefined, Cookie.duration.long),
+        () => {}
+      );
+    }
+  }, [gdprPassed, qualification]);
+
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,

@@ -129,13 +129,12 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": false,
-    "tips": true,
-    "top": true
+    "enable": false
   },
   "root": "dydu-root",
   "secondary": {
     "automatic": true,
+    "fixedDimensions": false,
     "mode": "left",
     "width": 500,
     "transient": true
@@ -200,7 +199,8 @@
     "sttServerUrl": "",
     "ttsServerUrl": "",
     "voice": "Damien",
-    "voiceSpace": "default"
+    "voiceSpace": "default",
+    "color": "black"
   },
   "welcome": {
     "enable": true,

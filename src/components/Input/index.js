@@ -1,4 +1,4 @@
-import Voice from '@dydu_ai/voice-module';
+//import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
+// eslint-disable-next-line no-unused-vars
 import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
@@ -134,17 +135,15 @@ export default function Input({ focus, onRequest, onResponse }) {
                    suggestions={suggestions}
                    theme={theme} />
       { voice && counter === maxLength ?
-        <Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} /> :
+        <voice/> :
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
     </form>
   );
 }
 
-
 Input.defaultProps = {
   focus: true,
 };
-
 
 Input.propTypes = {
   focus: PropTypes.bool,
