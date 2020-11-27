@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -48,11 +48,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
+  const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
-  const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
-  const [gdprPassed, setGdprPassed] = useState(false);
+  // const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
+  // const [gdprPassed, setGdprPassed] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const qualification = !!configuration.application.qualification;
@@ -150,30 +151,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     toggleSecondary,
   ]);
 
-  useEffect(() => {
-    if (gdprShowDisclaimer) {
-      setGdprShowDisclaimer(false);
-      modal(GdprDisclaimer, null, { dismissable: false, variant: 'full' }).then(
-        () => {
-          Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
-          setGdprPassed(true);
-        },
-        () => {
-          setGdprShowDisclaimer(true);
-          toggle(1)();
-        },
-      );
-    }
-  }, [gdprShowDisclaimer, modal, toggle]);
-
-  useEffect(() => {
-    if (!Cookie.get(Cookie.names.gdpr)) {
-      setGdprShowDisclaimer(true);
-    }
-    else {
-      setGdprPassed(true);
-    }
-  }, []);
 
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
@@ -185,8 +162,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
         <div>
           <div className={classes.container}>
-            {gdprPassed && (
-              <>
+            <>
+              <GdprDisclaimer>
                 <Onboarding render>
                   <div tabIndex='0' className={c(
                     'dydu-chatbox-body',
@@ -204,8 +181,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                   {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
                   <Footer onRequest={addRequest} onResponse={addResponse} />
                 </Onboarding>
-              </>
-            )}
+              </GdprDisclaimer>
+            </>
             <Header dialogRef={dialogRef}
                     extended={extended}
                     minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
@@ -233,10 +210,12 @@ Chatbox.propTypes = {
 
 export function ChatboxWrapper(rest) {
   return (
-    <OnboardingProvider>
-      <ModalProvider>
-        <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
-      </ModalProvider>
-    </OnboardingProvider>
+    <GdprProvider>
+      <OnboardingProvider>
+        <ModalProvider>
+          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+        </ModalProvider>
+      </OnboardingProvider>
+    </GdprProvider>
   );
 }
