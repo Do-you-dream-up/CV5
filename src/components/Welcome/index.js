@@ -27,11 +27,11 @@ export default function Welcome() {
         const localWelcome = {text : response.text, sidebar: response.sidebar};
         Local.set(Local.names.welcome, localWelcome);
       });
-  }, []);
+  }, [knowledgeName, welcomeText]);
 
-  return  enable && welcomeText && (
+  return (enable && welcomeText) ? (
     <Interaction live type="response" secondary={welcomeSidebar} className={c('dydu-top')}>
       {[welcomeText]}
     </Interaction>
-  );
+  ) : null;
 }

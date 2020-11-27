@@ -10,6 +10,7 @@ export class Cookie {
     banner: 'dydu.banner',
     gdpr: 'dydu.gdpr',
     locale: 'dydu.locale',
+    visitor: 'dydu.visitor'
   };
 
   static duration = {
