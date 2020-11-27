@@ -27,7 +27,7 @@ export default function GdprDisclaimer({ children, className, component, ...rest
 
   return !gdprPassed ? React.createElement(
     component,
-    {className: c('dydu-gdpr-disclaimer', className), ...rest},
+    {className: c('dydu-gdpr-disclaimer', className, classes.root), ...rest},
     (
       <>
         {body && (
