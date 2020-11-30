@@ -1,6 +1,6 @@
 {
     "banner": {
-        "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
+        "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de <a href>votre actualité </a> ou de celle du marché.</p>",
         "more": "En savoir plus",
         "ok": "Merci"
     },
@@ -15,9 +15,9 @@
         "previous": "Prochain"
     },
     "close": {
-        "body": "Si vous souhaitez ré-ouvrir la chatbot, veuillez s'il vous plaît rafraîchir la page.",
+        "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
         "no": "Annuler",
-        "title": "Fermer la chatbot?",
+        "title": "Faire disparaitre le chatbot ?",
         "yes": "Fermer"
     },
     "contacts": {
@@ -51,18 +51,18 @@
     },
     "feedback": {
         "choices": [
-            "Nous n'avons pas compris votre question",
-            "La solution proposée ne me convient pas",
-            "La réponse n'était pas assez claire"
+            "Je n'ai pas compris votre question",
+            "J'ai bien compris mais la solution proposée ne vous satisfait pas",
+            "Ma réponse n'était pas claire"
         ],
         "comment": {
-            "help": "Qu'est ce qu'il ne va pas?",
-            "placeholder": "Ecrivez ici...",
-            "thanks": "Merci pour votre retour détaillé!"
+            "help": "Avez-vous un commentaire ?",
+            "placeholder": "Saisissez votre commentaire...",
+            "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
         },
         "vote": {
-            "negative": "Retour négatif",
-            "positive": "Retour positif",
+            "negative": "Négatif",
+            "positive": "Positif",
             "thanks": "Merci pour votre retour!"
         }
     },
@@ -76,44 +76,48 @@
             "title": "Vos fonctionnalités"
         },
         "rosetta": {
-            "en": "Anglais",
-            "fr": "Français"
+            "en": "English",
+            "fr": "Français",
+            "es": "Español",
+            "de": "Deutsch",
+            "it": "Italiano",
+            "pt": "Português"
         },
         "translate": "Languages"
     },
     "form": {
-        "cancel": "Annuler",
+        "cancel": "Fermer",
         "submit": "Envoyer"
     },
     "gdpr": {
         "disclaimer": {
-            "body": "<p>En utilisant ce Chatbot vous consentez directement à ce que les données transmises soient exploitées à des fins de réponses automatisées et d'enrichissement du moteur de dialogue avant de faire l'objet d'une anonymisation les supprimant de manière irréversible.</p>",
+            "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site. Les informations que vous nous transmettez permettent de traiter votre demande. Toutefois, aucune donnée personnelle pouvant permettre votre identification ne doit être communiquée dans cet outil, ni aucune donnée sensible, telle qu’une information sur votre état de santé ou sur vos opinions et convictions personnelles.</p>",
             "cancel": "Je refuse",
             "ok": "J'accepte"
         },
         "form": {
             "email": {
-                "placeholder": "Entrez votre email..."
+                "placeholder": "Saisissez votre email..."
             },
             "forget": {
-                "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                "description": "Effacer mes données personnelles"
             },
             "get": {
-                "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+                "description": "Exporter mes données personnelles"
             }
         },
         "get": {
-            "error": "Veuillez nous excuser, il y a malheureusement eu une erreur avec votre requête RGPD.",
-            "success": "Votre demande RGPD a été soumis avec succès."
+            "error": "Une erreur est survenue.",
+            "success": "Votre demande a été envoyée."
         }
     },
     "header": {
         "actions": {
             "close": "Fermer",
             "expand": "Agrandir",
-            "minimize": "Minimiser",
-            "more": "Plus d'infos",
-            "shrink": "Réduire",
+            "minimize": "Réduire",
+            "more": "Plus d'options",
+            "shrink": "Diminuer",
             "tests": "Tests",
             "fontDecrease": "Réduire police",
             "fontIncrease": "Agrandir police"
@@ -124,8 +128,8 @@
         "actions": {
             "send": "Envoie",
             "record": {
-                "start": "Record start",
-                "stop": "Record stop"
+                "start": "Début de l'enregistrement",
+                "stop": "Fin de l'enregistrement"
               },
               "media": {
                 "start": "Start",
@@ -146,9 +150,9 @@
         "skip": "Passer le onboarding",
         "steps": [
             {
-                "body": "<p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+                "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
                 "image": "dydu-onboarding-1.svg",
-                "title": "Préférez des phrases complètes"
+                "title": "Quelques astuces"
             },
             {
                 "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus.</p>",

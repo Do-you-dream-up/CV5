@@ -6,6 +6,9 @@ export default createUseStyles(theme => ({
     '& > *': {
       pointerEvents: 'auto',
     },
+    '& > :not(:last-child)': {
+      marginRight: '.1em',
+    },
     marginRight: '.5em',
     position: 'absolute',
     right: 0,
@@ -26,15 +29,15 @@ export default createUseStyles(theme => ({
     boxShadow: 'none !important',
   }),
   image: () => ({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '2.5em',
-    width: '2.5em',
-    marginRight: '0.6em',
     '& img' : {
       height: '100%',
     },
+    alignItems: 'center',
+    display: 'flex',
+    height: '2.5em',
+    justifyContent: 'center',
+    marginRight: '0.6em',
+    width: '2.5em',
   }),
   logo: () => ({
     '& > .dydu-header-title:only-child': {
