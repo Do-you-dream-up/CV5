@@ -32,6 +32,9 @@ export default createUseStyles(theme => {
       height: configuration.secondary.fixedDimensions ? undefined : height,
       overflowY: 'auto',
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
+      [theme.breakpoints.down('xs')]: {
+        height: '100%',
+      },
     }),
     body: () => ({
       padding: '1.6em',
