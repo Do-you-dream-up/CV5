@@ -23,7 +23,7 @@ import useStyles from './styles';
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({ dialogRef, extended, minimal, onClose, onExpand, onMinimize, ...rest }) {
+export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
@@ -64,18 +64,24 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
     }
   }, [factor, fontSize, maxFontSize, minFontSize]);
 
-  useEffect(() => {
-    if (dialogRef.current && gdprPassed && !!hasActions.fontChange) {
-      dialogRef.current.style.fontSize = `${fontSize}em`;
-      Local.set(Local.names.fontSize, fontSize);
-    }
-  }, [dialogRef, gdprPassed, fontSize, changeFontSize, hasActions.fontChange]);
 
   useEffect(() => {
     if (Local.get(Local.names.fontSize)) {
       setFontSize(Local.get(Local.names.fontSize));
     }
   }, []);
+
+  useEffect(() => {
+    if (gdprRef.current && !gdprPassed && !!hasActions.fontChange) {
+      gdprRef.current.style.fontSize = `${fontSize}em`;
+      Local.set(Local.names.fontSize, fontSize);
+    }
+    else if (dialogRef.current && gdprPassed && !!hasActions.fontChange) {
+      dialogRef.current.style.fontSize = `${fontSize}em`;
+      Local.set(Local.names.fontSize, fontSize);
+    }
+  }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
+
 
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
   const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
@@ -102,7 +108,7 @@ export default function Header({ dialogRef, extended, minimal, onClose, onExpand
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} title={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.more && (!onboardingActive || !onboardingEnable),
+      when: !!hasActions.more && !!gdprPassed && (!onboardingActive || !onboardingEnable),
     },
     {
       children: <img alt={actionFontIncrease} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontIncrease}`} title={actionFontIncrease} />,
@@ -179,6 +185,10 @@ Header.propTypes = {
     PropTypes.shape({ current: PropTypes.any })
   ]),
   extended: PropTypes.bool,
+  gdprRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
   minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onExpand: PropTypes.func,
