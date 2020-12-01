@@ -17,7 +17,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
 
   const RE_EMAIL = /(.+)(<a href="mailto:\S+@\S+\.\S+").*(>.+<\/a>)(.+)/g;
   const RE_LINK = /(<a href="(http(s)?:\/\/)?\S+\.\S+").*(>.+<\/a>)/g;
-  const RE_ONCLICK = /onclick=".+"/gm;
+  const RE_ONCLICK = /onclick=".+?"/gm;
 
   const htmlCleanup = html && html.match(RE_EMAIL) || html && html.match(RE_LINK) ?
                       html.replace(RE_ONCLICK, '') :
