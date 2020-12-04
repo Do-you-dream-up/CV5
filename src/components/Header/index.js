@@ -50,7 +50,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = Cookie.get(Cookie.names.gdpr);
   const singleTab = configuration.tabs.items.length === 1 ? true : false;
-  console.log('typeres', typeResponse);
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
