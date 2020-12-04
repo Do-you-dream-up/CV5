@@ -82,11 +82,13 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     }
   }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
 
-
+  const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto)$/g;
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
   const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 
-  const imageType = typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
+  const imageType = typeResponse && typeResponse.match(RE_UNDERSTOOD) ?
+                    imageLink.understood :
+                    typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
                     imageLink.misunderstood :
                     typeResponse && typeResponse.match(RE_REWORD) ?
                     imageLink.reword :
