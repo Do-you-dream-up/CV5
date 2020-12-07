@@ -9,7 +9,7 @@ export default createUseStyles(theme => ({
   },
   root: {
     '@global': {
-      'a[href], .dydu-link': {
+      'a, .dydu-link': {
         '&:hover': {
           textDecoration: 'underline',
         },

@@ -41,7 +41,7 @@ export default function Top({ className, component, ...rest }) {
         <ol>
           {items.map(({ reword }, index) => {
             const onAsk = () => window.dydu.chat.ask(reword, {'type': 'redirection_knowledge'});
-            return <li key={index}><a children={reword} onClick={onAsk} href='#' /></li>;
+            return <li key={index}><a children={reword} onClick={onAsk} /></li>;
           })}
         </ol>
       </PrettyHtml>

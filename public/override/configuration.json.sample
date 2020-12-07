@@ -96,7 +96,8 @@
       "imageLink": {
         "default": "dydu-logo.svg",
         "misunderstood": "dydu-misunderstood-white.svg",
-        "reword": "dydu-reword-white.svg"
+        "reword": "dydu-reword-white.svg",
+        "understood": "dydu-understood-white.svg"
       } 
     }
   },
