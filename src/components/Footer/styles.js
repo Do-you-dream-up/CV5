@@ -17,6 +17,7 @@ export default createUseStyles(theme => ({
     boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
     display: 'flex',
+    flexShrink: 0,
     position: 'relative',
     width: '100%',
     [theme.breakpoints.down('xs')]: {
