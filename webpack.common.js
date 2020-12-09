@@ -13,6 +13,12 @@ module.exports = {
   module: {
     rules: [
       {
+        enforce: 'pre',
+        include: Path.resolve(__dirname, 'src/'),
+        loader: 'eslint-loader',
+        test: /\.js$/,
+      },
+      {
         include: Path.resolve(__dirname, 'src/'),
         loader: 'babel-loader',
         test: /\.js$/,
@@ -26,6 +32,7 @@ module.exports = {
         test: /\.(eot|png|svg|ttf|woff|woff2)$/,
       },
       configuration.Voice && configuration.Voice.enable ? {
+        enforce: 'pre',
         include: Path.resolve(__dirname, 'src/'),
         loader: 'string-replace-loader',
         options: {

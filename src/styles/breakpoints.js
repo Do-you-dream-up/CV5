@@ -1,6 +1,6 @@
 const KEYS = ['xs', 'sm', 'md', 'lg', 'xl'];
 const UNIT = 'px';
-const VALUES = {xs: 0, sm: 600, md: 960, lg: 1280, xl: 1920};
+const VALUES = {lg: 1280, md: 960, sm: 600, xl: 1920, xs: 0};
 
 
 const between = (start, end) => {
@@ -41,11 +41,11 @@ const width = key => {
 
 
 export default {
-  keys: KEYS,
-  values: VALUES,
   between,
   down,
+  keys: KEYS,
   only,
   up,
+  values: VALUES,
   width,
 };

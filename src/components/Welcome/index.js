@@ -21,10 +21,10 @@ export default function Welcome() {
       setWelcomeSidebar((Local.get(Local.names.welcome)).sidebar);
       return;
      }
-      dydu.talk(knowledgeName, {hide: true, doNotSave: true}).then(response => {
+      dydu.talk(knowledgeName, {doNotSave: true, hide: true}).then(response => {
         setWelcomeText(response.text);
         setWelcomeSidebar(response.sidebar);
-        const localWelcome = {text : response.text, sidebar: response.sidebar};
+        const localWelcome = { sidebar: response.sidebar, text : response.text};
         Local.set(Local.names.welcome, localWelcome);
       });
   }, [knowledgeName, welcomeText]);

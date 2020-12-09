@@ -11,6 +11,7 @@ export default createUseStyles(theme => ({
     marginLeft: '.5em',
     overflow: 'hidden',
     width: 64,
+    // eslint-disable-next-line sort-keys
     '& img' : {
       height: '100%'
     },
