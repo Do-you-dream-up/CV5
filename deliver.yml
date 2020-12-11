@@ -13,20 +13,18 @@
         msg: "{{ configuration }}"
     - name: "Make Directory"
       file:
-        path: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ cconfiguration.application.directory }}"
+        path: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory | 'master'}}"
         state: directory
         recurse: yes
         mode: '0755'
-      when: configuration.application.directory != ""
     - name: "Synchronize Content"
       synchronize:
         src: build/
-        dest: "/var/opt/docker/volumes/cdn_nginx_www/_dataconfiguration/{{ configuration.application.directory }}/{{ bot.ref }}/"
+        dest: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory | 'master' }}"
         archive: no
         recursive: yes
         times: no
         checksum: yes
         delete: yes
         private_key: .ssh/id_ed25519
-      when: bconfiguration.application.directory != ""
 ...
