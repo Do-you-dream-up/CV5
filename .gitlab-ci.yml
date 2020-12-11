@@ -1,23 +1,23 @@
-image: node:latest
+---
 
-services:
-  - docker:dind
+stages:
+  - delivery
 
-variables:
-  DOCKER_DRIVER: overlay2
-
-build:
-  script:
-    - apt-get update -qq && apt-get install -y -qq lftp
-    - cp -n public/override/bot.json.sample public/override/bot.json
-    - cp -n public/override/configuration.json.sample public/override/configuration.json
-    - cp -n public/override/theme.json.sample public/override/theme.json
-    - cp -n public/override/style.css.sample public/override/style.css
-    - npm i
+deliver:
+  stage: delivery
+  image: node:latest
+  before_script:
+    - npm install
     - npm run build
-    - lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/; mirror --reverse build ./html/bliss/${CI_COMMIT_REF_NAME} --ignore-time --parallel=10; quit"
-    #- npm run build:documentation
-    #- lftp ftp://${FTP_USERNAME}:${FTP_PASSWORD}@${FTP_HOST}:${FTP_PORT} -e "set ssl:verify-certificate false; rm -rf ./html/bliss/${CI_COMMIT_REF_NAME}/documentation/; mirror --reverse styleguide ./html/bliss/${CI_COMMIT_REF_NAME}/documentation --ignore-time --parallel=10; quit"
+  script:
+    - apt update
+    - apt install -y rsync python3-pip
+    - pip3 --no-cache-dir install ansible
+    - chmod 0700 .ssh
+    - chmod 0600 .ssh/id_ed25519
+    - ansible-playbook --inventory hosts.yml deliver.yml
   only:
-    - master
-    - production
+    refs:
+      - project/demo1
+
+...

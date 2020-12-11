@@ -1,0 +1,32 @@
+---
+# deliver.yml: playbook file for ansible
+
+- name: "Deliver"
+  hosts: all
+  tasks:
+    - name: "Include Vars"
+      include_vars:
+        name: configuration
+        file: public/override/configuration.json
+    - name: "Debug Vars"
+      debug:
+        msg: "{{ configuration }}"
+    - name: "Make Directory"
+      file:
+        path: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ cconfiguration.application.directory }}"
+        state: directory
+        recurse: yes
+        mode: '0755'
+      when: configuration.application.directory != ""
+    - name: "Synchronize Content"
+      synchronize:
+        src: build/
+        dest: "/var/opt/docker/volumes/cdn_nginx_www/_dataconfiguration/{{ configuration.application.directory }}/{{ bot.ref }}/"
+        archive: no
+        recursive: yes
+        times: no
+        checksum: yes
+        delete: yes
+        private_key: .ssh/id_ed25519
+      when: bconfiguration.application.directory != ""
+...

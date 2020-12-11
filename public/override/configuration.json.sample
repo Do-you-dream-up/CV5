@@ -4,7 +4,8 @@
     "qualification": true,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "publicPath": "./"
+    "cdn":"",
+    "directory":""
   },
   "avatar": {
     "background": false,
