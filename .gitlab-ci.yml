@@ -18,6 +18,6 @@ deliver:
     - ansible-playbook --inventory hosts.yml deliver.yml
   only:
     refs:
-      - project/demo1
+      - master
 
 ...
