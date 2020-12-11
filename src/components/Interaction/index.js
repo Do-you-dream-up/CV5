@@ -27,6 +27,7 @@ export default function Interaction({
   scroll,
   secondary,
   steps,
+  templatename,
   thinking,
   type,
 }) {
@@ -43,10 +44,11 @@ export default function Interaction({
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
+
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
-        if (carousel) {
+        if (carousel || templatename) {
           setBubbles(previous => [...previous, ...newBubbles]);
           setHasLoader(false);
         }
@@ -66,28 +68,33 @@ export default function Interaction({
       setBubbles(newBubbles);
       setHasLoader(false);
     }
-  }, [carousel, delay, thinking]);
+  }, [carousel, delay, templatename, thinking]);
 
   useEffect(() => {
     if (!ready && children) {
       setReady(true);
       let content = children;
-      if (!carousel) {
-        content = content.reduce((accumulator, it) => (
-          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
-        ), []);
+      if (templatename) {
+        addBubbles(content);
       }
-      if (carousel) {
-        content = content.reduce((accumulator, it) => (
+      else {
+        if (!carousel) {
+          content = content.reduce((accumulator, it) => (
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
-        ), []);
-      }
+          ), []);
+        }
+        if (carousel) {
+          content = content.reduce((accumulator, it) => (
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
+          ), []);
+        }
       if (typeof(children) === String && children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
       }
       addBubbles(content.filter(it => it));
+      }
     }
-  }, [addBubbles, carousel, children, ready]);
+  }, [addBubbles, carousel, children, ready, templatename]);
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
@@ -112,10 +119,11 @@ export default function Interaction({
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };
-              return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} {...attributes} />;
+              return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} templatename={templatename} {...attributes} />;
             }),
             className: c('dydu-interaction-bubbles', classes.bubbles),
             steps: steps,
+            templatename: templatename,
           },
         )}
         {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
@@ -141,6 +149,7 @@ Interaction.propTypes = {
   scroll: PropTypes.bool,
   secondary: PropTypes.object,
   steps: PropTypes.array,
+  templatename: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

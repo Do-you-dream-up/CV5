@@ -47,7 +47,7 @@ export function DialogProvider({ children }) {
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(response => {
-    const { askFeedback, guiAction, text, typeResponse, urlRedirect } = response;
+    const { askFeedback, guiAction, templateData, templateName, text, typeResponse, urlRedirect } = response;
     const steps = parseSteps(response);
     setText(text);
     setTypeResponse(typeResponse);
@@ -71,9 +71,10 @@ export function DialogProvider({ children }) {
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
-                   children={steps.map(({ text }) => text)}
+                   children={ text ? steps.map(({ text }) => text) : templateData}
                    type="response"
                    steps={steps}
+                   templatename={templateName}
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
