@@ -7,14 +7,14 @@ deliver:
   stage: delivery
   image: node:latest
   before_script:
-    - npm install
-    - npm run build
-  script:
-    - apt update
     - cp -n public/override/configuration.json.sample public/override/configuration.json
     - cp -n public/override/bot.json.sample public/override/bot.json
     - cp -n public/override/theme.json.sample public/override/theme.json
     - cp -n public/override/style.css.sample public/override/style.css
+    - npm install
+    - npm run build
+  script:
+    - apt update
     - apt install -y rsync python3-pip
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
