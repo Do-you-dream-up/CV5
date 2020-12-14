@@ -17,7 +17,7 @@
         state: directory
         recurse: yes
         mode: '0755'
-      when: bconfiguration.application.directory != ""
+      when: configuration.application.directory != ""
     - name: "Synchronize Content"
       synchronize:
         src: build/
@@ -28,5 +28,5 @@
         checksum: yes
         delete: yes
         private_key: .ssh/id_ed25519
-      when: bconfiguration.application.directory != ""
+      when: configuration.application.directory != ""
 ...
