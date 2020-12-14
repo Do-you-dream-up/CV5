@@ -18,6 +18,10 @@ deliver:
     - ansible-playbook --inventory hosts.yml deliver.yml
   only:
     refs:
-      - non
+      - production
+      - development
+      - project/region-auvergne-rhone-alpes
+      - project/city-drop
+      - project
 
 ...
