@@ -42,6 +42,8 @@ export default function Interaction({
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
+  const carouselTemplate = templatename === 'dydu_carousel_001';
+  const productTemplate = templatename === 'dydu_product_001';
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
 
@@ -74,8 +76,36 @@ export default function Interaction({
     if (!ready && children) {
       setReady(true);
       let content = children;
-      if (templatename) {
+      if (productTemplate) {
         addBubbles(content);
+      }
+      else if (carouselTemplate) {
+        let temp = JSON.parse(content);
+        let product1 = {}, product2 = {}, product3 = {}, product4 = {}, product5 = {};
+        for (const i in temp) {
+          if (i.substr(i.length - 1) == 1) {
+            product1[i] = temp[i];
+          }
+          else if (i.substr(i.length - 1) == 2) {
+            product2[i] = temp[i];
+          }
+          else if (i.substr(i.length - 1) == 3) {
+            product3[i] = temp[i];
+          }
+          else if (i.substr(i.length - 1) == 4) {
+            product4[i] = temp[i];
+          }
+          else {
+            product5[i] = temp[i];
+          }
+        }
+        let p1 = JSON.stringify(product1);
+        let p2 = JSON.stringify(product2);
+        let p3 = JSON.stringify(product3);
+        let p4 = JSON.stringify(product4);
+        let p5 = JSON.stringify(product5);
+        let results = [p1, p2, p3, p4, p5];
+        addBubbles(results.filter(it => it));
       }
       else {
         if (!carousel) {
@@ -94,7 +124,7 @@ export default function Interaction({
       addBubbles(content.filter(it => it));
       }
     }
-  }, [addBubbles, carousel, children, ready, templatename]);
+  }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
@@ -105,10 +135,10 @@ export default function Interaction({
       {[classes.barf]: carousel && bubbles.length},
       className,
     )}>
-      {hasAvatar && (hasLoader || !carousel) && <Avatar type={type} />}
+      {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
         {bubbles.length > 0 && React.createElement(
-          carousel ? Carousel : 'div',
+          carousel || carouselTemplate ? Carousel : 'div',
           {
             children: bubbles.map((it, index) => {
               const attributes = {

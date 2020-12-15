@@ -8,7 +8,7 @@ export default function ProductTemplate({html}) {
 
     const { configuration } = useContext(ConfigurationContext);
     const classes = useStyles({configuration});
-    const {button1, button2, button3, imageLink, imageName, numeric, subtitle, title} = JSON.parse(html);
+    const {buttonA, buttonB, buttonC, imageLink, imageName, numeric, subtitle, title} = JSON.parse(html);
 
     return (
       <div className={c('dydu-product-template', classes.root)}>
@@ -21,9 +21,9 @@ export default function ProductTemplate({html}) {
           {subtitle && <div dangerouslySetInnerHTML={{__html: subtitle}} />}
         </div>
         <div className={c('dydu-product-template-button', classes.button)}>
-          {button1 && <div dangerouslySetInnerHTML={{__html: button1}} />}
-          {button2 && <div dangerouslySetInnerHTML={{__html: button2}} />}
-          {button3 && <div dangerouslySetInnerHTML={{__html: button3}} />}
+          {buttonA && <div dangerouslySetInnerHTML={{__html: buttonA}} />}
+          {buttonB && <div dangerouslySetInnerHTML={{__html: buttonB}} />}
+          {buttonC && <div dangerouslySetInnerHTML={{__html: buttonC}} />}
         </div>
       </div>
     );

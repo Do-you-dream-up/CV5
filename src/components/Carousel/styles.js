@@ -49,5 +49,5 @@ export default createUseStyles(theme => ({
     flexDirection: 'row',
     transitionDuration: '.25s',
     transitionProperty: 'transform',
-  }),
+  })
 }));

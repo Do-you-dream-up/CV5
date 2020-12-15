@@ -14,15 +14,15 @@ import useStyles from  './styles';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({ children, className, steps, ...rest }) {
+export default function Carousel({ children, className, steps, templatename, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { offset, width } = configuration.carousel;
-  const hasBullets = !!configuration.carousel.bullets;
-  const hasControls = !!configuration.carousel.controls;
+  const { offset, width } = templatename ? configuration.templateCarousel : configuration.carousel;
+  const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
+  const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
-  const [ step, setStep ] = useState(steps[index]);
+  const [ step, setStep ] = useState(0);
   const { t } = useTranslation('translation');
   const previous = t('carousel.previous');
   const next = t('carousel.next');
@@ -57,7 +57,7 @@ export default function Carousel({ children, className, steps, ...rest }) {
   }, [secondaryActive, step, toggleSecondary]);
 
   useEffect(() => {
-    if (step && step.sidebar) {
+    if (steps && step && step.sidebar) {
       setStep(steps[index]);
       onToggle(Local.get(Local.names.secondary) || (automaticSecondary));
     }
@@ -96,4 +96,5 @@ Carousel.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
   className: PropTypes.string,
   steps: PropTypes.array,
+  templatename: PropTypes.string
 };

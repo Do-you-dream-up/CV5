@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import CarouselTemplate from  '../CarouselTemplate';
 import ProductTemplate from  '../ProductTemplate';
 import useStyles from './styles';
 
@@ -29,7 +30,8 @@ export default function PrettyHtml({ children, className, component, hasExternal
     <>
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
-      {templatename && <ProductTemplate html={html} />}
+      {templatename === 'dydu_product_001' && <ProductTemplate html={html} />}
+      {templatename === 'dydu_carousel_001' && <CarouselTemplate html={html} />}
       {!templatename && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />}
       {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />}
     </>

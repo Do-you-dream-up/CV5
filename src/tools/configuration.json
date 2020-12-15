@@ -191,6 +191,12 @@
     "bottom": 16,
     "right": 16
   },
+  "templateCarousel": {
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "width": 65
+  },
   "top": {
     "size": 3
   },
