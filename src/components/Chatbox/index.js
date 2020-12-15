@@ -8,7 +8,7 @@ import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
-import { TabProvider } from '../../contexts/TabContext';
+import { TabContext, TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { Cookie } from '../../tools/storage';
@@ -47,6 +47,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
@@ -166,46 +167,44 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     [classes.rootHidden]: !open,
   });
   return (
-    <TabProvider>
-      <div className={classnames} ref={root} {...rest} role='region' aria-label='chatbot window'>
-        <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
-        <div>
-          <div className={classes.container}>
-            <>
-              <GdprDisclaimer gdprRef={gdprRef}>
-                <Onboarding render>
-                  <div tabIndex='0' className={c(
-                    'dydu-chatbox-body',
-                    classes.body,
-                    { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
-                  )}>
-                    <Tab component={Dialog}
-                         dialogRef={dialogRef}
-                         interactions={interactions}
-                         onAdd={add}
-                         render
-                         value="dialog" />
-                    <Tab component={Contacts} value="contacts" />
-                  </div>
-                  {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                  <Footer onRequest={addRequest} onResponse={addResponse} />
-                </Onboarding>
-              </GdprDisclaimer>
-            </>
-            <Header dialogRef={dialogRef}
-                    gdprRef={gdprRef}
-                    extended={extended}
-                    minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
-                    onClose={onClose}
-                    onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
-                    onMinimize={onMinimize}
-                    style={{ order: -1 }} />
-            <Modal />
-            {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
-          </div>
+    <div className={classnames} ref={root} {...rest} role='region' aria-label='chatbot window'>
+      <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
+      <div>
+        <div className={classes.container}>
+          <>
+            <GdprDisclaimer gdprRef={gdprRef}>
+              <Onboarding render>
+                <div tabIndex='0' className={c(
+                  'dydu-chatbox-body',
+                  classes.body,
+                  { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
+                )}>
+                  <Tab component={Dialog}
+                       dialogRef={dialogRef}
+                       interactions={interactions}
+                       onAdd={add}
+                       render
+                       value="dialog" />
+                  <Tab component={Contacts} value="contacts" />
+                </div>
+                {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+                { !current && <Footer onRequest={addRequest} onResponse={addResponse} />}
+              </Onboarding>
+            </GdprDisclaimer>
+          </>
+          <Header dialogRef={dialogRef}
+                  gdprRef={gdprRef}
+                  extended={extended}
+                  minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
+                  onClose={onClose}
+                  onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                  onMinimize={onMinimize}
+                  style={{ order: -1 }} />
+          <Modal />
+          {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
         </div>
       </div>
-    </TabProvider>
+    </div>
   );
 }
 
@@ -223,7 +222,9 @@ export function ChatboxWrapper(rest) {
     <GdprProvider>
       <OnboardingProvider>
         <ModalProvider>
-          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+          <TabProvider>
+            <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+          </TabProvider>
         </ModalProvider>
       </OnboardingProvider>
     </GdprProvider>
