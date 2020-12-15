@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSwipeable } from 'react-swipeable';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import { DialogContext } from  '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
@@ -29,6 +30,13 @@ export default function Carousel({ children, className, steps, templatename, ...
   const length = React.Children.count(children);
   const automaticSecondary = !!configuration.secondary.automatic;
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => onNext(),
+    onSwipedRight: () => onPrevious(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
 
   const hasNext = () => index < length - 1;
   const hasPrevious = () => index > 0;
@@ -69,7 +77,7 @@ export default function Carousel({ children, className, steps, templatename, ...
            className={c('dydu-carousel-steps', classes.steps)}
            style={{transform: `translateX(${index * width * -1 + offset}%)`}}>
         {children.map((it, i) => (
-          <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
+          <div {...handlers} children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
       </div>
       {!!hasBullets && length > 0 && (
