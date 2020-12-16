@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 // eslint-disable-next-line no-unused-vars
@@ -19,6 +20,7 @@ import useStyles from './styles';
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ counter = 100, setCounter ] = useState(configuration.input.maxLength);
@@ -77,6 +79,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     if (text) {
       reset();
       onRequest(text);
+      event('questionSent', text);
       talk(text, {qualification}).then(onResponse);
     }
     setTyping(false);

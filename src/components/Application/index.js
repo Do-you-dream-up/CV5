@@ -3,6 +3,7 @@ import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import useStyles from './styles';
@@ -27,6 +28,7 @@ const Wizard = React.lazy(() => import(
 export default function Application() {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({configuration});
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
   const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
@@ -44,6 +46,11 @@ export default function Application() {
     setOpen(mode > 1);
     Local.set(Local.names.open, Math.max(mode, 1));
   }, [mode]);
+
+  useEffect(() => {
+    event('loadChatbox');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={c('dydu-application', classes.root)}>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContext} from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import Form from '../Form';
 import Interaction from '../Interaction';
@@ -16,12 +17,16 @@ import useStyles from './styles';
 export default function Gdpr({ onResolve, scroll, thinking }) {
 
   const { setPrompt } = useContext(DialogContext);
+  const event = useContext(EventsContext).onEvent('gdpr');
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
 
   const onSubmit = ({ email, withForget, withGet }) => {
     setPrompt('');
     const method = [withForget && 'Delete', withGet && 'Get'].filter(it => it);
+    method.map((val) => {
+      event(`${val.toLowerCase()}PersonalData`);
+    });
     dydu.gdpr({email, method}).then(
       () => window.dydu.chat.reply(t('gdpr.get.success')),
       () => window.dydu.chat.reply(t('gdpr.get.error')),
