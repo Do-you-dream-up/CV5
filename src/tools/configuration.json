@@ -130,7 +130,12 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": false
+    "enable": false,
+    "imageLinks": [
+      "dydu-onboarding-1.svg",
+      "dydu-onboarding-2.svg",
+      "dydu-onboarding-3.svg"
+    ]
   },
   "root": "dydu-root",
   "secondary": {
