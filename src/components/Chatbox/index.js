@@ -82,7 +82,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   useEffect(() => {
     if (!ready) {
-      window.dydu = {};
+      window.dydu = {...window.dydu};
 
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
