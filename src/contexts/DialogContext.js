@@ -8,12 +8,15 @@ import useViewport from '../tools/hooks/viewport';
 import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
 import { ConfigurationContext } from './ConfigurationContext';
+import { EventsContext } from './EventsContext';
 
+const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const [ disabled, setDisabled ] = useState(false);
   const [ interactions, setInteractions ] = useState([]);
   const [ locked, setLocked ] = useState(false);
@@ -68,6 +71,11 @@ export function DialogProvider({ children }) {
         }
       });
     }
+
+    if (typeResponse && typeResponse.match(RE_REWORD)) {
+      event('rewordDisplay');
+    }
+
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
@@ -77,7 +85,7 @@ export function DialogProvider({ children }) {
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, toggleSecondary]);
+  }, [add, event, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);

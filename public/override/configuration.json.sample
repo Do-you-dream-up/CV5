@@ -46,13 +46,33 @@
     "persist": true
   },
   "events": {
-    "active": true,
+    "active": false,
     "features": {
       "chatbox": {
-        "onMinimize": ["minimize"]
+        "loadChatbox": ["chatboxLoad"],
+        "onMinimize": ["minimize"],
+        "questionSent": ["questionSent"],
+        "rewordDisplay": ["rewordDisplay"]
+      },
+      "gdpr":{
+        "acceptGdpr": ["acceptGdpr"],
+        "getPersonalData": ["getPersonalData"],
+        "deletePersonalData": ["deletePersonalData"],
+        "displayGdpr": ["displayGdpr"]
+      },
+      "onboarding": {
+        "onboardingDisplay": ["onboardingDisplay"],
+        "onboardingCompleted": ["onboardingCompleted"]
+      },
+      "tab": {
+        "contactDisplay": ["contactDisplay"]
       },
       "teaser": {
-        "onClick": ["foo", "bar"]
+        "onClick": ["teaserClick"]
+      },
+      "top":{
+        "topDisplay": ["topDisplay"],
+        "topClicked": ["topClicked"]
       }
     },
     "verbosity": 2

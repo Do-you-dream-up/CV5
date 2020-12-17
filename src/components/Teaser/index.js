@@ -29,7 +29,7 @@ export default function Teaser({ open, toggle }) {
   const voice = configuration.Voice ? configuration.Voice.enable : false;
 
   const onClick = () => {
-    event('onClick', 1, 2, 4, 'asdf');
+    event('onClick');
     toggle(2)();
   };
 

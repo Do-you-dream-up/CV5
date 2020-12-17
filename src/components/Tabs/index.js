@@ -1,7 +1,8 @@
 import c from 'classnames';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { TabContext } from '../../contexts/TabContext';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
@@ -14,10 +15,16 @@ import useStyles from './styles';
 export default function Tabs() {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('tab');
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({configuration, current, length: tabs.length});
   const { ready, t } = useTranslation('translation');
   const { title: hasTitle } = configuration.tabs;
+
+  useEffect(() => {
+    if (current === 1)
+      event('contactDisplay');
+  }, [current, event]);
 
   return !!tabs.length && (
     <div className={c('dydu-tabs', classes.root)}>

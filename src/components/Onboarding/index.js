@@ -1,8 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import sanitize from '../../tools/sanitize';
 import Button from '../Button';
@@ -22,6 +23,7 @@ export default function Onboarding({ children, render }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } = useContext(OnboardingContext) || {};
+  const event = useContext(EventsContext).onEvent('onboarding');
   const classes = useStyles({configuration});
   const { t } = useTranslation('translation');
   const should = render && active;
@@ -31,6 +33,12 @@ export default function Onboarding({ children, render }) {
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
+
+  useEffect(() => {
+    if (active)
+      event('onboardingDisplay');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return !enable ? children : should ? (
     <div className={c('dydu-onboarding', classes.root)}>
