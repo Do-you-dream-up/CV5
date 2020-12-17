@@ -11,7 +11,7 @@ export function GdprProvider({ children }) {
   const onAccept = useCallback(() => {
     setGdprPassed(true);
     event('acceptGdpr');
-    Cookie.set(Cookie.names.gdpr);
+    Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
