@@ -45,6 +45,9 @@ export default createUseStyles(theme => ({
     minWidth: `${width}%`,
   }),
   steps: () => ({
+    '& .dydu-bubble-response' : {
+      alignItems: 'normal',
+    },
     display: 'flex',
     flexDirection: 'row',
     transitionDuration: '.25s',
