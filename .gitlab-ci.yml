@@ -22,6 +22,8 @@ deliver:
       - development
       - project/region-auvergne-rhone-alpes
       - project/city-drop
-      - project
+      - project/demo1
+      - project/demo2
+      - project/demo3
 
 ...
