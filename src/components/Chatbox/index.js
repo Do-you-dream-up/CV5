@@ -134,23 +134,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.reword = window.dydu.chat.ask;
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
+    window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0]);
     setReady(true);
-  }, [
-    addResponse,
-    ask,
-    empty,
-    i,
-    modal,
-    ready,
-    setDisabled,
-    setLocked,
-    setPlaceholder,
-    setPrompt,
-    setSecondary,
-    t,
-    toggle,
-    toggleSecondary,
-  ]);
+  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 
 
   useEffect(() => {
