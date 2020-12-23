@@ -25,5 +25,6 @@ deliver:
       - project/demo1
       - project/demo2
       - project/demo3
+      - project/hector-vb
 
 ...
