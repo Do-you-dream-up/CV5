@@ -27,5 +27,6 @@ deliver:
       - project/demo2
       - project/demo3
       - project/hector-vb
+      - project/ugap
 
 ...
