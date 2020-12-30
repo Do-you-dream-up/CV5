@@ -24,7 +24,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "width": 90
+    "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
@@ -220,7 +220,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "width": 65
+    "offsetBetweenCard": 64
   },
   "top": {
     "size": 3

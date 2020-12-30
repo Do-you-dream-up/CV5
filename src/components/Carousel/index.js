@@ -18,10 +18,9 @@ import useStyles from  './styles';
 export default function Carousel({ children, className, steps, templatename, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { offset, width } = templatename ? configuration.templateCarousel : configuration.carousel;
+  const { offset, offsetBetweenCard} = templatename ? configuration.templateCarousel : configuration.carousel;
   const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
-  const classes = useStyles({offset, width});
   const [ index, setIndex ] = useState(0);
   const [ step, setStep ] = useState(0);
   const { t } = useTranslation('translation');
@@ -30,6 +29,7 @@ export default function Carousel({ children, className, steps, templatename, ...
   const length = React.Children.count(children);
   const automaticSecondary = !!configuration.secondary.automatic;
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
+  const classes = useStyles({index, length, offset, offsetBetweenCard});
 
   const handlers = useSwipeable({
     onSwipedLeft: () => onNext(),
@@ -74,8 +74,7 @@ export default function Carousel({ children, className, steps, templatename, ...
   return (
     <div className={c('dydu-carousel', classes.root), className} {...rest}>
       <div children={children}
-           className={c('dydu-carousel-steps', classes.steps)}
-           style={{transform: `translateX(${index * width * -1 + offset}%)`}}>
+           className={c('dydu-carousel-steps', classes.steps)}>
         {children.map((it, i) => (
           <div {...handlers} children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
