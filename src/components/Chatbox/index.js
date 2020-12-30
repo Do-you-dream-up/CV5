@@ -82,7 +82,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   useEffect(() => {
     if (!ready) {
-      window.dydu = {};
+      window.dydu = {...window.dydu};
 
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
@@ -135,23 +135,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
+    if (configuration.spaces.items && configuration.spaces.items.length === 1)
+      window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [
-    addResponse,
-    ask,
-    empty,
-    i,
-    modal,
-    ready,
-    setDisabled,
-    setLocked,
-    setPlaceholder,
-    setPrompt,
-    setSecondary,
-    t,
-    toggle,
-    toggleSecondary,
-  ]);
+  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
 
 
   useEffect(() => {

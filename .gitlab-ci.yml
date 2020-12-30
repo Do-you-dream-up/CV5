@@ -7,6 +7,7 @@ deliver:
   stage: delivery
   image: node:latest
   before_script:
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
     - npm run build
   script:
@@ -22,6 +23,10 @@ deliver:
       - development
       - project/region-auvergne-rhone-alpes
       - project/city-drop
-      - project
+      - project/demo1
+      - project/demo2
+      - project/demo3
+      - project/hector-vb
+      - project/ugap
 
 ...
