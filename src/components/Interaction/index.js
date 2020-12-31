@@ -46,7 +46,6 @@ export default function Interaction({
   const productTemplate = templatename === 'dydu_product_001';
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
-
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
@@ -120,9 +119,10 @@ export default function Interaction({
         }
       if (typeof(children) === String && children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
+        }
+        addBubbles(content.filter(it => it));
       }
       addBubbles(content.filter(it => it));
-      }
     }
   }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
 
