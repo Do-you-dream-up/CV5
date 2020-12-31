@@ -25,7 +25,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "width": 90
+     "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
@@ -216,6 +216,12 @@
   "teaser": {
     "bottom": 16,
     "right": 16
+  },
+  "templateCarousel": {
+      "bullets": true,
+      "controls": true,
+      "offset": 5,
+      "offsetBetweenCard": 64
   },
   "top": {
     "size": 3

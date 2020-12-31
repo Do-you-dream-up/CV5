@@ -33,9 +33,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
           <Interaction children={it.text || it.templateData}
+                       templatename={it.templateName}
                        history
                        secondary={it.sidebar}
-                       templatename={it.templateName}
                        type="response" />,
         );
         return accumulator;

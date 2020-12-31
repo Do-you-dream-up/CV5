@@ -16,9 +16,9 @@ export default createUseStyles(theme => ({
       backgroundColor: theme.palette.background.bullet,
       borderRadius: '50%',
       cursor: 'pointer',
-      height: '.4em',
+      height: '0.375em',
       margin: [[0, '.15em']],
-      width: '.4em',
+      width: '0.375em',
     },
     display: 'flex',
     justifyContent: 'center',
@@ -35,19 +35,29 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
     position: 'relative',
   }),
-  step: ({ width }) => ({
+  step: ({length, offsetBetweenCard}) => ({
+    '& .dydu-bubble': {
+      height: '100%',
+    },
     '& > *': {
       flexGrow: 1,
       margin: [[0, '.25em'], '!important'],
     },
-    display: 'flex',
+    float: 'left',
+    height: '100%',
     margin: [[0], '!important'],
-    minWidth: `${width}%`,
+    width: `${offsetBetweenCard / length}%`,
   }),
-  steps: () => ({
-    display: 'flex',
+  steps: ({index, length, offsetBetweenCard}) => ({
+    '& .dydu-bubble-response' : {
+      alignItems: 'normal',
+    },
+    display: 'block',
     flexDirection: 'row',
+    overflow: 'hidden',
+    transform: `translate3d(${(index * -offsetBetweenCard / length)}%, 0, 0)`,
     transitionDuration: '.25s',
     transitionProperty: 'transform',
-  }),
+    width: `${length * 100}%`,
+  })
 }));

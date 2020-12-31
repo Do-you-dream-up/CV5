@@ -6,10 +6,10 @@ export default createUseStyles(theme => ({
     marginLeft: [[0], '!important'],
     marginRight: [[0], '!important'],
   },
-  base: () => ({
+  base: {
     display: 'flex',
-    margin: '1em',
-  }),
+    margin: [['1em'], '!important'],
+  },
   bubble: () => ({
     '&:not(:last-child)': {
       marginBottom: '.5em',
