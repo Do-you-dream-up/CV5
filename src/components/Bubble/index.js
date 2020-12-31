@@ -18,7 +18,7 @@ import useStyles from  './styles';
  * request should be displayed on the right of the conversation while its
  * response should appear in front, on the left.
  */
-export default function Bubble({ children, className, component, hasExternalLink, history, html, secondary, step, thinking, type }) {
+export default function Bubble({ children, className, component, hasExternalLink, history, html, secondary, step, templatename, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration});
@@ -48,7 +48,7 @@ export default function Bubble({ children, className, component, hasExternalLink
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex='-1' className={c('dydu-bubble-body', classes.body)}>
-        {(children || html) && <PrettyHtml children={children} hasExternalLink={hasExternalLink} html={html} type={type} />}
+        {(children || html) && <PrettyHtml children={children} hasExternalLink={hasExternalLink} html={html} templatename={templatename} type={type} />}
         {!!actions.length && <Actions actions= {actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
     </>
@@ -71,6 +71,7 @@ Bubble.propTypes = {
   html: PropTypes.string,
   secondary: PropTypes.object,
   step: PropTypes.object,
+  templatename: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
