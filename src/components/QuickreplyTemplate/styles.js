@@ -18,18 +18,18 @@ export default createUseStyles( theme => ({
         '& > div > a[href]': {
             color: theme.palette.primary.text,
             display: 'flex',
-            fontSize: '.8em',
             justifyContent: 'center',
-            padding: '.2em',
+            padding : '0.5em 1.2em',
         },
         '& > div > a[href] > img': {
             display: 'inline',
             height: 'auto',
             marginRight: '3px',
+            objectFit: 'cover',
         },
         display: 'grid',
         gridGap: '1em',
-        gridTemplateColumns: items === 4 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
+        gridTemplateColumns: items === 4 ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
         gridTemplateRows: 'auto',
     }),
 }));
