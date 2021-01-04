@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
-import { fetchPushrules } from '../../tools/pushrules';
+import fetchPushrules  from '../../tools/pushrules';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -28,7 +28,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
-    fetchPushrules();
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
@@ -54,6 +53,10 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
       }
     });
   }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
+
+  useEffect(() => {
+    fetchPushrules();
+  }, []);
 
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
