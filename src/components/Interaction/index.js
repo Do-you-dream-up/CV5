@@ -119,10 +119,9 @@ export default function Interaction({
         }
       if (typeof(children) === String && children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
-        }
-        addBubbles(content.filter(it => it));
       }
       addBubbles(content.filter(it => it));
+      }
     }
   }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
 
