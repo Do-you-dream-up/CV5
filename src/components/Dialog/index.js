@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import { fetchPushrules } from '../../tools/pushrules';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -12,7 +13,6 @@ import Spaces from '../Spaces';
 import Top from '../Top';
 import Welcome from '../Welcome';
 import useStyles from './styles';
-
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
@@ -28,6 +28,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
+    fetchPushrules();
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
