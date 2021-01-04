@@ -1,6 +1,8 @@
 import contextPush from './contextPushExt';
-import pushService from './pushService';
+import { processConditionCompliance } from './pushService';
 
+const INVALID_DELAY = { 'delay': -1, 'idleDelay': -1 };
+const VALID_DELAY = { 'delay': 0, 'idleDelay': -1 };
 const OPERATOR = {
     Contains: 'Contains',
     DoesNotStartWith: 'DoesNotStartWith',
@@ -12,8 +14,6 @@ const OPERATOR = {
     StartsWith: 'StartsWith',
 };
 
-export const INVALID_DELAY = { 'delay': -1, 'idleDelay': -1 };
-export const VALID_DELAY = { 'delay': 0, 'idleDelay': -1 };
 export const rulesDefintions = [
     {
         name: 'Container',
@@ -231,7 +231,7 @@ function isNumberValueCompliant(condition, valueToCompare) {
         && isNumberCompliant(valueToCompare, condition.value, condition.operator) ? VALID_DELAY : INVALID_DELAY;
 }
 
-export function isValidNumericOperator(operator) {
+function isValidNumericOperator(operator) {
     return operator === OPERATOR.Equals || operator === OPERATOR.NotEquals || operator === OPERATOR.GreaterThan || operator === OPERATOR.LesserThan;
 }
 
@@ -260,7 +260,7 @@ function getPageConditions(condition, ruleId, externInfos, compliantIndexesOnly)
     //Get compliant indexes -> Pages condition in direct children.
     if (compliantIndexesOnly) {
         for (let i = 0; i < conditions.length; i++) {
-            const compliance = pushService.processConditionCompliance(conditions[i], ruleId, externInfos);
+            const compliance = processConditionCompliance(conditions[i], ruleId, externInfos);
             if (compliance.isDelayValid()) {
                 indexes.push(conditions[i].index);
             }

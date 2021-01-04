@@ -1,60 +1,57 @@
 import dydu from '../dydu';
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { INVALID_DELAY, isValidNumericOperator, isValidStringOperator, rulesDefintions } from './rulesDefintion';
+import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
 const externalInfoProcessors = [...ExternalInfoProcessor];
 const externalInfos = {};
-const eventListeners = [];
-const pushService = {};
 const rules = [];
 const rulesDefinition = [...rulesDefintions];
+let canPush = true;
 
-pushService.canPush = true;
-pushService.isValidNumericOperator = isValidNumericOperator;
-pushService.isValidStringOperator = isValidStringOperator;
-pushService.INVALID_DELAY = INVALID_DELAY;
 
 //infoProcessor must be a function that takes externalInfos object as a parameter.
-pushService.addExternalInfoProcessor = function(infoProcessor) {
+// eslint-disable-next-line no-unused-vars
+function addExternalInfoProcessor(infoProcessor) {
     if (infoProcessor) {
         externalInfoProcessors.push(infoProcessor);
     }
-};
+}
 
 //Rule definitions
-pushService.addRuleDefinition = function(ruleDefinition) {
+// eslint-disable-next-line no-unused-vars
+function addRuleDefinition(ruleDefinition) {
     if (ruleDefinition) {
         rulesDefinition.push(ruleDefinition);
     }
-};
+}
 
 //Rules from knowledge base
-pushService.addRule = function(rule) {
+export function addRule(rule) {
     if (rule) {
         rules.push(rule);
     }
-};
+}
 
-pushService.getExternalInfos = function(now) {
+export function getExternalInfos(now) {
     while (externalInfoProcessors.length > 0) {
         let infoProcessor = externalInfoProcessors.pop();
         infoProcessor(externalInfos, now);
     }
     return externalInfos;
-};
+}
 
 function processGoalPage(rule, externInfos) {
     const id = rule.bgpId;
     const urlToCheck = rule.conditions[0].param_1;
-    if (dydu.getContextId() && dydu.getContextId() !== '' && pushService.urlComplianturlCompliant(urlToCheck, externInfos.windowLocation)) {
+    if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
         window.reword('_goalpage_:' + id, {hide: true});
     }
 }
 
-pushService.processRules = function(externInfos) {
+export function processRules (externInfos) {
     let bestDelayId;
     let bestIdleDelayId;
     let bestCompliance = new ComplianceInfo();
@@ -86,23 +83,7 @@ pushService.processRules = function(externInfos) {
     }
     //Push best compliant knowledges
     handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
-};
-
-pushService.cleanInactivityListeners = function() {
-    for (let j = 0; j < eventListeners.length; j++) {
-        for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
-            if (document.detachEvent) {
-                document.detachEvent('on' + INTERACTION_EVENTS[i], eventListeners[j]);
-            }
-            else {
-                document.removeEventListener(INTERACTION_EVENTS[i], eventListeners[j]);
-            }
-        }
-    }
-    eventListeners.length = 0;
-    clearTimeout(currentTimer.counter);
-    currentTimer.counter = null;
-};
+}
 
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
     if (delay !== -1 || idleDelay !== -1) {
@@ -121,10 +102,10 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
             if (idleDelay !== -1 && currentTimer.counter) {
                 for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
                     if (document.attachEvent) {
-                        document.attachEvent('on' + INTERACTION_EVENTS[i], pushService.interaction(idleDelayRuleId));
+                        document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
                     }
                     else {
-                        document.addEventListener(INTERACTION_EVENTS[i], pushService.interaction(idleDelayRuleId));
+                        document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
                     }
                 }
                 currentTimer.counter = setTimeout(() => {
@@ -136,14 +117,14 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
     }
 }
 
-pushService.interaction = function(ruleId) {
+function interaction (ruleId) {
     if (currentTimer.counter) {
         clearTimeout(currentTimer.counter);
         currentTimer.counter = setTimeout(() => {
             pushKnowledge(ruleId);
         }, currentTimer.duration);
     }
-};
+}
 
 
 function computeRuleCompliance(condition, ruleId, externInfos) {
@@ -186,7 +167,7 @@ function computeConditionCompliance(condition, ruleId, externInfos, childComplia
         conditionCompliance.mergeDelaysForOrCondition(childCompliance);
     }
     else if (childCompliance.isDelayValid()) {
-        conditionCompliance.copy(pushService.processConditionCompliance(condition, ruleId, externInfos));
+        conditionCompliance.copy(processConditionCompliance(condition, ruleId, externInfos));
         if (conditionCompliance.isDelayValid()) {
             conditionCompliance.mergeDelaysForAndCondition(childCompliance);
             conditionCompliance.setPriority(childCompliance.getPriority());
@@ -194,7 +175,7 @@ function computeConditionCompliance(condition, ruleId, externInfos, childComplia
     }
     if (conditionCompliance.isDelayValid()) {
         let comparedValue = null;
-        if (pushService.isValidStringOperator(condition.operator)) {
+        if (isValidStringOperator(condition.operator)) {
             comparedValue = condition.value;
         }
         conditionCompliance.updatePriority(condition.operator === 'Equals' || condition.operator === 'NotEquals', comparedValue);
@@ -202,7 +183,7 @@ function computeConditionCompliance(condition, ruleId, externInfos, childComplia
     return conditionCompliance;
 }
 
-pushService.processConditionCompliance = function(condition, ruleId, externInfos) {
+export function processConditionCompliance(condition, ruleId, externInfos) {
     let result = new ComplianceInfo();
     for (let i = 0; i < rulesDefinition.length; i++) {
         let ruleDefinition = rulesDefinition[i];
@@ -212,16 +193,16 @@ pushService.processConditionCompliance = function(condition, ruleId, externInfos
         }
     }
     return result;
-};
+}
 
 function pushKnowledge(ruleId) {
-    if (pushService.canPush) {
+    if (canPush) {
         window.reword('_pushcondition_:' + ruleId, {hide: true});
-        pushService.canPush = false;
+        canPush = false;
     }
 }
 
-pushService.urlCompliant = function(pattern, url) {
+function urlCompliant(pattern, url) {
     try {
         if (pattern.substring(pattern.length - 1) === '%') {
             return url.substring(0, pattern.length - 1) === pattern.substring(0, pattern.length - 1);
@@ -231,6 +212,4 @@ pushService.urlCompliant = function(pattern, url) {
     catch (e) {
         return false;
     }
-};
-
-export default pushService;
+}
