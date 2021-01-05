@@ -99,7 +99,7 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
                     pushKnowledge(delayRuleId);
                 }, delay * 1000);
             }
-            if (idleDelay !== -1 && currentTimer.counter) {
+            if (idleDelay !== -1 && !currentTimer.counter) {
                 for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
                     if (document.attachEvent) {
                         document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
@@ -163,7 +163,7 @@ function computeConditionCompliance(condition, ruleId, externInfos, childComplia
     let conditionCompliance = new ComplianceInfo();
     // Ignore PastPage type
     if (condition.type === 'PastPage'
-        && !(condition.parent.type === 'Container' && condition.children)) {
+        && !(condition.parent.type === 'Container' && !condition.children)) {
         conditionCompliance.mergeDelaysForOrCondition(childCompliance);
     }
     else if (childCompliance.isDelayValid()) {

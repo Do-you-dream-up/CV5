@@ -24,6 +24,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
+  const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
@@ -55,8 +56,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
 
   useEffect(() => {
-    fetchPushrules();
-  }, []);
+    if (active)
+      fetchPushrules();
+  }, [active]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>

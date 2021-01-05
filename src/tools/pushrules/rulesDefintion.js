@@ -134,7 +134,7 @@ export const rulesDefintions = [
     {
         name: 'City',
         processDelays: function (condition, ruleId, externInfos) {
-            if (externInfos.city) {
+            if (!externInfos.city) {
                 localisationProcessor(externInfos);
             }
             return isStringValueCompliant(condition, externInfos.city);
@@ -143,7 +143,7 @@ export const rulesDefintions = [
     {
         name: 'Country',
         processDelays: function (condition, ruleId, externInfos) {
-            if (externInfos.country) {
+            if (!externInfos.country) {
                 localisationProcessor(externInfos);
             }
             return isStringValueCompliant(condition, externInfos.country);
