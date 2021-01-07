@@ -79,8 +79,9 @@ export default function Interaction({
         addBubbles(content);
       }
       else if (carouselTemplate) {
+        /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
         let temp = JSON.parse(content);
-        let product1 = {}, product2 = {}, product3 = {}, product4 = {}, product5 = {};
+        const product1 = {}, product2 = {}, product3 = {}, product4 = {}, product5 = {};
         for (const i in temp) {
           if (i.substr(i.length - 1) == 1) {
             product1[i] = temp[i];
@@ -98,13 +99,13 @@ export default function Interaction({
             product5[i] = temp[i];
           }
         }
-        let p1 = JSON.stringify(product1);
-        let p2 = JSON.stringify(product2);
-        let p3 = JSON.stringify(product3);
-        let p4 = JSON.stringify(product4);
-        let p5 = JSON.stringify(product5);
-        let results = [p1, p2, p3, p4, p5];
-        addBubbles(results.filter(it => it));
+        const p1 = JSON.stringify(product1);
+        const p2 = JSON.stringify(product2);
+        const p3 = JSON.stringify(product3);
+        const p4 = JSON.stringify(product4);
+        const p5 = JSON.stringify(product5);
+        const sortedProducts = [p1, p2, p3, p4, p5];
+        addBubbles(sortedProducts.filter(it => it));
       }
       else {
         if (!carousel) {
@@ -119,10 +120,9 @@ export default function Interaction({
         }
       if (typeof(children) === String && children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
-        }
-        addBubbles(content.filter(it => it));
       }
       addBubbles(content.filter(it => it));
+      }
     }
   }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
 
