@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, knownTemplates } from  '../../tools/template';
 import CarouselTemplate from  '../CarouselTemplate';
 import ProductTemplate from  '../ProductTemplate';
 import useStyles from './styles';
@@ -20,7 +21,6 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const RE_EMAIL = /(.+)(<a href="mailto:\S+@\S+\.\S+").*(>.+<\/a>)(.+)/g;
   const RE_LINK = /(<a href="(http(s)?:\/\/)?\S+\.\S+").*(>.+<\/a>)/g;
   const RE_ONCLICK = /onclick=".+?"/gm;
-  const templateList = ['dydu_product_001', 'dydu_carousel_001'];
 
   const htmlCleanup = html && html.match(RE_EMAIL) || html && html.match(RE_LINK) ?
                       html.replace(RE_ONCLICK, '') :
@@ -31,9 +31,9 @@ export default function PrettyHtml({ children, className, component, hasExternal
     <>
       { children }
       { <span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span> }
-      { templatename === 'dydu_product_001' && <ProductTemplate html={html} /> }
-      { templatename === 'dydu_carousel_001' && <CarouselTemplate html={html} /> }
-      { !templateList.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} /> }
+      { templatename === PRODUCT_TEMPLATE && <ProductTemplate html={html} /> }
+      { templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={html} /> }
+      { !knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} /> }
       { hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} /> }
     </>
   ));

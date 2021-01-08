@@ -4,15 +4,15 @@ import React, { useContext } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import useStyles from  './styles';
 
-export default function ProductTemplate({html}) {
+export default function ProductTemplate({ classe = null, html }) {
 
     const { configuration } = useContext(ConfigurationContext);
     const classes = useStyles({configuration});
     const { product, text } = JSON.parse(html);
 
     return (
-      <div className={c('dydu-product-template', classes.root)}>
-        { !!text && <div>
+      <div className={classe || c('dydu-product-template', classes.root)}>
+        { !!text && <div className={c('dydu-product-template-content', classes.text)}>
             { text }
           </div>
         }
@@ -34,5 +34,6 @@ export default function ProductTemplate({html}) {
 }
 
 ProductTemplate.propTypes = {
+    classe: PropTypes.any,
     html: PropTypes.string,
   };

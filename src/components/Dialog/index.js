@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import { knownTemplates } from '../../tools/template';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -27,12 +28,12 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
-  const getContent = (text, templateData) => {
+  const getContent = (text, templateData, templateName) => {
     const list = [];
     if (text) {
       list.push(text);
     }
-    if (templateData) {
+    if (templateData && knownTemplates.includes(templateName)) {
       list.push(JSON.parse(templateData));
     }
     return list;
@@ -43,7 +44,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
-          <Interaction children={getContent(it.text, it.templateData)}
+          <Interaction children={getContent(it.text, it.templateData, it.templateName)}
                        templatename={it.templateName}
                        history
                        secondary={it.sidebar}
