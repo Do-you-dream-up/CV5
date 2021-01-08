@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import sanitize from  '../../tools/sanitize';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE } from  '../../tools/template';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Carousel from  '../Carousel';
@@ -27,6 +28,7 @@ export default function Interaction({
   scroll,
   secondary,
   steps,
+  templatename,
   thinking,
   type,
 }) {
@@ -41,24 +43,20 @@ export default function Interaction({
   const hasAvatar = !!configuration.interaction.avatar[type];
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
+  const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
+  const productTemplate = templatename === PRODUCT_TEMPLATE;
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
-        if (carousel) {
-          setBubbles(previous => [...previous, ...newBubbles]);
-          setHasLoader(false);
+        const newBubble = newBubbles.shift();
+        setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
+        if (newBubbles.length) {
+          addBubbles(newBubbles);
         }
         else {
-          const newBubble = newBubbles.shift();
-          setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
-          if (newBubbles.length) {
-            addBubbles(newBubbles);
-          }
-          else {
-            setHasLoader(false);
-          }
+          setHasLoader(false);
         }
       }, delay);
     }
@@ -66,28 +64,62 @@ export default function Interaction({
       setBubbles(newBubbles);
       setHasLoader(false);
     }
-  }, [carousel, delay, thinking]);
+  }, [delay, thinking]);
 
   useEffect(() => {
     if (!ready && children) {
       setReady(true);
-      let content = children;
-      if (!carousel) {
-        content = content.reduce((accumulator, it) => (
+      if (productTemplate) {
+        const bubble = {};
+        children.map( el => {
+          if (typeof(el) === 'string') {
+            bubble.text = el;
+          }
+          if (typeof(el) === 'object') {
+            bubble.product = el;
+          }
+        });
+        addBubbles([JSON.stringify(bubble)]);
+      }
+      else if (carouselTemplate) {
+        /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
+        children.map( el => {
+          const bubble = {};
+          if (typeof(el) === 'string') {
+           // bubble.text = el;
+          }
+
+          if (typeof(el) === 'object') {
+            const list = [];
+            for (let i = 1; i < 6; i++ ) {
+              const product = {};
+              product['buttonA'] = el[`buttonA${i}`];
+              product['buttonB'] = el[`buttonB${i}`];
+              product['buttonC'] = el[`buttonC${i}`];
+              product['imageLink'] = el[`imageLink${i}`];
+              product['imageName'] = el[`imageName${i}`];
+              product['numeric'] = el[`numeric${i}`];
+              product['subtitle'] = el[`subtitle${i}`];
+              product['title'] = el[`title${i}`];
+              bubble.product = product;
+              list.push(JSON.stringify(bubble));
+            }
+            addBubbles(list);
+          }
+        });
+      }
+      else {
+        const _children = children.reduce((accumulator, it) => (
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
         ), []);
+
+        if (typeof(_children) === String && _children[0].includes('target="_blank"')) {
+          setHasExternalLink(true);
+        }
+        addBubbles(_children.filter(it => it));
       }
-      if (carousel) {
-        content = content.reduce((accumulator, it) => (
-          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
-        ), []);
-      }
-      if (typeof(children) === String && children[0].includes('target="_blank"')) {
-        setHasExternalLink(true);
-      }
-      addBubbles(content.filter(it => it));
     }
-  }, [addBubbles, carousel, children, ready]);
+  }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
@@ -98,10 +130,10 @@ export default function Interaction({
       {[classes.barf]: carousel && bubbles.length},
       className,
     )}>
-      {hasAvatar && (hasLoader || !carousel) && <Avatar type={type} />}
+      {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
         {bubbles.length > 0 && React.createElement(
-          carousel ? Carousel : 'div',
+          carousel || carouselTemplate ? Carousel : 'div',
           {
             children: bubbles.map((it, index) => {
               const attributes = {
@@ -112,10 +144,11 @@ export default function Interaction({
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };
-              return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} {...attributes} />;
+              return <Bubble className={classes.bubble} hasExternalLink={hasExternalLink} key={index} templatename={templatename} {...attributes} />;
             }),
             className: c('dydu-interaction-bubbles', classes.bubbles),
             steps: steps,
+            templatename: templatename,
           },
         )}
         {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
@@ -141,6 +174,7 @@ Interaction.propTypes = {
   scroll: PropTypes.bool,
   secondary: PropTypes.object,
   steps: PropTypes.array,
+  templatename: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

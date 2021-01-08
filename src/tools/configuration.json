@@ -24,7 +24,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "width": 90
+    "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
@@ -45,13 +45,33 @@
     "persist": true
   },
   "events": {
-    "active": true,
+    "active": false,
     "features": {
       "chatbox": {
-        "onMinimize": ["minimize"]
+        "loadChatbox": ["chatboxLoad"],
+        "onMinimize": ["minimize"],
+        "questionSent": ["questionSent"],
+        "rewordDisplay": ["rewordDisplay"]
+      },
+      "gdpr":{
+        "acceptGdpr": ["acceptGdpr"],
+        "getPersonalData": ["getPersonalData"],
+        "deletePersonalData": ["deletePersonalData"],
+        "displayGdpr": ["displayGdpr"]
+      },
+      "onboarding": {
+        "onboardingDisplay": ["onboardingDisplay"],
+        "onboardingCompleted": ["onboardingCompleted"]
+      },
+      "tab": {
+        "contactDisplay": ["contactDisplay"]
       },
       "teaser": {
-        "onClick": ["foo", "bar"]
+        "onClick": ["teaserClick"]
+      },
+      "top":{
+        "topDisplay": ["topDisplay"],
+        "topClicked": ["topClicked"]
       }
     },
     "verbosity": 2
@@ -130,7 +150,12 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": false
+    "enable": false,
+    "imageLinks": [
+      "dydu-onboarding-1.svg",
+      "dydu-onboarding-2.svg",
+      "dydu-onboarding-3.svg"
+    ]
   },
   "root": "dydu-root",
   "secondary": {
@@ -190,6 +215,12 @@
   "teaser": {
     "bottom": 16,
     "right": 16
+  },
+  "templateCarousel": {
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "offsetBetweenCard": 64
   },
   "top": {
     "size": 3

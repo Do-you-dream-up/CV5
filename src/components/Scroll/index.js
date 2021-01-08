@@ -36,7 +36,7 @@ function Scroll({ component, delay, ...rest }) {
 
 Scroll.defaultProps = {
   component: 'div',
-  delay: 0,
+  delay: 30,
 };
 
 

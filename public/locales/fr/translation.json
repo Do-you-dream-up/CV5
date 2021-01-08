@@ -151,19 +151,16 @@
         "steps": [
             {
                 "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
-                "image": "dydu-onboarding-1.svg",
                 "title": "Quelques astuces"
             },
             {
                 "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus.</p>",
-                "image": "dydu-onboarding-2.svg",
                 "title": "Astuces 2"
             },
             {
                 "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante.</p>",
-                "image": "dydu-onboarding-3.svg",
                 "title": "Astuces 3"
-            }      
+            } 
         ]
     },
     "screenReader":{

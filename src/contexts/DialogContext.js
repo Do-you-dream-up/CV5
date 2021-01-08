@@ -7,13 +7,17 @@ import dotget from '../tools/dotget';
 import useViewport from '../tools/hooks/viewport';
 import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
+import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
+import { EventsContext } from './EventsContext';
 
+const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const DialogContext = React.createContext();
 export function DialogProvider({ children }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const [ disabled, setDisabled ] = useState(false);
   const [ interactions, setInteractions ] = useState([]);
   const [ locked, setLocked ] = useState(false);
@@ -47,7 +51,7 @@ export function DialogProvider({ children }) {
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(response => {
-    const { askFeedback, guiAction, text, typeResponse, urlRedirect } = response;
+    const { askFeedback, guiAction, templateData, templateName, text, typeResponse, urlRedirect } = response;
     const steps = parseSteps(response);
     setText(text);
     setTypeResponse(typeResponse);
@@ -68,16 +72,30 @@ export function DialogProvider({ children }) {
         }
       });
     }
+
+    if (typeResponse && typeResponse.match(RE_REWORD)) {
+      event('rewordDisplay');
+    }
+
+    const getContent = (text, templateData, templateName) => {
+      const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
+      if (templateData && knownTemplates.includes(templateName)) {
+        list.push(JSON.parse(templateData));
+      }
+      return list;
+    };
+
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
-                   children={steps.map(({ text }) => text)}
+                   children={getContent(text, templateData, templateName)}
                    type="response"
                    steps={steps}
+                   templatename={templateName}
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, isMobile, secondaryTransient, toggleSecondary]);
+  }, [add, event, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
