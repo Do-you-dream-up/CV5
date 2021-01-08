@@ -8,22 +8,26 @@ export default function ProductTemplate({html}) {
 
     const { configuration } = useContext(ConfigurationContext);
     const classes = useStyles({configuration});
-    const {buttonA, buttonB, buttonC, imageLink, imageName, numeric, subtitle, title} = JSON.parse(html);
+    const { product, text } = JSON.parse(html);
 
     return (
       <div className={c('dydu-product-template', classes.root)}>
+        { !!text && <div>
+            { text }
+          </div>
+        }
         <div className={c('dydu-product-template-image', classes.image)}>
-          <img src={imageLink} alt={imageName}/>
+          <img src={product.imageLink} alt={product.imageName}/>
         </div>
         <div className={c('dydu-product-template-text', classes.text)}>
-          <h3>{title}</h3>
-          {numeric && <p>{numeric}</p>}
-          {subtitle && <div dangerouslySetInnerHTML={{__html: subtitle}} />}
+          <h3> { product.title } </h3>
+          { !!product.numeric && <p>{product.numeric}</p>}
+          { !!product.subtitle && <div dangerouslySetInnerHTML={{__html: product.subtitle}} />}
         </div>
         <div className={c('dydu-product-template-button', classes.button)}>
-          {buttonA && <div dangerouslySetInnerHTML={{__html: buttonA}} />}
-          {buttonB && <div dangerouslySetInnerHTML={{__html: buttonB}} />}
-          {buttonC && <div dangerouslySetInnerHTML={{__html: buttonC}} />}
+          { !!product.buttonA && <div dangerouslySetInnerHTML={{__html: product.buttonA}} />}
+          { !!product.buttonB && <div dangerouslySetInnerHTML={{__html: product.buttonB}} />}
+          { !!product.buttonC && <div dangerouslySetInnerHTML={{__html: product.buttonC}} />}
         </div>
       </div>
     );

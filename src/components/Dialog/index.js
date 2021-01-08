@@ -27,12 +27,23 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
+  const getContent = (text, templateData) => {
+    const list = [];
+    if (text) {
+      list.push(text);
+    }
+    if (templateData) {
+      list.push(JSON.parse(templateData));
+    }
+    return list;
+  };
+
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
-          <Interaction children={[it.text, it.templateData ? JSON.parse(it.templateData) : null]}
+          <Interaction children={getContent(it.text, it.templateData)}
                        templatename={it.templateName}
                        history
                        secondary={it.sidebar}

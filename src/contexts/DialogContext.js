@@ -76,10 +76,18 @@ export function DialogProvider({ children }) {
       event('rewordDisplay');
     }
 
+    const getContent = (text, templateData) => {
+      const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
+      if (templateData) {
+        list.push(JSON.parse(templateData));
+      }
+      return list;
+    };
+
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
-                   children={ [text, templateData ? JSON.parse(templateData) : null]}
+                   children={getContent(text, templateData)}
                    type="response"
                    steps={steps}
                    templatename={templateName}

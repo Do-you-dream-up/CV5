@@ -49,19 +49,13 @@ export default function Interaction({
   const addBubbles = useCallback(newBubbles => {
     if (thinking) {
       setTimeout(() => {
-        if (carousel || templatename) {
-          setBubbles(previous => [...previous, ...newBubbles]);
-          setHasLoader(false);
+        const newBubble = newBubbles.shift();
+        setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
+        if (newBubbles.length) {
+          addBubbles(newBubbles);
         }
         else {
-          const newBubble = newBubbles.shift();
-          setBubbles(previous => [...previous, ...(newBubble ? [newBubble] : [])]);
-          if (newBubbles.length) {
-            addBubbles(newBubbles);
-          }
-          else {
-            setHasLoader(false);
-          }
+          setHasLoader(false);
         }
       }, delay);
     }
@@ -69,22 +63,34 @@ export default function Interaction({
       setBubbles(newBubbles);
       setHasLoader(false);
     }
-  }, [carousel, delay, templatename, thinking]);
+  }, [delay, thinking]);
 
   useEffect(() => {
     if (!ready && children) {
       setReady(true);
-      let content = children;
       if (productTemplate) {
-        addBubbles(content);
+        const bubble = {};
+        children.map( el => {
+          if (typeof(el) === 'string') {
+            bubble.text = el;
+          }
+          if (typeof(el) === 'object') {
+            bubble.product = el;
+          }
+        });
+        addBubbles([JSON.stringify(bubble)]);
       }
       else if (carouselTemplate) {
         /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
-        let temp = content;
-        const list = [];
-        temp.map( el => {
+        const bubble = {};
+        children.map( el => {
+
+          if (typeof(el) === 'string') {
+            bubble.text = el;
+          }
 
           if (typeof(el) === 'object') {
+            const list = [];
             for (let i = 1; i < 6; i++ ) {
               const product = {};
               product['buttonA'] = el[`buttonA${i}`];
@@ -95,27 +101,22 @@ export default function Interaction({
               product['numeric'] = el[`numeric${i}`];
               product['subtitle'] = el[`subtitle${i}`];
               product['title'] = el[`title${i}`];
-              list.push(JSON.stringify(product));
+              list.push(product);
             }
+            bubble.products = list;
           }
         });
-        addBubbles(list);
+        addBubbles([JSON.stringify(bubble)]);
       }
       else {
-        if (!carousel) {
-          content = content.reduce((accumulator, it) => (
+        const _children = children.reduce((accumulator, it) => (
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
-          ), []);
+        ), []);
+
+        if (typeof(_children) === String && _children[0].includes('target="_blank"')) {
+          setHasExternalLink(true);
         }
-        if (carousel) {
-          content = content.reduce((accumulator, it) => (
-          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
-          ), []);
-        }
-      if (typeof(children) === String && children[0].includes('target="_blank"')) {
-        setHasExternalLink(true);
-      }
-      addBubbles(content.filter(it => it));
+        addBubbles(_children.filter(it => it));
       }
     }
   }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);

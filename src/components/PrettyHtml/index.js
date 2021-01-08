@@ -29,12 +29,12 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
   return React.createElement(component, {className: c(classes.root, className), ...rest}, (
     <>
-      {children}
-      {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
-      {templateList.includes(templatename) && <ProductTemplate html={html} />}
-      {templateList.includes(templatename) && <CarouselTemplate html={html} />}
-      {!templateList.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />}
-      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />}
+      { children }
+      { <span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span> }
+      { templatename === 'dydu_product_001' && <ProductTemplate html={html} /> }
+      { templatename === 'dydu_carousel_001' && <CarouselTemplate html={html} /> }
+      { !templateList.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} /> }
+      { hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} /> }
     </>
   ));
 }
