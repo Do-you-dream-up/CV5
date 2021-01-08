@@ -82,11 +82,10 @@ export default function Interaction({
       }
       else if (carouselTemplate) {
         /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
-        const bubble = {};
         children.map( el => {
-
+          const bubble = {};
           if (typeof(el) === 'string') {
-            bubble.text = el;
+           // bubble.text = el;
           }
 
           if (typeof(el) === 'object') {
@@ -101,12 +100,12 @@ export default function Interaction({
               product['numeric'] = el[`numeric${i}`];
               product['subtitle'] = el[`subtitle${i}`];
               product['title'] = el[`title${i}`];
-              list.push(product);
+              bubble.product = product;
+              list.push(JSON.stringify(bubble));
             }
-            bubble.products = list;
+            addBubbles(list);
           }
         });
-        addBubbles([JSON.stringify(bubble)]);
       }
       else {
         const _children = children.reduce((accumulator, it) => (
