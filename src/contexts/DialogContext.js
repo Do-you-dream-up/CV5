@@ -79,7 +79,7 @@ export function DialogProvider({ children }) {
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
-                   children={ text ? steps.map(({ text }) => text) : templateData}
+                   children={ [text, templateData ? JSON.parse(templateData) : null]}
                    type="response"
                    steps={steps}
                    templatename={templateName}

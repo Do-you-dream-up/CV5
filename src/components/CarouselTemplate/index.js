@@ -28,7 +28,7 @@ export default function CarouselTemplate({html}) {
     return (
       <div className={c('dydu-carousel-template', classes.root)}>
         <div className={c('dydu-product-template-image', classes.image)}>
-          <img src={`${imageLink}`} alt={`${imageName}`}/>
+          <img src={imageLink} alt={imageName}/>
         </div>
         <div className={c('dydu-carousel-template-text', classes.text)}>
           <h3>{title}</h3>

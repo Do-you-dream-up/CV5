@@ -20,6 +20,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const RE_EMAIL = /(.+)(<a href="mailto:\S+@\S+\.\S+").*(>.+<\/a>)(.+)/g;
   const RE_LINK = /(<a href="(http(s)?:\/\/)?\S+\.\S+").*(>.+<\/a>)/g;
   const RE_ONCLICK = /onclick=".+?"/gm;
+  const templateList = ['dydu_product_001', 'dydu_carousel_001'];
 
   const htmlCleanup = html && html.match(RE_EMAIL) || html && html.match(RE_LINK) ?
                       html.replace(RE_ONCLICK, '') :
@@ -30,9 +31,9 @@ export default function PrettyHtml({ children, className, component, hasExternal
     <>
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
-      {templatename === 'dydu_product_001' && <ProductTemplate html={html} />}
-      {templatename === 'dydu_carousel_001' && <CarouselTemplate html={html} />}
-      {!templatename && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />}
+      {templateList.includes(templatename) && <ProductTemplate html={html} />}
+      {templateList.includes(templatename) && <CarouselTemplate html={html} />}
+      {!templateList.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />}
       {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />}
     </>
   ));

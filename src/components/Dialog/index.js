@@ -32,7 +32,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
       interactions = interactions.reduce((accumulator, it) => {
         accumulator.push(
           <Interaction children={it.user} history type="request" />,
-          <Interaction children={it.text || it.templateData}
+          <Interaction children={[it.text, it.templateData ? JSON.parse(it.templateData) : null]}
                        templatename={it.templateName}
                        history
                        secondary={it.sidebar}

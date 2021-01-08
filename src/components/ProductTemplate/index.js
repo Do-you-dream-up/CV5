@@ -13,7 +13,7 @@ export default function ProductTemplate({html}) {
     return (
       <div className={c('dydu-product-template', classes.root)}>
         <div className={c('dydu-product-template-image', classes.image)}>
-          <img src={`${imageLink}`} alt={`${imageName}`}/>
+          <img src={imageLink} alt={imageName}/>
         </div>
         <div className={c('dydu-product-template-text', classes.text)}>
           <h3>{title}</h3>

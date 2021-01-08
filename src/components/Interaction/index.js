@@ -80,32 +80,26 @@ export default function Interaction({
       }
       else if (carouselTemplate) {
         /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
-        let temp = JSON.parse(content);
-        const product1 = {}, product2 = {}, product3 = {}, product4 = {}, product5 = {};
-        for (const i in temp) {
-          if (i.substr(i.length - 1) == 1) {
-            product1[i] = temp[i];
+        let temp = content;
+        const list = [];
+        temp.map( el => {
+
+          if (typeof(el) === 'object') {
+            for (let i = 1; i < 6; i++ ) {
+              const product = {};
+              product['buttonA'] = el[`buttonA${i}`];
+              product['buttonB'] = el[`buttonB${i}`];
+              product['buttonC'] = el[`buttonC${i}`];
+              product['imageLink'] = el[`imageLink${i}`];
+              product['imageName'] = el[`imageName${i}`];
+              product['numeric'] = el[`numeric${i}`];
+              product['subtitle'] = el[`subtitle${i}`];
+              product['title'] = el[`title${i}`];
+              list.push(JSON.stringify(product));
+            }
           }
-          else if (i.substr(i.length - 1) == 2) {
-            product2[i] = temp[i];
-          }
-          else if (i.substr(i.length - 1) == 3) {
-            product3[i] = temp[i];
-          }
-          else if (i.substr(i.length - 1) == 4) {
-            product4[i] = temp[i];
-          }
-          else {
-            product5[i] = temp[i];
-          }
-        }
-        const p1 = JSON.stringify(product1);
-        const p2 = JSON.stringify(product2);
-        const p3 = JSON.stringify(product3);
-        const p4 = JSON.stringify(product4);
-        const p5 = JSON.stringify(product5);
-        const sortedProducts = [p1, p2, p3, p4, p5];
-        addBubbles(sortedProducts.filter(it => it));
+        });
+        addBubbles(list);
       }
       else {
         if (!carousel) {
