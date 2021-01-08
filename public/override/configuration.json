@@ -167,7 +167,7 @@
     "transient": true
   },
   "spaces": {
-    "active": true,
+    "active": false,
     "detection": [
       {
         "active": false,
@@ -200,7 +200,7 @@
         "value": {"doyoudreamup.com": "dydu"}
       }
     ],
-    "items": ["default", "foo", "bar"]
+    "items": ["default"]
   },
   "suggestions": {
     "limit": 3
