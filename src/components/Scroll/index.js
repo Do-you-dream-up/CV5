@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useDebounce from '../../tools/hooks/debounce';
 
 
@@ -13,11 +13,10 @@ import useDebounce from '../../tools/hooks/debounce';
 function Scroll({ component, delay, ...rest }) {
 
   const elementRef = useRef(null);
-  const [ ready, setReady] = useState(false);
-  const debouncedReady = useDebounce(ready, delay);
+  const debouncedReady = useDebounce(elementRef, delay);
 
   const scroll = () => {
-    elementRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
+    elementRef.current.scrollIntoView({behavior: 'smooth'});
   };
 
   useEffect(() => {
@@ -26,17 +25,13 @@ function Scroll({ component, delay, ...rest }) {
     }
   }, [debouncedReady]);
 
-  useEffect(() => {
-    setReady(true);
-  }, []);
-
   return React.createElement(component, {...rest, ref: elementRef});
 }
 
 
 Scroll.defaultProps = {
   component: 'div',
-  delay: 30,
+  delay: 0,
 };
 
 
