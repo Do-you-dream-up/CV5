@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles(theme => ({
     button: () => ({
         '& > :not(:last-child)': {
-            marginRight: '.6em',
+            marginRight: '.5em',
         },
         '& a[href]': {
             '&:hover': {
@@ -12,28 +12,34 @@ export default createUseStyles(theme => ({
             },
             alignItems: 'center',
             background: theme.palette.primary.main,
-            borderRadius: '5px',
+            borderRadius: '4px',
             color: theme.palette.primary.text,
             display: 'flex',
-            fontSize: '.8em',
-            height: '1.8em',
+            fontSize: '1em',
             justifyContent: 'center',
-            width: '5em',
+            margin: '0.2em 0',
+            padding: '0.5em 1.2em',
+        },
+        '& div' : {
+            flexShrink: '0',
         },
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: '.8em',
+        flexWrap: 'wrap',
+        margin: '0.8em 0',
+        padding: '0 1em',
+    }),
+    image : () => ({
+        '& img': {
+            maxWidth: '80%',
+        }
+    }),
+    root : () => ({
+        margin: '-0.8em -1em',
     }),
     text: () => ({
-        '& h3': {
-            fontSize: '1em',
-            margin: '.4em 0 .4em 0 !important',
-        },
-        '& p': {
-            fontSize: '.8em',
-            margin: '.2em 0',
-        },
+        margin: '0.8em 0',
+        padding: '0 1em',
     })
 }));
