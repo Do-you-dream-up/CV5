@@ -7,6 +7,7 @@ import dotget from '../tools/dotget';
 import useViewport from '../tools/hooks/viewport';
 import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
+import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext } from './EventsContext';
 
@@ -76,10 +77,18 @@ export function DialogProvider({ children }) {
       event('rewordDisplay');
     }
 
+    const getContent = (text, templateData, templateName) => {
+      const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
+      if (templateData && knownTemplates.includes(templateName)) {
+        list.push(JSON.parse(templateData));
+      }
+      return list;
+    };
+
     add(
       <Interaction askFeedback={askFeedback}
                    carousel={steps.length > 1}
-                   children={ text ? steps.map(({ text }) => text) : templateData}
+                   children={getContent(text, templateData, templateName)}
                    type="response"
                    steps={steps}
                    templatename={templateName}
