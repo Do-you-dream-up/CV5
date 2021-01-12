@@ -25,7 +25,7 @@ export function DialogProvider({ children }) {
   const [ prompt, setPrompt ] = useState('');
   const [ secondaryActive, setSecondaryActive ] = useState(false);
   const [ secondaryContent, setSecondaryContent ] = useState(null);
-  const [ text, setText ] = useState('');
+  const [ voiceContent, setVoiceContent ] = useState(null);
   const [ typeResponse, setTypeResponse ] = useState(null);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
@@ -53,7 +53,14 @@ export function DialogProvider({ children }) {
   const addResponse = useCallback(response => {
     const { askFeedback, guiAction, templateData, templateName, text, typeResponse, urlRedirect } = response;
     const steps = parseSteps(response);
-    setText(text);
+    if (configuration.Voice.enable) {
+      if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName.toLowerCase()) {
+        setVoiceContent({templateData, text});
+      }
+      else {
+        setVoiceContent({templateData: null, text});
+      }
+    }
     setTypeResponse(typeResponse);
     if (secondaryTransient || isMobile) {
       toggleSecondary(false)();
@@ -95,7 +102,7 @@ export function DialogProvider({ children }) {
                    thinking />
     );
     // eslint-disable-next-line no-use-before-define
-  }, [add, event, isMobile, secondaryTransient, toggleSecondary]);
+  }, [add, configuration, event, isMobile, secondaryTransient, toggleSecondary]);
 
   const empty = useCallback(() => {
     setInteractions([]);
@@ -138,10 +145,10 @@ export function DialogProvider({ children }) {
       setPlaceholder,
       setPrompt,
       setSecondary,
-      setText,
-      text,
+      setVoiceContent,
       toggleSecondary,
       typeResponse,
+      voiceContent,
     }} />
   );
 }
