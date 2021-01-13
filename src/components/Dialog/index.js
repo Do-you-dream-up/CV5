@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import { knownTemplates } from '../../tools/template';
 import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -21,23 +22,41 @@ import useStyles from './styles';
 export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { prompt, setPrompt } = useContext(DialogContext);
+  const { empty, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
+  const getContent = (text, templateData, templateName) => {
+    const list = [];
+    if (text) {
+      list.push(text);
+    }
+    if (templateData && knownTemplates.includes(templateName)) {
+      list.push(JSON.parse(templateData));
+    }
+    return list;
+  };
+
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
+    empty();
     if (Array.isArray(interactions)) {
-      interactions = interactions.reduce((accumulator, it) => {
+      interactions = interactions.reduce((accumulator, it, index) => {
         accumulator.push(
-          <Interaction children={it.user} history type="request" />,
-          <Interaction children={it.text} history secondary={it.sidebar} type="response" />,
+          <Interaction children={it.user} history type="request" scroll={false}/>,
+          <Interaction children={getContent(it.text, it.templateData, it.templateName)}
+                       templatename={it.templateName}
+                       scroll={index < interactions.length - 1 ? false : true}
+                       history
+                       secondary={it.sidebar}
+                       type="response" />,
         );
         return accumulator;
       }, []);
       onAdd(interactions);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [onAdd]);
 
   useEffect(() => {
