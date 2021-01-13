@@ -4,8 +4,8 @@
     "qualification": true,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "cdn":"https://cdn.doyoudreamup.com/",
-    "directory":"development/"
+    "cdn":"",
+    "directory":""
   },
   "avatar": {
     "background": false,
@@ -167,7 +167,7 @@
     "transient": true
   },
   "spaces": {
-    "active": true,
+    "active": false,
     "detection": [
       {
         "active": false,
