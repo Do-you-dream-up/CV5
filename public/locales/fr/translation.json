@@ -70,6 +70,7 @@
         "expand": "Ouvrir sous-menu",
         "menu": {
             "close": "Fermer",
+            "print": "Imprimer la conversation",
             "email": "Exporter la conversation par email",
             "gdpr": "RGPD (export, suppression)",
             "spaces": "Changer d'espace de consultation",
