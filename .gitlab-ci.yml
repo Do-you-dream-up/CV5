@@ -29,4 +29,5 @@ deliver:
       - project/hector-vb
       - project/ugap
       - project/anfr
+      - project/dydu
 ...
