@@ -226,6 +226,16 @@ export default new class Dydu {
     }
   });
 
+   /**
+   * Fetch pushrules.
+   *
+   * @returns {Promise}
+   */
+  pushrules = () => new Promise((resolve) => {
+      const path = `chat/pushrules/${BOT.id}`;
+      resolve(this.emit(API.post, path));
+  });
+
   /**
    * Print conversations.
    *

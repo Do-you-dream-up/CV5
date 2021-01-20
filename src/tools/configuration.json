@@ -157,6 +157,9 @@
       "dydu-onboarding-3.svg"
     ]
   },
+  "pushrules": {
+    "active": false
+  },
   "root": "dydu-root",
   "secondary": {
     "automatic": true,
