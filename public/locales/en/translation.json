@@ -70,6 +70,7 @@
         "expand": "Expand menu",
         "menu": {
             "close": "Close",
+            "print": "Print the conversation",
             "email": "Export the conversation by email",
             "gdpr": "GDPR (export, delete)",
             "spaces": "Switch consulting space",

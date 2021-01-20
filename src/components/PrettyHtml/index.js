@@ -2,8 +2,10 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE,  QUICK_REPLY, knownTemplates } from  '../../tools/template';
 import CarouselTemplate from  '../CarouselTemplate';
 import ProductTemplate from  '../ProductTemplate';
+import QuickreplyTemplate from '../QuickreplyTemplate';
 import useStyles from './styles';
 
 
@@ -28,12 +30,13 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
   return React.createElement(component, {className: c(classes.root, className), ...rest}, (
     <>
-      {children}
-      {<span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span>}
-      {templatename === 'dydu_product_001' && <ProductTemplate html={html} />}
-      {templatename === 'dydu_carousel_001' && <CarouselTemplate html={html} />}
-      {!templatename && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} />}
-      {hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />}
+      { children }
+      { <span className={classes.srOnly} dangerouslySetInnerHTML={{__html: interactionType}}></span> }
+      { templatename === PRODUCT_TEMPLATE && <ProductTemplate html={html} /> }
+      { templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={html} /> }
+      { templatename === QUICK_REPLY && <QuickreplyTemplate html={html} /> }
+      { !knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} /> }
+      { hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} /> }
     </>
   ));
 }

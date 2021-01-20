@@ -28,5 +28,6 @@ deliver:
       - project/demo3
       - project/hector-vb
       - project/ugap
-
+      - project/anfr
+      - project/dydu
 ...

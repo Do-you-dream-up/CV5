@@ -31,5 +31,9 @@ export default createUseStyles( theme => ({
         gridGap: '1em',
         gridTemplateColumns: items === 4 ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
         gridTemplateRows: 'auto',
+        text: () => ({
+            margin: '0.8em 0',
+            padding: '0 1em',
+        })
     }),
 }));
