@@ -223,7 +223,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 64
+    "offsetBetweenCard": 94
   },
   "top": {
     "size": 3
