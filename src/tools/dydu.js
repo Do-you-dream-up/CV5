@@ -226,6 +226,38 @@ export default new class Dydu {
     }
   });
 
+   /**
+   * Fetch pushrules.
+   *
+   * @returns {Promise}
+   */
+  pushrules = () => new Promise((resolve) => {
+      const path = `chat/pushrules/${BOT.id}`;
+      resolve(this.emit(API.post, path));
+  });
+
+  /**
+   * Print conversations.
+   *
+   *
+   */
+  printHistory = () => {
+    const contextId = this.getContextId();
+    if (contextId) {
+      const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+
+      const ifrm = document.querySelector('.dydu-iframe') || document.createElement('iframe');
+      ifrm.setAttribute('class', 'dydu-iframe');
+      ifrm.setAttribute('style', 'display:none;');
+      ifrm.src = path;
+
+      if (!document.querySelector('.dydu-iframe')) {
+        const el = document.querySelector('.dydu-chatbox');
+        el.parentNode.insertBefore(ifrm, el);
+      }
+    }
+  };
+
   /**
    * End the current conversation and reset the context ID.
    *

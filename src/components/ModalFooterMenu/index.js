@@ -18,13 +18,19 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const close = t('footer.menu.close');
+  const print = t('footer.menu.print');
   const email = t('footer.menu.email');
   const gdpr = t('footer.menu.gdpr');
   const title = t('footer.menu.title', {defaultValue: ''});
   const spaces = t('footer.menu.spaces');
   const { active: spaceChangeActive } = configuration.spaces;
 
+  const printConversation = () => {
+    dydu.printHistory();
+ };
+
   const items = [
+    {icon: 'icons/dydu-printer-black.svg', onClick: () => printConversation(), text: print},
     {icon: 'icons/dydu-email-send-black.svg', onClick: null, text: email},
     {
       icon: 'icons/dydu-database-black.svg',

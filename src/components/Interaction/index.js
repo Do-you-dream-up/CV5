@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import sanitize from  '../../tools/sanitize';
-import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE } from  '../../tools/template';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY } from  '../../tools/template';
 import Avatar from  '../Avatar';
 import Bubble from  '../Bubble';
 import Carousel from  '../Carousel';
@@ -45,6 +45,7 @@ export default function Interaction({
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
   const productTemplate = templatename === PRODUCT_TEMPLATE;
+  const quickTemplate = templatename === QUICK_REPLY;
   const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
   const addBubbles = useCallback(newBubbles => {
@@ -108,6 +109,18 @@ export default function Interaction({
           }
         });
       }
+      else if (quickTemplate) {
+        const bubble = {};
+        children.map( el => {
+          if (typeof(el) === 'string') {
+            bubble.text = el;
+          }
+          if (typeof(el) === 'object') {
+            bubble.quick = el;
+          }
+        });
+        addBubbles([JSON.stringify(bubble)]);
+      }
       else {
         const _children = children.reduce((accumulator, it) => (
           typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it]
@@ -119,7 +132,7 @@ export default function Interaction({
         addBubbles(_children.filter(it => it));
       }
     }
-  }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename]);
+  }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename, quickTemplate]);
 
   return (bubbles.length || hasLoader) && (
     <div className={c(
