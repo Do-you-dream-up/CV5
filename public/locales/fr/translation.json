@@ -49,6 +49,16 @@
             }]
         }
     },
+    "email": {
+        "form": {
+            "placeholder": "Entrez votre email"
+        },
+        "get": {
+            "error": "Désolé, il y a eu une erreur avec l'export.",
+            "success": "La conversation a bien été envoyée par email."
+        },
+        "welcome": "Pour recevoir la conversation, veuillez entrer votre adresse email ci-dessous : "
+    },
     "feedback": {
         "choices": [
             "Je n'ai pas compris votre question",

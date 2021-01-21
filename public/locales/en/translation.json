@@ -49,6 +49,16 @@
             }]
         }
     },
+    "email": {
+        "form": {
+            "placeholder": "Enter your email"
+        },
+        "get": {
+            "error": "We apologize, there was an error with the export.",
+            "success": "The conversation was successfully sent by email."
+        },
+        "welcome": "Please type in your email to receive the conversation: "
+    },
     "feedback": {
         "choices": [
             "We did not understand your question",

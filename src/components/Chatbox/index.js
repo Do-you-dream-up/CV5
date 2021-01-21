@@ -91,6 +91,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         set: (name, value) => dydu.variable(name, value),
       };
 
+      window.dydu.email = {
+        prompt: () => setPrompt('email'),
+      };
+
       window.dydu.gdpr = {
         prompt: () => setPrompt('gdpr'),
       };
