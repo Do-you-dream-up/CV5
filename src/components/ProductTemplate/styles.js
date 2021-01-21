@@ -39,6 +39,12 @@ export default createUseStyles(theme => ({
         margin: '-0.8em -1em',
     }),
     text: () => ({
+        '& h3': {
+            '& + p': {
+                marginTop: '-0.75em',
+            },
+            fontWeight: 'bold!important',
+        },
         margin: '0.8em 0',
         padding: '0 1em',
     })
