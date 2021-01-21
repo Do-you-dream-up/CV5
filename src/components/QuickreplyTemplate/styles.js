@@ -18,6 +18,7 @@ export default createUseStyles( theme => ({
         '& > div > a[href]': {
             color: theme.palette.primary.text,
             display: 'flex',
+            flexShrink: '0',
             justifyContent: 'center',
             padding : '0.5em 1.2em',
         },
