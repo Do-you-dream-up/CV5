@@ -27,17 +27,17 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
 
   const printConversation = () => {
     dydu.printHistory();
- };
+  };
 
   const items = [
     {icon: 'icons/dydu-printer-black.svg', onClick: () => printConversation(), text: print},
-    {icon: 'icons/dydu-email-send-black.svg', onClick: null, text: email},
+    {icon: 'icons/dydu-email-send-black.svg', onClick: () => window.dydu.promptEmail.prompt('exportConv'), text: email},
     {
       icon: 'icons/dydu-database-black.svg',
       onClick: spaceChangeActive ? () => window.dydu.space.prompt() : null,
       text: [spaces, dydu.getSpace()].filter(it => it).join(': '),
     },
-    {icon: 'icons/dydu-shield-lock-black.svg', onClick: () => window.dydu.gdpr.prompt(), text: gdpr},
+    {icon: 'icons/dydu-shield-lock-black.svg', onClick: () => window.dydu.promptEmail.prompt('gdpr'), text: gdpr},
   ];
 
   return React.createElement(

@@ -75,6 +75,28 @@ export default new class Dydu {
   })
 
   /**
+   * Export conversation by email
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  exportConversation = (text, options = {}) => {
+    const contextId = this.getContextId();
+    const data = qs.stringify({
+      clientId: this.getClientId(),
+      doNotRegisterInteraction: options.doNotSave,
+      language: this.getLocale(),
+      qualificationMode: options.qualification,
+      space: this.getSpace(),
+      userInput: `#dydumailto:${contextId}:${text}#`,
+      ...(options.extra && { extraParameters: options.extra }),
+    });
+    const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * Send the user feedback.
    *
    * @param {true|false|undefined} value - Value of the feedback.

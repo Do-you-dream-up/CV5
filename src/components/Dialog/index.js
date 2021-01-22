@@ -7,9 +7,9 @@ import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import fetchPushrules  from '../../tools/pushrules';
 import { knownTemplates } from '../../tools/template';
-import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
+import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import Welcome from '../Welcome';
@@ -82,8 +82,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
       )}
       <Welcome />
       { interactions.map((it, index) => ({ ...it, key: index })) }
-      { prompt === 'gdpr' && <Gdpr /> }
+      { prompt === 'gdpr' && <PromptEmail type='gdpr' /> }
       { prompt === 'spaces' && <Spaces /> }
+      { prompt === 'exportConv' && <PromptEmail type='exportConv' /> }
     </div >
   );
 }
