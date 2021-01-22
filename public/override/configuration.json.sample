@@ -159,7 +159,7 @@
     ]
   },
   "pushrules": {
-    "active": true
+    "active": false
   },
   "root": "dydu-root",
   "secondary": {
