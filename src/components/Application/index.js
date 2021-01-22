@@ -7,6 +7,7 @@ import { EventsContext } from '../../contexts/EventsContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import useStyles from './styles';
+// eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
 
 
@@ -36,7 +37,7 @@ export default function Application() {
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
-  if (customFont && customFont !== document.getElementById('font').href) {
+  if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
 
