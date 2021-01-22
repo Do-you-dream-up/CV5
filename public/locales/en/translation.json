@@ -49,10 +49,7 @@
             }]
         }
     },
-    "email": {
-        "form": {
-            "placeholder": "Enter your email"
-        },
+    "exportConv": {
         "get": {
             "error": "We apologize, there was an error with the export.",
             "success": "The conversation was successfully sent by email."
@@ -175,6 +172,9 @@
                 "title": "Tips 3"
             }
         ]
+    },
+    "promptEmail": {
+        "placeholder": "Enter your email..."
     },
     "screenReader": {
         "chatbot":  "chatbot says",

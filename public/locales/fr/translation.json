@@ -49,10 +49,7 @@
             }]
         }
     },
-    "email": {
-        "form": {
-            "placeholder": "Entrez votre email"
-        },
+    "exportConv": {
         "get": {
             "error": "Désolé, il y a eu une erreur avec l'export.",
             "success": "La conversation a bien été envoyée par email."
@@ -107,9 +104,6 @@
             "ok": "J'accepte"
         },
         "form": {
-            "email": {
-                "placeholder": "Saisissez votre email..."
-            },
             "forget": {
                 "description": "Effacer mes données personnelles"
             },
@@ -173,6 +167,9 @@
                 "title": "Astuces 3"
             } 
         ]
+    },
+    "promptEmail": {
+        "placeholder": "Saisissez votre email..."
     },
     "screenReader":{
         "chatbot":  "chatbot dit",
