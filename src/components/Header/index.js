@@ -37,7 +37,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
-  const { image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
+  const { customAvatar, image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
@@ -86,7 +86,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
   const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 
-  const imageType = typeResponse && typeResponse.match(RE_UNDERSTOOD) ?
+  const imageType = !customAvatar ? imageLink.default :
+                    typeResponse && typeResponse.match(RE_UNDERSTOOD) ?
                     imageLink.understood :
                     typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
                     imageLink.misunderstood :
