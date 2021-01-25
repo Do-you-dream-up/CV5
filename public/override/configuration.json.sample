@@ -204,7 +204,7 @@
         "value": {"doyoudreamup.com": "dydu"}
       }
     ],
-    "items": ["default", "foo", "bar"]
+    "items": ["default"]
   },
   "suggestions": {
     "limit": 3

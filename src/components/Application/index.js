@@ -34,6 +34,7 @@ export default function Application() {
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
   const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
   const [ mode, setMode ] = useState(~~initialMode);
+  // eslint-disable-next-line no-unused-vars
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
@@ -58,11 +59,9 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
         <>
-          {open && (
-            <Suspense fallback={null}>
-              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
-            </Suspense>
-          )}
+          <Suspense fallback={null}>
+            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
+          </Suspense>
           <Teaser open={mode === 1} toggle={toggle} />
         </>
       </DialogProvider>

@@ -19,10 +19,10 @@ import useStyles from './styles';
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
+export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { empty, prompt, setPrompt } = useContext(DialogContext);
+  const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
   const { active } = configuration.pushrules;
@@ -41,7 +41,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   };
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
-    empty();
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it, index) => {
         accumulator.push(
@@ -71,9 +70,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
 
   useEffect(() => {
-    if (active)
+    if (active && open)
       fetchPushrules();
-  }, [active]);
+  }, [active, open]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
@@ -97,4 +96,5 @@ Dialog.propTypes = {
   ]),
   interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
 };

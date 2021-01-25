@@ -171,6 +171,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                        dialogRef={dialogRef}
                        interactions={interactions}
                        onAdd={add}
+                       open={open}
                        render
                        value="dialog" />
                   <Tab component={Contacts} value="contacts" />
