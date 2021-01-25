@@ -74,6 +74,16 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
       fetchPushrules();
   }, [active, open]);
 
+  /**
+   * scroll to bottom of dialog on open chatbox
+   */
+  useEffect(() => {
+    if (open) {
+      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+      chatboxDiv.scrollTop = chatboxDiv.scrollHeight;
+    }
+  }, [open]);
+
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
       {!!top && (
