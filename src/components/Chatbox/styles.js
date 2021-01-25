@@ -18,6 +18,7 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
     overflowY: 'auto',
     position: 'relative',
+    scrollBehavior: 'smooth',
   }),
   bodyHidden: () => ({
     display: 'none',
