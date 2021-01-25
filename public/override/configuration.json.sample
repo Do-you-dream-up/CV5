@@ -112,6 +112,7 @@
       "more": "dydu-cog-white.svg"
     },
     "logo": {
+      "customAvatar": false,
       "title": true,
       "image": true,
       "imageLink": {
