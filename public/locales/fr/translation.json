@@ -186,6 +186,10 @@
         "title": "Besoin d'aide ?",
         "mouseover": "Aide ici"
     },
+    "template": {
+        "readmore": "... Lire la suite",
+        "readless": "Lire moins"
+    },
     "top": {
         "title": "Questions les plus posées:"
     }

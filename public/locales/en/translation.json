@@ -191,6 +191,10 @@
         "mouseover": "Heeelp here",
         "title": "Need help?"
     },
+    "template": {
+        "readmore": "Read more",
+        "readless": "Read less"
+    },
     "top": {
         "title": "Top-asked questions:"
     }

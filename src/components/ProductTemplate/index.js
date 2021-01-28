@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import ReadMore from '../ReadMore';
 import useStyles from  './styles';
 
 export default function ProductTemplate({ classe = null, html }) {
@@ -9,6 +10,9 @@ export default function ProductTemplate({ classe = null, html }) {
     const { configuration } = useContext(ConfigurationContext);
     const classes = useStyles({configuration});
     const { product, text } = JSON.parse(html);
+    // max number of characters for the subtitle before inserting a read more option :
+    const { readmore: maxChar } = configuration.templateProduct;
+    const readMoreActive = product.subtitle.length >= maxChar;
 
     return (
       <div className={classe || c('dydu-product-template', classes.root)}>
@@ -22,7 +26,8 @@ export default function ProductTemplate({ classe = null, html }) {
         <div className={c('dydu-product-template-text', classes.text)}>
           <h3> { product.title } </h3>
           { !!product.numeric && <p>{product.numeric}</p>}
-          { !!product.subtitle && <div dangerouslySetInnerHTML={{__html: product.subtitle}} />}
+          { !!product.subtitle && !readMoreActive && <div dangerouslySetInnerHTML={{__html: product.subtitle}} />}
+          { !!product.subtitle && !!readMoreActive && <ReadMore children={product.subtitle} maxChar={maxChar} />}
         </div>
         <div className={c('dydu-product-template-button', classes.button)}>
           { !!product.buttonA && <div dangerouslySetInnerHTML={{__html: product.buttonA}} />}
