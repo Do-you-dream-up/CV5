@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
 import Button from '../Button';
 import MenuList from '../MenuList';
@@ -24,13 +25,14 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const title = t('footer.menu.title', {defaultValue: ''});
   const spaces = t('footer.menu.spaces');
   const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
+  const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
     dydu.printHistory();
   };
 
   const items = [
-    {icon: 'icons/dydu-printer-black.svg', onClick: () => printConversation(), text: print},
+    {icon: 'icons/dydu-printer-black.svg', onClick: interactions.length > 1 ? () => printConversation() : null, text: print},
     {icon: 'icons/dydu-email-send-black.svg', onClick: () => window.dydu.promptEmail.prompt('exportConv'), text: email},
     {
       icon: 'icons/dydu-database-black.svg',
