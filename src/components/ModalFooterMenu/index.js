@@ -23,7 +23,7 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const gdpr = t('footer.menu.gdpr');
   const title = t('footer.menu.title', {defaultValue: ''});
   const spaces = t('footer.menu.spaces');
-  const { active: spaceChangeActive } = configuration.spaces;
+  const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
 
   const printConversation = () => {
     dydu.printHistory();
@@ -34,7 +34,7 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
     {icon: 'icons/dydu-email-send-black.svg', onClick: () => window.dydu.promptEmail.prompt('exportConv'), text: email},
     {
       icon: 'icons/dydu-database-black.svg',
-      onClick: spaceChangeActive ? () => window.dydu.space.prompt() : null,
+      onClick: spaceChangeActive && spacesArray.length > 1 ? () => window.dydu.space.prompt() : null,
       text: [spaces, dydu.getSpace()].filter(it => it).join(': '),
     },
     {icon: 'icons/dydu-shield-lock-black.svg', onClick: () => window.dydu.promptEmail.prompt('gdpr'), text: gdpr},
