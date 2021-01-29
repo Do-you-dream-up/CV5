@@ -226,6 +226,9 @@
     "offset": 5,
     "offsetBetweenCard": 94
   },
+  "templateProduct": {
+    "readmore": 100
+  },
   "top": {
     "size": 3
   },
