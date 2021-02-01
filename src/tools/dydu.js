@@ -19,6 +19,11 @@ const BOT = Object.assign({}, bot, (({ backUpServer, bot: id, server }) => ({
 }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })));
 
 /**
+ * Solution type
+ */
+const ASSISTANT = 'ASSISTANT';
+
+/**
  * Prefix the API and add generic headers.
  */
 const API = axios.create({
@@ -29,6 +34,7 @@ const API = axios.create({
   },
 });
 
+const variables = {};
 
 /**
  * Implement JavaScript bindings for Dydu's REST API.
@@ -106,7 +112,7 @@ export default new class Dydu {
     const data = qs.stringify({
       contextUUID: this.getContextId(),
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
-      solutionUsed: 'ASSISTANT',
+      solutionUsed:ASSISTANT,
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -122,7 +128,7 @@ export default new class Dydu {
     const data = qs.stringify({
       comment,
       contextUUID: this.getContextId(),
-      solutionUsed: 'ASSISTANT',
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -138,7 +144,7 @@ export default new class Dydu {
     const data = qs.stringify({
       choiceKey,
       contextUUID: this.getContextId(),
-      solutionUsed: 'ASSISTANT',
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -327,6 +333,15 @@ export default new class Dydu {
   });
 
   /**
+   * this method allows you to define variables that are modified on the client side
+   * @param {*} name
+   * @param {*} value
+   */
+  setRegisterContext = (name, value) => {
+    variables[name] = value;
+  }
+
+  /**
    * Set the current space and save it in the local storage.
    *
    * @param {string} space - Selected space.
@@ -372,6 +387,7 @@ export default new class Dydu {
       space: this.getSpace(),
       userInput: text,
       ...(options.extra && { extraParameters: options.extra }),
+      variables,
     });
     const contextId = this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -391,16 +407,19 @@ export default new class Dydu {
   };
 
   /**
-   * Set a context variable by name.
-   *
+   * this method is used to initialize a server-side variable
+   * (example: identified user initialized to false then modified in knowledge).
+   * This information is sent only once.
+   * setDialogVariable works on the same principle as registerContext.
    * @param {string} name - Variable to set.
    * @param {string} value - Value to use.
    * @returns {Promise}
    */
-  variable = (name, value) => {
+  setDialogVariable = (name, value) => {
     const data = qs.stringify({
-      contextUuid: this.getContextId(),
+      contextUuid: this.getContextId() ? this.getContextId() : null,
       name,
+      solutionUsed: ASSISTANT,
       value,
     });
     const path = `chat/variable/${BOT.id}/`;
@@ -417,7 +436,7 @@ export default new class Dydu {
       contextUuid: null,
       language: this.getLocale(),
       qualificationMode: options.qualification,
-      solutionUsed: 'ASSISTANT',
+      solutionUsed: ASSISTANT,
       space: this.getSpace() || 'default'
     });
     const path = `chat/welcomecall/${BOT.id}`;
