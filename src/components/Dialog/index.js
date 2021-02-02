@@ -60,6 +60,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   }), [onAdd]);
 
   useEffect(() => {
+    if (interactions.length > 0) {
+      return;
+    }
     fetch().finally(() => {
       if (spacesActive) {
         if (!window.dydu.space.get(spacesDetection)) {
@@ -67,7 +70,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
         }
       }
     });
-  }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
+  }, [fetch, interactions, setPrompt, spaces, spacesActive, spacesDetection]);
 
   useEffect(() => {
     if (active && open)
