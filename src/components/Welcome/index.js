@@ -16,17 +16,20 @@ export default function Welcome() {
   const { enable, knowledgeName } = configuration.welcome;
 
   useEffect(() => {
-     if (Local.get(Local.names.welcome)) {
+    if (Local.get(Local.names.welcome)) {
       setWelcomeText((Local.get(Local.names.welcome)).text);
       setWelcomeSidebar((Local.get(Local.names.welcome)).sidebar);
       return;
-     }
+    }
+    if (!welcomeText) {
       dydu.talk(knowledgeName, {doNotSave: true, hide: true}).then(response => {
         setWelcomeText(response.text);
         setWelcomeSidebar(response.sidebar);
         const localWelcome = { sidebar: response.sidebar, text : response.text};
         Local.set(Local.names.welcome, localWelcome);
       });
+    }
+
   }, [knowledgeName, welcomeText]);
 
   return (enable && welcomeText) ? (

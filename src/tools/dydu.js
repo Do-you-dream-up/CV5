@@ -19,6 +19,11 @@ const BOT = Object.assign({}, bot, (({ backUpServer, bot: id, server }) => ({
 }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })));
 
 /**
+ * Solution type
+ */
+const ASSISTANT = 'ASSISTANT';
+
+/**
  * Prefix the API and add generic headers.
  */
 const API = axios.create({
@@ -29,6 +34,7 @@ const API = axios.create({
   },
 });
 
+const variables = {};
 
 /**
  * Implement JavaScript bindings for Dydu's REST API.
@@ -81,8 +87,8 @@ export default new class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  exportConversation = (text, options = {}) => {
-    const contextId = this.getContextId();
+  exportConversation = async (text, options = {}) => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
@@ -102,11 +108,12 @@ export default new class Dydu {
    * @param {true|false|undefined} value - Value of the feedback.
    * @returns {Promise}
    */
-  feedback = value => {
+  feedback = async value => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUUID: this.getContextId(),
+      contextUUID: contextId,
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
-      solutionUsed: 'ASSISTANT',
+      solutionUsed:ASSISTANT,
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -118,11 +125,12 @@ export default new class Dydu {
    * @param {string} comment - Comment to send.
    * @returns {Promise}
    */
-  feedbackComment = comment => {
+  feedbackComment = async comment => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
       comment,
-      contextUUID: this.getContextId(),
-      solutionUsed: 'ASSISTANT',
+      contextUUID: contextId,
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -134,11 +142,12 @@ export default new class Dydu {
    * @param {string} choiceKey - Choice key to send.
    * @returns {Promise}
    */
-  feedbackInsatisfaction = choiceKey => {
+  feedbackInsatisfaction = async choiceKey => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
       choiceKey,
-      contextUUID: this.getContextId(),
-      solutionUsed: 'ASSISTANT',
+      contextUUID: contextId,
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -179,11 +188,25 @@ export default new class Dydu {
   getClientId = () => Local.get(Local.names.client, uuid4, true);
 
   /**
-   * Read the context ID from the local storage and return it.
+   * Read the context ID from the local storage and return it,
+   * if the context ID not exist in local storage we fecth it from the API
    *
-   * @returns {string|undefined} The context ID or undefined.
+   * @returns {string} The context ID.
    */
-  getContextId = () => Local.get(Local.names.context);
+  getContextId = async (forced) => {
+    const data = qs.stringify({
+      clientId: this.getClientId() ? this.getClientId() : null,
+      language: this.getLocale(),
+      space: this.getLocale(),
+    });
+    const path = `chat/context/${BOT.id}/`;
+    if (Local.get(Local.names.context) && !forced) {
+      return Local.get(Local.names.context);
+    }
+    const response = await this.emit(API.post, path, data);
+    this.setContextId(response.contextId);
+    return response.contextId;
+  };
 
   /**
    * Self-regeneratively return the currently selected locale.
@@ -237,7 +260,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   history = () => new Promise((resolve, reject) => {
-    const contextId = this.getContextId();
+    const contextId = Local.get(Local.names.context);
     if (contextId) {
       const data = qs.stringify({ contextUuid: contextId });
       const path = `chat/history/${BOT.id}/`;
@@ -263,8 +286,8 @@ export default new class Dydu {
    *
    *
    */
-  printHistory = () => {
-    const contextId = this.getContextId();
+  printHistory = async () => {
+    const contextId = await this.getContextId();
     if (contextId) {
       const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
@@ -285,16 +308,8 @@ export default new class Dydu {
    *
    * @returns {Promise}
    */
-  reset = () => {
-    const data = qs.stringify({
-      clientId: this.getClientId(),
-      language: this.getLocale(),
-      space: true,
-    });
-    const path = `chat/context/${BOT.id}/`;
-    return this.emit(API.post, path, data).then(({ contextId }) => {
-      this.setContextId(contextId);
-    });
+  reset = async () => {
+    return await this.getContextId(true);
   };
 
   /**
@@ -325,6 +340,15 @@ export default new class Dydu {
       reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
     }
   });
+
+  /**
+   * this method allows you to define variables that are modified on the client side
+   * @param {*} name
+   * @param {*} value
+   */
+  setRegisterContext = (name, value) => {
+    variables[name] = value;
+  }
 
   /**
    * Set the current space and save it in the local storage.
@@ -363,7 +387,7 @@ export default new class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  talk = (text, options = {}) => {
+  talk = async (text, options = {}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
@@ -372,8 +396,9 @@ export default new class Dydu {
       space: this.getSpace(),
       userInput: text,
       ...(options.extra && { extraParameters: options.extra }),
+      variables,
     });
-    const contextId = this.getContextId();
+    const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };
@@ -391,16 +416,20 @@ export default new class Dydu {
   };
 
   /**
-   * Set a context variable by name.
-   *
+   * this method is used to initialize a server-side variable
+   * (example: identified user initialized to false then modified in knowledge).
+   * This information is sent only once.
+   * setDialogVariable works on the same principle as registerContext.
    * @param {string} name - Variable to set.
    * @param {string} value - Value to use.
    * @returns {Promise}
    */
-  variable = (name, value) => {
+  setDialogVariable = async (name, value) => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUuid: this.getContextId(),
+      contextUuid: contextId,
       name,
+      solutionUsed: ASSISTANT,
       value,
     });
     const path = `chat/variable/${BOT.id}/`;
@@ -412,12 +441,13 @@ export default new class Dydu {
    *
    * @returns {Promise}
    */
-  welcomeCall = (options = {}) => {
+  welcomeCall = async (options = {}) => {
+    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUuid: null,
+      contextUuid: contextId,
       language: this.getLocale(),
       qualificationMode: options.qualification,
-      solutionUsed: 'ASSISTANT',
+      solutionUsed: ASSISTANT,
       space: this.getSpace() || 'default'
     });
     const path = `chat/welcomecall/${BOT.id}`;
