@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Bowser from 'bowser';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
@@ -7,6 +8,7 @@ import { decode } from './cipher';
 import configuration from './configuration.json';
 import { Cookie, Local } from './storage';
 
+const { browser, os} = Bowser.getParser(window.navigator.userAgent).parsedResult;
 
 /**
  * Read the bot ID and the API server from URL parameters when found. Default to
@@ -389,9 +391,11 @@ export default new class Dydu {
    */
   talk = async (text, options = {}) => {
     const data = qs.stringify({
+      browser: `${browser.name} ${browser.version}`,
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
       language: this.getLocale(),
+      os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
       userInput: text,
