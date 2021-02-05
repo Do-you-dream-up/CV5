@@ -10,6 +10,7 @@ const common = require('./webpack.common');
 module.exports = (env) => {
 
   const ASSET =  configuration.application.cdn + configuration.application.directory + env + '/' || './';
+  const QUALIFICATION = env === 'prod' ? false : true;
 
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
@@ -33,6 +34,7 @@ module.exports = (env) => {
       new webpack.DefinePlugin({
         'process.env': {
           PUBLIC_URL: JSON.stringify(ASSET),
+          QUALIFICATION
           }
       })
     ],

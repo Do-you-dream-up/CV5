@@ -56,7 +56,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const qualification = !!configuration.application.qualification;
+  const qualification = process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
