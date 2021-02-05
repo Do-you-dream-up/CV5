@@ -109,5 +109,5 @@ Then merge into =:production=.
 ** Deploying to CDN
 1. Checkout the feature branch
 1. Check cnd and directory in public/override/configuration.json
-1. Run npm run buildProd/buildPreprod
+1. Run npm run build
 1. Copy build folder in CDN

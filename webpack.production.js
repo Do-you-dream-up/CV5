@@ -9,7 +9,7 @@ const common = require('./webpack.common');
 
 module.exports = (env) => {
 
-  const ASSET =  configuration.application.cdn + configuration.application.directory + env + '/' || './';
+  const ASSET =  configuration.application.cdn + configuration.application.directory + `${env ? env + '/' : ''}` || './';
   const QUALIFICATION = env === 'prod' ? false : true;
 
   return Merge.strategy({plugins: 'prepend'})(common, {
