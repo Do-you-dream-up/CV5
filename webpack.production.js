@@ -7,8 +7,10 @@ const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
-module.exports = () => {
-  const ASSET =  configuration.application.cdn + configuration.application.directory || './';
+module.exports = (env) => {
+
+  const ASSET =  configuration.application.cdn + configuration.application.directory + env + '/' || './';
+
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',
