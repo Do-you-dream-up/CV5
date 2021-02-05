@@ -15,10 +15,6 @@ module.exports = {
     '**/__tests__/**',
     '**/components/*/styles.js',
   ],
-  ribbon: {
-    text: 'Repository',
-    url: 'https://git.nereide.dydu.ai/mmarques/bliss/',
-  },
   skipComponentsWithoutExample: true,
   styleguideComponents: {
     'PathlineRenderer': path.join(__dirname, 'src/styleguide/components/PathlineRenderer'),
