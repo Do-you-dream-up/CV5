@@ -20,7 +20,6 @@ preprod:
     - ansible-playbook --inventory hosts.yml deliverPreprod.yml
   only:
     refs:
-      - production
       - development
       - /project\/.*/
 
@@ -41,7 +40,6 @@ prod:
     - ansible-playbook --inventory hosts.yml deliverProd.yml
   only:
     refs:
-      - production
       - development
       - /project\/.*/
 ...
