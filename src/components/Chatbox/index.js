@@ -1,13 +1,14 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
-import { TabProvider } from '../../contexts/TabContext';
+import { TabContext, TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { Cookie } from '../../tools/storage';
@@ -46,19 +47,20 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setSecondary,
     toggleSecondary,
   } = useContext(DialogContext);
+  const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
   const { active: onboardingActive } = useContext(OnboardingContext);
+  const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
-  const [gdprShowDisclaimer, setGdprShowDisclaimer] = useState(false);
-  const [gdprPassed, setGdprPassed] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const qualification = !!configuration.application.qualification;
+  const qualification = process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
-
+  const dialogRef = useRef();
+  const gdprRef = useRef();
 
   const ask = useCallback((text, options) => {
     text = text.trim();
@@ -80,23 +82,24 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   useEffect(() => {
     if (!ready) {
-      window.dydu = {};
+      window.dydu = {...window.dydu};
 
       window.dydu.chat = {
         ask: (text, options) => ask(text, options),
         empty: () => empty(),
         reply: text => addResponse({ text }),
-        set: (name, value) => dydu.variable(name, value),
+        setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
+        setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
       };
 
-      window.dydu.gdpr = {
-        prompt: () => setPrompt('gdpr'),
+      window.dydu.promptEmail = {
+        prompt: (type) => setPrompt(type),
       };
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
-          ([locale]) => window.dydu.chat.reply(`New locale set: '${locale}'.`),
+          ([locale]) => window.dydu.chat.reply(`${t('interaction.languageChange')} '${locale}'.`),
           response => window.dydu.chat.reply(response),
           document.documentElement.lang = locale,
         ),
@@ -113,7 +116,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         get: strategy => dydu.getSpace(strategy),
         prompt: () => setPrompt('spaces'),
         set: (space, { quiet } = {}) => dydu.setSpace(space).then(
-          space => !quiet && window.dydu.chat.reply(`New space set: '${space}'.`),
+          space => !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`),
           () => { },
         ),
       };
@@ -130,93 +133,68 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
       window.reword = window.dydu.chat.ask;
+      window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
+
+    if (configuration.spaces.items && configuration.spaces.items.length === 1)
+      window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [
-    addResponse,
-    ask,
-    empty,
-    i,
-    modal,
-    ready,
-    setDisabled,
-    setLocked,
-    setPlaceholder,
-    setPrompt,
-    setSecondary,
-    t,
-    toggle,
-    toggleSecondary,
-  ]);
+  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
-    if (gdprShowDisclaimer) {
-      setGdprShowDisclaimer(false);
-      modal(GdprDisclaimer, null, { dismissable: false, variant: 'full' }).then(
-        () => {
-          Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
-          setGdprPassed(true);
-        },
-        () => {
-          setGdprShowDisclaimer(true);
-          toggle(1)();
-        },
+    if (gdprPassed && !Cookie.get(Cookie.names.visitor)) {
+      dydu.welcomeCall({ qualification }).then(
+        () => Cookie.set(Cookie.names.visitor, undefined, Cookie.duration.long),
+        () => {}
       );
     }
-  }, [gdprShowDisclaimer, modal, toggle]);
-
-  useEffect(() => {
-    if (!Cookie.get(Cookie.names.gdpr)) {
-      setGdprShowDisclaimer(true);
-    }
-    else {
-      setGdprPassed(true);
-    }
-  }, []);
+  }, [gdprPassed, qualification]);
 
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,
   });
   return (
-    <TabProvider>
-      <div className={classnames} ref={root} {...rest} role='region' aria-label='chatbot window'>
-        <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
-        <div>
-          <div className={classes.container}>
-            {gdprPassed && (
-              <>
-                <Onboarding render>
-                  <div tabIndex='0' className={c(
-                    'dydu-chatbox-body',
-                    classes.body,
-                    { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
-                  )}>
-                    <Tab component={Dialog}
-                         interactions={interactions}
-                         onAdd={add}
-                         render
-                         value="dialog" />
-                    <Tab component={Contacts} value="contacts" />
-                  </div>
-                  {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                  <Footer onRequest={addRequest} onResponse={addResponse} />
-                </Onboarding>
-              </>
-            )}
-            <Header extended={extended}
-                    minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
-                    onClose={onClose}
-                    onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
-                    onMinimize={onMinimize}
-                    style={{ order: -1 }} />
-            <Modal />
-            {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
-          </div>
+    <div className={classnames} ref={root} {...rest} role='region' aria-label='chatbot window'>
+      <h1 className={classes.srOnly} tabIndex='-1'>Chatbot window</h1>
+      <div>
+        <div className={classes.container}>
+          <>
+            <GdprDisclaimer gdprRef={gdprRef}>
+              <Onboarding render>
+                <div tabIndex='0' className={c(
+                  'dydu-chatbox-body',
+                  classes.body,
+                  { [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended) },
+                )}>
+                  <Tab component={Dialog}
+                       dialogRef={dialogRef}
+                       interactions={interactions}
+                       onAdd={add}
+                       open={open}
+                       render
+                       value="dialog" />
+                  <Tab component={Contacts} value="contacts" />
+                </div>
+                {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+                { !current && <Footer onRequest={addRequest} onResponse={addResponse} />}
+              </Onboarding>
+            </GdprDisclaimer>
+          </>
+          <Header dialogRef={dialogRef}
+                  gdprRef={gdprRef}
+                  extended={extended}
+                  minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
+                  onClose={onClose}
+                  onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                  onMinimize={onMinimize}
+                  style={{ order: -1 }} />
+          <Modal />
+          {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
         </div>
       </div>
-    </TabProvider>
+    </div>
   );
 }
 
@@ -231,10 +209,14 @@ Chatbox.propTypes = {
 
 export function ChatboxWrapper(rest) {
   return (
-    <OnboardingProvider>
-      <ModalProvider>
-        <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
-      </ModalProvider>
-    </OnboardingProvider>
+    <GdprProvider>
+      <OnboardingProvider>
+        <ModalProvider>
+          <TabProvider>
+            <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+          </TabProvider>
+        </ModalProvider>
+      </OnboardingProvider>
+    </GdprProvider>
   );
 }

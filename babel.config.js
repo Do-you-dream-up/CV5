@@ -5,7 +5,11 @@ module.exports = api => {
       '@babel/plugin-proposal-class-properties',
     ],
     presets: [
-      '@babel/preset-env',
+      ['@babel/preset-env',
+        {
+          'corejs': 3,
+          'useBuiltIns': 'usage',
+        }],
       '@babel/preset-react',
     ],
   };

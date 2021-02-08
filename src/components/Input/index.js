@@ -1,3 +1,4 @@
+//import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -5,19 +6,21 @@ import Autosuggest from 'react-autosuggest';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
+// eslint-disable-next-line no-unused-vars
+import { Cookie } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
-import Voice from '../Voice';
 import useStyles from './styles';
-
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ focus, onRequest, onResponse }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
   const classes = useStyles({configuration});
   const [ counter = 100, setCounter ] = useState(configuration.input.maxLength);
@@ -27,7 +30,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const [ typing, setTyping ] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification = !!configuration.application.qualification;
+  const qualification = process.env.QUALIFICATION;
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
@@ -76,6 +79,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     if (text) {
       reset();
       onRequest(text);
+      event('questionSent', text);
       talk(text, {qualification}).then(onResponse);
     }
     setTyping(false);
@@ -117,7 +121,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   };
 
   const actions = [{
-    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/send.black.png`} title={actionSend} />,
+    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />,
     type: 'submit',
     variant: 'icon',
   }];
@@ -134,17 +138,15 @@ export default function Input({ focus, onRequest, onResponse }) {
                    suggestions={suggestions}
                    theme={theme} />
       { voice && counter === maxLength ?
-        <Voice /> :
+        <voice/> :
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
     </form>
   );
 }
 
-
 Input.defaultProps = {
   focus: true,
 };
-
 
 Input.propTypes = {
   focus: PropTypes.bool,

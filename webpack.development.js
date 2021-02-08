@@ -2,7 +2,6 @@ const Path = require('path');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
 const common = require('./webpack.common');
-
 module.exports = Merge.smart(common, {
   devServer: {
     compress: true,
@@ -25,6 +24,7 @@ module.exports = Merge.smart(common, {
     new webpack.DefinePlugin({
       'process.env': {
         PUBLIC_URL: JSON.stringify('./'),
+        QUALIFICATION: true
        }
    })
   ],

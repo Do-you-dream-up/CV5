@@ -11,6 +11,10 @@ export default createUseStyles(theme => ({
     marginLeft: '.5em',
     overflow: 'hidden',
     width: 64,
+    // eslint-disable-next-line sort-keys
+    '& img' : {
+      height: '100%'
+    },
   }),
   button: () => ({
     '&:hover:before': {
@@ -49,7 +53,7 @@ export default createUseStyles(theme => ({
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
-    position: 'absolute',
+    position: 'fixed',
     right: configuration.teaser.right,
   }),
 }));

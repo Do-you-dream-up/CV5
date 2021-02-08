@@ -6,6 +6,9 @@ export default createUseStyles(theme => ({
     '& > *': {
       pointerEvents: 'auto',
     },
+    '& > :not(:last-child)': {
+      marginRight: '.1em',
+    },
     marginRight: '.5em',
     position: 'absolute',
     right: 0,
@@ -13,7 +16,7 @@ export default createUseStyles(theme => ({
   body: () => ({
     alignItems: 'center',
     display: 'flex',
-    justifyContent: 'flex-start',
+    minHeight: '2.8em',
     padding: '.6em',
   }),
   draggable: () => ({
@@ -24,6 +27,27 @@ export default createUseStyles(theme => ({
   }),
   flat: () => ({
     boxShadow: 'none !important',
+  }),
+  image: () => ({
+    '& img' : {
+      height: '100%',
+    },
+    alignItems: 'center',
+    display: 'flex',
+    height: '2.5em',
+    justifyContent: 'center',
+    marginRight: '0.6em',
+    width: '2.5em',
+  }),
+  logo: () => ({
+    '& > .dydu-header-title:only-child': {
+      margin: 'auto 0.5em',
+      width: '8.5em',
+    },
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
   }),
   root: () => ({
     backgroundColor: theme.palette.primary.main,
@@ -38,6 +62,8 @@ export default createUseStyles(theme => ({
     },
   }),
   title: () => ({
-    padding: '.5em',
+    minWidth: '6.7em',
+    padding: '.5em 0',
+    width: '6.5em',
   }),
 }));

@@ -1,6 +1,6 @@
 {
     "banner": {
-        "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
+        "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de <a href>votre actualité </a> ou de celle du marché.</p>",
         "more": "En savoir plus",
         "ok": "Merci"
     },
@@ -15,10 +15,10 @@
         "previous": "Prochain"
     },
     "close": {
-        "body": "If you would like to re-open the chatbox, please refresh the page.",
-        "no": "Cancel",
-        "title": "Close the chatbox?",
-        "yes": "Close"
+        "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
+        "no": "Annuler",
+        "title": "Faire disparaitre le chatbot ?",
+        "yes": "Fermer"
     },
     "contacts": {
         "phone": {
@@ -49,27 +49,35 @@
             }]
         }
     },
+    "exportConv": {
+        "get": {
+            "error": "Désolé, il y a eu une erreur avec l'export.",
+            "success": "La conversation a bien été envoyée par email."
+        },
+        "welcome": "Pour recevoir la conversation, veuillez entrer votre adresse email ci-dessous : "
+    },
     "feedback": {
         "choices": [
-            "We did not understand your question",
-            "The proposed solution did not satisfy you",
-            "Our answer was not clear enough"
+            "Je n'ai pas compris votre question",
+            "J'ai bien compris mais la solution proposée ne vous satisfait pas",
+            "Ma réponse n'était pas claire"
         ],
         "comment": {
-            "help": "What went wrong?",
-            "placeholder": "Comment here...",
-            "thanks": "Thank you for your detailed feedback!"
+            "help": "Avez-vous un commentaire ?",
+            "placeholder": "Saisissez votre commentaire...",
+            "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
         },
         "vote": {
-            "negative": "Negative feedback",
-            "positive": "Positive feedback",
-            "thanks": "Thank you for your feedback!"
+            "negative": "Négatif",
+            "positive": "Positif",
+            "thanks": "Merci pour votre retour!"
         }
     },
     "footer": {
         "expand": "Ouvrir sous-menu",
         "menu": {
             "close": "Fermer",
+            "print": "Imprimer la conversation",
             "email": "Exporter la conversation par email",
             "gdpr": "RGPD (export, suppression)",
             "spaces": "Changer d'espace de consultation",
@@ -77,44 +85,47 @@
         },
         "rosetta": {
             "en": "English",
-            "fr": "French"
+            "fr": "Français",
+            "es": "Español",
+            "de": "Deutsch",
+            "it": "Italiano",
+            "pt": "Português"
         },
         "translate": "Languages"
     },
     "form": {
-        "cancel": "Cancel",
-        "submit": "Submit"
+        "cancel": "Fermer",
+        "submit": "Envoyer"
     },
     "gdpr": {
         "disclaimer": {
-            "body": "<p>En utilisant ce Chatbot vous consentez directement à ce que les données transmises soient exploitées à des fins de réponses automatisées et d'enrichissement du moteur de dialogue avant de faire l'objet d'une anonymisation les supprimant de manière irréversible.</p>",
+            "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site. Les informations que vous nous transmettez permettent de traiter votre demande. Toutefois, aucune donnée personnelle pouvant permettre votre identification ne doit être communiquée dans cet outil, ni aucune donnée sensible, telle qu’une information sur votre état de santé ou sur vos opinions et convictions personnelles.</p>",
             "cancel": "Je refuse",
             "ok": "J'accepte"
         },
         "form": {
-            "email": {
-                "placeholder": "Enter your address..."
-            },
             "forget": {
-                "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                "description": "Effacer mes données personnelles"
             },
             "get": {
-                "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+                "description": "Exporter mes données personnelles"
             }
         },
         "get": {
-            "error": "Get error.",
-            "success": "Get success."
+            "error": "Une erreur est survenue.",
+            "success": "Votre demande a été envoyée."
         }
     },
     "header": {
         "actions": {
             "close": "Fermer",
-            "expand": "Expand",
+            "expand": "Agrandir",
             "minimize": "Réduire",
-            "more": "More",
-            "shrink": "Shrink",
-            "tests": "Tests"
+            "more": "Plus d'options",
+            "shrink": "Diminuer",
+            "tests": "Tests",
+            "fontDecrease": "Réduire police",
+            "fontIncrease": "Agrandir police"
         },
         "title": "Besoin d'aide ?"
     },
@@ -122,10 +133,8 @@
         "actions": {
             "send": "Envoie",
             "record": {
-                "start": "Record start",
-                "stop": "Record stop",
-                "start": "Start",
-                "stop": "Stop"
+                "start": "Début de l'enregistrement",
+                "stop": "Fin de l'enregistrement"
               },
               "media": {
                 "start": "Start",
@@ -136,21 +145,31 @@
           },
           "placeholder": "Ecrivez ici..."
     },
+    "interaction": {
+        "languageChange": "Vous utilisez cette langue:",
+        "spaceChange": "Vous êtes sur cet espace de consultation:"
+    },
     "onboarding": {
-        "carousel": {
-            "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
-            "next": "Suivant",
-            "previous": "Précédent",
-            "title": "Quelques astuces"
-        },
-        "preamble": "<p>Quelques informations avant de commencer</p>",
-        "skip": {
-            "button": "Dialoguer avec le Chatbot",
-            "title": "Démarrez une conversation"
-        },
-        "top": {
-            "title": "Voici les questions les plus posées"
-        }
+        "next": "Suivant",
+        "previous": "Précédent",
+        "skip": "Passer le onboarding",
+        "steps": [
+            {
+                "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+                "title": "Quelques astuces"
+            },
+            {
+                "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus.</p>",
+                "title": "Astuces 2"
+            },
+            {
+                "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante.</p>",
+                "title": "Astuces 3"
+            } 
+        ]
+    },
+    "promptEmail": {
+        "placeholder": "Saisissez votre email..."
     },
     "screenReader":{
         "chatbot":  "chatbot dit",
@@ -166,6 +185,10 @@
     "teaser": {
         "title": "Besoin d'aide ?",
         "mouseover": "Aide ici"
+    },
+    "template": {
+        "readmore": "... Lire la suite",
+        "readless": "Lire moins"
     },
     "top": {
         "title": "Questions les plus posées:"

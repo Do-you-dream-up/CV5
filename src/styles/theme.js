@@ -38,6 +38,7 @@ export default {
     },
     primary: {
       dark: theme.palette.primary.dark || '#0288D1',
+      hover: theme.palette.primary.hover || '#2E2E9E',
       light: theme.palette.primary.light || '#B3E5FC',
       main: theme.palette.primary.main || '#3636B9',
       text: theme.palette.primary.text || '#FFFFFF',

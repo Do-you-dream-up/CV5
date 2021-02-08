@@ -1,6 +1,6 @@
 {
     "banner": {
-        "html": "<p>Purus sit amet <em>volutpat consequat</em>.</p><p>In iaculis nunc sed augue lacus, et <a href>odio pellen diam volutpat</a> commodo.</p>",
+        "html": "<p> Put forward <em>your news</em>.</p><p>It can concern <a href>your business</a> or your industry.</p>",
         "more": "More information",
         "ok": "Thanks"
     },
@@ -49,6 +49,13 @@
             }]
         }
     },
+    "exportConv": {
+        "get": {
+            "error": "We apologize, there was an error with the export.",
+            "success": "The conversation was successfully sent by email."
+        },
+        "welcome": "Please type in your email to receive the conversation: "
+    },
     "feedback": {
         "choices": [
             "We did not understand your question",
@@ -70,6 +77,7 @@
         "expand": "Expand menu",
         "menu": {
             "close": "Close",
+            "print": "Print the conversation",
             "email": "Export the conversation by email",
             "gdpr": "GDPR (export, delete)",
             "spaces": "Switch consulting space",
@@ -77,11 +85,11 @@
         },
         "rosetta": {
             "en": "English",
-            "fr": "French",
-            "es": "Spanish",
-            "de": "German",
-            "it": "Italian",
-            "pt": "Portuguese"
+            "fr": "Français",
+            "es": "Español",
+            "de": "Deutsch",
+            "it": "Italiano",
+            "pt": "Português"
         },
         "translate": "Languages"
     },
@@ -107,8 +115,8 @@
             }
         },
         "get": {
-            "error": "Get error.",
-            "success": "Get success."
+            "error": "We apologize, there was an error with your GDPR request.",
+            "success": "Your GDPR request has been submitted successfully."
         }
     },
     "header": {
@@ -118,7 +126,9 @@
             "minimize": "Minimize",
             "more": "More",
             "shrink": "Shrink",
-            "tests": "Tests"
+            "tests": "Tests",
+            "fontDecrease": "Decrease font",
+            "fontIncrease": "Increase font"
         },
         "title": "Need help?"
     },
@@ -127,9 +137,7 @@
             "send": "Send",
             "record": {
                 "start": "Record start",
-                "stop": "Record stop",
-                "start": "Start",
-                "stop": "Stop"
+                "stop": "Record stop"
               },
               "media": {
                 "start": "Start",
@@ -140,21 +148,33 @@
           },
           "placeholder": "Type here..."
     },
+    "interaction": {
+        "languageChange": "You are using this language:",
+        "spaceChange": "You are on this space:"
+    },
     "onboarding": {
-        "carousel": {
-            "body": "<p><strong>Prefer complete sentences</strong></p><p>That way I can provide you with better content.</p>",
-            "next": "Next",
-            "previous": "Previous",
-            "title": "Tips"
-        },
-        "preamble": "<p>Some tips before we begin</p>",
-        "skip": {
-            "button": "Chat with the bot",
-            "title": "Start a conversation"
-        },
-        "top": {
-            "title": "Here are the top-asked topics"
-        }
+        "next": "Next",
+        "previous": "Previous",
+        "skip": "Skip Onboarding",
+        "steps": [{
+                "body": "<p>That way I can provide you with better content.</p>",
+                "image": "dydu-onboarding-1.svg",
+                "title": "Use at best complete sentences"
+            },
+            {
+                "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus pellentesque.</p>",
+                "image": "dydu-onboarding-2.svg",
+                "title": "Tips 2"
+            },
+            {
+                "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante ipsum primis.</p>",
+                "image": "dydu-onboarding-3.svg",
+                "title": "Tips 3"
+            }
+        ]
+    },
+    "promptEmail": {
+        "placeholder": "Enter your email..."
     },
     "screenReader": {
         "chatbot":  "chatbot says",
@@ -170,6 +190,10 @@
     "teaser": {
         "mouseover": "Heeelp here",
         "title": "Need help?"
+    },
+    "template": {
+        "readmore": "Read more",
+        "readless": "Read less"
     },
     "top": {
         "title": "Top-asked questions:"

@@ -20,8 +20,8 @@ export default function Secondary({ anchor, mode }) {
   const root = useRef(null);
   const [ initialMode, setMode ] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
-  const classes = useStyles({configuration});
-  const { body, title, url } = secondaryContent || {};
+  const { body, height, title, url, width } = secondaryContent || {};
+  const classes = useStyles({configuration, height, width});
   const { boundaries } = configuration.dragon;
 
   if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {
@@ -44,7 +44,7 @@ export default function Secondary({ anchor, mode }) {
         {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
           <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
-            <img alt="Close" src={`${process.env.PUBLIC_URL}icons/close.png`} title="Close" />
+            <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>
       </div>

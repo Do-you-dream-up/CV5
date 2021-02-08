@@ -18,7 +18,6 @@ export default createUseStyles(theme => ({
     minWidth: configuration.modal.minWidth,
   }),
   full: () => ({
-    alignItems: 'center',
     bottom: 0,
     boxShadow: 'none',
     display: 'flex',

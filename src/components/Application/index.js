@@ -3,9 +3,11 @@ import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import useStyles from './styles';
+// eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
 
 
@@ -27,14 +29,16 @@ const Wizard = React.lazy(() => import(
 export default function Application() {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({configuration});
   const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
   const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
   const [ mode, setMode ] = useState(~~initialMode);
+  // eslint-disable-next-line no-unused-vars
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
-  if (customFont && customFont !== document.getElementById('font').href) {
+  if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
 
@@ -45,16 +49,19 @@ export default function Application() {
     Local.set(Local.names.open, Math.max(mode, 1));
   }, [mode]);
 
+  useEffect(() => {
+    event('loadChatbox');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={c('dydu-application', classes.root)}>
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
         <>
-          {open && (
-            <Suspense fallback={null}>
-              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} />
-            </Suspense>
-          )}
+          <Suspense fallback={null}>
+            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
+          </Suspense>
           <Teaser open={mode === 1} toggle={toggle} />
         </>
       </DialogProvider>

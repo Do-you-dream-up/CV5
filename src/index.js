@@ -14,6 +14,17 @@ import keycloak from './tools/keycloak';
 let _configuration;
 let anchor;
 
+const getRootDiv = (configuration) => {
+
+  if (document.getElementById(configuration.root))
+    return document.getElementById(configuration.root);
+
+  const rootId = document.createElement('div');
+  rootId.id = configuration.root;
+  document.body.appendChild(rootId);
+  return document.getElementById(configuration.root);
+};
+
 // eslint-disable-next-line react/no-render-return-value
 const renderApp = () => ReactDOM.render(
   <JssProvider id={{minify: process.env.NODE_ENV === 'production'}}>
@@ -32,7 +43,7 @@ const renderApp = () => ReactDOM.render(
 
 configuration.initialize().then(configuration => {
   _configuration = configuration;
-  anchor = document.getElementById(configuration.root);
+  anchor = getRootDiv(configuration);
   if (anchor) {
     configuration.keycloak.enable ? keycloak.initKeycloak(renderApp, configuration.keycloak) : renderApp();
   }

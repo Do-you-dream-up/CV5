@@ -1,20 +1,24 @@
+//import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+// eslint-disable-next-line no-unused-vars
+import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
+// eslint-disable-next-line no-unused-vars
+import { Cookie } from '../../tools/storage';
+// eslint-disable-next-line no-unused-vars
+import Actions from '../Actions';
 import Skeleton from '../Skeleton';
-import Voice from '../Voice';
 import useStyles from './styles';
-
 
 /**
  * Minified version of the chatbox.
  */
 export default function Teaser({ open, toggle }) {
-
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
@@ -25,7 +29,7 @@ export default function Teaser({ open, toggle }) {
   const voice = configuration.Voice ? configuration.Voice.enable : false;
 
   const onClick = () => {
-    event('onClick', 1, 2, 4, 'asdf');
+    event('onClick');
     toggle(2)();
   };
 
@@ -54,7 +58,7 @@ export default function Teaser({ open, toggle }) {
             <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
-        { open && voice && <Voice /> }
+        { open && voice && <voice/> }
       </div>
     </div>
   );

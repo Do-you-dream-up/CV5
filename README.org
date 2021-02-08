@@ -1,5 +1,5 @@
 #+TITLE: Dydu Bliss
-#+AUTHOR: Mathieu Marques
+#+AUTHOR: Dydu
 
 * Installation
 
@@ -13,17 +13,22 @@ cp public/override/style.css.sample public/override/style.css
 cp public/override/theme.json.sample public/override/theme.json
 #+END_SRC
 
+A token is needed to install some dependencies like voice-module, ask for it.
+#+BEGIN_SRC sh
+export NPM_TOKEN=XXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+#+END_SRC
+
 The below instructions assume you have a working setup with latest =npm=.
 
 #+BEGIN_SRC sh
 npm install
+npm install @dydu_ai/voice-module --no-save //optional if you use voice-module
 npm start
 #+END_SRC
 
 * Contributing
 
 ** Setup
-
 Install the following dependencies globally when working outside of =npm=. This
 lets your editor know about ESLint dependencies.
 
@@ -92,6 +97,7 @@ First, merge the feature branches into =:master=.
 1. Merge the feature branch
 1. Bump the version: =npm version patch|minor=
 1. Push the changes
+1. git push origin <version>
 
 Then merge into =:production=.
 
@@ -102,6 +108,6 @@ Then merge into =:production=.
 
 ** Deploying to CDN
 1. Checkout the feature branch
-1. Check publicPath in public/override/configuration.json
+1. Check cnd and directory in public/override/configuration.json
 1. Run npm run build
 1. Copy build folder in CDN

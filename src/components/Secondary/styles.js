@@ -1,6 +1,5 @@
 import { createUseStyles } from 'react-jss';
 
-
 export default createUseStyles(theme => {
 
   const side = {
@@ -25,13 +24,17 @@ export default createUseStyles(theme => {
       display: 'flex',
       marginLeft: 'auto',
     }),
-    base: ({ configuration }) => ({
+    base: ({configuration, height, width }) => ({
       backgroundColor: theme.palette.background.secondary,
       boxShadow: theme.shadows[1],
       display: 'flex',
       flexDirection: 'column',
+      height: configuration.secondary.fixedDimensions ? undefined : height,
       overflowY: 'auto',
-      width: configuration.secondary.width,
+      width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
+      [theme.breakpoints.down('xs')]: {
+        height: '100%',
+      },
     }),
     body: () => ({
       padding: '1.6em',

@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import PrettyHtml from  '../PrettyHtml';
 
@@ -12,6 +13,7 @@ import PrettyHtml from  '../PrettyHtml';
 export default function Top({ className, component, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('top');
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
   const { size } = configuration.top;
@@ -29,19 +31,30 @@ export default function Top({ className, component, ...rest }) {
     }
   }), [size]);
 
+  const onAskHandler = (reword) => {
+    event('topClicked', reword);
+    window.dydu.chat.ask(reword, {'type': 'redirection_knowledge'});
+  };
+
   useEffect(() => {
     if (!ready) {
       fetch();
     }
   }, [fetch, ready]);
 
+  useEffect(() => {
+    if (items.length)
+      event('topDisplay');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
+
   return !!items.length && (
     React.createElement(component, {className: c('dydu-top', className), ...rest}, (
       <PrettyHtml>
         <ol>
           {items.map(({ reword }, index) => {
-            const onAsk = () => window.dydu.chat.ask(reword, {'type': 'redirection_knowledge'});
-            return <li key={index}><a children={reword} onClick={onAsk} href='#' /></li>;
+            const onAsk = () => onAskHandler(reword);
+            return <li key={index}><a children={reword} onClick={onAsk} /></li>;
           })}
         </ol>
       </PrettyHtml>

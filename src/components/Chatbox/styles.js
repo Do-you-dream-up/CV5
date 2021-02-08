@@ -3,9 +3,10 @@ import { createUseStyles } from 'react-jss';
 
 const extendedStyles = {
   bottom: 0,
-  height: '100%',
+  height: '100% !important',
+  maxHeight: 'inherit !important',
   right: 0,
-  width: '100%',
+  width: '100% !important',
 };
 
 
@@ -17,6 +18,7 @@ export default createUseStyles(theme => ({
     flexGrow: 1,
     overflowY: 'auto',
     position: 'relative',
+    scrollBehavior: 'smooth',
   }),
   bodyHidden: () => ({
     display: 'none',
@@ -45,9 +47,10 @@ export default createUseStyles(theme => ({
       },
     },
     bottom: 0,
-    height: 520,
+    height: 'calc(100% - 20px)',
+    maxHeight: 520,
     minWidth: 320,
-    position: 'absolute',
+    position: 'fixed',
     right: 0,
     transitionDuration: '.2s',
     transitionProperty: 'bottom, height, right, transform, width',
