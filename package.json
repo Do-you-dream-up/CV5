@@ -54,7 +54,7 @@
     "webpack-shell-plugin-next": "^1.2.0"
   },
   "scripts": {
-    "build": "webpack --config webpack.production.js",
+    "build": "webpack --env prod --config webpack.production.js",
     "buildProd": "webpack --env prod  --config webpack.production.js",
     "buildPreprod": "webpack --env preprod  --config webpack.production.js",
     "build:documentation": "styleguidist build --config .styleguide.config.js",

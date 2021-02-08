@@ -9,8 +9,12 @@ const common = require('./webpack.common');
 
 module.exports = (env) => {
 
-  const ASSET =  configuration.application.cdn + configuration.application.directory + `${env ? env + '/' : ''}` || './';
+  let ASSET = './';
   const QUALIFICATION = env === 'prod' ? false : true;
+
+  if (configuration.application.cdn && configuration.application.directory) {
+    ASSET =  configuration.application.cdn + configuration.application.directory + `${env ? env + '/' : ''}`;
+  }
 
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
