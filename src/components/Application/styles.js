@@ -6,6 +6,9 @@ export default createUseStyles(theme => ({
     '& *' : {
       boxSizing : 'border-box',
     },
+    '& iframe' : {
+      maxWidth: '100%',
+    },
     '& img' : {
       display:'block',
       maxWidth: '100%'
