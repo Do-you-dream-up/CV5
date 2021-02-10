@@ -20,7 +20,6 @@ export default createUseStyles(theme => ({
         '& div' : {
             flexShrink: '0',
         },
-        borderRadius: 'unset',
         display: 'flex',
         flexDirection: 'column',
         margin: '0.8em 0',
