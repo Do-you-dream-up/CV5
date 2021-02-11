@@ -2,9 +2,6 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(theme => ({
     button: () => ({
-        '& > :not(:last-child)': {
-            marginRight: '.5em',
-        },
         '& a[href]': {
             '&:hover': {
                 backgroundColor: theme.palette.primary.hover,
@@ -23,12 +20,9 @@ export default createUseStyles(theme => ({
         '& div' : {
             flexShrink: '0',
         },
-        alignItems: 'center',
         display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
         margin: '0.8em 0',
-        padding: '0 1em',
     }),
     image : () => ({
         '& img': {
