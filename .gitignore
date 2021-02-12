@@ -5,3 +5,5 @@
 /public/override/style.css
 /public/override/theme.json
 /public/override/bot.json
+deliver*
+hosts.yml

@@ -74,7 +74,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
 
   useEffect(() => {
     if (active && open)
+    setTimeout(() => {
       fetchPushrules();
+    }, 300);
   }, [active, open]);
 
   /**
