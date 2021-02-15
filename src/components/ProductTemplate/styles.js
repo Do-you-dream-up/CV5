@@ -33,6 +33,9 @@ export default createUseStyles(theme => ({
         margin: '-0.8em -1em',
     }),
     text: () => ({
+        '& div': {
+            textAlign: 'justify'
+        },
         '& h3': {
             '& + p': {
                 marginTop: '-0.75em',
