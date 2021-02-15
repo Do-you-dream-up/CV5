@@ -2,6 +2,9 @@ import { createUseStyles } from 'react-jss';
 
 
 export default createUseStyles(theme => ({
+  background : () => ({
+    position: 'absolute',
+  }),
   root: () => ({
     '& *' : {
       boxSizing : 'border-box',
