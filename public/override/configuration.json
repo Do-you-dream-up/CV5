@@ -1,5 +1,6 @@
 {
   "application": {
+    "background": "",
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],

@@ -36,6 +36,7 @@ export default function Application() {
   const [ mode, setMode ] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
   const [ open, setOpen ] = useState(~~initialMode > 1);
+  const { background } = configuration.application;
 
   let customFont = configuration.font.url;
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
@@ -59,6 +60,11 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
         <>
+          {background && !hasWizard && <iframe
+            className={c('dydu-background', classes.background)}
+            width='100%'
+            height='100%'
+            src={`${background}`}/>}
           <Suspense fallback={null}>
             <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
           </Suspense>
