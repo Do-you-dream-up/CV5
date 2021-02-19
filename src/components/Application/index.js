@@ -37,9 +37,7 @@ export default function Application() {
   const [ mode, setMode ] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
   const [ open, setOpen ] = useState(~~initialMode > 1);
-  // const { background } = configuration.application;
   const [background, setBackground] = useState('');
-  console.log('bac', background);
 
   let customFont = configuration.font.url;
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
@@ -68,10 +66,11 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
         <>
-          {!hasWizard && <Form data={{url: ''}} onResolve={onSubmit} >
+          {!hasWizard && <Form className={c('form-iframe', classes.iframe)} data={{url: ''}} onResolve={onSubmit} >
             {({ data, onChange }) => (
               <>
-                <input name='url'
+                <input className='input-iframe'
+                       name='url'
                        onChange={onChange}
                        placeholder='Enter background Url here'
                        value={data.url || ''} />
