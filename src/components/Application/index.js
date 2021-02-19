@@ -45,7 +45,6 @@ export default function Application() {
   }
 
   const onSubmit = ({ url }) => {
-    console.log('url', url);
     setBackground(url);
   };
 
