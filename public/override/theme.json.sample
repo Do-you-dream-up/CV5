@@ -53,7 +53,7 @@
     },
     "text": {
       "disabled": "rgba(0, 0, 0, .38)",
-      "link": "#3636B9",
+      "link": "",
       "primary": "rgba(0, 0, 0, .87)",
       "secondary": "rgba(0, 0, 0, .54)"
     },

@@ -61,7 +61,7 @@ export default {
     },
     text: {
       disabled: theme.palette.text.disabled || 'rgba(0, 0, 0, .38)',
-      link: theme.palette.text.link || '#FF4081',
+      link: theme.palette.text.link || theme.palette.primary.main,
       primary: theme.palette.text.primary || 'rgba(0, 0, 0, .87)',
       secondary: theme.palette.text.secondary || 'rgba(0, 0, 0, .54)',
     },
