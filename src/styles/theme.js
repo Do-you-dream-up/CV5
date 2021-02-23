@@ -44,7 +44,7 @@ export default {
       text: theme.palette.primary.text || '#FFFFFF',
     },
     request: {
-      background: theme.palette.request.background || '#D3D3F7',
+      background: theme.palette.request.background || 'rgba(54, 54, 185, .2)',
       text: theme.palette.request.text || 'rgba(0, 0, 0, .87)',
     },
     response: {

@@ -36,7 +36,7 @@
       "text": "#FFFFFF"
     },
     "request": {
-      "background": "#D3D3F7",
+      "background": "rgba(54, 54, 185, .2)",
       "text": "rgba(0, 0, 0, .87)"
     },
     "response": {

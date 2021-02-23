@@ -35,7 +35,7 @@ export default createUseStyles(theme => ({
     top: 0,
   }),
   request: () => ({
-    backgroundColor: theme.palette.request.background,
+    background: theme.palette.request.background,
     color: theme.palette.request.text,
     marginLeft: 'auto',
   }),
