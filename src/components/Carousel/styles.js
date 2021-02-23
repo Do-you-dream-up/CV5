@@ -25,11 +25,18 @@ export default createUseStyles(theme => ({
     marginTop: '.5em',
   }),
   controls: ({ offset }) => ({
+    '& .dydu-button' : {
+      backgroundColor: 'rgb(196 196 196 /50%)',
+    },
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
+    left: '-18px',
     margin: ['.5em', `${offset}%`, 0],
     padding: [0, '.25em'],
+    position:'absolute',
+    right: '-18px',
+    top:'calc(50% - 20px)',
   }),
   root: () => ({
     overflow: 'hidden',
@@ -55,6 +62,7 @@ export default createUseStyles(theme => ({
     display: 'block',
     flexDirection: 'row',
     overflow: 'hidden',
+    position: 'relative',
     transform: `translate3d(${(index * -offsetBetweenCard / length)}%, 0, 0)`,
     transitionDuration: '.25s',
     transitionProperty: 'transform',

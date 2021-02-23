@@ -53,9 +53,10 @@ export default createUseStyles(theme => ({
         paddingLeft: '1.4em',
       },
     },
-    'alignItems': 'center',
+    // 'alignItems': 'center',
     'display': 'flex',
     'flexDirection': 'row',
+    'height': '100%'
   },
   srOnly: {
     'border': 0,

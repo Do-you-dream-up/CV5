@@ -24,6 +24,7 @@ export default createUseStyles(theme => ({
     '&:focus': {
       outline: 'none'
     },
+    height: '100%',
     padding: [['.8em', '1em']],
     width: '100%',
   }),
