@@ -63,7 +63,7 @@ export default function Onboarding({ children, render }) {
         </div>
         )}
         <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-          <Button children={previous} disabled={!index} onClick={hasPrevious ? onPrevious : null} />
+          <Button children={previous} disabled={!index} secondary={true} onClick={hasPrevious ? onPrevious : null} />
           <Button children={next} onClick={hasNext ? onNext : onEnd} />
         </div>
       </div>

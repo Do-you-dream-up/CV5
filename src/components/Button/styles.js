@@ -101,6 +101,17 @@ export default createUseStyles(theme => {
       width: 40,
     }),
 
+    secondary: ({color = 'primary'}) => ({
+      '&:disabled': {
+        backgroundColor: theme.palette.action.disabled,
+        border: 'none',
+        color: theme.palette[color].text,
+      },
+      backgroundColor: 'transparent',
+      border: '1px solid',
+      color: theme.palette[color].main,
+    }),
+
     spin: () => ({
       animationDuration: '1.2s',
       animationIterationCount: 'infinite',
