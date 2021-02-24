@@ -39,7 +39,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
 
   const actions = [
     ...(onCancel ? [{children: t('form.cancel'), onClick: onCancel}] : []),
-    {children: t('form.cancel'), disabled: thinking || !currentSpace, icon: getSubmitIcon, onClick: onDismiss, spin: thinking, type: 'cancel'},
+    {children: t('form.cancel'), disabled: thinking || !currentSpace, icon: getSubmitIcon, onClick: onDismiss, secondary: true, spin: thinking, type: 'cancel'},
     {children: t('form.submit'), disabled: thinking, icon: getSubmitIcon, spin: thinking, type: 'form.submit'},
   ];
 
