@@ -1,3 +1,7 @@
 /build/
 /node_modules/
 /styleguide/
+.DS_Store
+/public/assets/.DS_Store
+/public/.DS_Store
+src/.DS_Store

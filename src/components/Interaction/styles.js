@@ -23,6 +23,7 @@ export default createUseStyles(theme => ({
     flexDirection: 'column',
     flexGrow: '1',
     overflowX: 'hidden',
+    position:'relative',
   }),
   loader: () => ({
     marginLeft: '.2em',
