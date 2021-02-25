@@ -56,7 +56,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const qualification = !!configuration.application.qualification;
+  const qualification = process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -88,11 +88,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         ask: (text, options) => ask(text, options),
         empty: () => empty(),
         reply: text => addResponse({ text }),
-        set: (name, value) => dydu.variable(name, value),
+        setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
+        setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
       };
 
-      window.dydu.gdpr = {
-        prompt: () => setPrompt('gdpr'),
+      window.dydu.promptEmail = {
+        prompt: (type) => setPrompt(type),
       };
 
       window.dydu.localization = {
@@ -135,11 +136,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
+
     if (configuration.spaces.items && configuration.spaces.items.length === 1)
       window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary]);
-
+  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
     if (gdprPassed && !Cookie.get(Cookie.names.visitor)) {
@@ -171,6 +172,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                        dialogRef={dialogRef}
                        interactions={interactions}
                        onAdd={add}
+                       open={open}
                        render
                        value="dialog" />
                   <Tab component={Contacts} value="contacts" />

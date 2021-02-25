@@ -16,13 +16,16 @@ function Scroll({ component, delay, ...rest }) {
   const debouncedReady = useDebounce(elementRef, delay);
 
   const scroll = () => {
-    elementRef.current.scrollIntoView({behavior: 'smooth'});
+    setTimeout(() => {
+      elementRef.current.scrollIntoView({behavior: 'smooth'});
+    }, delay);
   };
 
   useEffect(() => {
     if (debouncedReady) {
       scroll();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedReady]);
 
   return React.createElement(component, {...rest, ref: elementRef});

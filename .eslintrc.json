@@ -30,41 +30,41 @@
     "sort-destructure-keys"
   ],
   "rules": {
-    "array-bracket-newline": ["error", "consistent"],
-    "array-element-newline": ["error", "consistent"],
-    "block-spacing": ["error", "always"],
-    "brace-style": ["error", "stroustrup"],
-    "comma-spacing": "error",
-    "eol-last": ["error", "always"],
-    "import/order": ["error", {
+    "array-bracket-newline": ["warn", "consistent"],
+    "array-element-newline": ["warn", "consistent"],
+    "block-spacing": ["warn", "always"],
+    "brace-style": ["warn", "stroustrup"],
+    "comma-spacing": "warn",
+    "eol-last": ["warn", "always"],
+    "import/order": ["warn", {
       "alphabetize": {"order": "asc"},
       "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
       "newlines-between": "never"
     }],
-    "keyword-spacing": "error",
-    "no-empty": ["error", {"allowEmptyCatch": true}],
-    "no-eval": ["error", {"allowIndirect": true}],
-    "no-lonely-if": "error",
-    "no-multiple-empty-lines": ["error", {"max": 2, "maxBOF": 0, "maxEOF": 0}],
-    "no-trailing-spaces": "error",
-    "no-unused-vars": ["error", {"ignoreRestSiblings": true}],
-    "quotes": ["error", "single", {"avoidEscape": true}],
-    "react/jsx-indent": ["error", 2],
-    "react/jsx-indent-props": ["error", "first"],
+    "keyword-spacing": "warn",
+    "no-empty": ["warn", {"allowEmptyCatch": true}],
+    "no-eval": ["warn", {"allowIndirect": true}],
+    "no-lonely-if": "warn",
+    "no-multiple-empty-lines": ["warn", {"max": 2, "maxBOF": 0, "maxEOF": 0}],
+    "no-trailing-spaces": "warn",
+    "no-unused-vars": ["warn", {"ignoreRestSiblings": true}],
+    "quotes": ["warn", "single", {"avoidEscape": true}],
+    "react/jsx-indent": ["warn", 2],
+    "react/jsx-indent-props": ["warn", "first"],
     "react/no-children-prop": 0,
-    "react-hooks/exhaustive-deps": "error",
-    "react-hooks/rules-of-hooks": "error",
-    "semi": ["error", "always"],
-    "sort-destructure-keys/sort-destructure-keys": "error",
-    "sort-imports": ["error", {"ignoreDeclarationSort": true}],
-    "sort-keys": "error",
-    "space-before-blocks": ["error", "always"],
-    "space-infix-ops": "error"
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "semi": ["warn", "always"],
+    "sort-destructure-keys/sort-destructure-keys": "warn",
+    "sort-imports": ["warn", {"ignoreDeclarationSort": true}],
+    "sort-keys": "warn",
+    "space-before-blocks": ["warn", "always"],
+    "space-infix-ops": "warn"
   },
   "settings": {
     "import/core-modules": ["rsg-components/Styled"],
     "react": {
-      "version": "16"
+      "version": "17"
     }
   }
 }

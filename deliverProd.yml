@@ -13,7 +13,7 @@
         msg: "{{ configuration.application }}"
     - name: "Make Directory"
       file:
-        path: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory }}"
+        path: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory }}/prod/"
         state: directory
         recurse: yes
         mode: '0755'
@@ -21,7 +21,7 @@
     - name: "Synchronize Content"
       synchronize:
         src: build/
-        dest: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory }}"
+        dest: "/var/opt/docker/volumes/cdn_nginx_www/_data/{{ configuration.application.directory }}/prod/"
         archive: no
         recursive: yes
         times: no

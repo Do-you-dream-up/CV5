@@ -22,7 +22,7 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
 
 
   const actions = [
-    {children: t('gdpr.disclaimer.cancel'), onClick: onDecline},
+    {children: t('gdpr.disclaimer.cancel'), onClick: onDecline, secondary: true},
     {children: t('gdpr.disclaimer.ok'), onClick: onAccept},
   ];
   const body = sanitize(t('gdpr.disclaimer.body'));

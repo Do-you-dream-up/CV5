@@ -39,10 +39,7 @@ export default function Teaser({ open, toggle }) {
       onClick();
     }
   };
-  window.dydu = {...window.dydu};
-  window.dydu.ui = {
-    toggle: mode => toggle(mode)(),
-  };
+
   return (
     <div className={c('dydu-teaser', classes.root, {[classes.hidden]: !open})}>
       <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>

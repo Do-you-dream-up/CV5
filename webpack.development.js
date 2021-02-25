@@ -24,6 +24,7 @@ module.exports = Merge.smart(common, {
     new webpack.DefinePlugin({
       'process.env': {
         PUBLIC_URL: JSON.stringify('./'),
+        QUALIFICATION: true
        }
    })
   ],

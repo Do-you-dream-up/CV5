@@ -20,6 +20,7 @@ export default createUseStyles(theme => ({
   itemDisabled: () => ({
     color: theme.palette.text.disabled,
     cursor: 'not-allowed',
+    display: 'none',
   }),
   itemEnabled: () => ({
     '& $icon': {

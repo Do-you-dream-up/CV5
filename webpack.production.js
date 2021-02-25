@@ -7,8 +7,19 @@ const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
-module.exports = () => {
-  const ASSET =  configuration.application.cdn + configuration.application.directory || './';
+module.exports = (env) => {
+
+  let ASSET = './';
+  const QUALIFICATION = env[0] === 'prod' ? false : true;
+  const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
+
+  if (configuration.application.cdn && configuration.application.directory) {
+    ASSET =  configuration.application.cdn + configuration.application.directory;
+    if (!ONPREM) {
+      ASSET += `${env[0] ? env[0] + '/' : ''}`;
+    }
+  }
+
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',
@@ -31,6 +42,7 @@ module.exports = () => {
       new webpack.DefinePlugin({
         'process.env': {
           PUBLIC_URL: JSON.stringify(ASSET),
+          QUALIFICATION
           }
       })
     ],

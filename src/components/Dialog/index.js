@@ -5,26 +5,27 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import dydu from '../../tools/dydu';
+import fetchPushrules  from '../../tools/pushrules';
 import { knownTemplates } from '../../tools/template';
-import Gdpr from '../Gdpr';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
+import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import Welcome from '../Welcome';
 import useStyles from './styles';
 
-
 /**
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
+export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const { empty, prompt, setPrompt } = useContext(DialogContext);
+  const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
+  const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
@@ -40,7 +41,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   };
 
   const fetch = useCallback(() => dydu.history().then(({ interactions }) => {
-    empty();
     if (Array.isArray(interactions)) {
       interactions = interactions.reduce((accumulator, it, index) => {
         accumulator.push(
@@ -60,6 +60,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
   }), [onAdd]);
 
   useEffect(() => {
+    if (interactions.length > 0) {
+      return;
+    }
     fetch().finally(() => {
       if (spacesActive) {
         if (!window.dydu.space.get(spacesDetection)) {
@@ -67,7 +70,24 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
         }
       }
     });
-  }, [fetch, setPrompt, spaces, spacesActive, spacesDetection]);
+  }, [fetch, interactions, setPrompt, spaces, spacesActive, spacesDetection]);
+
+  useEffect(() => {
+    if (active && open)
+    setTimeout(() => {
+      fetchPushrules();
+    }, 300);
+  }, [active, open]);
+
+  /**
+   * scroll to bottom of dialog on open chatbox
+   */
+  useEffect(() => {
+    if (open) {
+      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+      chatboxDiv.scrollTop = chatboxDiv.scrollHeight;
+    }
+  }, [open]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
@@ -76,8 +96,9 @@ export default function Dialog({ dialogRef, interactions, onAdd, ...rest }) {
       )}
       <Welcome />
       { interactions.map((it, index) => ({ ...it, key: index })) }
-      { prompt === 'gdpr' && <Gdpr /> }
+      { prompt === 'gdpr' && <PromptEmail type='gdpr' /> }
       { prompt === 'spaces' && <Spaces /> }
+      { prompt === 'exportConv' && <PromptEmail type='exportConv' /> }
     </div >
   );
 }
@@ -90,4 +111,5 @@ Dialog.propTypes = {
   ]),
   interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
 };

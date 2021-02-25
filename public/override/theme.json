@@ -36,7 +36,7 @@
       "text": "#FFFFFF"
     },
     "request": {
-      "background": "#D3D3F7",
+      "background": "rgba(54, 54, 185, .2)",
       "text": "rgba(0, 0, 0, .87)"
     },
     "response": {
@@ -53,7 +53,7 @@
     },
     "text": {
       "disabled": "rgba(0, 0, 0, .38)",
-      "link": "#FF4081",
+      "link": "",
       "primary": "rgba(0, 0, 0, .87)",
       "secondary": "rgba(0, 0, 0, .54)"
     },

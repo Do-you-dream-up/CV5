@@ -1,32 +1,45 @@
 ---
 
 stages:
-  - delivery
+  - preprod
+  - prod
 
-deliver:
-  stage: delivery
+preprod:
+  stage: preprod
   image: node:latest
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
-    - npm run build
+    - npm run buildPreprod
   script:
     - apt update
     - apt install -y rsync python3-pip
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - ansible-playbook --inventory hosts.yml deliver.yml
+    - ansible-playbook --inventory hosts.yml deliverPreprod.yml
   only:
     refs:
-      - production
       - development
-      - project/region-auvergne-rhone-alpes
-      - project/city-drop
-      - project/demo1
-      - project/demo2
-      - project/demo3
-      - project/hector-vb
-      - project/ugap
-      - project/anfr
+      - /project\/.*/
+
+prod:
+  stage: prod
+  image: node:latest
+  when: manual
+  before_script:
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - npm install
+    - npm run buildProd
+  script:
+    - apt update
+    - apt install -y rsync python3-pip
+    - pip3 --no-cache-dir install ansible
+    - chmod 0700 .ssh
+    - chmod 0600 .ssh/id_ed25519
+    - ansible-playbook --inventory hosts.yml deliverProd.yml
+  only:
+    refs:
+      - development
+      - /project\/.*/
 ...

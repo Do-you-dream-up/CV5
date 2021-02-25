@@ -49,6 +49,13 @@
             }]
         }
     },
+    "exportConv": {
+        "get": {
+            "error": "Désolé, il y a eu une erreur avec l'export.",
+            "success": "La conversation a bien été envoyée par email."
+        },
+        "welcome": "Pour recevoir la conversation, veuillez entrer votre adresse email ci-dessous : "
+    },
     "feedback": {
         "choices": [
             "Je n'ai pas compris votre question",
@@ -70,6 +77,7 @@
         "expand": "Ouvrir sous-menu",
         "menu": {
             "close": "Fermer",
+            "print": "Imprimer la conversation",
             "email": "Exporter la conversation par email",
             "gdpr": "RGPD (export, suppression)",
             "spaces": "Changer d'espace de consultation",
@@ -96,9 +104,6 @@
             "ok": "J'accepte"
         },
         "form": {
-            "email": {
-                "placeholder": "Saisissez votre email..."
-            },
             "forget": {
                 "description": "Effacer mes données personnelles"
             },
@@ -163,6 +168,9 @@
             } 
         ]
     },
+    "promptEmail": {
+        "placeholder": "Saisissez votre email..."
+    },
     "screenReader":{
         "chatbot":  "chatbot dit",
         "me": "moi dit"
@@ -177,6 +185,10 @@
     "teaser": {
         "title": "Besoin d'aide ?",
         "mouseover": "Aide ici"
+    },
+    "template": {
+        "readmore": "... Lire la suite",
+        "readless": "Lire moins"
     },
     "top": {
         "title": "Questions les plus posées:"
