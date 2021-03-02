@@ -39,7 +39,7 @@ export default function Feedback() {
   const voteThanks = t('feedback.vote.thanks');
 
   const onComment = ({ comment }) => {
-    const value = comment.trim();
+    const value = comment ? comment.trim() : '';
     if (value.length) {
       setThinking(true);
       dydu.feedbackComment(value).then(() => setTimeout(() => {
@@ -97,6 +97,11 @@ export default function Feedback() {
     }, 1000));
   };
 
+  const onDismiss = () => {
+    setShowComment(false);
+    setThinking(false);
+  };
+
   return active && (showChoices || showComment || showVote) && (
     <div className="dydu-feedback">
       {showVote && (
@@ -116,7 +121,7 @@ export default function Feedback() {
       )}
       {showComment && (
         <Bubble component={Scroll} type="response">
-          <Form className="dydu-feedback-comment" data={{comment: ''}} onResolve={onComment} thinking={thinking}>
+          <Form className="dydu-feedback-comment" data={{comment: ''}} onResolve={onComment} onDismiss={onDismiss} thinking={thinking}>
             {({ data, onChange }) => (
               <>
                 {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
