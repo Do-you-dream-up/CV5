@@ -18,11 +18,17 @@ export default createUseStyles(theme => ({
             padding: '0.5em 1.2em',
         },
         '& div' : {
+            '&:not(:first-child) a[href]': {
+                backgroundColor:'transparent',
+                border: '1px solid',
+                borderColor: theme.palette.primary.main,
+                color: theme.palette.text.link,
+            },
             flexShrink: '0',
         },
         display: 'flex',
         flexDirection: 'column',
-        margin: '0.8em 0',
+        margin: 'auto 0 0.8em 0',
     }),
     image : () => ({
         '& img': {
@@ -30,9 +36,14 @@ export default createUseStyles(theme => ({
         }
     }),
     root : () => ({
+        display: 'flex',
+        flexDirection: 'column',
         margin: '-0.8em -1em',
     }),
     text: () => ({
+        '& div': {
+            textAlign: 'justify'
+        },
         '& h3': {
             '& + p': {
                 marginTop: '-0.75em',

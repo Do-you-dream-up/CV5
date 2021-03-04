@@ -45,7 +45,7 @@ export default function Banner() {
   }, [active, cookie, dismiss, transient]);
 
   const actions = [
-    ...dismissable ? [{children: t('banner.ok'), onClick: onDismiss}] : [],
+    ...dismissable ? [{children: t('banner.ok'), onClick: onDismiss, secondary: true}] : [],
     ...more ? [{children: t('banner.more'), href: moreLink, icon: `${process.env.PUBLIC_URL}icons/${configuration.banner.moreIcon}`}] : [],
   ];
 

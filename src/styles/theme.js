@@ -44,7 +44,7 @@ export default {
       text: theme.palette.primary.text || '#FFFFFF',
     },
     request: {
-      background: theme.palette.request.background || '#D3D3F7',
+      background: theme.palette.request.background || 'rgba(54, 54, 185, .2)',
       text: theme.palette.request.text || 'rgba(0, 0, 0, .87)',
     },
     response: {
@@ -61,7 +61,7 @@ export default {
     },
     text: {
       disabled: theme.palette.text.disabled || 'rgba(0, 0, 0, .38)',
-      link: theme.palette.text.link || '#FF4081',
+      link: theme.palette.text.link || theme.palette.primary.main,
       primary: theme.palette.text.primary || 'rgba(0, 0, 0, .87)',
       secondary: theme.palette.text.secondary || 'rgba(0, 0, 0, .54)',
     },

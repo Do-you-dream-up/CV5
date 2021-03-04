@@ -5,5 +5,11 @@
 /public/override/style.css
 /public/override/theme.json
 /public/override/bot.json
-deliver*
 hosts.yml
+deliver*
+.gitlab-ci.yml
+.npmrc
+.DS_Store
+/public/assets/.DS_Store
+/public/.DS_Store
+src/.DS_Store

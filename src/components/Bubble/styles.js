@@ -24,6 +24,7 @@ export default createUseStyles(theme => ({
     '&:focus': {
       outline: 'none'
     },
+    height: '100%',
     padding: [['.8em', '1em']],
     width: '100%',
   }),
@@ -34,7 +35,7 @@ export default createUseStyles(theme => ({
     top: 0,
   }),
   request: () => ({
-    backgroundColor: theme.palette.request.background,
+    background: theme.palette.request.background,
     color: theme.palette.request.text,
     marginLeft: 'auto',
   }),

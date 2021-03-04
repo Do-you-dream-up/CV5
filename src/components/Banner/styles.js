@@ -6,6 +6,9 @@ export default createUseStyles(theme => ({
     margin: '1em',
   }),
   body: () => ({
+    '& a' : {
+      color: theme.palette.text.link,
+    },
     margin: '1em',
   }),
   root: () => ({

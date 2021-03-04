@@ -242,7 +242,7 @@
     "color": "black"
   },
   "welcome": {
-    "enable": true,
+    "enable": false,
     "knowledgeName": "#welcome#"
   }
 }

@@ -103,7 +103,9 @@ export default function Interaction({
               product['subtitle'] = el[`subtitle${i}`];
               product['title'] = el[`title${i}`];
               bubble.product = product;
-              list.push(JSON.stringify(bubble));
+              if (!Object.values(bubble.product).every(param => param === null)) {
+                list.push(JSON.stringify(bubble));
+              }
             }
             addBubbles(list);
           }
