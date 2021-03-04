@@ -151,7 +151,7 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": true,
+    "enable": false,
     "imageLinks": [
       "dydu-onboarding-1.svg",
       "dydu-onboarding-2.svg",
