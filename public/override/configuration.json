@@ -151,7 +151,7 @@
     "minWidth": "50%"
   },
   "onboarding": {
-    "enable": false,
+    "enable": true,
     "imageLinks": [
       "dydu-onboarding-1.svg",
       "dydu-onboarding-2.svg",
@@ -203,7 +203,7 @@
         "value": {"doyoudreamup.com": "dydu"}
       }
     ],
-    "items": ["default"]
+    "items": ["default", "demo"]
   },
   "suggestions": {
     "limit": 3
