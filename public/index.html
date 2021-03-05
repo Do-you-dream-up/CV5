@@ -6,12 +6,27 @@
     <style type="text/css">body { font-family: monospace; margin: 1.2em; }</style>
     <link id="font" href="" rel="stylesheet">
     <title>Dydu Chatbox</title>
+    <script type="module">
+      const submitIframe = (e) => {
+        e.preventDefault();
+        var ifrm = document.createElement("iframe");
+        ifrm.setAttribute("src", document.getElementById("urlInput").value);
+        ifrm.style.width = "100%";
+        ifrm.style.height = "100%";
+        document.getElementById("chatbot-params").appendChild(ifrm);
+      };
+      document.getElementById("iframeForm").addEventListener("submit", submitIframe);
+    </script>
   </head>
   <body>
-    <div>
+    <div id="chatbot-params" style="width: 100%; height: 100%" >
       <span style="color: #FF4081">v<%= version %></span>
       <span style="color: #03A9F4"><%= now %></span>
       <span><%= hash %></span>
+      <form id="iframeForm">
+        <input id="urlInput" type="text" placeholder="Enter background Url here" name="url" value="">
+        <button type="submit">Ok</button>
+      </form>
     </div>
     <div id="dydu-root"></div>
   </body>
