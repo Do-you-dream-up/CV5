@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="width: 100%; height: 100%">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,21 +11,24 @@
         e.preventDefault();
         var ifrm = document.createElement("iframe");
         ifrm.setAttribute("src", document.getElementById("urlInput").value);
-        ifrm.style.width = "100%";
-        ifrm.style.height = "100%";
-        document.getElementById("chatbot-params").appendChild(ifrm);
+        ifrm.style.width = "inherit";
+        ifrm.style.height = "inherit";
+        document.getElementById("chatbot-external").appendChild(ifrm);
       };
       document.getElementById("iframeForm").addEventListener("submit", submitIframe);
+      if (window.location.href.includes("?wizard")) {
+        document.getElementById("iframeForm").style.visibility="hidden";  
+      }
     </script>
   </head>
-  <body>
-    <div id="chatbot-params" style="width: 100%; height: 100%" >
+  <body style="width: inherit; height: inherit" >
+    <div id="chatbot-external" style="width: inherit; height: inherit" >
       <span style="color: #FF4081">v<%= version %></span>
       <span style="color: #03A9F4"><%= now %></span>
       <span><%= hash %></span>
       <form id="iframeForm">
-        <input id="urlInput" type="text" placeholder="Enter background Url here" name="url" value="">
-        <button type="submit">Ok</button>
+        <input id="urlInput" type="text" placeholder="Enter background URL here" name="url" value="" style="width:90%; margin: 10px auto">
+        <button style="background-color: #3636B9; color:#FFF">Ok</button>
       </form>
     </div>
     <div id="dydu-root"></div>
