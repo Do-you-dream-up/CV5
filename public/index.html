@@ -7,17 +7,16 @@
     <link id="font" href="" rel="stylesheet">
     <title>Dydu Chatbox</title>
     <script type="module">
-      const submitIframe = (e) => {
-        e.preventDefault();
-        var ifrm = document.createElement("iframe");
-        ifrm.setAttribute("src", document.getElementById("urlInput").value);
-        ifrm.style.width = "inherit";
-        ifrm.style.height = "inherit";
-        document.getElementById("chatbot-external").appendChild(ifrm);
+      const submitIframe = () => {
+        if (!window.location.href.includes("?wizard") && document.getElementById("urlInput").value) {
+          var ifrm = document.getElementById("iframe");
+          ifrm.setAttribute("src", document.getElementById("urlInput").value);
+          ifrm.style.display = "block";
+        }
       };
-      document.getElementById("iframeForm").addEventListener("submit", submitIframe);
+      document.getElementById("button").addEventListener("click", submitIframe);
       if (window.location.href.includes("?wizard")) {
-        document.getElementById("iframeForm").style.visibility="hidden";  
+        document.getElementById("iframeForm").style.display="none";  
       }
     </script>
   </head>
@@ -26,10 +25,11 @@
       <span style="color: #FF4081">v<%= version %></span>
       <span style="color: #03A9F4"><%= now %></span>
       <span><%= hash %></span>
-      <form id="iframeForm">
+      <div id="iframeForm">
         <input id="urlInput" type="text" placeholder="Enter background URL here" name="url" value="" style="width:90%; margin: 10px auto">
-        <button style="background-color: #3636B9; color:#FFF">Ok</button>
-      </form>
+        <button id="button" style="background-color: #3636B9; color:#FFF">Ok</button>
+      </div>
+      <iframe id="iframe" style="width:inherit;height:inherit;display:none"></iframe>
     </div>
     <div id="dydu-root"></div>
   </body>
