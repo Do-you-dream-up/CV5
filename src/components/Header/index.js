@@ -9,7 +9,7 @@ import { DragonContext } from '../../contexts/DragonContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import useViewport from '../../tools/hooks/viewport';
-import { Cookie, Local } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import Banner from '../Banner';
@@ -48,7 +48,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
   const [fontSize, setFontSize] = useState(1);
-  const gdprPassed = Cookie.get(Cookie.names.gdpr);
+  const gdprPassed = Local.get(Local.names.gdpr);
   const singleTab = configuration.tabs.items.length === 1 ? true : false;
 
   const onToggleMore = () => {

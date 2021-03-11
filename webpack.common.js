@@ -38,7 +38,7 @@ module.exports = {
         options: {
           multiple: [
             {  flags: 'g', replace: "import Voice from '@dydu_ai/voice-module';", search: '//import-voice' },
-            {  flags: 'g', replace: "<Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Cookie.get(Cookie.names.gdpr)} t={t('input.actions.record')} />", search: '<voice/>' },
+            {  flags: 'g', replace: "<Voice DialogContext={DialogContext} configuration={configuration} Actions={Actions} show={!!Local.get(Local.names.gdpr)} t={t('input.actions.record')} />", search: '<voice/>' },
          ]
         },
         test: /\.js$/

@@ -7,10 +7,7 @@ import cookie from 'js-cookie';
 export class Cookie {
 
   static names = {
-    banner: 'dydu.banner',
-    gdpr: 'dydu.gdpr',
     locale: 'dydu.locale',
-    visitor: 'dydu.visitor'
   };
 
   static duration = {
@@ -42,15 +39,18 @@ export class Cookie {
 export class Local {
 
   static names = {
+    banner: 'dydu.banner',
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',
     fontSize: 'dydu.fontSize',
+    gdpr: 'dydu.gdpr',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
     secondary: 'dydu.secondary',
     space: 'dydu.space',
+    visitor: 'dydu.visitor',
     welcome: 'dydu.welcome',
   };
 
