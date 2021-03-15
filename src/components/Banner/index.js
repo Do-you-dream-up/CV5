@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
@@ -14,7 +14,7 @@ import useStyles from './styles';
  * content.
  *
  * The banner can persist through refresh of the page, can be dismissed manually
- * and its opening can be disabled in the presence of a cookie.
+ * and its opening can be disabled in the presence of a storage.
  */
 export default function Banner() {
 
@@ -22,14 +22,14 @@ export default function Banner() {
   const classes = useStyles({configuration});
   const [ show, setShow ] = useState(false);
   const { ready, t } = useTranslation('translation');
-  const { active, cookie, dismissable, more, moreLink, transient } = configuration.banner;
+  const { active, dismissable, more, moreLink, storage, transient } = configuration.banner;
   const html = sanitize(t('banner.html'));
 
   const dismiss = useCallback(() => {
-    if (cookie) {
-      Cookie.set(Cookie.names.banner);
+    if (storage) {
+      Local.set(Local.names.banner);
     }
-  }, [cookie]);
+  }, [storage]);
 
   const onDismiss = () => {
     setShow(false);
@@ -37,12 +37,12 @@ export default function Banner() {
   };
 
   useEffect(() => {
-    const show = !!active && (!cookie || !Cookie.get(Cookie.names.banner));
+    const show = !!active && (!storage || !Local.get(Local.names.banner));
     setShow(show);
     if (show && !!transient) {
       dismiss();
     }
-  }, [active, cookie, dismiss, transient]);
+  }, [active, storage, dismiss, transient]);
 
   const actions = [
     ...dismissable ? [{children: t('banner.ok'), onClick: onDismiss, secondary: true}] : [],

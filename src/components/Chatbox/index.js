@@ -11,7 +11,7 @@ import { OnboardingContext, OnboardingProvider } from '../../contexts/Onboarding
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -143,9 +143,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
-    if (gdprPassed && !Cookie.get(Cookie.names.visitor)) {
+    if (gdprPassed && !Local.get(Local.names.visitor)) {
       dydu.welcomeCall({ qualification }).then(
-        () => Cookie.set(Cookie.names.visitor, undefined, Cookie.duration.long),
+        () => Local.set(Local.names.visitor, undefined),
         () => {}
       );
     }

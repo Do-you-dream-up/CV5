@@ -10,7 +10,7 @@ import { EventsContext } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 // eslint-disable-next-line no-unused-vars
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
