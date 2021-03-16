@@ -11,7 +11,7 @@
         }
     },
     "carousel": {
-        "next": "Suivant",
+        "next": "Prochain",
         "previous": "Précédent"
     },
     "close": {
