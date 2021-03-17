@@ -11,8 +11,8 @@
         }
     },
     "carousel": {
-        "next": "Précédent",
-        "previous": "Prochain"
+        "next": "Suivant",
+        "previous": "Précédent"
     },
     "close": {
         "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
