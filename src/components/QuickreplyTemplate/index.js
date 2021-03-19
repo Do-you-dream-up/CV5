@@ -15,8 +15,8 @@ const classes = useStyles({items});
             { text }
           </div>
         }
-        { Object.keys(quick).map((key) => {
-          return (quick[key] && <div dangerouslySetInnerHTML={{__html: quick[key]}} />);
+        { Object.keys(quick).sort().map((el, index) => {
+          return (quick[el] && <div key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
         })}
       </div>
     );

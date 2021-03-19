@@ -9,7 +9,7 @@ import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 // eslint-disable-next-line no-unused-vars
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 // eslint-disable-next-line no-unused-vars
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';

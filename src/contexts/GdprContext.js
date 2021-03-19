@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { Cookie } from '../tools/storage';
+import { Local } from '../tools/storage';
 import { EventsContext } from './EventsContext';
 
 export const GdprContext = React.createContext();
 export function GdprProvider({ children }) {
 
-  const [gdprPassed, setGdprPassed] = useState(Cookie.get(Cookie.names.gdpr));
+  const [gdprPassed, setGdprPassed] = useState(Local.get(Local.names.gdpr));
   const event = useContext(EventsContext).onEvent('gdpr');
   const onAccept = useCallback(() => {
     setGdprPassed(true);
     event('acceptGdpr');
-    Cookie.set(Cookie.names.gdpr, undefined, Cookie.duration.long);
+    Local.set(Local.names.gdpr, undefined);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

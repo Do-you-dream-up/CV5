@@ -5,7 +5,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { Local } from '../../tools/storage';
-import Form from '../Form';
 import Teaser from '../Teaser';
 import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
@@ -37,16 +36,11 @@ export default function Application() {
   const [ mode, setMode ] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
   const [ open, setOpen ] = useState(~~initialMode > 1);
-  const [background, setBackground] = useState('');
 
   let customFont = configuration.font.url;
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
-
-  const onSubmit = ({ url }) => {
-    setBackground(url);
-  };
 
   const toggle = value => () => setMode(~~value);
 
@@ -65,22 +59,6 @@ export default function Application() {
       {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
       <DialogProvider>
         <>
-          {!hasWizard && <Form className={c('form-iframe', classes.iframe)} data={{url: ''}} onResolve={onSubmit} >
-            {({ data, onChange }) => (
-              <>
-                <input className='input-iframe'
-                       name='url'
-                       onChange={onChange}
-                       placeholder='Enter background Url here'
-                       value={data.url || ''} />
-              </>
-            )}
-          </Form>}
-          {!hasWizard && background && <iframe
-            className={c('dydu-background', classes.background)}
-            width='100%'
-            height='100%'
-            src={`${background}`}/>}
           <Suspense fallback={null}>
             <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
           </Suspense>
