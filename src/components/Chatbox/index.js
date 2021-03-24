@@ -161,6 +161,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       <div>
         <div className={classes.container}>
           <>
+            <Header dialogRef={dialogRef}
+                    gdprRef={gdprRef}
+                    extended={extended}
+                    minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
+                    onClose={onClose}
+                    onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                    onMinimize={onMinimize} />
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div tabIndex='0' className={c(
@@ -182,14 +189,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               </Onboarding>
             </GdprDisclaimer>
           </>
-          <Header dialogRef={dialogRef}
-                  gdprRef={gdprRef}
-                  extended={extended}
-                  minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
-                  onClose={onClose}
-                  onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
-                  onMinimize={onMinimize}
-                  style={{ order: -1 }} />
           <Modal />
           {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
         </div>
