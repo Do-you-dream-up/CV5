@@ -30,7 +30,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const [ typing, setTyping ] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification = process.env.QUALIFICATION;
+  const qualification = window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE :  process.env.QUALIFICATION;
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
