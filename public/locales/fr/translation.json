@@ -133,15 +133,12 @@
         "actions": {
             "send": "Envoie",
             "record": {
+                "mediaPause": "Pause",
+                "mediaPlay": "Commencer",
+                "mediaReplay": "Rejouer",
                 "start": "Début de l'enregistrement",
                 "stop": "Fin de l'enregistrement"
-              },
-              "media": {
-                "start": "Start",
-                "stop": "Stop",
-                "pause": "Pause"
               }
-          
           },
           "placeholder": "Ecrivez ici..."
     },
