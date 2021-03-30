@@ -136,9 +136,9 @@
         "actions": {
             "send": "Send",
             "record": {
-                "mediaPause": "Pause",
-                "mediaPlay": "Play",
-                "mediaReplay": "Replay",
+                "pause": "Pause",
+                "play": "Play",
+                "replay": "Replay",
                 "start": "Record start",
                 "stop": "Record stop"
               }
