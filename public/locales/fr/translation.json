@@ -133,9 +133,9 @@
         "actions": {
             "send": "Envoie",
             "record": {
-                "mediaPause": "Pause",
-                "mediaPlay": "Commencer",
-                "mediaReplay": "Rejouer",
+                "pause": "Pause",
+                "play": "Lire",
+                "replay": "Relire",
                 "start": "Début de l'enregistrement",
                 "stop": "Fin de l'enregistrement"
               }
