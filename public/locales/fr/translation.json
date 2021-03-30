@@ -133,15 +133,12 @@
         "actions": {
             "send": "Envoie",
             "record": {
+                "pause": "Pause",
+                "play": "Lire",
+                "replay": "Relire",
                 "start": "Début de l'enregistrement",
                 "stop": "Fin de l'enregistrement"
-              },
-              "media": {
-                "start": "Start",
-                "stop": "Stop",
-                "pause": "Pause"
               }
-          
           },
           "placeholder": "Ecrivez ici..."
     },
