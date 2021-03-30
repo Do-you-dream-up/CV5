@@ -13,7 +13,7 @@
   },
   "banner": {
     "active": true,
-    "cookie": true,
+    "storage": true,
     "dismissable": true,
     "more": true,
     "moreIcon": "dydu-open-in-new-white.svg",

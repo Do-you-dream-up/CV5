@@ -60,6 +60,7 @@ export default createUseStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0
     },
+    zIndex: 1,
   }),
   title: () => ({
     minWidth: '6.7em',

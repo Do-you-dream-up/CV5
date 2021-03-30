@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import { UserActionContext } from '../../contexts/UserActionContext';
 import dydu from '../../tools/dydu';
 import PrettyHtml from  '../PrettyHtml';
+import useStyles from './styles';
 
 
 /**
@@ -17,6 +19,8 @@ export default function Top({ className, component, ...rest }) {
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
   const { size } = configuration.top;
+  const { tabbing } = useContext(UserActionContext) || false;
+  const classes = useStyles();
 
   const fetch = useCallback(() => !!size && dydu.top(size).then(({ knowledgeArticles }) => {
     try {
@@ -54,7 +58,11 @@ export default function Top({ className, component, ...rest }) {
         <ol>
           {items.map(({ reword }, index) => {
             const onAsk = () => onAskHandler(reword);
-            return <li key={index}><a children={reword} onClick={onAsk} /></li>;
+            return (
+              <li key={index}>
+                <a href='#' className={c('dydu-top-items', {[classes.hideOutline]: !tabbing})} children={reword} onClick={onAsk} tabIndex='0' />
+              </li>
+              );
           })}
         </ol>
       </PrettyHtml>

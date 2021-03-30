@@ -1,6 +1,6 @@
 import qs from 'qs';
 import bot from '../../../public/override/bot';
-import { Cookie } from '../storage';
+import { Local } from '../storage';
 
 const BOT = Object.assign({}, bot, (({bot: id }) => ({
     ...id && { id }
@@ -101,7 +101,7 @@ function resetSessionCount(now) {
 }
 
 function readCookie(space) {
-    var c = Cookie.get('DYDU_PUSH_' + space + BOT.id);
+    var c = Local.get('DYDU_PUSH_' + space + BOT.id);
     if (typeof c === 'undefined' || c === null || c === '') {
         c = {};
     }
@@ -132,7 +132,7 @@ function writeCookie(ruleId, conditionId, value, space) {
     var t = c['r_' + ruleId] || {};
     t[conditionId] = value;
     c['r_' + ruleId] = t;
-    Cookie.set('DYDU_PUSH_' + space + BOT.id, c);
+    Local.set('DYDU_PUSH_' + space + BOT.id, c);
 }
 
 // Not working with google !
