@@ -18,10 +18,11 @@ import useStyles from  './styles';
  * request should be displayed on the right of the conversation while its
  * response should appear in front, on the left.
  */
-export default function Bubble({ children, className, component, hasExternalLink, history, html, secondary, step, templatename, thinking, type }) {
+export default function Bubble({ carousel, children, className, component, hasExternalLink, history, html, secondary, step, templatename, thinking, type }) {
 
   const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({configuration});
+  const hasCarouselAndSidebar = carousel && step && step.sidebar;
+  const classes = useStyles({configuration, hasCarouselAndSidebar});
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
@@ -63,6 +64,7 @@ Bubble.defaultProps = {
 
 Bubble.propTypes = {
   actions: PropTypes.node,
+  carousel: PropTypes.bool,
   children: PropTypes.element,
   className: PropTypes.string,
   component: PropTypes.elementType,

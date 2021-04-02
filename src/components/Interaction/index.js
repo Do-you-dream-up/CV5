@@ -152,6 +152,7 @@ export default function Interaction({
           {
             children: bubbles.map((it, index) => {
               const attributes = {
+                carousel: carousel,
                 component: scroll && !index ? Scroll : undefined,
                 history: history,
                 secondary: secondary,
