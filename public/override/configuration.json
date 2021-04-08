@@ -150,6 +150,10 @@
     "maxWidth": "80%",
     "minWidth": "50%"
   },
+  "moreOptions": {
+    "exportConversation": true,
+    "printConversation": true
+  },
   "onboarding": {
     "enable": false,
     "imageLinks": [
