@@ -7,11 +7,11 @@ export default createUseStyles(theme => ({
       marginTop: '1em',
     },
   }),
-  base: () => ({
+  base: ({hasCarouselAndSidebar}) => ({
     alignItems: 'center',
     borderRadius: theme.shape.radius.inner,
     display: 'flex',
-    minHeight: '3em',
+    minHeight: hasCarouselAndSidebar ? '9.5em' : '3em',
     overflow: 'hidden',
     position: 'relative',
     wordBreak: 'break-word',
@@ -24,6 +24,8 @@ export default createUseStyles(theme => ({
     '&:focus': {
       outline: 'none'
     },
+    display: 'flex',
+    flexDirection: 'column',
     height: '100%',
     padding: [['.8em', '1em']],
     width: '100%',
