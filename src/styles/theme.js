@@ -1,5 +1,5 @@
 import 'typeface-assistant';
-import theme from '../../public/override/theme.json';
+import theme from '../../public/override/theme';
 import breakpoints from './breakpoints';
 
 export default {

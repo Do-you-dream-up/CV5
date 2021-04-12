@@ -22,20 +22,19 @@ export const configuration = new class Configuration {
    * @returns {Promise}
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
+
     this.configuration = JSON.parse(JSON.stringify(json));
+
     return axios.get(path).then(
-      ({ data }) => this.sanitize(JSON.parse(JSON.stringify(data))),
-      ({ request }) => {
-        // eslint-disable-next-line no-console
-        console.warn(`[Dydu] Configuration file not found at '${request.responseURL}'.`);
-        // Fetch configuration from local storage
-        const data = Local.get('dydu.wizard.data');
-        if (data) {
+      ({ data }) => {
+        if (Local.get(Local.names.wizard)) {
+          this.configuration = Local.get(Local.names.wizard);
+          return this.sanitize(JSON.parse(JSON.stringify(this.configuration)));
+        }
+        else {
           return this.sanitize(JSON.parse(JSON.stringify(data)));
         }
-        //Return default configuration
-        return this.sanitize(this.configuration);
-      },
+      }
     );
   };
 
