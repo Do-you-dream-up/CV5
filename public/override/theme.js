@@ -34,7 +34,7 @@ export default {
     'primary': {
       'dark': '#0288D1',
       'light': '#B3E5FC',
-      'main': css.main ? css.main : '#3636B9',
+      'main': css && css.main ? css.main : '#3636B9',
       'text': '#FFFFFF'
     },
     'request': {
