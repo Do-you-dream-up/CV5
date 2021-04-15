@@ -1,7 +1,7 @@
 {
   "application": {
     "open": 1,
-    "languages": ["en", "fr"],
+    "languages": ["fr"],
     "defaultLanguage": ["fr"],
     "cdn":"https://cdn.doyoudreamup.com/",
     "directory":"development/"
@@ -163,7 +163,7 @@
     ]
   },
   "pushrules": {
-    "active": false
+    "active": true
   },
   "root": "dydu-root",
   "secondary": {
