@@ -4,8 +4,8 @@ import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
 import bot from '../../public/override/bot';
+import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
-import configuration from './configuration.json';
 import { Cookie, Local } from './storage';
 
 const { browser, os} = Bowser.getParser(window.navigator.userAgent).parsedResult;
