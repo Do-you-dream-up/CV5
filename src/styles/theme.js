@@ -1,5 +1,6 @@
 import 'typeface-assistant';
-import theme from '../../public/override/theme.json';
+// eslint-disable-next-line import/no-unresolved
+import theme from '../../public/override/theme';
 import breakpoints from './breakpoints';
 
 export default {

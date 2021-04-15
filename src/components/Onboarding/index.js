@@ -35,10 +35,9 @@ export default function Onboarding({ children, render }) {
   const next = t('onboarding.next');
 
   useEffect(() => {
-    if (active)
+    if (active && enable)
       event('onboardingDisplay');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [active, enable, event]);
 
   return !enable ? children : should ? (
     <div className={c('dydu-onboarding', classes.root)}>

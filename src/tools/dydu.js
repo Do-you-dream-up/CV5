@@ -3,9 +3,11 @@ import Bowser from 'bowser';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
+// eslint-disable-next-line import/no-unresolved
 import bot from '../../public/override/bot';
+// eslint-disable-next-line import/no-unresolved
+import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
-import configuration from './configuration.json';
 import { Cookie, Local } from './storage';
 
 const { browser, os} = Bowser.getParser(window.navigator.userAgent).parsedResult;

@@ -14,6 +14,7 @@ import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
+const logo =  localStorage.getItem('dydu.logo');
 
 /**
  * Minified version of the chatbox.
@@ -55,7 +56,7 @@ export default function Teaser({ open, toggle }) {
             <Skeleton children={title} hide={!ready} width="3em" />
           </div>
           <div className={c('dydu-teaser-brand', classes.brand)}>
-            <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
+            <img alt={title} src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
         { open && voice && <voice/> }
