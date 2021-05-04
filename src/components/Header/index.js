@@ -49,7 +49,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const actionFontDecrease = t('header.actions.fontDecrease');
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = Local.get(Local.names.gdpr);
-  const singleTab = configuration.tabs.items.length === 1 ? true : false;
+  const singleTab = !configuration.tabs.hasContactTab;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});

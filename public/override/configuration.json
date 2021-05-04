@@ -213,10 +213,7 @@
     "limit": 3
   },
   "tabs": {
-    "items": [
-      {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
-      {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}
-    ],
+    "hasContactTab": false,
     "selected": "dialog",
     "title": false
   },
