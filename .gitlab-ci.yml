@@ -6,7 +6,7 @@ stages:
 
 preprod:
   stage: preprod
-  image: node:latest
+  image: node:14.15.0
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
