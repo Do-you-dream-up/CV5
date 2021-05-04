@@ -5,7 +5,7 @@ import { ConfigurationContext } from './ConfigurationContext';
 export const TabContext = React.createContext();
 export function TabProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { hasContactTab, selected = 0 } = configuration.tabs;
+  const { hasContactTab, items, selected = 0 } = configuration.tabs;
   const [ current, setCurrent ] = useState();
   const [ tabs, setTabs ] = useState();
 
@@ -19,12 +19,12 @@ export function TabProvider({ children }) {
 
   useEffect(() => {
     if (hasContactTab) {
-      setTabs([{ icon: 'icons/dydu-message-text-white.svg', key: 'dialog' }, {icon: 'icons/dydu-account-box-white.svg', key: 'contacts'}]);
+      setTabs(items);
     }
     else {
-      setTabs([{ icon: 'icons/dydu-message-text-white.svg', key: 'dialog' }]);
+      setTabs(items.filter(item => item.key === 'dialog'));
     }
-  }, [hasContactTab]);
+  }, [hasContactTab, items]);
 
   useEffect(() => {
     if (Array.isArray(tabs)) {

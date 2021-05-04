@@ -214,6 +214,10 @@
   },
   "tabs": {
     "hasContactTab": false,
+    "items": [
+      {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
+      {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}
+    ],
     "selected": "dialog",
     "title": false
   },
