@@ -25,7 +25,7 @@ preprod:
 
 prod:
   stage: prod
-  image: node:latest
+  image: node:14.15.0
   when: manual
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
