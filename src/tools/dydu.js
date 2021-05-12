@@ -217,9 +217,9 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const { defaultLanguage } = configuration.application;
+      const { defaultLanguage, getDefaultLanguageFromSite } = configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
-      this.setLocale(locale);
+      getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale;
   };
