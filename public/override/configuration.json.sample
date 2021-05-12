@@ -152,11 +152,9 @@
   },
   "onboarding": {
     "enable": false,
-    "imageLinks": [
-      "dydu-onboarding-1.svg",
-      "dydu-onboarding-2.svg",
-      "dydu-onboarding-3.svg"
-    ]
+    "image1": "dydu-onboarding-1.svg",
+    "image2": "dydu-onboarding-2.svg",
+    "image3": "dydu-onboarding-3.svg"
   },
   "pushrules": {
     "active": false
