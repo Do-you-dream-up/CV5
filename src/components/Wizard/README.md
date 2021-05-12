@@ -104,7 +104,9 @@ const documentation = {
 
   onboarding: {
     enable: ['Enable the onboarding', 'Boolean'],
-    imageLinks: ['Set the image reference for each step', 'Array'],
+    image1: ['Set the onboarding image 1', 'String'],
+    image2: ['Set the onboarding image 2', 'String'],
+    image3: ['Set the onboarding image 3', 'String'],
   },
 
   onboarding: {
@@ -137,6 +139,7 @@ const documentation = {
   },
 
   tabs: {
+    hasContactTab: 'Boolean',
     items: ['Define the available tabs', 'Array'],
     selected: ['Initial tab', 'String'],
     title: ['Display the title for each tab', 'Boolean'],
