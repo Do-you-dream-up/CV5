@@ -16,7 +16,7 @@ const images = localStorage.getItem('dydu.images');
 export default function Avatar({ background, path, type }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration, type});
-  const logo = JSON.parse(images) ? JSON.parse(images).logo : null;
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   background = background !== undefined ? background : configuration.avatar.background;
   path = path !== undefined ? path : {request: `${process.env.PUBLIC_URL}assets/${configuration.avatar.request}`, response: `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}[type];
   return (
