@@ -100,6 +100,7 @@ const documentation = {
   moreOptions: {
     exportConversation: ['Allow user to export conversation', 'Boolean'],
     printConversation: ['Allow user to print conversation', 'Boolean'],
+    sendGdprData: ['Allow user to ask for its GDPR data', 'Boolean'],
   },
 
   onboarding: {
