@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-const images = JSON.parse(localStorage.getItem('dydu.images'));
+const images = localStorage.getItem('dydu.images');
 
 
 /**
@@ -16,7 +16,7 @@ const images = JSON.parse(localStorage.getItem('dydu.images'));
 export default function Avatar({ background, path, type }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({configuration, type});
-  const logo = images && images.logo;
+  const logo = JSON.parse(images) ? JSON.parse(images).logo : null;
   background = background !== undefined ? background : configuration.avatar.background;
   path = path !== undefined ? path : {request: `${process.env.PUBLIC_URL}assets/${configuration.avatar.request}`, response: `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}[type];
   return (
