@@ -149,6 +149,11 @@
     "maxWidth": "80%",
     "minWidth": "50%"
   },
+  "moreOptions": {
+    "exportConversation": true,
+    "printConversation": true,
+    "sendGdprData": true
+  },
   "onboarding": {
     "enable": false,
     "image1": "dydu-onboarding-1.svg",

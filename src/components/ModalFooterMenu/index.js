@@ -25,7 +25,7 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const title = t('footer.menu.title', {defaultValue: ''});
   const spaces = t('footer.menu.spaces');
   const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
-  const { exportConversation, printConversation: _printConversation } = configuration.moreOptions;
+  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
@@ -53,7 +53,8 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
     {
       icon: 'icons/dydu-shield-lock-black.svg',
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
-      text: gdpr
+      text: gdpr,
+      when: !!sendGdprData
     }
   ];
 
