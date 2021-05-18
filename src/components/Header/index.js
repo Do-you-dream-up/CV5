@@ -162,7 +162,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt={`${logo || imageType}`} src={`${logo || process.env.PUBLIC_URL}assets/${imageType}`} />
+              <img alt='avatar' src={logo || `${process.env.PUBLIC_URL}assets/${imageType}`} />
             </div>
           )}
           {!!hasTitle && (
