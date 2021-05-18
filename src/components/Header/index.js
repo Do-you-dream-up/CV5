@@ -87,14 +87,14 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
   const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 
-  const imageType = !customAvatar ? logo || imageLink.default :
+  const imageType = !customAvatar ? imageLink.default :
                     typeResponse && typeResponse.match(RE_UNDERSTOOD) ?
                     imageLink.understood :
                     typeResponse && typeResponse.match(RE_MISUNDERSTOOD) ?
                     imageLink.misunderstood :
                     typeResponse && typeResponse.match(RE_REWORD) ?
                     imageLink.reword :
-                    logo || imageLink.default;
+                    imageLink.default;
 
   const testsMenu = [Object.keys(ACTIONS).map(it => ({
     onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, {hide: true})),
@@ -162,7 +162,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt={`${imageType}`} src={`${process.env.PUBLIC_URL}assets/${imageType}`} />
+              <img alt={`${logo || imageType}`} src={`${logo || process.env.PUBLIC_URL}assets/${imageType}`} />
             </div>
           )}
           {!!hasTitle && (
