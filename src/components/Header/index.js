@@ -17,6 +17,7 @@ import ModalFooterMenu from '../ModalFooterMenu';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import useStyles from './styles';
+const images = localStorage.getItem('dydu.images');
 
 
 /**
@@ -50,6 +51,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = Local.get(Local.names.gdpr);
   const singleTab = !configuration.tabs.hasContactTab;
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, {variant: 'bottom'}).then(() => {}, () => {});
@@ -161,7 +163,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt={`${imageType}`} src={`${process.env.PUBLIC_URL}assets/${imageType}`} />
+              <img alt={logo || `${imageType}`} src={logo || `${process.env.PUBLIC_URL}assets/${imageType}`} />
             </div>
           )}
           {!!hasTitle && (
