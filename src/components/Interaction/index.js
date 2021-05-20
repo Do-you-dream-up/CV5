@@ -155,8 +155,8 @@ export default function Interaction({
                 carousel: carousel,
                 component: scroll && !index ? Scroll : undefined,
                 history: history,
-                secondary: secondary,
-                step: steps ? steps[index] : undefined,
+                secondary: index === bubbles.length - 1 ? secondary : undefined,
+                step: steps ? steps.length === 1 ? undefined : steps[index] : undefined,
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };
