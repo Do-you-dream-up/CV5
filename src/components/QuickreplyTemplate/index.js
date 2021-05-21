@@ -9,13 +9,13 @@ const { quick, text } = JSON.parse(html);
 const classes = useStyles();
 
     return (
-      <div className={c('dydu-quickreply-template-buttons', classes.quick)}>
+      <div className={c('dydu-quickreply-template', classes.quick)}>
         { !!text && <div className={c('dydu-quickreply-template-content', classes.text)}>
             { text }
           </div>
         }
         { Object.keys(quick).sort().map((el, index) => {
-          return (quick[el] && <div className={classes.buttons} key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
+          return (quick[el] && <div className={c('dydu-quickreply-template-buttons', classes.buttons)} key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
         })}
       </div>
     );
