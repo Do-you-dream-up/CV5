@@ -6,17 +6,16 @@ import useStyles from  './styles';
 export default function QuickreplyTemplate({html}) {
 
 const { quick, text } = JSON.parse(html);
-const items = Object.values(quick).filter((value) => value != null).length;
-const classes = useStyles({items});
+const classes = useStyles();
 
     return (
-      <div className={c('dydu-quickreply-template-buttons', classes.buttons)}>
+      <div className={c('dydu-quickreply-template', classes.quick)}>
         { !!text && <div className={c('dydu-quickreply-template-content', classes.text)}>
             { text }
           </div>
         }
         { Object.keys(quick).sort().map((el, index) => {
-          return (quick[el] && <div key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
+          return (quick[el] && <div className={c('dydu-quickreply-template-buttons', classes.buttons)} key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
         })}
       </div>
     );
