@@ -1,6 +1,7 @@
 ---
 
 stages:
+  - build
   - preprod
   - prod
 
@@ -42,4 +43,16 @@ prod:
     refs:
       - development
       - /project\/.*/
+
+dydubox:
+  stage: build
+  image: node:14.15.0
+  script:
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - npm install
+    - npm run buildProd
+  only:
+    variables: 
+      - $DYDUBOX_TRIGGER == "true"
+      - $CONFIGURATION_UUID
 ...
