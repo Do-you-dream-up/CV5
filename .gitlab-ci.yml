@@ -55,4 +55,8 @@ dydubox:
     variables: 
       - $DYDUBOX_TRIGGER == "true"
       - $CONFIGURATION_UUID
+  artifacts:
+    name: build-$CI_JOB_ID
+    paths:
+      - build/**
 ...
