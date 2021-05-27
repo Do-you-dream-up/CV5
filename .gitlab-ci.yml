@@ -73,10 +73,7 @@ dydubox:
       - .npm
   only:
     variables: 
-      - $DYDUBOX_TRIGGER == "true"
-      - $CONFIGURATION_UUID
-      - $BOT_UUID
-      - $BUILD_TARGET
+      - $DYDUBOX_TRIGGER == "true" && $CONFIGURATION_UUID && $BOT_UUID && $BUILD_TARGET
   artifacts:
     expire_in: 15m
     paths:
