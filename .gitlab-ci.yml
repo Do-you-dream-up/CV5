@@ -56,7 +56,14 @@ dydubox:
     - npm ci --cache .npm --prefer-offline
     - date
     - npm run buildProd
-    - date 
+    - date
+    - |
+      cat > build/metadata.txt << EOF
+      DATE=$(date)
+      BOT_UUID=$BOT_UUID
+      CONFIGURATION_UUID=$CONFIGURATION_UUID
+      JOB_ID=$CI_JOB_ID
+      EOF
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -66,7 +73,6 @@ dydubox:
       - $DYDUBOX_TRIGGER == "true"
       - $CONFIGURATION_UUID
   artifacts:
-    name: build-$CI_JOB_ID
     expire_in: 15m
     paths:
       - build/**
