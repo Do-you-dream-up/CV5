@@ -51,7 +51,6 @@ dydubox:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm ci --cache .npm --prefer-offline
     - npm run buildProd
-    - ls -latr
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -62,6 +61,7 @@ dydubox:
       - $CONFIGURATION_UUID
   artifacts:
     name: build-$CI_JOB_ID
+    expire_in: 15m
     paths:
       - build/**
 ...
