@@ -5,9 +5,12 @@ stages:
   - preprod
   - prod
 
+variables:
+  CDN_PATH: https://cdn.doyoudreamup.com
+
 preprod:
   stage: preprod
-  image: node:14.15.0
+  image: node:14.15.0-alpine
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
@@ -26,7 +29,7 @@ preprod:
 
 prod:
   stage: prod
-  image: node:14.15.0
+  image: node:14.15.0-alpine
   when: manual
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
@@ -50,19 +53,18 @@ dydubox:
   tags: 
     - build
   script:
-    - date
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-    - date
     - npm ci --cache .npm --prefer-offline
-    - date
-    - npm run buildProd
-    - date
+    - webpack --env $BUILD_TARGET --env sass --env "$CDN_PATH/$BOT_UUID/$CONFIGURATION_UUID/" --config webpack.production.js
     - |
       cat > build/metadata.txt << EOF
-      DATE=$(date)
+      DATE=$(date +"%y%m%d_%H%M")
       BOT_UUID=$BOT_UUID
       CONFIGURATION_UUID=$CONFIGURATION_UUID
+      BUILD_TARGET=$BUILD_TARGET
       JOB_ID=$CI_JOB_ID
+      CHATBOX_GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+      CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
       EOF
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -72,6 +74,8 @@ dydubox:
     variables: 
       - $DYDUBOX_TRIGGER == "true"
       - $CONFIGURATION_UUID
+      - $BOT_UUID
+      - $BUILD_TARGET
   artifacts:
     expire_in: 15m
     paths:
