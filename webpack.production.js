@@ -14,12 +14,13 @@ module.exports = (env) => {
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
 
   if (env[2]) {
-    ASSET = env[2];
+    ASSET = env[2] +  env[0] + '/';
+    console.log(ASSET);
   }
   else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
     if (!ONPREM) {
-      ASSET += `${env[0] ? env[0] + '/' : ''}`;
+      ASSET += `${env[0] ?  + '/' : ''}`;
     }
   }
 
