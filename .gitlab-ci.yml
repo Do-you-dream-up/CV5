@@ -60,8 +60,7 @@ dydubox:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - .npm/
-      - node_modules/
+      - .npm
   only:
     variables: 
       - $DYDUBOX_TRIGGER == "true"
