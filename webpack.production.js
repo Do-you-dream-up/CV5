@@ -13,7 +13,10 @@ module.exports = (env) => {
   const QUALIFICATION = env[0] === 'prod' ? false : true;
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
 
-  if (configuration.application.cdn && configuration.application.directory) {
+  if (env[2]) {
+    ASSET = env[2];
+  }
+  else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
     if (!ONPREM) {
       ASSET += `${env[0] ? env[0] + '/' : ''}`;
