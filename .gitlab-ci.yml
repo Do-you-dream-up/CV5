@@ -49,8 +49,13 @@ dydubox:
   image: node:14.15.0
   script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-    - npm ci
+    - npm ci --cache .npm --prefer-offline
     - npm run buildProd
+    - ls -latr
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
   only:
     variables: 
       - $DYDUBOX_TRIGGER == "true"
