@@ -3,7 +3,8 @@ const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
 const { version } = require('./package');
-const hash = new GitRevision().commithash().substring(0, 7);
+const hash = '654646464';
+// const hash = new GitRevision().commithash().substring(0, 7);
 const now = DayJs().format('YYYY-MM-DD HH:mm');
 const configuration = require('./public/override/configuration.json');
 
