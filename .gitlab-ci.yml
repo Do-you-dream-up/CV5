@@ -50,9 +50,13 @@ dydubox:
   tags: 
     - build
   script:
+    - date
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - date
     - npm ci --cache .npm --prefer-offline
+    - date
     - npm run buildProd
+    - date
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
