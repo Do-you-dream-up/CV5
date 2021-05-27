@@ -46,7 +46,7 @@ prod:
 
 dydubox:
   stage: build
-  image: node:14.15.0
+  image: node:14.15.0-alpine
   tags: 
     - build
   script:
