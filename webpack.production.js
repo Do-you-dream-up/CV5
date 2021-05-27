@@ -13,7 +13,11 @@ module.exports = (env) => {
   const QUALIFICATION = env[0] === 'prod' ? false : true;
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
 
-  if (env[2]) {
+  if (process?.env?.ASSET_FULL_URL) {
+    ASSET = process.env.ASSET_FULL_URL + '/';
+    console.log(ASSET);
+  }
+  else if (env[2]) {
     ASSET = env[2] +  env[0] + '/';
     console.log(ASSET);
   }

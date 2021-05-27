@@ -55,7 +55,8 @@ dydubox:
   script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm ci --cache .npm --prefer-offline
-    - webpack --env $BUILD_TARGET --env sass --env "$CDN_PATH/$BOT_UUID/$CONFIGURATION_UUID/" --config webpack.production.js
+    - export ASSET_FULL_URL="$CDN_PATH/$BOT_UUID/$CONFIGURATION_UUID/$BUILD_TARGET"
+    - npm run buildCi
     - |
       cat > build/metadata.txt << EOF
       DATE=$(date +"%y%m%d_%H%M")
