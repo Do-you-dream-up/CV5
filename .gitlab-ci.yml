@@ -52,7 +52,7 @@ dydubox:
   script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm ci --cache .npm --prefer-offline
-    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BOT_UUID/$CONFIGURATION_UUID/$BUILD_TARGET"
+    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
     - npm run buildCi
     - |
       cat > build/metadata.txt << EOF
