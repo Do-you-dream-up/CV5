@@ -13,7 +13,7 @@
     "response": "dydu-logo.svg"
   },
   "banner": {
-    "active": true,
+    "active": false,
     "storage": true,
     "dismissable": true,
     "more": true,
@@ -37,7 +37,7 @@
     "socialNetwork": true
   },
   "dialog": {
-    "top": true
+    "top": false
   },
   "dragon": {
     "active": true,
@@ -90,11 +90,11 @@
   },
   "header": {
     "actions": {
-      "close": true,
+      "close": false,
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": true,
+      "more": false,
       "tests": false
     },
     "fontSizeChange": {
@@ -152,12 +152,12 @@
     "minWidth": "50%"
   },
   "moreOptions": {
-    "exportConversation": true,
-    "printConversation": true,
-    "sendGdprData": true
+    "exportConversation": false,
+    "printConversation": false,
+    "sendGdprData": false
   },
   "onboarding": {
-    "enable": false,
+    "enable": true,
     "image1": "dydu-onboarding-1.svg",
     "image2": "dydu-onboarding-2.svg",
     "image3": "dydu-onboarding-3.svg"
@@ -210,7 +210,7 @@
     "items": ["default"]
   },
   "suggestions": {
-    "limit": 3
+    "limit": 0
   },
   "tabs": {
     "hasContactTab": false,
