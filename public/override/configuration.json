@@ -157,7 +157,7 @@
     "sendGdprData": false
   },
   "onboarding": {
-    "enable": true,
+    "enable": false,
     "image1": "dydu-onboarding-1.svg",
     "image2": "dydu-onboarding-2.svg",
     "image3": "dydu-onboarding-3.svg"
