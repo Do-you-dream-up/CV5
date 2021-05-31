@@ -3,7 +3,7 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false,
+    "getDefaultLanguageFromSite": false, 
     "cdn":"https://cdn.doyoudreamup.com/",
     "directory":"development/"
   },
