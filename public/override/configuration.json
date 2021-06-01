@@ -37,7 +37,7 @@
     "socialNetwork": true
   },
   "dialog": {
-    "top": false
+    "top": true
   },
   "dragon": {
     "active": true,
