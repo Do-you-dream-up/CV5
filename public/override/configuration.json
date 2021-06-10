@@ -129,6 +129,8 @@
     "maxLength": 100
   },
   "interaction": {
+    "avatarRequest" : "Utilisateur",
+    "avatarResponse" : "Super Bot",
     "avatar": {
       "request": false,
       "response": true
