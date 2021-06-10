@@ -114,7 +114,7 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true,
+      "image": true, 
       "imageLink": {
         "default": "dydu-logo.svg",
         "misunderstood": "dydu-misunderstood-white.svg",
