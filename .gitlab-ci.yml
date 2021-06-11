@@ -66,7 +66,7 @@ dydubox:
       CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
       ASSET_FULL_URL=$ASSET_FULL_URL
       EOF
-    - echo "Built with public path url '$ASSET_FULL_URL'"
+    - echo "Built with public path url $ASSET_FULL_URL"
     - mv build $CONFIGURATION_UUID
   cache:
     key: ${CI_COMMIT_REF_SLUG}
