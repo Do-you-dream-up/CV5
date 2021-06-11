@@ -41,6 +41,8 @@ export default function Interaction({
   const [ ready, setReady ] = useState(false);
   const [ hasExternalLink, setHasExternalLink ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
+  const UserName = configuration.interaction.avatarRequest;
+  const BotName = configuration.interaction.avatarResponse;
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
@@ -147,6 +149,8 @@ export default function Interaction({
     )}>
       {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        {type === 'request' && UserName && <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{UserName}</span>}
+        {type === 'response' && BotName && <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{BotName}</span>}
         {bubbles.length > 0 && React.createElement(
           carousel || carouselTemplate ? Carousel : 'div',
           {
