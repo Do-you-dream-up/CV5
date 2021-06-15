@@ -377,7 +377,7 @@ export default new class Dydu {
    * @returns {Promise}
    */
   suggest = text => {
-    const data = qs.stringify({ language: this.getLocale(), search: text });
+    const data = qs.stringify({ consultationSpace: this.getSpace(), language: this.getLocale(), search: text });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
