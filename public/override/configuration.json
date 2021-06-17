@@ -129,8 +129,9 @@
     "maxLength": 100
   },
   "interaction": {
-    "avatarRequest" : "Utilisateur",
-    "avatarResponse" : "Super Bot",
+    "avatarName" : true,
+    "avatarNameUser" : "Angel",
+    "avatarNameBot" : "C-3PO",
     "avatar": {
       "request": false,
       "response": true
