@@ -1,6 +1,7 @@
 import c from 'classnames';
 import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
+import { AuthContext, Authenticated } from '../../contexts/AuthContext';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -38,6 +39,8 @@ export default function Application() {
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
+  const oidcEnabled = configuration.oidc.enable;
+
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
@@ -60,7 +63,13 @@ export default function Application() {
       <DialogProvider>
         <>
           <Suspense fallback={null}>
+            { oidcEnabled ? <AuthContext>
+              <Authenticated>
+                <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
+              </Authenticated>
+            </AuthContext> :
             <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
+            }
           </Suspense>
           <Teaser open={mode === 1} toggle={toggle} />
         </>

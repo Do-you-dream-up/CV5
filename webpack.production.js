@@ -41,6 +41,7 @@ module.exports = (env) => {
       new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
       new webpack.DefinePlugin({
         'process.env': {
+          OIDC_URL: JSON.stringify(configuration.oidc.prodPorovider),
           PUBLIC_URL: JSON.stringify(ASSET),
           QUALIFICATION
           }
