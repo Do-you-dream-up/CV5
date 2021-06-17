@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Bowser from 'bowser';
 import debounce from 'debounce-promise';
+import jwt_decode from 'jwt-decode';
 import qs from 'qs';
 import uuid4 from 'uuid4';
 import bot from '../../public/override/bot';
@@ -319,11 +320,25 @@ export default new class Dydu {
    *
    * @param {string} value - Context ID to save.
    */
-  setContextId = value => {
+   setContextId = value => {
+    if (value !== Local.get(Local.names.context)) {
+      if (Cookie.get('dydu-oauth-token')) {
+        const access_token = Cookie.get('dydu-oauth-token');
+        const decoded = jwt_decode(access_token.id_token);
+        Object.keys(decoded).map((key, ind) => {
+          if (['emailAddress', 'firstName', 'lastName', 'mat'].includes(key)) {
+            setTimeout(() => {
+              window.dydu.chat.setDialogVariable(key, decoded[key]);
+            }, 600 * ind);
+          }
+        });
+      }
+    }
     if (value !== undefined) {
       Local.set(Local.names.context, value);
     }
   };
+
 
   /**
    * Save the currently selected locale in the local storage.
