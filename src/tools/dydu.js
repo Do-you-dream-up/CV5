@@ -429,15 +429,11 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
+      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       ...(options.extra && { extraParameters: options.extra }),
       variables,
     });
-    // send user token if exist
-    if (Cookie.get('dydu-oauth-token')) {
-      const access_token = Cookie.get('dydu-oauth-token');
-      data.tokenUserData = access_token;
-    }
     const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
