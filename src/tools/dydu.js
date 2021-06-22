@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Bowser from 'bowser';
 import debounce from 'debounce-promise';
-import jwt_decode from 'jwt-decode';
 import qs from 'qs';
 import uuid4 from 'uuid4';
 import bot from '../../public/override/bot';
@@ -9,17 +8,23 @@ import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
 
-const { browser, os} = Bowser.getParser(window.navigator.userAgent).parsedResult;
+const { browser, os } = Bowser.getParser(
+  window.navigator.userAgent
+).parsedResult;
 
 /**
  * Read the bot ID and the API server from URL parameters when found. Default to
  * the bot configuration.
  */
-const BOT = Object.assign({}, bot, (({ backUpServer, bot: id, server }) => ({
-  ...id && { id },
-  ...server && { server },
-  ...backUpServer && { backUpServer }
-}))(qs.parse(window.location.search, { ignoreQueryPrefix: true })));
+const BOT = Object.assign(
+  {},
+  bot,
+  (({ backUpServer, bot: id, server }) => ({
+    ...(id && { id }),
+    ...(server && { server }),
+    ...(backUpServer && { backUpServer }),
+  }))(qs.parse(window.location.search, { ignoreQueryPrefix: true }))
+);
 
 /**
  * Solution type
@@ -32,7 +37,7 @@ const ASSISTANT = 'ASSISTANT';
 const API = axios.create({
   baseURL: `https://${BOT.server}/servlet/api/`,
   headers: {
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
   },
 });
@@ -43,9 +48,7 @@ const variables = {};
  * Implement JavaScript bindings for Dydu's REST API.
  * https://uat.mars.doyoudreamup.com/servlet/api/doc3/index.html
  */
-export default new class Dydu {
-
-
+export default new (class Dydu {
   constructor() {
     this.client = this.getClientId();
     this.emit = debounce(this.emit, 100, { leading: true });
@@ -64,24 +67,26 @@ export default new class Dydu {
    * @param {number} tries - number of tries to send the request.
    * @returns {Promise}
    */
-  emit = (verb, path, data, tries = 0) => verb(path, data).then(({ data = {} }) => {
-    if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-      data.values = decode(data.values);
-      this.setContextId(data.values.contextId);
-      return data.values;
-    }
-    return data;
-  }).catch(() => {
-    if (BOT.backUpServer) {
-      tries++;
-      if (tries < 3)
-        this.emit(verb, path, data, tries);
-      else if (tries < 6) {
-        API.defaults.baseURL = `https://${BOT.backUpServer}/servlet/api/`;
-        this.emit(verb, path, data, tries);
-      }
-    }
-  })
+  emit = (verb, path, data, tries = 0) =>
+    verb(path, data)
+      .then(({ data = {} }) => {
+        if (Object.prototype.hasOwnProperty.call(data, 'values')) {
+          data.values = decode(data.values);
+          this.setContextId(data.values.contextId);
+          return data.values;
+        }
+        return data;
+      })
+      .catch(() => {
+        if (BOT.backUpServer) {
+          tries++;
+          if (tries < 3) this.emit(verb, path, data, tries);
+          else if (tries < 6) {
+            API.defaults.baseURL = `https://${BOT.backUpServer}/servlet/api/`;
+            this.emit(verb, path, data, tries);
+          }
+        }
+      });
 
   /**
    * Export conversation by email
@@ -111,12 +116,13 @@ export default new class Dydu {
    * @param {true|false|undefined} value - Value of the feedback.
    * @returns {Promise}
    */
-  feedback = async value => {
+  feedback = async (value) => {
     const contextId = await this.getContextId();
     const data = qs.stringify({
       contextUUID: contextId,
-      feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
-      solutionUsed:ASSISTANT,
+      feedBack:
+        { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -128,7 +134,7 @@ export default new class Dydu {
    * @param {string} comment - Comment to send.
    * @returns {Promise}
    */
-  feedbackComment = async comment => {
+  feedbackComment = async (comment) => {
     const contextId = await this.getContextId();
     const data = qs.stringify({
       comment,
@@ -145,7 +151,7 @@ export default new class Dydu {
    * @param {string} choiceKey - Choice key to send.
    * @returns {Promise}
    */
-  feedbackInsatisfaction = async choiceKey => {
+  feedbackInsatisfaction = async (choiceKey) => {
     const contextId = await this.getContextId();
     const data = qs.stringify({
       choiceKey,
@@ -175,11 +181,11 @@ export default new class Dydu {
       mail: email,
     };
     const path = `chat/gdpr/${BOT.id}/`;
-    return Promise.all(methods.map(it => this.emit(
-      API.post,
-      path,
-      qs.stringify({ ...data, object: it }),
-    )));
+    return Promise.all(
+      methods.map((it) =>
+        this.emit(API.post, path, qs.stringify({ ...data, object: it }))
+      )
+    );
   };
 
   /**
@@ -218,9 +224,14 @@ export default new class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const { defaultLanguage, getDefaultLanguageFromSite } = configuration.application;
-      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
-      getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
+      const { defaultLanguage, getDefaultLanguageFromSite } =
+        configuration.application;
+      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split(
+        '-'
+      )[0];
+      getDefaultLanguageFromSite
+        ? this.setLocale(document.documentElement.lang)
+        : this.setLocale(locale);
     }
     return this.locale;
   };
@@ -234,22 +245,29 @@ export default new class Dydu {
    * @param {string|Object} strategy.value - Data needed to extract the space value.
    * @returns {string}
    */
-  getSpace = strategy => {
+  getSpace = (strategy) => {
     if (!this.space || strategy) {
       this.space = Local.get(Local.names.space, '');
       if (Array.isArray(strategy)) {
-        const get = mode => ({
-          cookie: value => Cookie.get(value),
-          global: value => window[value],
-          hostname: value => value[window.location.hostname],
-          localstorage: value => Local.get(value),
-          route: value => value[window.location.pathname],
-          urlparameter: value => qs.parse(window.location.search, {ignoreQueryPrefix: true})[value],
-        }[mode]);
+        const get = (mode) =>
+          ({
+            cookie: (value) => Cookie.get(value),
+            global: (value) => window[value],
+            hostname: (value) => value[window.location.hostname],
+            localstorage: (value) => Local.get(value),
+            route: (value) => value[window.location.pathname],
+            urlparameter: (value) =>
+              qs.parse(window.location.search, { ignoreQueryPrefix: true })[
+                value
+              ],
+          }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space = typeof _get === 'function' ? _get(value) || this.space : this.space;
+            this.space =
+              typeof _get === 'function'
+                ? _get(value) || this.space
+                : this.space;
           }
         });
       }
@@ -262,27 +280,29 @@ export default new class Dydu {
    *
    * @returns {Promise}
    */
-  history = () => new Promise((resolve, reject) => {
-    const contextId = Local.get(Local.names.context);
-    if (contextId) {
-      const data = qs.stringify({ contextUuid: contextId });
-      const path = `chat/history/${BOT.id}/`;
-      resolve(this.emit(API.post, path, data));
-    }
-    else {
-      reject();
-    }
-  });
+  history = () =>
+    new Promise((resolve, reject) => {
+      const contextId = Local.get(Local.names.context);
+      if (contextId) {
+        const data = qs.stringify({ contextUuid: contextId });
+        const path = `chat/history/${BOT.id}/`;
+        resolve(this.emit(API.post, path, data));
+      }
+      else {
+        reject();
+      }
+    });
 
-   /**
+  /**
    * Fetch pushrules.
    *
    * @returns {Promise}
    */
-  pushrules = () => new Promise((resolve) => {
+  pushrules = () =>
+    new Promise((resolve) => {
       const path = `chat/pushrules/${BOT.id}`;
       resolve(this.emit(API.post, path));
-  });
+    });
 
   /**
    * Print conversations.
@@ -294,7 +314,9 @@ export default new class Dydu {
     if (contextId) {
       const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
-      const ifrm = document.querySelector('.dydu-iframe') || document.createElement('iframe');
+      const ifrm =
+        document.querySelector('.dydu-iframe') ||
+        document.createElement('iframe');
       ifrm.setAttribute('class', 'dydu-iframe');
       ifrm.setAttribute('style', 'display:none;');
       ifrm.src = path;
@@ -320,25 +342,11 @@ export default new class Dydu {
    *
    * @param {string} value - Context ID to save.
    */
-   setContextId = value => {
-    if (value !== Local.get(Local.names.context)) {
-      if (Cookie.get('dydu-oauth-token')) {
-        const access_token = Cookie.get('dydu-oauth-token');
-        const decoded = jwt_decode(access_token.id_token);
-        Object.keys(decoded).map((key, ind) => {
-          if (['emailAddress', 'firstName', 'lastName', 'mat'].includes(key)) {
-            setTimeout(() => {
-              window.dydu.chat.setDialogVariable(key, decoded[key]);
-            }, 600 * ind);
-          }
-        });
-      }
-    }
+  setContextId = (value) => {
     if (value !== undefined) {
       Local.set(Local.names.context, value);
     }
   };
-
 
   /**
    * Save the currently selected locale in the local storage.
@@ -346,17 +354,20 @@ export default new class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = locale => new Promise((resolve, reject) => {
-    const { languages } = configuration.application;
-    if (languages.includes(locale)) {
-      Local.set(Local.names.locale, locale);
-      this.locale = locale;
-      resolve(locale);
-    }
-    else {
-      reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
-    }
-  });
+  setLocale = (locale) =>
+    new Promise((resolve, reject) => {
+      const { languages } = configuration.application;
+      if (languages.includes(locale)) {
+        Local.set(Local.names.locale, locale);
+        this.locale = locale;
+        resolve(locale);
+      }
+      else {
+        reject(
+          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`
+        );
+      }
+    });
 
   /**
    * this method allows you to define variables that are modified on the client side
@@ -365,7 +376,7 @@ export default new class Dydu {
    */
   setRegisterContext = (name, value) => {
     variables[name] = value;
-  }
+  };
 
   /**
    * Set the current space and save it in the local storage.
@@ -373,17 +384,18 @@ export default new class Dydu {
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = space => new Promise((resolve, reject) => {
-    const value = String(space).trim().toLowerCase();
-    Local.set(Local.names.space, value);
-    if (this.space !== value) {
-      this.space = value;
-      resolve(value);
-    }
-    else {
-      reject(value);
-    }
-  });
+  setSpace = (space) =>
+    new Promise((resolve, reject) => {
+      const value = String(space).trim().toLowerCase();
+      Local.set(Local.names.space, value);
+      if (this.space !== value) {
+        this.space = value;
+        resolve(value);
+      }
+      else {
+        reject(value);
+      }
+    });
 
   /**
    * Fetch candidates for auto-completion.
@@ -391,8 +403,12 @@ export default new class Dydu {
    * @param {string} text - Input to search against.
    * @returns {Promise}
    */
-  suggest = text => {
-    const data = qs.stringify({ consultationSpace: this.getSpace(), language: this.getLocale(), search: text });
+  suggest = (text) => {
+    const data = qs.stringify({
+      consultationSpace: this.getSpace(),
+      language: this.getLocale(),
+      search: text,
+    });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
@@ -417,6 +433,11 @@ export default new class Dydu {
       ...(options.extra && { extraParameters: options.extra }),
       variables,
     });
+    // send user token if exist
+    if (Cookie.get('dydu-oauth-token')) {
+      const access_token = Cookie.get('dydu-oauth-token');
+      data.tokenUserData = access_token;
+    }
     const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
@@ -428,8 +449,11 @@ export default new class Dydu {
    * @param {number} [size] - Maximum number of topics to retrieve.
    * @returns {Promise}
    */
-  top = size => {
-    const data = qs.stringify({ language: this.getLocale(), maxKnowledge: size });
+  top = (size) => {
+    const data = qs.stringify({
+      language: this.getLocale(),
+      maxKnowledge: size,
+    });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
   };
@@ -467,7 +491,7 @@ export default new class Dydu {
       language: this.getLocale(),
       qualificationMode: options.qualification,
       solutionUsed: ASSISTANT,
-      space: this.getSpace() || 'default'
+      space: this.getSpace() || 'default',
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
@@ -478,8 +502,9 @@ export default new class Dydu {
    *
    * @returns {Promise}
    */
-  whoami = () => this.emit(API.get, 'whoami/').then(({ headers = [] }) => {
-    const data = headers.find(it => it && it.host);
-    return data && data.host;
-  });
-}();
+  whoami = () =>
+    this.emit(API.get, 'whoami/').then(({ headers = [] }) => {
+      const data = headers.find((it) => it && it.host);
+      return data && data.host;
+    });
+})();
