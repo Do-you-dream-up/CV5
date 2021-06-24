@@ -3,7 +3,7 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false,
+    "getDefaultLanguageFromSite": false, 
     "cdn":"",
     "directory":""
   },
@@ -13,7 +13,7 @@
     "response": "dydu-logo.svg"
   },
   "banner": {
-    "active": true,
+    "active": false,
     "storage": true,
     "dismissable": true,
     "more": true,
@@ -90,11 +90,11 @@
   },
   "header": {
     "actions": {
-      "close": true,
+      "close": false,
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": true,
+      "more": false,
       "tests": false
     },
     "fontSizeChange": {
@@ -114,7 +114,7 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true,
+      "image": true, 
       "imageLink": {
         "default": "dydu-logo.svg",
         "misunderstood": "dydu-misunderstood-white.svg",
@@ -129,6 +129,9 @@
     "maxLength": 100
   },
   "interaction": {
+    "avatarName" : false,
+    "avatarNameUser" : "",
+    "avatarNameBot" : "",
     "avatar": {
       "request": false,
       "response": true
@@ -152,16 +155,16 @@
     "minWidth": "50%"
   },
   "moreOptions": {
-    "exportConversation": true,
-    "printConversation": true,
-    "sendGdprData": true
+    "exportConversation": false,
+    "printConversation": false,
+    "sendGdprData": false
   },
   "oidc": {
     "enable": false,
     "clientId": "",
+    "prodPorovider": "",
     "preprodPorovider": "",
-    "prodPorovider":"" ,
-    "scopes": ["openid"]
+    "scopes": [""]
   },
   "onboarding": {
     "enable": false,
@@ -170,7 +173,7 @@
     "image3": "dydu-onboarding-3.svg"
   },
   "pushrules": {
-    "active": false
+    "active": true
   },
   "root": "dydu-root",
   "secondary": {
@@ -217,7 +220,7 @@
     "items": ["default"]
   },
   "suggestions": {
-    "limit": 3
+    "limit": 0
   },
   "tabs": {
     "hasContactTab": false,
