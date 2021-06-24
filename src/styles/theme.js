@@ -3,7 +3,7 @@ import theme from '../../public/override/theme.json';
 import breakpoints from './breakpoints';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
-theme.palette.primary.main  = css && css.main ? css.main : '#3636B9';
+theme.palette.primary.main  = css && css.main ? css.main : theme.palette.primary.main;
 
 export default {
 
