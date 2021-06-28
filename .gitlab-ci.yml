@@ -48,7 +48,7 @@ dydubox:
   stage: build
   image: node:14.15.0-alpine
   tags: 
-    - build
+    - chatbot
   script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm ci --cache .npm --prefer-offline
