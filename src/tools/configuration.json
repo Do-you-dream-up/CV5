@@ -127,9 +127,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "avatarName" : true,
-    "avatarNameUser" : "Angel",
-    "avatarNameBot" : "C-3PO",
+    "displayNameBot" : false,
+    "displayNameUser" : true,
+    "NameUser" : "Loris",
+    "NameBot" : "",
     "avatar": {
       "request": false,
       "response": true

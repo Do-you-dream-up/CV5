@@ -41,9 +41,10 @@ export default function Interaction({
   const [ ready, setReady ] = useState(false);
   const [ hasExternalLink, setHasExternalLink ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
-  const {avatarName : avatarDisplay} = configuration.interaction;
-  const avatarNameUser = configuration.interaction.avatarNameUser;
-  const avatarNameBot = configuration.interaction.avatarNameBot;
+  const {displayNameBot : avatarDisplayBot} = configuration.interaction;
+  const {displayNameUser : avatarDisplayUser} = configuration.interaction;
+  const NameUser = configuration.interaction.NameUser;
+  const NameBot = configuration.interaction.NameBot;
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
@@ -150,8 +151,8 @@ export default function Interaction({
     )}>
       {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
-        {type === 'request' && avatarNameUser && !!avatarDisplay && <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{avatarNameUser}</span>}
-        {type === 'response' && avatarNameBot && !!avatarDisplay && <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{avatarNameBot}</span>}
+        {type === 'request' && NameUser && !!avatarDisplayUser && <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{NameUser}</span>}
+        {type === 'response' && NameBot && !!avatarDisplayBot && <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{NameBot}</span>}
         {bubbles.length > 0 && React.createElement(
           carousel || carouselTemplate ? Carousel : 'div',
           {

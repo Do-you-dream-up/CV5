@@ -129,9 +129,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "avatarName" : false,
-    "avatarNameUser" : "",
-    "avatarNameBot" : "",
+    "displayNameBot" : false,
+    "displayNameUser" : true,
+    "NameUser" : "Loris",
+    "NameBot" : "",
     "avatar": {
       "request": false,
       "response": true
