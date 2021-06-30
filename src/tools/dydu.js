@@ -288,7 +288,7 @@ export default new (class Dydu {
         const path = `chat/history/${BOT.id}/`;
         resolve(this.emit(API.post, path, data));
       }
-      else {
+ else {
         reject();
       }
     });
@@ -362,7 +362,7 @@ export default new (class Dydu {
         this.locale = locale;
         resolve(locale);
       }
-      else {
+ else {
         reject(
           `Setting an unknown locale '${locale}'. Possible values: [${languages}].`
         );
@@ -392,7 +392,7 @@ export default new (class Dydu {
         this.space = value;
         resolve(value);
       }
-      else {
+ else {
         reject(value);
       }
     });
@@ -405,9 +405,9 @@ export default new (class Dydu {
    */
   suggest = (text) => {
     const data = qs.stringify({
-      consultationSpace: this.getSpace(),
       language: this.getLocale(),
       search: text,
+      space: this.getSpace(),
     });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -429,7 +429,9 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
+      tokenUserData: Cookie.get('dydu-oauth-token')
+        ? Cookie.get('dydu-oauth-token').id_token
+        : null,
       userInput: text,
       ...(options.extra && { extraParameters: options.extra }),
       variables,
