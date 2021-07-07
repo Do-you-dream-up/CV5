@@ -65,6 +65,6 @@ export default createUseStyles(theme => ({
   title: () => ({
     minWidth: '6.7em',
     padding: '.5em 0',
-    width: '6.5em',
+    width: '7.5em',
   }),
 }));

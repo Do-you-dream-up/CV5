@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React from 'react';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
-import theme from '../styles/theme';
 import json from './configuration.json';
 import { Local } from './storage';
 
@@ -54,7 +53,6 @@ export const configuration = new class Configuration {
       maxHeight,
       position,
       right,
-      shadow,
       top,
       width,
     } = {}) => ({
@@ -65,7 +63,6 @@ export const configuration = new class Configuration {
       ...(maxHeight !== undefined && {maxHeight}),
       ...(position !== undefined && {position}),
       ...(right !== undefined && {right}),
-      ...(shadow !== undefined && theme.shadows && {boxShadow: theme.shadows[~~shadow]}),
       ...(top !== undefined && {top}),
       ...(width !== undefined && {width}),
     });

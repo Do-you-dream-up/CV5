@@ -1,3 +1,4 @@
+import Axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { JssProvider, ThemeProvider } from 'react-jss';
@@ -5,7 +6,7 @@ import Application from './components/Application';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import { UserActionProvider } from './contexts/UserActionContext';
-import theme from './styles/theme';
+import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import './tools/internationalization';
 import keycloak from './tools/keycloak';
@@ -25,7 +26,7 @@ const getRootDiv = (configuration) => {
 };
 
 // eslint-disable-next-line react/no-render-return-value
-const renderApp = () => ReactDOM.render(
+const renderApp = (theme) => ReactDOM.render(
   <JssProvider id={{minify: process.env.NODE_ENV === 'production'}}>
     <ThemeProvider theme={theme}>
       <ConfigurationProvider configuration={_configuration}>
@@ -44,6 +45,12 @@ configuration.initialize().then(configuration => {
   _configuration = configuration;
   anchor = getRootDiv(configuration);
   if (anchor) {
-    configuration.keycloak.enable ? keycloak.initKeycloak(renderApp, configuration.keycloak) : renderApp();
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
+    .then(res => {
+        const data = res && res.data ? res.data : {};
+        data.breakpoints = breakpoints;
+        configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
+
+    });
   }
 });
