@@ -1,12 +1,13 @@
+import Axios from 'axios';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider, createUseStyles } from 'react-jss';
 import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsProvider } from '../../contexts/EventsContext';
 import { ModalProvider } from '../../contexts/ModalContext';
 import { TabProvider } from '../../contexts/TabContext';
-import theme from '../../styles/theme';
+import breakpoints from '../../styles/breakpoints';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
 import '../../tools/internationalization';
@@ -30,8 +31,18 @@ const json = configuration.sanitize(data);
 
 export default function Wrapper({ children }) {
   const classes = useStyles();
+  const [theme, setTheme] = useState(null);
+  useEffect(() => {
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
+    .then(res => {
+        const data = res && res.data ? res.data : {};
+        data.breakpoints = breakpoints;
+        setTheme(data);
+
+    });
+  }, []);
   return (
-    <ThemeProvider theme={theme}>
+    theme && <ThemeProvider theme={theme}>
       <ConfigurationProvider configuration={json}>
         <EventsProvider>
           <DialogProvider>
