@@ -19,13 +19,21 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const classes = useStyles();
   const { t } = useTranslation('translation');
 
-  const RE_EMAIL = /(.+)(<a href="mailto:\S+@\S+\.\S+").*(>.+<\/a>)(.+)/g;
-  const RE_LINK = /(<a href="(http(s)?:\/\/)?\S+\.\S+").*(>.+<\/a>)/g;
   const RE_ONCLICK = /onclick=".+?"/gm;
+  const RE_REWORD = /class="reword"/gm;
+  const RE_HREF = /(<a href([^>]+)>)/g;
+  const RE_HREF_EMPTY = /href="#"/g;
 
-  const htmlCleanup = html && html.match(RE_EMAIL) || html && html.match(RE_LINK) ?
-                      html.replace(RE_ONCLICK, '') :
-                      html;
+  const hrefMatchs = html && html.match(RE_HREF);
+
+  hrefMatchs && hrefMatchs.map(el => {
+    if (!el.match(RE_REWORD)) {
+      html = html.replace(el, el.replace(RE_ONCLICK, ''));
+    }
+    else {
+      html = html.replace(el, el.replace(RE_HREF_EMPTY, ''));
+    }
+  });
 
   const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
   return React.createElement(component, {className: c(classes.root, className), ...rest}, (
@@ -35,7 +43,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
       { templatename === PRODUCT_TEMPLATE && <ProductTemplate html={html} /> }
       { templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={html} /> }
       { templatename === QUICK_REPLY && <QuickreplyTemplate html={html} /> }
-      { !knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{__html: htmlCleanup}} /> }
+      { !knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{__html: html}} /> }
       { hasExternalLink && <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} /> }
     </>
   ));

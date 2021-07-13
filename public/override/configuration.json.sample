@@ -3,6 +3,7 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
+    "getDefaultLanguageFromSite": false, 
     "cdn":"",
     "directory":""
   },
@@ -12,7 +13,7 @@
     "response": "dydu-logo.svg"
   },
   "banner": {
-    "active": true,
+    "active": false,
     "storage": true,
     "dismissable": true,
     "more": true,
@@ -89,11 +90,11 @@
   },
   "header": {
     "actions": {
-      "close": true,
+      "close": false,
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": true,
+      "more": false,
       "tests": false
     },
     "fontSizeChange": {
@@ -113,7 +114,7 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true,
+      "image": true, 
       "imageLink": {
         "default": "dydu-logo.svg",
         "misunderstood": "dydu-misunderstood-white.svg",
@@ -128,6 +129,9 @@
     "maxLength": 100
   },
   "interaction": {
+    "avatarName" : false,
+    "avatarNameUser" : "",
+    "avatarNameBot" : "",
     "avatar": {
       "request": false,
       "response": true
@@ -150,16 +154,26 @@
     "maxWidth": "80%",
     "minWidth": "50%"
   },
+  "moreOptions": {
+    "exportConversation": false,
+    "printConversation": false,
+    "sendGdprData": false
+  },
+  "oidc": {
+    "enable": false,
+    "clientId": "",
+    "prodPorovider": "",
+    "preprodPorovider": "",
+    "scopes": [""]
+  },
   "onboarding": {
     "enable": false,
-    "imageLinks": [
-      "dydu-onboarding-1.svg",
-      "dydu-onboarding-2.svg",
-      "dydu-onboarding-3.svg"
-    ]
+    "image1": "dydu-onboarding-1.svg",
+    "image2": "dydu-onboarding-2.svg",
+    "image3": "dydu-onboarding-3.svg"
   },
   "pushrules": {
-    "active": false
+    "active": true
   },
   "root": "dydu-root",
   "secondary": {
@@ -206,9 +220,10 @@
     "items": ["default"]
   },
   "suggestions": {
-    "limit": 3
+    "limit": 0
   },
   "tabs": {
+    "hasContactTab": false,
     "items": [
       {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
       {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}

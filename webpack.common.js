@@ -3,9 +3,14 @@ const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Html = require('html-webpack-plugin');
 const { version } = require('./package');
-const hash = new GitRevision().commithash().substring(0, 7);
 const now = DayJs().format('YYYY-MM-DD HH:mm');
 const configuration = require('./public/override/configuration.json');
+
+function getCommitHash() {
+  if (process?.env?.CI_COMMIT_SHORT_SHA)
+    return process.env.CI_COMMIT_SHORT_SHA;
+  return new GitRevision().commithash().substring(0, 7);
+}
 
 module.exports = {
   bail: true,
@@ -53,7 +58,7 @@ module.exports = {
     new Html({
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),
-      templateParameters: {hash, now, version},
+      templateParameters: {hash: getCommitHash(), now, version},
     })
   ]
 };

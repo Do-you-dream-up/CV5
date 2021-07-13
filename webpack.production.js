@@ -13,10 +13,18 @@ module.exports = (env) => {
   const QUALIFICATION = env[0] === 'prod' ? false : true;
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
 
-  if (configuration.application.cdn && configuration.application.directory) {
+  if (process?.env?.ASSET_FULL_URL) {
+    ASSET = process.env.ASSET_FULL_URL + '/';
+    console.log(ASSET);
+  }
+  else if (env[2]) {
+    ASSET = env[2] +  env[0] + '/';
+    console.log(ASSET);
+  }
+  else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
     if (!ONPREM) {
-      ASSET += `${env[0] ? env[0] + '/' : ''}`;
+      ASSET += `${env[0] ?  + '/' : ''}`;
     }
   }
 
@@ -41,6 +49,7 @@ module.exports = (env) => {
       new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
       new webpack.DefinePlugin({
         'process.env': {
+          OIDC_URL: JSON.stringify(configuration.oidc.prodPorovider),
           PUBLIC_URL: JSON.stringify(ASSET),
           QUALIFICATION
           }

@@ -29,6 +29,15 @@ export default createUseStyles(theme => ({
   loader: () => ({
     marginLeft: '.2em',
   }),
+  nameRequest: () => ({
+    fontSize:'0.9em',
+    marginBottom: '0.2em',
+    marginLeft: 'auto',
+  }),
+  nameResponse: () => ({
+    fontSize:'0.9em',
+    marginBottom: '0.2em',
+  }),
   request: () => ({
     marginLeft: '2em',
   }),
