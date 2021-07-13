@@ -98,7 +98,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
+        set: (locale, languages) => Promise.all([dydu.setLocale(locale, languages), i.changeLanguage(locale)]).then(
           ([locale]) => window.dydu.chat.reply(`${t('interaction.languageChange')} '${locale}'.`),
           response => window.dydu.chat.reply(response),
         ),
@@ -134,10 +134,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
 
+    if (window.dydu.localization.get() && !configuration.application.languages.includes(window.dydu.localization.get()))
+    window.dydu.localization.set(configuration.application.languages[0], configuration.application.languages);
+
     if (configuration.spaces.items && configuration.spaces.items.length === 1)
       window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
+  }, [addResponse, ask, configuration.application.languages, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
     if (gdprPassed && !Local.get(Local.names.visitor)) {
