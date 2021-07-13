@@ -354,10 +354,9 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale) =>
+  setLocale = (locale, languages) =>
     new Promise((resolve, reject) => {
-      const { languages } = configuration.application;
-      if (languages.includes(locale)) {
+      if (!this.locale || languages.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);

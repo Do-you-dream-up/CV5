@@ -33,7 +33,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const languagesMenu = [languages.sort().map(id => ({
     icon: `flags/${id}.svg`,
     id,
-    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id),
+    onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
     text: t(`footer.rosetta.${id}`),
   }))];
 
