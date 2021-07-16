@@ -14,7 +14,7 @@ preprod:
     - npm run buildPreprod
   script:
     - apk update
-    - apk add --no-cache rsync python3-dev py3-pip gcc linux-headers
+    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
@@ -34,7 +34,7 @@ prod:
     - npm run buildProd
   script:
     - apk update
-    - apk add --no-cache rsync python3-dev py3-pip gcc linux-headers
+    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
