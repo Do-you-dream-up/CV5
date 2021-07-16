@@ -15,7 +15,7 @@ preprod:
   script:
     - apk update
     - apk add --no-cache rsync py-pip
-    - pip3 --no-cache-dir install ansible
+    - pip --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
     - ansible-playbook --inventory hosts.yml deliverPreprod.yml
@@ -35,7 +35,7 @@ prod:
   script:
     - apk update
     - apk add --no-cache rsync py-pip
-    - pip3 --no-cache-dir install ansible
+    - pip --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
     - ansible-playbook --inventory hosts.yml deliverProd.yml
