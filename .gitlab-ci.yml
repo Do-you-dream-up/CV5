@@ -8,6 +8,8 @@ stages:
 preprod:
   stage: preprod
   image: node:lts-alpine3.14
+  variables:
+    ANSIBLE_STDOUT_CALLBACK: yaml
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
@@ -18,7 +20,7 @@ preprod:
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - ansible-playbook --inventory hosts.yml deliverPreprod.yml
+    - ansible-playbook --verbose --inventory hosts.yml deliverPreprod.yml
   only:
     refs:
       - development
@@ -27,6 +29,8 @@ preprod:
 prod:
   stage: prod
   image: node:lts-alpine3.14
+  variables:
+    ANSIBLE_STDOUT_CALLBACK: yaml
   when: manual
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
@@ -38,7 +42,7 @@ prod:
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - ansible-playbook --inventory hosts.yml deliverProd.yml
+    - ansible-playbook --verbose --inventory hosts.yml deliverProd.yml
   only:
     refs:
       - development
