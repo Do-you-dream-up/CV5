@@ -13,8 +13,8 @@ preprod:
     - npm install
     - npm run buildPreprod
   script:
-    - apt update
-    - apt install -y rsync python3-pip
+    - apk update
+    - apk install -y rsync python3-pip
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
@@ -33,8 +33,8 @@ prod:
     - npm install
     - npm run buildProd
   script:
-    - apt update
-    - apt install -y rsync python3-pip
+    - apk update
+    - apk install -y rsync python3-pip
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
