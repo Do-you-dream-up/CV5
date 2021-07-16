@@ -7,7 +7,7 @@ stages:
 
 preprod:
   stage: preprod
-  image: node:14.15.0-alpine
+  image: node:lts-alpine3.14
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
@@ -26,7 +26,7 @@ preprod:
 
 prod:
   stage: prod
-  image: node:14.15.0-alpine
+  image: node:lts-alpine3.14
   when: manual
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
@@ -46,7 +46,7 @@ prod:
 
 dydubox:
   stage: build
-  image: node:14.15.0-alpine
+  image: node:lts-alpine3.14
   tags: 
     - chatbot
   script:
