@@ -23,8 +23,8 @@ module.exports = (env) => {
   }
   else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
-    if (!ONPREM) {
-      ASSET += `${env[0] ?  + '/' : ''}`;
+    if (!ONPREM ) {
+      ASSET += env[0] + '/';
     }
   }
 
