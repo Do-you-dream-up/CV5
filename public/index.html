@@ -7,6 +7,7 @@
     <link id="font" href="" rel="stylesheet">
     <title>Dydu Chatbox</title>
     <script type="module">
+      window.DYDU_QUALIFICATION_MODE = true;
       const submitIframe = () => {
         if (!window.location.href.includes("?wizard") && document.getElementById("urlInput").value) {
           var ifrm = document.getElementById("iframe");
