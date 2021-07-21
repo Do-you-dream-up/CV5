@@ -39,7 +39,7 @@ export default function Application() {
   const [ open, setOpen ] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
-  const oidcEnabled = configuration.oidc.enable;
+  const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
