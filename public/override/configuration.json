@@ -158,7 +158,7 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": false
+    "sendGdprData": true
   },
   "oidc": {
     "enable": false,
