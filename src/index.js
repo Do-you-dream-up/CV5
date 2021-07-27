@@ -10,6 +10,7 @@ import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import './tools/internationalization';
 import keycloak from './tools/keycloak';
+const css = localStorage.getItem('dydu.css');
 
 let _configuration;
 let anchor;
@@ -48,6 +49,7 @@ configuration.initialize().then(configuration => {
     Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
     .then(res => {
         const data = res && res.data ? res.data : {};
+        css && data.palette.primary.main === css.main;
         data.breakpoints = breakpoints;
         configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
 
