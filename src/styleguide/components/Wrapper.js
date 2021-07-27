@@ -36,7 +36,7 @@ export default function Wrapper({ children }) {
     Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
     .then(res => {
         const data = res && res.data ? res.data : {};
-        data.palette.primary.main = css && css.main;
+        data.palette.primary.main = css ? css.main : data.palette.primary.main;
         data.breakpoints = breakpoints;
         setTheme(data);
 
