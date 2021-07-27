@@ -11,7 +11,7 @@ import breakpoints from '../../styles/breakpoints';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
 import '../../tools/internationalization';
-const css = localStorage.getItem('dydu.css');
+const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 const useStyles = createUseStyles({
   root: {
@@ -36,7 +36,7 @@ export default function Wrapper({ children }) {
     Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
     .then(res => {
         const data = res && res.data ? res.data : {};
-        css && data.palette.primary.main === css.main;
+        data.palette.primary.main = css && css.main;
         data.breakpoints = breakpoints;
         setTheme(data);
 
