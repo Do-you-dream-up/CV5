@@ -116,10 +116,9 @@
       "title": true,
       "image": true, 
       "imageLink": {
-        "default": "dydu-logo.svg",
-        "misunderstood": "dydu-misunderstood-white.svg",
-        "reword": "dydu-reword-white.svg",
-        "understood": "dydu-understood-white.svg"
+        "misunderstood": "dydu-misunderstood.svg",
+        "reword": "dydu-reword.svg",
+        "understood": "dydu-understood.svg"
       } 
     }
   },
