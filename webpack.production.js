@@ -12,6 +12,7 @@ module.exports = (env) => {
   let ASSET = './';
   const QUALIFICATION = env[0] === 'prod' ? false : true;
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
+  const OIDC_CLIENT_ID = QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
 
   if (process?.env?.ASSET_FULL_URL) {
     ASSET = process.env.ASSET_FULL_URL + '/';
@@ -49,7 +50,7 @@ module.exports = (env) => {
       new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
       new webpack.DefinePlugin({
         'process.env': {
-          CLIENT_ID: JSON.stringify(configuration.oidc.clientIdProd),
+          OIDC_CLIENT_ID: OIDC_CLIENT_ID,
           OIDC_URL: JSON.stringify(configuration.oidc.prodPorovider),
           PUBLIC_URL: JSON.stringify(ASSET),
           QUALIFICATION
