@@ -162,7 +162,8 @@
   },
   "oidc": {
     "enable": false,
-    "clientId": "",
+    "clientIdProd": "",
+    "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
     "scopes": [""]
