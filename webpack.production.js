@@ -12,8 +12,8 @@ module.exports = (env) => {
   let ASSET = './';
   const QUALIFICATION = env[0] === 'prod' ? false : true;
   const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
-  const OIDC_CLIENT_ID = QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
-
+  const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
+  const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
   if (process?.env?.ASSET_FULL_URL) {
     ASSET = process.env.ASSET_FULL_URL + '/';
     console.log(ASSET);
@@ -51,10 +51,10 @@ module.exports = (env) => {
       new webpack.DefinePlugin({
         'process.env': {
           OIDC_CLIENT_ID: OIDC_CLIENT_ID,
-          OIDC_URL: JSON.stringify(configuration.oidc.prodPorovider),
+          OIDC_URL: OIDC_URL,
           PUBLIC_URL: JSON.stringify(ASSET),
           QUALIFICATION
-          }
+        }
       })
     ],
     stats: 'verbose',
