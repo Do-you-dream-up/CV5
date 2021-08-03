@@ -136,15 +136,12 @@
         "actions": {
             "send": "Send",
             "record": {
+                "pause": "Pause",
+                "play": "Play",
+                "replay": "Replay",
                 "start": "Record start",
                 "stop": "Record stop"
-              },
-              "media": {
-                "start": "Start",
-                "stop": "Stop",
-                "pause": "Pause"
               }
-          
           },
           "placeholder": "Type here..."
     },

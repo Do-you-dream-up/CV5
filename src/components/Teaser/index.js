@@ -14,6 +14,7 @@ import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
+const images =  localStorage.getItem('dydu.images');
 
 /**
  * Minified version of the chatbox.
@@ -24,6 +25,7 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
   const voice = configuration.Voice ? configuration.Voice.enable : false;
@@ -55,7 +57,7 @@ export default function Teaser({ open, toggle }) {
             <Skeleton children={title} hide={!ready} width="3em" />
           </div>
           <div className={c('dydu-teaser-brand', classes.brand)}>
-            <img alt={title} src={`${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
+            <img alt={title} src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
           </div>
         </div>
         { open && voice && <voice/> }

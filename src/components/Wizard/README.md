@@ -5,33 +5,41 @@ const documentation = {
 
   application: {
     open: ['0: Minimized - 1: Teaser - 2: Open - 3: Maximized', 'Boolean'],
-    qualification: ['Whether requests should carry the `qualificationMode` option', 'Boolean'],
     languages: ['Enabled languages', 'Array'],
+    defaultLanguage: ['default language', 'Array'],
+    cdn: ['cdn link', 'String'],
+    directory: ['name of folder where chatbot is hosted in cdn', 'String'],
   },
 
   avatar: {
     background: ['Add a background on avatars', 'Boolean'],
+    request: ['Image reference for request avatar', 'String'],
+    response: ['Image reference for response avatar', 'String'],
   },
 
   banner: {
     active: ['Render the banner', 'Boolean'],
-    cookie: ['Use cookies to remember the banner status', 'Boolean'],
+    storage: ['Use cookies to remember the banner status', 'Boolean'],
     dismissable: ['Display the dismissing button', 'Boolean'],
     more: ['Display the custom link', 'Boolean'],
+    moreIcon: ['Icon reference for moreIcon button', 'String'],
     moreLink: ['Custom link', 'String'],
     transient: ['Consider the banner as seen as soon as rendered', 'Boolean'],
-  },
-
-  carousel: {
-    bullets: ['Whether to display what the current step is', 'Boolean'],
-    controls: ['Whether to display controls beneath the carousel', 'Boolean'],
-    offset: ['Left offset of the first step, in percentage', 'Number'],
-    width: ['Total width of a step in the conversation area, in percentage', 'Number'],
   },
 
   chatbox: {
     expandable: ['Allow maximizing the chatbox', 'Boolean'],
     margin: ['Margins to the viewport', 'Number'],
+  },
+
+  contacts: {
+    phone: ['Enable the phone field', 'Boolean'],
+    email: ['Enable the email field', 'Boolean'],
+    socialNetwork: ['Enable the social network field', 'Boolean'],
+  },
+
+  dialog: {
+    top: ['Enable top knowledge', 'Boolean'],
   },
 
   dragon: {
@@ -53,16 +61,20 @@ const documentation = {
     askComment: ['Enable the prompt for comment', 'Boolean'],
   },
 
-  footer: {
-    more: ['Enable the extra menu', 'Boolean'],
+  font: {
+    url: ['Add a custom font url', 'String'],
   },
 
   header: {
     actions: ['Toggles for the optional header actions', 'Object'],
     title: ['Display the header title', 'Boolean'],
+    image: ['Display the header image', 'Boolean'],
+    customAvatar: ['Display a custom avatar', 'Boolean'],
+    fontChange: ['Set font changes parameters', 'Object'],
   },
 
   input: {
+    counter: ['Display counter on counter', 'boolean'],
     delay: ['Debounce-delay before suggestions are fired', 'Number'],
     maxLength: ['Maximum length for the text field', 'Number'],
   },
@@ -85,20 +97,34 @@ const documentation = {
     minWidth: ['Minimum width for centered modals', 'String'],
   },
 
+  moreOptions: {
+    exportConversation: ['Allow user to export conversation', 'Boolean'],
+    printConversation: ['Allow user to print conversation', 'Boolean'],
+    sendGdprData: ['Allow user to ask for its GDPR data', 'Boolean'],
+  },
+
   onboarding: {
-    tips: ['Display the carousel', 'Boolean'],
-    top: ['Display the top-knowledges if any', 'Boolean'],
+    enable: ['Enable the onboarding', 'Boolean'],
+    image1: ['Set the onboarding image 1', 'String'],
+    image2: ['Set the onboarding image 2', 'String'],
+    image3: ['Set the onboarding image 3', 'String'],
   },
 
   onboarding: {
     tips: ['Display the carousel', 'Boolean'],
     top: ['Display the top-knowledges if any', 'Boolean'],
+  },
+
+  pushrules: {
+    active: ['Activate pushrules', 'Boolean'],
   },
 
   root: ['HTML ID to attach the application onto', 'String'],
 
   secondary: {
     automatic: ['Automatically display the panel when available', 'Boolean'],
+    fixedDimensions: ['Override dimensions sent by backend', 'Boolean'],
+    width: ['Set a fixed width', 'String'],
     mode: ["Panel position: 'left', 'right' or 'over'", 'String'],
     transient: ["Don't keep the panel open when using the chatbox", 'Boolean'],
   },
@@ -114,13 +140,28 @@ const documentation = {
   },
 
   tabs: {
+    hasContactTab: 'Boolean',
     items: ['Define the available tabs', 'Array'],
     selected: ['Initial tab', 'String'],
     title: ['Display the title for each tab', 'Boolean'],
   },
 
+  teaser: {
+    bottom: ['Space between bottom viewport and teaser', 'Number'],
+    right: ['Space between right viewport and teaser', 'Number'],
+  },
+
+  templateProduct: {
+    readmore: ['Max number of characters before readmore', 'Number'],
+  },
+
   top: {
     size: ['Number of top-knowledges to fetch', 'Number'],
+  },
+
+  welcome: {
+    enable: ['Enable a welcome knowledge', 'Boolean'],
+    knowledgeName: ['knowledge Name reference in the bms', 'String'],
   },
 };
 

@@ -67,5 +67,5 @@ export default function Wizard() {
 
 
 Wizard.storage = {
-  data: 'dydu.wizard.data',
+  data: Local.names.wizard,
 };

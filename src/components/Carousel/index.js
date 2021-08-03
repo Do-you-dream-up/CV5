@@ -22,7 +22,7 @@ export default function Carousel({ children, className, steps, templatename, ...
   const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const [ index, setIndex ] = useState(0);
-  const [ step, setStep ] = useState(0);
+  const [ step, setStep ] = useState( steps ? steps[0] : 0);
   const { t } = useTranslation('translation');
   const previous = t('carousel.previous');
   const next = t('carousel.next');

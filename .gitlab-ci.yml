@@ -1,23 +1,26 @@
 ---
 
 stages:
+  - build
   - preprod
   - prod
 
 preprod:
   stage: preprod
-  image: node:latest
+  image: node:lts-alpine3.14
+  variables:
+    ANSIBLE_STDOUT_CALLBACK: yaml
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
     - npm run buildPreprod
   script:
-    - apt update
-    - apt install -y rsync python3-pip
+    - apk update
+    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev libffi-dev rust cargo openssl-dev openssh-client
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - ansible-playbook --inventory hosts.yml deliverPreprod.yml
+    - ansible-playbook --verbose --inventory hosts.yml deliverPreprod.yml
   only:
     refs:
       - development
@@ -25,21 +28,59 @@ preprod:
 
 prod:
   stage: prod
-  image: node:latest
+  image: node:lts-alpine3.14
+  variables:
+    ANSIBLE_STDOUT_CALLBACK: yaml
   when: manual
   before_script:
     - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
     - npm install
     - npm run buildProd
   script:
-    - apt update
-    - apt install -y rsync python3-pip
+    - apk update
+    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev libffi-dev rust cargo openssl-dev openssh-client
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - ansible-playbook --inventory hosts.yml deliverProd.yml
+    - ansible-playbook --verbose --inventory hosts.yml deliverProd.yml
   only:
     refs:
       - development
       - /project\/.*/
+
+dydubox:
+  stage: build
+  image: node:lts-alpine3.14
+  tags: 
+    - chatbot
+  script:
+    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - npm ci --cache .npm --prefer-offline
+    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
+    - npm run buildCi
+    - |
+      cat > build/metadata.txt << EOF
+      DATE=$(date +"%y%m%d_%H%M")
+      BOT_UUID=$BOT_UUID
+      CONFIGURATION_UUID=$CONFIGURATION_UUID
+      CDN_PUBLIC_URL=$CDN_PUBLIC_URL
+      BUILD_TARGET=$BUILD_TARGET
+      JOB_ID=$CI_JOB_ID
+      CHATBOX_GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+      CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
+      ASSET_FULL_URL=$ASSET_FULL_URL
+      EOF
+    - echo "Built with public path url $ASSET_FULL_URL"
+    - mv build $CONFIGURATION_UUID
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm
+  only:
+    variables: 
+      - $DYDUBOX_TRIGGER == "true" && $CONFIGURATION_UUID && $BOT_UUID && $BUILD_TARGET && $CDN_PUBLIC_URL
+  artifacts:
+    expire_in: 1h
+    paths:
+      - $CONFIGURATION_UUID/**
 ...

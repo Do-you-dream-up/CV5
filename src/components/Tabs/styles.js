@@ -6,6 +6,9 @@ export default createUseStyles(theme => ({
     cursor: 'not-allowed',
     opacity: .5,
   }),
+  hideOutline: () => ({
+    outline: 'none',
+  }),
   icon: () => ({
     height: '1.3em',
     opacity: .5,

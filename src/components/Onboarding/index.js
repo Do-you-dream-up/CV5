@@ -8,7 +8,7 @@ import { OnboardingContext } from '../../contexts/OnboardingContext';
 import sanitize from '../../tools/sanitize';
 import Button from '../Button';
 import useStyles from './styles';
-
+const images = JSON.parse(localStorage.getItem('dydu.images'));
 
 /**
  * Protect the children of this component behind an *onboarding* wall.
@@ -27,25 +27,31 @@ export default function Onboarding({ children, render }) {
   const classes = useStyles({configuration});
   const { t } = useTranslation('translation');
   const should = render && active;
-  const { enable } = configuration.onboarding;
-  const { imageLinks } = configuration.onboarding;
+  const { enable, image1, image2, image3  } = configuration.onboarding;
   const steps = t('onboarding.steps');
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
+  // onboarding Images from local storage of Dydubox
+  const onboarding1 = images && images.onboarding1;
+  const onboarding2 = images && images.onboarding2;
+  const onboarding3 = images && images.onboarding3;
+
+  const storageImage = index === 0 ? onboarding1 : index === 1 ? onboarding2 : onboarding3;
+  const configImage = index === 0 ? image1 : index === 1 ? image2 : image3;
+  const path = `${process.env.PUBLIC_URL}assets/${configImage}`;
 
   useEffect(() => {
-    if (active)
+    if (active && enable)
       event('onboardingDisplay');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [active, enable, event]);
 
   return !enable ? children : should ? (
     <div className={c('dydu-onboarding', classes.root)}>
       <div className={c('dydu-onboarding-carousel', classes.carousel)}>
         <div className={c('dydu-onboarding-image', classes.image)}>
-          <img src={`${process.env.PUBLIC_URL}assets/${imageLinks[index]}`}
-               alt={`${process.env.PUBLIC_URL}assets/${imageLinks[index]}`}/>
+          <img src={storageImage || path}
+               alt={storageImage || path}/>
         </div>
         <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
         <div className={c('dydu-onboarding-body', classes.body)}

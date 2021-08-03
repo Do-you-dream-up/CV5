@@ -51,7 +51,7 @@ export function DialogProvider({ children }) {
   }, [add, isMobile, secondaryTransient, toggleSecondary]);
 
   const addResponse = useCallback(response => {
-    const { askFeedback, guiAction, templateData, templateName, text, typeResponse, urlRedirect } = response;
+    const { askFeedback, guiAction, sidebar, templateData, templateName, text, typeResponse, urlRedirect } = response;
     const steps = parseSteps(response);
     if (configuration.Voice.enable) {
       if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName.toLowerCase()) {
@@ -97,6 +97,7 @@ export function DialogProvider({ children }) {
                    carousel={steps.length > 1}
                    children={getContent(text, templateData, templateName)}
                    type="response"
+                   secondary={sidebar}
                    steps={steps}
                    templatename={templateName}
                    thinking />
