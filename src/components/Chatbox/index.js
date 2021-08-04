@@ -135,12 +135,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     }
 
     if (window.dydu.localization.get() && !configuration.application.languages.includes(window.dydu.localization.get()))
-    window.dydu.localization.set(configuration.application.languages[0], configuration.application.languages);
+    window.dydu.localization.set(configuration.application.defaultLanguage[0], configuration.application.languages);
 
     if (configuration.spaces.items && configuration.spaces.items.length === 1)
       window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [addResponse, ask, configuration.application.languages, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
+  }, [addResponse, ask, configuration.application.defaultLanguage, configuration.application.languages, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
     if (gdprPassed && !Local.get(Local.names.visitor)) {
