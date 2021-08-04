@@ -1,11 +1,11 @@
 {
   "name": "dydu-bliss",
-  "version": "5.6.2",
+  "version": "5.6.4",
   "private": true,
   "license": "MIT",
   "start_url": ".",
   "dependencies": {
-    "@dydu_ai/oidc": "^1.1.5",
+    "@dydu_ai/oidc": "^1.1.7",
     "@mdi/js": "^4.8.95",
     "@mdi/react": "^1.3.0",
     "axios": "^0.19.2",
