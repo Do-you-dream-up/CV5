@@ -1,7 +1,9 @@
 const Path = require('path');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
+const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
+
 module.exports = Merge.smart(common, {
   devServer: {
     compress: true,
@@ -23,6 +25,8 @@ module.exports = Merge.smart(common, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
+        OIDC_CLIENT_ID: JSON.stringify(configuration.oidc.clientIdPreprod),
+        OIDC_URL: JSON.stringify(configuration.oidc.preprodPorovider),
         PUBLIC_URL: JSON.stringify('./'),
         QUALIFICATION: true
        }

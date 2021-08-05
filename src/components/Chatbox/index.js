@@ -11,7 +11,7 @@ import { OnboardingContext, OnboardingProvider } from '../../contexts/Onboarding
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie } from '../../tools/storage';
+import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -56,7 +56,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const qualification = process.env.QUALIFICATION;
+  const qualification = window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE :  process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -98,14 +98,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: locale => Promise.all([dydu.setLocale(locale), i.changeLanguage(locale)]).then(
+        set: (locale, languages) => Promise.all([dydu.setLocale(locale, languages), i.changeLanguage(locale)]).then(
           ([locale]) => window.dydu.chat.reply(`${t('interaction.languageChange')} '${locale}'.`),
           response => window.dydu.chat.reply(response),
-          document.documentElement.lang = locale,
         ),
       };
-
-      document.documentElement.lang = window.dydu.localization.get();
 
       window.dydu.lorem = {
         split: () => window.dydu.chat.reply(LOREM_HTML_SPLIT),
@@ -137,15 +134,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window._dydu_lockTextField = window.dydu.ui.lock;
     }
 
+    if (window.dydu.localization.get() && !configuration.application.languages.includes(window.dydu.localization.get()))
+    window.dydu.localization.set(configuration.application.defaultLanguage[0], configuration.application.languages);
+
     if (configuration.spaces.items && configuration.spaces.items.length === 1)
       window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {quiet: true});
     setReady(true);
-  }, [addResponse, ask, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
+  }, [addResponse, ask, configuration.application.defaultLanguage, configuration.application.languages, configuration.spaces.items, empty, i, modal, ready, setDisabled, setLocked, setPlaceholder, setPrompt, setSecondary, t, toggle, toggleSecondary, gdprPassed]);
 
   useEffect(() => {
-    if (gdprPassed && !Cookie.get(Cookie.names.visitor)) {
+    if (gdprPassed && !Local.get(Local.names.visitor)) {
       dydu.welcomeCall({ qualification }).then(
-        () => Cookie.set(Cookie.names.visitor, undefined, Cookie.duration.long),
+        () => Local.set(Local.names.visitor, undefined),
         () => {}
       );
     }
@@ -161,6 +161,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       <div>
         <div className={classes.container}>
           <>
+            <Header dialogRef={dialogRef}
+                    gdprRef={gdprRef}
+                    extended={extended}
+                    minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
+                    onClose={onClose}
+                    onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
+                    onMinimize={onMinimize} />
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div tabIndex='0' className={c(
@@ -182,14 +189,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               </Onboarding>
             </GdprDisclaimer>
           </>
-          <Header dialogRef={dialogRef}
-                  gdprRef={gdprRef}
-                  extended={extended}
-                  minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
-                  onClose={onClose}
-                  onExpand={expandable ? value => toggle(value ? 3 : 2) : null}
-                  onMinimize={onMinimize}
-                  style={{ order: -1 }} />
           <Modal />
           {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
         </div>

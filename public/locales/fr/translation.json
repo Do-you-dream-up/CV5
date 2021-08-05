@@ -11,8 +11,8 @@
         }
     },
     "carousel": {
-        "next": "Précédent",
-        "previous": "Prochain"
+        "next": "Suivant",
+        "previous": "Précédent"
     },
     "close": {
         "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
@@ -133,15 +133,12 @@
         "actions": {
             "send": "Envoie",
             "record": {
+                "pause": "Pause",
+                "play": "Lire",
+                "replay": "Relire",
                 "start": "Début de l'enregistrement",
                 "stop": "Fin de l'enregistrement"
-              },
-              "media": {
-                "start": "Start",
-                "stop": "Stop",
-                "pause": "Pause"
               }
-          
           },
           "placeholder": "Ecrivez ici..."
     },

@@ -12,7 +12,7 @@
   },
   "banner": {
     "active": true,
-    "cookie": true,
+    "storage": true,
     "dismissable": true,
     "more": true,
     "moreIcon": "dydu-open-in-new-white.svg",
@@ -127,6 +127,10 @@
     "maxLength": 100
   },
   "interaction": {
+    "displayNameBot" : false,
+    "displayNameUser" : true,
+    "NameUser" : "Loris",
+    "NameBot" : "",
     "avatar": {
       "request": false,
       "response": true
@@ -149,13 +153,23 @@
     "maxWidth": "80%",
     "minWidth": "50%"
   },
+  "moreOptions": {
+    "exportConversation": true,
+    "printConversation": true,
+    "sendGdprData": true
+  },
+  "oidc": {
+    "enable": false,
+    "clientId": "",
+    "prodPorovider": "",
+    "preprodPorovider": "",
+    "scopes": [""]
+  },
   "onboarding": {
     "enable": false,
-    "imageLinks": [
-      "dydu-onboarding-1.svg",
-      "dydu-onboarding-2.svg",
-      "dydu-onboarding-3.svg"
-    ]
+    "image1": "dydu-onboarding-1.svg",
+    "image2": "dydu-onboarding-2.svg",
+    "image3": "dydu-onboarding-3.svg"
   },
   "pushrules": {
     "active": false
@@ -208,6 +222,7 @@
     "limit": 3
   },
   "tabs": {
+    "hasContactTab": false,
     "items": [
       {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
       {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}

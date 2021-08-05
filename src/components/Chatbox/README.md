@@ -4,7 +4,8 @@ This component implements the exposed API through `window`:
 - `window.dydu.chat.empty`: Empty the current conversation
 - `window.dydu.chat.reply`: Add a response to the conversation
 - `window.dydu.chat.set`: Set a context variable
-- `window.dydu.gdpr.prompt`: Prompt for GDPR actions
+- `window.dydu.gdpr.promptEmail('gdpr')`: Prompt for GDPR actions
+- `window.dydu.gdpr.promptEmail('exportConv')`: Prompt for converstion export
 - `window.dydu.localization.get`: Return the current locale
 - `window.dydu.localization.set`: Edit the locale
 - `window.dydu.lorem.split`: Display test content with split bubbles

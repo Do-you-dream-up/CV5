@@ -41,6 +41,10 @@ export default function Interaction({
   const [ ready, setReady ] = useState(false);
   const [ hasExternalLink, setHasExternalLink ] = useState(false);
   const hasAvatar = !!configuration.interaction.avatar[type];
+  const {displayNameBot : avatarDisplayBot} = configuration.interaction;
+  const {displayNameUser : avatarDisplayUser} = configuration.interaction;
+  const NameUser = configuration.interaction.NameUser;
+  const NameBot = configuration.interaction.NameBot;
   const { loader } = configuration.interaction;
   const [ left, right ] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
@@ -103,7 +107,7 @@ export default function Interaction({
               product['subtitle'] = el[`subtitle${i}`];
               product['title'] = el[`title${i}`];
               bubble.product = product;
-              if (!Object.values(bubble.product).every(param => param === null)) {
+              if (!Object.values(bubble.product).every(param => param === null || param === undefined)) {
                 list.push(JSON.stringify(bubble));
               }
             }
@@ -147,15 +151,18 @@ export default function Interaction({
     )}>
       {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
       <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        {type === 'request' && NameUser && !!avatarDisplayUser && <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{NameUser}</span>}
+        {type === 'response' && NameBot && !!avatarDisplayBot && <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{NameBot}</span>}
         {bubbles.length > 0 && React.createElement(
           carousel || carouselTemplate ? Carousel : 'div',
           {
             children: bubbles.map((it, index) => {
               const attributes = {
+                carousel: carousel,
                 component: scroll && !index ? Scroll : undefined,
                 history: history,
-                secondary: secondary,
-                step: steps ? steps[index] : undefined,
+                secondary: index === bubbles.length - 1 ? secondary : undefined,
+                step: steps ? steps.length === 1 ? undefined : steps[index] : undefined,
                 type: type,
                 [typeof it === 'string' ? 'html' : 'children']: it,
               };

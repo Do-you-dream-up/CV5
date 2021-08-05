@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { TabContext } from '../../contexts/TabContext';
+import { UserActionContext } from '../../contexts/UserActionContext';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
 
@@ -20,6 +21,7 @@ export default function Tabs() {
   const classes = useStyles({configuration, current, length: tabs.length});
   const { ready, t } = useTranslation('translation');
   const { title: hasTitle } = configuration.tabs;
+  const { tabbing } = useContext(UserActionContext) || false;
 
   useEffect(() => {
     if (current === 1)
@@ -31,8 +33,14 @@ export default function Tabs() {
       <div className={classes.indicator} />
       {tabs.map(({ icon, key }, index) => {
         const label = t(`tabs.${key}`);
+        const onKeyDown = (event) => {
+          if (event.keyCode === 32 || event.keyCode === 13) {
+            event.preventDefault();
+            select(key)();
+          }
+        };
         return (
-          <div className={c('dydu-tab', classes.tab)} key={index} onClick={select(key)} title={label} role='navigation'>
+          <div className={c('dydu-tab', classes.tab, {[classes.hideOutline]: !tabbing})} key={index} onClick={select(key)} title={label} tabIndex='0' onKeyDown={onKeyDown}  role='navigation'>
             <div className={c('dydu-tab-label', classes.label, {[classes.selected]: current === index})}>
               {!!icon && <img alt={label} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
               {!!hasTitle && (

@@ -2,12 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from './ConfigurationContext';
 
-
 export const TabContext = React.createContext();
 export function TabProvider({ children }) {
-
   const { configuration } = useContext(ConfigurationContext);
-  const { items, selected = 0 } = configuration.tabs;
+  const { hasContactTab, items, selected = 0 } = configuration.tabs;
   const [ current, setCurrent ] = useState();
   const [ tabs, setTabs ] = useState();
 
@@ -20,10 +18,13 @@ export function TabProvider({ children }) {
   const should = value => find(value) === current;
 
   useEffect(() => {
-    if (Array.isArray(items)) {
-      setTabs(items.filter(it => it.key));
+    if (hasContactTab) {
+      setTabs(items);
     }
-  }, [items]);
+    else {
+      setTabs(items.filter(item => item.key === 'dialog'));
+    }
+  }, [hasContactTab, items]);
 
   useEffect(() => {
     if (Array.isArray(tabs)) {
@@ -38,7 +39,6 @@ export function TabProvider({ children }) {
     tabs,
   }} />;
 }
-
 
 TabProvider.propTypes = {
   children: PropTypes.object,

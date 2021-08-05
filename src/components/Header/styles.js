@@ -60,10 +60,11 @@ export default createUseStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0
     },
+    zIndex: 1,
   }),
   title: () => ({
     minWidth: '6.7em',
     padding: '.5em 0',
-    width: '6.5em',
+    width: '7.5em',
   }),
 }));
