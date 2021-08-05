@@ -1,7 +1,7 @@
 {
   "application": {
     "open": 1,
-    "languages": ["en", "fr"],
+    "languages": ["fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false, 
     "cdn":"",
