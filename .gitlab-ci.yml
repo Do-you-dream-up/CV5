@@ -11,7 +11,7 @@ preprod:
   variables:
     ANSIBLE_STDOUT_CALLBACK: yaml
   before_script:
-    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - echo "//https://nexus.doyoudreamup.com/repository/npm-private/:_authToken=${NPM_TOKEN}" >> .npmrc
     - npm install
     - npm run buildPreprod
   script:
@@ -33,7 +33,7 @@ prod:
     ANSIBLE_STDOUT_CALLBACK: yaml
   when: manual
   before_script:
-    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - echo "//https://nexus.doyoudreamup.com/repository/npm-private/:_authToken=${NPM_TOKEN}" >> .npmrc
     - npm install
     - npm run buildProd
   script:
@@ -54,7 +54,7 @@ dydubox:
   tags: 
     - chatbot
   script:
-    - echo "//https://nexus.doyoudreamup.com/repository/npm-private/:_authToken=${NEXUS_NPM_TOKEN}"
+    - echo "//https://nexus.doyoudreamup.com/repository/npm-private/:_authToken=${NEXUS_NPM_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
     - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
     - npm run buildCi
