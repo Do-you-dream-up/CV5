@@ -54,7 +54,7 @@ dydubox:
   tags: 
     - chatbot
   script:
-    - echo "//https://nexus.doyoudreamup.com/repository/npm-private/:_authToken=${NEXUS_NPM_TOKEN}" >> .npmrc
+    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_authToken=${GITLAB_RUNNER_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
     - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
     - npm run buildCi
