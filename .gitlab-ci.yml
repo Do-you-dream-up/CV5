@@ -26,7 +26,6 @@ preprod:
     refs:
       - development
       - /project\/.*/
-      - /test.*/
 
 prod:
   stage: prod
