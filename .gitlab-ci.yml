@@ -5,6 +5,7 @@ stages:
   - preprod
   - prod
   - push
+  - replace
 
 variables:
   STORE_PATH: https://nexus.doyoudreamup.com/repository/front_artefacts/chatbot/bliss
@@ -107,7 +108,7 @@ push_base:preprod:
     BUILD_TARGET: preprod
 
 dydubox:
-  stage: build
+  stage: replace
   image: alpine
   script:
     - apk add curl zip
