@@ -77,6 +77,9 @@ build_base:prod:
       - .npm
   only:
     - tags
+  except:
+    variables:
+      - $DYDUBOX_TRIGGER == "true"
   artifacts:
     expire_in: 1h
     paths:
@@ -100,6 +103,9 @@ push_base:prod:
     BUILD_TARGET: prod
   only:
     - tags
+  except:
+    variables:
+      - $DYDUBOX_TRIGGER == "true"
 
 push_base:preprod:
   extends:
