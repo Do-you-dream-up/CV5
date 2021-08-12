@@ -129,8 +129,8 @@
   },
   "interaction": {
     "displayNameBot" : false,
-    "displayNameUser" : true,
-    "NameUser" : "Loris",
+    "displayNameUser" : false,
+    "NameUser" : "",
     "NameBot" : "",
     "avatar": {
       "request": false,
