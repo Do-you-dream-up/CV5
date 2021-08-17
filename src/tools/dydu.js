@@ -7,6 +7,7 @@ import bot from '../../public/override/bot';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(
   window.navigator.userAgent
@@ -18,7 +19,7 @@ const { browser, os } = Bowser.getParser(
  */
 const BOT = Object.assign(
   {},
-  bot,
+  channelsBot ? channelsBot : bot,
   (({ backUpServer, bot: id, server }) => ({
     ...(id && { id }),
     ...(server && { server }),
