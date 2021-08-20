@@ -36,7 +36,7 @@ const ASSISTANT = 'ASSISTANT';
  * Prefix the API and add generic headers.
  */
 const API = axios.create({
-  baseURL: `${BOT.server}/servlet/api/`,
+  baseURL: BOT.server.startsWith('dev.dydu') ? `http://${BOT.server}/servlet/api/` : `https://${BOT.server}/servlet/api/`,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
