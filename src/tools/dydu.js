@@ -33,10 +33,15 @@ const BOT = Object.assign(
 const ASSISTANT = 'ASSISTANT';
 
 /**
+ * Use different protocols based on local server or not
+ */
+const protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
+
+/**
  * Prefix the API and add generic headers.
  */
 const API = axios.create({
-  baseURL: BOT.server.startsWith('dev.dydu') ? `http://${BOT.server}/servlet/api/` : `https://${BOT.server}/servlet/api/`,
+  baseURL: `${protocol}://${BOT.server}/servlet/api/`,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
