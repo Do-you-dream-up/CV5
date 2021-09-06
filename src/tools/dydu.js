@@ -14,7 +14,7 @@ const { browser, os } = Bowser.getParser(
 
 /**
  * - Wait for the bot ID and the API server then create default API based on the server.
- * - Use BOT from local storage when for the chatbox preview in Channels
+ * - Use BOT from local storage for the chatbox preview in Channels
  * - Protocol http is used when bliss is used in local with Channels
  */
 
