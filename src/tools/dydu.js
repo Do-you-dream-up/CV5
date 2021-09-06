@@ -38,10 +38,6 @@ let BOT, protocol, API;
  */
 const ASSISTANT = 'ASSISTANT';
 
-/**
- * Prefix the API and add generic headers.
- */
-
 const variables = {};
 
 /**
