@@ -3,7 +3,6 @@ import Bowser from 'bowser';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-import bot from '../../public/override/bot';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
@@ -14,18 +13,25 @@ const { browser, os } = Bowser.getParser(
 ).parsedResult;
 
 /**
- * Read the bot ID and the API server from URL parameters when found. Default to
- * the bot configuration.
+ * - Wait for the bot ID and the API server then create default API based on the server.
+ * - Use BOT from local storage when for the chatbox preview in Channels
+ * - Protocol http is used when bliss is used in local with Channels
  */
-const BOT = Object.assign(
-  {},
-  channelsBot ? channelsBot : bot,
-  (({ backUpServer, bot: id, server }) => ({
-    ...(id && { id }),
-    ...(server && { server }),
-    ...(backUpServer && { backUpServer }),
-  }))(qs.parse(window.location.search, { ignoreQueryPrefix: true }))
-);
+
+let BOT, protocol, API;
+
+(async function getBotInfo() {
+  const response = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+  BOT = channelsBot ? channelsBot : response.data;
+  protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
+  API = axios.create({
+    baseURL: `${protocol}://${BOT.server}/servlet/api/`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    },
+  });
+})();
 
 /**
  * Solution type
@@ -33,20 +39,8 @@ const BOT = Object.assign(
 const ASSISTANT = 'ASSISTANT';
 
 /**
- * Use different protocols based on local server or not
- */
-const protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
-
-/**
  * Prefix the API and add generic headers.
  */
-const API = axios.create({
-  baseURL: `${protocol}://${BOT.server}/servlet/api/`,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-  },
-});
 
 const variables = {};
 
