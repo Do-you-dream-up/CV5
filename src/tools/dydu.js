@@ -22,7 +22,15 @@ let BOT, protocol, API;
 
 (async function getBotInfo() {
   const response = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
-  BOT = channelsBot ? channelsBot : response.data;
+  BOT = Object.assign(
+    {},
+    channelsBot ? channelsBot : response.data,
+    (({ backUpServer, bot: id, server }) => ({
+      ...(id && { id }),
+      ...(server && { server }),
+      ...(backUpServer && { backUpServer }),
+    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true }))
+  );
   protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
   API = axios.create({
     baseURL: `${protocol}://${BOT.server}/servlet/api/`,
