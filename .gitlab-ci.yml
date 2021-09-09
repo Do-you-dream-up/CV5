@@ -4,15 +4,20 @@ stages:
   - build
   - preprod
   - prod
+  - push
+  - replace
+
+variables:
+  STORE_PATH: https://nexus.doyoudreamup.com/repository/front_artefacts/chatbot/bliss
+  KEY_TO_REPLACE: "<<<ASSET_FULL_URL_TO_REPLACE>>>"
 
 preprod:
   stage: preprod
   image: node:lts-alpine3.14
-  variables:
-    ANSIBLE_STDOUT_CALLBACK: yaml
   before_script:
-    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-    - npm install
+    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
+    - cat .npmrc
+    - npm ci --cache .npm --prefer-offline
     - npm run buildPreprod
   script:
     - apk update
@@ -29,12 +34,10 @@ preprod:
 prod:
   stage: prod
   image: node:lts-alpine3.14
-  variables:
-    ANSIBLE_STDOUT_CALLBACK: yaml
   when: manual
   before_script:
-    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-    - npm install
+    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
+    - npm ci --cache .npm --prefer-offline
     - npm run buildProd
   script:
     - apk update
@@ -48,16 +51,80 @@ prod:
       - development
       - /project\/.*/
 
-dydubox:
+build_base:prod:
   stage: build
   image: node:lts-alpine3.14
-  tags: 
+  tags:
     - chatbot
   script:
-    - npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
-    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
+    - export ASSET_FULL_URL="${KEY_TO_REPLACE}"
     - npm run buildCi
+    - |
+      cat > build/metadata.txt << EOF
+      DATE=$(date +"%y%m%d_%H%M")
+      BUILD_TARGET=$BUILD_TARGET
+      JOB_ID=$CI_JOB_ID
+      CHATBOX_GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+      CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
+      EOF
+  variables:
+    BUILD_TARGET: prod
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm
+  only:
+    - tags
+  except:
+    variables:
+      - $DYDUBOX_TRIGGER == "true"
+  artifacts:
+    expire_in: 1h
+    paths:
+      - build/**
+
+build_base:preprod:
+  extends:
+    - build_base:prod
+  variables:
+    BUILD_TARGET: preprod
+
+push_base:prod:
+  image: alpine
+  stage: push
+  script:
+    - apk add curl zip
+    - ZIP_FILE="base_${BUILD_TARGET}_${CI_COMMIT_REF_NAME}.zip"
+    - zip -r $ZIP_FILE build
+    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
+  variables:
+    BUILD_TARGET: prod
+  only:
+    - tags
+  except:
+    variables:
+      - $DYDUBOX_TRIGGER == "true"
+
+push_base:preprod:
+  extends:
+    - push_base:prod
+  variables:
+    BUILD_TARGET: preprod
+
+dydubox:
+  stage: replace
+  image: alpine
+  script:
+    - apk add curl zip
+    - ZIP_FILE="base_${BUILD_TARGET}_${CI_COMMIT_REF_NAME}.zip"
+    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
+    - echo "Public path url $ASSET_FULL_URL"
+    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --output "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
+    - unzip $ZIP_FILE
+    - ls -la
+    - find build/ -type f -print0 | xargs -0 sed -i "s@$KEY_TO_REPLACE@$ASSET_FULL_URL@g"
     - |
       cat > build/metadata.txt << EOF
       DATE=$(date +"%y%m%d_%H%M")
@@ -70,17 +137,13 @@ dydubox:
       CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
       ASSET_FULL_URL=$ASSET_FULL_URL
       EOF
-    - echo "Built with public path url $ASSET_FULL_URL"
     - mv build $CONFIGURATION_UUID
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .npm
   only:
-    variables: 
+    variables:
       - $DYDUBOX_TRIGGER == "true" && $CONFIGURATION_UUID && $BOT_UUID && $BUILD_TARGET && $CDN_PUBLIC_URL
   artifacts:
     expire_in: 1h
     paths:
       - $CONFIGURATION_UUID/**
+
 ...

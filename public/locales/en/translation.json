@@ -89,7 +89,9 @@
             "es": "Español",
             "de": "Deutsch",
             "it": "Italiano",
-            "pt": "Português"
+            "pt": "Português",
+            "pl": "Polski",
+            "ro": "Română"
         },
         "translate": "Languages"
     },

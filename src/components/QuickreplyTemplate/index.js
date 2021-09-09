@@ -10,9 +10,7 @@ const classes = useStyles();
 
     return (
       <div className={c('dydu-quickreply-template', classes.quick)}>
-        { !!text && <div className={c('dydu-quickreply-template-content', classes.text)}>
-            { text }
-          </div>
+        { !!text && <div className={c('dydu-quickreply-template-content', classes.text)} dangerouslySetInnerHTML={{__html: text}} />
         }
         { Object.keys(quick).sort().map((el, index) => {
           return (quick[el] && <div className={c('dydu-quickreply-template-buttons', classes.buttons)} key={index} dangerouslySetInnerHTML={{__html: quick[el]}} />);
