@@ -4,13 +4,13 @@
 * Installation
 
 Copy the bot configuration sample files 
-Fill both the =id= and the =server= keys with a bot of your choice in src/bot.json.
+Fill both the =id= and the =server= keys with a bot of your choice in public/override/bot.json.
 
 #+BEGIN_SRC sh
-cp src/bot.json.sample src/bot.json
-cp public/override/configuration.json.sample public/override/configuration.json
-cp public/override/style.css.sample public/override/style.css
-cp public/override/theme.json.sample public/override/theme.json
+cp public/override/bot.json.sample => public/override/bot.json
+cp public/override/configuration.json.sample => public/override/configuration.json
+cp public/override/style.css.sample => public/override/style.css
+cp public/override/theme.json.sample => public/override/theme.json
 #+END_SRC
 
 A token is needed to install some dependencies like voice-module, ask for it.
@@ -48,8 +48,8 @@ Namespace branches according to their content. Use kebab-case to name branches.
 - =style=    :: Syntax cleanup
 - =test=     :: Tests
 
-Do not push directly to =:master=, use feature branches and merge them into
-=:master= instead.
+Do not push directly to =:master= or =:development=,
+Use feature branches and merge them into =:development= instead.
 
 ** Commit Changes
 
@@ -61,53 +61,51 @@ errors or a malformed commit message.
 
 Use English in your commit messages.
 
-Good etiquette about committing in a shared environment:
-[[https://chris.beams.io/posts/git-commit/]]. Here is the gist of it:
+Rules about committing:
+Start with a verb (fix, refacto, feat etc), then main, then number of ticket, then describe what your are doing in a short message.
+example: fix(main): #RDA-9999 fix component
 
-- [[https://chris.beams.io/posts/git-commit/#separate][Separate subject from body with a blank line]]
-- [[https://chris.beams.io/posts/git-commit/#limit-50][Limit the subject line to 50 characters]]
-- [[https://chris.beams.io/posts/git-commit/#capitalize][Capitalize the subject line]]
-- [[https://chris.beams.io/posts/git-commit/#end][Do not end the subject line with a period]]
-- [[https://chris.beams.io/posts/git-commit/#imperative][Use the imperative mood in the subject line]]
-- [[https://chris.beams.io/posts/git-commit/#wrap-72][Wrap the body at 72 characters]]
-- [[https://chris.beams.io/posts/git-commit/#why-not-how][Use the body to explain what and why vs. how]]
 
 ** Pushing Changes
 
-1. Pull =:master= into a new branch with the corresponding prefix eg. =:namespace/123/your-feature=
+1. Pull =:development= into a new branch with the corresponding prefix eg. =:namespace/123/your-feature=
 1. Push your code to your branch
-1. Pull =:master= in your branch again
+1. Pull =:development= in your branch again
 1. Wait for the merge :-)
 
 Repeat steps 3 and 4 as often as necessary. Having your feature branches up to
-date with =:master= is paramount.
+date with =:development= is paramount.
 
 ** Deploying to Production
 
 /This is the current workflow. Subject to change later./
 
-To deploy to the =:production= branch, merge from =:master= only.
+To deploy to the =:master= branch, merge from =:development= only.
 
-First, merge the feature branches into =:master=.
+First, merge the feature branches into =:development=.
 
 1. Checkout the feature branch
 1. Review the changes
-1. Checkout =:master=
+1. Checkout =:development=
 1. Pull to ensure your local copy of the branch is up to date
 1. Merge the feature branch
 1. Bump the version: =npm version patch|minor=
 1. Push the changes
 1. git push origin <version>
 
-Then merge into =:production=.
+Then merge into =:master=.
 
-1. Checkout =:production=
+1. Checkout =:master=
 1. Pull to ensure your local copy of the branch is up to date
-1. Merge =:master=
+1. Merge =:development= without merging the files in override folder
 1. Push the changes
 
 ** Deploying to CDN
-1. Checkout the feature branch
-1. Check cnd and directory in public/override/configuration.json
-1. Run npm run build
-1. Copy build folder in CDN
+1. There is automatic deployment of development branch on https://cdn.doyoudreamup.com/ in preprod when new changes are pushed to development branch.
+1. Development branch in preprod: https://cdn.doyoudreamup.com/development/preprod/index.html
+1. Development branch in prod: https://cdn.doyoudreamup.com/development/prod/index.html
+
+** Project branches
+1. For new client projects, create a new branch named project/name_of_project from development branch.
+2. Complete the configuration in the override folder files.
+3. Push your changes in your branch.
