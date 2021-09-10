@@ -101,9 +101,9 @@ Then merge into =:master=.
 1. Push the changes
 
 ** Deploying to CDN
-There is automatic deployment of development branch on https://cdn.doyoudreamup.com/ in preprod when new changes are pushed to development branch.
-Development branch in preprod: https://cdn.doyoudreamup.com/development/preprod/index.html
-Development branch in prod: https://cdn.doyoudreamup.com/development/prod/index.html
+1. There is automatic deployment of development branch on https://cdn.doyoudreamup.com/ in preprod when new changes are pushed to development branch.
+1. Development branch in preprod: https://cdn.doyoudreamup.com/development/preprod/index.html
+1. Development branch in prod: https://cdn.doyoudreamup.com/development/prod/index.html
 
 ** Project branches
 1. For new client projects, create a new branch named project/name_of_project from development branch.
