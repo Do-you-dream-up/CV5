@@ -18,6 +18,11 @@ A token is needed to install some dependencies like voice-module, ask for it.
 export NPM_TOKEN=XXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 #+END_SRC
 
+Run this command to login to Nexus to use private dydu libs. Ask for your Nexus id and password.
+#+BEGIN_SRC sh
+npm login --registry https://nexus.doyoudreamup.com/repository/npm-private/
+#+END_SRC
+
 The below instructions assume you have a working setup with latest =npm=.
 
 #+BEGIN_SRC sh
