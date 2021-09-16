@@ -5,6 +5,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import dydu from '../../tools/dydu';
+import { Local } from '../../tools/storage';
 import PrettyHtml from  '../PrettyHtml';
 import useStyles from './styles';
 
@@ -21,8 +22,9 @@ export default function Top({ className, component, ...rest }) {
   const { size } = configuration.top;
   const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles();
+  const teaserMode = Local.get(Local.names.open) === 1;
 
-  const fetch = useCallback(() => !!size && dydu.top(size).then(({ knowledgeArticles }) => {
+  const fetch = useCallback(() => !teaserMode && !!size && dydu.top(size).then(({ knowledgeArticles }) => {
     try {
       const top = JSON.parse(knowledgeArticles);
       setItems(Array.isArray(top) ? top : [top]);
@@ -33,7 +35,7 @@ export default function Top({ className, component, ...rest }) {
     finally {
       setReady(true);
     }
-  }), [size]);
+  }), [size, teaserMode]);
 
   const onAskHandler = (reword) => {
     event('topClicked', reword);
