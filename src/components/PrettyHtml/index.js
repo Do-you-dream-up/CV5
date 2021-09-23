@@ -20,7 +20,7 @@ export default function PrettyHtml({ children, className, component, hasExternal
   const { t } = useTranslation('translation');
 
   const RE_ONCLICK = /onclick=".+?"/gm;
-  const RE_REWORD = /class="reword"/gm;
+  const RE_REWORD = /class="reword/gm;
   const RE_HREF = /(<a href([^>]+)>)/g;
   const RE_HREF_EMPTY = /href="#"/g;
 
