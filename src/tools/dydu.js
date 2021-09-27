@@ -12,6 +12,9 @@ const { browser, os } = Bowser.getParser(
   window.navigator.userAgent
 ).parsedResult;
 
+const getUrl = window.location;
+const baseUrl = `${getUrl.protocol}//${getUrl.host}/${getUrl.pathname.split('/')[1]}`;
+
 /**
  * - Wait for the bot ID and the API server then create default API based on the server.
  * - Use BOT from local storage for the chatbox preview in Channels
@@ -436,6 +439,7 @@ export default new (class Dydu {
         ? Cookie.get('dydu-oauth-token').id_token
         : null,
       userInput: text,
+      userUrl: baseUrl,
       ...(options.extra && { extraParameters: options.extra }),
       variables,
     });
