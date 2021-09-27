@@ -6,9 +6,13 @@ export default createUseStyles({
     '& > :not(:last-child)': {
       marginRight: '.5em',
     },
+    margin: '.7em',
     marginTop: '1em',
   },
   root: {
-    margin: '.7em'
+    '& > .dydu-gdpr-disclaimer-body': {
+      margin: '.7em'
+    },
+    overflow: 'auto',
   },
 });
