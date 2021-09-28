@@ -13,7 +13,7 @@ const { browser, os } = Bowser.getParser(
 ).parsedResult;
 
 const getUrl = window.location;
-const baseUrl = `${getUrl.protocol}//${getUrl.host}/${getUrl.pathname.split('/')[1]}`;
+const baseUrl = `${getUrl.protocol}//${getUrl.host}/${getUrl.pathname.split('/')}`;
 
 /**
  * - Wait for the bot ID and the API server then create default API based on the server.
