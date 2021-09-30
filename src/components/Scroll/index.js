@@ -17,7 +17,7 @@ function Scroll({ component, delay, ...rest }) {
 
   const scroll = () => {
     setTimeout(() => {
-      elementRef.current.scrollIntoView({behavior: 'smooth'});
+      elementRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
     }, delay);
   };
 
