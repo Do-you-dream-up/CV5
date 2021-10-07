@@ -85,10 +85,12 @@
         },
         "rosetta": {
             "en": "English",
+            "fi": "suomi",
             "fr": "Français",
             "es": "Español",
             "de": "Deutsch",
             "it": "Italiano",
+            "nl": "Dutch",
             "pt": "Português",
             "pl": "Polski",
             "ro": "Română"
