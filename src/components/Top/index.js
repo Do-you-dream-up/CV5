@@ -59,7 +59,10 @@ export default function Top({ className, component, ...rest }) {
       <PrettyHtml>
         <ol>
           {items.map(({ reword }, index) => {
-            const onAsk = () => onAskHandler(reword);
+            const onAsk = (event) => {
+              onAskHandler(reword);
+              event.stopPropagation();
+            };
             return (
               <li key={index}>
                 <a href='#' className={c('dydu-top-items', {[classes.hideOutline]: !tabbing})} children={reword} onClick={onAsk} tabIndex='0' />
