@@ -457,6 +457,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       language: this.getLocale(),
       maxKnowledge: size,
+      space: this.getSpace(),
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
