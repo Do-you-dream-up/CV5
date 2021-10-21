@@ -3,7 +3,9 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "publicPath": "./"
+    "getDefaultLanguageFromSite": false, 
+    "cdn":"",
+    "directory":""
   },
   "avatar": {
     "background": false,
@@ -11,7 +13,7 @@
     "response": "dydu-logo.svg"
   },
   "banner": {
-    "active": true,
+    "active": false,
     "storage": true,
     "dismissable": true,
     "more": true,
@@ -89,8 +91,8 @@
   "header": {
     "actions": {
       "close": false,
-      "expand": false,
-      "fontChange": true,
+      "expand": true,
+      "fontChange": false,
       "minimize": true,
       "more": false,
       "tests": false
@@ -112,12 +114,11 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true,
+      "image": true, 
       "imageLink": {
-        "default": "dydu-logo.svg",
-        "misunderstood": "dydu-misunderstood-white.svg",
-        "reword": "dydu-reword-white.svg",
-        "understood": "dydu-understood-white.svg"
+        "misunderstood": "dydu-misunderstood.svg",
+        "reword": "dydu-reword.svg",
+        "understood": "dydu-understood.svg"
       } 
     }
   },
@@ -128,8 +129,8 @@
   },
   "interaction": {
     "displayNameBot" : false,
-    "displayNameUser" : true,
-    "NameUser" : "Loris",
+    "displayNameUser" : false,
+    "NameUser" : "",
     "NameBot" : "",
     "avatar": {
       "request": false,
@@ -154,13 +155,14 @@
     "minWidth": "50%"
   },
   "moreOptions": {
-    "exportConversation": true,
-    "printConversation": true,
+    "exportConversation": false,
+    "printConversation": false,
     "sendGdprData": true
   },
   "oidc": {
     "enable": false,
-    "clientId": "",
+    "clientIdProd": "",
+    "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
     "scopes": [""]
@@ -172,7 +174,7 @@
     "image3": "dydu-onboarding-3.svg"
   },
   "pushrules": {
-    "active": false
+    "active": true
   },
   "root": "dydu-root",
   "secondary": {
@@ -219,7 +221,7 @@
     "items": ["default"]
   },
   "suggestions": {
-    "limit": 3
+    "limit": 0
   },
   "tabs": {
     "hasContactTab": false,
@@ -244,6 +246,7 @@
     "readmore": 100
   },
   "top": {
+    "period": "Last30Days",
     "size": 3
   },
   "Voice": {
