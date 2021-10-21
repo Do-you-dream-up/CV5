@@ -116,10 +116,9 @@
       "title": true,
       "image": true, 
       "imageLink": {
-        "default": "dydu-logo.svg",
-        "misunderstood": "dydu-misunderstood-white.svg",
-        "reword": "dydu-reword-white.svg",
-        "understood": "dydu-understood-white.svg"
+        "misunderstood": "dydu-misunderstood.svg",
+        "reword": "dydu-reword.svg",
+        "understood": "dydu-understood.svg"
       } 
     }
   },
@@ -129,9 +128,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "avatarName" : false,
-    "avatarNameUser" : "",
-    "avatarNameBot" : "",
+    "displayNameBot" : false,
+    "displayNameUser" : false,
+    "NameUser" : "",
+    "NameBot" : "",
     "avatar": {
       "request": false,
       "response": true
@@ -157,11 +157,12 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": false
+    "sendGdprData": true
   },
   "oidc": {
     "enable": false,
-    "clientId": "",
+    "clientIdProd": "",
+    "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
     "scopes": [""]
@@ -245,6 +246,7 @@
     "readmore": 100
   },
   "top": {
+    "period": "Last30Days",
     "size": 3
   },
   "Voice": {

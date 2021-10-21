@@ -453,10 +453,11 @@ export default new (class Dydu {
    * @param {number} [size] - Maximum number of topics to retrieve.
    * @returns {Promise}
    */
-  top = (size) => {
+  top = (period, size) => {
     const data = qs.stringify({
       language: this.getLocale(),
       maxKnowledge: size,
+      period: period,
       space: this.getSpace(),
     });
     const path = `chat/topknowledge/${BOT.id}/`;

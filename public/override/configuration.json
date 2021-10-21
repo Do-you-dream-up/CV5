@@ -246,6 +246,7 @@
     "readmore": 100
   },
   "top": {
+    "period": "Last30Days",
     "size": 3
   },
   "Voice": {

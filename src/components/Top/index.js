@@ -19,12 +19,12 @@ export default function Top({ className, component, ...rest }) {
   const event = useContext(EventsContext).onEvent('top');
   const [ items, setItems ] = useState([]);
   const [ ready, setReady ] = useState(false);
-  const { size } = configuration.top;
+  const { period, size } = configuration.top;
   const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles();
   const teaserMode = Local.get(Local.names.open) === 1;
 
-  const fetch = useCallback(() => !teaserMode && !!size && dydu.top(size).then(({ knowledgeArticles }) => {
+  const fetch = useCallback(() => !teaserMode && !!size && dydu.top(period, size).then(({ knowledgeArticles }) => {
     try {
       const top = JSON.parse(knowledgeArticles);
       setItems(Array.isArray(top) ? top : [top]);
@@ -35,7 +35,7 @@ export default function Top({ className, component, ...rest }) {
     finally {
       setReady(true);
     }
-  }), [size, teaserMode]);
+  }), [period, size, teaserMode]);
 
   const onAskHandler = (reword) => {
     event('topClicked', reword);
