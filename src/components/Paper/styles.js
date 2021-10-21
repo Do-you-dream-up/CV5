@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   header: () => ({
     borderBottomColor: theme.palette.divider,
     borderBottomStyle: 'solid',

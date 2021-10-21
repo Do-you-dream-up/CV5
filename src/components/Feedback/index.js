@@ -7,10 +7,9 @@ import dydu from '../../tools/dydu';
 import Bubble from '../Bubble';
 import Button from '../Button';
 import FeedbackChoices from '../FeedbackChoices';
-import Form from  '../Form';
+import Form from '../Form';
 import Scroll from '../Scroll';
 import useStyles from './styles';
-
 
 /**
  * Render interfaces for the user to submit feedback.
@@ -22,13 +21,12 @@ import useStyles from './styles';
  * 1. Comment
  */
 export default function Feedback() {
-
   const { configuration } = useContext(ConfigurationContext);
   const { addResponse } = useContext(DialogContext);
-  const [ showChoices, setShowChoices ] = useState(false);
-  const [ showComment, setShowComment ] = useState(false);
-  const [ showVote, setShowVote ] = useState(true);
-  const [ thinking, setThinking ] = useState(false);
+  const [showChoices, setShowChoices] = useState(false);
+  const [showComment, setShowComment] = useState(false);
+  const [showVote, setShowVote] = useState(true);
+  const [thinking, setThinking] = useState(false);
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const { active, askChoices, askComment } = configuration.feedback;
@@ -42,17 +40,19 @@ export default function Feedback() {
     const value = comment ? comment.trim() : '';
     if (value.length) {
       setThinking(true);
-      dydu.feedbackComment(value).then(() => setTimeout(() => {
-        setShowComment(false);
-        setThinking(false);
-        if (commentThanks) {
-          addResponse({text: commentThanks});
-        }
-      }, 1000));
+      dydu.feedbackComment(value).then(() =>
+        setTimeout(() => {
+          setShowComment(false);
+          setThinking(false);
+          if (commentThanks) {
+            addResponse({ text: commentThanks });
+          }
+        }, 1000),
+      );
     }
   };
 
-  const onKeyDown = event => {
+  const onKeyDown = (event) => {
     if (event.keyCode === 13 && !event.defaultPrevented) {
       event.preventDefault();
       onComment();
@@ -64,12 +64,10 @@ export default function Feedback() {
       setShowVote(false);
       if (askChoices) {
         setShowChoices(true);
-      }
-      else if (askComment) {
+      } else if (askComment) {
         setShowComment(true);
-      }
-      else if (voteThanks) {
-        addResponse({text: voteThanks});
+      } else if (voteThanks) {
+        addResponse({ text: voteThanks });
       }
     });
   };
@@ -78,23 +76,24 @@ export default function Feedback() {
     dydu.feedback(true).then(() => {
       setShowVote(false);
       if (voteThanks) {
-        addResponse({text: voteThanks});
+        addResponse({ text: voteThanks });
       }
     });
   };
 
-  const onChoicesSelect = value => {
+  const onChoicesSelect = (value) => {
     setThinking(true);
-    dydu.feedbackInsatisfaction(value).then(() => setTimeout(() => {
-      setShowChoices(false);
-      if (askComment) {
-        setShowComment(true);
-      }
-      else if (voteThanks) {
-        addResponse({text: voteThanks});
-      }
-      setThinking(false);
-    }, 1000));
+    dydu.feedbackInsatisfaction(value).then(() =>
+      setTimeout(() => {
+        setShowChoices(false);
+        if (askComment) {
+          setShowComment(true);
+        } else if (voteThanks) {
+          addResponse({ text: voteThanks });
+        }
+        setThinking(false);
+      }, 1000),
+    );
   };
 
   const onDismiss = () => {
@@ -102,46 +101,80 @@ export default function Feedback() {
     setThinking(false);
   };
 
-  return active && (showChoices || showComment || showVote) && (
-    <div className="dydu-feedback">
-      {showVote && (
-        <div className={c('dydu-feedback-vote', classes.vote)}>
-          <Button color="error" onClick={onVoteNegative} variant="icon">
-            <img alt={voteNegative} src={`${process.env.PUBLIC_URL}icons/dydu-thumb-down-white.svg`} title={voteNegative} />
-          </Button>
-          <Button color="success" onClick={onVotePositive} variant="icon">
-            <img alt={votePositive} src={`${process.env.PUBLIC_URL}icons/dydu-thumb-up-white.svg`} title={votePositive} />
-          </Button>
-        </div>
-      )}
-      {showChoices && (
-        <Bubble component={Scroll} thinking={thinking} type="response">
-          <FeedbackChoices onSelect={onChoicesSelect} />
-        </Bubble>
-      )}
-      {showComment && (
-        <Bubble component={Scroll} type="response">
-          <Form className="dydu-feedback-comment" data={{comment: ''}} onResolve={onComment} onDismiss={onDismiss} thinking={thinking}>
-            {({ data, onChange }) => (
-              <>
-                {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
-                <div className={c('dydu-feedback-comment-field', classes.commentField)}>
-                  <textarea autoFocus
-                            className={c(classes.commentFieldText, {[classes.thinking]: thinking})}
-                            disabled={thinking}
-                            maxLength={100}
-                            name="comment"
-                            onChange={onChange}
-                            onKeyDown={onKeyDown}
-                            placeholder={t('feedback.comment.placeholder')}
-                            value={data.comment} />
-                  <div children={data.comment} className={classes.commentFieldShadow} />
-                </div>
-              </>
-            )}
-          </Form>
-        </Bubble>
-      )}
-    </div>
+  return (
+    active &&
+    (showChoices || showComment || showVote) && (
+      <div className="dydu-feedback">
+        {showVote && (
+          <div className={c('dydu-feedback-vote', classes.vote)}>
+            <Button color="error" onClick={onVoteNegative} variant="icon">
+              <img
+                alt={voteNegative}
+                src={`${process.env.PUBLIC_URL}icons/dydu-thumb-down-white.svg`}
+                title={voteNegative}
+              />
+            </Button>
+            <Button color="success" onClick={onVotePositive} variant="icon">
+              <img
+                alt={votePositive}
+                src={`${process.env.PUBLIC_URL}icons/dydu-thumb-up-white.svg`}
+                title={votePositive}
+              />
+            </Button>
+          </div>
+        )}
+        {showChoices && (
+          <Bubble component={Scroll} thinking={thinking} type="response">
+            <FeedbackChoices onSelect={onChoicesSelect} />
+          </Bubble>
+        )}
+        {showComment && (
+          <Bubble component={Scroll} type="response">
+            <Form
+              className="dydu-feedback-comment"
+              data={{ comment: '' }}
+              onResolve={onComment}
+              onDismiss={onDismiss}
+              thinking={thinking}
+            >
+              {({ data, onChange }) => (
+                <>
+                  {commentHelp && (
+                    <p
+                      children={commentHelp}
+                      className="dydu-feedback-comment-help"
+                    />
+                  )}
+                  <div
+                    className={c(
+                      'dydu-feedback-comment-field',
+                      classes.commentField,
+                    )}
+                  >
+                    <textarea
+                      autoFocus
+                      className={c(classes.commentFieldText, {
+                        [classes.thinking]: thinking,
+                      })}
+                      disabled={thinking}
+                      maxLength={100}
+                      name="comment"
+                      onChange={onChange}
+                      onKeyDown={onKeyDown}
+                      placeholder={t('feedback.comment.placeholder')}
+                      value={data.comment}
+                    />
+                    <div
+                      children={data.comment}
+                      className={classes.commentFieldShadow}
+                    />
+                  </div>
+                </>
+              )}
+            </Form>
+          </Bubble>
+        )}
+      </div>
+    )
   );
 }

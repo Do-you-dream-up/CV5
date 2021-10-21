@@ -11,16 +11,18 @@ import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
 
-
-const Chatbox = React.lazy(() => import(
-  // webpackChunkName: "chatbox"
-  '../Chatbox'
-).then(module => ({default: module.ChatboxWrapper})));
-const Wizard = React.lazy(() => import(
-  // webpackChunkName: "wizard"
-  '../Wizard'
-));
-
+const Chatbox = React.lazy(() =>
+  import(
+    // webpackChunkName: "chatbox"
+    '../Chatbox'
+  ).then((module) => ({ default: module.ChatboxWrapper })),
+);
+const Wizard = React.lazy(() =>
+  import(
+    // webpackChunkName: "wizard"
+    '../Wizard'
+  ),
+);
 
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
@@ -28,24 +30,32 @@ const Wizard = React.lazy(() => import(
  * Optionally render the Wizard when the `wizard` URL parameter is found.
  */
 export default function Application() {
-
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
-  const classes = useStyles({configuration});
-  const hasWizard = qs.parse(window.location.search, {ignoreQueryPrefix: true}).wizard !== undefined;
-  const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
-  const [ mode, setMode ] = useState(~~initialMode);
+  const classes = useStyles({ configuration });
+  const hasWizard =
+    qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !==
+    undefined;
+  const initialMode = Local.get(
+    Local.names.open,
+    ~~configuration.application.open,
+  );
+  const [mode, setMode] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
-  const [ open, setOpen ] = useState(~~initialMode > 1);
+  const [open, setOpen] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
   const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 
-  if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
+  if (
+    customFont &&
+    document.getElementById('font') &&
+    customFont !== document.getElementById('font').href
+  ) {
     document.getElementById('font').href = customFont;
   }
 
-  const toggle = value => () => setMode(~~value);
+  const toggle = (value) => () => setMode(~~value);
 
   useEffect(() => {
     setOpen(mode > 1);
@@ -54,7 +64,7 @@ export default function Application() {
 
   useEffect(() => {
     event('loadChatbox');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -63,13 +73,25 @@ export default function Application() {
       <DialogProvider>
         <>
           <Suspense fallback={null}>
-            { oidcEnabled ? <AuthContext>
-              <Authenticated>
-                <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
-              </Authenticated>
-            </AuthContext> :
-            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode}/>
-            }
+            {oidcEnabled ? (
+              <AuthContext>
+                <Authenticated>
+                  <Chatbox
+                    extended={mode > 2}
+                    open={mode > 1}
+                    toggle={toggle}
+                    mode={mode}
+                  />
+                </Authenticated>
+              </AuthContext>
+            ) : (
+              <Chatbox
+                extended={mode > 2}
+                open={mode > 1}
+                toggle={toggle}
+                mode={mode}
+              />
+            )}
           </Suspense>
           <Teaser open={mode === 1} toggle={toggle} />
         </>

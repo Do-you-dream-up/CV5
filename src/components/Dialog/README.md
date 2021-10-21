@@ -6,5 +6,5 @@ const interactions = [
   <Interaction type="response" />,
 ];
 
-<Dialog interactions={interactions} />
+<Dialog interactions={interactions} />;
 ```

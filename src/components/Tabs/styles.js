@@ -1,40 +1,42 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   disabled: () => ({
     cursor: 'not-allowed',
-    opacity: .5,
+    opacity: 0.5,
   }),
   hideOutline: () => ({
     outline: 'none',
   }),
   icon: () => ({
     height: '1.3em',
-    opacity: .5,
+    opacity: 0.5,
     transitionDuration: '.2s',
     transitionProperty: 'opacity',
     width: '1.3em',
   }),
-  indicator: ({ current, length }) => ({...(length && current > -1 && {
-    '&:after': {
-      backgroundColor: theme.palette.primary.text,
-      borderRadius: '50%',
-      content: '""',
-      display: 'block',
-      height: '.3em',
-      marginBottom: '.3em',
-      width: '.3em',
-    },
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    left: `${100 / length * current}%`,
-    position: 'absolute',
-    transitionDuration: '.2s',
-    transitionProperty: 'left',
-    width: `${100 / length}%`,
-  })}),
+  indicator: ({ current, length }) => ({
+    ...(length &&
+      current > -1 && {
+        '&:after': {
+          backgroundColor: theme.palette.primary.text,
+          borderRadius: '50%',
+          content: '""',
+          display: 'block',
+          height: '.3em',
+          marginBottom: '.3em',
+          width: '.3em',
+        },
+        bottom: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        left: `${(100 / length) * current}%`,
+        position: 'absolute',
+        transitionDuration: '.2s',
+        transitionProperty: 'left',
+        width: `${100 / length}%`,
+      }),
+  }),
   label: () => ({
     '& > :not(:last-child)': {
       marginRight: '.5em',

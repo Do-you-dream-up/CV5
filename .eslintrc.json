@@ -23,43 +23,15 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "import",
-    "react",
-    "react-hooks",
-    "sort-destructure-keys"
-  ],
+  "plugins": ["import", "react", "react-hooks"],
   "rules": {
-    "array-bracket-newline": ["warn", "consistent"],
-    "array-element-newline": ["warn", "consistent"],
-    "block-spacing": ["warn", "always"],
-    "brace-style": ["warn", "stroustrup"],
-    "comma-spacing": "warn",
-    "eol-last": ["warn", "always"],
-    "import/order": ["warn", {
-      "alphabetize": {"order": "asc"},
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
-      "newlines-between": "never"
-    }],
     "keyword-spacing": "warn",
-    "no-empty": ["warn", {"allowEmptyCatch": true}],
-    "no-eval": ["warn", {"allowIndirect": true}],
-    "no-lonely-if": "warn",
-    "no-multiple-empty-lines": ["warn", {"max": 2, "maxBOF": 0, "maxEOF": 0}],
-    "no-trailing-spaces": "warn",
-    "no-unused-vars": ["warn", {"ignoreRestSiblings": true}],
-    "quotes": ["warn", "single", {"avoidEscape": true}],
-    "react/jsx-indent": ["warn", 2],
-    "react/jsx-indent-props": ["warn", "first"],
+    "no-empty": ["warn", { "allowEmptyCatch": true }],
+    "no-eval": ["warn", { "allowIndirect": true }],
+    "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
     "react/no-children-prop": 0,
     "react-hooks/exhaustive-deps": "warn",
-    "react-hooks/rules-of-hooks": "warn",
-    "semi": ["warn", "always"],
-    "sort-destructure-keys/sort-destructure-keys": "warn",
-    "sort-imports": ["warn", {"ignoreDeclarationSort": true}],
-    "sort-keys": "warn",
-    "space-before-blocks": ["warn", "always"],
-    "space-infix-ops": "warn"
+    "react-hooks/rules-of-hooks": "warn"
   },
   "settings": {
     "import/core-modules": ["rsg-components/Styled"],

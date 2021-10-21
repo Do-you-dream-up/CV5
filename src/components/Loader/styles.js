@@ -1,19 +1,17 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
-
+export default createUseStyles((theme) => ({
   '@keyframes growBackward': {
-    from: {height: '100%'},
-    to: {height: '50%'},
+    from: { height: '100%' },
+    to: { height: '50%' },
   },
   '@keyframes growForward': {
-    from: {height: '50%'},
-    to: {height: '100%'},
+    from: { height: '50%' },
+    to: { height: '100%' },
   },
   '@keyframes pulse': {
-    from: {transform: 'scale(0)'},
-    to: {transform: 'scale(1)'},
+    from: { transform: 'scale(0)' },
+    to: { transform: 'scale(1)' },
   },
 
   bars: () => ({

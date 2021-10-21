@@ -18,38 +18,40 @@ import useStyles from './styles';
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ focus, onRequest, onResponse }) {
-
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
-  const classes = useStyles({configuration});
-  const [ counter = 100, setCounter ] = useState(configuration.input.maxLength);
-  const [ input, setInput ] = useState('');
+  const classes = useStyles({ configuration });
+  const [counter = 100, setCounter] = useState(configuration.input.maxLength);
+  const [input, setInput] = useState('');
   const { prompt } = useContext(DialogContext);
-  const [ suggestions, setSuggestions ] = useState([]);
-  const [ typing, setTyping ] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification = window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE :  process.env.QUALIFICATION;
+  const qualification =
+    window.DYDU_QUALIFICATION_MODE !== undefined
+      ? window.DYDU_QUALIFICATION_MODE
+      : process.env.QUALIFICATION;
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
 
-  const onChange = event => {
+  const onChange = (event) => {
     setTyping(true);
     setInput(event.target.value);
     setCounter(maxLength - event.target.value.length);
   };
 
-  const onKeyDown = event => {
+  const onKeyDown = (event) => {
     if (event.keyCode === 13 && !event.defaultPrevented) {
       event.preventDefault();
       submit(input);
     }
   };
 
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     event.preventDefault();
     submit(input);
   };
@@ -61,9 +63,9 @@ export default function Input({ focus, onRequest, onResponse }) {
     submit(suggestionValue);
   };
 
-  const renderInputComponent = properties => (
+  const renderInputComponent = (properties) => (
     <div className={c('dydu-input-field', classes.field)}>
-      <textarea {...properties} disabled={prompt || locked}/>
+      <textarea {...properties} disabled={prompt || locked} />
       <div children={input} className={classes.fieldShadow} />
       {!!showCounter && <span children={counter} className={classes.counter} />}
     </div>
@@ -74,26 +76,31 @@ export default function Input({ focus, onRequest, onResponse }) {
     setInput('');
   };
 
-  const submit = text => {
+  const submit = (text) => {
     text = text.trim();
     if (text) {
       reset();
       onRequest(text);
       event('questionSent', text);
-      talk(text, {qualification}).then(onResponse);
+      talk(text, { qualification }).then(onResponse);
     }
     setTyping(false);
   };
 
-  const suggest = useCallback(text => {
-    text = text.trim();
-    if (text) {
-      dydu.suggest(text).then(suggestions => {
-        suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
-        setSuggestions(suggestions.slice(0, suggestionsLimit));
-      });
-    }
-  }, [suggestionsLimit]);
+  const suggest = useCallback(
+    (text) => {
+      text = text.trim();
+      if (text) {
+        dydu.suggest(text).then((suggestions) => {
+          suggestions = Array.isArray(suggestions)
+            ? suggestions
+            : [suggestions];
+          setSuggestions(suggestions.slice(0, suggestionsLimit));
+        });
+      }
+    },
+    [suggestionsLimit],
+  );
 
   useEffect(() => {
     if (typing) {
@@ -105,7 +112,10 @@ export default function Input({ focus, onRequest, onResponse }) {
     container: c('dydu-input-container', classes.container),
     input: c('dydu-input-field-text', classes.fieldText),
     suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
-    suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
+    suggestionHighlighted: c(
+      'dydu-suggestions-selected',
+      classes.suggestionsSelected,
+    ),
     suggestionsContainer: c('dydu-suggestions', classes.suggestions),
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
@@ -116,30 +126,50 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: (ready && placeholder || t('input.placeholder')).slice(0, 50),
+    placeholder: ((ready && placeholder) || t('input.placeholder')).slice(
+      0,
+      50,
+    ),
     value: input,
   };
 
-  const actions = [{
-    children: <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />,
-    type: 'submit',
-    variant: 'icon',
-  }];
+  const actions = [
+    {
+      children: (
+        <img
+          alt={actionSend}
+          src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`}
+          title={actionSend}
+        />
+      ),
+      type: 'submit',
+      variant: 'icon',
+    },
+  ];
 
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
-      <Autosuggest getSuggestionValue={suggestion => suggestion.rootConditionReword || ''}
-                   inputProps={inputProps}
-                   onSuggestionSelected={onSuggestionSelected}
-                   onSuggestionsClearRequested={() => setSuggestions([])}
-                   onSuggestionsFetchRequested={({ value }) => value}
-                   renderInputComponent={renderInputComponent}
-                   renderSuggestion={suggestion => suggestion.rootConditionReword || ''}
-                   suggestions={suggestions}
-                   theme={theme} />
-      { voice && counter === maxLength ?
-        <voice/> :
-        <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} /> }
+      <Autosuggest
+        getSuggestionValue={(suggestion) =>
+          suggestion.rootConditionReword || ''
+        }
+        inputProps={inputProps}
+        onSuggestionSelected={onSuggestionSelected}
+        onSuggestionsClearRequested={() => setSuggestions([])}
+        onSuggestionsFetchRequested={({ value }) => value}
+        renderInputComponent={renderInputComponent}
+        renderSuggestion={(suggestion) => suggestion.rootConditionReword || ''}
+        suggestions={suggestions}
+        theme={theme}
+      />
+      {voice && counter === maxLength ? (
+        <voice />
+      ) : (
+        <Actions
+          actions={actions}
+          className={c('dydu-input-actions', classes.actions)}
+        />
+      )}
     </form>
   );
 }

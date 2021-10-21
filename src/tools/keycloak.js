@@ -19,17 +19,18 @@ const initKeycloak = (onAuthenticatedCallback, configuration) => {
     return;
   }
   const _kc = new Keycloak({
-    'clientId': configuration.clientId,
-    'realm': configuration.realm,
-    'url': configuration.url
+    clientId: configuration.clientId,
+    realm: configuration.realm,
+    url: configuration.url,
   });
-  _kc.init({
-    onLoad: 'login-required'
-  }).then((authenticated) => {
+  _kc
+    .init({
+      onLoad: 'login-required',
+    })
+    .then((authenticated) => {
       if (authenticated) {
         onAuthenticatedCallback();
-      }
-      else {
+      } else {
         _kc.login;
       }
     });

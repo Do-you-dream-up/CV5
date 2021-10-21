@@ -25,40 +25,37 @@ const useStyles = createUseStyles({
   },
 });
 
-
 const json = configuration.sanitize(data);
-
 
 export default function Wrapper({ children }) {
   const classes = useStyles();
   const [theme, setTheme] = useState(null);
   useEffect(() => {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`)
-    .then(res => {
-        const data = res && res.data ? res.data : {};
-        data.palette.primary.main = css ? css.main : data.palette.primary.main;
-        data.breakpoints = breakpoints;
-        setTheme(data);
-
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
+      const data = res && res.data ? res.data : {};
+      data.palette.primary.main = css ? css.main : data.palette.primary.main;
+      data.breakpoints = breakpoints;
+      setTheme(data);
     });
   }, []);
   return (
-    theme && <ThemeProvider theme={theme}>
-      <ConfigurationProvider configuration={json}>
-        <EventsProvider>
-          <DialogProvider>
-            <ModalProvider>
-              <TabProvider>
-                <div children={children} className={classes.root} />
-              </TabProvider>
-            </ModalProvider>
-          </DialogProvider>
-        </EventsProvider>
-      </ConfigurationProvider>
-    </ThemeProvider>
+    theme && (
+      <ThemeProvider theme={theme}>
+        <ConfigurationProvider configuration={json}>
+          <EventsProvider>
+            <DialogProvider>
+              <ModalProvider>
+                <TabProvider>
+                  <div children={children} className={classes.root} />
+                </TabProvider>
+              </ModalProvider>
+            </DialogProvider>
+          </EventsProvider>
+        </ConfigurationProvider>
+      </ThemeProvider>
+    )
   );
 }
-
 
 Wrapper.propTypes = {
   children: PropTypes.element,

@@ -1,6 +1,3 @@
 ```jsx static
-<Scroll>
-  ...
-</Scroll>
+<Scroll>...</Scroll>
 ```
-

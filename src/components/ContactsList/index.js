@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import useStyles from './styles';
 
-
 /**
  * Contact list for phone numbers, emails and social networks
  */
@@ -23,8 +22,17 @@ export default function ContactsList({ icon, id, list, title }) {
           {id === 'email' && <a href={`mailto:${item.email}`}>{item.email}</a>}
           {id === 'social' && (
             <div>
-              <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">{item.socialText}</a>
-              <img alt="icons/dydu-open-in-new-black.svg" src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />
+              <a
+                href={item.socialUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {item.socialText}
+              </a>
+              <img
+                alt="icons/dydu-open-in-new-black.svg"
+                src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`}
+              />
             </div>
           )}
         </div>
@@ -36,12 +44,14 @@ export default function ContactsList({ icon, id, list, title }) {
 ContactsList.propTypes = {
   icon: PropTypes.string,
   id: PropTypes.string,
-  list: PropTypes.arrayOf(PropTypes.shape({
+  list: PropTypes.arrayOf(
+    PropTypes.shape({
       email: PropTypes.string,
       phone: PropTypes.string,
       socialText: PropTypes.string,
       socialUrl: PropTypes.string,
       title: PropTypes.string.isRequired,
-    })).isRequired,
+    }),
+  ).isRequired,
   title: PropTypes.string.isRequired,
 };

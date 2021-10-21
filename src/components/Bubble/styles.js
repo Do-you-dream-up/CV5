@@ -1,13 +1,12 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     '&:not(:first-child)': {
       marginTop: '1em',
     },
   }),
-  base: ({hasCarouselAndSidebar}) => ({
+  base: ({ hasCarouselAndSidebar }) => ({
     alignItems: 'center',
     borderRadius: theme.shape.radius.inner,
     display: 'flex',
@@ -22,7 +21,7 @@ export default createUseStyles(theme => ({
   }),
   body: () => ({
     '&:focus': {
-      outline: 'none'
+      outline: 'none',
     },
     display: 'flex',
     flexDirection: 'column',

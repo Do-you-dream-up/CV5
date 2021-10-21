@@ -9,7 +9,7 @@ import { Cookie, Local } from './storage';
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(
-  window.navigator.userAgent
+  window.navigator.userAgent,
 ).parsedResult;
 
 const getUrl = window.location.href;
@@ -23,7 +23,9 @@ const getUrl = window.location.href;
 let BOT, protocol, API;
 
 (async function getBotInfo() {
-  const response = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+  const response = await axios.get(
+    `${process.env.PUBLIC_URL}override/bot.json`,
+  );
   BOT = Object.assign(
     {},
     channelsBot ? channelsBot : response.data,
@@ -31,7 +33,7 @@ let BOT, protocol, API;
       ...(id && { id }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
-    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true }))
+    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
   protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
   API = axios.create({
@@ -189,8 +191,8 @@ export default new (class Dydu {
     const path = `chat/gdpr/${BOT.id}/`;
     return Promise.all(
       methods.map((it) =>
-        this.emit(API.post, path, qs.stringify({ ...data, object: it }))
-      )
+        this.emit(API.post, path, qs.stringify({ ...data, object: it })),
+      ),
     );
   };
 
@@ -215,6 +217,9 @@ export default new (class Dydu {
       space: this.getLocale(),
     });
     const path = `chat/context/${BOT.id}/`;
+    if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
+      return Local.byBotId(BOT.id).get(Local.names.context);
+    }
     if (Local.get(Local.names.context) && !forced) {
       return Local.get(Local.names.context);
     }
@@ -233,7 +238,7 @@ export default new (class Dydu {
       const { defaultLanguage, getDefaultLanguageFromSite } =
         configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split(
-        '-'
+        '-',
       )[0];
       getDefaultLanguageFromSite
         ? this.setLocale(document.documentElement.lang)
@@ -286,18 +291,15 @@ export default new (class Dydu {
    *
    * @returns {Promise}
    */
-  history = () =>
-    new Promise((resolve, reject) => {
-      const contextId = Local.get(Local.names.context);
-      if (contextId) {
-        const data = qs.stringify({ contextUuid: contextId });
-        const path = `chat/history/${BOT.id}/`;
-        resolve(this.emit(API.post, path, data));
-      }
- else {
-        reject();
-      }
-    });
+  history = async () => {
+    const contextId = await this.getContextId();
+    if (contextId) {
+      const data = qs.stringify({ contextUuid: contextId });
+      const path = `chat/history/${BOT.id}/`;
+      const response = await this.emit(API.post, path, data);
+      return response;
+    }
+  };
 
   /**
    * Fetch pushrules.
@@ -351,6 +353,7 @@ export default new (class Dydu {
   setContextId = (value) => {
     if (value !== undefined) {
       Local.set(Local.names.context, value);
+      Local.byBotId(BOT.id).set(Local.names.context, value);
     }
   };
 
@@ -366,10 +369,9 @@ export default new (class Dydu {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);
-      }
- else {
+      } else {
         reject(
-          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`
+          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`,
         );
       }
     });
@@ -396,8 +398,7 @@ export default new (class Dydu {
       if (this.space !== value) {
         this.space = value;
         resolve(value);
-      }
- else {
+      } else {
         reject(value);
       }
     });
