@@ -3,9 +3,9 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false, 
-    "cdn":"",
-    "directory":""
+    "getDefaultLanguageFromSite": false,
+    "cdn": "",
+    "directory": ""
   },
   "avatar": {
     "background": false,
@@ -54,7 +54,7 @@
         "questionSent": ["questionSent"],
         "rewordDisplay": ["rewordDisplay"]
       },
-      "gdpr":{
+      "gdpr": {
         "acceptGdpr": ["acceptGdpr"],
         "getPersonalData": ["getPersonalData"],
         "deletePersonalData": ["deletePersonalData"],
@@ -70,7 +70,7 @@
       "teaser": {
         "onClick": ["teaserClick"]
       },
-      "top":{
+      "top": {
         "topDisplay": ["topDisplay"],
         "topClicked": ["topClicked"]
       }
@@ -114,12 +114,12 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true, 
+      "image": true,
       "imageLink": {
         "misunderstood": "dydu-misunderstood.svg",
         "reword": "dydu-reword.svg",
         "understood": "dydu-understood.svg"
-      } 
+      }
     }
   },
   "input": {
@@ -128,10 +128,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "displayNameBot" : false,
-    "displayNameUser" : false,
-    "NameUser" : "",
-    "NameBot" : "",
+    "displayNameBot": false,
+    "displayNameUser": false,
+    "NameUser": "",
+    "NameBot": "",
     "avatar": {
       "request": false,
       "response": true
@@ -210,12 +210,12 @@
       {
         "active": false,
         "mode": "route",
-        "value": {"/": "dydu"}
+        "value": { "/": "dydu" }
       },
       {
         "active": false,
         "mode": "hostname",
-        "value": {"doyoudreamup.com": "dydu"}
+        "value": { "doyoudreamup.com": "dydu" }
       }
     ],
     "items": ["default"]
@@ -226,8 +226,8 @@
   "tabs": {
     "hasContactTab": false,
     "items": [
-      {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
-      {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}
+      { "icon": "icons/dydu-message-text-white.svg", "key": "dialog" },
+      { "icon": "icons/dydu-account-box-white.svg", "key": "contacts" }
     ],
     "selected": "dialog",
     "title": false

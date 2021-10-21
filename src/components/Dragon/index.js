@@ -1,12 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import useEvent from '../../tools/hooks/event';
 import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-
 
 /**
  * Wrapper to enable dragging on other components.
@@ -15,21 +20,24 @@ import { Local } from '../../tools/storage';
  * `translate3d` CSS property.
  */
 export default function Dragon({ children, component, reset, ...rest }) {
-
   const { configuration } = useContext(ConfigurationContext);
-  const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
+  const {
+    boundaries: withBoundaries,
+    factor: defaultFactor = 1,
+    persist,
+  } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const root = useRef(null);
-  const [ boundaries, setBoundaries ] = useState(null);
-  const [ current, setCurrent ] = useState(null);
-  const [ offset, setOffset ] = useState(null);
-  const [ origin, setOrigin ] = useState(null);
-  const [ moving, setMoving ] = useState(false);
+  const [boundaries, setBoundaries] = useState(null);
+  const [current, setCurrent] = useState(null);
+  const [offset, setOffset] = useState(null);
+  const [origin, setOrigin] = useState(null);
+  const [moving, setMoving] = useState(false);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const active = !reset && configuration.dragon.active && !isMobile;
 
-  const onDrag = event => {
+  const onDrag = (event) => {
     if (moving && origin) {
       event.preventDefault();
       let x = event.clientX - origin.x;
@@ -43,33 +51,41 @@ export default function Dragon({ children, component, reset, ...rest }) {
         x = Math.min(Math.max(x, -left), right);
         y = Math.min(Math.max(y, -top), bottom);
       }
-      setOffset({x, y});
+      setOffset({ x, y });
     }
   };
 
   const onDragEnd = () => {
     if (moving) {
       root.current.style.transitionDuration = '';
-      setCurrent(previous => ({x: previous.x + offset.x, y: previous.y + offset.y}));
+      setCurrent((previous) => ({
+        x: previous.x + offset.x,
+        y: previous.y + offset.y,
+      }));
       setMoving(false);
-      setOffset({x: 0, y: 0});
+      setOffset({ x: 0, y: 0 });
       setOrigin(null);
     }
   };
 
-  const onDragStart = element => event => {
+  const onDragStart = (element) => (event) => {
     if (element.current === event.target) {
       root.current.style.transitionDuration = '0s';
       let { bottom, left, right, top } = root.current.getBoundingClientRect();
-      setBoundaries({bottom: window.innerHeight - bottom, left, right: window.innerWidth - right, top});
+      setBoundaries({
+        bottom: window.innerHeight - bottom,
+        left,
+        right: window.innerWidth - right,
+        top,
+      });
       setMoving(true);
-      setOrigin({x: event.clientX + offset.x, y: event.clientY + offset.y});
+      setOrigin({ x: event.clientX + offset.x, y: event.clientY + offset.y });
     }
   };
 
   const onReset = useCallback(({ x = 0, y = 0 }) => {
-    setCurrent({x, y});
-    setOffset({x: 0, y: 0});
+    setCurrent({ x, y });
+    setOffset({ x: 0, y: 0 });
   }, []);
 
   useEffect(() => {
@@ -79,30 +95,39 @@ export default function Dragon({ children, component, reset, ...rest }) {
   }, [current, persist]);
 
   useEffect(() => {
-    const { x, y } = persist ? Local.get(Local.names.dragon) || {} : {x: 0, y: 0};
-    onReset({x, y});
+    const { x, y } = persist
+      ? Local.get(Local.names.dragon) || {}
+      : { x: 0, y: 0 };
+    onReset({ x, y });
   }, [onReset, persist]);
 
   useEvent('mousemove', onDrag);
   useEvent('mouseup', onDragEnd);
 
-  const transform = (
+  const transform =
     !!current && !reset
       ? `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`
-      : 'translate3d(0, 0, 0)'
-  );
-  return !!current && (
-    <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-      {React.createElement(component, {...rest, root, style: {transform}})}
-    </DragonProvider>
+      : 'translate3d(0, 0, 0)';
+  return (
+    !!current && (
+      <DragonProvider
+        onDrag={onDrag}
+        onDragEnd={onDragEnd}
+        onDragStart={active ? onDragStart : null}
+      >
+        {React.createElement(component, {
+          ...rest,
+          root,
+          style: { transform },
+        })}
+      </DragonProvider>
+    )
   );
 }
-
 
 Dragon.defaultProps = {
   component: 'div',
 };
-
 
 Dragon.propTypes = {
   children: PropTypes.element,

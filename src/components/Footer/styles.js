@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     alignItems: 'center',
     paddingLeft: '.5em',
@@ -21,7 +20,7 @@ export default createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     [theme.breakpoints.down('xs')]: {
-      borderRadius: 0
+      borderRadius: 0,
     },
   }),
 }));

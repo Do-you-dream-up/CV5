@@ -1,8 +1,8 @@
 ```jsx
 import { useState } from 'react';
 
-const [ hidden, setHidden ] = useState(true);
-const onToggle = () => setHidden(previous => !previous);
+const [hidden, setHidden] = useState(true);
+const onToggle = () => setHidden((previous) => !previous);
 
 <>
   <button children="Toggle" onClick={onToggle} />
@@ -16,5 +16,5 @@ const onToggle = () => setHidden(previous => !previous);
       </p>
     </div>
   </Skeleton>
-</>
+</>;
 ```

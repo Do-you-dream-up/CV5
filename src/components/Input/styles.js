@@ -1,8 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
-
+export default createUseStyles((theme) => ({
   actions: () => ({
     '& > *': {
       marginLeft: '.5em',
@@ -51,7 +49,7 @@ export default createUseStyles(theme => ({
     fontSize: '1em',
     lineHeight: '1.7em',
     overflow: 'hidden',
-    padding: [['.4em', '3em', '.4em', '.6em']],  // DEBT
+    padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
     whiteSpace: 'pre-wrap',
     width: '100%',
     wordBreak: 'break-word',

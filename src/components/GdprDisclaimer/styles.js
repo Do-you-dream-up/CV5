@@ -1,6 +1,5 @@
 import { createUseStyles } from 'react-jss';
 
-
 export default createUseStyles({
   actions: {
     '& > :not(:last-child)': {
@@ -11,7 +10,7 @@ export default createUseStyles({
   },
   root: {
     '& > .dydu-gdpr-disclaimer-body': {
-      margin: '.7em'
+      margin: '.7em',
     },
     overflow: 'auto',
   },

@@ -1,8 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => {
-
+export default createUseStyles((theme) => {
   const contained = ({ color = 'primary' } = {}) => ({
     borderRadius: theme.shape.radius.inner,
     padding: [['.5em', '1.2em']],
@@ -16,7 +14,6 @@ export default createUseStyles(theme => {
   });
 
   return {
-
     '@keyframes spin': {
       '0%': {
         transform: 'rotate(0deg)',
@@ -68,8 +65,8 @@ export default createUseStyles(theme => {
       position: 'relative',
     }),
 
-    contained: ({ color = 'primary'}) => ({
-      ...contained({color}),
+    contained: ({ color = 'primary' }) => ({
+      ...contained({ color }),
     }),
 
     grow: () => ({
@@ -78,11 +75,11 @@ export default createUseStyles(theme => {
     }),
 
     hideOutline: () => ({
-      outline : 'none',
+      outline: 'none',
     }),
 
-    icon: ({ color = ''}) => ({
-      ...contained({color}),
+    icon: ({ color = '' }) => ({
+      ...contained({ color }),
       '& $children *': {
         display: 'block',
         maxHeight: 24,
@@ -101,7 +98,7 @@ export default createUseStyles(theme => {
       width: 40,
     }),
 
-    secondary: ({color = 'primary'}) => ({
+    secondary: ({ color = 'primary' }) => ({
       '&:disabled': {
         backgroundColor: theme.palette.action.disabled,
         border: 'none',

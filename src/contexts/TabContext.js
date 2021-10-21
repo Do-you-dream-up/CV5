@@ -6,23 +6,25 @@ export const TabContext = React.createContext();
 export function TabProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { hasContactTab, items, selected = 0 } = configuration.tabs;
-  const [ current, setCurrent ] = useState();
-  const [ tabs, setTabs ] = useState();
+  const [current, setCurrent] = useState();
+  const [tabs, setTabs] = useState();
 
-  const find = useCallback(value => (
-    tabs && tabs.findIndex((it, index) => value === it.key || value === index)
-  ), [tabs]);
+  const find = useCallback(
+    (value) =>
+      tabs &&
+      tabs.findIndex((it, index) => value === it.key || value === index),
+    [tabs],
+  );
 
-  const select = useCallback(value => () => setCurrent(find(value)), [find]);
+  const select = useCallback((value) => () => setCurrent(find(value)), [find]);
 
-  const should = value => find(value) === current;
+  const should = (value) => find(value) === current;
 
   useEffect(() => {
     if (hasContactTab) {
       setTabs(items);
-    }
-    else {
-      setTabs(items.filter(item => item.key === 'dialog'));
+    } else {
+      setTabs(items.filter((item) => item.key === 'dialog'));
     }
   }, [hasContactTab, items]);
 
@@ -32,12 +34,17 @@ export function TabProvider({ children }) {
     }
   }, [select, selected, tabs]);
 
-  return <TabContext.Provider children={children} value={{
-    current,
-    select,
-    should,
-    tabs,
-  }} />;
+  return (
+    <TabContext.Provider
+      children={children}
+      value={{
+        current,
+        select,
+        should,
+        tabs,
+      }}
+    />
+  );
 }
 
 TabProvider.propTypes = {

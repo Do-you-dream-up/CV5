@@ -1,5 +1,5 @@
 ```jsx
 const onClose = () => alert('Closing!');
 
-<Header onClose={onClose} />
+<Header onClose={onClose} />;
 ```

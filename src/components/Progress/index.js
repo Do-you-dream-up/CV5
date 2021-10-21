@@ -1,8 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import useStyles from  './styles';
-
+import useStyles from './styles';
 
 /**
  * Display a progress status.
@@ -17,7 +16,6 @@ export default function Progress({ className }) {
     </div>
   );
 }
-
 
 Progress.propTypes = {
   className: PropTypes.string,

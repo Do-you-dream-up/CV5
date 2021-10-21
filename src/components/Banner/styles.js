@@ -1,12 +1,11 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     margin: '1em',
   }),
   body: () => ({
-    '& a' : {
+    '& a': {
       color: theme.palette.text.link,
     },
     margin: '1em',

@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   barf: {
     marginLeft: [[0], '!important'],
     marginRight: [[0], '!important'],
@@ -22,20 +21,20 @@ export default createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: '1',
-    height:'100%',
+    height: '100%',
     overflowX: 'hidden',
-    position:'relative',
+    position: 'relative',
   }),
   loader: () => ({
     marginLeft: '.2em',
   }),
   nameRequest: () => ({
-    fontSize:'0.9em',
+    fontSize: '0.9em',
     marginBottom: '0.2em',
     marginLeft: 'auto',
   }),
   nameResponse: () => ({
-    fontSize:'0.9em',
+    fontSize: '0.9em',
     marginBottom: '0.2em',
   }),
   request: () => ({

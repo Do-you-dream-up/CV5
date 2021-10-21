@@ -1,22 +1,21 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
-  email : {
+export default createUseStyles((theme) => ({
+  email: {
     '& > div': {
+      '& > div': {
         '& > div': {
+          '& > div': {
             '& > div': {
-                '& > div': {
-                    '& > div': {
-                        '& > div': {
-                            marginBottom: '.5em'
-                        },
-                        flexDirection: 'column',
-                    }
-                }
-            }
-        }
-    }
+              '& > div': {
+                marginBottom: '.5em',
+              },
+              flexDirection: 'column',
+            },
+          },
+        },
+      },
+    },
   },
   field: {
     '&:not(:last-child)': {
