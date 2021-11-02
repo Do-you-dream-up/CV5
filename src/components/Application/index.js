@@ -5,6 +5,8 @@ import { AuthContext, Authenticated } from '../../contexts/AuthContext';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import { findValueByKey } from '../../tools/findValueByKey';
+import { parseString } from '../../tools/parseString';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import useStyles from './styles';
@@ -46,6 +48,23 @@ export default function Application() {
 
   let customFont = configuration.font.url;
   const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
+  const {
+    active: hasAuthStorageCheck,
+    sessionStorageKey,
+    searchKey,
+  } = configuration.checkAuthorization;
+
+  // get the session storage value based on the sessionStorageKey
+  const sessionStorageValue = parseString(
+    sessionStorage.getItem(sessionStorageKey),
+  );
+  // if the session storage value is a deep nested object, check for the searchKey
+  const sessionToken =
+    sessionStorageValue && typeof sessionStorageValue === 'object'
+      ? findValueByKey(sessionStorageValue, searchKey)
+      : sessionStorageValue;
+  const isAuthorized =
+    sessionToken && !!sessionToken.length && !!sessionToken[0];
 
   if (
     customFont &&
@@ -58,9 +77,15 @@ export default function Application() {
   const toggle = (value) => () => setMode(~~value);
 
   useEffect(() => {
-    setOpen(mode > 1);
-    Local.set(Local.names.open, Math.max(mode, 1));
-  }, [mode]);
+    if (hasAuthStorageCheck && !isAuthorized) {
+      setMode(0);
+      Local.set(Local.names.open, 0);
+    } else {
+      setOpen(mode > 1);
+      setMode(Math.max(mode, 1));
+      Local.set(Local.names.open, Math.max(mode, 1));
+    }
+  }, [hasAuthStorageCheck, mode, isAuthorized]);
 
   useEffect(() => {
     event('loadChatbox');
