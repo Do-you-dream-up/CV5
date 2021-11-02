@@ -38,7 +38,7 @@ export default createUseStyles((theme) => ({
       marginBottom: '1em',
     },
     '& > a': {
-      color: theme.palette.text.link,
+      color: theme.palette.text.link || theme.palette.primary.main,
     },
     height: '80%',
     overflowY: 'auto',
