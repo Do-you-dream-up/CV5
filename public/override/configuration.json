@@ -3,9 +3,9 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false, 
-    "cdn":"https://cdn.doyoudreamup.com/",
-    "directory":"development/"
+    "getDefaultLanguageFromSite": false,
+    "cdn": "https://cdn.doyoudreamup.com/",
+    "directory": "development/"
   },
   "avatar": {
     "background": false,
@@ -25,11 +25,16 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-     "offsetBetweenCard": 100
+    "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
     "margin": 16
+  },
+  "checkAuthorization": {
+    "active": false,
+    "sessionStorageKey": "",
+    "searchKey": ""
   },
   "contacts": {
     "phone": true,
@@ -54,7 +59,7 @@
         "questionSent": ["questionSent"],
         "rewordDisplay": ["rewordDisplay"]
       },
-      "gdpr":{
+      "gdpr": {
         "acceptGdpr": ["acceptGdpr"],
         "getPersonalData": ["getPersonalData"],
         "deletePersonalData": ["deletePersonalData"],
@@ -70,7 +75,7 @@
       "teaser": {
         "onClick": ["teaserClick"]
       },
-      "top":{
+      "top": {
         "topDisplay": ["topDisplay"],
         "topClicked": ["topClicked"]
       }
@@ -114,12 +119,12 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true, 
+      "image": true,
       "imageLink": {
         "misunderstood": "dydu-misunderstood.svg",
         "reword": "dydu-reword.svg",
         "understood": "dydu-understood.svg"
-      } 
+      }
     }
   },
   "input": {
@@ -128,10 +133,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "displayNameBot" : false,
-    "displayNameUser" : false,
-    "NameUser" : "",
-    "NameBot" : "",
+    "displayNameBot": false,
+    "displayNameUser": false,
+    "NameUser": "",
+    "NameBot": "",
     "avatar": {
       "request": false,
       "response": true
@@ -186,8 +191,7 @@
   },
   "spaces": {
     "active": true,
-    "detection": [
-      {
+    "detection": [{
         "active": false,
         "mode": "cookie",
         "value": "dyduspace"
@@ -210,12 +214,16 @@
       {
         "active": false,
         "mode": "route",
-        "value": {"/": "dydu"}
+        "value": {
+          "/": "dydu"
+        }
       },
       {
         "active": false,
         "mode": "hostname",
-        "value": {"doyoudreamup.com": "dydu"}
+        "value": {
+          "doyoudreamup.com": "dydu"
+        }
       }
     ],
     "items": ["default"]
@@ -225,9 +233,14 @@
   },
   "tabs": {
     "hasContactTab": false,
-    "items": [
-      {"icon": "icons/dydu-message-text-white.svg", "key": "dialog"},
-      {"icon": "icons/dydu-account-box-white.svg", "key": "contacts"}
+    "items": [{
+        "icon": "icons/dydu-message-text-white.svg",
+        "key": "dialog"
+      },
+      {
+        "icon": "icons/dydu-account-box-white.svg",
+        "key": "contacts"
+      }
     ],
     "selected": "dialog",
     "title": false
@@ -237,10 +250,10 @@
     "right": 16
   },
   "templateCarousel": {
-      "bullets": true,
-      "controls": true,
-      "offset": 5,
-      "offsetBetweenCard": 94
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "offsetBetweenCard": 94
   },
   "templateProduct": {
     "readmore": 100
