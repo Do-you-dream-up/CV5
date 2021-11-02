@@ -49,7 +49,7 @@ export default function GdprDisclaimer({
         },
         <>
           {body && (
-            <div className="dydu-gdpr-disclaimer-body">
+            <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
               <Skeleton
                 hide={!ready}
                 height="7em"
