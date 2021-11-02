@@ -22,7 +22,7 @@ export default createUseStyles((theme) => ({
         backgroundColor: 'transparent',
         border: '1px solid',
         borderColor: theme.palette.primary.main,
-        color: theme.palette.text.link || theme.palette.primary.main,
+        color: theme.palette.primary.main,
       },
       flexShrink: '0',
     },
