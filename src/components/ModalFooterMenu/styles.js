@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     borderTopColor: theme.palette.divider,
     borderTopStyle: 'solid',
@@ -9,10 +8,12 @@ export default createUseStyles(theme => ({
     display: 'flex',
     padding: [['.6em', '1.2em']],
   }),
-  root: () => ({'&&': {
-    padding: 0,
-    width: '100%',
-  }}),
+  root: () => ({
+    '&&': {
+      padding: 0,
+      width: '100%',
+    },
+  }),
   title: () => ({
     borderBottomColor: theme.palette.divider,
     borderBottomStyle: 'solid',

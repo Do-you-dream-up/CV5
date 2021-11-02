@@ -1,7 +1,7 @@
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles(() => ({
-    hideOutline: () => ({
-        outline : 'none',
-    }),
+  hideOutline: () => ({
+    outline: 'none',
+  }),
 }));

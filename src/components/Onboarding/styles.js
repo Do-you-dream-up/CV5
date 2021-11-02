@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     display: 'flex',
     flexDirection: 'column',
@@ -39,22 +38,22 @@ export default createUseStyles(theme => ({
       marginBottom: '1em',
     },
     '& > a': {
-      color: theme.palette.text.link
+      color: theme.palette.text.link || theme.palette.primary.main,
     },
     height: '80%',
     overflowY: 'auto',
     position: 'relative',
     textAlign: 'center',
-    width: '100%'
+    width: '100%',
   }),
   image: () => ({
     '& img': {
       height: 'auto',
       margin: '0 auto',
-      maxWidth: '50%'
+      maxWidth: '50%',
     },
     display: 'block',
-    textAlign: 'center'
+    textAlign: 'center',
   }),
   root: () => ({
     display: 'flex',
@@ -66,6 +65,6 @@ export default createUseStyles(theme => ({
   }),
   title: () => ({
     fontSize: '1.2em',
-    fontWeight: 'bold'
-  })
+    fontWeight: 'bold',
+  }),
 }));

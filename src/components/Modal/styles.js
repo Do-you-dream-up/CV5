@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   bottom: () => ({
     borderBottomLeftRadius: theme.shape.radius.outer,
     borderBottomRightRadius: theme.shape.radius.outer,

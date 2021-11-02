@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   actions: () => ({
     '& > *': {
       pointerEvents: 'auto',
@@ -29,7 +28,7 @@ export default createUseStyles(theme => ({
     boxShadow: 'none !important',
   }),
   image: () => ({
-    '& img' : {
+    '& img': {
       height: '100%',
     },
     alignItems: 'center',
@@ -58,7 +57,7 @@ export default createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     [theme.breakpoints.down('xs')]: {
-      borderRadius: 0
+      borderRadius: 0,
     },
     zIndex: 1,
   }),

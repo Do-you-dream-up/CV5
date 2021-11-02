@@ -1,5 +1,5 @@
 ```jsx
 const onDismiss = () => alert('Dismissed!');
 
-<GdprDisclaimer onResolve={onDismiss} />
+<GdprDisclaimer onResolve={onDismiss} />;
 ```

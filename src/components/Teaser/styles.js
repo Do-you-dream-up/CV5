@@ -1,8 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
-
+export default createUseStyles((theme) => ({
   brand: () => ({
     alignItems: 'center',
     display: 'flex',
@@ -12,8 +10,8 @@ export default createUseStyles(theme => ({
     overflow: 'hidden',
     width: 64,
     // eslint-disable-next-line sort-keys
-    '& img' : {
-      height: '100%'
+    '& img': {
+      height: '100%',
     },
   }),
   button: () => ({
@@ -34,7 +32,7 @@ export default createUseStyles(theme => ({
     position: 'relative',
   }),
   dyduTeaserContainer: () => ({
-    display: 'flex'
+    display: 'flex',
   }),
   dyduTeaserTitle: () => ({
     alignItems: 'center',
@@ -44,7 +42,7 @@ export default createUseStyles(theme => ({
     display: 'none !important',
   }),
   hideOutline: () => ({
-    outline : 'none',
+    outline: 'none',
   }),
   root: ({ configuration }) => ({
     alignItems: 'center',

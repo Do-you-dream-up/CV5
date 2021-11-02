@@ -1,19 +1,18 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   '@keyframes grow': {
-    from: {left: '-5%', width: '5%'},
-    to: {left: '150%', width: '100%'},
+    from: { left: '-5%', width: '5%' },
+    to: { left: '150%', width: '100%' },
   },
   '@keyframes shrink': {
-    from: {left: '-80%', width: '80%'},
-    to: {left: '120%', width: '20%'},
+    from: { left: '-80%', width: '80%' },
+    to: { left: '120%', width: '20%' },
   },
   back: {
     backgroundColor: theme.palette.secondary.main,
     height: '100%',
-    opacity: .4,
+    opacity: 0.4,
     position: 'absolute',
     width: '150%',
   },

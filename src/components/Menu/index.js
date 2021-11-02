@@ -6,7 +6,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import MenuList from '../MenuList';
 import useStyles from './styles';
 
-
 /**
  * Create a togglable menu, akin to the right-click contextual menu on various
  * systems. The toggle has to be located in the menu children and its `onClick`
@@ -16,11 +15,10 @@ import useStyles from './styles';
  * between categories.
  */
 export default function Menu({ component, items, selected, ...rest }) {
-
   const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({configuration});
-  const [ geometry, setGeometry ] = useState(null);
-  const [ open, setOpen ] = useState(false);
+  const classes = useStyles({ configuration });
+  const [geometry, setGeometry] = useState(null);
+  const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const menuRef = useRef(null);
   const node = document && document.getElementById(configuration.root);
@@ -29,13 +27,16 @@ export default function Menu({ component, items, selected, ...rest }) {
 
   const onClose = () => setOpen(false);
 
-  const onDocumentClick = event => {
-    if (!anchorRef.current.contains(event.target) && !menuRef.current.contains(event.target)) {
+  const onDocumentClick = (event) => {
+    if (
+      !anchorRef.current.contains(event.target) &&
+      !menuRef.current.contains(event.target)
+    ) {
       setOpen(false);
     }
   };
 
-  const toggle = value => () => {
+  const toggle = (value) => () => {
     value = value === undefined ? !open : value;
     return value ? setOpen(true) : setOpen(false);
   };
@@ -45,23 +46,32 @@ export default function Menu({ component, items, selected, ...rest }) {
       const anchor = anchorRef.current.getBoundingClientRect();
       const menu = menuRef.current.getBoundingClientRect();
       const left = anchor.left + anchor.width / 2 - menu.width / 2;
-      const upwards = window.innerHeight - anchor.y - anchor.height - spacing * 2 < menu.height;
+      const upwards =
+        window.innerHeight - anchor.y - anchor.height - spacing * 2 <
+        menu.height;
       setGeometry({
-        left: Math.max(0, Math.min(left, window.innerWidth - menuRef.current.offsetWidth - spacing)),
+        left: Math.max(
+          0,
+          Math.min(
+            left,
+            window.innerWidth - menuRef.current.offsetWidth - spacing,
+          ),
+        ),
         visibility: 'visible',
-        ...(upwards ? {
-          top: anchor.top - spacing - menu.height,
-        } : {
-          maxHeight: anchor.topwindow.innerHeight - anchor.bottom - spacing * 2,
-          top: anchor.bottom + spacing,
-        }),
+        ...(upwards
+          ? {
+              top: anchor.top - spacing - menu.height,
+            }
+          : {
+              maxHeight:
+                anchor.topwindow.innerHeight - anchor.bottom - spacing * 2,
+              top: anchor.bottom + spacing,
+            }),
       });
-    }
-    else {
+    } else {
       setGeometry(null);
     }
   }, [open, spacing]);
-
 
   useEffect(() => {
     if (geometry) {
@@ -72,12 +82,25 @@ export default function Menu({ component, items, selected, ...rest }) {
 
   return (
     <>
-      {React.createElement(component, {onClick: toggle(), ref: anchorRef, ...rest})}
+      {React.createElement(component, {
+        onClick: toggle(),
+        ref: anchorRef,
+        ...rest,
+      })}
       {open && (
         <Portal node={node}>
-          <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
+          <div
+            className={c('dydu-menu', classes.root)}
+            ref={menuRef}
+            style={geometry}
+          >
             {items.map((it, index) => (
-              <MenuList items={it} key={index} onClose={onClose} selected={selected} />
+              <MenuList
+                items={it}
+                key={index}
+                onClose={onClose}
+                selected={selected}
+              />
             ))}
           </div>
         </Portal>
@@ -85,7 +108,6 @@ export default function Menu({ component, items, selected, ...rest }) {
     </>
   );
 }
-
 
 Menu.defaultProps = {
   component: 'div',
