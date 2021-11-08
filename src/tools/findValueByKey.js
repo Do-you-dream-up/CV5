@@ -10,7 +10,7 @@ export const findValueByKey = (obj, keyToFind) => {
     (acc, [key, value]) =>
       key === keyToFind
         ? acc.concat(value)
-        : typeof value === 'object'
+        : value !== null && typeof value === 'object'
         ? acc.concat(findValueByKey(value, keyToFind))
         : acc,
     [],
