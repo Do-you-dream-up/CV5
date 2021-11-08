@@ -48,11 +48,15 @@ export default function Application() {
 
   let customFont = configuration.font.url;
   const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
-  const {
-    active: hasAuthStorageCheck,
-    sessionStorageKey,
-    searchKey,
-  } = configuration.checkAuthorization;
+
+  const hasAuthStorageCheck =
+    configuration.checkAuthorization && configuration.checkAuthorization.active;
+  const sessionStorageKey =
+    configuration.checkAuthorization &&
+    configuration.checkAuthorization.sessionStorageKey;
+  const searchKey =
+    configuration.checkAuthorization &&
+    configuration.checkAuthorization.searchKey;
 
   // get the session storage value based on the sessionStorageKey
   const sessionStorageValue = parseString(
