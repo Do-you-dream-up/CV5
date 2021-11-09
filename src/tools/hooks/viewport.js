@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 export default function (query) {
   query = query.replace(/^@media( ?)/m, '');
   const hasSupport = !!window.matchMedia;
-  const [match, setMatch] = useState(() =>
-    hasSupport ? window.matchMedia(query).matches : false,
-  );
+  const [match, setMatch] = useState(() => (hasSupport ? window.matchMedia(query).matches : false));
 
   useEffect(() => {
     if (hasSupport) {

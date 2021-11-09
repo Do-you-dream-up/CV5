@@ -8,9 +8,7 @@ import { decode } from './cipher';
 import { Cookie, Local } from './storage';
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
-const { browser, os } = Bowser.getParser(
-  window.navigator.userAgent,
-).parsedResult;
+const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
 
 const getUrl = window.location.href;
 
@@ -23,9 +21,7 @@ const getUrl = window.location.href;
 let BOT, protocol, API;
 
 (async function getBotInfo() {
-  const response = await axios.get(
-    `${process.env.PUBLIC_URL}override/bot.json`,
-  );
+  const response = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
   BOT = Object.assign(
     {},
     channelsBot ? channelsBot : response.data,
@@ -128,8 +124,7 @@ export default new (class Dydu {
     const contextId = await this.getContextId();
     const data = qs.stringify({
       contextUUID: contextId,
-      feedBack:
-        { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
+      feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: ASSISTANT,
     });
     const path = `chat/feedback/${BOT.id}/`;
@@ -189,11 +184,7 @@ export default new (class Dydu {
       mail: email,
     };
     const path = `chat/gdpr/${BOT.id}/`;
-    return Promise.all(
-      methods.map((it) =>
-        this.emit(API.post, path, qs.stringify({ ...data, object: it })),
-      ),
-    );
+    return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
   /**
@@ -235,14 +226,9 @@ export default new (class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const { defaultLanguage, getDefaultLanguageFromSite } =
-        configuration.application;
-      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split(
-        '-',
-      )[0];
-      getDefaultLanguageFromSite
-        ? this.setLocale(document.documentElement.lang)
-        : this.setLocale(locale);
+      const { defaultLanguage, getDefaultLanguageFromSite } = configuration.application;
+      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
+      getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale;
   };
@@ -267,18 +253,12 @@ export default new (class Dydu {
             hostname: (value) => value[window.location.hostname],
             localstorage: (value) => Local.get(value),
             route: (value) => value[window.location.pathname],
-            urlparameter: (value) =>
-              qs.parse(window.location.search, { ignoreQueryPrefix: true })[
-                value
-              ],
+            urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
           }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space =
-              typeof _get === 'function'
-                ? _get(value) || this.space
-                : this.space;
+            this.space = typeof _get === 'function' ? _get(value) || this.space : this.space;
           }
         });
       }
@@ -322,9 +302,7 @@ export default new (class Dydu {
     if (contextId) {
       const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
-      const ifrm =
-        document.querySelector('.dydu-iframe') ||
-        document.createElement('iframe');
+      const ifrm = document.querySelector('.dydu-iframe') || document.createElement('iframe');
       ifrm.setAttribute('class', 'dydu-iframe');
       ifrm.setAttribute('style', 'display:none;');
       ifrm.src = path;
@@ -370,9 +348,7 @@ export default new (class Dydu {
         this.locale = locale;
         resolve(locale);
       } else {
-        reject(
-          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`,
-        );
+        reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
       }
     });
 
@@ -435,9 +411,7 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token')
-        ? Cookie.get('dydu-oauth-token').id_token
-        : null,
+      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
       ...(options.extra && { extraParameters: options.extra }),

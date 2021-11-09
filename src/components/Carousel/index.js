@@ -14,23 +14,11 @@ import useStyles from './styles';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({
-  children,
-  className,
-  steps,
-  templatename,
-  ...rest
-}) {
+export default function Carousel({ children, className, steps, templatename, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { offset, offsetBetweenCard } = templatename
-    ? configuration.templateCarousel
-    : configuration.carousel;
-  const hasBullets = templatename
-    ? !!configuration.templateCarousel
-    : !!configuration.carousel;
-  const hasControls = templatename
-    ? !!configuration.templateCarousel
-    : !!configuration.carousel;
+  const { offset, offsetBetweenCard } = templatename ? configuration.templateCarousel : configuration.carousel;
+  const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
+  const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState(steps ? steps[0] : 0);
   const { t } = useTranslation('translation');
@@ -51,18 +39,13 @@ export default function Carousel({
   const hasNext = () => index < length - 1;
   const hasPrevious = () => index > 0;
 
-  const onNext = () =>
-    setIndex((previous) => Math.min(length - 1, previous + 1));
+  const onNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
   const onPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
 
   const previousAction = [
     {
       children: (
-        <img
-          alt={previous}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`}
-          title={previous}
-        />
+        <img alt={previous} src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`} title={previous} />
       ),
       disabled: !hasPrevious(),
       onClick: onPrevious,
@@ -72,13 +55,7 @@ export default function Carousel({
 
   const nextAction = [
     {
-      children: (
-        <img
-          alt={next}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`}
-          title={next}
-        />
-      ),
+      children: <img alt={next} src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`} title={next} />,
       disabled: !hasNext(),
       onClick: onNext,
       variant: 'icon',
@@ -106,17 +83,9 @@ export default function Carousel({
 
   return (
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div
-        children={children}
-        className={c('dydu-carousel-steps', classes.steps)}
-      >
+      <div children={children} className={c('dydu-carousel-steps', classes.steps)}>
         {children.map((it, i) => (
-          <div
-            {...handlers}
-            children={it}
-            className={c('dydu-carousel-step', classes.step)}
-            key={i}
-          />
+          <div {...handlers} children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
       </div>
       {!!hasBullets && length > 0 && (

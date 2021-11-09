@@ -6,9 +6,7 @@ import { UserActionContext } from '../../contexts/UserActionContext';
 import useStyles from './styles';
 
 // eslint-disable-next-line react/display-name
-export default React.forwardRef((props, ref) => (
-  <ButtonBase {...props} reference={ref} />
-));
+export default React.forwardRef((props, ref) => <ButtonBase {...props} reference={ref} />);
 
 /**
  * Re-usable button component.
@@ -40,9 +38,7 @@ export function ButtonBase({
 
   const button = (
     <div children={children} className={classes.children}>
-      {icon && (
-        <img alt={icon} src={icon} className={c({ [classes.spin]: spin })} />
-      )}
+      {icon && <img alt={icon} src={icon} className={c({ [classes.spin]: spin })} />}
       <span children={children} />
     </div>
   );

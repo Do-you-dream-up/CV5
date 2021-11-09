@@ -18,9 +18,7 @@ export const configuration = new (class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (
-    path = `${process.env.PUBLIC_URL}override/configuration.json`,
-  ) => {
+  initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
 
     return axios.get(path).then(({ data }) => {
@@ -41,17 +39,7 @@ export const configuration = new (class Configuration {
    * @returns {Object}
    */
   sanitize = (data) => {
-    const forgeStyles = ({
-      background,
-      bottom,
-      height,
-      left,
-      maxHeight,
-      position,
-      right,
-      top,
-      width,
-    } = {}) => ({
+    const forgeStyles = ({ background, bottom, height, left, maxHeight, position, right, top, width } = {}) => ({
       ...(background !== undefined && { background }),
       ...(bottom !== undefined && { bottom }),
       ...(height !== undefined && { height }),
@@ -84,8 +72,6 @@ export const withConfiguration = (Component) =>
   class InnerComponent extends React.PureComponent {
     static contextType = ConfigurationContext;
     render() {
-      return (
-        <Component configuration={this.context.configuration} {...this.props} />
-      );
+      return <Component configuration={this.context.configuration} {...this.props} />;
     }
   };

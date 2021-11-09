@@ -29,25 +29,16 @@ export default function MenuList({ items, onClose, selected }) {
     <ul className={c('dydu-menu-list', classes.root)}>
       {items.map(({ icon, id, onClick, text }, index) => (
         <li
-          className={c(
-            'dydu-menu-list-item',
-            classes.item,
-            onClick ? classes.itemEnabled : classes.itemDisabled,
-            { [classes.selected]: selected && selected === id },
-          )}
+          className={c('dydu-menu-list-item', classes.item, onClick ? classes.itemEnabled : classes.itemDisabled, {
+            [classes.selected]: selected && selected === id,
+          })}
           key={index}
           onClick={onItemClick(onClick)}
           onKeyDown={onKeyDown(onClick)}
           tabIndex="0"
           title={text}
         >
-          {!!icon && (
-            <img
-              alt={text}
-              className={classes.icon}
-              src={`${process.env.PUBLIC_URL}${icon}`}
-            />
-          )}
+          {!!icon && <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
           {text}
         </li>
       ))}

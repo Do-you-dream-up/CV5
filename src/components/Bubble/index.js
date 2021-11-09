@@ -42,11 +42,7 @@ export default function Bubble({
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
-  const actions = [
-    ...(sidebar
-      ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }]
-      : []),
-  ];
+  const actions = [...(sidebar ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }] : [])];
 
   const onToggle = useCallback(
     (open) => {
@@ -57,27 +53,17 @@ export default function Bubble({
 
   useEffect(() => {
     if (sidebar) {
-      onToggle(
-        Local.get(Local.names.secondary) || (!history && automaticSecondary),
-      );
+      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
     }
   }, [automaticSecondary, history, onToggle, sidebar]);
 
   return React.createElement(
     component,
     {
-      className: c(
-        'dydu-bubble',
-        `dydu-bubble-${type}`,
-        classes.base,
-        classes[type],
-        className,
-      ),
+      className: c('dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type], className),
     },
     <>
-      {thinking && (
-        <Progress className={c('dydu-bubble-progress', classes.progress)} />
-      )}
+      {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
           <PrettyHtml
@@ -88,12 +74,7 @@ export default function Bubble({
             type={type}
           />
         )}
-        {!!actions.length && (
-          <Actions
-            actions={actions}
-            className={c('dydu-bubble-actions', classes.actions)}
-          />
-        )}
+        {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
     </>,
   );

@@ -16,8 +16,7 @@ export default function Avatar({ background, path, type }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration, type });
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
-  background =
-    background !== undefined ? background : configuration.avatar.background;
+  background = background !== undefined ? background : configuration.avatar.background;
   path =
     path !== undefined
       ? path
@@ -28,13 +27,9 @@ export default function Avatar({ background, path, type }) {
   return (
     <div
       children={!!path && <img alt={`${type} avatar`} src={logo || path} />}
-      className={c(
-        'dydu-avatar',
-        `dydu-avatar-${type}`,
-        classes.base,
-        classes[type],
-        { [classes.background]: background },
-      )}
+      className={c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
+        [classes.background]: background,
+      })}
     />
   );
 }

@@ -19,24 +19,14 @@ import useStyles from './styles';
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({
-  dialogRef,
-  interactions,
-  onAdd,
-  open,
-  ...rest
-}) {
+export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
   const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
-  const {
-    active: spacesActive,
-    detection: spacesDetection,
-    items: spaces = [],
-  } = configuration.spaces;
+  const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
   const getContent = (text, templateData, templateName) => {
     const list = [];
@@ -55,12 +45,7 @@ export default function Dialog({
         if (Array.isArray(interactions)) {
           interactions = interactions.reduce((accumulator, it, index) => {
             accumulator.push(
-              <Interaction
-                children={it.user}
-                history
-                type="request"
-                scroll={false}
-              />,
+              <Interaction children={it.user} history type="request" scroll={false} />,
               <Interaction
                 children={getContent(it.text, it.templateData, it.templateName)}
                 templatename={it.templateName}
@@ -122,13 +107,8 @@ export default function Dialog({
 }
 
 Dialog.propTypes = {
-  dialogRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.any }),
-  ]),
-  interactions: PropTypes.arrayOf(
-    PropTypes.shape({ type: PropTypes.oneOf([Interaction]) }),
-  ).isRequired,
+  dialogRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })]),
+  interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
   onAdd: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
 };

@@ -45,11 +45,7 @@ export function getExternalInfos(now) {
 function processGoalPage(rule, externInfos) {
   const id = rule.bgpId;
   const urlToCheck = rule.conditions[0].param_1;
-  if (
-    dydu.getContextId() &&
-    dydu.getContextId() !== '' &&
-    urlCompliant(urlToCheck, externInfos.windowLocation)
-  ) {
+  if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
     window.reword('_goalpage_:' + id, { hide: true });
   }
 }
@@ -68,11 +64,7 @@ export function processRules(externInfos) {
         children: rule.conditions,
         type: 'Container',
       };
-      let ruleCompliance = computeRuleCompliance(
-        conditionsContainer,
-        id,
-        externInfos,
-      );
+      let ruleCompliance = computeRuleCompliance(conditionsContainer, id, externInfos);
       if (ruleCompliance.hasHigherPriorityThan(bestCompliance)) {
         if (ruleCompliance.isDelayValid()) {
           bestDelayId = id;
@@ -90,12 +82,7 @@ export function processRules(externInfos) {
     }
   }
   //Push best compliant knowledges
-  handlePush(
-    bestCompliance.getDelay(),
-    bestDelayId,
-    bestCompliance.getIdleDelay(),
-    bestIdleDelayId,
-  );
+  handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
@@ -113,15 +100,9 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
       if (idleDelay !== -1 && !currentTimer.counter) {
         for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
           if (document.attachEvent) {
-            document.attachEvent(
-              'on' + INTERACTION_EVENTS[i],
-              interaction(idleDelayRuleId),
-            );
+            document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
           } else {
-            document.addEventListener(
-              INTERACTION_EVENTS[i],
-              interaction(idleDelayRuleId),
-            );
+            document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
           }
         }
         currentTimer.counter = setTimeout(() => {
@@ -143,17 +124,8 @@ function interaction(ruleId) {
 }
 
 function computeRuleCompliance(condition, ruleId, externInfos) {
-  let bestChildCompliance = computeChildrenCompliance(
-    condition,
-    ruleId,
-    externInfos,
-  );
-  return computeConditionCompliance(
-    condition,
-    ruleId,
-    externInfos,
-    bestChildCompliance,
-  );
+  let bestChildCompliance = computeChildrenCompliance(condition, ruleId, externInfos);
+  return computeConditionCompliance(condition, ruleId, externInfos, bestChildCompliance);
 }
 
 function computeChildrenCompliance(condition, ruleId, externInfos) {
@@ -161,11 +133,7 @@ function computeChildrenCompliance(condition, ruleId, externInfos) {
   if (condition.children) {
     for (let c = 0; c < condition.children.length; c++) {
       condition.children[c].parent = condition;
-      let childCompliance = computeRuleCompliance(
-        condition.children[c],
-        ruleId,
-        externInfos,
-      );
+      let childCompliance = computeRuleCompliance(condition.children[c], ruleId, externInfos);
       if (childCompliance.hasHigherPriorityThan(bestCompliance)) {
         if (childCompliance.isDelayValid()) {
           // Use childDelays
@@ -185,23 +153,13 @@ function computeChildrenCompliance(condition, ruleId, externInfos) {
   return bestCompliance;
 }
 
-function computeConditionCompliance(
-  condition,
-  ruleId,
-  externInfos,
-  childCompliance,
-) {
+function computeConditionCompliance(condition, ruleId, externInfos, childCompliance) {
   let conditionCompliance = new ComplianceInfo();
   // Ignore PastPage type
-  if (
-    condition.type === 'PastPage' &&
-    !(condition.parent.type === 'Container' && !condition.children)
-  ) {
+  if (condition.type === 'PastPage' && !(condition.parent.type === 'Container' && !condition.children)) {
     conditionCompliance.mergeDelaysForOrCondition(childCompliance);
   } else if (childCompliance.isDelayValid()) {
-    conditionCompliance.copy(
-      processConditionCompliance(condition, ruleId, externInfos),
-    );
+    conditionCompliance.copy(processConditionCompliance(condition, ruleId, externInfos));
     if (conditionCompliance.isDelayValid()) {
       conditionCompliance.mergeDelaysForAndCondition(childCompliance);
       conditionCompliance.setPriority(childCompliance.getPriority());
@@ -225,9 +183,7 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
   for (let i = 0; i < rulesDefinition.length; i++) {
     let ruleDefinition = rulesDefinition[i];
     if (condition.type === ruleDefinition.name) {
-      result = new ComplianceInfo(
-        ruleDefinition.processDelays(condition, ruleId, externInfos),
-      );
+      result = new ComplianceInfo(ruleDefinition.processDelays(condition, ruleId, externInfos));
       break;
     }
   }
@@ -244,10 +200,7 @@ function pushKnowledge(ruleId) {
 function urlCompliant(pattern, url) {
   try {
     if (pattern.substring(pattern.length - 1) === '%') {
-      return (
-        url.substring(0, pattern.length - 1) ===
-        pattern.substring(0, pattern.length - 1)
-      );
+      return url.substring(0, pattern.length - 1) === pattern.substring(0, pattern.length - 1);
     }
     return pattern === url;
   } catch (e) {
