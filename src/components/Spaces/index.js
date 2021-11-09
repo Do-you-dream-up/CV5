@@ -32,14 +32,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
       {({ data, onChange }) =>
         items.map((it, index) => (
           <label className={classes.item} key={index}>
-            <input
-              checked={data.space === it}
-              name="space"
-              onChange={onChange}
-              required
-              type="radio"
-              value={it}
-            />
+            <input checked={data.space === it} name="space" onChange={onChange} required type="radio" value={it} />
             {it}
           </label>
         ))
@@ -50,12 +43,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
   return (
     !!ready &&
     !!(welcome || form) && (
-      <Interaction
-        className="dydu-interaction-spaces"
-        scroll={scroll}
-        thinking={thinking}
-        type="response"
-      >
+      <Interaction className="dydu-interaction-spaces" scroll={scroll} thinking={thinking} type="response">
         {[welcome, form]}
       </Interaction>
     )

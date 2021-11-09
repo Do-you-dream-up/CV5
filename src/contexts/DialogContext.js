@@ -31,10 +31,7 @@ export function DialogProvider({ children }) {
   const { transient: secondaryTransient } = configuration.secondary;
 
   const add = useCallback((interaction) => {
-    setInteractions((previous) => [
-      ...previous,
-      ...(Array.isArray(interaction) ? interaction : [interaction]),
-    ]);
+    setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
   }, []);
 
   const addRequest = useCallback(
@@ -54,23 +51,10 @@ export function DialogProvider({ children }) {
 
   const addResponse = useCallback(
     (response) => {
-      const {
-        askFeedback,
-        guiAction,
-        sidebar,
-        templateData,
-        templateName,
-        text,
-        typeResponse,
-        urlRedirect,
-      } = response;
+      const { askFeedback, guiAction, sidebar, templateData, templateName, text, typeResponse, urlRedirect } = response;
       const steps = parseSteps(response);
       if (configuration.Voice.enable) {
-        if (
-          templateName &&
-          configuration.Voice.voiceSpace.toLowerCase() ===
-            templateName.toLowerCase()
-        ) {
+        if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName.toLowerCase()) {
           setVoiceContent({ templateData, text });
         } else {
           setVoiceContent({ templateData: null, text });
@@ -89,9 +73,7 @@ export function DialogProvider({ children }) {
           if (typeof f === 'function') {
             f(...parameters);
           } else {
-            console.warn(
-              `[Dydu] Action '${action}' was not found in 'window' object.`,
-            );
+            console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
           }
         });
       }

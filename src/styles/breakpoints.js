@@ -8,10 +8,7 @@ const between = (start, end) => {
     return up(start);
   }
   const left = typeof VALUES[start] === 'number' ? VALUES[start] : start;
-  const right =
-    typeof VALUES[KEYS[next]] === 'number' && next
-      ? VALUES[KEYS[next]] - 1
-      : end;
+  const right = typeof VALUES[KEYS[next]] === 'number' && next ? VALUES[KEYS[next]] - 1 : end;
   return `@media (min-width: ${~~left}${UNIT}) and (max-width: ${~~right}${UNIT})`;
 };
 
@@ -20,10 +17,7 @@ const down = (value) => {
   if (next === KEYS.length) {
     return up(VALUES[0]);
   }
-  const right =
-    typeof VALUES[KEYS[next]] === 'number' && next
-      ? VALUES[KEYS[next]] - 1
-      : value;
+  const right = typeof VALUES[KEYS[next]] === 'number' && next ? VALUES[KEYS[next]] - 1 : value;
   return `@media (max-width: ${~~right}${UNIT})`;
 };
 

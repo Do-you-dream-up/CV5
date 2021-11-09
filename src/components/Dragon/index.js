@@ -1,11 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
@@ -21,11 +15,7 @@ import { Local } from '../../tools/storage';
  */
 export default function Dragon({ children, component, reset, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
-  const {
-    boundaries: withBoundaries,
-    factor: defaultFactor = 1,
-    persist,
-  } = configuration.dragon;
+  const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const root = useRef(null);
   const [boundaries, setBoundaries] = useState(null);
@@ -95,9 +85,7 @@ export default function Dragon({ children, component, reset, ...rest }) {
   }, [current, persist]);
 
   useEffect(() => {
-    const { x, y } = persist
-      ? Local.get(Local.names.dragon) || {}
-      : { x: 0, y: 0 };
+    const { x, y } = persist ? Local.get(Local.names.dragon) || {} : { x: 0, y: 0 };
     onReset({ x, y });
   }, [onReset, persist]);
 
@@ -110,11 +98,7 @@ export default function Dragon({ children, component, reset, ...rest }) {
       : 'translate3d(0, 0, 0)';
   return (
     !!current && (
-      <DragonProvider
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
-        onDragStart={active ? onDragStart : null}
-      >
+      <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
         {React.createElement(component, {
           ...rest,
           root,

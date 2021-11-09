@@ -22,11 +22,7 @@ export default function ContactsList({ icon, id, list, title }) {
           {id === 'email' && <a href={`mailto:${item.email}`}>{item.email}</a>}
           {id === 'social' && (
             <div>
-              <a
-                href={item.socialUrl}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">
                 {item.socialText}
               </a>
               <img

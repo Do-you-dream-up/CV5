@@ -17,13 +17,12 @@ export default function Actions({ actions, className }) {
   return (
     !!actions.length && (
       <div className={c('dydu-actions', classes.root, className)}>
-        {actions.map(
-          ({ items, selected, type = 'button', when, ...rest }, index) =>
-            React.createElement(items ? Menu : Button, {
-              key: index,
-              ...(items ? { component: Button, items, selected } : { type }),
-              ...rest,
-            }),
+        {actions.map(({ items, selected, type = 'button', when, ...rest }, index) =>
+          React.createElement(items ? Menu : Button, {
+            key: index,
+            ...(items ? { component: Button, items, selected } : { type }),
+            ...rest,
+          }),
         )}
       </div>
     )

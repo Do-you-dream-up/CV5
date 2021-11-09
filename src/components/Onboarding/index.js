@@ -21,16 +21,8 @@ const images = JSON.parse(localStorage.getItem('dydu.images'));
  */
 export default function Onboarding({ children, render }) {
   const { configuration } = useContext(ConfigurationContext);
-  const {
-    active,
-    hasNext,
-    hasPrevious,
-    index,
-    onEnd,
-    onNext,
-    onPrevious,
-    onStep,
-  } = useContext(OnboardingContext) || {};
+  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } =
+    useContext(OnboardingContext) || {};
   const event = useContext(EventsContext).onEvent('onboarding');
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
@@ -45,8 +37,7 @@ export default function Onboarding({ children, render }) {
   const onboarding2 = images && images.onboarding2;
   const onboarding3 = images && images.onboarding3;
 
-  const storageImage =
-    index === 0 ? onboarding1 : index === 1 ? onboarding2 : onboarding3;
+  const storageImage = index === 0 ? onboarding1 : index === 1 ? onboarding2 : onboarding3;
   const configImage = index === 0 ? image1 : index === 1 ? image2 : image3;
   const path = `${process.env.PUBLIC_URL}assets/${configImage}`;
 
@@ -62,9 +53,7 @@ export default function Onboarding({ children, render }) {
         <div className={c('dydu-onboarding-image', classes.image)}>
           <img src={storageImage || path} alt={storageImage || path} />
         </div>
-        <div className={c('dydu-onboarding-title', classes.title)}>
-          {steps[index].title}
-        </div>
+        <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
         <div
           className={c('dydu-onboarding-body', classes.body)}
           dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
@@ -88,12 +77,7 @@ export default function Onboarding({ children, render }) {
           </div>
         )}
         <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-          <Button
-            children={previous}
-            disabled={!index}
-            secondary={true}
-            onClick={hasPrevious ? onPrevious : null}
-          />
+          <Button children={previous} disabled={!index} secondary={true} onClick={hasPrevious ? onPrevious : null} />
           <Button children={next} onClick={hasNext ? onNext : onEnd} />
         </div>
       </div>

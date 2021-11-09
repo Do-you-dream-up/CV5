@@ -22,9 +22,7 @@ export function EventsProvider({ children }) {
             if (typeof f === 'function') {
               f(...rest);
             } else if (verbosity > 0) {
-              console.warn(
-                `[Dydu] Action '${action}' was not found in 'window' object.`,
-              );
+              console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
             }
           });
         }

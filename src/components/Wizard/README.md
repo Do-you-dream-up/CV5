@@ -50,10 +50,7 @@ const documentation = {
 
   events: {
     active: ['Enable event tracking', 'Boolean'],
-    features: [
-      'All supported features with arrays containing actions to track',
-      'Object',
-    ],
+    features: ['All supported features with arrays containing actions to track', 'Object'],
     verbosity: ['Log level, the higher the more verbose', 'Number'],
   },
 
@@ -180,21 +177,15 @@ const documentation = {
       <div style={{ marginBottom: 8, maxWidth: '100%', minWidth: '50%' }}>
         <div children={<strong children={component} />} />
         <div style={{ display: 'flex' }}>
-          <pre
-            children={JSON.stringify(data, null, 2)}
-            style={{ margin: 0, overflowX: 'auto' }}
-          />
+          <pre children={JSON.stringify(data, null, 2)} style={{ margin: 0, overflowX: 'auto' }} />
           <div style={{ marginLeft: '1em' }}>
             {typeof data === 'object' ? (
               <dl style={{ margin: 0 }}>
                 {Object.keys(data).map((key, index) => {
-                  const [definition, type] = (documentation[component] || {})[
-                    key
-                  ] || ['-'];
+                  const [definition, type] = (documentation[component] || {})[key] || ['-'];
                   const label = (
                     <>
-                      <code children={key} />{' '}
-                      {!!type && <small children={`(${type})`} />}
+                      <code children={key} /> {!!type && <small children={`(${type})`} />}
                     </>
                   );
                   return (

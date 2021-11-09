@@ -30,9 +30,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined
-      ? window.DYDU_QUALIFICATION_MODE
-      : process.env.QUALIFICATION;
+    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
@@ -92,9 +90,7 @@ export default function Input({ focus, onRequest, onResponse }) {
       text = text.trim();
       if (text) {
         dydu.suggest(text).then((suggestions) => {
-          suggestions = Array.isArray(suggestions)
-            ? suggestions
-            : [suggestions];
+          suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
         });
       }
@@ -112,10 +108,7 @@ export default function Input({ focus, onRequest, onResponse }) {
     container: c('dydu-input-container', classes.container),
     input: c('dydu-input-field-text', classes.fieldText),
     suggestion: c('dydu-suggestions-candidate', classes.suggestionsCandidate),
-    suggestionHighlighted: c(
-      'dydu-suggestions-selected',
-      classes.suggestionsSelected,
-    ),
+    suggestionHighlighted: c('dydu-suggestions-selected', classes.suggestionsSelected),
     suggestionsContainer: c('dydu-suggestions', classes.suggestions),
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
@@ -126,21 +119,14 @@ export default function Input({ focus, onRequest, onResponse }) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ((ready && placeholder) || t('input.placeholder')).slice(
-      0,
-      50,
-    ),
+    placeholder: ((ready && placeholder) || t('input.placeholder')).slice(0, 50),
     value: input,
   };
 
   const actions = [
     {
       children: (
-        <img
-          alt={actionSend}
-          src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`}
-          title={actionSend}
-        />
+        <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />
       ),
       type: 'submit',
       variant: 'icon',
@@ -150,9 +136,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
       <Autosuggest
-        getSuggestionValue={(suggestion) =>
-          suggestion.rootConditionReword || ''
-        }
+        getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}
         onSuggestionSelected={onSuggestionSelected}
         onSuggestionsClearRequested={() => setSuggestions([])}
@@ -165,10 +149,7 @@ export default function Input({ focus, onRequest, onResponse }) {
       {voice && counter === maxLength ? (
         <voice />
       ) : (
-        <Actions
-          actions={actions}
-          className={c('dydu-input-actions', classes.actions)}
-        />
+        <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       )}
     </form>
   );

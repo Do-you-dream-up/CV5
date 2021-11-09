@@ -21,10 +21,7 @@ export default function QuickreplyTemplate({ html }) {
           return (
             quick[el] && (
               <div
-                className={c(
-                  'dydu-quickreply-template-buttons',
-                  classes.buttons,
-                )}
+                className={c('dydu-quickreply-template-buttons', classes.buttons)}
                 key={index}
                 dangerouslySetInnerHTML={{ __html: quick[el] }}
               />

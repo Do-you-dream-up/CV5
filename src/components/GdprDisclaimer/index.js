@@ -12,13 +12,7 @@ import useStyles from './styles';
 /**
  * GDPR disclaimer. Prompt the user at first visit for clearance.
  */
-export default function GdprDisclaimer({
-  children,
-  className,
-  component,
-  gdprRef,
-  ...rest
-}) {
+export default function GdprDisclaimer({ children, className, component, gdprRef, ...rest }) {
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
   const { gdprPassed, onAccept, onDecline } = useContext(GdprContext) || {};
@@ -50,20 +44,12 @@ export default function GdprDisclaimer({
         <>
           {body && (
             <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
-              <Skeleton
-                hide={!ready}
-                height="7em"
-                variant="paragraph"
-                width="17em"
-              >
+              <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
                 <div dangerouslySetInnerHTML={{ __html: body }} />
               </Skeleton>
             </div>
           )}
-          <Actions
-            actions={actions}
-            className={c('dydu-gdpr-disclaimer-actions', classes.actions)}
-          />
+          <Actions actions={actions} className={c('dydu-gdpr-disclaimer-actions', classes.actions)} />
         </>,
       )
     : children;
@@ -76,4 +62,6 @@ GdprDisclaimer.defaultProps = {
 GdprDisclaimer.propTypes = {
   className: PropTypes.string,
   component: PropTypes.elementType,
+  children: PropTypes.any,
+  gdprRef: PropTypes.any,
 };

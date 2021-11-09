@@ -16,8 +16,7 @@ let _configuration;
 let anchor;
 
 const getRootDiv = (configuration) => {
-  if (document.getElementById(configuration.root))
-    return document.getElementById(configuration.root);
+  if (document.getElementById(configuration.root)) return document.getElementById(configuration.root);
 
   const rootId = document.createElement('div');
   rootId.id = configuration.root;
@@ -50,9 +49,7 @@ configuration.initialize().then((configuration) => {
       const data = res && res.data ? res.data : {};
       data.palette.primary.main = css ? css.main : data.palette.primary.main;
       data.breakpoints = breakpoints;
-      configuration.keycloak.enable
-        ? keycloak.initKeycloak(renderApp(data), configuration.keycloak)
-        : renderApp(data);
+      configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });
   }
 });
