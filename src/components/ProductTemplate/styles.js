@@ -49,6 +49,7 @@ export default createUseStyles((theme) => ({
         marginTop: '-0.75em',
       },
       fontWeight: 'bold!important',
+      textTransform: 'none!important',
     },
     margin: '0.8em 0',
     padding: '0 1em',
