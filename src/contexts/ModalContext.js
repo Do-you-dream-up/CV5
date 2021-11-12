@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-
-const OPTIONS = {dismissable: true, variant: 'center'};
-
+const OPTIONS = { dismissable: true, variant: 'center' };
 
 export const ModalContext = React.createContext();
 export function ModalProvider({ children }) {
-
-  const [ Component, setComponent ] = useState(null);
-  const [ onReject, setOnReject ] = useState(null);
-  const [ onResolve, setOnResolve ] = useState(null);
-  const [ options, setOptions ] = useState(OPTIONS);
-  const [ thinking, setThinking ] = useState(false);
+  const [Component, setComponent] = useState(null);
+  const [onReject, setOnReject] = useState(null);
+  const [onResolve, setOnResolve] = useState(null);
+  const [options, setOptions] = useState(OPTIONS);
+  const [thinking, setThinking] = useState(false);
 
   /**
    * Initialize values for a modal element. Values are further utilized by the
@@ -26,25 +23,29 @@ export function ModalProvider({ children }) {
    * @param {Object} [options] - Extra options to pass to the modal component.
    * @returns {Promise}
    */
-  const modal = (Component, action, options) => new Promise((resolve, reject) => {
-    setComponent(() => Component);
-    setOnReject(() => onCleanup(reject));
-    setOnResolve(() => data => {
-      if (typeof action === 'function') {
-        setThinking(true);
-        setTimeout(() => action(data).then(
-          response => onCleanup(resolve)(response),
-          response => onCleanup(reject)(response),
-        ), 1000);
-      }
-      else {
-        onCleanup(resolve)();
-      }
+  const modal = (Component, action, options) =>
+    new Promise((resolve, reject) => {
+      setComponent(() => Component);
+      setOnReject(() => onCleanup(reject));
+      setOnResolve(() => (data) => {
+        if (typeof action === 'function') {
+          setThinking(true);
+          setTimeout(
+            () =>
+              action(data).then(
+                (response) => onCleanup(resolve)(response),
+                (response) => onCleanup(reject)(response),
+              ),
+            1000,
+          );
+        } else {
+          onCleanup(resolve)();
+        }
+      });
+      setOptions((previous) => ({ ...previous, ...options }));
     });
-    setOptions(previous => ({...previous, ...options}));
-  });
 
-  const onCleanup = callback => data => {
+  const onCleanup = (callback) => (data) => {
     setComponent(null);
     setOnReject(null);
     setOnResolve(null);
@@ -55,16 +56,20 @@ export function ModalProvider({ children }) {
     }
   };
 
-  return <ModalContext.Provider children={children} value={{
-    Component,
-    modal,
-    onReject,
-    onResolve,
-    options,
-    thinking,
-  }} />;
+  return (
+    <ModalContext.Provider
+      children={children}
+      value={{
+        Component,
+        modal,
+        onReject,
+        onResolve,
+        options,
+        thinking,
+      }}
+    />
+  );
 }
-
 
 ModalProvider.propTypes = {
   children: PropTypes.node,

@@ -7,7 +7,7 @@ const now = DayJs().format('YYYY-MM-DD HH:mm');
 const configuration = require('./public/override/configuration.json');
 
 function getCommitHash() {
-  if (process?.env?.CI_COMMIT_SHORT_SHA)
+  if (process.env.CI_COMMIT_SHORT_SHA)
     return process.env.CI_COMMIT_SHORT_SHA;
   return new GitRevision().commithash().substring(0, 7);
 }

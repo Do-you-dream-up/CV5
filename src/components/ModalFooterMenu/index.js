@@ -9,12 +9,16 @@ import Button from '../Button';
 import MenuList from '../MenuList';
 import useStyles from './styles';
 
-
 /**
  * Footer menu. Display a list of hidden features.
  */
-export default function ModalFooterMenu({ className, component, onReject, onResolve, ...rest }) {
-
+export default function ModalFooterMenu({
+  className,
+  component,
+  onReject,
+  onResolve,
+  ...rest
+}) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles();
   const { t } = useTranslation('translation');
@@ -22,10 +26,15 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
   const print = t('footer.menu.print');
   const email = t('footer.menu.email');
   const gdpr = t('footer.menu.gdpr');
-  const title = t('footer.menu.title', {defaultValue: ''});
+  const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
-  const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
-  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+  const { active: spaceChangeActive, items: spacesArray } =
+    configuration.spaces;
+  const {
+    exportConversation,
+    printConversation: _printConversation,
+    sendGdprData,
+  } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
@@ -37,47 +46,46 @@ export default function ModalFooterMenu({ className, component, onReject, onReso
       icon: 'icons/dydu-printer-black.svg',
       onClick: interactions.length > 1 ? () => printConversation() : null,
       text: print,
-      when: !!_printConversation
+      when: !!_printConversation,
     },
     {
       icon: 'icons/dydu-email-send-black.svg',
       onClick: () => window.dydu.promptEmail.prompt('exportConv'),
       text: email,
-      when: !!exportConversation
+      when: !!exportConversation,
     },
     {
       icon: 'icons/dydu-database-black.svg',
-      onClick: spaceChangeActive && spacesArray.length > 1 ? () => window.dydu.space.prompt() : null,
-      text: [spaces, dydu.getSpace()].filter(it => it).join(': '),
+      onClick:
+        spaceChangeActive && spacesArray.length > 1
+          ? () => window.dydu.space.prompt()
+          : null,
+      text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
     },
     {
       icon: 'icons/dydu-shield-lock-black.svg',
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
       text: gdpr,
-      when: !!sendGdprData
-    }
+      when: !!sendGdprData,
+    },
   ];
 
   return React.createElement(
     component,
-    {className: c('dydu-footer-menu', className, classes.root), ...rest},
-    (
-      <>
-        {title && <div children={title} className={classes.title} />}
-        <MenuList items={items} onClose={onResolve} />
-        <div children={title} className={classes.actions}>
-          <Button children={close} grow onClick={onResolve} />
-        </div>
-      </>
-    ),
+    { className: c('dydu-footer-menu', className, classes.root), ...rest },
+    <>
+      {title && <div children={title} className={classes.title} />}
+      <MenuList items={items} onClose={onResolve} />
+      <div children={title} className={classes.actions}>
+        <Button children={close} grow onClick={onResolve} />
+      </div>
+    </>,
   );
 }
-
 
 ModalFooterMenu.defaultProps = {
   component: 'div',
 };
-
 
 ModalFooterMenu.propTypes = {
   className: PropTypes.string,

@@ -9,7 +9,7 @@ const classes = createUseStyles({
   },
 })();
 
-<div style={{position: 'relative', width: '100%'}}>
+<div style={{ position: 'relative', width: '100%' }}>
   <Progress className={classes.progress} />
-</div>
+</div>;
 ```

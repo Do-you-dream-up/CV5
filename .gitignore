@@ -1,15 +1,8 @@
 /build/
 /node_modules/
 /styleguide/
-/public/override/configuration.json
-/public/override/style.css
-/public/override/theme.json
-/public/override/bot.json
-hosts.yml
-deliver*
-.gitlab-ci.yml
-.npmrc
 .DS_Store
 /public/assets/.DS_Store
 /public/.DS_Store
 src/.DS_Store
+.idea/

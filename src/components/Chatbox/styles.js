@@ -1,6 +1,5 @@
 import { createUseStyles } from 'react-jss';
 
-
 const extendedStyles = {
   bottom: 0,
   height: '100% !important',
@@ -9,11 +8,10 @@ const extendedStyles = {
   width: '100% !important',
 };
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   body: () => ({
     '&:focus': {
-      outline: 'none'
+      outline: 'none',
     },
     flexGrow: 1,
     overflowY: 'auto',
@@ -62,14 +60,14 @@ export default createUseStyles(theme => ({
     display: 'none !important',
   }),
   srOnly: {
-    'border': 0,
-    'clip': 'rect(0, 0, 0, 0)',
-    'height': '1px',
-    'margin': '-1px',
-    'overflow': 'hidden',
-    'padding': 0,
-    'position': 'absolute',
+    border: 0,
+    clip: 'rect(0, 0, 0, 0)',
+    height: '1px',
+    margin: '-1px',
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
     'white-space': 'nowrap',
-    'width': '1px',
+    width: '1px',
   },
 }));

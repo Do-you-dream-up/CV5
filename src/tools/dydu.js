@@ -3,46 +3,52 @@ import Bowser from 'bowser';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-// eslint-disable-next-line import/no-unresolved
-import bot from '../../public/override/bot';
-// eslint-disable-next-line import/no-unresolved
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(
-  window.navigator.userAgent
+  window.navigator.userAgent,
 ).parsedResult;
 
+const getUrl = window.location.href;
+
 /**
- * Read the bot ID and the API server from URL parameters when found. Default to
- * the bot configuration.
+ * - Wait for the bot ID and the API server then create default API based on the server.
+ * - Use BOT from local storage for the chatbox preview in Channels
+ * - Protocol http is used when bliss is used in local with Channels
  */
-const BOT = Object.assign(
-  {},
-  bot,
-  (({ backUpServer, bot: id, server }) => ({
-    ...(id && { id }),
-    ...(server && { server }),
-    ...(backUpServer && { backUpServer }),
-  }))(qs.parse(window.location.search, { ignoreQueryPrefix: true }))
-);
+
+let BOT, protocol, API;
+
+(async function getBotInfo() {
+  const response = await axios.get(
+    `${process.env.PUBLIC_URL}override/bot.json`,
+  );
+  BOT = Object.assign(
+    {},
+    channelsBot ? channelsBot : response.data,
+    (({ backUpServer, bot: id, server }) => ({
+      ...(id && { id }),
+      ...(server && { server }),
+      ...(backUpServer && { backUpServer }),
+    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
+  );
+  protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
+  API = axios.create({
+    baseURL: `${protocol}://${BOT.server}/servlet/api/`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    },
+  });
+})();
 
 /**
  * Solution type
  */
 const ASSISTANT = 'ASSISTANT';
-
-/**
- * Prefix the API and add generic headers.
- */
-const API = axios.create({
-  baseURL: `https://${BOT.server}/servlet/api/`,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-  },
-});
 
 const variables = {};
 
@@ -185,8 +191,8 @@ export default new (class Dydu {
     const path = `chat/gdpr/${BOT.id}/`;
     return Promise.all(
       methods.map((it) =>
-        this.emit(API.post, path, qs.stringify({ ...data, object: it }))
-      )
+        this.emit(API.post, path, qs.stringify({ ...data, object: it })),
+      ),
     );
   };
 
@@ -211,6 +217,9 @@ export default new (class Dydu {
       space: this.getLocale(),
     });
     const path = `chat/context/${BOT.id}/`;
+    if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
+      return Local.byBotId(BOT.id).get(Local.names.context);
+    }
     if (Local.get(Local.names.context) && !forced) {
       return Local.get(Local.names.context);
     }
@@ -229,7 +238,7 @@ export default new (class Dydu {
       const { defaultLanguage, getDefaultLanguageFromSite } =
         configuration.application;
       const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split(
-        '-'
+        '-',
       )[0];
       getDefaultLanguageFromSite
         ? this.setLocale(document.documentElement.lang)
@@ -282,18 +291,15 @@ export default new (class Dydu {
    *
    * @returns {Promise}
    */
-  history = () =>
-    new Promise((resolve, reject) => {
-      const contextId = Local.get(Local.names.context);
-      if (contextId) {
-        const data = qs.stringify({ contextUuid: contextId });
-        const path = `chat/history/${BOT.id}/`;
-        resolve(this.emit(API.post, path, data));
-      }
- else {
-        reject();
-      }
-    });
+  history = async () => {
+    const contextId = await this.getContextId();
+    if (contextId) {
+      const data = qs.stringify({ contextUuid: contextId });
+      const path = `chat/history/${BOT.id}/`;
+      const response = await this.emit(API.post, path, data);
+      return response;
+    }
+  };
 
   /**
    * Fetch pushrules.
@@ -347,6 +353,7 @@ export default new (class Dydu {
   setContextId = (value) => {
     if (value !== undefined) {
       Local.set(Local.names.context, value);
+      Local.byBotId(BOT.id).set(Local.names.context, value);
     }
   };
 
@@ -362,10 +369,9 @@ export default new (class Dydu {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);
-      }
- else {
+      } else {
         reject(
-          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`
+          `Setting an unknown locale '${locale}'. Possible values: [${languages}].`,
         );
       }
     });
@@ -392,8 +398,7 @@ export default new (class Dydu {
       if (this.space !== value) {
         this.space = value;
         resolve(value);
-      }
- else {
+      } else {
         reject(value);
       }
     });
@@ -434,6 +439,7 @@ export default new (class Dydu {
         ? Cookie.get('dydu-oauth-token').id_token
         : null,
       userInput: text,
+      userUrl: getUrl,
       ...(options.extra && { extraParameters: options.extra }),
       variables,
     });
@@ -448,10 +454,12 @@ export default new (class Dydu {
    * @param {number} [size] - Maximum number of topics to retrieve.
    * @returns {Promise}
    */
-  top = (size) => {
+  top = (period, size) => {
     const data = qs.stringify({
       language: this.getLocale(),
       maxKnowledge: size,
+      period: period,
+      space: this.getSpace(),
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);

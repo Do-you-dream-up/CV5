@@ -1,11 +1,10 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   icon: () => ({
     marginRight: '1em',
-    maxHeight: '1em',
-    opacity: .5,
+    maxHeight: '2em',
+    opacity: 0.5,
     overflow: 'hidden',
     width: '1.2em',
   }),

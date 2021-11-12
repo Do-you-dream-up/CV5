@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   base: ({ height, width }) => ({
     backgroundColor: theme.palette.background.skeleton,
     height,

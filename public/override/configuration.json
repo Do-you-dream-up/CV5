@@ -1,0 +1,277 @@
+{
+  "application": {
+    "open": 1,
+    "languages": ["en", "fr"],
+    "defaultLanguage": ["fr"],
+    "getDefaultLanguageFromSite": false, 
+    "cdn":"",
+    "directory":""
+  },
+  "avatar": {
+    "background": false,
+    "request": "",
+    "response": "dydu-logo.svg"
+  },
+  "banner": {
+    "active": false,
+    "storage": true,
+    "dismissable": true,
+    "more": true,
+    "moreIcon": "dydu-open-in-new-white.svg",
+    "moreLink": "https://goo.gle",
+    "transient": false
+  },
+  "carousel": {
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "offsetBetweenCard": 100
+  },
+  "chatbox": {
+    "expandable": true,
+    "margin": 16
+  },
+  "checkAuthorization": {
+    "active": false,
+    "sessionStorageKey": "",
+    "searchKey": ""
+  },
+  "contacts": {
+    "phone": true,
+    "email": true,
+    "socialNetwork": true
+  },
+  "dialog": {
+    "top": true
+  },
+  "dragon": {
+    "active": true,
+    "boundaries": true,
+    "factor": 100,
+    "persist": true
+  },
+  "events": {
+    "active": false,
+    "features": {
+      "chatbox": {
+        "loadChatbox": ["chatboxLoad"],
+        "onMinimize": ["minimize"],
+        "questionSent": ["questionSent"],
+        "rewordDisplay": ["rewordDisplay"]
+      },
+      "gdpr": {
+        "acceptGdpr": ["acceptGdpr"],
+        "getPersonalData": ["getPersonalData"],
+        "deletePersonalData": ["deletePersonalData"],
+        "displayGdpr": ["displayGdpr"]
+      },
+      "onboarding": {
+        "onboardingDisplay": ["onboardingDisplay"],
+        "onboardingCompleted": ["onboardingCompleted"]
+      },
+      "tab": {
+        "contactDisplay": ["contactDisplay"]
+      },
+      "teaser": {
+        "onClick": ["teaserClick"]
+      },
+      "top": {
+        "topDisplay": ["topDisplay"],
+        "topClicked": ["topClicked"]
+      }
+    },
+    "verbosity": 2
+  },
+  "feedback": {
+    "active": true,
+    "askChoices": true,
+    "askComment": true
+  },
+  "font": {
+    "url": ""
+  },
+  "footer": {
+    "translate": true
+  },
+  "header": {
+    "actions": {
+      "close": false,
+      "expand": true,
+      "fontChange": false,
+      "minimize": true,
+      "more": false,
+      "tests": false
+    },
+    "fontSizeChange": {
+      "factor": 0.1,
+      "maxFontSize": 1.3,
+      "minFontSize": 0.75
+    },
+    "icons": {
+      "close": "dydu-close-white.svg",
+      "collapse": "dydu-arrow-collapse-white.svg",
+      "expand": "dydu-arrow-expand-white.svg",
+      "fontIncrease": "dydu-font-plus-white.svg",
+      "fontDecrease": "dydu-font-minus-white.svg",
+      "minimize": "dydu-minimize-white.svg",
+      "more": "dydu-cog-white.svg"
+    },
+    "logo": {
+      "customAvatar": false,
+      "title": true,
+      "image": true,
+      "imageLink": {
+        "misunderstood": "dydu-misunderstood.svg",
+        "reword": "dydu-reword.svg",
+        "understood": "dydu-understood.svg"
+      }
+    }
+  },
+  "input": {
+    "counter": true,
+    "delay": 300,
+    "maxLength": 100
+  },
+  "interaction": {
+    "displayNameBot": false,
+    "displayNameUser": false,
+    "NameUser": "",
+    "NameBot": "",
+    "avatar": {
+      "request": false,
+      "response": true
+    },
+    "loader": [400, 600]
+  },
+  "keycloak": {
+    "enable": false,
+    "realm": "",
+    "url": "",
+    "clientId": ""
+  },
+  "loader": {
+    "size": 5
+  },
+  "menu": {
+    "spacing": 4
+  },
+  "modal": {
+    "maxWidth": "80%",
+    "minWidth": "50%"
+  },
+  "moreOptions": {
+    "exportConversation": false,
+    "printConversation": false,
+    "sendGdprData": false
+  },
+  "oidc": {
+    "enable": false,
+    "clientId": "",
+    "prodPorovider": "",
+    "preprodPorovider": "",
+    "scopes": [""]
+  },
+  "onboarding": {
+    "enable": false,
+    "image1": "dydu-onboarding-1.svg",
+    "image2": "dydu-onboarding-2.svg",
+    "image3": "dydu-onboarding-3.svg"
+  },
+  "pushrules": {
+    "active": true
+  },
+  "root": "dydu-root",
+  "secondary": {
+    "automatic": true,
+    "fixedDimensions": false,
+    "mode": "left",
+    "width": 500,
+    "transient": true
+  },
+  "spaces": {
+    "active": true,
+    "detection": [{
+        "active": false,
+        "mode": "cookie",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "localstorage",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "urlparameter",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "global",
+        "value": "dyduspace"
+      },
+      {
+        "active": false,
+        "mode": "route",
+        "value": {
+          "/": "dydu"
+        }
+      },
+      {
+        "active": false,
+        "mode": "hostname",
+        "value": {
+          "doyoudreamup.com": "dydu"
+        }
+      }
+    ],
+    "items": ["default"]
+  },
+  "suggestions": {
+    "limit": 0
+  },
+  "tabs": {
+    "hasContactTab": false,
+    "items": [{
+        "icon": "icons/dydu-message-text-white.svg",
+        "key": "dialog"
+      },
+      {
+        "icon": "icons/dydu-account-box-white.svg",
+        "key": "contacts"
+      }
+    ],
+    "selected": "dialog",
+    "title": false
+  },
+  "teaser": {
+    "bottom": 16,
+    "right": 16
+  },
+  "templateCarousel": {
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "offsetBetweenCard": 94
+  },
+  "templateProduct": {
+    "readmore": 100
+  },
+  "top": {
+    "period": "Last30Days",
+    "size": 3
+  },
+  "Voice": {
+    "enable": false,
+    "ssml": "true",
+    "sttServerUrl": "",
+    "ttsServerUrl": "",
+    "voice": "Damien",
+    "voiceSpace": "default",
+    "color": "black"
+  },
+  "welcome": {
+    "enable": true,
+    "knowledgeName": "#welcome#"
+  }
+}

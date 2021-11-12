@@ -2,7 +2,6 @@
  * Export ready-to-use dummy texts.
  */
 export const LOREM = {
-
   links: `
     <h2>Links</h2>
     <p>
@@ -31,7 +30,6 @@ export const LOREM = {
     <p>Ullamcorper a lacus vestibulum sed? Ullamcorper eget nulla facilisi etiam!</p>
   `,
 };
-
 
 export const LOREM_HTML = Object.values(LOREM).join('');
 export const LOREM_HTML_SPLIT = Object.values(LOREM).join('<hr />');

@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   active: {},
   bullets: () => ({
     '& > *': {
@@ -25,7 +24,7 @@ export default createUseStyles(theme => ({
     marginTop: '.5em',
   }),
   controls: ({ offset }) => ({
-    '& .dydu-button' : {
+    '& .dydu-button': {
       backgroundColor: 'rgb(196 196 196 /50%)',
     },
     alignItems: 'center',
@@ -34,15 +33,15 @@ export default createUseStyles(theme => ({
     left: '-18px',
     margin: ['0', `${offset}%`, 0],
     padding: [0, '.25em'],
-    position:'absolute',
+    position: 'absolute',
     right: '-18px',
-    top:'calc(50% - 27px)',
+    top: 'calc(50% - 27px)',
   }),
   root: () => ({
     overflow: 'hidden',
     position: 'relative',
   }),
-  step: ({length, offsetBetweenCard}) => ({
+  step: ({ length, offsetBetweenCard }) => ({
     '& .dydu-bubble': {
       height: '100%',
     },
@@ -55,8 +54,8 @@ export default createUseStyles(theme => ({
     margin: [[0], '!important'],
     width: `${offsetBetweenCard / length}%`,
   }),
-  steps: ({index, length, offsetBetweenCard}) => ({
-    '& .dydu-bubble-response' : {
+  steps: ({ index, length, offsetBetweenCard }) => ({
+    '& .dydu-bubble-response': {
       alignItems: 'normal',
     },
     display: 'block',
@@ -64,9 +63,9 @@ export default createUseStyles(theme => ({
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
-    transform: `translate3d(${(index * -offsetBetweenCard / length)}%, 0, 0)`,
+    transform: `translate3d(${(index * -offsetBetweenCard) / length}%, 0, 0)`,
     transitionDuration: '.25s',
     transitionProperty: 'transform',
     width: `${length * 100}%`,
-  })
+  }),
 }));

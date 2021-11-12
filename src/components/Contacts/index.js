@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from  '../../contexts/ConfigurationContext';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
 import useStyles from './styles';
-
 
 /**
  * Contact tab
@@ -23,13 +22,36 @@ export default function Contacts() {
   const socialTitle = t('contacts.socialNetwork.title');
   const socialNetworks = t('contacts.socialNetwork.list');
 
-  return !!ready && (
-    <div className={classes.root}>
-      <Paper elevation={4}>
-        {showPhone && <ContactsList id='phone' title={phoneTitle} list={phones} icon="icons/dydu-phone-black.svg" />}
-        {showEmail && <ContactsList id='email' title={emailTitle} list={emails} icon="icons/dydu-email-black.svg" />}
-        {showSocial && <ContactsList id='social' title={socialTitle} list={socialNetworks} icon="icons/dydu-account-black.svg" />}
-      </Paper>
-    </div>
+  return (
+    !!ready && (
+      <div className={classes.root}>
+        <Paper elevation={4}>
+          {showPhone && (
+            <ContactsList
+              id="phone"
+              title={phoneTitle}
+              list={phones}
+              icon="icons/dydu-phone-black.svg"
+            />
+          )}
+          {showEmail && (
+            <ContactsList
+              id="email"
+              title={emailTitle}
+              list={emails}
+              icon="icons/dydu-email-black.svg"
+            />
+          )}
+          {showSocial && (
+            <ContactsList
+              id="social"
+              title={socialTitle}
+              list={socialNetworks}
+              icon="icons/dydu-account-black.svg"
+            />
+          )}
+        </Paper>
+      </div>
+    )
   );
 }

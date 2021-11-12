@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-
-export default createUseStyles(theme => ({
+export default createUseStyles((theme) => ({
   field: () => ({
     '& > :not(:first-child)': {
       marginLeft: '1em',

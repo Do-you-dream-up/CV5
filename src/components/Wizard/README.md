@@ -2,7 +2,6 @@
 import configuration from '../../tools/configuration.json';
 
 const documentation = {
-
   application: {
     open: ['0: Minimized - 1: Teaser - 2: Open - 3: Maximized', 'Boolean'],
     languages: ['Enabled languages', 'Array'],
@@ -51,7 +50,10 @@ const documentation = {
 
   events: {
     active: ['Enable event tracking', 'Boolean'],
-    features: ['All supported features with arrays containing actions to track', 'Object'],
+    features: [
+      'All supported features with arrays containing actions to track',
+      'Object',
+    ],
     verbosity: ['Log level, the higher the more verbose', 'Number'],
   },
 
@@ -165,19 +167,36 @@ const documentation = {
   },
 };
 
-<div style={{width: '100%'}}>
-  <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', margin: '0px 8px'}}>
-    {Object.entries(configuration).map(([ component, data ]) => (
-      <div style={{marginBottom: 8, maxWidth: '100%', minWidth: '50%'}}>
+<div style={{ width: '100%' }}>
+  <div
+    style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      margin: '0px 8px',
+    }}
+  >
+    {Object.entries(configuration).map(([component, data]) => (
+      <div style={{ marginBottom: 8, maxWidth: '100%', minWidth: '50%' }}>
         <div children={<strong children={component} />} />
-        <div style={{display: 'flex'}}>
-          <pre children={JSON.stringify(data, null, 2)} style={{margin: 0, overflowX: 'auto'}} />
-          <div style={{marginLeft: '1em'}}>
+        <div style={{ display: 'flex' }}>
+          <pre
+            children={JSON.stringify(data, null, 2)}
+            style={{ margin: 0, overflowX: 'auto' }}
+          />
+          <div style={{ marginLeft: '1em' }}>
             {typeof data === 'object' ? (
-              <dl style={{margin: 0}}>
+              <dl style={{ margin: 0 }}>
                 {Object.keys(data).map((key, index) => {
-                  const [ definition, type ] = (documentation[component] || {})[key] || ['-'];
-                  const label = <><code children={key} /> {!!type && <small children={`(${type})`} />}</>;
+                  const [definition, type] = (documentation[component] || {})[
+                    key
+                  ] || ['-'];
+                  const label = (
+                    <>
+                      <code children={key} />{' '}
+                      {!!type && <small children={`(${type})`} />}
+                    </>
+                  );
                   return (
                     <React.Fragment key={index}>
                       <dt children={label} />
@@ -186,11 +205,13 @@ const documentation = {
                   );
                 })}
               </dl>
-            ) : <small children={documentation[component]} />}
+            ) : (
+              <small children={documentation[component]} />
+            )}
           </div>
         </div>
       </div>
     ))}
   </div>
-</div>
+</div>;
 ```
