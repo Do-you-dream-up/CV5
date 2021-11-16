@@ -30,6 +30,7 @@ const meta = () => {
 export const ACTIONS = {
   '#comment#': null,
   '#context#': null,
+  '#contextVariables#': () => window.dydu.chat.reply(dydu.getContextVariables()),
   '#feedback#': null,
   '#host#': () => dydu.whoami().then(window.dydu.chat.reply),
   '#iframe#': null,
