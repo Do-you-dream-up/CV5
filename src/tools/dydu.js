@@ -362,6 +362,18 @@ export default new (class Dydu {
   };
 
   /**
+   * get all contextVariables and format them in an html list:
+   */
+  getContextVariables = () => {
+    let list = '<ul>';
+    for (const [key, value] of Object.entries(variables)) {
+      list += '<li>' + key + '&nbsp;=&nbsp;' + value + '</li>';
+    }
+    list += '</ul>';
+    return list;
+  };
+
+  /**
    * Set the current space and save it in the local storage.
    *
    * @param {string} space - Selected space.
