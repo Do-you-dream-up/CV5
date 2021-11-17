@@ -13,9 +13,9 @@ const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResul
 const getUrl = window.location.href;
 
 /**
- * - Wait for the bot ID and the API server then create default API based on the server.
- * - Use BOT from local storage for the chatbox preview in Channels
- * - Protocol http is used when bliss is used in local with Channels
+ * - Wait for the bot ID and the API server then create default API based on the server ;
+ * - Use BOT from local storage for the chatbox preview in Channels ;
+ * - Protocol http is used when bliss is used in local with Channels.
  */
 
 let BOT, protocol, API;
