@@ -124,11 +124,16 @@ export default function Interaction({
         });
         addBubbles([JSON.stringify(bubble)]);
       } else {
-        const _children = children.reduce(
+        let _children = children.reduce(
           (accumulator, it) =>
             typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it],
           [],
         );
+
+        // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
+        if (_children[0] === '' && secondary) {
+          _children = ['&nbsp;'];
+        }
 
         if (typeof _children === String && _children[0].includes('target="_blank"')) {
           setHasExternalLink(true);
@@ -136,7 +141,18 @@ export default function Interaction({
         addBubbles(_children.filter((it) => it));
       }
     }
-  }, [addBubbles, carouselTemplate, history, carousel, children, productTemplate, ready, templatename, quickTemplate]);
+  }, [
+    addBubbles,
+    carouselTemplate,
+    history,
+    carousel,
+    children,
+    productTemplate,
+    ready,
+    templatename,
+    quickTemplate,
+    secondary,
+  ]);
 
   return (
     (bubbles.length || hasLoader) && (
