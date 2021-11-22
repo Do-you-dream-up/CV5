@@ -65,11 +65,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     (text, options) => {
       text = text.trim();
       if (text && ['redirection_newpage'].indexOf(options.type) === -1) {
+        const toSend = {
+          qualification,
+          extra: options,
+        };
+
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
           addRequest(text);
         }
-        talk(text, { qualification }).then(addResponse);
+        talk(text, toSend).then(addResponse);
       }
     },
     [addRequest, addResponse, qualification],
