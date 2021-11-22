@@ -426,7 +426,9 @@ export default new (class Dydu {
       tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
-      ...(options.extra && { extraParameters: options.extra }),
+      ...(options.extra && {
+        extraParameters: JSON.stringify(options.extra),
+      }),
       variables,
     });
     const contextId = await this.getContextId();
