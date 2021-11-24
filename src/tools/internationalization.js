@@ -28,7 +28,7 @@ i.use(initReactI18next)
     returnObjects: true,
   });
 
-wording &&
+wording.length &&
   wording.map((item) => {
     i.addResourceBundle(item.language, 'translation', item.translation);
   });
