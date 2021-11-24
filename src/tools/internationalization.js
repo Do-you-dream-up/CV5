@@ -3,6 +3,7 @@ import BrowserLanguage from 'i18next-browser-languagedetector';
 import Backend from 'i18next-xhr-backend';
 import { initReactI18next } from 'react-i18next';
 import { Cookie, Local } from './storage';
+const wording = JSON.parse(localStorage.getItem('dydu.wording'));
 
 i.use(initReactI18next)
   .use(Backend)
@@ -25,4 +26,9 @@ i.use(initReactI18next)
     lowerCaseLng: true,
     react: { useSuspense: false },
     returnObjects: true,
+  });
+
+wording &&
+  wording.map((item) => {
+    i.addResourceBundle(item.language, 'translation', item.translation);
   });
