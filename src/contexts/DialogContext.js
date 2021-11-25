@@ -67,15 +67,31 @@ export function DialogProvider({ children }) {
       if (urlRedirect) {
         window.open(urlRedirect, '_blank');
       }
+
       if (guiAction) {
-        parseActions(guiAction).forEach(({ action, parameters }) => {
-          const f = dotget(window, action);
-          if (typeof f === 'function') {
-            f(...parameters);
-          } else {
-            console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
-          }
-        });
+        // check for the dydu functions in the window object
+        if (guiAction.match('^javascript:dydu')) {
+          parseActions(guiAction).forEach(({ action, parameters }) => {
+            const f = dotget(window, action);
+            if (typeof f === 'function') {
+              f(...parameters);
+            } else {
+              console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
+            }
+          });
+        }
+        // temporary solution which uses the dangerous eval() to eval guiaction code
+        else if (guiAction.match('^javascript:')) {
+          const guiActionCode = guiAction.substr(11);
+          eval(
+            'try{' +
+              guiActionCode +
+              '}catch(e) {' +
+              "console.error('Error in Normal GUI action " +
+              guiActionCode.replace(/'/g, "\\'") +
+              "');}",
+          );
+        }
       }
 
       if (typeResponse && typeResponse.match(RE_REWORD)) {
