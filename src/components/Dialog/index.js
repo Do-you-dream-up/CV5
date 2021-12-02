@@ -13,7 +13,6 @@ import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import Welcome from '../Welcome';
-import PoweredBy from '../PoweredBy';
 import useStyles from './styles';
 
 /**
@@ -28,7 +27,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
-  const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
 
   const getContent = (text, templateData, templateName) => {
     const list = [];
@@ -97,17 +95,14 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   }, [open]);
 
   return (
-    <>
-      <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
-        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
-        <Welcome />
-        {interactions.map((it, index) => ({ ...it, key: index }))}
-        {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
-        {prompt === 'spaces' && <Spaces />}
-        {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
-      </div>
-      {poweredByActive && <PoweredBy />}
-    </>
+    <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
+      {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
+      <Welcome />
+      {interactions.map((it, index) => ({ ...it, key: index }))}
+      {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
+      {prompt === 'spaces' && <Spaces />}
+      {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
+    </div>
   );
 }
 

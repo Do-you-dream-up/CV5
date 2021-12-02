@@ -114,10 +114,6 @@ const documentation = {
     top: ['Display the top-knowledges if any', 'Boolean'],
   },
 
-  poweredBy: {
-    active: ['Activate the text powered by dydu at the end of the conversation', 'Boolean'],
-  },
-
   pushrules: {
     active: ['Activate pushrules', 'Boolean'],
   },

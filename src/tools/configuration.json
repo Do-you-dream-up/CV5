@@ -178,9 +178,6 @@
     "image2": "dydu-onboarding-2.svg",
     "image3": "dydu-onboarding-3.svg"
   },
-  "poweredBy": {
-    "active": true
-  },
   "pushrules": {
     "active": true
   },
