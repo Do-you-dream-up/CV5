@@ -69,7 +69,7 @@ export default function Application() {
       Local.set(Local.names.open, 0);
     } else {
       setOpen(mode > 1);
-      setMode(Math.max(mode, 1));
+      setMode(Math.max(mode, 0));
       Local.set(Local.names.open, Math.max(mode, 1));
     }
   }, [hasAuthStorageCheck, mode, isAuthorized]);
