@@ -3,9 +3,9 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false, 
-    "cdn":"",
-    "directory":""
+    "getDefaultLanguageFromSite": false,
+    "cdn":"https://cdn.doyoudreamup.com/",
+    "directory":"development/"
   },
   "avatar": {
     "background": false,
@@ -162,11 +162,12 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": false
+    "sendGdprData": true
   },
   "oidc": {
     "enable": false,
-    "clientId": "",
+    "clientIdProd": "",
+    "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
     "scopes": [""]
