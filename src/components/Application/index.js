@@ -35,13 +35,8 @@ export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
-  const hasWizard =
-    qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !==
-    undefined;
-  const initialMode = Local.get(
-    Local.names.open,
-    ~~configuration.application.open,
-  );
+  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
+  const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
   const [mode, setMode] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(~~initialMode > 1);
@@ -49,32 +44,20 @@ export default function Application() {
   let customFont = configuration.font.url;
   const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 
-  const hasAuthStorageCheck =
-    configuration.checkAuthorization && configuration.checkAuthorization.active;
-  const sessionStorageKey =
-    configuration.checkAuthorization &&
-    configuration.checkAuthorization.sessionStorageKey;
-  const searchKey =
-    configuration.checkAuthorization &&
-    configuration.checkAuthorization.searchKey;
+  const hasAuthStorageCheck = configuration.checkAuthorization && configuration.checkAuthorization.active;
+  const sessionStorageKey = configuration.checkAuthorization && configuration.checkAuthorization.sessionStorageKey;
+  const searchKey = configuration.checkAuthorization && configuration.checkAuthorization.searchKey;
 
   // get the session storage value based on the sessionStorageKey
-  const sessionStorageValue = parseString(
-    sessionStorage.getItem(sessionStorageKey),
-  );
+  const sessionStorageValue = parseString(sessionStorage.getItem(sessionStorageKey));
   // if the session storage value is a deep nested object, check for the searchKey
   const sessionToken =
     sessionStorageValue && typeof sessionStorageValue === 'object'
       ? findValueByKey(sessionStorageValue, searchKey)
       : sessionStorageValue;
-  const isAuthorized =
-    sessionToken && !!sessionToken.length && !!sessionToken[0];
+  const isAuthorized = sessionToken && !!sessionToken.length && !!sessionToken[0];
 
-  if (
-    customFont &&
-    document.getElementById('font') &&
-    customFont !== document.getElementById('font').href
-  ) {
+  if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
 
@@ -105,21 +88,11 @@ export default function Application() {
             {oidcEnabled ? (
               <AuthContext>
                 <Authenticated>
-                  <Chatbox
-                    extended={mode > 2}
-                    open={mode > 1}
-                    toggle={toggle}
-                    mode={mode}
-                  />
+                  <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
                 </Authenticated>
               </AuthContext>
             ) : (
-              <Chatbox
-                extended={mode > 2}
-                open={mode > 1}
-                toggle={toggle}
-                mode={mode}
-              />
+              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
             )}
           </Suspense>
           <Teaser open={mode === 1} toggle={toggle} />

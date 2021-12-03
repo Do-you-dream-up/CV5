@@ -15,7 +15,7 @@ function Scroll({ component, delay, ...rest }) {
 
   const scroll = () => {
     setTimeout(() => {
-      elementRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      elementRef.current && elementRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, delay);
   };
 
@@ -24,7 +24,7 @@ function Scroll({ component, delay, ...rest }) {
       scroll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedReady]);
+  }, [debouncedReady, scroll()]);
 
   return React.createElement(component, { ...rest, ref: elementRef });
 }

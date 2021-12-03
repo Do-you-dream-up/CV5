@@ -38,50 +38,25 @@ export const rulesDefintions = [
     name: 'PageVisitCount',
     processDelays: function (condition, ruleId, externInfos) {
       if (isValidNumericOperator(condition.operator)) {
-        let compliantConditionIndexes = getPageConditions(
-          condition,
-          ruleId,
-          externInfos,
-          true,
-        );
-        let pageConditions = getPageConditions(
-          condition,
-          ruleId,
-          externInfos,
-          false,
-        );
+        let compliantConditionIndexes = getPageConditions(condition, ruleId, externInfos, true);
+        let pageConditions = getPageConditions(condition, ruleId, externInfos, false);
         let isCompliant = false;
         //Check rule compliance
         for (let i = 0; i < pageConditions.length; i++) {
           let conditionId = condition.index + '-' + pageConditions[i].index;
-          let pageVisitCount = parseInt(
-            contextPush.getPushData(ruleId, conditionId, 0),
-          );
+          let pageVisitCount = parseInt(contextPush.getPushData(ruleId, conditionId, 0));
           if (pageConditions[i].type === 'CurrentPage') {
             pageVisitCount++;
           }
-          if (
-            isNumberCompliant(
-              pageVisitCount,
-              condition.value,
-              condition.operator,
-            )
-          ) {
+          if (isNumberCompliant(pageVisitCount, condition.value, condition.operator)) {
             isCompliant = true;
           }
         }
         //Increment past pages values
         for (let j = 0; j < compliantConditionIndexes.length; j++) {
-          let compliantConditionId =
-            condition.index + '-' + compliantConditionIndexes[j];
-          let compliantPageVisitCount =
-            parseInt(contextPush.getPushData(ruleId, compliantConditionId, 0)) +
-            1;
-          contextPush.setPushData(
-            ruleId,
-            compliantConditionId,
-            compliantPageVisitCount,
-          );
+          let compliantConditionId = condition.index + '-' + compliantConditionIndexes[j];
+          let compliantPageVisitCount = parseInt(contextPush.getPushData(ruleId, compliantConditionId, 0)) + 1;
+          contextPush.setPushData(ruleId, compliantConditionId, compliantPageVisitCount);
         }
         if (isCompliant) {
           return VALID_DELAY;
@@ -132,15 +107,9 @@ export const rulesDefintions = [
     name: 'GlobalVisitDuration',
     processDelays: function (condition, ruleId, externInfos) {
       let delay = parseInt(condition.value);
-      if (
-        VALID_DELAY ===
-        isNumberValueCompliant(condition, externInfos.visitDuration)
-      ) {
+      if (VALID_DELAY === isNumberValueCompliant(condition, externInfos.visitDuration)) {
         return VALID_DELAY;
-      } else if (
-        isValidNumericOperator(condition.operator) &&
-        externInfos.visitDuration < delay
-      ) {
+      } else if (isValidNumericOperator(condition.operator) && externInfos.visitDuration < delay) {
         return { delay: delay - externInfos.visitDuration, idleDelay: -1 };
       }
       return INVALID_DELAY;
@@ -185,20 +154,14 @@ export const rulesDefintions = [
   {
     name: 'NumberOfPreviousChat',
     processDelays: function (condition, ruleId, externInfos) {
-      return isNumberValueCompliant(
-        condition,
-        externInfos.numberOfPreviousChat,
-      );
+      return isNumberValueCompliant(condition, externInfos.numberOfPreviousChat);
     },
   },
   {
     name: 'UsedKeyWords',
     processDelays: function (condition, ruleId, externInfos) {
       for (let i = 0; i < externInfos.usedKeywords.length; i++) {
-        if (
-          VALID_DELAY ===
-          isStringValueCompliant(condition, externInfos.usedKeywords[i])
-        ) {
+        if (VALID_DELAY === isStringValueCompliant(condition, externInfos.usedKeywords[i])) {
           return VALID_DELAY;
         }
       }
@@ -208,10 +171,7 @@ export const rulesDefintions = [
   {
     name: 'DurationSinceLastVisit',
     processDelays: function (condition, ruleId, externInfos) {
-      return isNumberValueCompliant(
-        condition,
-        externInfos.durationSinceLastVisit,
-      );
+      return isNumberValueCompliant(condition, externInfos.durationSinceLastVisit);
     },
   },
 ];
@@ -220,15 +180,9 @@ function isStringValueCompliant(condition, valueToCompare) {
   if (isValidStringOperator(condition.operator)) {
     const pattern = computeRegex(condition.value, condition.operator);
     if (condition.operator !== OPERATOR.IsContained) {
-      return isStringCompliant(valueToCompare, pattern, condition.operator)
-        ? VALID_DELAY
-        : INVALID_DELAY;
+      return isStringCompliant(valueToCompare, pattern, condition.operator) ? VALID_DELAY : INVALID_DELAY;
     } else {
-      return condition.value
-        .toLowerCase()
-        .indexOf(valueToCompare.toLowerCase()) >= 0
-        ? VALID_DELAY
-        : INVALID_DELAY;
+      return condition.value.toLowerCase().indexOf(valueToCompare.toLowerCase()) >= 0 ? VALID_DELAY : INVALID_DELAY;
     }
   }
   return INVALID_DELAY;
@@ -256,10 +210,7 @@ function isStringCompliant(url, pattern, operator) {
 function computeRegex(val, operator) {
   val = val || '';
   val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-  if (
-    operator === OPERATOR.StartsWith ||
-    operator === OPERATOR.DoesNotStartWith
-  ) {
+  if (operator === OPERATOR.StartsWith || operator === OPERATOR.DoesNotStartWith) {
     val = '^' + val;
   } else if (operator === OPERATOR.Equals) {
     val = '^' + val + '$';
@@ -300,23 +251,14 @@ function isNumberCompliant(number1, number2, operator) {
   return false;
 }
 
-function getPageConditions(
-  condition,
-  ruleId,
-  externInfos,
-  compliantIndexesOnly,
-) {
+function getPageConditions(condition, ruleId, externInfos, compliantIndexesOnly) {
   const indexes = [];
   const conditions = [];
   getChildrenPageConditions(condition, conditions);
   //Get compliant indexes -> Pages condition in direct children.
   if (compliantIndexesOnly) {
     for (let i = 0; i < conditions.length; i++) {
-      const compliance = processConditionCompliance(
-        conditions[i],
-        ruleId,
-        externInfos,
-      );
+      const compliance = processConditionCompliance(conditions[i], ruleId, externInfos);
       if (compliance.isDelayValid()) {
         indexes.push(conditions[i].index);
       }
@@ -331,10 +273,7 @@ function getChildrenPageConditions(condition, conditions) {
   if (condition.children) {
     for (let i = 0; i < condition.children.length; i++) {
       const childCondition = condition.children[i];
-      if (
-        childCondition.type === 'CurrentPage' ||
-        childCondition.type === 'PastPage'
-      ) {
+      if (childCondition.type === 'CurrentPage' || childCondition.type === 'PastPage') {
         conditions.push(childCondition);
       }
     }

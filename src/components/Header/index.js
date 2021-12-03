@@ -1,12 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -29,16 +23,7 @@ const images = localStorage.getItem('dydu.images');
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
-export default function Header({
-  dialogRef,
-  extended,
-  gdprRef,
-  minimal,
-  onClose,
-  onExpand,
-  onMinimize,
-  ...rest
-}) {
+export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
@@ -51,15 +36,9 @@ export default function Header({
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
-  const {
-    customAvatar,
-    image: hasImage,
-    imageLink,
-    title: hasTitle,
-  } = configuration.header.logo;
+  const { customAvatar, image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
   const defaultAvatar = configuration.avatar.response;
-  const { factor, maxFontSize, minFontSize } =
-    configuration.header.fontSizeChange;
+  const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
   const actionMinimize = t('header.actions.minimize');
@@ -105,14 +84,7 @@ export default function Header({
       dialogRef.current.style.fontSize = `${fontSize}em`;
       Local.set(Local.names.fontSize, fontSize);
     }
-  }, [
-    dialogRef,
-    gdprPassed,
-    gdprRef,
-    fontSize,
-    changeFontSize,
-    hasActions.fontChange,
-  ]);
+  }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
 
   const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto)$/g;
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
@@ -146,8 +118,7 @@ export default function Header({
       ),
       items: () => testsMenu,
       variant: 'icon',
-      when:
-        !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
+      when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
     },
     {
       children: (
@@ -159,10 +130,7 @@ export default function Header({
       ),
       onClick: onToggleMore,
       variant: 'icon',
-      when:
-        !!hasActions.more &&
-        !!gdprPassed &&
-        (!onboardingActive || !onboardingEnable),
+      when: !!hasActions.more && !!gdprPassed && (!onboardingActive || !onboardingEnable),
     },
     {
       children: (
@@ -241,10 +209,7 @@ export default function Header({
   ];
 
   return (
-    <header
-      className={c('dydu-header', classes.root, { [classes.flat]: minimal })}
-      {...rest}
-    >
+    <header className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest}>
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,
@@ -255,27 +220,16 @@ export default function Header({
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img
-                alt="avatar"
-                src={logo || `${process.env.PUBLIC_URL}assets/${imageType}`}
-              />
+              <img alt="avatar" src={logo || `${process.env.PUBLIC_URL}assets/${imageType}`} />
             </div>
           )}
           {!!hasTitle && (
             <div className={c('dydu-header-title', classes.title)}>
-              <Skeleton
-                children={t('header.title')}
-                hide={!ready}
-                variant="text"
-                width="6em"
-              />
+              <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
             </div>
           )}
         </div>
-        <Actions
-          actions={actions}
-          className={c('dydu-header-actions', classes.actions)}
-        />
+        <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
       </div>
       {!minimal && (
         <>
@@ -288,15 +242,9 @@ export default function Header({
 }
 
 Header.propTypes = {
-  dialogRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.any }),
-  ]),
+  dialogRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })]),
   extended: PropTypes.bool,
-  gdprRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.any }),
-  ]),
+  gdprRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })]),
   minimal: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onExpand: PropTypes.func,

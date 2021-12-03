@@ -11,8 +11,6 @@ export default (data = {}, path = '', separator = '.') =>
     .split(separator)
     .reduce(
       (accumulator, it) =>
-        accumulator && Object.prototype.hasOwnProperty.call(accumulator, it)
-          ? accumulator[it]
-          : undefined,
+        accumulator && Object.prototype.hasOwnProperty.call(accumulator, it) ? accumulator[it] : undefined,
       data,
     );

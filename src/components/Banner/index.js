@@ -20,8 +20,7 @@ export default function Banner() {
   const classes = useStyles({ configuration });
   const [show, setShow] = useState(false);
   const { ready, t } = useTranslation('translation');
-  const { active, dismissable, more, moreLink, storage, transient } =
-    configuration.banner;
+  const { active, dismissable, more, moreLink, storage, transient } = configuration.banner;
   const html = sanitize(t('banner.html'));
 
   const dismiss = useCallback(() => {
@@ -44,9 +43,7 @@ export default function Banner() {
   }, [active, storage, dismiss, transient]);
 
   const actions = [
-    ...(dismissable
-      ? [{ children: t('banner.ok'), onClick: onDismiss, secondary: true }]
-      : []),
+    ...(dismissable ? [{ children: t('banner.ok'), onClick: onDismiss, secondary: true }] : []),
     ...(more
       ? [
           {
@@ -67,10 +64,7 @@ export default function Banner() {
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </Skeleton>
         </div>
-        <Actions
-          actions={actions}
-          className={c('dydu-banner-actions', classes.actions)}
-        />
+        <Actions actions={actions} className={c('dydu-banner-actions', classes.actions)} />
       </div>
     )
   );

@@ -10,9 +10,8 @@ const onToggle = () => setHidden((previous) => !previous);
     <div>
       <p>Quasi architecto beatae vitae dicta sunt explicabo.</p>
       <p>
-        Nisi porta lorem mollis aliquam ut porttitor leo a diam sollicitudin
-        tempor id eu! Porttitor massa id neque aliquam vestibulum morbi blandit
-        cursus risus, at ultrices mi tempus imperdiet nulla?
+        Nisi porta lorem mollis aliquam ut porttitor leo a diam sollicitudin tempor id eu! Porttitor massa id neque
+        aliquam vestibulum morbi blandit cursus risus, at ultrices mi tempus imperdiet nulla?
       </p>
     </div>
   </Skeleton>

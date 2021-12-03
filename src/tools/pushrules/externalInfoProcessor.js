@@ -36,7 +36,6 @@ export const ExternalInfoProcessor = [
   },
 
   function durationSinceLastVisitCountProcessor(externalInfos) {
-    externalInfos.durationSinceLastVisit =
-      contextPush.getDurationSinceLastVisit();
+    externalInfos.durationSinceLastVisit = contextPush.getDurationSinceLastVisit();
   },
 ];

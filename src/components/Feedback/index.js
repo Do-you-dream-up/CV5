@@ -139,18 +139,8 @@ export default function Feedback() {
             >
               {({ data, onChange }) => (
                 <>
-                  {commentHelp && (
-                    <p
-                      children={commentHelp}
-                      className="dydu-feedback-comment-help"
-                    />
-                  )}
-                  <div
-                    className={c(
-                      'dydu-feedback-comment-field',
-                      classes.commentField,
-                    )}
-                  >
+                  {commentHelp && <p children={commentHelp} className="dydu-feedback-comment-help" />}
+                  <div className={c('dydu-feedback-comment-field', classes.commentField)}>
                     <textarea
                       autoFocus
                       className={c(classes.commentFieldText, {
@@ -164,10 +154,7 @@ export default function Feedback() {
                       placeholder={t('feedback.comment.placeholder')}
                       value={data.comment}
                     />
-                    <div
-                      children={data.comment}
-                      className={classes.commentFieldShadow}
-                    />
+                    <div children={data.comment} className={classes.commentFieldShadow} />
                   </div>
                 </>
               )}

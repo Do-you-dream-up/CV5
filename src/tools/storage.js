@@ -58,8 +58,7 @@ export class Local {
    *
    * @param {string} [name] - Name of the local storage variable to delete.
    */
-  static clear = (name) =>
-    name ? localStorage.removeItem(name) : localStorage.clear();
+  static clear = (name) => (name ? localStorage.removeItem(name) : localStorage.clear());
 
   /**
    * Retrieve a value stored in the local storage.

@@ -54,13 +54,7 @@ export default function Tabs() {
                   [classes.selected]: current === index,
                 })}
               >
-                {!!icon && (
-                  <img
-                    alt={label}
-                    className={classes.icon}
-                    src={`${process.env.PUBLIC_URL}${icon}`}
-                  />
-                )}
+                {!!icon && <img alt={label} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
                 {!!hasTitle && (
                   <Skeleton hide={!ready} variant="text" width="4em">
                     <span children={label} />

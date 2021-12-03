@@ -18,9 +18,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    configuration.application.defaultLanguage[0],
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
   const { languages } = configuration.application;
   const { translate: hasTranslate } = configuration.footer;
   const actionTranslate = t('footer.translate');
@@ -33,10 +31,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
     languages.sort().map((id) => ({
       icon: `flags/${id}.svg`,
       id,
-      onClick: () =>
-        window.dydu &&
-        window.dydu.localization &&
-        window.dydu.localization.set(id, languages),
+      onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
       text: t(`footer.rosetta.${id}`),
     })),
   ];
@@ -59,10 +54,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   return (
     <footer className={c('dydu-footer', classes.root)} {...rest}>
-      <Actions
-        actions={actions}
-        className={c('dydu-footer-actions', classes.actions)}
-      />
+      <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
       <div className={classes.content}>
         <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
       </div>

@@ -18,13 +18,7 @@ function WizardFieldStatus({ error, status }) {
   }[status || 'pending'];
   return (
     <div className={classes.root}>
-      <Icon
-        {...rest}
-        className={c(classes.base, classes[status])}
-        path={path}
-        size={1}
-        title={title}
-      />
+      <Icon {...rest} className={c(classes.base, classes[status])} path={path} size={1} title={title} />
       {error && <div className={classes.tooltip} children={error} />}
     </div>
   );

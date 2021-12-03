@@ -8,13 +8,7 @@ import useStyles from './styles';
 /**
  * Confirmation modal to close the chatbox.
  */
-export default function ModalClose({
-  className,
-  component,
-  onReject,
-  onResolve,
-  ...rest
-}) {
+export default function ModalClose({ className, component, onReject, onResolve, ...rest }) {
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const body = t('close.body', { defaultValue: '' });
@@ -29,9 +23,7 @@ export default function ModalClose({
       {title && <h3 children={title} className={classes.title} />}
       {body && <p children={body} className={classes.body} />}
       <div children={title} className={classes.actions}>
-        {typeof onReject === 'function' && (
-          <Button children={no} onClick={onReject} secondary={true} />
-        )}
+        {typeof onReject === 'function' && <Button children={no} onClick={onReject} secondary={true} />}
         <Button children={yes} onClick={onResolve} />
       </div>
     </>,

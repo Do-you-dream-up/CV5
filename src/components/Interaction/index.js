@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import {
-  CAROUSSEL_TEMPLATE,
-  PRODUCT_TEMPLATE,
-  QUICK_REPLY,
-} from '../../tools/template';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY } from '../../tools/template';
 import Avatar from '../Avatar';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
@@ -59,10 +55,7 @@ export default function Interaction({
       if (thinking) {
         setTimeout(() => {
           const newBubble = newBubbles.shift();
-          setBubbles((previous) => [
-            ...previous,
-            ...(newBubble ? [newBubble] : []),
-          ]);
+          setBubbles((previous) => [...previous, ...(newBubble ? [newBubble] : [])]);
           if (newBubbles.length) {
             addBubbles(newBubbles);
           } else {
@@ -112,11 +105,7 @@ export default function Interaction({
               product['subtitle'] = el[`subtitle${i}`];
               product['title'] = el[`title${i}`];
               bubble.product = product;
-              if (
-                !Object.values(bubble.product).every(
-                  (param) => param === null || param === undefined,
-                )
-              ) {
+              if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
                 list.push(JSON.stringify(bubble));
               }
             }
@@ -135,18 +124,18 @@ export default function Interaction({
         });
         addBubbles([JSON.stringify(bubble)]);
       } else {
-        const _children = children.reduce(
+        let _children = children.reduce(
           (accumulator, it) =>
-            typeof it === 'string'
-              ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)]
-              : [...accumulator, it],
+            typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it],
           [],
         );
 
-        if (
-          typeof _children === String &&
-          _children[0].includes('target="_blank"')
-        ) {
+        // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
+        if (_children[0] === '' && secondary) {
+          _children = ['&nbsp;'];
+        }
+
+        if (typeof _children === String && _children[0].includes('target="_blank"')) {
           setHasExternalLink(true);
         }
         addBubbles(_children.filter((it) => it));
@@ -162,6 +151,7 @@ export default function Interaction({
     ready,
     templatename,
     quickTemplate,
+    secondary,
   ]);
 
   return (
@@ -176,54 +166,40 @@ export default function Interaction({
           className,
         )}
       >
-        {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && (
-          <Avatar type={type} />
-        )}
+        {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
         <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
           {type === 'request' && NameUser && !!avatarDisplayUser && (
-            <span className={c(`dydu-name-${type}`, classes.nameRequest)}>
-              {NameUser}
-            </span>
+            <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{NameUser}</span>
           )}
           {type === 'response' && NameBot && !!avatarDisplayBot && (
-            <span className={c(`dydu-name-${type}`, classes.nameResponse)}>
-              {NameBot}
-            </span>
+            <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{NameBot}</span>
           )}
           {bubbles.length > 0 &&
-            React.createElement(
-              carousel || carouselTemplate ? Carousel : 'div',
-              {
-                children: bubbles.map((it, index) => {
-                  const attributes = {
-                    carousel: carousel,
-                    component: scroll && !index ? Scroll : undefined,
-                    history: history,
-                    secondary:
-                      index === bubbles.length - 1 ? secondary : undefined,
-                    step: steps
-                      ? steps.length === 1
-                        ? undefined
-                        : steps[index]
-                      : undefined,
-                    type: type,
-                    [typeof it === 'string' ? 'html' : 'children']: it,
-                  };
-                  return (
-                    <Bubble
-                      className={classes.bubble}
-                      hasExternalLink={hasExternalLink}
-                      key={index}
-                      templatename={templatename}
-                      {...attributes}
-                    />
-                  );
-                }),
-                className: c('dydu-interaction-bubbles', classes.bubbles),
-                steps: steps,
-                templatename: templatename,
-              },
-            )}
+            React.createElement(carousel || carouselTemplate ? Carousel : 'div', {
+              children: bubbles.map((it, index) => {
+                const attributes = {
+                  carousel: carousel,
+                  component: scroll && !index ? Scroll : undefined,
+                  history: history,
+                  secondary: index === bubbles.length - 1 ? secondary : undefined,
+                  step: steps ? (steps.length === 1 ? undefined : steps[index]) : undefined,
+                  type: type,
+                  [typeof it === 'string' ? 'html' : 'children']: it,
+                };
+                return (
+                  <Bubble
+                    className={classes.bubble}
+                    hasExternalLink={hasExternalLink}
+                    key={index}
+                    templatename={templatename}
+                    {...attributes}
+                  />
+                );
+              }),
+              className: c('dydu-interaction-bubbles', classes.bubbles),
+              steps: steps,
+              templatename: templatename,
+            })}
           {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
           {!hasLoader && askFeedback && <Feedback />}
         </div>

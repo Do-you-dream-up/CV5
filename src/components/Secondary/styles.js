@@ -30,9 +30,7 @@ export default createUseStyles((theme) => {
       flexDirection: 'column',
       height: configuration.secondary.fixedDimensions ? undefined : height,
       overflowY: 'auto',
-      width: configuration.secondary.fixedDimensions
-        ? configuration.secondary.width
-        : width,
+      width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
       [theme.breakpoints.down('xs')]: {
         height: '100%',
       },

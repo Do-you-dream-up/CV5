@@ -12,13 +12,7 @@ import useStyles from './styles';
 /**
  * Footer menu. Display a list of hidden features.
  */
-export default function ModalFooterMenu({
-  className,
-  component,
-  onReject,
-  onResolve,
-  ...rest
-}) {
+export default function ModalFooterMenu({ className, component, onReject, onResolve, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles();
   const { t } = useTranslation('translation');
@@ -28,13 +22,8 @@ export default function ModalFooterMenu({
   const gdpr = t('footer.menu.gdpr');
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
-  const { active: spaceChangeActive, items: spacesArray } =
-    configuration.spaces;
-  const {
-    exportConversation,
-    printConversation: _printConversation,
-    sendGdprData,
-  } = configuration.moreOptions;
+  const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
+  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
@@ -56,10 +45,7 @@ export default function ModalFooterMenu({
     },
     {
       icon: 'icons/dydu-database-black.svg',
-      onClick:
-        spaceChangeActive && spacesArray.length > 1
-          ? () => window.dydu.space.prompt()
-          : null,
+      onClick: spaceChangeActive && spacesArray.length > 1 ? () => window.dydu.space.prompt() : null,
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
     },
     {

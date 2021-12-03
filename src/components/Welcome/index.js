@@ -17,22 +17,15 @@ export default function Welcome() {
 
   useEffect(() => {
     if (!welcomeText && !teaserMode) {
-      dydu
-        .talk(knowledgeName, { doNotSave: true, hide: true })
-        .then((response) => {
-          setWelcomeText(response.text);
-          setWelcomeSidebar(response.sidebar);
-        });
+      dydu.talk(knowledgeName, { doNotSave: true, hide: true }).then((response) => {
+        setWelcomeText(response.text);
+        setWelcomeSidebar(response.sidebar);
+      });
     }
   }, [knowledgeName, teaserMode, welcomeText]);
 
   return enable && welcomeText ? (
-    <Interaction
-      live
-      type="response"
-      secondary={welcomeSidebar}
-      className={c('dydu-top')}
-    >
+    <Interaction live type="response" secondary={welcomeSidebar} className={c('dydu-top')}>
       {[welcomeText]}
     </Interaction>
   ) : null;

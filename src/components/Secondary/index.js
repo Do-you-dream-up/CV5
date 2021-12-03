@@ -14,8 +14,7 @@ import useStyles from './styles';
  */
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { secondaryActive, secondaryContent, toggleSecondary } =
-    useContext(DialogContext);
+  const { secondaryActive, secondaryContent, toggleSecondary } = useContext(DialogContext);
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
@@ -23,15 +22,8 @@ export default function Secondary({ anchor, mode }) {
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
 
-  if (
-    boundaries &&
-    (mode === 'left' || mode === 'right') &&
-    anchor &&
-    anchor.current &&
-    root.current
-  ) {
-    let { left: anchorLeft, right: anchorRight } =
-      anchor.current.getBoundingClientRect();
+  if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {
+    let { left: anchorLeft, right: anchorRight } = anchor.current.getBoundingClientRect();
     anchorRight = window.innerWidth - anchorRight;
     let { left, right, width } = root.current.getBoundingClientRect();
     right = window.innerWidth - right;
@@ -43,43 +35,16 @@ export default function Secondary({ anchor, mode }) {
   }
 
   return secondaryActive ? (
-    <div
-      className={c(
-        'dydu-secondary',
-        `dydu-secondary-${mode}`,
-        classes.base,
-        classes[mode],
-      )}
-      ref={root}
-    >
+    <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
       <div className={c('dydu-secondary-header', classes.header)}>
-        {title && (
-          <h1
-            children={title}
-            className={c('dydu-secondary-title', classes.title)}
-          />
-        )}
+        {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button
-            color="primary"
-            onClick={toggleSecondary(false)}
-            type="button"
-            variant="icon"
-          >
-            <img
-              alt="Close"
-              src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`}
-              title="Close"
-            />
+          <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
+            <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>
       </div>
-      {body && (
-        <PrettyHtml
-          className={c('dydu-secondary-body', classes.body)}
-          html={body}
-        />
-      )}
+      {body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />}
       {url && (
         <iframe
           allow="fullscreen"
