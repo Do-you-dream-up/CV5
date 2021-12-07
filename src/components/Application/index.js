@@ -1,7 +1,7 @@
 import c from 'classnames';
 import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
-import { AuthContext, Authenticated } from '../../contexts/AuthContext';
+//import { AuthContext, Authenticated } from '../../contexts/AuthContext';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -42,11 +42,12 @@ export default function Application() {
   const [open, setOpen] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
-  const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 
   const hasAuthStorageCheck = configuration.checkAuthorization && configuration.checkAuthorization.active;
   const sessionStorageKey = configuration.checkAuthorization && configuration.checkAuthorization.sessionStorageKey;
   const searchKey = configuration.checkAuthorization && configuration.checkAuthorization.searchKey;
+
+  //const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 
   // get the session storage value based on the sessionStorageKey
   const sessionStorageValue = parseString(sessionStorage.getItem(sessionStorageKey));
@@ -81,23 +82,15 @@ export default function Application() {
 
   return (
     <div className={c('dydu-application', classes.root)}>
-      {hasWizard && <Suspense children={<Wizard />} fallback={null} />}
-      <DialogProvider>
-        <>
-          <Suspense fallback={null}>
-            {oidcEnabled ? (
-              <AuthContext>
-                <Authenticated>
-                  <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
-                </Authenticated>
-              </AuthContext>
-            ) : (
-              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
-            )}
-          </Suspense>
-          <Teaser open={mode === 1} toggle={toggle} />
-        </>
-      </DialogProvider>
+      <Suspense fallback={null}>
+        {hasWizard && <Wizard />}
+        <DialogProvider>
+          <>
+            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
+            <Teaser open={mode === 1} toggle={toggle} />
+          </>
+        </DialogProvider>
+      </Suspense>
     </div>
   );
 }

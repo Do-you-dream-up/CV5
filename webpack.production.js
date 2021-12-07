@@ -34,7 +34,7 @@ module.exports = (env) => {
     mode: 'production',
     output: {
       filename: 'bundle.min.js',
-      jsonpFunction: 'dydu.bliss',
+      chunkLoadingGlobal: 'dydu.bliss',
       path: Path.resolve(__dirname, 'build'),
       publicPath:  ASSET
     },
@@ -47,7 +47,20 @@ module.exports = (env) => {
         }
       }) : () => {},
       new Clean(),
-      new Copy([Path.resolve(__dirname, 'public/')], {ignore: ['index.html', '*.json.sample', '*.css.sample']}),
+      new Copy(
+          {
+            patterns: [
+              {
+                from: "public/**/*",
+                globOptions: {
+                  dot: true,
+                  gitignore: true,
+                  ignore: ["index.html", "*.json.sample", "*.css.sample"],
+                },
+              },
+            ],
+          }
+      ),
       new webpack.DefinePlugin({
         'process.env': {
           OIDC_CLIENT_ID: OIDC_CLIENT_ID,
