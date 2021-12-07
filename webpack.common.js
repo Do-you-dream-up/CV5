@@ -1,6 +1,7 @@
 const Path = require('path');
 const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
+const Eslint = require('eslint-webpack-plugin');
 const Html = require('html-webpack-plugin');
 const { version } = require('./package');
 const now = DayJs().format('YYYY-MM-DD HH:mm');
@@ -18,28 +19,21 @@ module.exports = {
   module: {
     rules: [
       {
-        enforce: 'pre',
         include: Path.resolve(__dirname, 'src/'),
-        loader: 'eslint-loader',
+        use: ["babel-loader"],
         test: /\.js$/,
       },
       {
-        include: Path.resolve(__dirname, 'src/'),
-        loader: 'babel-loader',
-        test: /\.js$/,
-      },
-      {
-        loader: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
         test: /\.css$/,
       },
       {
-        loader: 'file-loader',
+        type: "asset/resource",
         test: /\.(eot|png|svg|ttf|woff|woff2)$/,
       },
       configuration.Voice && configuration.Voice.enable ? {
-        enforce: 'pre',
         include: Path.resolve(__dirname, 'src/'),
-        loader: 'string-replace-loader',
+        use: ["string-replace-loader"],
         options: {
           multiple: [
             {  flags: 'g', replace: "import Voice from '@dydu_ai/voice-module';", search: '//import-voice' },
@@ -55,6 +49,7 @@ module.exports = {
     hints: false,
   },
   plugins: [
+    new Eslint(),
     new Html({
       hash: true,
       template: Path.resolve(__dirname, 'public/index.html'),

@@ -6,6 +6,7 @@ const theme = require('./src/styleguide/theme');
 
 
 module.exports = {
+  webpackConfig: require('./webpack.common.js'),
   assetsDir: path.join(__dirname, 'public/'),
   exampleMode: 'expand',
   ignore: [
