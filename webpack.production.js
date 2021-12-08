@@ -10,8 +10,8 @@ const common = require('./webpack.common');
 module.exports = (env) => {
 
   let ASSET = './';
-  const QUALIFICATION = env[0] === 'prod' ? false : true;
-  const ONPREM = env[1] && env[1] === 'onprem' ?  true : false;
+  const QUALIFICATION = env.prod ? false : true;
+  const ONPREM = env.onprem ?  true : false;
   const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
   const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
   if (process.env.ASSET_FULL_URL) {
@@ -19,13 +19,13 @@ module.exports = (env) => {
     console.log(ASSET);
   }
   else if (env[2]) {
-    ASSET = env[2] +  env[0] + '/';
+    ASSET = env[2] +  env.prod ? 'prod' : 'preprod' + '/';
     console.log(ASSET);
   }
   else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
     if (!ONPREM ) {
-      ASSET += env[0] + '/';
+      ASSET += env.prod ? 'prod' : 'preprod' + '/';
     }
   }
 
