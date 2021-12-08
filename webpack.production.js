@@ -29,6 +29,8 @@ module.exports = (env) => {
     }
   }
 
+  console.log('ASSET ??', ASSET);
+
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',
@@ -51,11 +53,12 @@ module.exports = (env) => {
           {
             patterns: [
               {
-                from: "public/**/*",
+                from: "**/*",
+                context: Path.resolve(__dirname, "public"),
                 globOptions: {
                   dot: true,
                   gitignore: true,
-                  ignore: ["index.html", "*.json.sample", "*.css.sample"],
+                  ignore: ["**/index.html", "**/*.json.sample", "**/*.css.sample"],
                 },
               },
             ],
