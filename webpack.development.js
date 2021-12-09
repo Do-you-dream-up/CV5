@@ -7,19 +7,22 @@ const common = require('./webpack.common');
 module.exports = Merge.smart(common, {
   devServer: {
     compress: true,
-    contentBase: Path.resolve(__dirname, 'public/'),
-    open: true,
-    openPage: '?wizard',
-    overlay: {
-      errors: true,
-      warnings: true,
+    static: {
+      directory: Path.resolve(__dirname, 'public'),
     },
+    open: ['/?wizard'],
+    client: {
+      overlay: {
+        errors: true,
+        warnings: true,
+      },
+    }
   },
   devtool: 'inline-source-map',
   mode: 'development',
   output: {
     filename: 'bundle.min.js',
-    jsonpFunction: 'dydu.bliss',
+    chunkLoadingGlobal: 'dydu.bliss',
     path: Path.resolve(__dirname, 'build/'),
   },
   plugins: [

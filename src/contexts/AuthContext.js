@@ -1,3 +1,4 @@
+/**
 import { createAuthContext } from '@dydu_ai/oidc';
 import configuration from '../../public/override/configuration.json';
 
@@ -10,3 +11,4 @@ const { AuthContext, Authenticated, useToken } = createAuthContext({
 });
 
 export { AuthContext, Authenticated, useToken };
+*/
