@@ -29,8 +29,6 @@ module.exports = (env) => {
     }
   }
 
-  console.log('ASSET ??', ASSET);
-
   return Merge.strategy({plugins: 'prepend'})(common, {
     devtool: 'source-map',
     mode: 'production',
