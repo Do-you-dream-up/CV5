@@ -26,29 +26,10 @@ export default function Contacts() {
     !!ready && (
       <div className={classes.root}>
         <Paper elevation={4}>
-          {showPhone && (
-            <ContactsList
-              id="phone"
-              title={phoneTitle}
-              list={phones}
-              icon="icons/dydu-phone-black.svg"
-            />
-          )}
-          {showEmail && (
-            <ContactsList
-              id="email"
-              title={emailTitle}
-              list={emails}
-              icon="icons/dydu-email-black.svg"
-            />
-          )}
+          {showPhone && <ContactsList id="phone" title={phoneTitle} list={phones} icon="icons/dydu-phone-black.svg" />}
+          {showEmail && <ContactsList id="email" title={emailTitle} list={emails} icon="icons/dydu-email-black.svg" />}
           {showSocial && (
-            <ContactsList
-              id="social"
-              title={socialTitle}
-              list={socialNetworks}
-              icon="icons/dydu-account-black.svg"
-            />
+            <ContactsList id="social" title={socialTitle} list={socialNetworks} icon="icons/dydu-account-black.svg" />
           )}
         </Paper>
       </div>

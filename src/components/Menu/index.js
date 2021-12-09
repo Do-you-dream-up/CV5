@@ -28,10 +28,7 @@ export default function Menu({ component, items, selected, ...rest }) {
   const onClose = () => setOpen(false);
 
   const onDocumentClick = (event) => {
-    if (
-      !anchorRef.current.contains(event.target) &&
-      !menuRef.current.contains(event.target)
-    ) {
+    if (!anchorRef.current.contains(event.target) && !menuRef.current.contains(event.target)) {
       setOpen(false);
     }
   };
@@ -46,25 +43,16 @@ export default function Menu({ component, items, selected, ...rest }) {
       const anchor = anchorRef.current.getBoundingClientRect();
       const menu = menuRef.current.getBoundingClientRect();
       const left = anchor.left + anchor.width / 2 - menu.width / 2;
-      const upwards =
-        window.innerHeight - anchor.y - anchor.height - spacing * 2 <
-        menu.height;
+      const upwards = window.innerHeight - anchor.y - anchor.height - spacing * 2 < menu.height;
       setGeometry({
-        left: Math.max(
-          0,
-          Math.min(
-            left,
-            window.innerWidth - menuRef.current.offsetWidth - spacing,
-          ),
-        ),
+        left: Math.max(0, Math.min(left, window.innerWidth - menuRef.current.offsetWidth - spacing)),
         visibility: 'visible',
         ...(upwards
           ? {
               top: anchor.top - spacing - menu.height,
             }
           : {
-              maxHeight:
-                anchor.topwindow.innerHeight - anchor.bottom - spacing * 2,
+              maxHeight: anchor.topwindow.innerHeight - anchor.bottom - spacing * 2,
               top: anchor.bottom + spacing,
             }),
       });
@@ -89,18 +77,9 @@ export default function Menu({ component, items, selected, ...rest }) {
       })}
       {open && (
         <Portal node={node}>
-          <div
-            className={c('dydu-menu', classes.root)}
-            ref={menuRef}
-            style={geometry}
-          >
+          <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
             {items.map((it, index) => (
-              <MenuList
-                items={it}
-                key={index}
-                onClose={onClose}
-                selected={selected}
-              />
+              <MenuList items={it} key={index} onClose={onClose} selected={selected} />
             ))}
           </div>
         </Portal>

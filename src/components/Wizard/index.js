@@ -24,23 +24,14 @@ export default function Wizard() {
     let filename = 'configuration.json';
     let contentType = 'application/json;charset=utf-8;';
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob(
-        [
-          decodeURIComponent(
-            encodeURI(JSON.stringify(Local.get(Wizard.storage.data))),
-          ),
-        ],
-        { type: contentType },
-      );
+      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(Local.get(Wizard.storage.data))))], {
+        type: contentType,
+      });
       navigator.msSaveOrOpenBlob(blob, filename);
     } else {
       var a = document.createElement('a');
       a.download = filename;
-      a.href =
-        'data:' +
-        contentType +
-        ',' +
-        encodeURIComponent(JSON.stringify(Local.get(Wizard.storage.data)));
+      a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(Local.get(Wizard.storage.data)));
       a.target = '_blank';
       document.body.appendChild(a);
       a.click();
@@ -58,14 +49,7 @@ export default function Wizard() {
                 <h2 className={classes.title} children={parent} />
                 <ul className={classes.fields}>
                   {Object.entries(value).map(([key, value], index) => (
-                    <WizardField
-                      component="li"
-                      key={index}
-                      label={key}
-                      onSave={onSave}
-                      parent={parent}
-                      value={value}
-                    />
+                    <WizardField component="li" key={index} label={key} onSave={onSave} parent={parent} value={value} />
                   ))}
                 </ul>
               </div>

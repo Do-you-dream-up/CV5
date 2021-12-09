@@ -3,7 +3,7 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false, 
+    "getDefaultLanguageFromSite": false,
     "cdn":"",
     "directory":""
   },
@@ -162,11 +162,12 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": false
+    "sendGdprData": true
   },
   "oidc": {
     "enable": false,
-    "clientId": "",
+    "clientIdProd": "",
+    "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
     "scopes": [""]

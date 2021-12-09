@@ -83,8 +83,7 @@ function setCity(value) {
 function getPagesViewedCount() {
   //Should be used after getGlobalVisitCount
   //Should be used only once par page loaded...
-  var count =
-    parseInt(readCookieValue('pagesViewed', 'count', 0, 'session')) + 1;
+  var count = parseInt(readCookieValue('pagesViewed', 'count', 0, 'session')) + 1;
   setPagesViewedCount(count);
   return count;
 }
@@ -95,9 +94,7 @@ function computeDurationSinceLastVisit(now) {
 }
 
 function getDurationSinceLastVisit() {
-  return (
-    parseInt(readCookieValue('lastvisit', 'durationsince', 0, 'global')) / 1000
-  );
+  return parseInt(readCookieValue('lastvisit', 'durationsince', 0, 'global')) / 1000;
 }
 
 function resetSessionCount(now) {

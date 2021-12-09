@@ -27,10 +27,7 @@ function WizardField({ component, label, onSave, parent, value: oldValue }) {
   };
 
   const onChange = (event) => {
-    const newValue =
-      event.target.type === 'checkbox'
-        ? event.target.checked
-        : event.target.value;
+    const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setError(null);
     setStatus(WizardField.status.pending);
     setValue(newValue);

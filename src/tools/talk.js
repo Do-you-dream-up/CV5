@@ -6,8 +6,7 @@ import { LOREM_HTML } from './lorem';
  * Forge the #meta# response and add it the conversation.
  */
 const meta = () => {
-  const { parsedResult: { browser = {}, os = {}, platform = {} } = {} } =
-    Bowser.getParser(window.navigator.userAgent);
+  const { parsedResult: { browser = {}, os = {}, platform = {} } = {} } = Bowser.getParser(window.navigator.userAgent);
   const html = [
     '<dl>',
     ...[
@@ -31,14 +30,14 @@ const meta = () => {
 export const ACTIONS = {
   '#comment#': null,
   '#context#': null,
+  '#contextVariables#': () => window.dydu.chat.reply(dydu.getContextVariables()),
   '#feedback#': null,
   '#host#': () => dydu.whoami().then(window.dydu.chat.reply),
   '#iframe#': null,
   '#lorem#': () => window.dydu.lorem.standard(),
   '#meta#': meta,
   '#reset#': () => dydu.reset().then(window.dydu.chat.empty),
-  '#secondary#': () =>
-    window.dydu.ui.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
+  '#secondary#': () => window.dydu.ui.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
   '#template#': null,

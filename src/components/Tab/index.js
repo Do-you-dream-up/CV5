@@ -11,11 +11,7 @@ function Tab({ children, component, render, value, ...rest }) {
   const display = should(value);
 
   return render || display
-    ? React.createElement(
-        component,
-        { ...(render && !display && { style: { display: 'none' } }), ...rest },
-        children,
-      )
+    ? React.createElement(component, { ...(render && !display && { style: { display: 'none' } }), ...rest }, children)
     : null;
 }
 

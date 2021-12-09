@@ -65,7 +65,7 @@ export default function Top({ className, component, ...rest }) {
           {items.map(({ reword }, index) => {
             const onAsk = (event) => {
               onAskHandler(reword);
-              event.stopPropagation();
+              event.preventDefault();
             };
             return (
               <li key={index}>

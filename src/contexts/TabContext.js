@@ -10,9 +10,7 @@ export function TabProvider({ children }) {
   const [tabs, setTabs] = useState();
 
   const find = useCallback(
-    (value) =>
-      tabs &&
-      tabs.findIndex((it, index) => value === it.key || value === index),
+    (value) => tabs && tabs.findIndex((it, index) => value === it.key || value === index),
     [tabs],
   );
 

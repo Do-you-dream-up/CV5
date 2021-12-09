@@ -23,9 +23,7 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
   const onSubmit = ({ email, withForget, withGet }) => {
     setPrompt('');
     if (type === 'gdpr') {
-      const method = [withForget && 'Delete', withGet && 'Get'].filter(
-        (it) => it,
-      );
+      const method = [withForget && 'Delete', withGet && 'Get'].filter((it) => it);
       method.map((val) => {
         event(`${val.toLowerCase()}PersonalData`);
       });
@@ -34,12 +32,10 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
         () => window.dydu.chat.reply(t('gdpr.get.error')),
       );
     } else if (type === 'exportConv') {
-      dydu
-        .exportConversation(email, { botLabel: 'Chatbot', userLabel: 'Moi' })
-        .then(
-          () => window.dydu.chat.reply(t('exportConv.get.success')),
-          () => window.dydu.chat.reply(t('exportConv.get.error')),
-        );
+      dydu.exportConversation(email, { botLabel: 'Chatbot', userLabel: 'Moi' }).then(
+        () => window.dydu.chat.reply(t('exportConv.get.success')),
+        () => window.dydu.chat.reply(t('exportConv.get.error')),
+      );
     }
   };
 
@@ -78,45 +74,15 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
                 </label>
                 {type === 'gdpr' && (
                   <>
-                    <label
-                      className={c(
-                        'dydu-gdpr-form-field',
-                        classes.fieldCheckbox,
-                      )}
-                    >
-                      <input
-                        checked={data.withGet || ''}
-                        name="withGet"
-                        onChange={onChange}
-                        type="checkbox"
-                      />
-                      <Skeleton
-                        height="1em"
-                        hide={!ready}
-                        variant="paragraph"
-                        width="16em"
-                      >
+                    <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
+                      <input checked={data.withGet || ''} name="withGet" onChange={onChange} type="checkbox" />
+                      <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
                         <div children={t('gdpr.form.get.description')} />
                       </Skeleton>
                     </label>
-                    <label
-                      className={c(
-                        'dydu-gdpr-form-field',
-                        classes.fieldCheckbox,
-                      )}
-                    >
-                      <input
-                        checked={data.withForget || ''}
-                        name="withForget"
-                        onChange={onChange}
-                        type="checkbox"
-                      />
-                      <Skeleton
-                        height="1em"
-                        hide={!ready}
-                        variant="paragraph"
-                        width="16em"
-                      >
+                    <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
+                      <input checked={data.withForget || ''} name="withForget" onChange={onChange} type="checkbox" />
+                      <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
                         <div children={t('gdpr.form.forget.description')} />
                       </Skeleton>
                     </label>

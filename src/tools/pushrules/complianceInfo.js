@@ -59,10 +59,7 @@ export default function ComplianceInfo(delays, priority) {
   };
 
   this.mergeDelayIfSmaller = function (other) {
-    if (
-      this.delays.delay === -1 ||
-      (other.delays.delay >= 0 && other.delays.delay < this.delays.delay)
-    ) {
+    if (this.delays.delay === -1 || (other.delays.delay >= 0 && other.delays.delay < this.delays.delay)) {
       this.delays.delay = other.delays.delay;
       return true;
     }
@@ -78,10 +75,7 @@ export default function ComplianceInfo(delays, priority) {
       //Condition complies only if idleDelay is respected.
       this.delays.delay = -1;
     }
-    this.delays.idleDelay = Math.max(
-      this.delays.idleDelay,
-      other.delays.idleDelay,
-    );
+    this.delays.idleDelay = Math.max(this.delays.idleDelay, other.delays.idleDelay);
   };
 
   this.mergeDelaysForOrCondition = function (other) {
@@ -93,8 +87,7 @@ export default function ComplianceInfo(delays, priority) {
   this.mergeIdleDelayIfSmaller = function (other) {
     if (
       this.delays.idleDelay === -1 ||
-      (other.delays.idleDelay >= 0 &&
-        other.delays.idleDelay < this.delays.idleDelay)
+      (other.delays.idleDelay >= 0 && other.delays.idleDelay < this.delays.idleDelay)
     ) {
       this.delays.idleDelay = other.delays.idleDelay;
       return true;

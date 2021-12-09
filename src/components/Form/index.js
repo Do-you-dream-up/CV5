@@ -12,24 +12,14 @@ import useStyles from './styles';
  * Children should be a callback which accepts the form data and the field
  * onchange callback as parameters.
  */
-export default function Form({
-  children,
-  className,
-  onDismiss,
-  onReject,
-  onResolve,
-  thinking,
-}) {
+export default function Form({ children, className, onDismiss, onReject, onResolve, thinking }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles();
-  const currentSpace = window.dydu
-    ? window.dydu.space.get()
-    : configuration.spaces.items[0];
+  const currentSpace = window.dydu ? window.dydu.space.get() : configuration.spaces.items[0];
   const [data, setData] = useState({ space: currentSpace });
   const { t } = useTranslation('translation');
 
-  const getSubmitIcon = () =>
-    thinking && `${process.env.PUBLIC_URL}icons/dydu-loading-white.svg`;
+  const getSubmitIcon = () => thinking && `${process.env.PUBLIC_URL}icons/dydu-loading-white.svg`;
 
   const onCancel =
     typeof onReject === 'function'
@@ -72,15 +62,9 @@ export default function Form({
   ];
 
   return (
-    <form
-      className={c('dydu-form', classes.root, className)}
-      onSubmit={onSubmit}
-    >
+    <form className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
       <div children={children({ data, onChange })} className={classes.body} />
-      <Actions
-        actions={actions}
-        className={c('dydu-form-actions', classes.actions)}
-      />
+      <Actions actions={actions} className={c('dydu-form-actions', classes.actions)} />
     </form>
   );
 }
