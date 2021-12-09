@@ -25,7 +25,7 @@ module.exports = (env) => {
   else if (configuration.application.cdn && configuration.application.directory) {
     ASSET =  configuration.application.cdn + configuration.application.directory;
     if (!ONPREM ) {
-      ASSET += env.prod ? 'prod' : 'preprod' + '/';
+      ASSET += env.prod ? 'prod/' : 'preprod/';
     }
   }
 
