@@ -54,6 +54,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const understood = images && JSON.parse(images) && JSON.parse(images).understood;
   const misunderstood = images && JSON.parse(images) && JSON.parse(images).misunderstood;
   const reword = images && JSON.parse(images) && JSON.parse(images).reword;
+  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+  const { interactions } = useContext(DialogContext);
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
@@ -146,7 +148,10 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       ),
       onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.more && !!gdprPassed && (!onboardingActive || !onboardingEnable),
+      when:
+        (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
+        !!gdprPassed &&
+        (!onboardingActive || !onboardingEnable),
     },
     {
       children: (
