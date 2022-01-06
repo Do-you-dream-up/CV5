@@ -68,12 +68,13 @@ export default function Application() {
     if (hasAuthStorageCheck && !isAuthorized) {
       setMode(0);
       Local.set(Local.names.open, 0);
-    } else {
-      setOpen(mode > 1);
-      setMode(Math.max(mode, 0));
-      Local.set(Local.names.open, Math.max(mode, 1));
     }
-  }, [hasAuthStorageCheck, mode, isAuthorized]);
+  }, [hasAuthStorageCheck, isAuthorized]);
+
+  useEffect(() => {
+    setOpen(mode > 1);
+    Local.set(Local.names.open, Math.max(mode, 1));
+  }, [mode]);
 
   useEffect(() => {
     event('loadChatbox');
