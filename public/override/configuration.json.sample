@@ -99,7 +99,6 @@
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": false,
       "tests": false
     },
     "fontSizeChange": {
