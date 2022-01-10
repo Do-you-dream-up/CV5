@@ -102,10 +102,10 @@ export default function Carousel({ children, className, steps, templatename, ...
         </div>
       )}
       {!!hasControls && length > 1 && (
-        <div className={c('dydu-carousel-controls', classes.controls)}>
-          <Actions actions={previousAction} />
-          <Actions actions={nextAction} />
-        </div>
+        <>
+          <Actions actions={previousAction} targetStyleKey="arrowButtonLeft" />
+          <Actions actions={nextAction} targetStyleKey="arrowButtonRight" />
+        </>
       )}
     </div>
   );
