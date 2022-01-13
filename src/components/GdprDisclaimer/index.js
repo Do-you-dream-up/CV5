@@ -2,6 +2,7 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
 import sanitize from '../../tools/sanitize';
@@ -13,9 +14,11 @@ import useStyles from './styles';
  * GDPR disclaimer. Prompt the user at first visit for clearance.
  */
 export default function GdprDisclaimer({ children, className, component, gdprRef, ...rest }) {
+  const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
   const { gdprPassed, onAccept, onDecline } = useContext(GdprContext) || {};
+  const enable = configuration.gdprDisclaimer && configuration.gdprDisclaimer.enable;
   const event = useContext(EventsContext).onEvent('gdpr');
 
   const actions = [
@@ -33,8 +36,9 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return !gdprPassed
-    ? React.createElement(
+  return !enable || gdprPassed
+    ? children
+    : React.createElement(
         component,
         {
           className: c('dydu-gdpr-disclaimer', className, classes.root),
@@ -51,8 +55,7 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
           )}
           <Actions actions={actions} className={c('dydu-gdpr-disclaimer-actions', classes.actions)} />
         </>,
-      )
-    : children;
+      );
 }
 
 GdprDisclaimer.defaultProps = {
