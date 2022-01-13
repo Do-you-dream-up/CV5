@@ -93,6 +93,9 @@
   "footer": {
     "translate": true
   },
+    "gdprDisclaimer": {
+    "enable": true
+  },
   "header": {
     "actions": {
       "close": false,
