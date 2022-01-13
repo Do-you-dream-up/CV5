@@ -1,6 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import Button from '../Button';
 import Menu from '../Menu';
 import useStyles from './styles';
@@ -11,12 +11,15 @@ import useStyles from './styles';
  * Usually these can take the form of a button list at the bottom of a paper component,
  * or at the top-right of a card component.
  */
-export default function Actions({ actions, className }) {
+export default function Actions({ actions, className, targetStyleKey }) {
   const classes = useStyles();
   actions = actions.filter((it) => it.when === undefined || it.when);
+
+  const _classes = useMemo(() => classes[targetStyleKey] || classes.root, [targetStyleKey, classes]);
+
   return (
     !!actions.length && (
-      <div className={c('dydu-actions', classes.root, className)}>
+      <div className={c('dydu-actions', _classes, className)}>
         {actions.map(({ items, selected, type = 'button', when, ...rest }, index) =>
           React.createElement(items ? Menu : Button, {
             key: index,
@@ -44,4 +47,5 @@ Actions.propTypes = {
     }),
   ),
   className: PropTypes.string,
+  targetStyleKey: PropTypes.string,
 };
