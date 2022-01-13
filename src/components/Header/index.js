@@ -51,6 +51,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const gdprPassed = Local.get(Local.names.gdpr);
   const singleTab = !configuration.tabs.hasContactTab;
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
+  const understood = images && JSON.parse(images) && JSON.parse(images).understood;
+  const misunderstood = images && JSON.parse(images) && JSON.parse(images).misunderstood;
+  const reword = images && JSON.parse(images) && JSON.parse(images).reword;
+  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+  const { interactions } = useContext(DialogContext);
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
@@ -100,6 +105,19 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     ? imageLink.reword
     : defaultAvatar;
 
+  // check for avatar from local storage first for dydubox, if none present get it from assets folder
+  const getAvatar = () => {
+    if (imageType === defaultAvatar) {
+      return logo || `${process.env.PUBLIC_URL}assets/${imageType}`;
+    } else if (imageType === imageLink.understood) {
+      return understood || `${process.env.PUBLIC_URL}assets/${imageType}`;
+    } else if (imageType === imageLink.misunderstood) {
+      return misunderstood || `${process.env.PUBLIC_URL}assets/${imageType}`;
+    } else if (imageType === imageLink.reword) {
+      return reword || `${process.env.PUBLIC_URL}assets/${imageType}`;
+    }
+  };
+
   const testsMenu = [
     Object.keys(ACTIONS).map((it) => ({
       onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, { hide: true })),
@@ -130,7 +148,10 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       ),
       onClick: onToggleMore,
       variant: 'icon',
-      when: !!hasActions.more && !!gdprPassed && (!onboardingActive || !onboardingEnable),
+      when:
+        (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
+        !!gdprPassed &&
+        (!onboardingActive || !onboardingEnable),
     },
     {
       children: (
@@ -220,7 +241,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt="avatar" src={logo || `${process.env.PUBLIC_URL}assets/${imageType}`} />
+              <img alt="avatar" src={getAvatar()} />
             </div>
           )}
           {!!hasTitle && (

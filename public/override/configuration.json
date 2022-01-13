@@ -93,13 +93,15 @@
   "footer": {
     "translate": true
   },
+  "gdprDisclaimer": {
+    "enable": true
+  },
   "header": {
     "actions": {
       "close": false,
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": false,
       "tests": false
     },
     "fontSizeChange": {
@@ -162,7 +164,7 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": true
+    "sendGdprData": false
   },
   "oidc": {
     "enable": false,

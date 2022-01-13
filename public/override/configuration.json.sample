@@ -93,13 +93,15 @@
   "footer": {
     "translate": true
   },
+    "gdprDisclaimer": {
+    "enable": true
+  },
   "header": {
     "actions": {
       "close": false,
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": false,
       "tests": false
     },
     "fontSizeChange": {
