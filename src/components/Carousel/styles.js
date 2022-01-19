@@ -22,6 +22,8 @@ export default createUseStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     marginTop: '.5em',
+    height: '40px',
+    alignItems: 'center',
   }),
   controls: ({ offset }) => ({
     '& .dydu-button': {
