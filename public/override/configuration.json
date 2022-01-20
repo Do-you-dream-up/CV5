@@ -249,7 +249,8 @@
   },
   "teaser": {
     "bottom": 16,
-    "right": 16
+    "right": 16,
+    "displayType": 0
   },
   "templateCarousel": {
     "bullets": true,

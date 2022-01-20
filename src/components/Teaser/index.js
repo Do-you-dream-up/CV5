@@ -16,6 +16,12 @@ import Skeleton from '../Skeleton';
 import useStyles from './styles';
 const images = localStorage.getItem('dydu.images');
 
+const TEASER_TYPES = {
+  AVATAR_AND_TEXT: 0,
+  AVATAR_ONLY: 1,
+  TEXT_ONLY: 2,
+};
+
 /**
  * Minified version of the chatbox.
  */
@@ -29,6 +35,12 @@ export default function Teaser({ open, toggle }) {
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
   const voice = configuration.Voice ? configuration.Voice.enable : false;
+  // DISPLAY TEASER TYPE
+  const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
+  const initialTeaserType =
+    configuration.teaser.displayType > TEXT_ONLY || configuration.teaser.displayType < AVATAR_AND_TEXT
+      ? AVATAR_AND_TEXT
+      : configuration.teaser.displayType;
 
   const onClick = () => {
     event('onClick');
@@ -56,12 +68,16 @@ export default function Teaser({ open, toggle }) {
             [classes.hideOutline]: !tabbing,
           })}
         >
-          <div className={c('dydu-teaser-button', classes.button)}>
-            <Skeleton children={title} hide={!ready} width="3em" />
-          </div>
-          <div className={c('dydu-teaser-brand', classes.brand)}>
-            <img alt={title} src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
-          </div>
+          {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
+            <div className={c('dydu-teaser-button', classes.button)}>
+              <Skeleton children={title} hide={!ready} width="3em" />
+            </div>
+          )}
+          {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
+            <div className={c('dydu-teaser-brand', classes.brand)}>
+              <img alt={title} src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
+            </div>
+          )}
         </div>
         {open && voice && <voice />}
       </div>
