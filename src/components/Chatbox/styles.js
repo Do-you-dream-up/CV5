@@ -53,6 +53,7 @@ export default createUseStyles((theme) => ({
     transitionDuration: '.2s',
     transitionProperty: 'bottom, height, right, transform, width',
     width: 370,
+    zIndex: 10,
     [theme.breakpoints.down('xs')]: extendedStyles,
   }),
   rootExtended: () => extendedStyles,
