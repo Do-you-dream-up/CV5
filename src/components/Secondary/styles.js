@@ -12,6 +12,7 @@ export default createUseStyles((theme) => {
       marginRight: 'unset',
       right: 0,
       width: 'unset !important',
+      top: '3.4em', // size of the chatbox header (minHeight + padding)
     },
   };
 
