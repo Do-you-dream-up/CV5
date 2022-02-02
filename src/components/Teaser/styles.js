@@ -52,6 +52,7 @@ export default createUseStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     position: 'fixed',
+    zIndex: 10,
     right: configuration.teaser.right,
   }),
 }));
