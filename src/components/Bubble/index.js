@@ -2,8 +2,10 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import PrettyHtml from '../PrettyHtml';
@@ -35,10 +37,14 @@ export default function Bubble({
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
+  const theme = useTheme();
+  const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
-  const automaticSecondary = !!configuration.secondary.automatic;
+  const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
+  const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
+  const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
