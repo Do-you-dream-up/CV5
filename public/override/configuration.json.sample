@@ -185,7 +185,10 @@
   },
   "root": "dydu-root",
   "secondary": {
-    "automatic": true,
+    "automatic": {
+      "desktop": true,
+      "fullScreen": false
+    },
     "fixedDimensions": false,
     "mode": "left",
     "width": 500,
