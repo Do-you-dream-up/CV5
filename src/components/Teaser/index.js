@@ -38,7 +38,9 @@ export default function Teaser({ open, toggle }) {
   // DISPLAY TEASER TYPE
   const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
   const initialTeaserType =
-    configuration.teaser.displayType > TEXT_ONLY || configuration.teaser.displayType < AVATAR_AND_TEXT
+    !configuration.teaser.displayType ||
+    configuration.teaser.displayType > TEXT_ONLY ||
+    configuration.teaser.displayType < AVATAR_AND_TEXT
       ? AVATAR_AND_TEXT
       : configuration.teaser.displayType;
 

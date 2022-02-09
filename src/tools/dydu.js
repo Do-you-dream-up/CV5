@@ -429,7 +429,7 @@ export default new (class Dydu {
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
-      variables,
+      variables: JSON.stringify(variables),
     });
     const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
