@@ -2,9 +2,11 @@ import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'react-jss';
 import { useSwipeable } from 'react-swipeable';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import useStyles from './styles';
@@ -16,6 +18,8 @@ import useStyles from './styles';
  */
 export default function Carousel({ children, className, steps, templatename, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
+  const theme = useTheme();
+  const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { offset, offsetBetweenCard } = templatename ? configuration.templateCarousel : configuration.carousel;
   const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
@@ -25,7 +29,9 @@ export default function Carousel({ children, className, steps, templatename, ...
   const previous = t('carousel.previous');
   const next = t('carousel.next');
   const length = React.Children.count(children);
-  const automaticSecondary = !!configuration.secondary.automatic;
+  const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
+  const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
+  const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
   const classes = useStyles({ index, length, offset, offsetBetweenCard });
 
@@ -83,9 +89,9 @@ export default function Carousel({ children, className, steps, templatename, ...
 
   return (
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div children={children} className={c('dydu-carousel-steps', classes.steps)}>
+      <div children={children} className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
         {children.map((it, i) => (
-          <div {...handlers} children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
+          <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
         ))}
       </div>
       {!!hasBullets && length > 0 && (
