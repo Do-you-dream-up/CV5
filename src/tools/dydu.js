@@ -6,6 +6,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
@@ -108,6 +109,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
+      solutionUsed: ASSISTANT,
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -206,6 +208,7 @@ export default new (class Dydu {
       clientId: this.getClientId() ? this.getClientId() : null,
       language: this.getLocale(),
       space: this.getLocale(),
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -274,10 +277,12 @@ export default new (class Dydu {
   history = async () => {
     const contextId = await this.getContextId();
     if (contextId) {
-      const data = qs.stringify({ contextUuid: contextId });
+      const data = qs.stringify({
+        contextUuid: contextId,
+        solutionUsed: ASSISTANT,
+      });
       const path = `chat/history/${BOT.id}/`;
-      const response = await this.emit(API.post, path, data);
-      return response;
+      return await this.emit(API.post, path, data);
     }
   };
 
@@ -426,6 +431,7 @@ export default new (class Dydu {
       tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
+      solutionUsed: ASSISTANT,
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
@@ -448,6 +454,7 @@ export default new (class Dydu {
       maxKnowledge: size,
       period: period,
       space: this.getSpace(),
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
