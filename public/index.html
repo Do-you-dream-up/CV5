@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style type="text/css">body { font-family: monospace; margin: 1.2em; }</style>
+    <style type="text/css">body { font-family: monospace; }</style>
     <link id="font" href="" rel="stylesheet">
     <title>Dydu Chatbox</title>
     <script type="module">
@@ -15,13 +15,36 @@
           ifrm.style.display = "block";
         }
       };
+
       document.getElementById("button").addEventListener("click", submitIframe);
       if (window.location.href.includes("?wizard")) {
-        document.getElementById("iframeForm").style.display="none";  
+        document.getElementById("iframeForm").style.display="none";
+      }
+
+      if (window.location.href.includes("iframeurl=")) {
+        document.getElementById("iframeForm").style.display="none"; // hide the input on the top of the page
+        document.body.style.margin = "0"; // remove all margin to have the iframe on the whole page
+
+        // search all the span inside the first div and hide them
+        const spanList = document.getElementById("chatbot-external").getElementsByTagName('span');
+        for (let i = 0; i < spanList.length; i++) {
+          spanList[i].style.display="none";
+        }
+
+        // retrive the iframe element and give it dynamically the url passed in the query "iframeurl" to display the website behind the chatbox
+        const ifrm = document.getElementById("iframe");
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+          get: (searchParams, prop) => searchParams.get(prop),
+        });
+        // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
+        let iframeurlValue = params.iframeurl; // "some_value"
+
+        ifrm.setAttribute("src", iframeurlValue);
+        ifrm.style.display = "block";
       }
     </script>
   </head>
-  <body style="width: inherit; height: inherit" >
+  <body style="width: inherit; height: inherit;" >
     <div id="chatbot-external" style="width: inherit; height: inherit" >
       <span style="color: #FF4081">v<%= version %></span>
       <span style="color: #03A9F4"><%= now %></span>
