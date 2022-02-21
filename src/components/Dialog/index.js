@@ -30,7 +30,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   const fetch = useCallback(
     () =>
       dydu.history().then(({ interactions }) => {
-        console.log(interactions);
         if (Array.isArray(interactions)) {
           interactions = rebuildInteractionsListFromHistory(interactions);
           onAdd(interactions);
