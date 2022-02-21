@@ -11,6 +11,8 @@ import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext } from './EventsContext';
 
+const isOfTypeString = (v) => typeof v === 'string';
+
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const DialogContext = React.createContext();
@@ -47,6 +49,49 @@ export function DialogProvider({ children }) {
       // eslint-disable-next-line no-use-before-define
     },
     [add, isMobile, secondaryTransient, toggleSecondary],
+  );
+
+  const makeInteractionPropsListWithInteractionChildrenListAndData = useCallback((childrenList, data) => {
+    return childrenList.map((child) => ({
+      children: child,
+      ...data,
+    }));
+  }, []);
+
+  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList = []) => {
+    return propsList.map((interactionAttributeObject, index) => {
+      const props = {
+        type: 'response',
+        ...interactionAttributeObject,
+        templatename: isOfTypeString(interactionAttributeObject.children)
+          ? undefined
+          : interactionAttributeObject.templateName,
+        askFeedback: isOfTypeString(interactionAttributeObject.children)
+          ? false
+          : interactionAttributeObject.askFeedback,
+      };
+      return <Interaction key={index} {...props} thinking />;
+    });
+  }, []);
+
+  const createResponseOrRequestWithInteractionFromHistory = useCallback((interactionFromHistory) => {
+    return {
+      ...interactionFromHistory,
+      typeResponse: interactionFromHistory.type,
+    };
+  }, []);
+
+  const rebuildInteractionsListFromHistory = useCallback(
+    (interactionsListFromHistory) => {
+      interactionsListFromHistory.forEach((interactionFromHistory) => {
+        const responseOrRequestWithInteractionFromHistory =
+          createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
+        addRequest(responseOrRequestWithInteractionFromHistory.user);
+        addResponse(responseOrRequestWithInteractionFromHistory);
+      });
+      return interactions;
+    },
+    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
   );
 
   const addResponse = useCallback(
@@ -106,21 +151,55 @@ export function DialogProvider({ children }) {
         return list;
       };
 
-      add(
-        <Interaction
-          askFeedback={askFeedback}
-          carousel={steps.length > 1}
-          children={getContent(text, templateData, templateName)}
-          type="response"
-          secondary={sidebar}
-          steps={steps}
-          templatename={templateName}
-          thinking
-        />,
-      );
+      const interactionChildrenList = getContent(text, templateData, templateName);
+
+      const verifyInteractionDataType = () => {
+        if (templateName === 'dydu_carousel_001' || templateName === 'dydu_product_001') {
+          const interactionData = {
+            askFeedback,
+            carousel: steps.length > 1,
+            type: 'response',
+            secondary: sidebar,
+            steps: steps,
+            templateName,
+          };
+          const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
+            interactionChildrenList,
+            interactionData,
+          );
+          return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
+        } else {
+          return (
+            <Interaction
+              askFeedback={askFeedback}
+              carousel={steps.length > 1}
+              children={getContent(text, templateData, templateName)}
+              type="response"
+              secondary={sidebar}
+              steps={steps}
+              templatename={templateName}
+              thinking
+            />
+          );
+        }
+      };
+
+      const interactionsList = verifyInteractionDataType();
+
+      add(interactionsList);
+
       // eslint-disable-next-line no-use-before-define
     },
-    [add, configuration, event, isMobile, secondaryTransient, toggleSecondary],
+    [
+      add,
+      configuration,
+      event,
+      isMobile,
+      secondaryTransient,
+      makeInteractionPropsListWithInteractionChildrenListAndData,
+      makeInteractionComponentForEachInteractionPropInList,
+      toggleSecondary,
+    ],
   );
 
   const empty = useCallback(() => {
@@ -163,6 +242,7 @@ export function DialogProvider({ children }) {
         locked,
         placeholder,
         prompt,
+        rebuildInteractionsListFromHistory,
         secondaryActive,
         secondaryContent,
         setDisabled,
