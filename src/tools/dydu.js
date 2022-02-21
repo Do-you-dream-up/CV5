@@ -6,6 +6,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
@@ -188,12 +189,24 @@ export default new (class Dydu {
   };
 
   /**
+   * Generate an id with uuid4 package, remove all '-'
+   * and keep only 15 characters (in the DB the clientId can have only 15 characters)
+   *
+   * @returns {string} The new client ID
+   */
+  generateNewIdWithUuid4 = () => {
+    const generatedId = uuid4();
+    const newId = generatedId.replaceAll('-', '');
+    return newId.slice(0, 15);
+  };
+
+  /**
    * Read the client ID from the local storage and return it. Forge a new one
    * using uuid4 if necessary.
    *
    * @returns {string} The client ID.
    */
-  getClientId = () => Local.get(Local.names.client, uuid4, true);
+  getClientId = () => Local.get(Local.names.client, this.generateNewIdWithUuid4(), true);
 
   /**
    * Read the context ID from the local storage and return it,
