@@ -419,6 +419,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       search: text,
       space: this.getSpace(),
+      onlyShowRewordables: true, // to display only the activates rewords / suggestions
     });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
