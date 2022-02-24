@@ -6,6 +6,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
@@ -108,6 +109,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
+      solutionUsed: ASSISTANT,
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -188,12 +190,24 @@ export default new (class Dydu {
   };
 
   /**
+   * Generate an id with uuid4 package, remove all '-'
+   * and keep only 15 characters (in the DB the clientId can have only 15 characters)
+   *
+   * @returns {string} The new client ID
+   */
+  generateNewIdWithUuid4 = () => {
+    const generatedId = uuid4();
+    const newId = generatedId.replaceAll('-', '');
+    return newId.slice(0, 15);
+  };
+
+  /**
    * Read the client ID from the local storage and return it. Forge a new one
    * using uuid4 if necessary.
    *
    * @returns {string} The client ID.
    */
-  getClientId = () => Local.get(Local.names.client, uuid4, true);
+  getClientId = () => Local.get(Local.names.client, this.generateNewIdWithUuid4(), true);
 
   /**
    * Read the context ID from the local storage and return it,
@@ -206,6 +220,7 @@ export default new (class Dydu {
       clientId: this.getClientId() ? this.getClientId() : null,
       language: this.getLocale(),
       space: this.getLocale(),
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -274,10 +289,12 @@ export default new (class Dydu {
   history = async () => {
     const contextId = await this.getContextId();
     if (contextId) {
-      const data = qs.stringify({ contextUuid: contextId });
+      const data = qs.stringify({
+        contextUuid: contextId,
+        solutionUsed: ASSISTANT,
+      });
       const path = `chat/history/${BOT.id}/`;
-      const response = await this.emit(API.post, path, data);
-      return response;
+      return await this.emit(API.post, path, data);
     }
   };
 
@@ -402,6 +419,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       search: text,
       space: this.getSpace(),
+      onlyShowRewordables: true, // to display only the activates rewords / suggestions
     });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -426,6 +444,7 @@ export default new (class Dydu {
       tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
+      solutionUsed: ASSISTANT,
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
@@ -448,6 +467,7 @@ export default new (class Dydu {
       maxKnowledge: size,
       period: period,
       space: this.getSpace(),
+      solutionUsed: ASSISTANT,
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
