@@ -39,7 +39,8 @@
         // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
         let iframeurlValue = params.iframeurl; // "some_value"
 
-        ifrm.setAttribute("src", iframeurlValue);
+        iframeurlValue = iframeurlValue.replace('https://', '');
+        ifrm.setAttribute("src", `https://${iframeurlValue}`);
         ifrm.style.display = "block";
       }
     </script>
