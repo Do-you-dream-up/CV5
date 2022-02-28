@@ -63,6 +63,20 @@ export default function Bubble({
     }
   }, [automaticSecondary, history, onToggle, sidebar]);
 
+  // useEffect(() => {
+  //   if (document.querySelectorAll('.dydu-bubble-body a')) {
+  //     const interactiveElements = document.querySelectorAll('.dydu-bubble-body a');
+  //     const interactiveElementsArray = Array.from(interactiveElements);
+  //     interactiveElementsArray.forEach((element) => {
+  //
+  //       if (element === interactiveElementsArray[0]) {
+  //         element.focus();
+  //         console.log('works')
+  //       }
+  //     })
+  //   }
+  // }, []);
+
   return React.createElement(
     component,
     {

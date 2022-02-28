@@ -54,6 +54,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
+  const labelChatbot = t('general.label_chatbot');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
@@ -186,9 +187,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     [classes.rootHidden]: !open,
   });
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-label="chatbot window">
+    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot}>
       <span className={classes.srOnly} tabIndex="-1">
-        Chatbot window
+        {labelChatbot}
       </span>
       <div>
         <div className={classes.container}>

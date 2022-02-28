@@ -1,4 +1,7 @@
 {
+    "general": {
+        "label_chatbot": "Chatbot window"
+    },
     "banner": {
         "html": "<p> Put forward <em>your news</em>.</p><p>It can concern <a href>your business</a> or your industry.</p>",
         "more": "More information",
@@ -68,8 +71,8 @@
             "thanks": "Thank you for your detailed feedback!"
         },
         "vote": {
-            "negative": "Negative feedback",
-            "positive": "Positive feedback",
+            "negative": "Useless help",
+            "positive": "Useful help",
             "thanks": "Thank you for your feedback!"
         }
     },
@@ -126,8 +129,8 @@
     "header": {
         "actions": {
             "close": "Close",
-            "expand": "Expand",
-            "minimize": "Minimize",
+            "expand": "Expand chat window",
+            "minimize": "Minimize chat window",
             "more": "More",
             "shrink": "Shrink",
             "tests": "Tests",
@@ -179,7 +182,8 @@
     },
     "screenReader": {
         "chatbot":  "chatbot says",
-        "me": "me says"
+        "me": "me says",
+        "say": "says"
     },
     "spaces": {
         "welcome": "Welcome to the chatbot, please select a space before chatting :"
