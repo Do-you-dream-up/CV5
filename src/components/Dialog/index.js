@@ -70,7 +70,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   }, [open]);
 
   return (
-    <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest}>
+    <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
       {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
       <Welcome />
       {interactions.map((it, index) => ({ ...it, key: index }))}

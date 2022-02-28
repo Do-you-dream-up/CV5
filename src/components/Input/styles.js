@@ -68,6 +68,9 @@ export default createUseStyles((theme) => ({
     '&[disabled]': {
       cursor: 'not-allowed',
     },
+    '&:focus': {
+      boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
+    },
     background: 0,
     border: 0,
     color: theme.palette.text.primary,

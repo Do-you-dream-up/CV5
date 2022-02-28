@@ -53,12 +53,12 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   ];
 
   return (
-    <footer className={c('dydu-footer', classes.root)} {...rest}>
+    <div className={c('dydu-footer', classes.root)} {...rest}>
       <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
       <div className={classes.content}>
         <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
       </div>
-    </footer>
+    </div>
   );
 }
 

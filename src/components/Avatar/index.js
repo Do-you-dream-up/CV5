@@ -26,7 +26,7 @@ export default function Avatar({ background, path, type }) {
         }[type];
   return (
     <div
-      children={!!path && <img alt={`${type} avatar`} src={logo || path} />}
+      children={!!path && <img src={logo || path} />}
       className={c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
         [classes.background]: background,
       })}

@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles((theme) => {
   const contained = ({ color = 'primary' } = {}) => ({
     borderRadius: theme.shape.radius.inner,
-    padding: [['.5em', '1.2em']],
+    padding: [['.5em', '1em']],
     ...(color && {
       '&:disabled': {
         backgroundColor: theme.palette.action.disabled,

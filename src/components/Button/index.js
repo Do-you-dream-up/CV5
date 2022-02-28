@@ -46,6 +46,7 @@ export function ButtonBase({
   return React.createElement(
     href ? 'a' : component,
     {
+      title,
       ...rest,
       ...(href ? { href, target, title } : { onClick, type }),
       className: c(
@@ -58,7 +59,6 @@ export function ButtonBase({
         { [classes.grow]: grow },
       ),
       ref: reference,
-      tabIndex: '0',
     },
     button,
   );

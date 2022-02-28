@@ -4,4 +4,9 @@ export default createUseStyles(() => ({
   hideOutline: () => ({
     outline: 'none',
   }),
+  accessibility: () => ({
+    '&:focus': {
+      textDecoration: 'underline',
+    },
+  }),
 }));
