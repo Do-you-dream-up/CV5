@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -10,12 +10,16 @@ import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext } from './EventsContext';
+import StartPolling from '../tools/special-actions/Polling/StartPolling';
 
 const isOfTypeString = (v) => typeof v === 'string';
 
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const DialogContext = React.createContext();
+
+export const useDialog = () => useContext(DialogContext);
+
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -28,9 +32,16 @@ export function DialogProvider({ children }) {
   const [secondaryContent, setSecondaryContent] = useState(null);
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
+  const [statusText, setStatusText] = useState(null);
+
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
+
+  useEffect(() => {
+    StartPolling.options.displayResponse = addResponse;
+    StartPolling.options.displayStatus = setStatusText;
+  }, [addResponse, setStatusText]);
 
   const add = useCallback((interaction) => {
     setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
@@ -233,6 +244,7 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
+        statusText,
         add,
         addRequest,
         addResponse,

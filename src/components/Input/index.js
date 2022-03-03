@@ -14,6 +14,7 @@ import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
+
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
@@ -92,21 +93,24 @@ export default function Input({ focus, onRequest, onResponse }) {
     [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter],
   );
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setCounter(configuration.input.maxLength);
     setInput('');
-  };
+  }, [configuration.input.maxLength]);
 
-  const submit = (text) => {
-    text = text.trim();
-    if (text) {
-      reset();
-      onRequest(text);
-      event('questionSent', text);
-      talk(text, { qualification }).then(onResponse);
-    }
-    setTyping(false);
-  };
+  const submit = useCallback(
+    (text) => {
+      text = text.trim();
+      if (text) {
+        reset();
+        onRequest(text);
+        event('questionSent', text);
+        talk(text, { qualification }).then(onResponse);
+      }
+      setTyping(false);
+    },
+    [event, onRequest, onResponse, qualification, reset],
+  );
 
   const suggest = useCallback(
     (text) => {
