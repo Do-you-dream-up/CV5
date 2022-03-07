@@ -8,10 +8,15 @@
     "directory":""
   },
   "avatar": {
-    "background": false,
-    "request": "",
-    "response": "dydu-logo.svg"
-  },
+    "request": {
+      "background": false,
+      "image": ""
+    },
+    "response": {
+      "background": false,
+      "image": "dydu-logo.svg"
+    }
+},
   "banner": {
     "active": false,
     "storage": true,
