@@ -37,7 +37,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
   const { customAvatar, image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
-  const defaultAvatar = configuration.avatar.response;
+  const defaultAvatar = configuration.avatar.response.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
