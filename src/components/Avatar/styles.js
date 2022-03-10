@@ -1,8 +1,8 @@
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
-  background: ({ type }) => ({
-    backgroundColor: theme.palette[type].background,
+  showBackground: ({ primaryColor = 'primary' }) => ({
+    backgroundColor: `${theme.palette[primaryColor].main}33`,
   }),
   base: () => ({
     '& > *': {

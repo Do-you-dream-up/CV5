@@ -32,6 +32,7 @@ export const ACTIONS = {
   '#context#': null,
   '#contextVariables#': () => window.dydu.chat.reply(dydu.getContextVariables()),
   '#feedback#': null,
+  '#botid#': () => window.dydu.chat.reply(dydu.getBot().id),
   '#host#': () => dydu.whoami().then(window.dydu.chat.reply),
   '#iframe#': null,
   '#lorem#': () => window.dydu.lorem.standard(),

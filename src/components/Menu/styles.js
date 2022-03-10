@@ -13,5 +13,6 @@ export default createUseStyles((theme) => ({
     overflowY: 'auto',
     position: 'fixed',
     visibility: 'hidden',
+    zIndex: '99',
   }),
 }));

@@ -47,9 +47,8 @@ module.exports = (env) => {
         }
       }) : () => {},
       new Clean(),
-      new Copy(
-          {
-            patterns: [
+      new Copy({
+        patterns: [
               {
                 from: "**/*",
                 context: Path.resolve(__dirname, "public"),
@@ -59,9 +58,8 @@ module.exports = (env) => {
                   ignore: ["**/index.html", "**/*.json.sample", "**/*.css.sample"],
                 },
               },
-            ],
-          }
-      ),
+        ]
+      }),
       new webpack.DefinePlugin({
         'process.env': {
           OIDC_CLIENT_ID: OIDC_CLIENT_ID,

@@ -62,8 +62,11 @@ export default createUseStyles((theme) => ({
     zIndex: 1,
   }),
   title: () => ({
+    fontSize: '16px',
+    fontWeight: 'normal',
     minWidth: '6.7em',
     padding: '.5em 0',
+    margin: 0,
     width: '7.5em',
   }),
 }));

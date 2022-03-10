@@ -71,7 +71,7 @@ export default function Top({ className, component, ...rest }) {
               <li key={index}>
                 <a
                   href="#"
-                  className={c('dydu-top-items', {
+                  className={c('dydu-top-items', classes.accessibility, {
                     [classes.hideOutline]: !tabbing,
                   })}
                   children={reword}

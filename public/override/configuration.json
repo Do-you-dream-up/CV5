@@ -8,15 +8,20 @@
     "directory":""
   },
   "avatar": {
-    "background": false,
-    "request": "",
-    "response": "dydu-logo.svg"
+    "request": {
+      "background": false,
+      "image": ""
+    },
+    "response": {
+      "background": true,
+      "image": "dydu-logo.svg"
+    }
   },
   "banner": {
     "active": false,
     "storage": true,
     "dismissable": true,
-    "more": true,
+    "more": false,
     "moreIcon": "dydu-open-in-new-white.svg",
     "moreLink": "https://goo.gle",
     "transient": false

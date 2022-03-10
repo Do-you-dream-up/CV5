@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -10,10 +10,16 @@ import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext } from './EventsContext';
+import StartPolling from '../tools/special-actions/Polling/StartPolling';
+
+const isOfTypeString = (v) => typeof v === 'string';
 
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const DialogContext = React.createContext();
+
+export const useDialog = () => useContext(DialogContext);
+
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -26,9 +32,16 @@ export function DialogProvider({ children }) {
   const [secondaryContent, setSecondaryContent] = useState(null);
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
+  const [statusText, setStatusText] = useState(null);
+
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
+
+  useEffect(() => {
+    StartPolling.options.displayResponse = addResponse;
+    StartPolling.options.displayStatus = setStatusText;
+  }, [addResponse, setStatusText]);
 
   const add = useCallback((interaction) => {
     setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
@@ -47,6 +60,49 @@ export function DialogProvider({ children }) {
       // eslint-disable-next-line no-use-before-define
     },
     [add, isMobile, secondaryTransient, toggleSecondary],
+  );
+
+  const makeInteractionPropsListWithInteractionChildrenListAndData = useCallback((childrenList, data) => {
+    return childrenList.map((child) => ({
+      children: child,
+      ...data,
+    }));
+  }, []);
+
+  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList = []) => {
+    return propsList.map((interactionAttributeObject, index) => {
+      const props = {
+        type: 'response',
+        ...interactionAttributeObject,
+        templatename: isOfTypeString(interactionAttributeObject.children)
+          ? undefined
+          : interactionAttributeObject.templateName,
+        askFeedback: isOfTypeString(interactionAttributeObject.children)
+          ? false
+          : interactionAttributeObject.askFeedback,
+      };
+      return <Interaction key={index} {...props} thinking />;
+    });
+  }, []);
+
+  const createResponseOrRequestWithInteractionFromHistory = useCallback((interactionFromHistory) => {
+    return {
+      ...interactionFromHistory,
+      typeResponse: interactionFromHistory.type,
+    };
+  }, []);
+
+  const rebuildInteractionsListFromHistory = useCallback(
+    (interactionsListFromHistory) => {
+      interactionsListFromHistory.forEach((interactionFromHistory) => {
+        const responseOrRequestWithInteractionFromHistory =
+          createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
+        addRequest(responseOrRequestWithInteractionFromHistory.user);
+        addResponse(responseOrRequestWithInteractionFromHistory);
+      });
+      return interactions;
+    },
+    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
   );
 
   const addResponse = useCallback(
@@ -106,21 +162,55 @@ export function DialogProvider({ children }) {
         return list;
       };
 
-      add(
-        <Interaction
-          askFeedback={askFeedback}
-          carousel={steps.length > 1}
-          children={getContent(text, templateData, templateName)}
-          type="response"
-          secondary={sidebar}
-          steps={steps}
-          templatename={templateName}
-          thinking
-        />,
-      );
+      const interactionChildrenList = getContent(text, templateData, templateName);
+
+      const verifyInteractionDataType = () => {
+        if (templateName === 'dydu_carousel_001' || templateName === 'dydu_product_001') {
+          const interactionData = {
+            askFeedback,
+            carousel: steps.length > 1,
+            type: 'response',
+            secondary: sidebar,
+            steps: steps,
+            templateName,
+          };
+          const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
+            interactionChildrenList,
+            interactionData,
+          );
+          return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
+        } else {
+          return (
+            <Interaction
+              askFeedback={askFeedback}
+              carousel={steps.length > 1}
+              children={getContent(text, templateData, templateName)}
+              type="response"
+              secondary={sidebar}
+              steps={steps}
+              templatename={templateName}
+              thinking
+            />
+          );
+        }
+      };
+
+      const interactionsList = verifyInteractionDataType();
+
+      add(interactionsList);
+
       // eslint-disable-next-line no-use-before-define
     },
-    [add, configuration, event, isMobile, secondaryTransient, toggleSecondary],
+    [
+      add,
+      configuration,
+      event,
+      isMobile,
+      secondaryTransient,
+      makeInteractionPropsListWithInteractionChildrenListAndData,
+      makeInteractionComponentForEachInteractionPropInList,
+      toggleSecondary,
+    ],
   );
 
   const empty = useCallback(() => {
@@ -154,6 +244,7 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
+        statusText,
         add,
         addRequest,
         addResponse,
@@ -163,6 +254,7 @@ export function DialogProvider({ children }) {
         locked,
         placeholder,
         prompt,
+        rebuildInteractionsListFromHistory,
         secondaryActive,
         secondaryContent,
         setDisabled,

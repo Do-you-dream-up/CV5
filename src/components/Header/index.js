@@ -37,7 +37,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
   const { customAvatar, image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
-  const defaultAvatar = configuration.avatar.response;
+  const defaultAvatar = configuration.avatar.response.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
@@ -127,110 +127,84 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: (
-        <img
-          alt={actionTests}
-          src={`${process.env.PUBLIC_URL}icons/dydu-dots-vertical-white.svg`}
-          title={actionTests}
-        />
-      ),
+      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}icons/dydu-dots-vertical-white.svg`} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
+      title: actionTests,
     },
     {
-      children: (
-        <img
-          alt={actionMore}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`}
-          title={actionMore}
-        />
-      ),
+      children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} />,
       onClick: onToggleMore,
       variant: 'icon',
       when:
         (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
         !!gdprPassed &&
         (!onboardingActive || !onboardingEnable),
+      title: actionMore,
     },
     {
       children: (
         <img
           alt={actionFontIncrease}
           src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontIncrease}`}
-          title={actionFontIncrease}
         />
       ),
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
       when: !!hasActions.fontChange,
+      title: actionFontIncrease,
     },
     {
       children: (
         <img
           alt={actionFontDecrease}
           src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontDecrease}`}
-          title={actionFontDecrease}
         />
       ),
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
       when: !!hasActions.fontChange,
+      title: actionFontDecrease,
     },
     {
-      children: (
-        <img
-          alt={actionExpand}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`}
-          title={actionExpand}
-        />
-      ),
+      children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} />,
       onClick: () => onExpand(true)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
+      title: actionExpand,
     },
     {
       children: (
-        <img
-          alt={actionShrink}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.collapse}`}
-          title={actionShrink}
-        />
+        <img alt={actionShrink} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.collapse}`} />
       ),
       onClick: () => onExpand(false)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
+      title: actionShrink,
     },
     {
       children: (
-        <img
-          alt={actionMinimize}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.minimize}`}
-          title={actionMinimize}
-        />
+        <img alt={actionMinimize} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.minimize}`} />
       ),
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
+      title: actionMinimize,
     },
     {
-      children: (
-        <img
-          alt={actionClose}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`}
-          title={actionClose}
-        />
-      ),
+      children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`} />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,
+      title: actionClose,
     },
   ];
 
   return (
-    <header className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest}>
+    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest}>
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,
@@ -245,9 +219,9 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </div>
           )}
           {!!hasTitle && (
-            <div className={c('dydu-header-title', classes.title)}>
+            <h1 className={c('dydu-header-title', classes.title)}>
               <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
-            </div>
+            </h1>
           )}
         </div>
         <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
@@ -258,7 +232,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           <Banner />
         </>
       )}
-    </header>
+    </div>
   );
 }
 

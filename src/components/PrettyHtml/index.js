@@ -1,12 +1,13 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
 import CarouselTemplate from '../CarouselTemplate';
 import ProductTemplate from '../ProductTemplate';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import useStyles from './styles';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 
 /**
  * Prettify children and string passed as parameter.
@@ -25,6 +26,24 @@ export default function PrettyHtml({
 }) {
   const classes = useStyles();
   const { t } = useTranslation('translation');
+  const { configuration } = useContext(ConfigurationContext);
+  const { NameUser, NameBot } = configuration.interaction;
+
+  const displayScreenreaderUser = useCallback(() => {
+    if (NameUser !== '') {
+      return `${NameUser} ${t('screenReader.say')}`;
+    } else {
+      return t('screenReader.me');
+    }
+  }, [NameUser, t]);
+
+  const displayScreenreaderBot = useCallback(() => {
+    if (NameBot !== '') {
+      return `${NameBot} ${t('screenReader.say')}`;
+    } else {
+      return t('screenReader.chatbot');
+    }
+  }, [NameBot, t]);
 
   const RE_ONCLICK = /onclick=".+?"/gm;
   const RE_REWORD = /class="reword/gm;
@@ -38,11 +57,31 @@ export default function PrettyHtml({
       if (!el.match(RE_REWORD)) {
         html = html.replace(el, el.replace(RE_ONCLICK, ''));
       } else {
-        html = html.replace(el, el.replace(RE_HREF_EMPTY, ''));
+        html = html.replace(el, el.replace(RE_HREF_EMPTY, 'href="javascript:void(0)"'));
       }
     });
 
-  const interactionType = type === 'response' ? t('screenReader.chatbot') : t('screenReader.me');
+  // to focus the first interactive elements of the last response of the bot
+  useEffect(() => {
+    if (document.querySelectorAll('.dydu-bubble-body')) {
+      const responsesBotContentArray = Array.from(document.querySelectorAll('.dydu-bubble-body'));
+      const lastResponseBotContent = responsesBotContentArray[responsesBotContentArray.length - 1];
+
+      responsesBotContentArray.forEach((elementParent) => {
+        if (elementParent === lastResponseBotContent) {
+          const interactiveElementsArray = Array.from(elementParent.querySelectorAll('a'));
+
+          interactiveElementsArray.forEach((elementChild) => {
+            if (elementChild === interactiveElementsArray[0]) {
+              elementChild.focus();
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  const interactionType = type === 'response' ? displayScreenreaderBot() : displayScreenreaderUser();
   return React.createElement(
     component,
     { className: c(classes.root, className), ...rest },

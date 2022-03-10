@@ -1,16 +1,22 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import dotget from '../tools/dotget';
 import { ConfigurationContext } from './ConfigurationContext';
+
+export const useEvent = () => {
+  return useContext(EventsContext);
+};
 
 export const EventsContext = React.createContext();
 export function EventsProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active, features = {}, verbosity = 0 } = configuration.events;
+  const [event, setEvent] = useState();
 
   const onEvent =
     (feature) =>
     (event, ...rest) => {
+      setEvent(`${feature}/${event}`);
       if (active) {
         const actions = (features[feature] || {})[event];
         if (Array.isArray(actions)) {
@@ -29,7 +35,7 @@ export function EventsProvider({ children }) {
       }
     };
 
-  return <EventsContext.Provider children={children} value={{ onEvent }} />;
+  return <EventsContext.Provider children={children} value={{ onEvent, event }} />;
 }
 
 EventsProvider.propTypes = {
