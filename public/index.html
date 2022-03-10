@@ -8,22 +8,9 @@
     <title>Dydu Chatbox</title>
     <script type="module">
       window.DYDU_QUALIFICATION_MODE = true;
-      const submitIframe = () => {
-        if (!window.location.href.includes("?wizard") && document.getElementById("urlInput").value) {
-          var ifrm = document.getElementById("iframe");
-          ifrm.setAttribute("src", document.getElementById("urlInput").value);
-          ifrm.style.display = "block";
-        }
-      };
-
-      document.getElementById("button").addEventListener("click", submitIframe);
-      if (window.location.href.includes("?wizard")) {
-        document.getElementById("iframeForm").style.display="none";
-      }
 
       if (window.location.href.includes("iframeurl=")) {
-        document.getElementById("iframeForm").style.display="none"; // hide the input on the top of the page
-        document.body.style.margin = "0"; // remove all margin to have the iframe on the whole page
+        document.body.style.padding = "0"; // remove all margin to have the iframe on the whole page
 
         // search all the span inside the first div and hide them
         const spanList = document.getElementById("chatbot-external").getElementsByTagName('span');
@@ -31,7 +18,7 @@
           spanList[i].style.display="none";
         }
 
-        // retrive the iframe element and give it dynamically the url passed in the query "iframeurl" to display the website behind the chatbox
+        // retrieve the iframe element and give it dynamically the url passed in the query "iframeurl" to display the website behind the chatbox
         const ifrm = document.getElementById("iframe");
         const params = new Proxy(new URLSearchParams(window.location.search), {
           get: (searchParams, prop) => searchParams.get(prop),
@@ -39,20 +26,17 @@
         // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
         let iframeurlValue = params.iframeurl; // "some_value"
 
-        ifrm.setAttribute("src", iframeurlValue);
+        iframeurlValue = iframeurlValue.replace('https://', '');
+        ifrm.setAttribute("src", `https://${iframeurlValue}`);
         ifrm.style.display = "block";
       }
     </script>
   </head>
-  <body style="width: inherit; height: inherit;" >
-    <div id="chatbot-external" style="width: inherit; height: inherit" >
+  <body style="width: inherit; height: inherit; margin: 0; padding: 8px 0 0 8px;">
+    <div id="chatbot-external" style="width: inherit; height: inherit;">
       <span style="color: #FF4081">v<%= version %></span>
       <span style="color: #03A9F4"><%= now %></span>
       <span><%= hash %></span>
-      <div id="iframeForm">
-        <input id="urlInput" type="text" placeholder="Enter background URL here" name="url" value="" style="width:90%; margin: 10px auto">
-        <button id="button" style="background-color: #3636B9; color:#FFF">Ok</button>
-      </div>
       <iframe id="iframe" style="width:inherit;height:inherit;display:none"></iframe>
     </div>
     <div id="dydu-root"></div>

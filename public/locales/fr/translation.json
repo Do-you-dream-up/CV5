@@ -1,4 +1,7 @@
 {
+    "general": {
+        "label_chatbot": "Fenêtre du chatbot"
+    },
     "banner": {
         "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de <a href>votre actualité </a> ou de celle du marché.</p>",
         "more": "En savoir plus",
@@ -68,8 +71,8 @@
             "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
         },
         "vote": {
-            "negative": "Négatif",
-            "positive": "Positif",
+            "negative": "Aide inutile",
+            "positive": "Aide utile",
             "thanks": "Merci pour votre retour!"
         }
     },
@@ -123,8 +126,8 @@
     "header": {
         "actions": {
             "close": "Fermer",
-            "expand": "Agrandir",
-            "minimize": "Réduire",
+            "expand": "Agrandir la fenêtre de discussion",
+            "minimize": "Réduire la fenêtre de discussion",
             "more": "Plus d'options",
             "shrink": "Diminuer",
             "tests": "Tests",
@@ -173,8 +176,9 @@
         "placeholder": "Saisissez votre email..."
     },
     "screenReader":{
-        "chatbot":  "chatbot dit",
-        "me": "moi dit"
+        "chatbot": "bot dit",
+        "me": "moi dit",
+        "say": "dit"
     },
     "spaces": {
         "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"

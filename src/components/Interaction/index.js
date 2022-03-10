@@ -169,10 +169,14 @@ export default function Interaction({
         {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
         <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
           {type === 'request' && NameUser && !!avatarDisplayUser && (
-            <span className={c(`dydu-name-${type}`, classes.nameRequest)}>{NameUser}</span>
+            <span className={c(`dydu-name-${type}`, classes.nameRequest)} aria-hidden="true">
+              {NameUser}
+            </span>
           )}
           {type === 'response' && NameBot && !!avatarDisplayBot && (
-            <span className={c(`dydu-name-${type}`, classes.nameResponse)}>{NameBot}</span>
+            <span className={c(`dydu-name-${type}`, classes.nameResponse)} aria-hidden="true">
+              {NameBot}
+            </span>
           )}
           {bubbles.length > 0 &&
             React.createElement(carousel || carouselTemplate ? Carousel : 'div', {

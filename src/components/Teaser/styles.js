@@ -24,6 +24,9 @@ export default createUseStyles((theme) => ({
       right: 0,
       top: 0,
     },
+    '&:focus': {
+      boxShadow: '0px 6px 9px 0px rgba(86,86,86,0.52)',
+    },
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.shape.radius.inner,
     boxSizing: 'border-box',

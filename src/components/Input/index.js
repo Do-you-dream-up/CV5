@@ -1,12 +1,12 @@
 //import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import { EventsContext } from '../../contexts/EventsContext';
+import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import useDebounce from '../../tools/hooks/debounce';
 // eslint-disable-next-line no-unused-vars
@@ -14,6 +14,7 @@ import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
+
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
@@ -35,6 +36,19 @@ export default function Input({ focus, onRequest, onResponse }) {
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
+  const inputRef = useRef(null);
+  // eslint-disable-next-line no-unused-vars
+  const [increment, setIncrement] = useState();
+  const { event: chatbotEvent } = useEvent();
+
+  let incrementToUpdateRefOnRender = 0;
+
+  useEffect(() => {
+    if (chatbotEvent === 'teaser/onClick') {
+      inputRef && inputRef?.current?.focus();
+    }
+    setIncrement(incrementToUpdateRefOnRender++);
+  }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
 
   const onChange = (event) => {
     setTyping(true);
@@ -61,29 +75,42 @@ export default function Input({ focus, onRequest, onResponse }) {
     submit(suggestionValue);
   };
 
-  const renderInputComponent = (properties) => (
-    <div className={c('dydu-input-field', classes.field)}>
-      <textarea {...properties} disabled={prompt || locked} />
-      <div children={input} className={classes.fieldShadow} />
-      {!!showCounter && <span children={counter} className={classes.counter} />}
-    </div>
+  const renderInputComponent = useCallback(
+    (properties) => {
+      const data = {
+        ...properties,
+        ref: inputRef,
+      };
+
+      return (
+        <div className={c('dydu-input-field', classes.field)}>
+          <textarea {...data} disabled={prompt || locked} />
+          <div children={input} className={classes.fieldShadow} />
+          {!!showCounter && <span children={counter} className={classes.counter} />}
+        </div>
+      );
+    },
+    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter],
   );
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setCounter(configuration.input.maxLength);
     setInput('');
-  };
+  }, [configuration.input.maxLength]);
 
-  const submit = (text) => {
-    text = text.trim();
-    if (text) {
-      reset();
-      onRequest(text);
-      event('questionSent', text);
-      talk(text, { qualification }).then(onResponse);
-    }
-    setTyping(false);
-  };
+  const submit = useCallback(
+    (text) => {
+      text = text.trim();
+      if (text) {
+        reset();
+        onRequest(text);
+        event('questionSent', text);
+        talk(text, { qualification }).then(onResponse);
+      }
+      setTyping(false);
+    },
+    [event, onRequest, onResponse, qualification, reset],
+  );
 
   const suggest = useCallback(
     (text) => {
@@ -135,6 +162,7 @@ export default function Input({ focus, onRequest, onResponse }) {
 
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
+      {/*{renderInputComponent()}*/}
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}

@@ -3,9 +3,13 @@ import Bowser from 'bowser';
 import debounce from 'debounce-promise';
 import qs from 'qs';
 import uuid4 from 'uuid4';
+
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
+import SpecialActionHandler from './SpecialActionHandler';
+import { toFormUrlEncoded } from './helpers';
+import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -41,11 +45,6 @@ let BOT, protocol, API;
     },
   });
 })();
-
-/**
- * Solution type
- */
-const ASSISTANT = 'ASSISTANT';
 
 const variables = {};
 
@@ -109,7 +108,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -127,7 +126,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       contextUUID: contextId,
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -144,7 +143,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       comment,
       contextUUID: contextId,
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -161,7 +160,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       choiceKey,
       contextUUID: contextId,
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -188,6 +187,8 @@ export default new (class Dydu {
     const path = `chat/gdpr/${BOT.id}/`;
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
+
+  getBot = () => BOT;
 
   /**
    * Generate an id with uuid4 package, remove all '-'
@@ -220,7 +221,7 @@ export default new (class Dydu {
       clientId: this.getClientId() ? this.getClientId() : null,
       language: this.getLocale(),
       space: this.getLocale(),
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -291,7 +292,7 @@ export default new (class Dydu {
     if (contextId) {
       const data = qs.stringify({
         contextUuid: contextId,
-        solutionUsed: ASSISTANT,
+        solutionUsed: SOLUTION_TYPE.assistant,
       });
       const path = `chat/history/${BOT.id}/`;
       return await this.emit(API.post, path, data);
@@ -433,27 +434,35 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   talk = async (text, options = {}) => {
-    const data = qs.stringify({
-      browser: `${browser.name} ${browser.version}`,
-      clientId: this.getClientId(),
-      doNotRegisterInteraction: options.doNotSave,
-      language: this.getLocale(),
-      os: `${os.name} ${os.version}`,
-      qualificationMode: options.qualification,
-      space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
-      userInput: text,
-      userUrl: getUrl,
-      solutionUsed: ASSISTANT,
-      ...(options.extra && {
-        extraParameters: JSON.stringify(options.extra),
-      }),
-      variables: JSON.stringify(variables),
-    });
+    const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
+    const data = qs.stringify(payload);
     const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data);
+    return this.emit(API.post, path, data).then((response) => {
+      this.#onReceiveTalkResponse(response);
+      return response;
+    });
   };
+
+  #onReceiveTalkResponse = (response) => {
+    SpecialActionHandler.processIfContainsAction(this, response);
+  };
+
+  poll = async (lastPoll) => {
+    const data = {
+      contextUuid: await this.getContextId(),
+      solutionUsed: SOLUTION_TYPE.livechat,
+      language: this.getLocale(),
+      space: this.getSpace(),
+      lastPoll,
+      format: RESPONSE_QUERY_FORMAT.json,
+    };
+
+    const path = `/chat/poll/last/${this.getBotId()}`;
+    return this.emit(API.post, path, toFormUrlEncoded(data));
+  };
+
+  getBotId = () => BOT.id;
 
   /**
    * Fetch the top-asked topics. Limit results to the provided size.
@@ -467,7 +476,7 @@ export default new (class Dydu {
       maxKnowledge: size,
       period: period,
       space: this.getSpace(),
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -487,7 +496,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       contextUuid: contextId,
       name,
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
       value,
     });
     const path = `chat/variable/${BOT.id}/`;
@@ -505,7 +514,7 @@ export default new (class Dydu {
       contextUuid: contextId,
       language: this.getLocale(),
       qualificationMode: options.qualification,
-      solutionUsed: ASSISTANT,
+      solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
     });
     const path = `chat/welcomecall/${BOT.id}`;
@@ -522,4 +531,24 @@ export default new (class Dydu {
       const data = headers.find((it) => it && it.host);
       return data && data.host;
     });
+
+  #makeTalkPayloadWithTextAndOption = (text, options) => {
+    return {
+      browser: `${browser.name} ${browser.version}`,
+      clientId: this.getClientId(),
+      doNotRegisterInteraction: options.doNotSave,
+      language: this.getLocale(),
+      os: `${os.name} ${os.version}`,
+      qualificationMode: options.qualification,
+      space: this.getSpace(),
+      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
+      userInput: text,
+      userUrl: getUrl,
+      solutionUsed: SOLUTION_TYPE.assistant,
+      ...(options.extra && {
+        extraParameters: JSON.stringify(options.extra),
+      }),
+      variables: JSON.stringify(variables),
+    };
+  };
 })();

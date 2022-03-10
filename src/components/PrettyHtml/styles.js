@@ -12,6 +12,9 @@ export default createUseStyles((theme) => ({
         '&:hover': {
           textDecoration: 'underline',
         },
+        '&:focus': {
+          textDecoration: 'underline',
+        },
         color: theme.palette.text.link || theme.palette.primary.main,
         cursor: 'pointer',
         textDecoration: 'none',
