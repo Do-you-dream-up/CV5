@@ -8,14 +8,9 @@
     "directory":"development/"
   },
   "avatar": {
-    "request": {
-      "background": false,
-      "image": ""
-    },
-    "response": {
-      "background": true,
-      "image": "dydu-logo.svg"
-    }
+    "background": false,
+    "request": "",
+    "response": "dydu-logo.svg"
   },
   "banner": {
     "active": false,
