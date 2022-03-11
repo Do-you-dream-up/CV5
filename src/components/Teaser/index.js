@@ -77,7 +77,7 @@ export default function Teaser({ open, toggle }) {
           )}
           {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
             <div className={c('dydu-teaser-brand', classes.brand)}>
-              <img alt="" src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response.image}`} />
+              <img alt="" src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
             </div>
           )}
         </div>
