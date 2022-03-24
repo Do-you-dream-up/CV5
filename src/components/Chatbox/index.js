@@ -90,6 +90,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   useEffect(() => {
     if (!ready) {
+      return;
+    }
+
+    if (typeof window.dyduAfterLoad === 'function') {
+      window.dyduAfterLoad();
+    }
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = {
