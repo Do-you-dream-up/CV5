@@ -115,10 +115,10 @@
                 "placeholder": "Enter your address..."
             },
             "forget": {
-                "description": "Forget: lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                "description": "Erase my personal data"
             },
             "get": {
-                "description": "Get: nunc dictum hendrerit erat, in posuere ante interdum pharetra."
+                "description": "Export my personal data"
             }
         },
         "get": {
