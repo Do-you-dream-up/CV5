@@ -114,7 +114,7 @@ export default function Input({ onRequest, onResponse }) {
   const suggest = useCallback(
     (text) => {
       text = text.trim();
-      if (text) {
+      if (text && suggestionsLimit > 0) {
         dydu.suggest(text).then((suggestions) => {
           suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
