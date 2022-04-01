@@ -1,4 +1,4 @@
-//import-voice
+import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -32,7 +32,6 @@ export default function Input({ onRequest, onResponse }) {
   const actionSend = t('input.actions.send');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
-  const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -172,8 +171,14 @@ export default function Input({ onRequest, onResponse }) {
         suggestions={suggestions}
         theme={theme}
       />
-      {voice && counter === maxLength ? (
-        <voice />
+      {Voice.isEnabled && counter === maxLength ? (
+        <Voice
+          DialogContext={DialogContext}
+          configuration={configuration}
+          Actions={Actions}
+          show={!!Local.get(Local.names.gdpr)}
+          t={t('input.actions.record')}
+        />
       ) : (
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       )}
