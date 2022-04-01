@@ -106,9 +106,9 @@
     },
     "gdpr": {
         "disclaimer": {
-            "body": "<p>Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed? Elit, at imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis urna, id volutpat lacus laoreet non curabitur gravida!</p><p>Purus ut faucibus pulvinar elementum integer enim neque, volutpat ac tincidunt vitae, semper quis lectus. At augue eget arcu dictum varius duis at consectetur lorem donec massa sapien, faucibus et?</p><p>Amet, consectetur adipiscing elit pellentesque habitant morbi tristique senectus.</p>",
-            "cancel": "Cancel",
-            "ok": "Ok"
+            "body": "<p>This dialog box is there to guide you as best as possible on our site. The information you send us allows us to process your request. However, no personal data that could allow your identification should be communicated in this tool, nor any sensitive data, such as information on your state of health or on your personal opinions and convictions.</p>",
+            "cancel": "I refuse",
+            "ok": "I accept"
         },
         "form": {
             "email": {
@@ -131,7 +131,7 @@
             "close": "Close",
             "expand": "Expand chat window",
             "minimize": "Minimize chat window",
-            "more": "More",
+            "more": "More options",
             "shrink": "Shrink",
             "tests": "Tests",
             "fontDecrease": "Decrease font",
@@ -193,11 +193,11 @@
         "dialog": "Dialog"
     },
     "teaser": {
-        "mouseover": "Heeelp here",
+        "mouseover": "Help here",
         "title": "Need help?"
     },
     "template": {
-        "readmore": "Read more",
+        "readmore": "... Read more",
         "readless": "Read less"
     },
     "top": {
