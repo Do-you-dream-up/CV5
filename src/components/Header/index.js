@@ -55,6 +55,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const misunderstood = images && JSON.parse(images) && JSON.parse(images).misunderstood;
   const reword = images && JSON.parse(images) && JSON.parse(images).reword;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
   const { interactions } = useContext(DialogContext);
 
   const onToggleMore = () => {
@@ -118,6 +119,26 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     }
   };
 
+  const checkDisplayParametersInMoreOptionsCog = useCallback(() => {
+    if (disclaimerEnable === false || gdprPassed) {
+      return (
+        (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
+        (!onboardingActive || !onboardingEnable)
+      );
+    } else {
+      return false;
+    }
+  }, [
+    _printConversation,
+    disclaimerEnable,
+    exportConversation,
+    gdprPassed,
+    interactions.length,
+    onboardingActive,
+    onboardingEnable,
+    sendGdprData,
+  ]);
+
   const testsMenu = [
     Object.keys(ACTIONS).map((it) => ({
       onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, { hide: true })),
@@ -137,10 +158,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} />,
       onClick: onToggleMore,
       variant: 'icon',
-      when:
-        (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
-        !!gdprPassed &&
-        (!onboardingActive || !onboardingEnable),
+      when: checkDisplayParametersInMoreOptionsCog(),
       title: actionMore,
     },
     {
