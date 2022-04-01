@@ -45,18 +45,14 @@ export default function PrettyHtml({
     }
   }, [NameBot, t]);
 
-  const RE_ONCLICK = /onclick=".+?"/gm;
-  const RE_REWORD = /class="reword/gm;
-  const RE_HREF = /(<a href([^>]+)>)/g;
   const RE_HREF_EMPTY = /href="#"/g;
+  const RE_HREF = /(<a href([^>]+)>)/g;
 
   const hrefMatchs = html && html.match(RE_HREF);
 
   hrefMatchs &&
     hrefMatchs.map((el) => {
-      if (!el.match(RE_REWORD)) {
-        html = html.replace(el, el.replace(RE_ONCLICK, ''));
-      } else {
+      if (el.match(RE_HREF_EMPTY)) {
         html = html.replace(el, el.replace(RE_HREF_EMPTY, 'href="javascript:void(0)"'));
       }
     });
