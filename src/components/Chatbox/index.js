@@ -65,7 +65,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const ask = useCallback(
     (text, options) => {
       text = text.trim();
-      if (text && ['redirection_newpage'].indexOf(options.type) === -1) {
+      if (text) {
         const toSend = {
           qualification,
           extra: options,

@@ -3,7 +3,6 @@ const { CleanWebpackPlugin: Clean  } = require('clean-webpack-plugin');
 const Copy = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
-const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
@@ -29,7 +28,7 @@ module.exports = (env) => {
     }
   }
 
-  return Merge.strategy({plugins: 'prepend'})(common, {
+  return Merge.strategy({plugins: 'prepend'})(common(env), {
     devtool: 'source-map',
     mode: 'production',
     output: {
@@ -39,13 +38,6 @@ module.exports = (env) => {
       publicPath:  ASSET
     },
     plugins: [
-      configuration.Voice && configuration.Voice.enable ? new WebpackShellPluginNext({
-        onBuildStart:{
-          blocking: true,
-          parallel: false,
-          scripts: ['npm install @dydu_ai/voice-module --no-save'],
-        }
-      }) : () => {},
       new Clean(),
       new Copy({
         patterns: [

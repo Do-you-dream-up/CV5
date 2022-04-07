@@ -1,7 +1,7 @@
 import c from 'classnames';
 import qs from 'qs';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
-//import { AuthContext, Authenticated } from '../../contexts/AuthContext';
+import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -12,6 +12,8 @@ import Teaser from '../Teaser';
 import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
+
+const { AuthContext, Authenticated } = AuthPayload;
 
 const Chatbox = React.lazy(() =>
   import(
@@ -86,10 +88,12 @@ export default function Application() {
       <Suspense fallback={null}>
         {hasWizard && <Wizard />}
         <DialogProvider>
-          <>
-            <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
-            <Teaser open={mode === 1} toggle={toggle} />
-          </>
+          <AuthContext>
+            <Authenticated>
+              <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
+              <Teaser open={mode === 1} toggle={toggle} />
+            </Authenticated>
+          </AuthContext>
         </DialogProvider>
       </Suspense>
     </div>

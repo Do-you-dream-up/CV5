@@ -1,4 +1,4 @@
-//import-voice
+import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -18,7 +18,7 @@ import useStyles from './styles';
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
-export default function Input({ focus, onRequest, onResponse }) {
+export default function Input({ onRequest, onResponse }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
@@ -32,7 +32,6 @@ export default function Input({ focus, onRequest, onResponse }) {
   const actionSend = t('input.actions.send');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
-  const voice = configuration.Voice ? configuration.Voice.enable : false;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -79,7 +78,6 @@ export default function Input({ focus, onRequest, onResponse }) {
     (properties) => {
       const data = {
         ...properties,
-        ref: inputRef,
       };
 
       return (
@@ -115,7 +113,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   const suggest = useCallback(
     (text) => {
       text = text.trim();
-      if (text) {
+      if (text && suggestionsLimit > 0) {
         dydu.suggest(text).then((suggestions) => {
           suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
@@ -141,7 +139,7 @@ export default function Input({ focus, onRequest, onResponse }) {
   };
 
   const inputProps = {
-    autoFocus: focus,
+    ref: inputRef,
     disabled,
     maxLength,
     onChange,
@@ -162,7 +160,6 @@ export default function Input({ focus, onRequest, onResponse }) {
 
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
-      {/*{renderInputComponent()}*/}
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}
@@ -174,8 +171,14 @@ export default function Input({ focus, onRequest, onResponse }) {
         suggestions={suggestions}
         theme={theme}
       />
-      {voice && counter === maxLength ? (
-        <voice />
+      {Voice.isEnabled && counter === maxLength ? (
+        <Voice
+          DialogContext={DialogContext}
+          configuration={configuration}
+          Actions={Actions}
+          show={!!Local.get(Local.names.gdpr)}
+          t={t('input.actions.record')}
+        />
       ) : (
         <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       )}

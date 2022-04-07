@@ -4,7 +4,7 @@ const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
-module.exports = Merge.smart(common, {
+module.exports = env => Merge.smart(common(env), {
   devServer: {
     compress: true,
     static: {
