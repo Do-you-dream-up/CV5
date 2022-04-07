@@ -38,8 +38,7 @@ export default createUseStyles((theme) => ({
     '&:not(:first-child)': {
       marginTop: '.5em',
     },
-    backgroundColor: theme.palette.primary.light,
-    border: 0,
+    border: '1px solid #bdc3c7',
     borderRadius: theme.shape.radius.inner,
     boxSizing: 'border-box',
     display: 'block',
