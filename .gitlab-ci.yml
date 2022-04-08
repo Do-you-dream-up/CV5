@@ -97,8 +97,11 @@ push_base:prod:
   script:
     - apk add curl zip
     - ZIP_FILE="base_${BUILD_TARGET}_${CI_COMMIT_REF_NAME}.zip"
+    - ZIP_FILE_LATEST="base_latest_${CI_COMMIT_REF_NAME}.zip"
     - zip -r $ZIP_FILE build
+    - cp $ZIP_FILE $ZIP_FILE_LATEST
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
+    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE_LATEST}" ${STORE_PATH}/latest/${ZIP_FILE_LATEST}'
   variables:
     BUILD_TARGET: prod
   only:
