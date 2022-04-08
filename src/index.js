@@ -1,15 +1,18 @@
-import Axios from 'axios';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import './tools/internationalization';
+
 import { JssProvider, ThemeProvider } from 'react-jss';
+
 import Application from './components/Application';
+import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { UserActionProvider } from './contexts/UserActionContext';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
-import './tools/internationalization';
 import keycloak from './tools/keycloak';
+
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 let _configuration;
@@ -41,15 +44,28 @@ const renderApp = (theme) =>
     anchor,
   );
 
-configuration.initialize().then((configuration) => {
-  _configuration = configuration;
-  anchor = getRootDiv(configuration);
-  if (anchor) {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
-      const data = res && res.data ? res.data : {};
-      data.palette.primary.main = css ? css.main : data.palette.primary.main;
-      data.breakpoints = breakpoints;
-      configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
+configuration
+  .initialize()
+  .then((configuration) => {
+    _configuration = configuration;
+    anchor = getRootDiv(configuration);
+    if (anchor) {
+      Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
+        const data = res && res.data ? res.data : {};
+        data.palette.primary.main = css ? css.main : data.palette.primary.main;
+        data.breakpoints = breakpoints;
+        configuration.keycloak.enable
+          ? keycloak.initKeycloak(renderApp(data), configuration.keycloak)
+          : renderApp(data);
+      });
+    }
+  })
+  .then(() => {
+    Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
+      if (res?.data.length > 0) {
+        const style = document.createElement('style');
+        style.textContent = res.data;
+        document.head.appendChild(style);
+      }
     });
-  }
-});
+  });
