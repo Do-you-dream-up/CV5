@@ -1,6 +1,6 @@
 module.exports = {
   fontFamily: {
-    base: '"Roboto", sans-serif',
+    base: '"Roboto Regular", sans-serif',
     monospace: '"Menlo", monospace',
   },
 };
