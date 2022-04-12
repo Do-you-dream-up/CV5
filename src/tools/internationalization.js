@@ -10,6 +10,7 @@ i.use(initReactI18next)
   .use(BrowserLanguage)
   .init({
     backend: {
+      crossDomain: true,
       loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json`,
     },
     cleanCode: true,
