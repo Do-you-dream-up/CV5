@@ -15,6 +15,11 @@ import StartPolling from '../tools/special-actions/Polling/StartPolling';
 const isOfTypeString = (v) => typeof v === 'string';
 
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
+const FEEDBACK_RESPONSE = {
+  positive: 'positive',
+  negative: 'negative',
+  noResponseGiven: 'withoutAnswer',
+};
 
 export const DialogContext = React.createContext();
 
@@ -92,22 +97,20 @@ export function DialogProvider({ children }) {
     };
   }, []);
 
-  const rebuildInteractionsListFromHistory = useCallback(
-    (interactionsListFromHistory) => {
-      interactionsListFromHistory.forEach((interactionFromHistory) => {
-        const responseOrRequestWithInteractionFromHistory =
-          createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
-        addRequest(responseOrRequestWithInteractionFromHistory.user);
-        addResponse(responseOrRequestWithInteractionFromHistory);
-      });
-      return interactions;
-    },
-    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
-  );
-
   const addResponse = useCallback(
     (response) => {
-      const { askFeedback, guiAction, sidebar, templateData, templateName, text, typeResponse, urlRedirect } = response;
+      const {
+        askFeedback: _askFeedback,
+        feedback,
+        guiAction,
+        sidebar,
+        templateData,
+        templateName,
+        text,
+        typeResponse,
+        urlRedirect,
+      } = response;
+      const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
       const steps = parseSteps(response);
       if (configuration.Voice.enable) {
         if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName.toLowerCase()) {
@@ -211,6 +214,19 @@ export function DialogProvider({ children }) {
       makeInteractionComponentForEachInteractionPropInList,
       toggleSecondary,
     ],
+  );
+
+  const rebuildInteractionsListFromHistory = useCallback(
+    (interactionsListFromHistory) => {
+      interactionsListFromHistory.forEach((interactionFromHistory) => {
+        const responseOrRequestWithInteractionFromHistory =
+          createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
+        addRequest(responseOrRequestWithInteractionFromHistory.user);
+        addResponse(responseOrRequestWithInteractionFromHistory);
+      });
+      return interactions;
+    },
+    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
   );
 
   const empty = useCallback(() => {
