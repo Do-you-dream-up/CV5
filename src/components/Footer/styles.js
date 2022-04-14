@@ -19,6 +19,7 @@ export default createUseStyles((theme) => ({
     flexShrink: 0,
     position: 'relative',
     width: '100%',
+    height: 60,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
     },
