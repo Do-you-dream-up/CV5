@@ -8,6 +8,16 @@ export default createUseStyles((theme) => ({
   },
   root: {
     '@global': {
+      '@font-face': {
+        fontFamily: 'Roboto Regular',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        src: 'url("./fonts/Roboto/Roboto-Regular.ttf") format("truetype")',
+        fallbacks: [
+          { src: 'url("./fonts/Roboto/Roboto-Regular.woff") format("woff")' },
+          { src: 'url("./fonts/Roboto/Roboto-Regular.woff2") format("woff2")' },
+        ],
+      },
       'a, .dydu-link': {
         '&:hover': {
           textDecoration: 'underline',
@@ -20,7 +30,7 @@ export default createUseStyles((theme) => ({
         textDecoration: 'none',
       },
       button: {
-        fontFamily: theme.fontFamily,
+        fontFamily: theme.font.sansSerif,
       },
       dd: {
         color: theme.palette.text.primary,

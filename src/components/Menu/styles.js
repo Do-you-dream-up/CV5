@@ -9,7 +9,7 @@ export default createUseStyles((theme) => ({
     borderRadius: theme.shape.radius.inner,
     boxShadow: theme.shadows[1],
     color: theme.palette.text.primary,
-    fontFamily: 'sans-serif',
+    fontFamily: theme.font.sansSerif,
     overflowY: 'auto',
     position: 'fixed',
     visibility: 'hidden',
