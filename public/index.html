@@ -6,37 +6,132 @@
     <style type="text/css">body { font-family: monospace; }</style>
     <link id="font" href="" rel="stylesheet">
     <title>Dydu Chatbox</title>
-    <script type="module">
-      window.DYDU_QUALIFICATION_MODE = true;
-
-      if (window.location.href.includes("iframeurl=")) {
-        document.body.style.padding = "0"; // remove all margin to have the iframe on the whole page
-
-        // search all the span inside the first div and hide them
-        const spanList = document.getElementById("chatbot-external").getElementsByTagName('span');
-        for (let i = 0; i < spanList.length; i++) {
-          spanList[i].style.display="none";
-        }
-
-        // retrieve the iframe element and give it dynamically the url passed in the query "iframeurl" to display the website behind the chatbox
-        const ifrm = document.getElementById("iframe");
-        const params = new Proxy(new URLSearchParams(window.location.search), {
-          get: (searchParams, prop) => searchParams.get(prop),
-        });
-        // Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
-        let iframeurlValue = params.iframeurl; // "some_value"
-
-        iframeurlValue = iframeurlValue.replace('https://', '');
-        ifrm.setAttribute("src", `https://${iframeurlValue}`);
-        ifrm.style.display = "block";
+    <script type="module" src="chatboxHomepage.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Assistant';
+        font-style: normal;
+        font-weight: normal;
+        src: url('Fonts/Assistant-Regular.ttf') format('truetype'),
+          url('Fonts/Assistant-Regular.woff') format('woff'),
+          url('Fonts/Assistant-Regular.woff2') format('woff2');
       }
-    </script>
+
+      @font-face {
+        font-family: 'Assistant Light';
+        font-style: normal;
+        font-weight: normal;
+        src: url('Fonts/Assistant-Light.ttf') format('truetype'),
+          url('Fonts/Assistant-Light.woff') format('woff'),
+          url('Fonts/Assistant-Light.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Assistant Semi Bold';
+        font-style: normal;
+        font-weight: normal;
+        src: url('Fonts/Assistant-SemiBold.ttf') format('truetype'),
+          url('Fonts/Assistant-SemiBold.woff') format('woff'),
+          url('Fonts/Assistant-SemiBold.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Assistant Bold';
+        font-style: normal;
+        font-weight: normal;
+        src: url('Fonts/Assistant-Bold.ttf') format('truetype'),
+          url('Fonts/Assistant-Bold.woff') format('woff'),
+          url('Fonts/Assistant-Bold.woff2') format('woff2');
+      }
+
+      #chatbot-external {
+        font-family: "Assistant", sans-serif;
+        font-size: 14px;
+      }
+      #chatbot-external h1,
+      #chatbot-external h2 {
+        font-family: "Assistant Bold", sans-serif;
+      }
+      #chatbot-external h1 {
+        margin-bottom: 0;
+        font-size: 50px;
+        color: #152D62;
+      }
+      #chatbot-external h2 {
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 30px;
+        color: #152D62;
+      }
+      #chatbot-external p {
+        margin-top: 0;
+        margin-bottom: 40px;
+        font-size: 16px;
+        color: #74889D;
+      }
+
+      #chatbot-external #versionNumber {
+        padding: 5px 10px;
+      }
+
+      #chatbot-external #iframeForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80%;
+        text-align: center;
+      }
+
+      #chatbot-external #iframeForm input#urlInput {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 9px 8px;
+        border-radius: 6px;
+        border: 1px solid #CAD5DB;
+      }
+
+      #chatbot-external #iframeForm input#urlInput::placeholder,
+      #chatbot-external #iframeForm input#urlInput::-webkit-input-placeholder,
+      #chatbot-external #iframeForm input#urlInput:-moz-placeholder,
+      #chatbot-external #iframeForm input#urlInput::-moz-placeholder {
+        color: #95a5a6;
+      }
+
+      #chatbot-external #iframeForm button#button {
+        width: 174px;
+        height: 36px;
+        color:#FFFFFF;
+        border: none;
+        border-radius: 6px;
+        background: #4545C9 0% 0% no-repeat padding-box;
+      }
+    </style>
   </head>
-  <body style="width: inherit; height: inherit; margin: 0; padding: 8px 0 0 8px;">
+  <body style="width: inherit; height: inherit; margin: 0;">
     <div id="chatbot-external" style="width: inherit; height: inherit;">
-      <span style="color: #FF4081">v<%= version %></span>
-      <span style="color: #03A9F4"><%= now %></span>
-      <span><%= hash %></span>
+      <div id="versionNumber">
+        <span style="color: #FF4081">v<%= version %></span>
+        <span style="color: #03A9F4"><%= now %></span>
+        <span><%= hash %></span>
+      </div>
+      <div id="iframeForm">
+        <div style="width: 35%;">
+          <h1>Visualisez votre chatbox</h1>
+          <h2>dans l'environnement où elle sera intégrée</h2>
+          <p>Vous pouvez afficher votre chatbox dans le site web que vous voulez. Il suffit de remplir le champ ci-dessous avec l'adresse URL de votre site et de cliquer sur le bouton afficher.</p>
+        </div>
+        <div style="width: 30%;">
+          <input
+            id="urlInput"
+            type="text"
+            placeholder="https://votreurldetest.ai"
+            name="url"
+            value=""
+          >
+          <button id="button">Afficher</button>
+        </div>
+      </div>
       <iframe id="iframe" style="width:inherit; height:inherit; border: 0; display:none;"></iframe>
     </div>
     <div id="dydu-root"></div>
