@@ -49,7 +49,6 @@ export class Local {
     open: 'dydu.open',
     secondary: 'dydu.secondary',
     space: 'dydu.space',
-    visitor: 'dydu.visitor',
     wizard: 'dydu.wizard.data',
   };
 

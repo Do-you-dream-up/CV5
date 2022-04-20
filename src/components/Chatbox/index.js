@@ -11,7 +11,7 @@ import { OnboardingContext, OnboardingProvider } from '../../contexts/Onboarding
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import dydu from '../../tools/dydu';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Local } from '../../tools/storage';
+import { Cookie, Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -25,6 +25,7 @@ import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import useStyles from './styles';
+import { encode } from '../../tools/cipher';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -183,14 +184,23 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     gdprPassed,
   ]);
 
+  const cookieStringKeyUniqueVisitor = useCallback(async () => {
+    const botId = await dydu.getBotId();
+    const currentSpace = Local.get(Local.names.space);
+    const currentLanguage = Local.get(Local.names.locale);
+    return `DYDU_lastvisitfor_${botId}_${currentSpace}_${currentLanguage}`;
+  }, []);
+
   useEffect(() => {
-    if (gdprPassed && !Local.get(Local.names.visitor)) {
-      dydu.welcomeCall({ qualification }).then(
-        () => Local.set(Local.names.visitor, undefined),
-        () => {},
-      );
-    }
-  }, [gdprPassed, qualification]);
+    cookieStringKeyUniqueVisitor().then((visitorCookieValue) => {
+      if (gdprPassed && !Cookie.get(visitorCookieValue)) {
+        dydu.welcomeCall({ qualification }).then(
+          () => Cookie.set(visitorCookieValue, encode(new Date().toISOString()), undefined),
+          () => {},
+        );
+      }
+    });
+  }, [cookieStringKeyUniqueVisitor, gdprPassed, qualification]);
 
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
