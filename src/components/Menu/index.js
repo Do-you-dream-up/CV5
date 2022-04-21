@@ -52,7 +52,7 @@ export default function Menu({ component, items, selected, ...rest }) {
               top: anchor.top - spacing - menu.height,
             }
           : {
-              maxHeight: anchor.topwindow.innerHeight - anchor.bottom - spacing * 2,
+              maxHeight: anchor.top + window.innerHeight - anchor.bottom - spacing * 2,
               top: anchor.bottom + spacing,
             }),
       });

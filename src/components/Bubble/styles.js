@@ -20,7 +20,6 @@ export default createUseStyles((theme) => {
     }),
     base: ({ hasCarouselAndSidebar }) => ({
       alignItems: 'center',
-      borderRadius: theme.shape.radius.inner,
       display: 'flex',
       minHeight: hasCarouselAndSidebar ? '9.5em' : '3em',
       overflow: 'hidden',
@@ -51,8 +50,10 @@ export default createUseStyles((theme) => {
       ...request({ color }),
       color: theme.palette.request.text,
       marginLeft: 'auto',
+      borderRadius: '15px 0px 15px 15px',
     }),
     response: () => ({
+      borderRadius: '0 15px 15px 15px',
       backgroundColor: theme.palette.response.background,
       color: theme.palette.response.text,
       marginRight: 'auto',

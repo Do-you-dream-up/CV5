@@ -20,6 +20,7 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
   const { gdprPassed, onAccept, onDecline } = useContext(GdprContext) || {};
   const enable = configuration.gdprDisclaimer && configuration.gdprDisclaimer.enable;
   const event = useContext(EventsContext).onEvent('gdpr');
+  const titleDisclaimer = t('gdpr.disclaimer.title');
 
   const actions = [
     {
@@ -47,11 +48,14 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
         },
         <>
           {body && (
-            <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
-              <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
-                <div dangerouslySetInnerHTML={{ __html: body }} />
-              </Skeleton>
-            </div>
+            <>
+              <div className={c('dydu-gdpr-disclaimer-body', classes.title)}>{titleDisclaimer}</div>
+              <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
+                <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
+                  <div dangerouslySetInnerHTML={{ __html: body }} />
+                </Skeleton>
+              </div>
+            </>
           )}
           <Actions actions={actions} className={c('dydu-gdpr-disclaimer-actions', classes.actions)} />
         </>,
