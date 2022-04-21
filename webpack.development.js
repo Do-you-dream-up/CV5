@@ -16,7 +16,12 @@ module.exports = env => Merge.smart(common(env), {
         errors: true,
         warnings: true,
       },
-    }
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Methods': '*',
+    },
   },
   devtool: 'inline-source-map',
   mode: 'development',

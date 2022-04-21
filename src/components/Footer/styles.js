@@ -4,6 +4,7 @@ export default createUseStyles((theme) => ({
   actions: () => ({
     alignItems: 'center',
     paddingLeft: '.5em',
+    height: 60,
   }),
   content: () => ({
     flexGrow: 1,

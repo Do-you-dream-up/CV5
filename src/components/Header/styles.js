@@ -8,15 +8,13 @@ export default createUseStyles((theme) => ({
     '& > :not(:last-child)': {
       marginRight: '.1em',
     },
-    marginRight: '.5em',
-    position: 'absolute',
-    right: 0,
+    width: '50%', // TODO: put at 30% when there are only 2 icons left in the header
   }),
   body: () => ({
     alignItems: 'center',
     display: 'flex',
-    minHeight: '2.8em',
-    padding: '.6em',
+    height: '100%',
+    padding: '.6em 20px',
   }),
   draggable: () => ({
     '& > *': {
@@ -35,20 +33,22 @@ export default createUseStyles((theme) => ({
     display: 'flex',
     height: '2.5em',
     justifyContent: 'center',
-    marginRight: '0.6em',
+    marginRight: '16px',
     width: '2.5em',
   }),
   logo: () => ({
     '& > .dydu-header-title:only-child': {
       margin: 'auto 0.5em',
-      width: '8.5em',
+      width: '50%', // TODO: put at 70% when there are only 2 icons left in the header
     },
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'start',
+    width: '70%',
   }),
   root: () => ({
+    height: 60,
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,
     borderTopRightRadius: theme.shape.radius.outer,
@@ -67,6 +67,6 @@ export default createUseStyles((theme) => ({
     minWidth: '6.7em',
     padding: '.5em 0',
     margin: 0,
-    width: '7.5em',
+    width: '100%',
   }),
 }));

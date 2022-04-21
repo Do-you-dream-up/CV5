@@ -7,7 +7,7 @@ export default createUseStyles((theme) => ({
   },
   base: {
     display: 'flex',
-    margin: [['1em'], '!important'],
+    margin: [['20px 10px'], '!important'],
   },
   bubble: () => ({
     '&:not(:last-child)': {
@@ -38,9 +38,12 @@ export default createUseStyles((theme) => ({
     marginBottom: '0.2em',
   }),
   request: () => ({
+    borderRadius: '15px',
     marginLeft: '2em',
+    paddingLeft: 35,
   }),
   response: () => ({
+    width: '85%',
     [theme.breakpoints.up('sm')]: {
       marginRight: '2em',
     },
