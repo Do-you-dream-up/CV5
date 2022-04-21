@@ -5,12 +5,24 @@ export default createUseStyles({
     '& > :not(:last-child)': {
       marginRight: '.5em',
     },
-    margin: '1em 1em 1em 0',
+    margin: '1em',
+    '& $button': {
+      width: '50%',
+      justifyContent: 'center',
+    },
   },
   body: {
-    margin: '.7em',
+    margin: '1em',
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 25,
   },
   root: {
     overflowY: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    height: '100%',
   },
 });
