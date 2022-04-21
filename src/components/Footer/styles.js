@@ -4,6 +4,7 @@ export default createUseStyles((theme) => ({
   actions: () => ({
     alignItems: 'center',
     paddingLeft: '.5em',
+    height: 60,
   }),
   content: () => ({
     flexGrow: 1,
@@ -19,7 +20,6 @@ export default createUseStyles((theme) => ({
     flexShrink: 0,
     position: 'relative',
     width: '100%',
-    height: 60,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
     },
