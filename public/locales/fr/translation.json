@@ -106,7 +106,8 @@
     },
     "gdpr": {
         "disclaimer": {
-            "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site. Les informations que vous nous transmettez permettent de traiter votre demande. Toutefois, aucune donnée personnelle pouvant permettre votre identification ne doit être communiquée dans cet outil, ni aucune donnée sensible, telle qu’une information sur votre état de santé ou sur vos opinions et convictions personnelles.</p>",
+            "title": "Données personnelles",
+            "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site.<br/><br/> Les informations que vous nous transmettez permettent de traiter votre demande.<br/><br/> Cependant, aucune donnée personnelle ou sensible pouvant permettre votre identification ne doit être communiquée dans cet outil (comme par exemple des informations sur votre état de santé, vos coordonnées bancaires, vos opinions ou convictions personnelles).</p>",
             "cancel": "Je refuse",
             "ok": "J'accepte"
         },
