@@ -15,7 +15,7 @@
       },
       "background": {
         "bullet": "#A4A4A4",
-        "default": "#F5F5F5",
+        "default": "#FFFFFF",
         "dim": "rgba(0, 0, 0, .05)",
         "highlight": "rgba(0, 0, 0, .05)",
         "menu": "#FFFFFF",
@@ -32,7 +32,7 @@
       "primary": {
         "dark": "#0288D1",
         "light": "#B3E5FC",
-        "main": "#3636B9",
+        "main": "#41479B",
         "text": "#FFFFFF"
       },
       "request": {
@@ -40,7 +40,7 @@
         "text": "rgba(0, 0, 0, .87)"
       },
       "response": {
-        "background": "#FFFFFF",
+        "background": "#EDF1F5",
         "text": "rgba(0, 0, 0, .87)"
       },
       "secondary": {
