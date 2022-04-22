@@ -7,13 +7,13 @@ export default createUseStyles((theme) => ({
     },
     alignItems: 'center',
     display: 'flex',
+    '& $path': {
+      fill: theme.palette.primary.main,
+    },
   }),
 
   container: () => ({
-    backgroundColor: theme.palette.background.dim,
-    borderRadius: theme.shape.radius.inner,
     flexGrow: 1,
-    overflow: 'hidden',
   }),
 
   counter: () => ({
@@ -57,25 +57,24 @@ export default createUseStyles((theme) => ({
 
   fieldShadow: () => ({
     extend: 'fieldBase',
+    height: 40,
     minHeight: '100%',
     visibility: 'hidden',
   }),
 
   fieldText: () => ({
+    height: 40,
     '&::placeholder': {
       color: theme.palette.text.secondary,
     },
     '&[disabled]': {
       cursor: 'not-allowed',
     },
-    '&:focus': {
-      boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
-    },
     background: 0,
     border: 0,
     color: theme.palette.text.primary,
     extend: 'fieldBase',
-    height: '100%',
+    // height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
@@ -84,6 +83,12 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flex: 'auto',
+    backgroundColor: theme.palette.background.dim,
+    borderRadius: theme.shape.radius.inner,
+    overflow: 'hidden',
+    '&:focus': {
+      boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
+    },
   }),
 
   suggestions: () => ({
