@@ -1,11 +1,14 @@
 ---
 
 stages:
-  - build
   - preprod
   - prod
-  - push
+  - build
+  - publish_preprod
+  - publish_prod
   - replace
+  - mirror
+  - release
 
 variables:
   STORE_PATH: https://nexus.doyoudreamup.com/repository/front_artefacts/chatbot/bliss
@@ -28,7 +31,6 @@ preprod:
     - ansible-playbook --verbose --inventory hosts.yml deliverPreprod.yml
   only:
     refs:
-      - development
       - /project\/.*/
 
 prod:
@@ -48,12 +50,17 @@ prod:
     - ansible-playbook --verbose --inventory hosts.yml deliverProd.yml
   only:
     refs:
-      - development
       - /project\/.*/
+
+include:
+  - project: 'main-solution/build-and-tools/ci-cd-templates'
+    file:
+      - 'node/common.gitlab-ci.yml'
+      - 'node/version-management.gitlab-ci.yml'
 
 build_base:prod:
   stage: build
-  image: node:lts-alpine3.14
+  image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
   tags:
     - chatbot
   script:
@@ -76,7 +83,7 @@ build_base:prod:
     paths:
       - .npm
   only:
-    - tags
+    - branches
   except:
     variables:
       - $DYDUBOX_TRIGGER == "true"
@@ -91,30 +98,74 @@ build_base:preprod:
   variables:
     BUILD_TARGET: preprod
 
-push_base:prod:
-  image: alpine
-  stage: push
+push_base:preprod:
+  image: docker-registry.dydu-priv.com/devops/build/gitlab-docker:latest
+  stage: publish_preprod
+  dependencies: ["build_base:preprod"]
+  before_script:
+      - apk add curl zip
+      - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
+      - >
+        case $CI_COMMIT_REF_NAME in
+        master) export LATEST="latest" ;;
+        development) VERSION=$VERSION-SNAPSHOT ; export LATEST="latest-SNAPSHOT" ;;
+        esac
+      - echo "Will publish version $VERSION"
+      - /helper.sh loginGit
   script:
-    - apk add curl zip
-    - ZIP_FILE="base_${BUILD_TARGET}_${CI_COMMIT_REF_NAME}.zip"
-    - ZIP_FILE_LATEST="base_${BUILD_TARGET}_latest.zip"
+    - ZIP_FILE="base_${BUILD_TARGET}_${VERSION}.zip"
+    - ZIP_FILE_LATEST="base_${BUILD_TARGET}_${LATEST}.zip"
     - zip -r $ZIP_FILE build
     - cp $ZIP_FILE $ZIP_FILE_LATEST
+    - echo "$ZIP_FILE $STORE_PATH/$BUILD_TARGET/$ZIP_FILE"
+    - echo "$ZIP_FILE_LATEST $STORE_PATH/$BUILD_TARGET/$ZIP_FILE_LATEST"
+    - git fetch --all --tags
+    - if [[ ! $(git tag -l "ci_$VERSION") ]]; then git tag -f ci_$VERSION ; git push --tags --force origin ci_$VERSION ; fi
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE_LATEST}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE_LATEST}'
   variables:
-    BUILD_TARGET: prod
-  only:
-    - tags
+    BUILD_TARGET: preprod
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: on_success
+    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
+      when: on_success
+    - when: never
   except:
     variables:
       - $DYDUBOX_TRIGGER == "true"
 
-push_base:preprod:
+push_base:prod:
+  stage: publish_prod
   extends:
-    - push_base:prod
+    - push_base:preprod
+  dependencies: ["build_base:prod"]
   variables:
-    BUILD_TARGET: preprod
+    BUILD_TARGET: prod
+  rules:
+    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\\(release\\).*/"
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
+    - when: never
+
+mirror:
+  stage: mirror
+  image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
+  before_script:
+    - 'curl --header "PRIVATE-TOKEN: $GITLAB_RUNNER_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
+    - chmod +x /helper.sh
+  script:
+    - '/helper.sh loginGit'
+    - 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
+    - 'git clone git@github.com:Do-you-dream-up/CV5.git repopub'
+    - 'cd repopub'
+    - 'git remote add this ../.'
+    - 'git fetch this --tags'
+    - 'git merge --no-edit --allow-unrelated-histories this/test-cicd-bliss'
+    - 'git remote remove this'
+    - 'git push'
+  rules:
+    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\\(release\\).*/"
 
 dydubox:
   stage: replace
