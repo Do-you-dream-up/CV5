@@ -160,7 +160,7 @@ mirror:
     - 'cd repopub'
     - 'git remote add this ../.'
     - 'git fetch this --tags'
-    - 'git merge --no-edit --allow-unrelated-histories this/test-cicd-bliss'
+    - 'git merge --no-edit --allow-unrelated-histories this/master'
     - 'git remote remove this'
     - 'git push'
   rules:
