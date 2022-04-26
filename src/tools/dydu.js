@@ -7,7 +7,6 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
-import SpecialActionHandler from './SpecialActionHandler';
 import { toFormUrlEncoded } from './helpers';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
@@ -438,14 +437,7 @@ export default new (class Dydu {
     const data = qs.stringify(payload);
     const contextId = await this.getContextId();
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data).then((response) => {
-      this.#onReceiveTalkResponse(response);
-      return response;
-    });
-  };
-
-  #onReceiveTalkResponse = (response) => {
-    SpecialActionHandler.processIfContainsAction(this, response);
+    return this.emit(API.post, path, data);
   };
 
   poll = async (lastPoll) => {

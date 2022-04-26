@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Poller from '../../Poller';
+import Poller from './Poller';
 import {
   getPollId,
   handleResponse,

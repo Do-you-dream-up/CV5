@@ -1,10 +1,15 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDialog } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
 
 const StatusText = () => {
-  const { statusText } = useDialog();
+  const { statusText, flushStatusText } = useDialog();
+
+  useEffect(() => {
+    if (!isDefined(statusText)) return;
+    setTimeout(flushStatusText, 1500);
+  }, [flushStatusText]);
 
   return !isDefined(statusText) || statusText.length === 0 ? null : (
     <div style={Style.main}>
