@@ -14,11 +14,13 @@ import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ onRequest, onResponse }) {
+  const { isWebsocket, send } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
@@ -96,6 +98,15 @@ export default function Input({ onRequest, onResponse }) {
     setInput('');
   }, [configuration.input.maxLength]);
 
+  const sendInput = useCallback(
+    (input) => {
+      if (isWebsocket) send(input);
+      else talk(input, { qualification }).then(onResponse);
+    },
+    // eslint-disable-next-line
+    [isWebsocket, send],
+  );
+
   const submit = useCallback(
     (text) => {
       text = text.trim();
@@ -103,11 +114,11 @@ export default function Input({ onRequest, onResponse }) {
         reset();
         onRequest(text);
         event('questionSent', text);
-        talk(text, { qualification }).then(onResponse);
+        sendInput(text);
       }
       setTyping(false);
     },
-    [event, onRequest, onResponse, qualification, reset],
+    [event, onRequest, reset, sendInput],
   );
 
   const suggest = useCallback(

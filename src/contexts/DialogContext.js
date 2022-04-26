@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -10,7 +10,6 @@ import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext } from './EventsContext';
-import StartPolling from '../tools/special-actions/Polling/StartPolling';
 
 const isOfTypeString = (v) => typeof v === 'string';
 
@@ -38,15 +37,13 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [statusText, setStatusText] = useState(null);
+  const [lastResponse, setLastResponse] = useState(null);
 
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
-  useEffect(() => {
-    StartPolling.options.displayResponse = addResponse;
-    StartPolling.options.displayStatus = setStatusText;
-  }, [addResponse, setStatusText]);
+  const flushStatusText = useCallback(() => setStatusText(null), []);
 
   const add = useCallback((interaction) => {
     setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
@@ -99,6 +96,7 @@ export function DialogProvider({ children }) {
 
   const addResponse = useCallback(
     (response) => {
+      setLastResponse(response);
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -260,7 +258,10 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
+        flushStatusText,
+        lastResponse,
         statusText,
+        setStatusText,
         add,
         addRequest,
         addResponse,
