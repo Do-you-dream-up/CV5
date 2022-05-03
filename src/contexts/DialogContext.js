@@ -9,7 +9,7 @@ import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
-import { EventsContext } from './EventsContext';
+import { EventsContext, useEvent } from './EventsContext';
 
 const isOfTypeString = (v) => typeof v === 'string';
 
@@ -27,6 +27,7 @@ export const useDialog = () => useContext(DialogContext);
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
+  const { onNewMessage } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -97,6 +98,7 @@ export function DialogProvider({ children }) {
   const addResponse = useCallback(
     (response) => {
       setLastResponse(response);
+      onNewMessage(response);
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -204,7 +206,7 @@ export function DialogProvider({ children }) {
     },
     [
       add,
-      configuration,
+      onNewMessage,
       event,
       isMobile,
       secondaryTransient,
