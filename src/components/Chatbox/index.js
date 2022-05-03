@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import { EventsContext } from '../../contexts/EventsContext';
+import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
@@ -25,6 +25,7 @@ import Onboarding from '../Onboarding';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import useStyles from './styles';
+import { isDefined } from '../../tools/helpers';
 import { encode } from '../../tools/cipher';
 
 /**
@@ -48,6 +49,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
+  const { onChatboxLoaded } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
@@ -88,6 +90,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     event('onMinimize', 'params', 'params2');
     toggle(1)();
   };
+
+  useEffect(() => {
+    if (isDefined(root.current)) {
+      onChatboxLoaded(root.current);
+    }
+  }, [onChatboxLoaded, root]);
 
   useEffect(() => {
     if (!ready) {
