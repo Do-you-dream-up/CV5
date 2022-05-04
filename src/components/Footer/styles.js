@@ -11,7 +11,7 @@ export default createUseStyles((theme) => ({
     padding: '.5em',
   }),
   root: () => ({
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#EDF1F5',
     borderBottomLeftRadius: theme.shape.radius.outer,
     borderBottomRightRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[1],

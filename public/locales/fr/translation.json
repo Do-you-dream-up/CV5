@@ -148,7 +148,7 @@
                 "stop": "Fin de l'enregistrement"
               }
           },
-          "placeholder": "Ecrivez ici..."
+          "placeholder": "Tapez votre message ici"
     },
     "interaction": {
         "languageChange": "Vous utilisez cette langue:",
