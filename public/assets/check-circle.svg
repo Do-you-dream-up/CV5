@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14.001" viewBox="0 0 14 14.001">
+  <g id="Icon_feather-check-circle" data-name="Icon feather-check-circle" transform="translate(-1.5 -1.49)">
+    <path id="Path_46" data-name="Path 46" d="M8.5,15.491q-.13,0-.261,0A7,7,0,1,1,11.349,2.1a.636.636,0,1,1-.518,1.163,5.727,5.727,0,1,0,3.4,5.235V7.909a.636.636,0,1,1,1.273,0v.585a7,7,0,0,1-7,7Z" fill="#46525f"/>
+    <path id="Path_47" data-name="Path 47" d="M14.545,12.143a.636.636,0,0,1-.45-.186l-1.909-1.909a.636.636,0,0,1,.9-.9l1.459,1.459,5.914-5.92a.636.636,0,0,1,.9.9L15,11.956a.636.636,0,0,1-.45.187Z" transform="translate(-6.046 -1.733)" fill="#46525f"/>
+  </g>
+</svg>

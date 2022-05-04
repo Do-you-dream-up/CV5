@@ -78,7 +78,33 @@ const LivechatPayloadCreator = {
 };
 
 const LivechatPayloadChecker = {
-  statusMessage: (payload) => {
+  operatorAutomaticallyTransferredDialog: (payload) => {
+    return (
+      payload?.type.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals('DialogTransferredAutomatically')
+    );
+  },
+  operatorManuallyTransferredDialog: (payload) => {
+    return (
+      payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('DialogTransferredManually')
+    );
+  },
+  operatorDisconnected: (payload) => {
+    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorDisconnected');
+  },
+  operatorConnected: (payload) => {
+    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorConnected');
+  },
+  operatorBusy: (payload) => {
+    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorBusy');
+  },
+  startLivechat: (payload) => {
+    return payload?.specialAction?.fromBase64()?.equals('StartPolling');
+  },
+  timeout: (payload) => {
+    return payload?.type?.equals('payload') && payload?.values?.code?.fromBase64().equals('AlmostTimedOut');
+  },
+  operatorWriting: (payload) => {
     return payload?.type?.equals('notification') && payload?.values?.code?.fromBase64().equals('OperatorWritingStatus');
   },
   getContextResponse: (payload) => {

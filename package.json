@@ -34,6 +34,7 @@
     "socket.io-client": "^2.3.1",
     "string-replace-loader": "^3.0.1",
     "style-loader": "^3.3.1",
+    "styled-components": "^5.3.5",
     "typeface-assistant": "0.0.75",
     "uuid4": "^1.1.4"
   },

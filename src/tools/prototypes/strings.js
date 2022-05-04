@@ -5,11 +5,19 @@ String.prototype.contains = function (substr) {
 };
 
 String.prototype.toBase64 = function () {
-  return b64encode(this);
+  try {
+    return b64encode(this);
+  } catch (e) {
+    return this;
+  }
 };
 
 String.prototype.fromBase64 = function () {
-  return b64decode(this);
+  try {
+    return b64decode(this);
+  } catch (e) {
+    return this;
+  }
 };
 
 String.prototype.equals = function (str) {

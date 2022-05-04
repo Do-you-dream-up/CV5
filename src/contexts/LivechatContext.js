@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDialog } from './DialogContext';
-import { isDefined } from '../tools/helpers';
+import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 import dydu from '../tools/dydu';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
@@ -24,17 +24,16 @@ export function LivechatProvider({ children }) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
-  const { lastResponse, setStatusText } = useDialog();
+  const { lastResponse, displayNotification: notify } = useDialog();
 
-  const displayResponseText = useCallback(
-    (text) => {
-      setStatusText(null);
-      window.dydu.chat.reply(text);
+  const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
+
+  const displayNotification = useCallback(
+    (notification) => {
+      notify(recursiveBase64DecodeString(notification));
     },
-    [setStatusText],
+    [notify],
   );
-
-  const displayStatusText = useCallback(setStatusText, [setStatusText]);
 
   const shouldEndLivechat = useMemo(() => {
     return isDefined(lastResponse) && containsEndLivechatSpecialAction(lastResponse);
@@ -56,7 +55,7 @@ export function LivechatProvider({ children }) {
       console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
       const fallbackTunnel = findFallbackTunnelInList(tunnelList);
       console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-      fallbackTunnel.open(configuration).then(onSuccessOpenTunnel(fallbackTunnel));
+      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
     },
     [onSuccessOpenTunnel, tunnelList],
   );
@@ -74,7 +73,7 @@ export function LivechatProvider({ children }) {
       api: dydu,
       endLivechat,
       displayResponseText,
-      displayStatusText,
+      displayNotification,
       onFail: onFailOpenTunnel,
     };
     _tunnel
@@ -83,7 +82,7 @@ export function LivechatProvider({ children }) {
       .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
   }, [
     displayResponseText,
-    displayStatusText,
+    displayNotification,
     endLivechat,
     lastResponse,
     onFailOpenTunnel,

@@ -51,7 +51,7 @@ export function b64decode(str) {
   );
 }
 
-export const isOfTypeString = (v) => typeof v === 'string';
+export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[object String]';
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
 export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[object Function]';
@@ -139,3 +139,28 @@ export const osName = () => {
   if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
   return OSName;
 };
+
+export const recursiveBase64DecodeString = (obj) => {
+  return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
+};
+
+const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
+  if (keylist.length === 0) return res;
+
+  const key = keylist.pop();
+  let value = o[key];
+
+  if (isOfTypeString(value)) {
+    try {
+      res[key] = value.fromBase64();
+    } catch (e) {
+      // Exception: malformed URI
+      res[key] = value;
+    }
+  } else if (isOfTypeObject(value)) res[key] = _recursiveBase64DecodeString(value, Object.keys(value), res[key]);
+  else res[key] = value;
+
+  return _recursiveBase64DecodeString(o, keylist, res);
+};
+
+export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
