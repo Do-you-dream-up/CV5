@@ -193,6 +193,7 @@ export function DialogProvider({ children }) {
               steps={steps}
               templatename={templateName}
               thinking
+              typeResponse={typeResponse}
             />
           );
         }
@@ -213,6 +214,8 @@ export function DialogProvider({ children }) {
       makeInteractionPropsListWithInteractionChildrenListAndData,
       makeInteractionComponentForEachInteractionPropInList,
       toggleSecondary,
+      configuration.Voice.enable,
+      configuration.Voice.voiceSpace,
     ],
   );
 

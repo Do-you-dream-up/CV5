@@ -8,8 +8,8 @@
     "directory":"development/"
   },
   "avatar": {
-    "background": false,
-    "request": "",
+    "background": true,
+    "request": "dydu-logo.svg",
     "response": "dydu-logo.svg"
   },
   "banner": {
@@ -119,7 +119,7 @@
       "more": "dydu-cog-white.svg"
     },
     "logo": {
-      "customAvatar": false,
+      "customAvatar": true,
       "title": true,
       "image": true,
       "imageLink": {
@@ -140,7 +140,7 @@
     "NameUser": "",
     "NameBot": "",
     "avatar": {
-      "request": false,
+      "request": true,
       "response": true
     },
     "loader": [400, 600]
