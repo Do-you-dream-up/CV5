@@ -32,6 +32,7 @@ preprod:
   only:
     refs:
       - /project\/.*/
+      - development
 
 prod:
   stage: prod
@@ -51,6 +52,7 @@ prod:
   only:
     refs:
       - /project\/.*/
+      - development
 
 include:
   - project: 'main-solution/build-and-tools/ci-cd-templates'
