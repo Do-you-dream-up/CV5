@@ -4,13 +4,14 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY } from '../../tools/template';
-import Avatar from '../Avatar';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
 import Scroll from '../Scroll';
 import useStyles from './styles';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import Avatar from '../Avatar';
 
 /**
  * Build an interaction to display content within the conversation. An
@@ -30,6 +31,7 @@ export default function Interaction({
   templatename,
   thinking,
   type,
+  typeResponse,
 }) {
   children = Array.isArray(children) ? children : [children];
   const { configuration } = useContext(ConfigurationContext);
@@ -38,11 +40,12 @@ export default function Interaction({
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [hasExternalLink, setHasExternalLink] = useState(false);
-  const hasAvatar = !!configuration.interaction.avatar[type];
   const { displayNameBot: avatarDisplayBot } = configuration.interaction;
   const { displayNameUser: avatarDisplayUser } = configuration.interaction;
+  const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
   const NameUser = configuration.interaction.NameUser;
   const NameBot = configuration.interaction.NameBot;
+  const defaultAvatar = configuration.avatar.response;
   const { loader } = configuration.interaction;
   const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
@@ -166,7 +169,15 @@ export default function Interaction({
           className,
         )}
       >
-        {hasAvatar && (hasLoader || !(carousel || carouselTemplate)) && <Avatar type={type} />}
+        <AvatarsMatchingRequest
+          type={type}
+          hasLoader={hasLoader}
+          carousel={carousel}
+          carouselTemplate={carouselTemplate}
+          defaultAvatar={!hasAvatarMatchingRequest ? defaultAvatar : null}
+          AvatarComponent={Avatar}
+          typeResponse={typeResponse}
+        />
         <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
           {type === 'request' && NameUser && !!avatarDisplayUser && (
             <span className={c(`dydu-name-${type}`, classes.nameRequest)} aria-hidden="true">
@@ -229,4 +240,5 @@ Interaction.propTypes = {
   templatename: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
+  typeResponse: PropTypes.string,
 };
