@@ -46,7 +46,7 @@ export default createUseStyles((theme) => ({
     boxSizing: 'border-box',
     display: 'block',
     fontFamily: 'inherit',
-    fontSize: '1em',
+    fontSize: '16px',
     lineHeight: '1.7em',
     overflow: 'hidden',
     padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
@@ -65,16 +65,15 @@ export default createUseStyles((theme) => ({
   fieldText: () => ({
     height: 40,
     '&::placeholder': {
-      color: theme.palette.text.secondary,
+      color: '#46525F',
     },
     '&[disabled]': {
       cursor: 'not-allowed',
     },
-    background: 0,
+    background: '#EDF1F5',
     border: 0,
     color: theme.palette.text.primary,
     extend: 'fieldBase',
-    // height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
@@ -83,7 +82,6 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flex: 'auto',
-    backgroundColor: theme.palette.background.dim,
     borderRadius: theme.shape.radius.inner,
     overflow: 'hidden',
     '&:focus': {
