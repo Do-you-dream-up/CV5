@@ -10,8 +10,8 @@ import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext, useEvent } from './EventsContext';
-
-const isOfTypeString = (v) => typeof v === 'string';
+import { isDefined, isOfTypeString } from '../tools/helpers';
+import LivechatPayload from '../tools/LivechatPayload';
 
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const FEEDBACK_RESPONSE = {
@@ -19,6 +19,8 @@ const FEEDBACK_RESPONSE = {
   negative: 'negative',
   noResponseGiven: 'withoutAnswer',
 };
+
+const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
 
 export const DialogContext = React.createContext();
 
@@ -37,18 +39,22 @@ export function DialogProvider({ children }) {
   const [secondaryContent, setSecondaryContent] = useState(null);
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
-  const [statusText, setStatusText] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
 
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
-  const flushStatusText = useCallback(() => setStatusText(null), []);
-
   const add = useCallback((interaction) => {
     setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
   }, []);
+
+  const displayNotification = useCallback(
+    (notification) => {
+      if (isDefined(notification)) add(<Interaction.Notification notification={notification} />);
+    },
+    [add],
+  );
 
   const addRequest = useCallback(
     (text) => {
@@ -99,6 +105,7 @@ export function DialogProvider({ children }) {
     (response) => {
       setLastResponse(response);
       onNewMessage(response);
+      if (isStartLivechatResponse(response)) return displayNotification(response);
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -206,16 +213,17 @@ export function DialogProvider({ children }) {
       // eslint-disable-next-line no-use-before-define
     },
     [
-      add,
       onNewMessage,
-      event,
-      isMobile,
-      secondaryTransient,
-      makeInteractionPropsListWithInteractionChildrenListAndData,
-      makeInteractionComponentForEachInteractionPropInList,
-      toggleSecondary,
+      displayNotification,
       configuration.Voice.enable,
       configuration.Voice.voiceSpace,
+      secondaryTransient,
+      isMobile,
+      add,
+      toggleSecondary,
+      event,
+      makeInteractionPropsListWithInteractionChildrenListAndData,
+      makeInteractionComponentForEachInteractionPropInList,
     ],
   );
 
@@ -263,10 +271,8 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
-        flushStatusText,
+        displayNotification,
         lastResponse,
-        statusText,
-        setStatusText,
         add,
         addRequest,
         addResponse,

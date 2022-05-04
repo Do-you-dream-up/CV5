@@ -30,14 +30,14 @@ const MESSAGE_TYPE = {
   error: 'error',
   operatorResponse: 'operatorResponse',
   contextResponse: 'contextResponse',
-  statusMessage: 'statusMessage',
+  notification: 'notification',
   endPolling: 'endPolling',
 };
 
 let onFail = null;
 let onEndCommunication = null;
 let displayResponseText = null;
-let displayStatusText = null;
+let displayNotificationMessage = null;
 
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
@@ -58,13 +58,24 @@ export default function useDyduWebsocket() {
     return JSON.parse(lastMessage?.data);
   }, [lastMessage]);
 
+  const isOperatorStateNotification = useCallback((messageData) => {
+    return (
+      LivechatPayload.is.operatorWriting(messageData) ||
+      LivechatPayload.is.operatorBusy(messageData) ||
+      LivechatPayload.is.operatorConnected(messageData) ||
+      LivechatPayload.is.operatorDisconnected(messageData) ||
+      LivechatPayload.is.operatorManuallyTransferredDialog(messageData) ||
+      LivechatPayload.is.operatorAutomaticallyTransferredDialog(messageData)
+    );
+  }, []);
+
   const messageType = useMemo(() => {
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
-    if (LivechatPayload.is.statusMessage(messageData)) return MESSAGE_TYPE.statusMessage;
+    if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
     return MESSAGE_TYPE.operatorResponse;
-  }, [messageData]);
+  }, [isOperatorStateNotification, messageData]);
 
   const messageText = useMemo(() => {
     if (!isDefined(messageData)) return null;
@@ -78,9 +89,9 @@ export default function useDyduWebsocket() {
     }
   }, [messageText]);
 
-  const displayStatus = useCallback(() => {
-    if (isDefined(messageText)) displayStatusText(messageText);
-  }, [messageText]);
+  const displayNotification = useCallback(() => {
+    if (isDefined(messageText)) displayNotificationMessage(messageData);
+  }, [messageData, messageText]);
 
   const decrementHandshakeCountDown = useCallback(
     () => setHandshakeStepCountdown(handshakeStepCountdown - 1),
@@ -132,8 +143,8 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
 
-      case MESSAGE_TYPE.statusMessage:
-        return displayStatus();
+      case MESSAGE_TYPE.notification:
+        return displayNotification();
 
       case MESSAGE_TYPE.contextResponse:
         return processHandshakeNextStep();
@@ -142,11 +153,11 @@ export default function useDyduWebsocket() {
         return handleError();
 
       case MESSAGE_TYPE.endPolling: {
-        displayMessage();
+        displayNotification();
         return close();
       }
     }
-  }, [close, displayMessage, displayStatus, handleError, messageType, processHandshakeNextStep]);
+  }, [close, displayMessage, displayNotification, handleError, messageType, processHandshakeNextStep]);
 
   useEffect(() => {
     if (handshakeStepCountdown === 1) return sendFirstHandshake();
@@ -184,7 +195,7 @@ export default function useDyduWebsocket() {
   const setupOutputs = useCallback((configuration) => {
     onEndCommunication = configuration.endLivechat;
     displayResponseText = configuration.displayResponseText;
-    displayStatusText = configuration.displayStatusText;
+    displayNotificationMessage = configuration.displayNotification;
     onFail = configuration.onFail;
   }, []);
 

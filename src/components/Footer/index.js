@@ -6,7 +6,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Actions from '../Actions';
 import Input from '../Input';
 import useStyles from './styles';
-import StatusText from './StatusText';
 import { LivechatProvider } from '../../contexts/LivechatContext';
 
 /**
@@ -56,7 +55,6 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   return (
     <>
-      <StatusText />
       <footer className={c('dydu-footer', classes.root)} {...rest}>
         <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
         <div className={classes.content}>

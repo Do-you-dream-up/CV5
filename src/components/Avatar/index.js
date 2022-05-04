@@ -25,8 +25,8 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
       return path;
     } else {
       return {
-        request: `${process.env.PUBLIC_URL}assets/${configuration.avatar.request.image}`,
-        response: `${process.env.PUBLIC_URL}assets/${configuration.avatar.response.image}`,
+        request: `${process.env.PUBLIC_URL}assets/${configuration?.avatar?.request?.image}`,
+        response: `${process.env.PUBLIC_URL}assets/${configuration?.avatar?.response?.image}`,
       }[type];
     }
   }, [configuration.avatar.request.image, configuration.avatar.response.image, linkAvatarDependOnType, path, type]);

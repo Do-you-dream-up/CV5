@@ -1,4 +1,4 @@
-import './tools/prototypes/strings';
+import './tools/prototypes/prototypes-augmented';
 import './tools/internationalization';
 
 import { JssProvider, ThemeProvider } from 'react-jss';

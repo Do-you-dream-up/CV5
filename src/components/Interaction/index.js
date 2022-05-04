@@ -1,9 +1,9 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY } from '../../tools/template';
+import Avatar from '../Avatar';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
 import Feedback from '../Feedback';
@@ -11,7 +11,61 @@ import Loader from '../Loader';
 import Scroll from '../Scroll';
 import useStyles from './styles';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
-import Avatar from '../Avatar';
+import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
+import { isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { InChatNotification } from '../../styles/styledComponent';
+import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+
+const templateNameToBubbleCreateAction = {
+  [INTERACTION_TEMPLATE.quickReply]: (list) => {
+    const bubble = {};
+    list.forEach((el) => {
+      if (typeof el === 'string') {
+        bubble.text = el;
+      }
+      if (typeof el === 'object') {
+        bubble.quick = el;
+      }
+    });
+    return [JSON.stringify(bubble)];
+  },
+  [INTERACTION_TEMPLATE.product]: (list) => {
+    const bubble = {};
+    const item = list.pop();
+    if (isOfTypeString(item)) bubble.text = item;
+    if (isOfTypeObject(item)) bubble.product = item;
+    return [JSON.stringify(bubble)];
+  },
+  [INTERACTION_TEMPLATE.carousel]: (list) => {
+    const bubbles = [];
+    /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
+    list.forEach((el) => {
+      const bubble = {};
+      if (typeof el === 'string') {
+        // bubble.text = el;
+      }
+
+      if (typeof el === 'object') {
+        for (let i = 1; i < 6; i++) {
+          const product = {};
+          product['buttonA'] = el[`buttonA${i}`];
+          product['buttonB'] = el[`buttonB${i}`];
+          product['buttonC'] = el[`buttonC${i}`];
+          product['imageLink'] = el[`imageLink${i}`];
+          product['imageName'] = el[`imageName${i}`];
+          product['numeric'] = el[`numeric${i}`];
+          product['subtitle'] = el[`subtitle${i}`];
+          product['title'] = el[`title${i}`];
+          bubble.product = product;
+          if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
+            bubbles.push(JSON.stringify(bubble));
+          }
+        }
+      }
+    });
+    return bubbles;
+  },
+};
 
 /**
  * Build an interaction to display content within the conversation. An
@@ -33,26 +87,36 @@ export default function Interaction({
   type,
   typeResponse,
 }) {
-  children = Array.isArray(children) ? children : [children];
-  const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({ configuration });
   const [bubbles, setBubbles] = useState([]);
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [hasExternalLink, setHasExternalLink] = useState(false);
-  const { displayNameBot: avatarDisplayBot } = configuration.interaction;
-  const { displayNameUser: avatarDisplayUser } = configuration.interaction;
-  const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
-  const NameUser = configuration.interaction.NameUser;
-  const NameBot = configuration.interaction.NameBot;
-  const defaultAvatar = configuration.avatar?.response?.image;
-  const { loader } = configuration.interaction;
-  const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
-  const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
-  const productTemplate = templatename === PRODUCT_TEMPLATE;
-  const quickTemplate = templatename === QUICK_REPLY;
-  const delay = Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
 
+  const { configuration } = useContext(ConfigurationContext);
+  const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
+
+  const classes = useStyles({ configuration });
+
+  const {
+    displayNameBot: avatarDisplayBot,
+    displayNameUser: avatarDisplayUser,
+    NameUser,
+    NameBot,
+  } = configuration.interaction;
+
+  const defaultAvatar = configuration.avatar?.response?.image;
+
+  const delay = useMemo(() => {
+    const loader = configuration.interaction;
+    const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
+    return Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
+  }, [configuration.interaction]);
+
+  children = Array.isArray(children) ? children : [children];
+
+  const carouselTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.carousel), [templatename]);
+  const productTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.product), [templatename]);
+  const quickTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.quickReply), [templatename]);
   const addBubbles = useCallback(
     (newBubbles) => {
       if (thinking) {
@@ -73,76 +137,36 @@ export default function Interaction({
     [delay, thinking],
   );
 
+  const createBubbleListNoTemplate = useCallback(
+    (list) => {
+      let _children = list.reduce(
+        (accumulator, it) =>
+          typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it],
+        [],
+      );
+
+      // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
+      if (_children[0] === '' && secondary) {
+        _children = ['&nbsp;'];
+      }
+
+      if (typeof _children === String && _children[0].includes('target="_blank"')) {
+        setHasExternalLink(true);
+      }
+      return _children.filter((it) => it);
+    },
+    [secondary],
+  );
+
   useEffect(() => {
     if (!ready && children) {
       setReady(true);
-      if (productTemplate) {
-        const bubble = {};
-        children.map((el) => {
-          if (typeof el === 'string') {
-            bubble.text = el;
-          }
-          if (typeof el === 'object') {
-            bubble.product = el;
-          }
-        });
-        addBubbles([JSON.stringify(bubble)]);
-      } else if (carouselTemplate) {
-        /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
-        children.map((el) => {
-          const bubble = {};
-          if (typeof el === 'string') {
-            // bubble.text = el;
-          }
 
-          if (typeof el === 'object') {
-            const list = [];
-            for (let i = 1; i < 6; i++) {
-              const product = {};
-              product['buttonA'] = el[`buttonA${i}`];
-              product['buttonB'] = el[`buttonB${i}`];
-              product['buttonC'] = el[`buttonC${i}`];
-              product['imageLink'] = el[`imageLink${i}`];
-              product['imageName'] = el[`imageName${i}`];
-              product['numeric'] = el[`numeric${i}`];
-              product['subtitle'] = el[`subtitle${i}`];
-              product['title'] = el[`title${i}`];
-              bubble.product = product;
-              if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
-                list.push(JSON.stringify(bubble));
-              }
-            }
-            addBubbles(list);
-          }
-        });
-      } else if (quickTemplate) {
-        const bubble = {};
-        children.map((el) => {
-          if (typeof el === 'string') {
-            bubble.text = el;
-          }
-          if (typeof el === 'object') {
-            bubble.quick = el;
-          }
-        });
-        addBubbles([JSON.stringify(bubble)]);
-      } else {
-        let _children = children.reduce(
-          (accumulator, it) =>
-            typeof it === 'string' ? [...accumulator, ...sanitize(it).split(/<hr.*?>/)] : [...accumulator, it],
-          [],
-        );
+      const createBubbleListFn = templatename
+        ? templateNameToBubbleCreateAction[templatename]
+        : createBubbleListNoTemplate;
 
-        // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
-        if (_children[0] === '' && secondary) {
-          _children = ['&nbsp;'];
-        }
-
-        if (typeof _children === String && _children[0].includes('target="_blank"')) {
-          setHasExternalLink(true);
-        }
-        addBubbles(_children.filter((it) => it));
-      }
+      addBubbles(createBubbleListFn(children));
     }
   }, [
     addBubbles,
@@ -155,7 +179,85 @@ export default function Interaction({
     templatename,
     quickTemplate,
     secondary,
+    createBubbleListNoTemplate,
   ]);
+
+  const isCarousel = useMemo(() => carousel || carouselTemplate, [carouselTemplate, carousel]);
+
+  const _Avatar = useMemo(() => {
+    return (
+      <AvatarsMatchingRequest
+        type={type}
+        hasLoader={hasLoader}
+        carousel={carousel}
+        carouselTemplate={carouselTemplate}
+        defaultAvatar={!hasAvatarMatchingRequest ? defaultAvatar : null}
+        AvatarComponent={Avatar}
+        typeResponse={typeResponse}
+      />
+    );
+  }, [carousel, carouselTemplate, defaultAvatar, hasAvatarMatchingRequest, hasLoader, type, typeResponse]);
+
+  const EmiterName = useMemo(() => {
+    let name = null;
+    if (type?.equals(INTERACTION_TYPE.request) && NameUser && !!avatarDisplayUser) name = NameUser;
+    if (type?.equals(INTERACTION_TYPE.response) && NameBot && !!avatarDisplayBot) name = NameBot;
+
+    return (
+      <span className={c(`dydu-name-${type}`, classes.nameRequest)} aria-hidden="true">
+        {name}
+      </span>
+    );
+  }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes.nameRequest, type]);
+
+  const _Feedback = useMemo(() => {
+    return !hasLoader && askFeedback ? <Feedback /> : null;
+  }, [askFeedback, hasLoader]);
+
+  const _Loader = useMemo(() => {
+    return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
+  }, [classes.loader, hasLoader, scroll]);
+
+  const bubbleList = useMemo(() => {
+    if (bubbles.length <= 0) return null;
+
+    const baseProps = {
+      carousel: carousel,
+      history: history,
+      type: type,
+    };
+    return bubbles.map((it, index) => {
+      const attributes = {
+        ...baseProps,
+        step: steps ? (steps.length === 1 ? undefined : steps[index]) : undefined,
+        component: scroll && !index ? Scroll : undefined,
+        secondary: index === bubbles.length - 1 ? secondary : undefined,
+        [typeof it === 'string' ? 'html' : 'children']: it,
+      };
+      return (
+        <Bubble
+          className={classes.bubble}
+          hasExternalLink={hasExternalLink}
+          key={index}
+          templatename={templatename}
+          {...attributes}
+        />
+      );
+    });
+  }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);
+
+  const ListBubble = useMemo(() => {
+    if (!isDefined(bubbleList)) return null;
+
+    const wrapperProps = {
+      className: c('dydu-interaction-bubbles', classes.bubbles),
+      steps: steps,
+      templatename: templatename,
+    };
+
+    if (isCarousel) return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
+    return <div {...wrapperProps}>{bubbleList}</div>;
+  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
 
   return (
     (bubbles.length || hasLoader) && (
@@ -169,54 +271,12 @@ export default function Interaction({
           className,
         )}
       >
-        <AvatarsMatchingRequest
-          type={type}
-          hasLoader={hasLoader}
-          carousel={carousel}
-          carouselTemplate={carouselTemplate}
-          defaultAvatar={!hasAvatarMatchingRequest ? defaultAvatar : null}
-          AvatarComponent={Avatar}
-          typeResponse={typeResponse}
-        />
+        {_Avatar}
         <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
-          {type === 'request' && NameUser && !!avatarDisplayUser && (
-            <span className={c(`dydu-name-${type}`, classes.nameRequest)} aria-hidden="true">
-              {NameUser}
-            </span>
-          )}
-          {type === 'response' && NameBot && !!avatarDisplayBot && (
-            <span className={c(`dydu-name-${type}`, classes.nameResponse)} aria-hidden="true">
-              {NameBot}
-            </span>
-          )}
-          {bubbles.length > 0 &&
-            React.createElement(carousel || carouselTemplate ? Carousel : 'div', {
-              children: bubbles.map((it, index) => {
-                const attributes = {
-                  carousel: carousel,
-                  component: scroll && !index ? Scroll : undefined,
-                  history: history,
-                  secondary: index === bubbles.length - 1 ? secondary : undefined,
-                  step: steps ? (steps.length === 1 ? undefined : steps[index]) : undefined,
-                  type: type,
-                  [typeof it === 'string' ? 'html' : 'children']: it,
-                };
-                return (
-                  <Bubble
-                    className={classes.bubble}
-                    hasExternalLink={hasExternalLink}
-                    key={index}
-                    templatename={templatename}
-                    {...attributes}
-                  />
-                );
-              }),
-              className: c('dydu-interaction-bubbles', classes.bubbles),
-              steps: steps,
-              templatename: templatename,
-            })}
-          {hasLoader && <Loader className={classes.loader} scroll={scroll} />}
-          {!hasLoader && askFeedback && <Feedback />}
+          {EmiterName}
+          {ListBubble}
+          {_Loader}
+          {_Feedback}
         </div>
       </div>
     )
@@ -242,3 +302,22 @@ Interaction.propTypes = {
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,
 };
+
+export const InteractionNotification = ({ notification }) => {
+  const { text, iconSrc } = useNotificationHelper(notification);
+
+  const canRender = useMemo(() => isDefined(text) && isDefined(iconSrc), [text, iconSrc]);
+
+  return !canRender ? null : (
+    <InChatNotification>
+      <img className="icon" src={iconSrc} />
+      <p>{text}</p>
+    </InChatNotification>
+  );
+};
+
+InteractionNotification.propTypes = {
+  notification: PropTypes.any,
+};
+
+Interaction.Notification = InteractionNotification;

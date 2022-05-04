@@ -83,7 +83,12 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
 
 Dialog.propTypes = {
   dialogRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })]),
-  interactions: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf([Interaction]) })).isRequired,
+  interactions: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.shape({ type: PropTypes.oneOf([Interaction]) }),
+      PropTypes.shape({ type: PropTypes.oneOf([Interaction.Notification]) }),
+    ]),
+  ).isRequired,
   onAdd: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
 };
