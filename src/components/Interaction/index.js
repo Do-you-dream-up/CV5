@@ -45,7 +45,7 @@ export default function Interaction({
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
   const NameUser = configuration.interaction.NameUser;
   const NameBot = configuration.interaction.NameBot;
-  const defaultAvatar = configuration.avatar.response;
+  const defaultAvatar = configuration.avatar?.response?.image;
   const { loader } = configuration.interaction;
   const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
   const carouselTemplate = templatename === CAROUSSEL_TEMPLATE;
