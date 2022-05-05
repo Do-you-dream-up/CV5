@@ -227,11 +227,8 @@ export function DialogProvider({ children }) {
     ],
   );
 
-  const flushInteractionList = useCallback(() => setInteractions([]), []);
-
   const rebuildInteractionsListFromHistory = useCallback(
     (interactionsListFromHistory) => {
-      if (interactions?.length > 0) flushInteractionList();
       interactionsListFromHistory.forEach((interactionFromHistory) => {
         const responseOrRequestWithInteractionFromHistory =
           createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
@@ -240,7 +237,7 @@ export function DialogProvider({ children }) {
       });
       return interactions;
     },
-    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, flushInteractionList, interactions],
+    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
   );
 
   const empty = useCallback(() => {

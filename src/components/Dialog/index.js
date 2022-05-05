@@ -25,18 +25,19 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   const { top } = configuration.dialog;
   const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
-  // eslint-disable-next-line
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
 
-  const fetch = useCallback(() => {
-    return dydu.history().then(({ interactions }) => {
-      if (Array.isArray(interactions)) {
-        interactions = rebuildInteractionsListFromHistory(interactions);
-        onAdd(interactions);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    });
-  }, [onAdd, rebuildInteractionsListFromHistory]);
+  const fetch = useCallback(
+    () =>
+      dydu.history().then(({ interactions }) => {
+        if (Array.isArray(interactions)) {
+          interactions = rebuildInteractionsListFromHistory(interactions);
+          onAdd(interactions);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }),
+    [onAdd, rebuildInteractionsListFromHistory],
+  );
 
   useEffect(() => {
     if (interactions.length > 0) {
@@ -49,8 +50,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
         }
       }
     });
-    // eslint-disable-next-line
-  }, [spacesActive, setPrompt, spacesDetection]);
+  }, [fetch, interactions, setPrompt, spaces, spacesActive, spacesDetection]);
 
   useEffect(() => {
     if (active && open)
