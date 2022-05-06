@@ -191,15 +191,16 @@ build_demo_preprod:latest:
   before_script:
     - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
     - if [ "$LATEST" = true ]; then export DIR_NAME="latest"; else export DIR_NAME=$VERSION; fi
-    - if [ "DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
+    - if [ "$DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "$DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
     - echo "Will publish version $VERSION to https://uat.cdn.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
-    - export ASSET_FULL_URL='https://uat.cdn.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}'
+    - export ASSET_FULL_URL="https://uat.cdn.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
     - echo "DIR_NAME=${DIR_NAME}" >> deploy.env
     - echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
   script:
-    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrcgco
+    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
-    - npm run ${WP_SCRIPT}
+    - echo "npm run ${WP_SCRIPT}"
+    - "npm run ${WP_SCRIPT}"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
     - when: never
