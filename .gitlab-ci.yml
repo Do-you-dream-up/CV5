@@ -168,20 +168,15 @@ build_publish_demo_preprod:
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
+  artifacts:
+    reports:
+      dotenv: deploy.env
 
 build_publish_demo_prod:
-  stage: demo
-  script: echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
+  extends:
+    - build_publish_demo_preprod
   variables:
     DEMO_ENV: "prod"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-      when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
-      when: manual
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
 
 #### build and push demo preprod latest ####
 build_demo_preprod:latest:
@@ -206,7 +201,6 @@ build_demo_preprod:latest:
     - when: never
   variables:
     LATEST: "true"
-    DEMO_ENV: "preprod"
   artifacts:
     reports:
       dotenv: deploy.env
@@ -222,9 +216,6 @@ publish_demo_preprod:latest:
     - 'env'
     - 'ls -larth build/'
     - 'ansible-playbook --verbose --inventory hosts.yml --limit "uat" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - when: never
 
 #### build and push demo preprod version ####
 build_demo_preprod:version:
@@ -245,8 +236,6 @@ build_demo_prod:latest:
   needs: ["build_publish_demo_prod"]
   variables:
     LATEST: "true"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
 
 publish_demo_prod:latest:
   extends:
