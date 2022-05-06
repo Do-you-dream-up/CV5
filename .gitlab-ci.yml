@@ -198,6 +198,11 @@ build_demo_preprod:latest:
     - "npm run ${WP_SCRIPT}"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
     - when: never
   variables:
     LATEST: "true"
@@ -216,6 +221,15 @@ publish_demo_preprod:latest:
     - 'env'
     - 'ls -larth build/'
     - 'ansible-playbook --verbose --inventory hosts.yml --limit "uat" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
+
 
 #### build and push demo preprod version ####
 build_demo_preprod:version:
@@ -249,8 +263,6 @@ build_demo_prod:version:
   needs: ["build_publish_demo_prod"]
   variables:
     LATEST: "false"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
 
 publish_demo_prod:version:
   extends:
