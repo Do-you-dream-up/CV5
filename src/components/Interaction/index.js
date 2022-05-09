@@ -204,11 +204,11 @@ export default function Interaction({
     if (type?.equals(INTERACTION_TYPE.response) && NameBot && !!avatarDisplayBot) name = NameBot;
 
     return (
-      <span className={c(`dydu-name-${type}`, classes.nameRequest)} aria-hidden="true">
+      <span className={c(`dydu-name-${type}`, classes[`name${type}`])} aria-hidden="true">
         {name}
       </span>
     );
-  }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes.nameRequest, type]);
+  }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes, type]);
 
   const _Feedback = useMemo(() => {
     return !hasLoader && askFeedback ? <Feedback /> : null;

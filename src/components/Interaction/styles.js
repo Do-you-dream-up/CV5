@@ -28,12 +28,12 @@ export default createUseStyles((theme) => ({
   loader: () => ({
     marginLeft: '.2em',
   }),
-  nameRequest: () => ({
+  namerequest: () => ({
     fontSize: '0.9em',
     marginBottom: '0.2em',
     marginLeft: 'auto',
   }),
-  nameResponse: () => ({
+  nameresponse: () => ({
     fontSize: '0.9em',
     marginBottom: '0.2em',
   }),
