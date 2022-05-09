@@ -35,7 +35,6 @@ preprod:
   only:
     refs:
       - /project\/.*/
-      - development
 
 prod:
   stage: prod
@@ -55,7 +54,6 @@ prod:
   only:
     refs:
       - /project\/.*/
-      - development
 
 include:
   - project: 'main-solution/build-and-tools/ci-cd-templates'
@@ -160,7 +158,7 @@ build_publish_demo_preprod:
   stage: demo
   script:
     - 'echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env'
-    - 'if [ "DEMO_ENV" = "preprod" ]; then echo "CDN_HOST=uat.cdn" >> deploy.env; else echo "CDN_HOST=cdn" >> deploy.env; fi'
+    - if [ "$DEMO_ENV" = "preprod" ]; then echo "CDN_HOST=uat.cdn" >> deploy.env; else echo "CDN_HOST=cdn" >> deploy.env; fi
   variables:
     DEMO_ENV: "preprod"
   rules:
@@ -230,12 +228,11 @@ publish_demo_preprod:latest:
     - if [ "CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
     - 'env'
     - 'ls -larth build/'
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit ${ANSIBLE_GROUP} deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
+    - 'ansible-playbook --verbose --inventory hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
       when: manual
     - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-      when: manual
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
