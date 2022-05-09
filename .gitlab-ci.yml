@@ -225,10 +225,11 @@ publish_demo_preprod:latest:
   image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
   needs: ["build_demo_preprod:latest"]
   script:
-    - if [ "CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
+    - if [ "$CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
     - 'env'
     - 'ls -larth build/'
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
+    - 'echo "ansible-playbook --verbose --inventory hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}""'
+    - 'ansible-playbook -vvv --inventory hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
       when: manual
