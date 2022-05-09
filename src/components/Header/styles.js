@@ -48,13 +48,14 @@ export default createUseStyles((theme) => ({
     width: '70%',
   }),
   root: () => ({
-    height: 60,
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: 110,
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,
     borderTopRightRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
-    position: 'relative',
     width: '100%',
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
