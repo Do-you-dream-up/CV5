@@ -31,7 +31,7 @@ preprod:
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "prod" deliverPreprod.yml'
+    - 'ansible-playbook --verbose --inventory hosts.yml --limit "project" deliverPreprod.yml'
   only:
     refs:
       - /project\/.*/
@@ -51,7 +51,7 @@ prod:
     - pip3 --no-cache-dir install ansible
     - chmod 0700 .ssh
     - chmod 0600 .ssh/id_ed25519
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "prod" deliverProd.yml'
+    - 'ansible-playbook --verbose --inventory hosts.yml --limit "project" deliverProd.yml'
   only:
     refs:
       - /project\/.*/
@@ -158,12 +158,14 @@ push_base:prod:
 #### trigger build and push demo ####
 build_publish_demo_preprod:
   stage: demo
-  script: echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
+  script:
+    - 'echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env'
+    - 'if [ "DEMO_ENV" = "preprod" ]; then echo "CDN_HOST=uat.cdn" >> deploy.env; else echo "CDN_HOST=cdn" >> deploy.env; fi'
   variables:
     DEMO_ENV: "preprod"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
       when: on_success
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
@@ -177,6 +179,13 @@ build_publish_demo_prod:
     - build_publish_demo_preprod
   variables:
     DEMO_ENV: "prod"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: on_success
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
 
 #### build and push demo preprod latest ####
 build_demo_preprod:latest:
@@ -187,10 +196,11 @@ build_demo_preprod:latest:
     - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
     - if [ "$LATEST" = true ]; then export DIR_NAME="latest"; else export DIR_NAME=$VERSION; fi
     - if [ "$DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "$DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
-    - echo "Will publish version $VERSION to https://uat.cdn.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
-    - export ASSET_FULL_URL="https://uat.cdn.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
+    - 'echo "Will publish version ${VERSION} to https://${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"'
+    - export ASSET_FULL_URL="https://={CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
     - echo "DIR_NAME=${DIR_NAME}" >> deploy.env
     - echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
+    - echo "CDN_HOST=${CDN_HOST}" >> deploy.env
   script:
     - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
@@ -199,8 +209,7 @@ build_demo_preprod:latest:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
       when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
-      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
@@ -218,18 +227,18 @@ publish_demo_preprod:latest:
   image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
   needs: ["build_demo_preprod:latest"]
   script:
+    - if [ "CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
     - 'env'
     - 'ls -larth build/'
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "uat" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
+    - 'ansible-playbook --verbose --inventory hosts.yml --limit ${ANSIBLE_GROUP} deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
       when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
       when: manual
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
-
 
 #### build and push demo preprod version ####
 build_demo_preprod:version:
@@ -250,11 +259,27 @@ build_demo_prod:latest:
   needs: ["build_publish_demo_prod"]
   variables:
     LATEST: "true"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
 
 publish_demo_prod:latest:
   extends:
     - publish_demo_preprod:latest
   needs: ["build_demo_prod:latest"]
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
 
 #### build and push demo prod version ####
 build_demo_prod:version:
@@ -263,11 +288,27 @@ build_demo_prod:version:
   needs: ["build_publish_demo_prod"]
   variables:
     LATEST: "false"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
 
 publish_demo_prod:version:
   extends:
     - publish_demo_preprod:latest
   needs: ["build_demo_prod:version"]
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+      when: manual
+    - if: '$DYDUBOX_TRIGGER == "true"'
+      when: never
+    - when: never
 
 mirror:
   stage: mirror
