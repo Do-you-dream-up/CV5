@@ -196,7 +196,7 @@ build_demo_preprod:latest:
     - if [ "$LATEST" = true ]; then export DIR_NAME="latest"; else export DIR_NAME=$VERSION; fi
     - if [ "$DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "$DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
     - 'echo "Will publish version ${VERSION} to https://${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"'
-    - export ASSET_FULL_URL="https://=${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
+    - export ASSET_FULL_URL="https://${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
     - echo "DIR_NAME=${DIR_NAME}" >> deploy.env
     - echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
     - echo "CDN_HOST=${CDN_HOST}" >> deploy.env
