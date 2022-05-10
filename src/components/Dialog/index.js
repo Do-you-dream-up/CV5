@@ -65,7 +65,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   useEffect(() => {
     if (open) {
       const chatboxDiv = document.querySelector('.dydu-chatbox-body');
-      chatboxDiv.scrollTop = chatboxDiv.scrollHeight;
+      chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
     }
   }, [open]);
 
