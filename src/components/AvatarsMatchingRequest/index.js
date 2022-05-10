@@ -22,7 +22,7 @@ const AvatarsMatchingRequest = ({
   const { customAvatar, image: hasImage, imageLink } = configuration.header.logo;
 
   const hasAvatar = useMemo(() => {
-    return !!configuration.interaction.avatar[type];
+    return !!configuration?.interaction?.avatar?.[type];
   }, [configuration, type]);
 
   const typeMapImage = useMemo(() => {
@@ -37,7 +37,7 @@ const AvatarsMatchingRequest = ({
     if (!isSet(customAvatar) || !customAvatar || !isSet(typeResponse)) {
       return defaultAvatar;
     } else {
-      const resultMatchingImageType = Object.keys(typeMapImage).filter((keyType) => {
+      const resultMatchingImageType = Object.keys(typeMapImage)?.filter((keyType) => {
         return typeResponse.match(typeMapImage[keyType].pattern);
       });
 
