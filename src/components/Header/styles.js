@@ -13,7 +13,6 @@ export default createUseStyles((theme) => ({
   body: () => ({
     alignItems: 'center',
     display: 'flex',
-    height: '100%',
     padding: '.6em 20px',
   }),
   draggable: () => ({
@@ -50,7 +49,7 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: 110,
+    maxHeight: 270, // header:60 + contact tab:40 + banner:170 max.
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,
     borderTopRightRadius: theme.shape.radius.outer,
