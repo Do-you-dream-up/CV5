@@ -2,7 +2,7 @@
 # deliver.yml: playbook file for ansible
 
 - name: "Deliver"
-  hosts: all
+  hosts: uat:prod
   tasks:
     - set_fact:
         cdn_path : "{{ cdn_directory }}/{{ env }}/{{ version }}"
