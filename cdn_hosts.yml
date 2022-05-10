@@ -5,12 +5,15 @@ all:
   vars:
     ansible_port: 558
     ansible_user: dydu
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    cdn_directory: "dydubox/configurations/demo"
   children:
-    project:
+    uat:
+      hosts:
+        uat1.cdn.dydu-priv.com:
+    prod:
       hosts:
         node1.cdn.dydu-priv.com:
         node2.cdn.dydu-priv.com:
         node3.cdn.dydu-priv.com:
-      vars:
-        ansible_ssh_common_args: '-i .ssh/id_ed25519 -o StrictHostKeyChecking=no'
 ...
