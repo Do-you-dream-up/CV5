@@ -8,16 +8,9 @@
     "directory": ""
   },
   "avatar": {
-    "request": {
-      "enableInDialog": false,
-      "background": false,
-      "image": ""
-    },
-    "response": {
-      "enableInDialog": true,
-      "background": true,
-      "image": "dydu-logo.svg"
-    }
+    "background": false,
+    "request": "",
+    "response": "dydu-logo.svg"
   },
   "banner": {
     "active": false,
@@ -127,7 +120,7 @@
       "more": "dydu-cog-white.svg"
     },
     "logo": {
-      "customAvatar": true,
+      "customAvatar": false,
       "title": true,
       "image": true,
       "imageLink": {
@@ -147,6 +140,10 @@
     "displayNameUser": false,
     "NameUser": "",
     "NameBot": "",
+    "avatar": {
+      "request": false,
+      "response": true
+    },
     "loader": [400, 600]
   },
   "keycloak": {

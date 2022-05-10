@@ -12,11 +12,11 @@ const images = localStorage.getItem('dydu.images');
  * A request avatar should be next to the user's input while a response avatar
  * should be next to its response.
  */
-const Avatar = ({ path, type, linkAvatarDependOnType }) => {
+const Avatar = ({ background, path, type, linkAvatarDependOnType }) => {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration, type });
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
-  const background = configuration?.avatar[type]?.background;
+  background = background !== undefined ? background : configuration.avatar.background;
 
   const _path = useMemo(() => {
     if (!linkAvatarDependOnType.includes('/null') && type !== 'request') {
@@ -25,11 +25,11 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
       return path;
     } else {
       return {
-        request: `${process.env.PUBLIC_URL}assets/${configuration?.avatar?.request?.image}`,
-        response: `${process.env.PUBLIC_URL}assets/${configuration?.avatar?.response?.image}`,
+        request: `${process.env.PUBLIC_URL}assets/${configuration.avatar.request}`,
+        response: `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`,
       }[type];
     }
-  }, [configuration.avatar.request.image, configuration.avatar.response.image, linkAvatarDependOnType, path, type]);
+  }, [configuration.avatar.request, configuration.avatar.response, linkAvatarDependOnType, path, type]);
 
   const _className = useMemo(() => {
     return c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
