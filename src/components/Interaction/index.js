@@ -104,7 +104,7 @@ export default function Interaction({
     NameBot,
   } = configuration.interaction;
 
-  const defaultAvatar = configuration.avatar?.response?.image;
+  const defaultAvatar = configuration.avatar.response;
 
   const delay = useMemo(() => {
     const loader = configuration.interaction;

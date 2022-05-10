@@ -22,7 +22,7 @@ const AvatarsMatchingRequest = ({
   const { customAvatar, image: hasImage, imageLink } = configuration.header.logo;
 
   const hasAvatar = useMemo(() => {
-    return !!configuration?.avatar[type]?.enableInDialog;
+    return !!configuration.interaction.avatar[type];
   }, [configuration, type]);
 
   const typeMapImage = useMemo(() => {
