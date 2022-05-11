@@ -1,0 +1,178 @@
+/* --- FONTS --- */
+
+@font-face {
+    font-family: 'Assistant';
+    font-style: normal;
+    font-weight: normal;
+    src: url('Fonts/Assistant-Regular.ttf') format('truetype'),
+    url('Fonts/Assistant-Regular.woff') format('woff'),
+    url('Fonts/Assistant-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Assistant Light';
+    font-style: normal;
+    font-weight: normal;
+    src: url('Fonts/Assistant-Light.ttf') format('truetype'),
+    url('Fonts/Assistant-Light.woff') format('woff'),
+    url('Fonts/Assistant-Light.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Assistant Semi Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: url('Fonts/Assistant-SemiBold.ttf') format('truetype'),
+    url('Fonts/Assistant-SemiBold.woff') format('woff'),
+    url('Fonts/Assistant-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Assistant Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: url('Fonts/Assistant-Bold.ttf') format('truetype'),
+    url('Fonts/Assistant-Bold.woff') format('woff'),
+    url('Fonts/Assistant-Bold.woff2') format('woff2');
+}
+
+/* ---------- */
+
+#chatbot-external {
+    font-family: "Assistant", sans-serif;
+    font-size: 14px;
+}
+#chatbot-external h1,
+#chatbot-external h2 {
+    font-family: "Assistant Bold", sans-serif;
+}
+#chatbot-external h1 {
+    margin-bottom: 0;
+    font-size: 30px;
+    color: #152D62;
+}
+#chatbot-external h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 18px;
+    color: #152D62;
+}
+#chatbot-external p {
+    margin-top: 0;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: #74889D;
+}
+
+#chatbot-external #versionNumber {
+    padding: 5px 10px;
+}
+
+#chatbot-external #iframeForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80%;
+    text-align: center;
+}
+
+#chatbot-external #iframeForm #btnStopPreview {
+    position: absolute;
+    top: 20px;
+    display: none;
+    align-items: center;
+    padding: 20px 35px;
+    border: none;
+    background: #33333B 0 0 no-repeat padding-box;
+    box-shadow: 0 3px 6px #00000080;
+    border-radius: 78px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#chatbot-external #iframeForm #btnStopPreview:hover {
+    background: #000000 0 0 no-repeat padding-box;
+}
+#chatbot-external #iframeForm #btnStopPreview img {
+    width: 19px;
+    height: 19px;
+    padding-left: 12px;
+}
+
+#chatbot-external #iframeForm .container-texts {
+    width: 75%;
+}
+
+#chatbot-external #iframeForm .container-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#chatbot-external #iframeForm input#urlInput {
+    width: 80%;
+    margin-bottom: 20px;
+    padding: 9px 8px;
+    border-radius: 6px;
+    border: 1px solid #CAD5DB;
+}
+
+#chatbot-external #iframeForm input#urlInput::placeholder,
+#chatbot-external #iframeForm input#urlInput::-webkit-input-placeholder,
+#chatbot-external #iframeForm input#urlInput:-moz-placeholder,
+#chatbot-external #iframeForm input#urlInput::-moz-placeholder {
+    color: #95a5a6;
+}
+
+#chatbot-external #iframeForm button#btnDisplayIframe {
+    width: 174px;
+    height: 36px;
+    color:#FFFFFF;
+    border: none;
+    border-radius: 6px;
+    background: #4545C9 0 0 no-repeat padding-box;
+    cursor: pointer;
+}
+
+/* --- MEDIA QUERIES --- */
+
+@media screen and (min-width: 375px) {
+    #chatbot-external #iframeForm .container-texts {
+        width: 90%;
+    }
+}
+@media screen and (min-width: 720px) {
+    #chatbot-external h1 {
+        font-size: 50px;
+    }
+    #chatbot-external h2 {
+        font-size: 30px;
+    }
+    #chatbot-external p {
+        font-size: 16px;
+    }
+
+    #chatbot-external #iframeForm .container-texts {
+        width: 75%;
+    }
+
+    #chatbot-external #iframeForm .container-input input#urlInput {
+        width: 70%;
+    }
+}
+
+@media screen and (min-width: 1650px) {
+    #chatbot-external #iframeForm {
+        justify-content: center;
+    }
+
+    #chatbot-external #iframeForm .container-texts {
+        width: 36%;
+    }
+
+    #chatbot-external #iframeForm .container-input input#urlInput {
+        width: 35%;
+    }
+}

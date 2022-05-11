@@ -1,4 +1,4 @@
-import { isDefined } from './helpers';
+import { isDefined } from '../../helpers';
 
 export default class Poller {
   #serverRequestAction = null;

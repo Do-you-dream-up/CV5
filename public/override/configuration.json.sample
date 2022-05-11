@@ -8,10 +8,10 @@
     "directory":""
   },
   "avatar": {
-    "background": false,
-    "request": "",
-    "response": "dydu-logo.svg"
+    "request": true,
+    "response": true
   },
+},
   "banner": {
     "active": false,
     "storage": true,
@@ -140,7 +140,7 @@
     "NameUser" : "",
     "NameBot" : "",
     "avatar": {
-      "request": false,
+      "request": true,
       "response": true
     },
     "loader": [400, 600]

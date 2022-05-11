@@ -1,6 +1,65 @@
 import cookie from 'js-cookie';
 
 /**
+ * Small wrapper featuring a getter and a setter for browser session.
+ */
+export class Session {
+  static names = {
+    newMessage: 'dydu.newMessage',
+  };
+
+  /**
+   * Retrieve a value stored in the session storage.
+   *
+   * If the value is not found in the session storage dictionary and a fallback is
+   * provided, set it before returning it.
+   *
+   * If the provided fallback is a function, call it to obtain the fallback
+   * value.
+   *
+   * @param {string} name - Name of the session storage variable to fetch.
+   * @param {*} [fallback] - Value or function to fallback to if the name was
+   *                         not found.
+   * @param {boolean} save - Whether the fallback value should be saved.
+   * @returns {*} Value of the variable that was found.
+   */
+  static get = (name, fallback, save) => {
+    let value = sessionStorage.getItem(name);
+    if (!value && fallback !== undefined) {
+      value = typeof fallback === 'function' ? fallback() : fallback;
+      if (save) {
+        this.set(name, value);
+      }
+    }
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  };
+
+  /**
+   * Upsert a value in the session storage.
+   *
+   * @param {string} name - Name of the session storage variable.
+   * @param {*} [value] - Value to set, default to the current Unix timestamp.
+   * @param {*} [rest] - Extra options to pass to `sessionStorage.setItem`.
+   */
+  static set = (name, value, ...rest) => {
+    value = value === undefined ? Math.floor(Date.now() / 1000) : value;
+    value = typeof value === 'object' ? JSON.stringify(value) : value;
+    sessionStorage.setItem(name, value, ...rest);
+  };
+
+  /**
+   * Clear a session storage variable or all variables if no name is specified.
+   *
+   * @param {string} [name] - Name of the session storage variable to delete.
+   */
+  static clear = (name) => (name ? sessionStorage.removeItem(name) : sessionStorage.clear());
+}
+
+/**
  * Small wrapper featuring a getter and a setter for browser cookies.
  */
 export class Cookie {

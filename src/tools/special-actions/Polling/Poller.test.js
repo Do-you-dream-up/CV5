@@ -1,5 +1,5 @@
 import Poller from './Poller';
-import { isDefined } from './helpers';
+import { isDefined } from '../../helpers';
 
 const getDefaultConfig = (value = {}) => {
   return {

@@ -17,6 +17,7 @@ export default function Avatar({ background, path, type }) {
   const classes = useStyles({ configuration, type });
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   background = background !== undefined ? background : configuration.avatar.background;
+
   path =
     path !== undefined
       ? path

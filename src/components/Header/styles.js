@@ -13,7 +13,6 @@ export default createUseStyles((theme) => ({
   body: () => ({
     alignItems: 'center',
     display: 'flex',
-    height: '100%',
     padding: '.6em 20px',
   }),
   draggable: () => ({
@@ -48,13 +47,14 @@ export default createUseStyles((theme) => ({
     width: '70%',
   }),
   root: () => ({
-    height: 60,
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: 270, // header:60 + contact tab:40 + banner:170 max.
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.radius.outer,
     borderTopRightRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
-    position: 'relative',
     width: '100%',
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,

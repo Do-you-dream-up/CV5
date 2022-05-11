@@ -7,13 +7,14 @@ export default createUseStyles((theme) => ({
     },
     alignItems: 'center',
     display: 'flex',
+    '& $path': {
+      fill: theme.palette.primary.main,
+    },
   }),
 
   container: () => ({
-    backgroundColor: theme.palette.background.dim,
-    borderRadius: theme.shape.radius.inner,
     flexGrow: 1,
-    overflow: 'hidden',
+    height: '100%',
   }),
 
   counter: () => ({
@@ -46,36 +47,34 @@ export default createUseStyles((theme) => ({
     boxSizing: 'border-box',
     display: 'block',
     fontFamily: 'inherit',
-    fontSize: '1em',
+    fontSize: '16px',
     lineHeight: '1.7em',
-    overflow: 'hidden',
+    overflowY: 'scroll',
     padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
     whiteSpace: 'pre-wrap',
-    width: '100%',
+    width: '105%',
     wordBreak: 'break-word',
   },
 
   fieldShadow: () => ({
     extend: 'fieldBase',
+    height: '100%',
     minHeight: '100%',
     visibility: 'hidden',
   }),
 
   fieldText: () => ({
+    height: '100%',
     '&::placeholder': {
-      color: theme.palette.text.secondary,
+      color: '#46525F',
     },
     '&[disabled]': {
       cursor: 'not-allowed',
     },
-    '&:focus': {
-      boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
-    },
-    background: 0,
+    background: '#EDF1F5',
     border: 0,
     color: theme.palette.text.primary,
     extend: 'fieldBase',
-    height: '100%',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
@@ -84,6 +83,12 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flex: 'auto',
+    height: '100%',
+    borderRadius: theme.shape.radius.inner,
+    overflow: 'hidden',
+    '&:focus': {
+      boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
+    },
   }),
 
   suggestions: () => ({
