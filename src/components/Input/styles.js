@@ -14,6 +14,7 @@ export default createUseStyles((theme) => ({
 
   container: () => ({
     flexGrow: 1,
+    height: '100%',
   }),
 
   counter: () => ({
@@ -48,22 +49,22 @@ export default createUseStyles((theme) => ({
     fontFamily: 'inherit',
     fontSize: '16px',
     lineHeight: '1.7em',
-    overflow: 'hidden',
+    overflowY: 'scroll',
     padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
     whiteSpace: 'pre-wrap',
-    width: '100%',
+    width: '105%',
     wordBreak: 'break-word',
   },
 
   fieldShadow: () => ({
     extend: 'fieldBase',
-    height: 40,
+    height: '100%',
     minHeight: '100%',
     visibility: 'hidden',
   }),
 
   fieldText: () => ({
-    height: 40,
+    height: '100%',
     '&::placeholder': {
       color: '#46525F',
     },
@@ -82,6 +83,7 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flex: 'auto',
+    height: '100%',
     borderRadius: theme.shape.radius.inner,
     overflow: 'hidden',
     '&:focus': {
