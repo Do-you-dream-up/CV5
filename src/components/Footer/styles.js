@@ -4,10 +4,11 @@ export default createUseStyles((theme) => ({
   actions: () => ({
     alignItems: 'center',
     paddingLeft: '.5em',
-    height: 60,
+    height: '100%',
   }),
   content: () => ({
     flexGrow: 1,
+    height: '100%',
     padding: '.5em',
   }),
   root: () => ({
@@ -20,6 +21,9 @@ export default createUseStyles((theme) => ({
     flexShrink: 0,
     position: 'relative',
     width: '100%',
+    heigth: 60,
+    minHeight: 60,
+    maxHeight: 130,
     [theme.breakpoints.down('xs')]: {
       borderRadius: 0,
     },
