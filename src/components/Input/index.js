@@ -14,11 +14,13 @@ import { Local } from '../../tools/storage';
 import talk from '../../tools/talk';
 import Actions from '../Actions';
 import useStyles from './styles';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ onRequest, onResponse }) {
+  const { isWebsocket, send } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
@@ -96,6 +98,15 @@ export default function Input({ onRequest, onResponse }) {
     setInput('');
   }, [configuration.input.maxLength]);
 
+  const sendInput = useCallback(
+    (input) => {
+      if (isWebsocket) send(input);
+      else talk(input, { qualification }).then(onResponse);
+    },
+    // eslint-disable-next-line
+    [isWebsocket, send],
+  );
+
   const submit = useCallback(
     (text) => {
       text = text.trim();
@@ -103,11 +114,11 @@ export default function Input({ onRequest, onResponse }) {
         reset();
         onRequest(text);
         event('questionSent', text);
-        talk(text, { qualification }).then(onResponse);
+        sendInput(text);
       }
       setTyping(false);
     },
-    [event, onRequest, onResponse, qualification, reset],
+    [event, onRequest, reset, sendInput],
   );
 
   const suggest = useCallback(
@@ -151,10 +162,16 @@ export default function Input({ onRequest, onResponse }) {
   const actions = [
     {
       children: (
-        <img alt={actionSend} src={`${process.env.PUBLIC_URL}icons/dydu-telegram-black.svg`} title={actionSend} />
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+          <path
+            fill="#7091D8"
+            d="M9.78,18.65L10.06,14.42L17.74,7.5C18.08,7.19 17.67,7.04 17.22,7.31L7.74,13.3L3.64,12C2.76,11.75 2.75,11.14 3.84,10.7L19.81,4.54C20.54,4.21 21.24,4.72 20.96,5.84L18.24,18.65C18.05,19.56 17.5,19.78 16.74,19.36L12.6,16.3L10.61,18.23C10.38,18.46 10.19,18.65 9.78,18.65Z"
+          />
+        </svg>
       ),
       type: 'submit',
       variant: 'icon',
+      title: actionSend,
     },
   ];
 
@@ -180,7 +197,7 @@ export default function Input({ onRequest, onResponse }) {
           t={t('input.actions.record')}
         />
       ) : (
-        <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+        counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       )}
     </form>
   );

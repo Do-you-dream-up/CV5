@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -9,10 +9,9 @@ import parseSteps from '../tools/steps';
 import { Local } from '../tools/storage';
 import { knownTemplates } from '../tools/template';
 import { ConfigurationContext } from './ConfigurationContext';
-import { EventsContext } from './EventsContext';
-import StartPolling from '../tools/special-actions/Polling/StartPolling';
-
-const isOfTypeString = (v) => typeof v === 'string';
+import { EventsContext, useEvent } from './EventsContext';
+import { isDefined, isOfTypeString } from '../tools/helpers';
+import LivechatPayload from '../tools/LivechatPayload';
 
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const FEEDBACK_RESPONSE = {
@@ -21,6 +20,8 @@ const FEEDBACK_RESPONSE = {
   noResponseGiven: 'withoutAnswer',
 };
 
+const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
+
 export const DialogContext = React.createContext();
 
 export const useDialog = () => useContext(DialogContext);
@@ -28,6 +29,7 @@ export const useDialog = () => useContext(DialogContext);
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
+  const { onNewMessage } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -37,20 +39,22 @@ export function DialogProvider({ children }) {
   const [secondaryContent, setSecondaryContent] = useState(null);
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
-  const [statusText, setStatusText] = useState(null);
+  const [lastResponse, setLastResponse] = useState(null);
 
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
-  useEffect(() => {
-    StartPolling.options.displayResponse = addResponse;
-    StartPolling.options.displayStatus = setStatusText;
-  }, [addResponse, setStatusText]);
-
   const add = useCallback((interaction) => {
     setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
   }, []);
+
+  const displayNotification = useCallback(
+    (notification) => {
+      if (isDefined(notification)) add(<Interaction.Notification notification={notification} />);
+    },
+    [add],
+  );
 
   const addRequest = useCallback(
     (text) => {
@@ -99,6 +103,9 @@ export function DialogProvider({ children }) {
 
   const addResponse = useCallback(
     (response) => {
+      setLastResponse(response);
+      onNewMessage(response);
+      if (isStartLivechatResponse(response)) return displayNotification(response);
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -193,6 +200,7 @@ export function DialogProvider({ children }) {
               steps={steps}
               templatename={templateName}
               thinking
+              typeResponse={typeResponse}
             />
           );
         }
@@ -205,19 +213,25 @@ export function DialogProvider({ children }) {
       // eslint-disable-next-line no-use-before-define
     },
     [
-      add,
-      configuration,
-      event,
-      isMobile,
+      onNewMessage,
+      displayNotification,
+      configuration.Voice.enable,
+      configuration.Voice.voiceSpace,
       secondaryTransient,
+      isMobile,
+      add,
+      toggleSecondary,
+      event,
       makeInteractionPropsListWithInteractionChildrenListAndData,
       makeInteractionComponentForEachInteractionPropInList,
-      toggleSecondary,
     ],
   );
 
+  const flushInteractionList = useCallback(() => setInteractions([]), []);
+
   const rebuildInteractionsListFromHistory = useCallback(
     (interactionsListFromHistory) => {
+      if (interactions?.length > 0) flushInteractionList();
       interactionsListFromHistory.forEach((interactionFromHistory) => {
         const responseOrRequestWithInteractionFromHistory =
           createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
@@ -226,7 +240,7 @@ export function DialogProvider({ children }) {
       });
       return interactions;
     },
-    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, interactions],
+    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, flushInteractionList, interactions],
   );
 
   const empty = useCallback(() => {
@@ -260,7 +274,8 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
-        statusText,
+        displayNotification,
+        lastResponse,
         add,
         addRequest,
         addResponse,

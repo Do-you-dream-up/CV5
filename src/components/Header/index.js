@@ -55,8 +55,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const misunderstood = images && JSON.parse(images) && JSON.parse(images).misunderstood;
   const reword = images && JSON.parse(images) && JSON.parse(images).reword;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
-  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
   const { interactions } = useContext(DialogContext);
+  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(

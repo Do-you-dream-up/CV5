@@ -1,5 +1,4 @@
 import { b64decode, b64dFields, isDefined, isEmptyArray, isOfType, toFormUrlEncoded } from './helpers';
-import { atob } from 'js-base64';
 import { VAR_TYPE } from './constants';
 
 describe('helpers', () => {
@@ -84,25 +83,6 @@ describe('helpers', () => {
       const expectedObj = initialObj;
       const targetFieldName = 'field4'; // this is not in |initialObj|
       expect(b64dFields(initialObj, [targetFieldName])).toEqual(expectedObj);
-    });
-
-    it('should throw error when a field in list is not defined', () => {
-      const initialObj = {
-        field1: {},
-        field2: btoa('bonjour'),
-        field3: null,
-      };
-      const targetFieldName = 'field3'; // this is not a string
-      expect(() => b64dFields(initialObj, [targetFieldName])).toThrowError();
-    });
-    it('should throw error when a field in list is not of type string', () => {
-      const initialObj = {
-        field1: {},
-        field2: btoa('bonjour'),
-        field3: true,
-      };
-      const targetFieldName = 'field3'; // this is not a string
-      expect(() => b64dFields(initialObj, [targetFieldName])).toThrowError();
     });
   });
   describe('isOfType', function () {

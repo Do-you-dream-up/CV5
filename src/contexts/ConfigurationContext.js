@@ -1,5 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
+
+export const useConfiguration = () => {
+  return useContext(ConfigurationContext);
+};
 
 export const ConfigurationContext = React.createContext();
 export class ConfigurationProvider extends React.Component {

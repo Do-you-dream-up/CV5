@@ -151,7 +151,7 @@
                 "stop": "Record stop"
               }
           },
-          "placeholder": "Type here..."
+          "placeholder": "Type your message here"
     },
     "interaction": {
         "languageChange": "You are using this language:",
