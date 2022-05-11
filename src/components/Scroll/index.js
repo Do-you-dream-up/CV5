@@ -24,7 +24,7 @@ function Scroll({ component, delay, ...rest }) {
       scroll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedReady, scroll()]);
+  }, [debouncedReady]);
 
   return React.createElement(component, { ...rest, ref: elementRef });
 }
