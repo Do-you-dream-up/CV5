@@ -150,7 +150,7 @@ export default function Interaction({
         _children = ['&nbsp;'];
       }
 
-      if (typeof _children === String && _children[0].includes('target="_blank"')) {
+      if (isOfTypeString(_children[0]) && _children[0].includes('target="_blank"')) {
         setHasExternalLink(true);
       }
       return _children.filter((it) => it);
@@ -162,9 +162,7 @@ export default function Interaction({
     if (!ready && children) {
       setReady(true);
 
-      const createBubbleListFn = templatename
-        ? templateNameToBubbleCreateAction[templatename]
-        : createBubbleListNoTemplate;
+      const createBubbleListFn = templateNameToBubbleCreateAction[templatename] || createBubbleListNoTemplate;
 
       addBubbles(createBubbleListFn(children));
     }
