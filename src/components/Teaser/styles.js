@@ -12,6 +12,7 @@ export default createUseStyles((theme) => ({
     // eslint-disable-next-line sort-keys
     '& img': {
       height: '100%',
+      pointerEvents: 'none',
     },
   }),
   button: () => ({
