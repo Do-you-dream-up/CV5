@@ -1,7 +1,8 @@
 //import-voice
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
+import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 // eslint-disable-next-line no-unused-vars
@@ -31,10 +32,15 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
+
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
+
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const voice = configuration.Voice ? configuration.Voice.enable : false;
+  const [isCommandHandled, setIsCommandHandled] = useState(null);
+  const [buttonPressTimer, setButtonPressTimer] = useState(null);
+
   // DISPLAY TEASER TYPE
   const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
   const initialTeaserType =
@@ -44,46 +50,81 @@ export default function Teaser({ open, toggle }) {
       ? AVATAR_AND_TEXT
       : configuration.teaser.displayType;
 
-  const onClick = () => {
+  const openChatboxOnClickOrTouch = useCallback(() => {
     event('onClick');
     toggle(2)();
-  };
+  }, [event, toggle]);
+
+  const handleButtonPress = useCallback(
+    (e) => {
+      if (buttonPressTimer) clearTimeout(buttonPressTimer);
+
+      setButtonPressTimer(setTimeout(handleLongPress, 250, e));
+
+      setIsCommandHandled(false);
+    },
+    [buttonPressTimer, handleLongPress],
+  );
+
+  const handleLongPress = useCallback(() => {
+    setIsCommandHandled(true);
+  }, []);
+
+  const handleButtonRelease = useCallback(() => {
+    if (!isCommandHandled) {
+      openChatboxOnClickOrTouch();
+      //isCommandHandled isn't updated here, as a result logic is executed always
+      // got regular click, not long press
+      setIsCommandHandled(true);
+    }
+
+    clearTimeout(buttonPressTimer);
+  }, [buttonPressTimer, isCommandHandled, openChatboxOnClickOrTouch]);
 
   const onKeyDown = (event) => {
     if (event.keyCode === 32 || event.keyCode === 13) {
       event.preventDefault();
-      onClick();
+      openChatboxOnClickOrTouch();
     }
   };
 
   return (
-    <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}>
-      <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
-        <div
-          onClick={onClick}
-          onKeyDown={onKeyDown}
-          title={mouseover}
-          role="button"
-          tabIndex="0"
-          aria-pressed={!open}
-          className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
-            [classes.hideOutline]: !tabbing,
-          })}
-        >
-          {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
-            <div className={c('dydu-teaser-button', classes.button)}>
-              <Skeleton children={title} hide={!ready} width="3em" />
-            </div>
-          )}
-          {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
-            <div className={c('dydu-teaser-brand', classes.brand)}>
-              <img alt="" src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`} />
-            </div>
-          )}
+    <Draggable bounds="body">
+      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}>
+        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
+          <div
+            onMouseDown={handleButtonPress}
+            onMouseUp={handleButtonRelease}
+            onKeyDown={onKeyDown}
+            onTouchStart={handleButtonPress}
+            onTouchEnd={handleButtonRelease}
+            title={mouseover}
+            role="button"
+            tabIndex="0"
+            aria-pressed={!open}
+            className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
+              [classes.hideOutline]: !tabbing,
+            })}
+          >
+            {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
+              <div className={c('dydu-teaser-button', classes.button)}>
+                <Skeleton children={title} hide={!ready} width="3em" />
+              </div>
+            )}
+            {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
+              <div className={c('dydu-teaser-brand', classes.brand)}>
+                <img
+                  onKeyDown={onKeyDown}
+                  alt=""
+                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}
+                />
+              </div>
+            )}
+          </div>
+          {open && voice && <voice />}
         </div>
-        {open && voice && <voice />}
       </div>
-    </div>
+    </Draggable>
   );
 }
 
