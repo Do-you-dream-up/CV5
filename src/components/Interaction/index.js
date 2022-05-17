@@ -1,3 +1,5 @@
+/* eslint-disable */
+import DotLoader from 'react-spinners/BeatLoader';
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -12,9 +14,11 @@ import Scroll from '../Scroll';
 import useStyles from './styles';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import { isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
-import { InChatNotification } from '../../styles/styledComponent';
+import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+import { useDialog } from '../../contexts/DialogContext';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -91,6 +95,7 @@ export default function Interaction({
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [hasExternalLink, setHasExternalLink] = useState(false);
+  const { isLivechatOn } = useLivechat();
 
   const { configuration } = useContext(ConfigurationContext);
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
@@ -213,8 +218,9 @@ export default function Interaction({
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
+    if (isLivechatOn) return null;
     return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
-  }, [classes.loader, hasLoader, scroll]);
+  }, [classes.loader, hasLoader, isLivechatOn, scroll]);
 
   const bubbleList = useMemo(() => {
     if (bubbles.length <= 0) return null;
@@ -301,6 +307,22 @@ Interaction.propTypes = {
   typeResponse: PropTypes.string,
 };
 
+const Writing = () => {
+  // eslint-disable
+  const avatarImageUrl = useMemo(() => asset('dydu-logo.svg'), []);
+
+  return (
+    <RowInteraction>
+      <AvatarContainer>
+        <Avatar type={INTERACTION_TYPE.response} linkAvatarDependOnType={avatarImageUrl} />
+      </AvatarContainer>
+      <BubbleContainer>
+        <DotLoader loading={true} size={10} margin={2} />
+      </BubbleContainer>
+    </RowInteraction>
+  );
+};
+
 export const InteractionNotification = ({ notification }) => {
   const { text, iconSrc } = useNotificationHelper(notification);
 
@@ -319,3 +341,4 @@ InteractionNotification.propTypes = {
 };
 
 Interaction.Notification = InteractionNotification;
+Interaction.Writing = Writing;
