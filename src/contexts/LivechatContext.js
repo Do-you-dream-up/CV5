@@ -24,8 +24,7 @@ export function LivechatProvider({ children }) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
-  const [isLivechatOn, setIsLivechatOn] = useState(false);
-  const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
+  const { lastResponse, displayNotification: notify } = useDialog();
 
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
 
@@ -47,7 +46,6 @@ export function LivechatProvider({ children }) {
   const onSuccessOpenTunnel = useCallback((tunnel) => {
     const iswebsocket = isWebsocketTunnel(tunnel);
     if (iswebsocket) setIsWebsocket(true);
-    setIsLivechatOn(true);
     setTunnel(tunnel);
   }, []);
 
@@ -77,7 +75,6 @@ export function LivechatProvider({ children }) {
       displayResponseText,
       displayNotification,
       onFail: onFailOpenTunnel,
-      showAnimationOperatorWriting,
     };
     _tunnel
       .open(tunnelInitialConfig)
@@ -90,7 +87,6 @@ export function LivechatProvider({ children }) {
     lastResponse,
     onFailOpenTunnel,
     onSuccessOpenTunnel,
-    showAnimationOperatorWriting,
     tunnelList,
   ]);
 
@@ -113,9 +109,8 @@ export function LivechatProvider({ children }) {
     () => ({
       isWebsocket,
       send,
-      isLivechatOn,
     }),
-    [isLivechatOn, isWebsocket, send],
+    [isWebsocket, send],
   );
   return <LivechatContext.Provider value={dataContext}>{children}</LivechatContext.Provider>;
 }

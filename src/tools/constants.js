@@ -41,6 +41,5 @@ export const INTERACTION_NOTIFICATION_TYPE = {
   wait: 'wait',
   success: 'success',
   timeout: 'timeout',
-  writing: 'writing',
   dialogTransferredAutomatically: 'dialogTransferredAutomatically',
 };

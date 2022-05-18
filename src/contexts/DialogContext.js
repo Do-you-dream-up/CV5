@@ -1,6 +1,5 @@
-/* eslint-disable */
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -14,11 +13,6 @@ import { EventsContext, useEvent } from './EventsContext';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 import LivechatPayload from '../tools/LivechatPayload';
 
-const isLastElementOfTypeAnimationWriting = (list) => {
-  const last = list[list.length - 1];
-  return last?.type?.name === Interaction.Writing.name;
-};
-
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const FEEDBACK_RESPONSE = {
   positive: 'positive',
@@ -27,15 +21,6 @@ const FEEDBACK_RESPONSE = {
 };
 
 const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
-
-let isTimeoutRunning = false;
-const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
-  if (isTimeoutRunning) return;
-  isTimeoutRunning = setTimeout(() => {
-    stopAnimationCallback();
-    isTimeoutRunning = false;
-  }, 5000);
-};
 
 export const DialogContext = React.createContext();
 
@@ -60,23 +45,9 @@ export function DialogProvider({ children }) {
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
-  const add = useCallback(
-    (interaction) => {
-      onNewMessage();
-      setInteractions((previous) => {
-        if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
-        return !isDefined(interaction)
-          ? previous.slice()
-          : [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])];
-      });
-    },
-    [onNewMessage],
-  );
-
-  const showAnimationOperatorWriting = useCallback(() => {
-    add(<Interaction.Writing />);
-    delayStopAnimationOperatorWriting(add);
-  }, [add]);
+  const add = useCallback((interaction) => {
+    setInteractions((previous) => [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])]);
+  }, []);
 
   const displayNotification = useCallback(
     (notification) => {
@@ -133,6 +104,7 @@ export function DialogProvider({ children }) {
   const addResponse = useCallback(
     (response) => {
       setLastResponse(response);
+      onNewMessage(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
       const {
         askFeedback: _askFeedback,
@@ -241,6 +213,7 @@ export function DialogProvider({ children }) {
       // eslint-disable-next-line no-use-before-define
     },
     [
+      onNewMessage,
       displayNotification,
       configuration.Voice.enable,
       configuration.Voice.voiceSpace,
@@ -301,7 +274,6 @@ export function DialogProvider({ children }) {
     <DialogContext.Provider
       children={children}
       value={{
-        showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
         add,
