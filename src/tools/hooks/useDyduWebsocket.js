@@ -29,7 +29,6 @@ countdownRetryHandshake.maxRetry = MAX_RETRY_HANDSHAKE_STEP;
 const MESSAGE_TYPE = {
   error: 'error',
   operatorResponse: 'operatorResponse',
-  operatorWriting: 'operatorWriting',
   contextResponse: 'contextResponse',
   notification: 'notification',
   endPolling: 'endPolling',
@@ -39,7 +38,6 @@ let onFail = null;
 let onEndCommunication = null;
 let displayResponseText = null;
 let displayNotificationMessage = null;
-let onOperatorWriting = null;
 
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
@@ -92,10 +90,7 @@ export default function useDyduWebsocket() {
   }, [messageText]);
 
   const displayNotification = useCallback(() => {
-    if (!isDefined(messageText)) return;
-
-    if (LivechatPayload.is.operatorWriting(messageData)) return onOperatorWriting();
-    displayNotificationMessage(messageData);
+    if (isDefined(messageText)) displayNotificationMessage(messageData);
   }, [messageData, messageText]);
 
   const decrementHandshakeCountDown = useCallback(
@@ -201,7 +196,6 @@ export default function useDyduWebsocket() {
     onEndCommunication = configuration.endLivechat;
     displayResponseText = configuration.displayResponseText;
     displayNotificationMessage = configuration.displayNotification;
-    onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
   }, []);
 
