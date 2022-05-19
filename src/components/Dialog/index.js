@@ -87,6 +87,7 @@ Dialog.propTypes = {
     PropTypes.oneOfType([
       PropTypes.shape({ type: PropTypes.oneOf([Interaction]) }),
       PropTypes.shape({ type: PropTypes.oneOf([Interaction.Notification]) }),
+      PropTypes.shape({ type: PropTypes.oneOf([Interaction.Writing]) }),
     ]),
   ).isRequired,
   onAdd: PropTypes.func.isRequired,

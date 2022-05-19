@@ -6,7 +6,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Actions from '../Actions';
 import Input from '../Input';
 import useStyles from './styles';
-import { LivechatProvider } from '../../contexts/LivechatContext';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -58,9 +57,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
       <footer className={c('dydu-footer', classes.root)} {...rest}>
         <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
         <div className={classes.content}>
-          <LivechatProvider>
-            <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
-          </LivechatProvider>
+          <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
         </div>
       </footer>
     </>
