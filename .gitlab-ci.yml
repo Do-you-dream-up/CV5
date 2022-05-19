@@ -127,7 +127,7 @@ push_base:preprod:
     - echo "$ZIP_FILE $STORE_PATH/$BUILD_TARGET/$ZIP_FILE"
     - echo "$ZIP_FILE_LATEST $STORE_PATH/$BUILD_TARGET/$ZIP_FILE_LATEST"
     - git fetch --all --tags
-    - if [[ ! $(git tag -l "ci_$VERSION") ]]; then git tag -f ci_$VERSION ; git push --tags --force origin ci_$VERSION ; fi
+    - if [[ ! $(git tag -l "$VERSION") ]]; then git tag -f $VERSION ; git push --tags --force origin $VERSION ; fi
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE_LATEST}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE_LATEST}'
   variables:
@@ -303,7 +303,7 @@ mirror:
   stage: mirror
   image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
   before_script:
-    - 'curl --header "PRIVATE-TOKEN: $GITLAB_RUNNER_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
+    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
     - chmod +x /helper.sh
   script:
     - '/helper.sh loginGit'
@@ -311,7 +311,7 @@ mirror:
     - 'git clone git@github.com:Do-you-dream-up/CV5.git repopub'
     - 'cd repopub'
     - 'git remote add this ../.'
-    - 'git fetch this --tags'
+    - 'git fetch this --tags || true'
     - 'git merge --no-edit --allow-unrelated-histories this/master'
     - 'git remote remove this'
     - 'git push'
