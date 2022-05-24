@@ -97,6 +97,7 @@ export class Cookie {
  */
 export class Local {
   static names = {
+    livechat: 'dydu.livechat',
     banner: 'dydu.banner',
     client: 'dydu.client',
     context: 'dydu.context',
@@ -258,4 +259,13 @@ export class Local {
       },
     };
   };
+
+  static livechat = Object.create({
+    save: (data) => localStorage.setItem(Local.names.livechat, JSON.stringify(data)),
+    load: () => {
+      const d = localStorage.getItem(Local.names.livechat) || '{}';
+      return JSON.parse(d);
+    },
+    reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
+  });
 }

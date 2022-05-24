@@ -20,7 +20,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ onRequest, onResponse }) {
-  const { isWebsocket, send } = useLivechat();
+  const { isLivechatOn, send } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
@@ -100,11 +100,11 @@ export default function Input({ onRequest, onResponse }) {
 
   const sendInput = useCallback(
     (input) => {
-      if (isWebsocket) send(input);
+      if (isLivechatOn) send(input);
       else talk(input, { qualification }).then(onResponse);
     },
     // eslint-disable-next-line
-    [isWebsocket, send],
+    [isLivechatOn, send],
   );
 
   const submit = useCallback(
