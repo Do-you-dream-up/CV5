@@ -5,6 +5,7 @@ import dydu from '../../tools/dydu';
 import parseSteps from '../../tools/steps';
 import { Local } from '../../tools/storage';
 import Interaction from '../Interaction';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 /**
  * Fetch the welcome sentece knowledge and display it.
@@ -14,6 +15,7 @@ export default function Welcome() {
   const [welcomeContent, setWelcomeContent] = useState([]);
   const [welcomeSidebar, setWelcomeSidebar] = useState(null);
   const [welcomeSteps, setWelcomeSteps] = useState(null);
+  const { isLivechatOn } = useLivechat();
   const hasCarousel = welcomeSteps && welcomeSteps.length > 1;
   const { enable, knowledgeName } = configuration.welcome;
   const teaserMode = Local.get(Local.names.open) === 1;
@@ -27,12 +29,13 @@ export default function Welcome() {
   }, []);
 
   useEffect(() => {
+    if (isLivechatOn) return;
     if (!welcomeContent[0] && !teaserMode) {
       dydu.talk(knowledgeName, { doNotSave: true, hide: true }).then((response) => {
         getWelcomeContent(response);
       });
     }
-  }, [getWelcomeContent, knowledgeName, teaserMode, welcomeContent]);
+  }, [getWelcomeContent, isLivechatOn, knowledgeName, teaserMode, welcomeContent]);
 
   return enable && welcomeContent && welcomeContent[0] ? (
     <Interaction
