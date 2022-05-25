@@ -112,7 +112,7 @@ export default function Interaction({
   const defaultAvatar = configuration.avatar.response;
 
   const delay = useMemo(() => {
-    const loader = configuration.interaction;
+    const { loader } = configuration.interaction;
     const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
     return Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
   }, [configuration.interaction]);
