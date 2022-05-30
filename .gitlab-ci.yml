@@ -205,6 +205,8 @@ build_demo_preprod:latest:
     - echo "DIR_NAME=${DIR_NAME}" >> deploy.env
     - echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
     - echo "CDN_HOST=${CDN_HOST}" >> deploy.env
+    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/137/repository/files/public%2Foverride%2Fbot%2Ejson/raw?ref=development --output public/override/bot.json'
+    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/137/repository/files/public%2Foverride%2Fconfiguration%2Ejson/raw?ref=development --output public/override/configuration.json'
   script:
     - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
     - echo "//nexus.doyoudreamup.com/repository/npm-public/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
