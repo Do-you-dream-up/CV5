@@ -1,6 +1,5 @@
-/* eslint-disable */
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTheme } from 'react-jss';
 import Interaction from '../components/Interaction';
 import parseActions from '../tools/actions';
@@ -13,6 +12,8 @@ import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext, useEvent } from './EventsContext';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 import LivechatPayload from '../tools/LivechatPayload';
+import dydu from '../tools/dydu';
+import { useLivechat } from './LivechatContext';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -55,6 +56,10 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
+  const [welcomeContent, setWelcomeContent] = useState(null);
+  const { knowledgeName } = configuration.welcome;
+  const teaserMode = Local.get(Local.names.open) === 1;
+  const { isLivechatOn } = useLivechat();
 
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
@@ -297,6 +302,23 @@ export function DialogProvider({ children }) {
     [],
   );
 
+  const callWelcomeKnowledge = useCallback(() => {
+    if (isDefined(welcomeContent) || teaserMode) return;
+
+    if (isLivechatOn) return;
+
+    dydu.talk(knowledgeName, { doNotSave: true, hide: true }).then((response) => {
+      setWelcomeContent(response);
+      addResponse(response);
+    });
+    // eslint-disable-next-line
+  }, [knowledgeName, teaserMode, welcomeContent, isLivechatOn]);
+
+  useEffect(() => {
+    callWelcomeKnowledge();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <DialogContext.Provider
       children={children}
@@ -325,6 +347,7 @@ export function DialogProvider({ children }) {
         toggleSecondary,
         typeResponse,
         voiceContent,
+        callWelcomeKnowledge,
       }}
     />
   );

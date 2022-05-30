@@ -9,7 +9,12 @@ export default function QuickreplyTemplate({ html }) {
 
   const content = useMemo(() => {
     if (!isDefined(html)) return null;
-    const parse = JSON.parse(html);
+    let parse = null;
+    try {
+      parse = JSON.parse(html);
+    } catch {
+      parse = html;
+    }
     if (!isDefined(parse) || !isOfTypeObject(parse)) return null;
     return parse;
   }, [html]);
@@ -21,7 +26,7 @@ export default function QuickreplyTemplate({ html }) {
 
   const quick = useMemo(() => {
     if (!isDefined(content)) return null;
-    return content.quick;
+    return content.quick || {};
   }, [content]);
 
   if (!isDefined(content)) return null;
