@@ -49,7 +49,6 @@ export default createUseStyles((theme) => ({
     fontFamily: 'inherit',
     fontSize: '16px',
     lineHeight: '1.7em',
-    overflowY: 'scroll',
     padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
     whiteSpace: 'pre-wrap',
     width: '105%',
