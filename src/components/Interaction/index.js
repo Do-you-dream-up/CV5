@@ -1,4 +1,3 @@
-/* eslint-disable */
 import DotLoader from 'react-spinners/BeatLoader';
 import c from 'classnames';
 import PropTypes from 'prop-types';
@@ -14,24 +13,34 @@ import Scroll from '../Scroll';
 import useStyles from './styles';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { asset, isDefined, isEmptyString, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
-import { useDialog } from '../../contexts/DialogContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
-    const bubble = {};
-    list.forEach((el) => {
-      if (typeof el === 'string') {
-        bubble.text = el;
-      }
-      if (typeof el === 'object') {
-        bubble.quick = el;
-      }
-    });
-    return [JSON.stringify(bubble)];
+    const shouldSplit = (text) => text.indexOf('<hr class="split">') >= 0;
+    const splitText = (text) => text.split(/<hr class="split">/);
+    const makeBubbleObjWithText = (text) => ({ text });
+    const jsonStringify = (d) => JSON.stringify(d);
+
+    const [text = '', quick] = list;
+    const results = [];
+
+    if (!isEmptyString(text)) {
+      results.push(jsonStringify({ text }));
+    }
+
+    if (!shouldSplit(text)) return results.concat([jsonStringify({ quick })]);
+    return splitText(text)
+      .reduce((result, text) => {
+        if (text.indexOf('><') < 0) {
+          result.push(jsonStringify(makeBubbleObjWithText(text)));
+        }
+        return result;
+      }, [])
+      .concat([jsonStringify({ quick })]);
   },
   [INTERACTION_TEMPLATE.product]: (list) => {
     const bubble = {};
@@ -112,7 +121,7 @@ export default function Interaction({
   const defaultAvatar = configuration.avatar.response;
 
   const delay = useMemo(() => {
-    const loader = configuration.interaction;
+    const { loader } = configuration.interaction;
     const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
     return Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
   }, [configuration.interaction]);
@@ -122,6 +131,7 @@ export default function Interaction({
   const carouselTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.carousel), [templatename]);
   const productTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.product), [templatename]);
   const quickTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.quickReply), [templatename]);
+
   const addBubbles = useCallback(
     (newBubbles) => {
       if (thinking) {
@@ -238,6 +248,7 @@ export default function Interaction({
         secondary: index === bubbles.length - 1 ? secondary : undefined,
         [typeof it === 'string' ? 'html' : 'children']: it,
       };
+
       return (
         <Bubble
           className={classes.bubble}

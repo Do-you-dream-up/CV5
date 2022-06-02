@@ -164,3 +164,6 @@ const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
 };
 
 export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
+
+export const qualification =
+  window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;

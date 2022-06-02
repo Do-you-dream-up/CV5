@@ -27,6 +27,7 @@ import Tab from '../Tab';
 import useStyles from './styles';
 import { isDefined } from '../../tools/helpers';
 import { encode } from '../../tools/cipher';
+import { RE_REWORD } from '../../tools/constants';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -76,11 +77,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
-          addRequest(text);
+          if (!RE_REWORD) {
+            addRequest(text);
+          }
         }
         talk(text, toSend).then(addResponse);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [addRequest, addResponse, qualification],
   );
 
@@ -140,7 +144,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.dydu.space = {
         get: (strategy) => dydu.getSpace(strategy),
         prompt: () => setPrompt('spaces'),
-        set: (space, { quiet } = {}) =>
+        set: (space, { quiet = true } = {}) =>
           dydu.setSpace(space).then(
             (space) => !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`),
             () => {},

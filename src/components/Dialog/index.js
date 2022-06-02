@@ -11,7 +11,6 @@ import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
 import Top from '../Top';
-import Welcome from '../Welcome';
 import useStyles from './styles';
 
 /**
@@ -72,7 +71,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
       {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
-      <Welcome />
       {interactions.map((it, index) => ({ ...it, key: index }))}
       {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
       {prompt === 'spaces' && <Spaces />}

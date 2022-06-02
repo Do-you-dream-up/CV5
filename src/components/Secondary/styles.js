@@ -6,7 +6,7 @@ export default createUseStyles((theme) => {
     bottom: 0,
     position: 'absolute',
     top: 0,
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('md')]: {
       borderRadius: 0,
       left: 0,
       marginRight: 'unset',
@@ -24,7 +24,7 @@ export default createUseStyles((theme) => {
       display: 'flex',
       marginLeft: 'auto',
     }),
-    base: ({ configuration, height, width }) => ({
+    base: ({ configuration, width, height }) => ({
       backgroundColor: theme.palette.background.secondary,
       boxShadow: theme.shadows[1],
       display: 'flex',
@@ -32,13 +32,16 @@ export default createUseStyles((theme) => {
       height: configuration.secondary.fixedDimensions ? undefined : height,
       overflowY: 'auto',
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('md')]: {
         height: '100%',
+        maxHeight: 'initial',
       },
     }),
     body: () => ({
+      height: 'initial',
       padding: '1.6em',
       paddingTop: 0,
+      paddingBottom: 10,
     }),
     frame: () => ({
       border: 0,
@@ -48,6 +51,7 @@ export default createUseStyles((theme) => {
       backgroundColor: `${theme.palette.background.secondary}CC`,
       display: 'flex',
       padding: '1.6em',
+      paddingBottom: 10,
       position: 'sticky',
       top: 0,
     }),

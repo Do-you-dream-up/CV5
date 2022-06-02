@@ -6,7 +6,10 @@ export default createUseStyles(() => ({
   }),
   accessibility: () => ({
     '&:focus': {
-      textDecoration: 'underline',
+      textDecoration: 'none !important',
+    },
+    '&:hover': {
+      textDecoration: 'underline !important',
     },
   }),
 }));

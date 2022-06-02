@@ -44,3 +44,5 @@ export const INTERACTION_NOTIFICATION_TYPE = {
   writing: 'writing',
   dialogTransferredAutomatically: 'dialogTransferredAutomatically',
 };
+
+export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;

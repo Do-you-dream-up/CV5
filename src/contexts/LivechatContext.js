@@ -5,6 +5,8 @@ import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 import dydu from '../tools/dydu';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
+import { Local } from '../tools/storage';
+import useQueue from '../tools/hooks/useQueue';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -26,7 +28,7 @@ export function LivechatProvider({ children }) {
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
-
+  const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
 
   const displayNotification = useCallback(
@@ -65,6 +67,7 @@ export function LivechatProvider({ children }) {
   const endLivechat = useCallback(() => {
     console.warn('ending livechat...');
     setIsWebsocket(false);
+    setIsLivechatOn(false);
     setTunnel(null);
   }, []);
 
@@ -94,6 +97,16 @@ export function LivechatProvider({ children }) {
     tunnelList,
   ]);
 
+  /*
+  useEffect(() => {
+    Local.livechat.save({ isLivechatOn });
+  }, [isLivechatOn]);
+*/
+  useEffect(() => {
+    const data = Local.livechat.load();
+    setIsLivechatOn(data?.isLivechatOn || false);
+  }, []);
+
   useEffect(() => {
     if (shouldEndLivechat) endLivechat();
   }, [shouldEndLivechat, endLivechat]);
@@ -102,11 +115,16 @@ export function LivechatProvider({ children }) {
     if (shouldStartLivechat) startLivechat();
   }, [shouldStartLivechat, startLivechat]);
 
+  useEffect(() => {
+    if (!isQueueEmpty && isDefined(tunnel?.send)) tunnel.send(pop());
+  }, [isQueueEmpty, queue, pop, tunnel?.send, tunnel]);
+
   const send = useCallback(
     (userInput) => {
-      tunnel?.send(userInput);
+      if (!isDefined(tunnel)) put(userInput);
+      else tunnel?.send(userInput);
     },
-    [tunnel],
+    [put, tunnel],
   );
 
   const dataContext = useMemo(
