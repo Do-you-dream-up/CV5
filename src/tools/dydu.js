@@ -7,7 +7,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
-import { toFormUrlEncoded } from './helpers';
+import { toFormUrlEncoded, qualification } from './helpers';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -221,6 +221,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
+      qualificationMode: qualification,
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -435,7 +436,7 @@ export default new (class Dydu {
   talk = async (text, options = {}) => {
     const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
     const data = qs.stringify(payload);
-    const contextId = await this.getContextId();
+    const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };
