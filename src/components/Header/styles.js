@@ -25,9 +25,6 @@ export default createUseStyles((theme) => ({
     boxShadow: 'none !important',
   }),
   image: () => ({
-    '& img': {
-      height: '100%',
-    },
     alignItems: 'center',
     display: 'flex',
     height: '2.5em',
