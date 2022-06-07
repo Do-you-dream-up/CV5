@@ -58,9 +58,9 @@ export default function Onboarding({ children, render }) {
           className={c('dydu-onboarding-body', classes.body)}
           dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
         />
-        <a href="#" onClick={onEnd}>
+        <button type="button" onClick={onEnd}>
           {skip}
-        </a>
+        </button>
       </div>
       <div className={c('dydu-onboarding-actions', classes.actions)}>
         {steps.length > 1 && (
