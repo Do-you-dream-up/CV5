@@ -6,6 +6,7 @@ import cookie from 'js-cookie';
 export class Session {
   static names = {
     newMessage: 'dydu.newMessage',
+    banner: 'dydu.banner',
   };
 
   /**
@@ -98,7 +99,6 @@ export class Cookie {
 export class Local {
   static names = {
     livechat: 'dydu.livechat',
-    banner: 'dydu.banner',
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',

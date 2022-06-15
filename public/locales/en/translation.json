@@ -3,7 +3,7 @@
         "label_chatbot": "Chatbot window"
     },
     "banner": {
-        "html": "<p> Put forward <em>your news</em>.</p><p>It can concern <a href>your business</a> or your industry.</p>",
+        "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",
         "more": "More information",
         "ok": "Thanks"
     },
