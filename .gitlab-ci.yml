@@ -316,7 +316,7 @@ update_version:
     - git checkout development && git pull
     - 'sed -i "s/\"version\":.*\,$/\"version\": \"${VERSION}\",/g" package.json && cat package.json | grep version'
     - git add package.json
-    - 'git commit -m "ci(release): Upgraded to ${VERSION}" && git push origin test_bliss_development'
+    - 'git commit -m "ci(release): Upgraded to ${VERSION}" && git push origin development'
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
       when: on_success
