@@ -62,12 +62,12 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   /**
    * scroll to bottom of dialog on open chatbox
    */
-  // useEffect(() => {
-  //   const chatboxDiv = document.querySelector('.dydu-chatbox-body');
-  //   if (open && chatboxDiv) {
-  //     chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
-  //   }
-  // }, [open]);
+  useEffect(() => {
+    if (open) {
+      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+      chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
+    }
+  }, [open]);
 
   return (
     <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
