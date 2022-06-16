@@ -4,36 +4,36 @@
     font-family: 'Assistant';
     font-style: normal;
     font-weight: normal;
-    src: url('Fonts/Assistant-Regular.ttf') format('truetype'),
-    url('Fonts/Assistant-Regular.woff') format('woff'),
-    url('Fonts/Assistant-Regular.woff2') format('woff2');
+    src: url('fonts/Assistant/Assistant-Regular.ttf') format('truetype'),
+    url('fonts/Assistant/Assistant-Regular.woff') format('woff'),
+    url('fonts/Assistant/Assistant-Regular.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Assistant Light';
     font-style: normal;
     font-weight: normal;
-    src: url('Fonts/Assistant-Light.ttf') format('truetype'),
-    url('Fonts/Assistant-Light.woff') format('woff'),
-    url('Fonts/Assistant-Light.woff2') format('woff2');
+    src: url('fonts/Assistant/Assistant-Light.ttf') format('truetype'),
+    url('fonts/Assistant/Assistant-Light.woff') format('woff'),
+    url('fonts/Assistant/Assistant-Light.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Assistant Semi Bold';
     font-style: normal;
     font-weight: normal;
-    src: url('Fonts/Assistant-SemiBold.ttf') format('truetype'),
-    url('Fonts/Assistant-SemiBold.woff') format('woff'),
-    url('Fonts/Assistant-SemiBold.woff2') format('woff2');
+    src: url('fonts/Assistant/Assistant-SemiBold.ttf') format('truetype'),
+    url('fonts/Assistant/Assistant-SemiBold.woff') format('woff'),
+    url('fonts/Assistant/Assistant-SemiBold.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Assistant Bold';
     font-style: normal;
     font-weight: normal;
-    src: url('Fonts/Assistant-Bold.ttf') format('truetype'),
-    url('Fonts/Assistant-Bold.woff') format('woff'),
-    url('Fonts/Assistant-Bold.woff2') format('woff2');
+    src: url('fonts/Assistant/Assistant-Bold.ttf') format('truetype'),
+    url('fonts/Assistant/Assistant-Bold.woff') format('woff'),
+    url('fonts/Assistant/Assistant-Bold.woff2') format('woff2');
 }
 
 /* ---------- */

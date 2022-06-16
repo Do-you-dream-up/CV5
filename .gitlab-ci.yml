@@ -3,12 +3,13 @@
 stages:
   - preprod
   - prod
-  - build
-  - publish_preprod
-  - publish_prod
-  - demo
+  - build_base
+  - publish_base_preprod
+  - publish_base_prod
+  - prepare_demo_env
   - build_demo
   - publish_demo
+  - update_version
   - replace
   - mirror
   - release
@@ -63,10 +64,9 @@ include:
   - project: 'main-solution/build-and-tools/ci-cd-templates'
     file:
       - 'node/common.gitlab-ci.yml'
-      - 'node/version-management.gitlab-ci.yml'
 
 build_base:prod:
-  stage: build
+  stage: build_base
   image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
   tags:
     - chatbot
@@ -110,7 +110,7 @@ build_base:preprod:
 
 push_base:preprod:
   image: docker-registry.dydu-priv.com/devops/build/gitlab-docker:latest
-  stage: publish_preprod
+  stage: publish_base_preprod
   dependencies: ["build_base:preprod"]
   before_script:
       - apk add curl zip
@@ -136,7 +136,7 @@ push_base:preprod:
   variables:
     BUILD_TARGET: preprod
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
       when: on_success
     - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
       when: on_success
@@ -145,14 +145,14 @@ push_base:preprod:
     - when: never
 
 push_base:prod:
-  stage: publish_prod
+  stage: publish_base_prod
   extends:
     - push_base:preprod
   dependencies: ["build_base:prod"]
   variables:
     BUILD_TARGET: prod
   rules:
-    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\\(release\\).*/"
+    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/"
       when: manual
     - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
     - when: never
@@ -160,7 +160,7 @@ push_base:prod:
 
 #### trigger build and push demo ####
 build_publish_demo_preprod:
-  stage: demo
+  stage: prepare_demo_env
   script:
     - 'echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env'
     - if [ "$DEMO_ENV" = "preprod" ]; then echo "CDN_HOST=uat.cdn" >> deploy.env; else echo "CDN_HOST=cdn" >> deploy.env; fi
@@ -184,7 +184,7 @@ build_publish_demo_prod:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
       when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
       when: manual
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
@@ -196,7 +196,6 @@ build_demo_preprod:latest:
   image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
   needs: ["build_publish_demo_preprod"]
   before_script:
-    - 'env'
     - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
     - if [ "$LATEST" = true ]; then export DIR_NAME="latest"; else export DIR_NAME=$VERSION; fi
     - if [ "$DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "$DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
@@ -233,7 +232,6 @@ publish_demo_preprod:latest:
   needs: ["build_demo_preprod:latest"]
   script:
     - if [ "$CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
-    - 'env'
     - 'ls -larth build/'
     - 'echo "ansible-playbook --verbose --inventory cdn_hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}""'
     - 'ansible-playbook -v --inventory cdn_hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
@@ -264,7 +262,7 @@ build_demo_prod:latest:
     LATEST: "true"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
@@ -275,7 +273,7 @@ publish_demo_prod:latest:
   needs: ["build_demo_prod:latest"]
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
@@ -289,7 +287,7 @@ build_demo_prod:version:
     LATEST: "false"
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
@@ -300,10 +298,28 @@ publish_demo_prod:version:
   needs: ["build_demo_prod:version"]
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\(release\).*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
     - if: '$DYDUBOX_TRIGGER == "true"'
       when: never
     - when: never
+
+update_version:
+  image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
+  stage: update_version
+  before_script:
+    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
+    - chmod +x /helper.sh
+    - /helper.sh loginGit
+  script:
+    - "export VERSION=$(npm --no-git-tag-version version minor | sed s/^v//g)"
+    - git restore package.json package-lock.json
+    - git checkout development && git pull
+    - 'sed -i "s/\"version\":.*\,$/\"version\": \"${VERSION}\",/g" package.json && cat package.json | grep version'
+    - git add package.json
+    - 'git commit -m "ci(release): Upgraded to ${VERSION}" && git push origin development'
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
+      when: on_success
 
 mirror:
   stage: mirror
@@ -314,18 +330,16 @@ mirror:
   script:
     - '/helper.sh loginGit'
     - 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
+    - 'git fetch -v || true'
     - 'git clone git@github.com:Do-you-dream-up/CV5.git repopub'
     - 'cd repopub'
-    - 'git remote add this ../.'
+    - 'git remote add this ${CI_PROJECT_DIR}'
     - 'git fetch this --tags || true'
     - 'git merge --no-edit --allow-unrelated-histories this/master'
     - 'git remote remove this'
     - 'git push'
   rules:
-    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/ && $CI_COMMIT_MESSAGE =~ /^ci\\(release\\).*/"
-
-Minor Upgrade:
-  needs: ["build_base:prod"]
+    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/"
 
 dydubox:
   stage: replace

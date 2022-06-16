@@ -37,8 +37,15 @@ export default createUseStyles((theme) => ({
     '& > :not(:last-child)': {
       marginBottom: '1em',
     },
-    '& > a': {
+    '& > button': {
+      padding: 0,
+      border: 0,
+      background: 'none',
       color: theme.palette.text.link || theme.palette.primary.main,
+      fontFamily: theme.font.sansSerif,
+      fontSize: 16,
+      textDecoration: 'underline',
+      cursor: 'pointer',
     },
     height: '80%',
     overflowY: 'auto',

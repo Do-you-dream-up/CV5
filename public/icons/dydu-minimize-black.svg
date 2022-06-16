@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  width="24" height="24" viewBox="0 0 24 24">
-   <path fill="#33333B" d="M20,14H4V10H20" />
+<svg id="_icons" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+  <path id="Tracé_415" data-name="Tracé 415" d="M3.778,8.444H6.889A1.56,1.56,0,0,0,8.444,6.889V3.778A.735.735,0,0,0,7.667,3a.735.735,0,0,0-.778.778V6.889H3.778A.735.735,0,0,0,3,7.667.735.735,0,0,0,3.778,8.444Z" transform="translate(-3 -3)" fill="#33333b"/>
+  <path id="Tracé_416" data-name="Tracé 416" d="M15.556,8.444h3.111a.735.735,0,0,0,.778-.778.735.735,0,0,0-.778-.778H15.556V3.778a.778.778,0,1,0-1.556,0V6.889A1.56,1.56,0,0,0,15.556,8.444Z" transform="translate(-5.444 -3)" fill="#33333b"/>
+  <path id="Tracé_417" data-name="Tracé 417" d="M14.778,19.444a.735.735,0,0,0,.778-.778V15.556h3.111a.778.778,0,1,0,0-1.556H15.556A1.56,1.56,0,0,0,14,15.556v3.111A.735.735,0,0,0,14.778,19.444Z" transform="translate(-5.444 -5.444)" fill="#33333b"/>
+  <path id="Tracé_418" data-name="Tracé 418" d="M3.778,15.556H6.889v3.111a.735.735,0,0,0,.778.778.735.735,0,0,0,.778-.778V15.556A1.56,1.56,0,0,0,6.889,14H3.778a.778.778,0,1,0,0,1.556Z" transform="translate(-3 -5.444)" fill="#33333b"/>
 </svg>

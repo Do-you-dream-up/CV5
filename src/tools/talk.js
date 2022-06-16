@@ -32,6 +32,7 @@ export const ACTIONS = {
   '#comment#': null,
   '#context#': null,
   '#contextVariables#': () => window.dydu.chat.reply(dydu.getContextVariables()),
+  '#contextvariables#': () => window.dydu.chat.reply(dydu.getContextVariables()), // like on CV4
   '#feedback#': null,
   '#botid#': () => window.dydu.chat.reply(dydu.getBot().id),
   '#host#': () => dydu.whoami().then(window.dydu.chat.reply),

@@ -323,14 +323,16 @@ const Writing = () => {
   const avatarImageUrl = useMemo(() => asset('dydu-logo.svg'), []);
 
   return (
-    <RowInteraction>
-      <AvatarContainer>
-        <Avatar type={INTERACTION_TYPE.response} linkAvatarDependOnType={avatarImageUrl} />
-      </AvatarContainer>
-      <BubbleContainer>
-        <DotLoader loading={true} size={10} margin={2} />
-      </BubbleContainer>
-    </RowInteraction>
+    <Scroll>
+      <RowInteraction>
+        <AvatarContainer>
+          <Avatar type={INTERACTION_TYPE.response} linkAvatarDependOnType={avatarImageUrl} />
+        </AvatarContainer>
+        <BubbleContainer>
+          <DotLoader loading={true} size={10} margin={2} />
+        </BubbleContainer>
+      </RowInteraction>
+    </Scroll>
   );
 };
 
@@ -340,10 +342,12 @@ export const InteractionNotification = ({ notification }) => {
   const canRender = useMemo(() => isDefined(text) && isDefined(iconSrc), [text, iconSrc]);
 
   return !canRender ? null : (
-    <InChatNotification>
-      <img className="icon" src={iconSrc} />
-      <p>{text}</p>
-    </InChatNotification>
+    <Scroll>
+      <InChatNotification>
+        <img className="icon" src={iconSrc} />
+        <p>{text}</p>
+      </InChatNotification>
+    </Scroll>
   );
 };
 

@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import { Local } from '../../tools/storage';
+import { Session } from '../../tools/storage';
 import Actions from '../Actions';
 import Skeleton from '../Skeleton';
 import useStyles from './styles';
@@ -25,7 +25,7 @@ export default function Banner() {
 
   const dismiss = useCallback(() => {
     if (storage) {
-      Local.set(Local.names.banner);
+      Session.set(Session.names.banner);
     }
   }, [storage]);
 
@@ -35,7 +35,7 @@ export default function Banner() {
   };
 
   useEffect(() => {
-    const show = !!active && (!storage || !Local.get(Local.names.banner));
+    const show = !!active && (!storage || !Session.get(Session.names.banner));
     setShow(show);
     if (show && !!transient) {
       dismiss();
