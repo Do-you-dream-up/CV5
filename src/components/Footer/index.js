@@ -29,7 +29,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   const languagesMenu = [
     languages.sort().map((id) => ({
-      icon: `flags/${id}.svg`,
+      icon: `flags/${id}.png`,
       id,
       onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
       text: t(`footer.rosetta.${id}`),
@@ -41,7 +41,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
       children: (
         <img
           alt={actionTranslate}
-          src={`${process.env.PUBLIC_URL}flags/${selectedLanguage}.svg`}
+          src={`${process.env.PUBLIC_URL}flags/${selectedLanguage}.png`}
           title={actionTranslate}
         />
       ),
