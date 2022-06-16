@@ -63,8 +63,8 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
    * scroll to bottom of dialog on open chatbox
    */
   useEffect(() => {
-    if (open) {
-      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    if (open && chatboxDiv) {
       chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
     }
   }, [open]);
