@@ -441,17 +441,17 @@ export default new (class Dydu {
     return this.emit(API.post, path, data);
   };
 
-  poll = async (lastPoll) => {
+  poll = async ({ serverTime, pollTime, contextId, context }) => {
     const data = {
-      contextUuid: await this.getContextId(),
       solutionUsed: SOLUTION_TYPE.livechat,
-      language: this.getLocale(),
-      space: this.getSpace(),
-      lastPoll,
       format: RESPONSE_QUERY_FORMAT.json,
+      space: this.getSpace(),
+      contextUuid: contextId || context?.fromBase64() || (await this.getContextId()),
+      language: this.getLocale(),
+      lastPoll: serverTime || pollTime,
     };
 
-    const path = `/chat/poll/last/${this.getBotId()}`;
+    const path = `/chat/poll/last/${this.getBot()?.id}`;
     return this.emit(API.post, path, toFormUrlEncoded(data));
   };
 

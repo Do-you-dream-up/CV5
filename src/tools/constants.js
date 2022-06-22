@@ -45,4 +45,22 @@ export const INTERACTION_NOTIFICATION_TYPE = {
   dialogTransferredAutomatically: 'dialogTransferredAutomatically',
 };
 
+export const RESPONSE_SPECIAL_ACTION = {
+  startPolling: 'StartPolling',
+  endPolling: 'EndPolling',
+};
+
+export const LIVECHAT_NOTIFICATION = {
+  operatorAnswer: 'OPRegularOperatorAnswer',
+  operatorWriting: 'OperatorWritingStatus',
+  operatorBusy: 'OperatorBusy',
+  operactorConnected: 'OperatorConnected',
+  operatorDisconnected: 'OperatorDisconnected',
+  invalidRequest: 'ERRInvalidRequest',
+  waitingForOperator: 'NAWaitingForOperator',
+  almostTimeout: 'AlmostTimedOut',
+  dialogTransferredManually: 'DialogTransferredManually',
+  dialogTransferredAutomatically: 'DialogTransferredAutomatically',
+};
+
 export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
