@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { browserName, isOfTypeString, osName } from './helpers';
+import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
 
 let PAYLOAD_COMMON_CONTENT = {
   contextId: null,
@@ -80,40 +81,57 @@ const LivechatPayloadCreator = {
 const LivechatPayloadChecker = {
   operatorAutomaticallyTransferredDialog: (payload) => {
     return (
-      payload?.type.equals('notification') &&
-      payload?.values?.code?.fromBase64()?.equals('DialogTransferredAutomatically')
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogTransferredAutomatically)
     );
   },
   operatorManuallyTransferredDialog: (payload) => {
     return (
-      payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('DialogTransferredManually')
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogTransferredManually)
     );
   },
   operatorDisconnected: (payload) => {
-    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorDisconnected');
+    return (
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operatorDisconnected)
+    );
   },
   operatorConnected: (payload) => {
-    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorConnected');
+    return (
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operactorConnected)
+    );
   },
   operatorBusy: (payload) => {
-    return payload?.type.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OperatorBusy');
+    return (
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operatorBusy)
+    );
   },
   startLivechat: (payload) => {
     return payload?.specialAction?.fromBase64()?.equals('StartPolling');
   },
   timeout: (payload) => {
-    return payload?.type?.equals('payload') && payload?.values?.code?.fromBase64().equals('AlmostTimedOut');
+    return (
+      payload?.type?.equals('payload') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.almostTimeout)
+    );
   },
   operatorWriting: (payload) => {
-    return payload?.type?.equals('notification') && payload?.values?.code?.fromBase64().equals('OperatorWritingStatus');
+    return (
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operatorWriting)
+    );
   },
   getContextResponse: (payload) => {
     return payload?.type?.equals('getContextResponse');
   },
   endPolling: (payload) => {
     return (
-      payload?.values?.specialAction?.fromBase64().equals('EndPolling') ||
-      (payload?.type?.equals('notification') && payload?.values?.code?.fromBase64().equals('OnOperatorCloseDialog'))
+      payload?.values?.typeResponse?.fromBase64()?.equals('NAAutoCloseDialog') ||
+      payload?.values?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
+      (payload?.type?.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OnOperatorCloseDialog'))
     );
   },
 };
@@ -127,37 +145,3 @@ const LivechatPayload = {
 };
 
 export default LivechatPayload;
-
-/*
-ON USER TYPING
-
-{
-  type: "typing"
-  parameters: {
-    botId: "MjNmNWU0YzYtNzNlNC00OTEyLWFkMzctNjU4YWFlNTE1NjA5"
-    clientId: "aktuWFRwZ1ZQWkxpT2p2"
-    content: "Y291"
-    contextId: "MTBkMjczYTYtYzQwMi00OThlLWI4OTItZjkwOTI4YjA5MmNm"
-    language: "ZnI="
-    qualificationMode: true
-    saml2_info: ""
-    solutionUsed: "TElWRUNIQVQ="
-    space: "RGVmYXV0"
-    timestamp: 1649837362363
-    typing: true
-    useServerCookieForContext: false
-  }
-}
- */
-
-/*
-ALMOST TIMEOUT NOTIFICATION
-
-type: "notification"
-values: {
-  code: "QWxtb3N0VGltZWRPdXQ=" ===> "AlmostTimedOut"
-  contextId: "MTBkMjczYTYtYzQwMi00OThlLWI4OTItZjkwOTI4YjA5MmNm"
-  serverTime: 1649837945392
-  text: null
-}
-*/

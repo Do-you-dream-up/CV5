@@ -179,7 +179,8 @@ export default function Interaction({
 
       const createBubbleListFn = templateNameToBubbleCreateAction[templatename] || createBubbleListNoTemplate;
 
-      addBubbles(createBubbleListFn(children));
+      const bubbles = createBubbleListFn(children);
+      addBubbles(bubbles);
     }
   }, [
     addBubbles,

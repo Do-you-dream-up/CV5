@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { isDefined, asset } from '../helpers';
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
@@ -12,8 +12,9 @@ const isEndLivechat = (notification) =>
 const isStartLivechat = (notification) =>
   LivechatPayload.is.startLivechat(notification) ? INTERACTION_NOTIFICATION_TYPE.success : null;
 
-const isOperatorWriting = (notification) =>
-  LivechatPayload.is.statusMessage(notification) ? INTERACTION_NOTIFICATION_TYPE.writing : null;
+const isOperatorWriting = (notification) => {
+  return LivechatPayload.is.operatorWriting(notification) ? INTERACTION_NOTIFICATION_TYPE.writing : null;
+};
 
 const isOperatorDisconnected = (notification) =>
   LivechatPayload.is.operatorDisconnected(notification) ? INTERACTION_NOTIFICATION_TYPE.operatorDisconnected : null;
@@ -71,6 +72,7 @@ const notificationTypeToIconUrl = {
 export default function useNotificationHelper(notification) {
   const text = useMemo(() => notification?.values?.text, [notification]) || notification?.text;
   const type = useMemo(() => getNotificationType(notification), [notification]);
+
   const iconSrc = useMemo(() => (!isDefined(type) ? null : notificationTypeToIconUrl[type]), [type]);
   const isWriting = useMemo(() => {
     if (!isDefined(type)) return null;
