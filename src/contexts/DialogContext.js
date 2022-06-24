@@ -164,7 +164,7 @@ export function DialogProvider({ children }) {
         toggleSecondary(false)();
       }
       if (urlRedirect) {
-        window.open(urlRedirect, '_blank');
+        window.open(urlRedirect, '_self');
       }
 
       if (guiAction) {
