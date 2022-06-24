@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { isDefined, asset } from '../helpers';
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
