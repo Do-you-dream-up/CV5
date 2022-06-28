@@ -7,7 +7,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
-import { toFormUrlEncoded, qualification } from './helpers';
+import { toFormUrlEncoded, qualification, isEmptyString } from './helpers';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -25,17 +25,27 @@ const getUrl = window.location.href;
 let BOT, protocol, API;
 
 (async function getBotInfo() {
-  const response = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+
+  const botData = {
+    ...data,
+    backUpServer: getBackupServerForAppOne(data.server, data.backUpServer),
+  };
+
+  // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
+  // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
     {},
-    channelsBot ? channelsBot : response.data,
+    channelsBot ? channelsBot : botData,
     (({ backUpServer, bot: id, server }) => ({
       ...(id && { id }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
+
   protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
+
   API = axios.create({
     baseURL: `${protocol}://${BOT.server}/servlet/api/`,
     headers: {
@@ -44,6 +54,14 @@ let BOT, protocol, API;
     },
   });
 })();
+
+const getBackupServerForAppOne = (server, backupServer) => {
+  if (server && server.startsWith('app1') && isEmptyString(backupServer)) {
+    return server.replace('app1', 'app2');
+  } else {
+    return backupServer;
+  }
+};
 
 const variables = {};
 
