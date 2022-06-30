@@ -17,7 +17,9 @@ function Scroll({ component, delay, ...rest }) {
   const scroll = () => {
     setTimeout(() => {
       const scrollList = document.querySelector('.dydu-chatbox-body');
-      scrollList.scrollTop = scrollList?.scrollHeight;
+      if (scrollList) {
+        scrollList.scrollTop = scrollList?.scrollHeight;
+      }
     }, delay);
   };
 
