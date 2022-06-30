@@ -88,9 +88,6 @@ export default function PrettyHtml({
       {templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={html} />}
       {templatename === QUICK_REPLY && <QuickreplyTemplate html={html} />}
       {!knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{ __html: html }} />}
-      {hasExternalLink && (
-        <img className={classes.externalLinkIcon} src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`} />
-      )}
     </>,
   );
 }

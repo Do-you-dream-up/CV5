@@ -1,27 +1,169 @@
+/* eslint-disable */
 import { TUNNEL_MODE } from '../../contexts/LivechatContext';
-import StartPolling from '../special-actions/Polling/StartPolling';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
+import LivechatPayload from '../LivechatPayload';
+
+const isNotificationOperatorWriting = (response) => {
+  const res = response?.code?.fromBase64()?.equals('OperatorWritingStatus') || false;
+  return res;
+};
+const isNotificationStopLivechat = (response) => {
+  const res = response?.specialAction?.fromBase64()?.equals('EndPolling') || false;
+  return res;
+};
+
+let onOperatorWriting = null;
+let displayResponse = null;
+let displayNotification = null;
+let onEndLivechat = null;
+let api = null;
+
+const saveConfiguration = (configuration) => {
+  onOperatorWriting = configuration.showAnimationOperatorWriting;
+  displayResponse = configuration.displayResponseText;
+  displayNotification = configuration.displayNotification;
+  onEndLivechat = configuration.endLivechat;
+  api = configuration.api;
+};
+
+const RESPONSE_TYPE = {
+  notification: 'notification',
+  message: 'message',
+};
+
+const typeToChecker = {
+  [RESPONSE_TYPE.message]: (response) => {
+    return isDefined(response) && isDefined(response?.text) && isDefined(response?.fromDetail);
+  },
+  [RESPONSE_TYPE.notification]: (response) => {
+    return (
+      isDefined(response?.code) ||
+      (isDefined(response?.typeResponse) && response?.typeResponse?.fromBase64()?.equals('NAAutoCloseDialog'))
+    );
+  },
+};
+
+const TYPE_NAME_LIST = Object.keys(RESPONSE_TYPE);
+
+const INTERVAL_MS = 2500;
+
+let interval;
+const stopPolling = () => {
+  clearInterval(interval);
+  interval = null;
+  initialized = false;
+};
+
+const responseToLivechatPayload = (r) => ({
+  ...r,
+  values: { ...r },
+});
+
+const typeToHandler = {
+  [RESPONSE_TYPE.message]: (response) => {
+    const { text } = response;
+    displayResponse(text);
+  },
+  [RESPONSE_TYPE.notification]: (response) => {
+    const notification = responseToLivechatPayload(response);
+    notification.type = 'notification';
+
+    if (LivechatPayload.is.operatorWriting(notification)) {
+      return onOperatorWriting();
+    }
+
+    displayNotification(notification);
+
+    if (LivechatPayload.is.endPolling(notification)) {
+      stopPolling();
+      onEndLivechat();
+    }
+  },
+};
+
+const getType = (response) => {
+  let res = TYPE_NAME_LIST.reduce((typeNameResult, typeName) => {
+    if (!isEmptyString(typeNameResult)) return typeNameResult; // already found type
+    if (typeToChecker[typeName](response)) return typeName; // just found the type
+    return ''; // no type found yet
+  }, '');
+
+  if (isEmptyString(res)) res = null;
+  return res;
+};
+
+const getHandler = (response) => {
+  const type = getType(response);
+  if (!isDefined(type)) return null;
+  return typeToHandler[type];
+};
+
+let lastResponse = null;
+const saveLastResponse = (r) => {
+  if (!isDefined(r)) return;
+
+  lastResponse = {
+    ...lastResponse,
+    ...r,
+  };
+};
+
+const isAvailable = () => true;
+let initialized = false;
+const initializationDone = () => (initialized = true);
+const hasAlreadyBeenInitialized = () => initialized === true;
+
+const startPolling = () => {
+  clearInterval(interval);
+  interval = setInterval(() => {
+    if (!isDefined(lastResponse)) return;
+    api.poll(lastResponse).then((pollResponse) => {
+      saveLastResponse(pollResponse);
+      const handler = getHandler(pollResponse);
+      const dataMessage = recursiveBase64DecodeString(pollResponse);
+      if (isDefined(handler)) handler(dataMessage);
+      else console.warn('received response but no handler', dataMessage);
+    });
+  }, INTERVAL_MS);
+};
 
 export default function useDyduPolling() {
-  const setupOutputs = useCallback((configuration) => {
-    StartPolling.options.displayResponse = configuration.displayResponseText;
-    StartPolling.options.displayStatus = configuration.displayNotification;
+  const [intervalId, setIntervalId] = useState(null);
+
+  const isRunning = useMemo(() => isDefined(intervalId), [intervalId]);
+  const isConnected = useMemo(() => isRunning, [isRunning]);
+
+  useEffect(() => () => stopPolling(), []);
+
+  const promiseInit = useCallback((initialData) => {
+    return new Promise((resolve, reject) => {
+      saveConfiguration(initialData);
+      saveLastResponse(initialData);
+      initializationDone();
+      resolve(true);
+    });
   }, []);
 
-  const open = useCallback(
-    (configuration) => {
-      return new Promise((resolve) => {
-        setupOutputs(configuration);
-        StartPolling(configuration.api, configuration);
-        resolve(true);
-      });
-    },
-    [setupOutputs],
-  );
+  const open = useCallback((initialData) => {
+    return new Promise((resolve, reject) => {
+      if (hasAlreadyBeenInitialized()) resolve(true);
+      promiseInit(initialData).then(startPolling);
+      resolve(true);
+    });
+  }, []);
+
+  const send = useCallback((...props) => {
+    return api.talk(...props);
+  }, []);
 
   return {
-    isAvailable: () => true,
-    mode: TUNNEL_MODE.polling,
+    isConnected,
+    isRunning,
+    isAvailable,
+    mode: TUNNEL_MODE.websocket,
     open,
+    send,
+    close,
   };
 }

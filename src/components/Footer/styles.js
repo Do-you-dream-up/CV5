@@ -3,8 +3,21 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles((theme) => ({
   actions: () => ({
     alignItems: 'center',
-    paddingLeft: '.5em',
+    paddingLeft: 17,
     height: '100%',
+    '& button': {
+      width: 27,
+      height: 27,
+      '&:not(:disabled):hover:before': {
+        backgroundColor: 'inherit',
+      },
+      '&:not(:disabled)': {
+        '& > div:hover': {
+          borderRadius: '50%',
+          boxShadow: '0px 3px 6px #00000029',
+        },
+      },
+    },
   }),
   content: () => ({
     flexGrow: 1,

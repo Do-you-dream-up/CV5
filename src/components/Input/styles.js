@@ -49,7 +49,7 @@ export default createUseStyles((theme) => ({
     fontFamily: 'inherit',
     fontSize: '16px',
     lineHeight: '1.7em',
-    padding: [['.4em', '3em', '.4em', '.6em']], // DEBT
+    padding: [['.4em', '3em', '.4em', '13px']], // DEBT
     whiteSpace: 'pre-wrap',
     width: '105%',
     wordBreak: 'break-word',

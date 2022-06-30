@@ -1,17 +1,18 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import dydu from '../../tools/dydu';
-import fetchPushrules from '../../tools/pushrules';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
+import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
+import fetchPushrules from '../../tools/pushrules';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
@@ -62,8 +63,8 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
    * scroll to bottom of dialog on open chatbox
    */
   useEffect(() => {
-    if (open) {
-      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    if (open && chatboxDiv) {
       chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
     }
   }, [open]);
