@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
+
+import PropTypes from 'prop-types';
 import useDebounce from '../../tools/hooks/debounce';
 
 /**
@@ -15,7 +16,8 @@ function Scroll({ component, delay, ...rest }) {
 
   const scroll = () => {
     setTimeout(() => {
-      elementRef.current && elementRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const scrollList = document.querySelector('.dydu-chatbox-body');
+      scrollList.scrollTop = scrollList?.scrollHeight;
     }, delay);
   };
 

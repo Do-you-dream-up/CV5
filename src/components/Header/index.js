@@ -92,7 +92,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     }
   }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
 
-  const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto)$/g;
+  const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked|DMMetaUnderstoodQuestion)$/g;
   const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
   const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 

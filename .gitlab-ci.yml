@@ -129,8 +129,8 @@ push_base:preprod:
     - cp $ZIP_FILE $ZIP_FILE_LATEST
     - echo "$ZIP_FILE $STORE_PATH/$BUILD_TARGET/$ZIP_FILE"
     - echo "$ZIP_FILE_LATEST $STORE_PATH/$BUILD_TARGET/$ZIP_FILE_LATEST"
-    - git fetch --all --tags
-    - if [[ ! $(git tag -l "$VERSION") ]]; then git tag -f $VERSION ; git push --tags --force origin $VERSION ; fi
+    - git fetch --all --tags -f
+    - git tag -f $VERSION ; git push --tags --force origin $VERSION
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
     - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE_LATEST}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE_LATEST}'
   variables:

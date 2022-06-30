@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDialog } from './DialogContext';
@@ -97,11 +98,6 @@ export function LivechatProvider({ children }) {
     tunnelList,
   ]);
 
-  /*
-  useEffect(() => {
-    Local.livechat.save({ isLivechatOn });
-  }, [isLivechatOn]);
-*/
   useEffect(() => {
     const data = Local.livechat.load();
     setIsLivechatOn(data?.isLivechatOn || false);
