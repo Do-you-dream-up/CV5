@@ -70,6 +70,7 @@
             "placeholder": "Saisissez votre commentaire...",
             "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
         },
+        "question": "Je suis désolé de ne pas avoir su répondre à votre demande. Pouvez-vous nous dire pourquoi ?",
         "vote": {
             "negative": "Aide inutile",
             "positive": "Aide utile",
