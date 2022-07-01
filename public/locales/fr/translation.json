@@ -151,7 +151,7 @@
           "placeholder": "Tapez votre message ici"
     },
     "interaction": {
-        "languageChange": "A partir de maintenant, je vous répondrai en Français.",
+        "languageChange": "A partir de maintenant, je vous répondrai en",
         "spaceChange": "Vous êtes sur cet espace de consultation:"
     },
     "onboarding": {

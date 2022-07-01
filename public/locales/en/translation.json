@@ -154,7 +154,7 @@
           "placeholder": "Type your message here"
     },
     "interaction": {
-        "languageChange": "From now on, I will answer you in English.",
+        "languageChange": "From now on, I will answer you in",
         "spaceChange": "You are on this space:"
     },
     "onboarding": {
