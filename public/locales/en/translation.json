@@ -70,6 +70,7 @@
             "placeholder": "Comment here...",
             "thanks": "Thank you for your detailed feedback!"
         },
+        "question": "I'm sorry that I couldn't answer your request. Can you tell us why?",
         "vote": {
             "negative": "Useless help",
             "positive": "Useful help",
