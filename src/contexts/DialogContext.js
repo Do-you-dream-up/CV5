@@ -1,19 +1,20 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTheme } from 'react-jss';
-import Interaction from '../components/Interaction';
-import parseActions from '../tools/actions';
-import dotget from '../tools/dotget';
-import useViewport from '../tools/hooks/viewport';
-import parseSteps from '../tools/steps';
-import { Local } from '../tools/storage';
-import { knownTemplates } from '../tools/template';
-import { ConfigurationContext } from './ConfigurationContext';
 import { EventsContext, useEvent } from './EventsContext';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
+
+import { ConfigurationContext } from './ConfigurationContext';
+import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
+import { Local } from '../tools/storage';
+import PropTypes from 'prop-types';
+import dotget from '../tools/dotget';
 import dydu from '../tools/dydu';
+import { knownTemplates } from '../tools/template';
+import parseActions from '../tools/actions';
+import parseSteps from '../tools/steps';
 import { useLivechat } from './LivechatContext';
+import { useTheme } from 'react-jss';
+import useViewport from '../tools/hooks/viewport';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -117,12 +118,12 @@ export function DialogProvider({ children }) {
       const props = {
         type: 'response',
         ...interactionAttributeObject,
-        templatename: isOfTypeString(interactionAttributeObject.children)
+        templatename: isOfTypeString(interactionAttributeObject?.children)
           ? undefined
           : interactionAttributeObject.templateName,
-        askFeedback: isOfTypeString(interactionAttributeObject.children)
+        askFeedback: isOfTypeString(interactionAttributeObject?.children)
           ? false
-          : interactionAttributeObject.askFeedback,
+          : interactionAttributeObject?.askFeedback,
       };
       return <Interaction key={index} {...props} thinking />;
     });
@@ -131,7 +132,7 @@ export function DialogProvider({ children }) {
   const createResponseOrRequestWithInteractionFromHistory = useCallback((interactionFromHistory) => {
     return {
       ...interactionFromHistory,
-      typeResponse: interactionFromHistory.type,
+      typeResponse: interactionFromHistory?.type,
     };
   }, []);
 
@@ -153,7 +154,7 @@ export function DialogProvider({ children }) {
       const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
       const steps = parseSteps(response);
       if (configuration.Voice.enable) {
-        if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName.toLowerCase()) {
+        if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName?.toLowerCase()) {
           setVoiceContent({ templateData, text });
         } else {
           setVoiceContent({ templateData: null, text });
