@@ -70,6 +70,7 @@
             "placeholder": "Saisissez votre commentaire...",
             "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
         },
+        "question": "Je suis désolé de ne pas avoir su répondre à votre demande. Pouvez-vous nous dire pourquoi ?",
         "vote": {
             "negative": "Aide inutile",
             "positive": "Aide utile",
@@ -151,7 +152,7 @@
           "placeholder": "Tapez votre message ici"
     },
     "interaction": {
-        "languageChange": "A partir de maintenant, je vous répondrai en Français.",
+        "languageChange": "A partir de maintenant, je vous répondrai en",
         "spaceChange": "Vous êtes sur cet espace de consultation:"
     },
     "onboarding": {

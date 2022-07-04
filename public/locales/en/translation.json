@@ -70,6 +70,7 @@
             "placeholder": "Comment here...",
             "thanks": "Thank you for your detailed feedback!"
         },
+        "question": "I'm sorry that I couldn't answer your request. Can you tell us why?",
         "vote": {
             "negative": "Useless help",
             "positive": "Useful help",
@@ -154,7 +155,7 @@
           "placeholder": "Type your message here"
     },
     "interaction": {
-        "languageChange": "From now on, I will answer you in English.",
+        "languageChange": "From now on, I will answer you in",
         "spaceChange": "You are on this space:"
     },
     "onboarding": {
