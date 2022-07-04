@@ -53,11 +53,11 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   }, [spacesActive, setPrompt, spacesDetection]);
 
   useEffect(() => {
-    if (active && open)
+    if (active)
       setTimeout(() => {
         fetchPushrules();
       }, 300);
-  }, [active, open]);
+  }, [active]);
 
   /**
    * scroll to bottom of dialog on open chatbox
