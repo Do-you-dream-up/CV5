@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import Avatar from '../Avatar';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
 import Scroll from '../Scroll';
 import useStyles from './styles';
+import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
 import { asset, isDefined, isEmptyString, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
@@ -118,7 +118,7 @@ export default function Interaction({
     NameBot,
   } = configuration.interaction;
 
-  const defaultAvatar = configuration.avatar.response;
+  const defaultAvatar = configuration.avatar?.response?.image;
 
   const delay = useMemo(() => {
     const { loader } = configuration.interaction;

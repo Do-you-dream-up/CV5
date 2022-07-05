@@ -116,7 +116,7 @@ export default function Teaser({ open, toggle }) {
                 <img
                   onKeyDown={onKeyDown}
                   alt=""
-                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}
+                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`}
                 />
               </div>
             )}
