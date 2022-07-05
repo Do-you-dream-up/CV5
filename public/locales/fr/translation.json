@@ -1,6 +1,6 @@
 {
     "general": {
-        "label_chatbot": "Fenêtre du chatbot"
+        "labelChatbot": "Fenêtre du chatbot"
     },
     "banner": {
         "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",

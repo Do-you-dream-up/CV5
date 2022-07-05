@@ -58,7 +58,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const labelChatbot = t('general.label_chatbot');
+  const labelChatbot = t('general.labelChatbot');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
