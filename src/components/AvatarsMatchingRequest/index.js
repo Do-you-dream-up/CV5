@@ -47,10 +47,7 @@ const AvatarsMatchingRequest = ({
   }, [customAvatar, defaultAvatar, typeMapImage, typeResponse]);
 
   const linkAvatarDependOnType = useMemo(() => {
-    console.log('🚀 ~ file: index.js ~ line 51 ~ linkAvatarDependOnType ~ link', link);
-    console.log('🚀 ~ file: index.js ~ line 52 ~ linkAvatarDependOnType ~ imageType', imageType);
     const link = imageType?.includes('base64') ? imageType : `${process.env.PUBLIC_URL}assets/${imageType}`;
-    console.log('🚀 ~ file: index.js ~ line 53 ~ linkAvatarDependOnType ~ link', link);
     return link;
   }, [imageType]);
 

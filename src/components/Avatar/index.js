@@ -22,15 +22,12 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
 
   const _path = useMemo(() => {
     if (!linkAvatarDependOnType.includes('/null') && type !== 'request') {
-      console.log(linkAvatarDependOnType);
       return linkAvatarDependOnType;
     } else if (path !== undefined) {
       return path;
     } else {
       const requestImage = configuration.avatar?.request?.image;
-      console.log('🚀 ~ file: index.js ~ line 30 ~ const_path=useMemo ~ requestImage', requestImage);
       const responseImage = configuration.avatar?.response?.image;
-      console.log('🚀 ~ file: index.js ~ line 32 ~ const_path=useMemo ~ responseImage', responseImage);
       return {
         request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,
         response: responseImage?.includes('base64')
