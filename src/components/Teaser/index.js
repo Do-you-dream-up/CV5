@@ -1,20 +1,21 @@
-//import-voice
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import Draggable from 'react-draggable';
-import { useTranslation } from 'react-i18next';
+
+// eslint-disable-next-line no-unused-vars
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 // eslint-disable-next-line no-unused-vars
 import { DialogContext } from '../../contexts/DialogContext';
+import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
-import { UserActionContext } from '../../contexts/UserActionContext';
 // eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
-// eslint-disable-next-line no-unused-vars
-import Actions from '../Actions';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
+import { UserActionContext } from '../../contexts/UserActionContext';
+//import-voice
+import c from 'classnames';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 const images = localStorage.getItem('dydu.images');
 
 const TEASER_TYPES = {
@@ -116,7 +117,7 @@ export default function Teaser({ open, toggle }) {
                 <img
                   onKeyDown={onKeyDown}
                   alt=""
-                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}
+                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`}
                 />
               </div>
             )}

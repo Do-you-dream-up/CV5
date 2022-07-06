@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 
@@ -22,7 +23,7 @@ const AvatarsMatchingRequest = ({
   const { customAvatar, image: hasImage, imageLink } = configuration.header.logo;
 
   const hasAvatar = useMemo(() => {
-    return !!configuration?.interaction?.avatar?.[type];
+    return !!configuration?.avatar[type]?.enable;
   }, [configuration, type]);
 
   const typeMapImage = useMemo(() => {
@@ -46,7 +47,8 @@ const AvatarsMatchingRequest = ({
   }, [customAvatar, defaultAvatar, typeMapImage, typeResponse]);
 
   const linkAvatarDependOnType = useMemo(() => {
-    return `${process.env.PUBLIC_URL}assets/${imageType}`;
+    const link = imageType?.includes('base64') ? imageType : `${process.env.PUBLIC_URL}assets/${imageType}`;
+    return link;
   }, [imageType]);
 
   const showHeaderAvatar = useMemo(() => {

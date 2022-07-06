@@ -8,12 +8,14 @@ import { useTranslation } from 'react-i18next';
 export default function FeedbackChoices({ onSelect }) {
   const { t } = useTranslation('translation');
   const choices = t('feedback.choices', { defaultValue: [] });
+  const askChoices = t('feedback.question');
 
   const onClick = (index) => () => onSelect(index);
 
   return (
     !!choices.length && (
       <div className="dydu-feedback-choices">
+        <p>{askChoices}</p>
         <ul>
           {choices.map((choice, index) => (
             <li key={index}>

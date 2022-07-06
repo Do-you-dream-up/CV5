@@ -8,9 +8,16 @@
     "directory":""
   },
   "avatar": {
-    "background": false,
-    "request": "",
-    "response": "dydu-logo.svg"
+    "request": {
+      "enable": false,
+      "background": false,
+      "image": "dydu-logo.svg"
+    },
+    "response": {
+      "enable": true,
+      "background": false,
+      "image": "dydu-logo.svg"
+    }
   },
   "banner": {
     "active": false,
@@ -139,10 +146,6 @@
     "displayNameUser": false,
     "NameUser": "",
     "NameBot": "",
-    "avatar": {
-      "request": false,
-      "response": true
-    },
     "loader": [400, 600]
   },
   "keycloak": {

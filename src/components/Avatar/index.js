@@ -1,8 +1,10 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import useStyles from './styles';
+
 const images = localStorage.getItem('dydu.images');
 
 /**
@@ -12,31 +14,43 @@ const images = localStorage.getItem('dydu.images');
  * A request avatar should be next to the user's input while a response avatar
  * should be next to its response.
  */
-export default function Avatar({ background, path, type }) {
+const Avatar = ({ path, type, linkAvatarDependOnType }) => {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration, type });
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
-  background = background !== undefined ? background : configuration.avatar.background;
+  const background = configuration?.avatar[type]?.background;
 
-  path =
-    path !== undefined
-      ? path
-      : {
-          request: `${process.env.PUBLIC_URL}assets/${configuration.avatar.request}`,
-          response: `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`,
-        }[type];
-  return (
-    <div
-      children={!!path && <img src={logo || path} />}
-      className={c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
-        [classes.background]: background,
-      })}
-    />
-  );
-}
+  const _path = useMemo(() => {
+    if (!linkAvatarDependOnType.includes('/null') && type !== 'request') {
+      return linkAvatarDependOnType;
+    } else if (path !== undefined) {
+      return path;
+    } else {
+      const requestImage = configuration.avatar?.request?.image;
+      const responseImage = configuration.avatar?.response?.image;
+      return {
+        request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,
+        response: responseImage?.includes('base64')
+          ? responseImage
+          : `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`,
+      }[type];
+    }
+  }, [configuration.avatar.request.image, configuration.avatar.response.image, linkAvatarDependOnType, path, type]);
+
+  const _className = useMemo(() => {
+    return c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
+      [classes.background]: background,
+    });
+  }, [background, classes, type]);
+
+  return <div className={_className}>{!!_path && <img alt={`${type} avatar`} src={logo || _path} />}</div>;
+};
 
 Avatar.propTypes = {
   background: PropTypes.bool,
+  linkAvatarDependOnType: PropTypes.string,
   path: PropTypes.string,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
+
+export default Avatar;

@@ -1,22 +1,25 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
+
+import { ACTIONS } from '../../tools/talk';
+import Actions from '../Actions';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import Banner from '../Banner';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
-import { ModalContext } from '../../contexts/ModalContext';
-import { OnboardingContext } from '../../contexts/OnboardingContext';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import { ACTIONS } from '../../tools/talk';
-import Actions from '../Actions';
-import Banner from '../Banner';
+import { ModalContext } from '../../contexts/ModalContext';
 import ModalFooterMenu from '../ModalFooterMenu';
+import { OnboardingContext } from '../../contexts/OnboardingContext';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
+import c from 'classnames';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/viewport';
+
 const images = localStorage.getItem('dydu.images');
 
 /**
@@ -28,7 +31,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
-  const { typeResponse } = useContext(DialogContext);
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({ configuration });
@@ -36,8 +38,9 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
-  const { customAvatar, image: hasImage, imageLink, title: hasTitle } = configuration.header.logo;
-  const defaultAvatar = configuration.avatar.response;
+  const { image: hasImage, title: hasTitle } = configuration.header.logo;
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
+  const defaultAvatar = configuration.avatar?.response?.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
@@ -50,12 +53,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = Local.get(Local.names.gdpr);
   const singleTab = !configuration.tabs.hasContactTab;
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
-  const understood = images && JSON.parse(images) && JSON.parse(images).understood;
-  const misunderstood = images && JSON.parse(images) && JSON.parse(images).misunderstood;
-  const reword = images && JSON.parse(images) && JSON.parse(images).reword;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
-  const { interactions } = useContext(DialogContext);
+  const { interactions, typeResponse } = useContext(DialogContext);
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const onToggleMore = () => {
@@ -91,33 +90,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       Local.set(Local.names.fontSize, fontSize);
     }
   }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
-
-  const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked|DMMetaUnderstoodQuestion)$/g;
-  const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
-  const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
-
-  const imageType = !customAvatar
-    ? defaultAvatar
-    : typeResponse && typeResponse.match(RE_UNDERSTOOD)
-    ? imageLink.understood
-    : typeResponse && typeResponse.match(RE_MISUNDERSTOOD)
-    ? imageLink.misunderstood
-    : typeResponse && typeResponse.match(RE_REWORD)
-    ? imageLink.reword
-    : defaultAvatar;
-
-  // check for avatar from local storage first for dydubox, if none present get it from assets folder
-  const getAvatar = () => {
-    if (imageType === defaultAvatar) {
-      return logo || `${process.env.PUBLIC_URL}assets/${imageType}`;
-    } else if (imageType === imageLink.understood) {
-      return understood || `${process.env.PUBLIC_URL}assets/${imageType}`;
-    } else if (imageType === imageLink.misunderstood) {
-      return misunderstood || `${process.env.PUBLIC_URL}assets/${imageType}`;
-    } else if (imageType === imageLink.reword) {
-      return reword || `${process.env.PUBLIC_URL}assets/${imageType}`;
-    }
-  };
 
   const checkDisplayParametersInMoreOptionsCog = useCallback(() => {
     if (disclaimerEnable === false || gdprPassed) {
@@ -233,7 +205,12 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)}>
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)}>
-              <img alt="avatar" src={getAvatar()} />
+              <AvatarsMatchingRequest
+                typeResponse={typeResponse}
+                headerAvatar={true}
+                defaultAvatar={logo || defaultAvatar}
+                type={''}
+              />
             </div>
           )}
           {!!hasTitle && (

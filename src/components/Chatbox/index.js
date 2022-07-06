@@ -58,7 +58,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const [ready, setReady] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const labelChatbot = t('general.label_chatbot');
+  const labelChatbot = t('general.labelChatbot');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
@@ -131,7 +131,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         get: () => dydu.getLocale(),
         set: (locale, languages) =>
           Promise.all([dydu.setLocale(locale, languages), i.changeLanguage(locale)]).then(
-            ([locale]) => window.dydu.chat.reply(`${t('interaction.languageChange')} '${locale}'.`),
+            ([locale]) =>
+              window.dydu.chat.reply(`${t('interaction.languageChange')} ${t(`footer.rosetta.${locale}`)}.`),
             (response) => window.dydu.chat.reply(response),
           ),
       };
