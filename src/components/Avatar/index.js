@@ -4,6 +4,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import useStyles from './styles';
+
 const images = localStorage.getItem('dydu.images');
 
 /**
@@ -27,7 +28,9 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
       return path;
     } else {
       const requestImage = configuration.avatar?.request?.image;
+      console.log('🚀 ~ file: index.js ~ line 30 ~ const_path=useMemo ~ requestImage', requestImage);
       const responseImage = configuration.avatar?.response?.image;
+      console.log('🚀 ~ file: index.js ~ line 32 ~ const_path=useMemo ~ responseImage', responseImage);
       return {
         request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,
         response: responseImage?.includes('base64')
