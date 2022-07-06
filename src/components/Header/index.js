@@ -1,23 +1,26 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
+
+import { ACTIONS } from '../../tools/talk';
+import Actions from '../Actions';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import Banner from '../Banner';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
-import { ModalContext } from '../../contexts/ModalContext';
-import { OnboardingContext } from '../../contexts/OnboardingContext';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import { ACTIONS } from '../../tools/talk';
-import Actions from '../Actions';
-import Banner from '../Banner';
+import { ModalContext } from '../../contexts/ModalContext';
 import ModalFooterMenu from '../ModalFooterMenu';
+import { OnboardingContext } from '../../contexts/OnboardingContext';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
+import c from 'classnames';
 import useStyles from './styles';
-import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/viewport';
+
+const images = localStorage.getItem('dydu.images');
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -36,6 +39,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;
+  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const defaultAvatar = configuration.avatar?.response?.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
@@ -204,7 +208,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
               <AvatarsMatchingRequest
                 typeResponse={typeResponse}
                 headerAvatar={true}
-                defaultAvatar={defaultAvatar}
+                defaultAvatar={logo || defaultAvatar}
                 type={''}
               />
             </div>
