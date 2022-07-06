@@ -16,6 +16,7 @@ import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+
 const images = localStorage.getItem('dydu.images');
 
 const TEASER_TYPES = {
@@ -38,6 +39,11 @@ export default function Teaser({ open, toggle }) {
   const mouseover = t('teaser.mouseover');
 
   const logo = images && JSON.parse(images) && JSON.parse(images).logo;
+  const responseImage = configuration.avatar?.response?.image;
+  const logoResponse = responseImage?.includes('base64')
+    ? responseImage
+    : `${process.env.PUBLIC_URL}assets/${responseImage}`;
+
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState(null);
   const [buttonPressTimer, setButtonPressTimer] = useState(null);
@@ -114,11 +120,7 @@ export default function Teaser({ open, toggle }) {
             )}
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
               <div className={c('dydu-teaser-brand', classes.brand)}>
-                <img
-                  onKeyDown={onKeyDown}
-                  alt=""
-                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`}
-                />
+                <img onKeyDown={onKeyDown} alt="" src={logo || logoResponse} />
               </div>
             )}
           </div>
