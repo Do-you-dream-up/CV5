@@ -1,7 +1,8 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useMemo } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import useStyles from './styles';
 const images = localStorage.getItem('dydu.images');
 
@@ -25,9 +26,13 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
     } else if (path !== undefined) {
       return path;
     } else {
+      const requestImage = configuration.avatar?.request?.image;
+      const responseImage = configuration.avatar?.response?.image;
       return {
-        request: `${process.env.PUBLIC_URL}assets/${configuration.avatar?.request?.image}`,
-        response: `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`,
+        request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,
+        response: responseImage?.includes('base64')
+          ? responseImage
+          : `${process.env.PUBLIC_URL}assets/${configuration.avatar?.response?.image}`,
       }[type];
     }
   }, [configuration.avatar.request.image, configuration.avatar.response.image, linkAvatarDependOnType, path, type]);
