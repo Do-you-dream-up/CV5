@@ -22,22 +22,10 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
 
   const _path = useMemo(() => {
     if (!linkAvatarDependOnType.includes('/null') && type !== 'request') {
-      console.log(
-        '🚀 ~ file: index.js ~ line 38 ~ const_path=useMemo ~ linkAvatarDependOnType',
-        linkAvatarDependOnType,
-      );
       return linkAvatarDependOnType;
     } else if (path !== undefined) {
       return path;
     } else {
-      console.log(
-        '🚀 ~ file: index.js ~ line 31 ~ const_path=useMemo ~ configuration.avatar?.request',
-        configuration.avatar?.request,
-      );
-      console.log(
-        '🚀 ~ file: index.js ~ line 33 ~ const_path=useMemo ~ configuration.avatar?.response',
-        configuration.avatar?.response,
-      );
       const requestImage = configuration.avatar?.request?.image;
       const responseImage = configuration.avatar?.response?.image;
       return {
