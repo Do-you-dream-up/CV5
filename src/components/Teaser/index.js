@@ -43,6 +43,9 @@ export default function Teaser({ open, toggle }) {
   const logoResponse = responseImage?.includes('base64')
     ? responseImage
     : `${process.env.PUBLIC_URL}assets/${responseImage}`;
+  console.log('🚀 ~ file: index.js ~ line 43 ~ Teaser ~ responseImage', responseImage);
+  console.log('🚀 ~ file: index.js ~ line 42 ~ Teaser ~ logo', logo);
+  console.log('🚀 ~ file: index.js ~ line 44 ~ Teaser ~ logoResponse', logoResponse);
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState(null);
   const [buttonPressTimer, setButtonPressTimer] = useState(null);
