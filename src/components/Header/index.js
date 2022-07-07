@@ -20,8 +20,6 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/viewport';
 
-const images = localStorage.getItem('dydu.images');
-
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
@@ -39,7 +37,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const defaultAvatar = configuration.avatar?.response?.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
@@ -208,7 +205,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
               <AvatarsMatchingRequest
                 typeResponse={typeResponse}
                 headerAvatar={true}
-                defaultAvatar={logo || defaultAvatar}
+                defaultAvatar={defaultAvatar}
                 type={''}
               />
             </div>

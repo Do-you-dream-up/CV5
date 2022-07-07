@@ -17,8 +17,6 @@ import c from 'classnames';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
-const images = localStorage.getItem('dydu.images');
-
 const TEASER_TYPES = {
   AVATAR_AND_TEXT: 0,
   AVATAR_ONLY: 1,
@@ -38,7 +36,6 @@ export default function Teaser({ open, toggle }) {
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
 
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const responseImage = configuration.avatar?.response?.image;
   const logoResponse = responseImage?.includes('base64')
     ? responseImage
@@ -120,7 +117,7 @@ export default function Teaser({ open, toggle }) {
             )}
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
               <div className={c('dydu-teaser-brand', classes.brand)}>
-                <img onKeyDown={onKeyDown} alt="" src={logo || logoResponse} />
+                <img onKeyDown={onKeyDown} alt="" src={logoResponse} />
               </div>
             )}
           </div>

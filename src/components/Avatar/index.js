@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import c from 'classnames';
 import useStyles from './styles';
 
-const images = localStorage.getItem('dydu.images');
-
 /**
  * Avatar to display in the conversation. Usually next to the conversation
  * bubbles.
@@ -17,7 +15,6 @@ const images = localStorage.getItem('dydu.images');
 const Avatar = ({ path, type, linkAvatarDependOnType }) => {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration, type });
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
   const background = configuration?.avatar[type]?.background;
 
   const _path = useMemo(() => {
@@ -43,7 +40,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
     });
   }, [background, classes, type]);
 
-  return <div className={_className}>{!!_path && <img alt={`${type} avatar`} src={logo || _path} />}</div>;
+  return <div className={_className}>{!!_path && <img alt={`${type} avatar`} src={_path} />}</div>;
 };
 
 Avatar.propTypes = {
