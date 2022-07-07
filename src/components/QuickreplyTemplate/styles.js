@@ -32,7 +32,7 @@ export default createUseStyles((theme) => ({
     flexWrap: 'wrap',
     gap: '1em',
   }),
-  text: () => ({
-    margin: '0.8em 0',
+  separator: () => ({
+    width: '100%',
   }),
 }));
