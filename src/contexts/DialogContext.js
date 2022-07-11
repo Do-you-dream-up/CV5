@@ -1,5 +1,5 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
@@ -314,11 +314,6 @@ export function DialogProvider({ children }) {
     });
     // eslint-disable-next-line
   }, [knowledgeName, teaserMode, welcomeContent, isLivechatOn]);
-
-  useEffect(() => {
-    callWelcomeKnowledge();
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <DialogContext.Provider
