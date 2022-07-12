@@ -5,14 +5,15 @@ import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
-import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
+import useStyles from './styles';
+import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import fetchPushrules from '../../tools/pushrules';
-import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import PoweredBy from '../PoweredBy';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
@@ -27,6 +28,7 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   const { t } = useTranslation('translation');
   // eslint-disable-next-line
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
+  const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
 
   const fetch = useCallback(() => {
     return dydu.history().then(({ interactions }) => {
@@ -70,13 +72,16 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   }, [open]);
 
   return (
-    <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
-      {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
-      {interactions.map((it, index) => ({ ...it, key: index }))}
-      {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
-      {prompt === 'spaces' && <Spaces />}
-      {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
-    </div>
+    <>
+      <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
+        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
+        {interactions.map((it, index) => ({ ...it, key: index }))}
+        {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
+        {prompt === 'spaces' && <Spaces />}
+        {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
+      </div>
+      {poweredByActive && <PoweredBy />}
+    </>
   );
 }
 
