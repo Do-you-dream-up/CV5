@@ -4,8 +4,8 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn":"",
-    "directory":""
+    "cdn":"https://cdn.doyoudreamup.com/",
+    "directory":"development/"
   },
   "avatar": {
     "background": false,
