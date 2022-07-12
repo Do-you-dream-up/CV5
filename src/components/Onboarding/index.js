@@ -1,14 +1,14 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import sanitize from '../../tools/sanitize';
-import Button from '../Button';
 import useStyles from './styles';
-const images = JSON.parse(localStorage.getItem('dydu.images'));
+import { useTranslation } from 'react-i18next';
 
 /**
  * Protect the children of this component behind an *onboarding* wall.
@@ -32,14 +32,9 @@ export default function Onboarding({ children, render }) {
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
-  // onboarding Images from local storage of Dydubox
-  const onboarding1 = images && images.onboarding1;
-  const onboarding2 = images && images.onboarding2;
-  const onboarding3 = images && images.onboarding3;
 
-  const storageImage = index === 0 ? onboarding1 : index === 1 ? onboarding2 : onboarding3;
   const configImage = index === 0 ? image1 : index === 1 ? image2 : image3;
-  const path = `${process.env.PUBLIC_URL}assets/${configImage}`;
+  const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 
   useEffect(() => {
     if (active && enable) event('onboardingDisplay');
@@ -51,7 +46,7 @@ export default function Onboarding({ children, render }) {
     <div className={c('dydu-onboarding', classes.root)}>
       <div className={c('dydu-onboarding-carousel', classes.carousel)}>
         <div className={c('dydu-onboarding-image', classes.image)}>
-          <img src={storageImage || path} alt={storageImage || path} />
+          <img src={path} alt={path} />
         </div>
         <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
         <div

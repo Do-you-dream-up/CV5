@@ -13,6 +13,11 @@ export default createUseStyles((theme) => ({
     '&:focus': {
       outline: 'none',
     },
+    // add to position "powered by" line at the end of the chatbox
+    display: 'flex',
+    flex: 1,
+    flexFlow: 'column nowrap',
+    // -------------------------------------------------------- //
     flexGrow: 1,
     overflowY: 'auto',
     position: 'relative',

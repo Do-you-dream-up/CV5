@@ -8,15 +8,22 @@
     "directory": ""
   },
   "avatar": {
-    "background": false,
-    "request": "",
-    "response": "dydu-logo.svg"
+    "request": {
+      "enable": false,
+      "background": false,
+      "image": "dydu-logo.svg"
+    },
+    "response": {
+      "enable": true,
+      "background": false,
+      "image": "dydu-logo.svg"
+    }
   },
   "banner": {
     "active": false,
     "storage": true,
     "dismissable": true,
-    "more": true,
+    "more": false,
     "moreIcon": "dydu-open-in-new-white.svg",
     "moreLink": "https://goo.gle",
     "transient": false
@@ -102,7 +109,6 @@
       "expand": true,
       "fontChange": false,
       "minimize": true,
-      "more": false,
       "tests": false
     },
     "fontSizeChange": {
@@ -165,7 +171,7 @@
   "moreOptions": {
     "exportConversation": false,
     "printConversation": false,
-    "sendGdprData": true
+    "sendGdprData": false
   },
   "oidc": {
     "enable": false,
@@ -181,6 +187,9 @@
     "image2": "dydu-onboarding-2.svg",
     "image3": "dydu-onboarding-3.svg"
   },
+  "poweredBy": {
+    "active": false
+  },
   "pushrules": {
     "active": true
   },
@@ -188,7 +197,6 @@
   "secondary": {
     "automatic": {
       "desktop": true,
-      "mobile": false,
       "fullScreen": false
     },
     "fixedDimensions": false,
@@ -222,12 +230,16 @@
       {
         "active": false,
         "mode": "route",
-        "value": { "/": "dydu" }
+        "value": {
+          "/": "dydu"
+        }
       },
       {
         "active": false,
         "mode": "hostname",
-        "value": { "doyoudreamup.com": "dydu" }
+        "value": {
+          "doyoudreamup.com": "dydu"
+        }
       }
     ],
     "items": ["default"]
@@ -238,15 +250,22 @@
   "tabs": {
     "hasContactTab": false,
     "items": [
-      { "icon": "icons/dydu-message-text-white.svg", "key": "dialog" },
-      { "icon": "icons/dydu-account-box-white.svg", "key": "contacts" }
+      {
+        "icon": "icons/dydu-message-text-white.svg",
+        "key": "dialog"
+      },
+      {
+        "icon": "icons/dydu-account-box-white.svg",
+        "key": "contacts"
+      }
     ],
     "selected": "dialog",
     "title": false
   },
   "teaser": {
     "bottom": 16,
-    "right": 16
+    "right": 16,
+    "displayType": 0
   },
   "templateCarousel": {
     "bullets": true,
