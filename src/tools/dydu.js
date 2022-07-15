@@ -597,4 +597,20 @@ export default new (class Dydu {
       variables: JSON.stringify(variables),
     };
   };
+
+  getSurvey = async (surveyId = '') => {
+    console.log('getSurvey', surveyId);
+    if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
+
+    const path = `/chat/survey/configuration/${this.getBotId()}`;
+    const data = toFormUrlEncoded({
+      contextUuid: await this.getContextId(),
+      solutionUsed: SOLUTION_TYPE.assistant,
+      language: this.getLocale(),
+      surveyId,
+    });
+
+    // first get that survey configuration
+    return this.emit(API.post, path, data);
+  };
 })();

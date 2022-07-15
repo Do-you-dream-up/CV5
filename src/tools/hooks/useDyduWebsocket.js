@@ -27,6 +27,7 @@ countdownRetryHandshake.MAX_RETRY_HANDSHAKE_STEP = MAX_RETRY_HANDSHAKE_STEP;
 countdownRetryHandshake.maxRetry = MAX_RETRY_HANDSHAKE_STEP;
 
 const MESSAGE_TYPE = {
+  survey: 'survey',
   error: 'error',
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
@@ -35,6 +36,7 @@ const MESSAGE_TYPE = {
   endPolling: 'endPolling',
 };
 
+let handleSurvey = null;
 let onFail = null;
 let onEndCommunication = null;
 let displayResponseText = null;
@@ -72,9 +74,11 @@ export default function useDyduWebsocket() {
   }, []);
 
   const messageType = useMemo(() => {
+    console.log('determinating message type');
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
+    if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, messageData]);
@@ -145,6 +149,9 @@ export default function useDyduWebsocket() {
   useEffect(() => {
     if (!isDefined(messageType)) return;
     switch (messageType) {
+      case MESSAGE_TYPE.survey:
+        return handleSurvey();
+
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
 
@@ -203,6 +210,7 @@ export default function useDyduWebsocket() {
     displayNotificationMessage = configuration.displayNotification;
     onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
+    handleSurvey = configuration.handleSurvey;
   }, []);
 
   const open = useCallback(

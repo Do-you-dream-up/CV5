@@ -7,6 +7,8 @@ import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
+import Survey from '../tools/survey';
+import { useSurvey } from './SurveyContext';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -27,6 +29,7 @@ export function LivechatProvider({ children }) {
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
+  const { setSurveyConfiguration } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
@@ -71,6 +74,13 @@ export function LivechatProvider({ children }) {
     setTunnel(null);
   }, []);
 
+  const handleSurvey = useCallback(
+    (data) => {
+      Survey.handle(data).then(setSurveyConfiguration);
+    },
+    [setSurveyConfiguration],
+  );
+
   const startLivechat = useCallback(() => {
     const _tunnel = findFirstAvailableTunnelInList(tunnelList);
     const tunnelInitialConfig = {
@@ -81,20 +91,22 @@ export function LivechatProvider({ children }) {
       displayNotification,
       onFail: onFailOpenTunnel,
       showAnimationOperatorWriting,
+      handleSurvey,
     };
     _tunnel
       .open(tunnelInitialConfig)
       .then(() => onSuccessOpenTunnel(_tunnel))
       .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
   }, [
+    tunnelList,
+    lastResponse,
+    endLivechat,
     displayResponseText,
     displayNotification,
-    endLivechat,
-    lastResponse,
     onFailOpenTunnel,
-    onSuccessOpenTunnel,
     showAnimationOperatorWriting,
-    tunnelList,
+    handleSurvey,
+    onSuccessOpenTunnel,
   ]);
 
   useEffect(() => {

@@ -99,6 +99,16 @@ const LivechatPayloadCreator = {
 };
 
 const LivechatPayloadChecker = {
+  operatorSendSurvey: (payload) => {
+    const a =
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals('OperatorSendSurvey') &&
+      isDefined(payload?.values?.survey) &&
+      !isEmptyString(payload?.values?.survey);
+
+    console.log('is survey response ?', a, payload);
+    return a;
+  },
   operatorAutomaticallyTransferredDialog: (payload) => {
     return (
       payload?.type?.equals('notification') &&
