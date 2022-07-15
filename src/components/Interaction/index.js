@@ -36,7 +36,6 @@ const templateNameToBubbleCreateAction = {
     if (shouldSplit(text)) {
       return textArray.reduce((result, text, i) => {
         if (i === textArray.length - 1) {
-          console.log('i', i, 'text array', textArray);
           return result.concat([jsonStringify({ text, separator: true, quick })]);
         }
 

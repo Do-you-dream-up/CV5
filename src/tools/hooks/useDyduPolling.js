@@ -157,6 +157,11 @@ export default function useDyduPolling() {
     return api.talk(...props);
   }, []);
 
+  const onUserTyping = useCallback((userInput) => {
+    //const payload = LivechatPayload.create.userTypingMessage(userInput);
+    api.typing(userInput);
+  }, []);
+
   return {
     isConnected,
     isRunning,
@@ -165,5 +170,6 @@ export default function useDyduPolling() {
     open,
     send,
     close,
+    onUserTyping,
   };
 }
