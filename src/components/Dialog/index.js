@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -14,9 +14,6 @@ import dydu from '../../tools/dydu';
 import fetchPushrules from '../../tools/pushrules';
 import { useTranslation } from 'react-i18next';
 import PoweredBy from '../PoweredBy';
-import Form from '@rjsf/core';
-import { useSurvey } from '../../contexts/SurveyContext';
-import { isDefined } from '../../tools/helpers';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
@@ -100,15 +97,4 @@ Dialog.propTypes = {
   ).isRequired,
   onAdd: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-};
-
-const Survey = () => {
-  const { configuration } = useSurvey();
-
-  const schema = useMemo(() => {
-    const fields = configuration?.fields;
-    return !isDefined(fields) ? null : fields;
-  }, [configuration]);
-
-  return !isDefined(schema) ? null : <Form schema={schema} />;
 };

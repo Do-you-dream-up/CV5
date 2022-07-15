@@ -72,7 +72,7 @@ const typeToHandler = {
     notification.type = 'notification';
 
     if (LivechatPayload.is.operatorWriting(notification)) return onOperatorWriting();
-    if (LivechatPayload.is.operatorSendSurvey(notification)) return handleSurvey();
+    if (LivechatPayload.is.operatorSendSurvey(notification)) return handleSurvey(notification);
 
     displayNotification(notification);
 
