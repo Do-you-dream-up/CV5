@@ -14,6 +14,14 @@ export default class Survey {
 
   static handle(data) {
     console.log('handleing survey!');
-    return dydu.getSurvey(extractId(data)).then(console.log);
+    const surveyId = extractId(data);
+    console.log('surveyID ??', surveyId, data);
+    return dydu
+      .getSurvey(surveyId)
+      .then((r) => {
+        console.log('response schema ?', r);
+        return r;
+      })
+      .catch((e) => console.error('while getting survey configuration', e));
   }
 }

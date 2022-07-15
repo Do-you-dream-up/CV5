@@ -150,7 +150,7 @@ export default function useDyduWebsocket() {
     if (!isDefined(messageType)) return;
     switch (messageType) {
       case MESSAGE_TYPE.survey:
-        return handleSurvey();
+        return handleSurvey(messageData);
 
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
@@ -169,7 +169,7 @@ export default function useDyduWebsocket() {
         return close();
       }
     }
-  }, [close, displayMessage, displayNotification, handleError, messageType, processHandshakeNextStep]);
+  }, [close, displayMessage, displayNotification, handleError, messageData, messageType, processHandshakeNextStep]);
 
   useEffect(() => {
     if (handshakeStepCountdown === 1) return sendFirstHandshake();

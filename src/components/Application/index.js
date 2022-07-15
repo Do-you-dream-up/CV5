@@ -13,6 +13,7 @@ import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
 import { LivechatProvider } from '../../contexts/LivechatContext';
+import SurveyProvider from '../../contexts/SurveyContext';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -91,9 +92,11 @@ export default function Application() {
         <DialogProvider>
           <AuthContext>
             <Authenticated>
-              <LivechatProvider>
-                <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
-              </LivechatProvider>
+              <SurveyProvider>
+                <LivechatProvider>
+                  <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
+                </LivechatProvider>
+              </SurveyProvider>
               <Teaser open={mode === 1} toggle={toggle} />
             </Authenticated>
           </AuthContext>

@@ -6,18 +6,19 @@ const SurveyContext = React.createContext({});
 
 export const useSurvey = () => useContext(SurveyContext);
 
-export default function SurveyContextProvider({ children }) {
+export default function SurveyProvider({ children }) {
   const [configuration, setConfiguration] = useState(null);
 
   const dataContext = useMemo(() => {
     return {
       setSurveyConfiguration: setConfiguration,
+      configuration,
     };
   }, []);
 
   return <SurveyContext.Provider value={dataContext}>{children}</SurveyContext.Provider>;
 }
 
-SurveyContextProvider.propTypes = {
+SurveyProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
 };

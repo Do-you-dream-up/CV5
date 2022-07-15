@@ -76,6 +76,7 @@ export function LivechatProvider({ children }) {
 
   const handleSurvey = useCallback(
     (data) => {
+      console.log('handleing survey w/ data', data);
       Survey.handle(data).then(setSurveyConfiguration);
     },
     [setSurveyConfiguration],
