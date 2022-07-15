@@ -36,6 +36,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { ready, t } = useTranslation('translation');
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { actions: hasActions = {} } = configuration.header;
+  const { items: consultationSpaces = [] } = configuration.spaces;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;
   const defaultAvatar = configuration.avatar?.response?.image;
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
@@ -91,7 +92,10 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const checkDisplayParametersInMoreOptionsCog = useCallback(() => {
     if (disclaimerEnable === false || gdprPassed) {
       return (
-        (!!exportConversation || (interactions.length > 1 && !!_printConversation) || !!sendGdprData) &&
+        (!!exportConversation ||
+          consultationSpaces.length > 1 ||
+          (interactions.length > 1 && !!_printConversation) ||
+          !!sendGdprData) &&
         (!onboardingActive || !onboardingEnable)
       );
     } else {
@@ -102,6 +106,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     disclaimerEnable,
     exportConversation,
     gdprPassed,
+    consultationSpaces,
     interactions.length,
     onboardingActive,
     onboardingEnable,
