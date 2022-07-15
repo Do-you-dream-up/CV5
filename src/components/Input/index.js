@@ -20,7 +20,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
 export default function Input({ onRequest, onResponse }) {
-  const { isLivechatOn, send } = useLivechat();
+  const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder } = useContext(DialogContext);
@@ -68,6 +68,10 @@ export default function Input({ onRequest, onResponse }) {
     event.preventDefault();
     submit(input);
   };
+
+  useEffect(() => {
+    if (isLivechatOn && typing) livechatTyping(input);
+  }, [input, isLivechatOn, livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();

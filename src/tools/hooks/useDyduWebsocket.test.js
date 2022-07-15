@@ -32,6 +32,7 @@ const getTunnelInitialConfiguration = (overrider = {}) => ({
 const InterfaceTunnel = {
   isRunning: false,
   isAvailable: jest.fn(),
+  onUserTyping: jest.fn(),
   mode: TUNNEL_MODE.websocket,
   open: jest.fn(),
   send: jest.fn(),
