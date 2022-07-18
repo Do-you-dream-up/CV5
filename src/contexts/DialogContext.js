@@ -1,5 +1,5 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
@@ -9,6 +9,7 @@ import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
 import dydu from '../tools/dydu';
+import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
@@ -45,6 +46,7 @@ export const useDialog = () => useContext(DialogContext);
 
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
+  const { active } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage } = useEvent();
   const [disabled, setDisabled] = useState(false);
@@ -65,6 +67,18 @@ export function DialogProvider({ children }) {
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
+
+  const triggerPushRule = () => {
+    setTimeout(() => {
+      fetchPushrules();
+    }, 300);
+  };
+
+  useEffect(() => {
+    if ((active && !knowledgeName) || (active && welcomeContent)) {
+      triggerPushRule();
+    }
+  }, [active, knowledgeName, welcomeContent]);
 
   const add = useCallback(
     (interaction) => {
@@ -351,4 +365,5 @@ export function DialogProvider({ children }) {
 
 DialogProvider.propTypes = {
   children: PropTypes.object,
+  toggle: PropTypes.any,
 };

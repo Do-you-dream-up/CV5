@@ -11,7 +11,6 @@ import { LivechatProvider } from '../../contexts/LivechatContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import c from 'classnames';
-import fetchPushrules from '../../tools/pushrules';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
@@ -39,6 +38,8 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+  const { active } = configuration.pushrules;
+  const { knowledgeName } = configuration.welcome;
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
@@ -48,7 +49,6 @@ export default function Application() {
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(~~initialMode > 1);
 
-  const { active } = configuration.pushrules;
   let customFont = configuration.font.url;
 
   const hasAuthStorageCheck = configuration.checkAuthorization && configuration.checkAuthorization.active;
@@ -73,13 +73,6 @@ export default function Application() {
   const toggle = (value) => () => setMode(~~value);
 
   useEffect(() => {
-    if (active)
-      setTimeout(() => {
-        fetchPushrules();
-      }, 300);
-  }, [active]);
-
-  useEffect(() => {
     if (hasAuthStorageCheck && !isAuthorized) {
       setMode(0);
       Local.set(Local.names.open, 0);
@@ -90,6 +83,12 @@ export default function Application() {
     setOpen(mode > 1);
     Local.set(Local.names.open, Math.max(mode, 1));
   }, [mode]);
+
+  useEffect(() => {
+    if (active && knowledgeName) {
+      setMode(2);
+    }
+  }, [active, knowledgeName]);
 
   useEffect(() => {
     event('loadChatbox');
