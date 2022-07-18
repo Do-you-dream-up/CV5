@@ -1,20 +1,16 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
+import { Cookie, Local } from '../../tools/storage';
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
+import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
-import dydu from '../../tools/dydu';
-import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
-import { Cookie, Local } from '../../tools/storage';
-import talk from '../../tools/talk';
+
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
+import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer';
@@ -22,12 +18,17 @@ import Header from '../Header';
 import Modal from '../Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding';
+import PropTypes from 'prop-types';
+import { RE_REWORD } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
-import useStyles from './styles';
-import { isDefined } from '../../tools/helpers';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
 import { encode } from '../../tools/cipher';
-import { RE_REWORD } from '../../tools/constants';
+import { isDefined } from '../../tools/helpers';
+import talk from '../../tools/talk';
+import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -47,6 +48,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setPrompt,
     setSecondary,
     toggleSecondary,
+    callWelcomeKnowledge,
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -56,15 +58,23 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
+  const [afterLoadTriggered, setAfterLoadTriggered] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
-  const labelChatbot = t('general.label_chatbot');
+  const labelChatbot = t('general.labelChatbot');
   const qualification =
     window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
   const gdprRef = useRef();
+
+  useEffect(() => {
+    if (ready && afterLoadTriggered) {
+      callWelcomeKnowledge();
+    }
+    // eslint-disable-next-line
+  }, [ready, afterLoadTriggered]);
 
   const ask = useCallback(
     (text, options) => {
@@ -107,12 +117,19 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     }
 
     if (typeof window.dyduAfterLoad === 'function') {
-      window.dyduAfterLoad();
+      const dyduAfterLoad = async () => {
+        await window.dyduAfterLoad();
+      };
+      dyduAfterLoad().then(() => {
+        setAfterLoadTriggered(true);
+      });
+    } else {
+      setAfterLoadTriggered(true);
     }
   }, [ready]);
 
   useEffect(() => {
-    if (!ready) {
+    if (!ready && !afterLoadTriggered) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = {
@@ -186,6 +203,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     i,
     modal,
     ready,
+    afterLoadTriggered,
     setDisabled,
     setLocked,
     setPlaceholder,

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDialog } from './DialogContext';
@@ -123,13 +122,21 @@ export function LivechatProvider({ children }) {
     [put, tunnel],
   );
 
+  const typing = useCallback(
+    (input) => {
+      tunnel?.onUserTyping(input);
+    },
+    [tunnel],
+  );
+
   const dataContext = useMemo(
     () => ({
       isWebsocket,
       send,
       isLivechatOn,
+      typing,
     }),
-    [isLivechatOn, isWebsocket, send],
+    [isLivechatOn, isWebsocket, send, typing],
   );
   return <LivechatContext.Provider value={dataContext}>{children}</LivechatContext.Provider>;
 }

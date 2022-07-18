@@ -29,8 +29,12 @@ export default function QuickreplyTemplate({ html }) {
     return content.quick || {};
   }, [content]);
 
-  if (!isDefined(content)) return null;
+  const separator = useMemo(() => {
+    if (!isDefined(content)) return null;
+    return content.separator;
+  }, [content]);
 
+  if (!isDefined(content)) return null;
   return (
     <div className={c('dydu-quickreply-template', classes.quick)}>
       {!!text && (
@@ -39,6 +43,7 @@ export default function QuickreplyTemplate({ html }) {
           dangerouslySetInnerHTML={{ __html: text }}
         />
       )}
+      {separator && <div className={c('dydu-quickreply-template-separator', classes.separator)} />}
       {Object.keys(quick)
         .sort()
         .map((el, index) => {

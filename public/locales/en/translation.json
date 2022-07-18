@@ -1,6 +1,6 @@
 {
     "general": {
-        "label_chatbot": "Chatbot window"
+        "labelChatbot": "Chatbot window"
     },
     "banner": {
         "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",

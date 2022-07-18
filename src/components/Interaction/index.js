@@ -4,43 +4,47 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import sanitize from '../../tools/sanitize';
-import Avatar from '../Avatar';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
 import Scroll from '../Scroll';
 import useStyles from './styles';
+import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import { asset, isDefined, isEmptyString, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import { useLivechat } from '../../contexts/LivechatContext';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
-    const shouldSplit = (text) => text.indexOf('<hr class="split">') >= 0;
     const splitText = (text) => text.split(/<hr class="split">/);
+    const shouldSplit = (text) => text.indexOf('<hr class="split">') >= 0;
     const makeBubbleObjWithText = (text) => ({ text });
     const jsonStringify = (d) => JSON.stringify(d);
 
     const [text = '', quick] = list;
+    const textArray = splitText(text);
     const results = [];
 
-    if (!isEmptyString(text)) {
-      results.push(jsonStringify({ text }));
+    if (!shouldSplit(text)) {
+      return results.concat([jsonStringify({ text, separator: true, quick })]);
     }
 
-    if (!shouldSplit(text)) return results.concat([jsonStringify({ quick })]);
-    return splitText(text)
-      .reduce((result, text) => {
+    if (shouldSplit(text)) {
+      return textArray.reduce((result, text, i) => {
+        if (i === textArray.length - 1) {
+          return result.concat([jsonStringify({ text, separator: true, quick })]);
+        }
+
         if (text.indexOf('><') < 0) {
           result.push(jsonStringify(makeBubbleObjWithText(text)));
         }
         return result;
-      }, [])
-      .concat([jsonStringify({ quick })]);
+      }, []);
+    }
   },
   [INTERACTION_TEMPLATE.product]: (list) => {
     const bubble = {};
@@ -51,7 +55,8 @@ const templateNameToBubbleCreateAction = {
   },
   [INTERACTION_TEMPLATE.carousel]: (list) => {
     const bubbles = [];
-    /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the product number (last character of property name), then creates a sortedArray with each product as a string*/
+    /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the
+    product number (last character of property name), then creates a sortedArray with each product as a string */
     list.forEach((el) => {
       const bubble = {};
       if (typeof el === 'string') {
@@ -118,7 +123,7 @@ export default function Interaction({
     NameBot,
   } = configuration.interaction;
 
-  const defaultAvatar = configuration.avatar.response;
+  const defaultAvatar = configuration.avatar?.response?.image;
 
   const delay = useMemo(() => {
     const { loader } = configuration.interaction;

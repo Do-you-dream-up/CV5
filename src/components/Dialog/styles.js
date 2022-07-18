@@ -2,7 +2,12 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles({
   root: {
-    flex: '1 1 auto',
+    // add to position "powered by" line at the end of the chatbox
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 'none',
+    // -------------------------------------------------------- //
     overflow: 'hidden',
+    marginBottom: 'auto',
   },
 });

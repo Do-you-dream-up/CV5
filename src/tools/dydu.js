@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from 'axios';
 import Bowser from 'bowser';
 import debounce from 'debounce-promise';
@@ -7,7 +8,7 @@ import uuid4 from 'uuid4';
 import configuration from '../../public/override/configuration.json';
 import { decode } from './cipher';
 import { Cookie, Local } from './storage';
-import { toFormUrlEncoded, qualification, isEmptyString } from './helpers';
+import { toFormUrlEncoded, qualification, isEmptyString, isDefined } from './helpers';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -103,7 +104,8 @@ export default new (class Dydu {
           tries++;
           if (tries < 3) this.emit(verb, path, data, tries);
           else if (tries < 6) {
-            API.defaults.baseURL = `https://${BOT.backUpServer}/servlet/api/`;
+            const pathApi = path.startsWith('/servlet') ? path : '/servlet/api/';
+            API.defaults.baseURL = `https://${BOT.backUpServer}${pathApi}`;
             this.emit(verb, path, data, tries);
           }
         }
@@ -457,6 +459,39 @@ export default new (class Dydu {
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
+  };
+
+  #makeTLivechatTypingPayloadWithInput = async (input = '') => {
+    if (!isDefined(input)) return;
+    return {
+      type: 'typing',
+      parameters: {
+        typing: isDefined(input) && !isEmptyString(input),
+        content: input?.toBase64(),
+        contextId: await this.getContextId(),
+        botId: this.getBot()?.id?.toBase64(),
+        qualificationMode: true,
+        language: this.getLocale().toBase64(),
+        space: this.getSpace().toBase64(),
+        solutionUsed: SOLUTION_TYPE.assistant,
+        clientId: 'TTFkVTNWZUdvSFBxaUJn',
+        useServerCookieForContext: false,
+        saml2_info: '',
+        timestamp: new Date().getMilliseconds(),
+      },
+    };
+  };
+
+  #toQueryString = (obj) => {
+    return encodeURIComponent(JSON.stringify(obj));
+  };
+
+  typing = async (text) => {
+    const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
+    const qs = this.#toQueryString(typingPayload);
+    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${qs}`;
+    return fetch(path).then((r) => r.json());
+    //return this.emit(API.get, path);
   };
 
   poll = async ({ serverTime, pollTime, contextId, context }) => {

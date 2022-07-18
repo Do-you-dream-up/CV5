@@ -1,21 +1,21 @@
-//import-voice
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import Draggable from 'react-draggable';
-import { useTranslation } from 'react-i18next';
+
+// eslint-disable-next-line no-unused-vars
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 // eslint-disable-next-line no-unused-vars
 import { DialogContext } from '../../contexts/DialogContext';
+import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
-import { UserActionContext } from '../../contexts/UserActionContext';
 // eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
-// eslint-disable-next-line no-unused-vars
-import Actions from '../Actions';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
+import { UserActionContext } from '../../contexts/UserActionContext';
+//import-voice
+import c from 'classnames';
 import useStyles from './styles';
-const images = localStorage.getItem('dydu.images');
+import { useTranslation } from 'react-i18next';
 
 const TEASER_TYPES = {
   AVATAR_AND_TEXT: 0,
@@ -36,7 +36,11 @@ export default function Teaser({ open, toggle }) {
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
 
-  const logo = images && JSON.parse(images) && JSON.parse(images).logo;
+  const responseImage = configuration.avatar?.response?.image;
+  const logoResponse = responseImage?.includes('base64')
+    ? responseImage
+    : `${process.env.PUBLIC_URL}assets/${responseImage}`;
+
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState(null);
   const [buttonPressTimer, setButtonPressTimer] = useState(null);
@@ -113,11 +117,7 @@ export default function Teaser({ open, toggle }) {
             )}
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
               <div className={c('dydu-teaser-brand', classes.brand)}>
-                <img
-                  onKeyDown={onKeyDown}
-                  alt=""
-                  src={logo || `${process.env.PUBLIC_URL}assets/${configuration.avatar.response}`}
-                />
+                <img onKeyDown={onKeyDown} alt="" src={logoResponse} />
               </div>
             )}
           </div>
