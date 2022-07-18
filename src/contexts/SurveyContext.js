@@ -1,10 +1,8 @@
-/* eslint-disable */
 import React, { useMemo, useContext, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDialog } from './DialogContext';
-import { isDefined, isEmptyString } from '../tools/helpers';
-import Form from '@rjsf/core';
-import { LOREM_HTML } from '../tools/lorem';
+import { isDefined } from '../tools/helpers';
+import dydu from '../tools/dydu';
 
 const SurveyContext = React.createContext({});
 
@@ -12,34 +10,35 @@ export const useSurvey = () => useContext(SurveyContext);
 
 const extractId = (data) => data?.values?.survey?.fromBase64();
 
+const getSurveyConfigurationById = (id) => dydu.getSurvey(id);
+
 export default function SurveyProvider({ children }) {
-  const { toggleSecondary } = useDialog();
+  const { open: openSecondary } = useDialog();
   const [id, setId] = useState(null);
-
-  const getSurveyConfigurationById = useCallback((id) => dydu.getSurvey(id), []);
-
-  const configuration = useMemo(() => {
-    if (isDefined(id) && !isEmptyString(id)) return getSurveyConfigurationById(id);
-    return null;
-  }, [id]);
+  const [configuration, setConfiguration] = useState(null);
 
   const showSurvey = useCallback((data) => setId(extractId(data)), []);
 
   useEffect(() => {
-    if (!isDefined(configuration)) return;
+    if (isDefined(id)) getSurveyConfigurationById(id).then(setConfiguration);
+  }, [id]);
 
-    const { title, fields } = configuration;
-    const secondaryProps = { title: configuration?.title, body: <Form schema={fields[0]} /> };
+  useEffect(() => {
+    if (!isDefined(configuration)) return;
+    console.log('survey config', configuration);
+    const { fields } = configuration;
+    const secondaryProps = { title: configuration?.title, body: fields[0] };
     console.log('survey config', configuration);
     window.dydu.ui.secondary(true, secondaryProps);
-    toggleSecondary(true, secondaryProps)();
-  }, [configuration?.title]);
+    openSecondary(secondaryProps);
+    //toggleSecondary(true, secondaryProps)();
+  }, [configuration, configuration?.title, openSecondary]);
 
   const dataContext = useMemo(() => {
     return {
       showSurvey,
     };
-  }, []);
+  }, [showSurvey]);
 
   return <SurveyContext.Provider value={dataContext}>{children}</SurveyContext.Provider>;
 }

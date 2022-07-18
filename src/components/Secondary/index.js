@@ -1,11 +1,13 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
+import Form from '@rjsf/core';
+import { isDefined, isOfTypeString } from '../../tools/helpers';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -34,6 +36,13 @@ export default function Secondary({ anchor, mode }) {
     }
   }
 
+  const BodyComponent = useMemo(() => {
+    if (!isDefined(body)) return null;
+    if (isOfTypeString(body)) return <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />;
+    console.log('body for Form', body);
+    return <Form schema={body} />;
+  }, [body, classes.body]);
+
   return secondaryActive ? (
     <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
       <div className={c('dydu-secondary-header', classes.header)}>
@@ -44,7 +53,8 @@ export default function Secondary({ anchor, mode }) {
           </Button>
         </div>
       </div>
-      {body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />}
+      {BodyComponent}
+      {/*body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />*/}
       {url && (
         <iframe
           allow="fullscreen"
