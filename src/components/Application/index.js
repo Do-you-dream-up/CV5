@@ -1,18 +1,21 @@
-import c from 'classnames';
-import qs from 'qs';
+// eslint-disable-next-line import/no-unresolved
+import '../../../public/override/style.css';
+
 import React, { Suspense, useContext, useEffect, useState } from 'react';
+
 import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
-import { findValueByKey } from '../../tools/findValueByKey';
-import { parseString } from '../../tools/parseString';
+import { LivechatProvider } from '../../contexts/LivechatContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
+import c from 'classnames';
+import fetchPushrules from '../../tools/pushrules';
+import { findValueByKey } from '../../tools/findValueByKey';
+import { parseString } from '../../tools/parseString';
+import qs from 'qs';
 import useStyles from './styles';
-// eslint-disable-next-line import/no-unresolved
-import '../../../public/override/style.css';
-import { LivechatProvider } from '../../contexts/LivechatContext';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -36,6 +39,7 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
   const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
@@ -44,6 +48,7 @@ export default function Application() {
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(~~initialMode > 1);
 
+  const { active } = configuration.pushrules;
   let customFont = configuration.font.url;
 
   const hasAuthStorageCheck = configuration.checkAuthorization && configuration.checkAuthorization.active;
@@ -66,6 +71,13 @@ export default function Application() {
   }
 
   const toggle = (value) => () => setMode(~~value);
+
+  useEffect(() => {
+    if (active)
+      setTimeout(() => {
+        fetchPushrules();
+      }, 300);
+  }, [active]);
 
   useEffect(() => {
     if (hasAuthStorageCheck && !isAuthorized) {

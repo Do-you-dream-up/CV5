@@ -10,7 +10,6 @@ import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import fetchPushrules from '../../tools/pushrules';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +22,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
   const { rebuildInteractionsListFromHistory, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
-  const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
   // eslint-disable-next-line
   const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
@@ -51,13 +49,6 @@ export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }
     });
     // eslint-disable-next-line
   }, [spacesActive, setPrompt, spacesDetection]);
-
-  useEffect(() => {
-    if (active)
-      setTimeout(() => {
-        fetchPushrules();
-      }, 300);
-  }, [active]);
 
   /**
    * scroll to bottom of dialog on open chatbox
