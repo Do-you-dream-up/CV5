@@ -1,7 +1,8 @@
-import dydu from '../dydu';
+import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
+
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
+import dydu from '../dydu';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
