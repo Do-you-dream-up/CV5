@@ -1,14 +1,19 @@
-import c from 'classnames';
-import qs from 'qs';
+// eslint-disable-next-line import/no-unresolved
+import '../../../public/override/style.css';
+
 import React, { Suspense, useContext, useEffect, useState } from 'react';
+
 import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
-import { findValueByKey } from '../../tools/findValueByKey';
-import { parseString } from '../../tools/parseString';
+import { LivechatProvider } from '../../contexts/LivechatContext';
 import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
+import c from 'classnames';
+import { findValueByKey } from '../../tools/findValueByKey';
+import { parseString } from '../../tools/parseString';
+import qs from 'qs';
 import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
@@ -37,6 +42,9 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+  const { active } = configuration.pushrules;
+  const { knowledgeName } = configuration.welcome;
+
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
   const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
@@ -79,6 +87,12 @@ export default function Application() {
     setOpen(mode > 1);
     Local.set(Local.names.open, Math.max(mode, 1));
   }, [mode]);
+
+  useEffect(() => {
+    if (active && knowledgeName) {
+      setMode(2);
+    }
+  }, [active, knowledgeName]);
 
   useEffect(() => {
     event('loadChatbox');
