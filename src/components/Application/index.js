@@ -16,8 +16,6 @@ import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 // eslint-disable-next-line import/no-unresolved
-import '../../../public/override/style.css';
-import { LivechatProvider } from '../../contexts/LivechatContext';
 import SurveyProvider from '../../contexts/SurveyContext';
 
 const { AuthContext, Authenticated } = AuthPayload;

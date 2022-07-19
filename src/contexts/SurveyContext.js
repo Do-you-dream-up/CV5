@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDialog } from './DialogContext';
 import { isDefined } from '../tools/helpers';
 import dydu from '../tools/dydu';
+import Survey from '../Survey/Survey';
 
 const SurveyContext = React.createContext({});
 
@@ -26,13 +27,11 @@ export default function SurveyProvider({ children }) {
   useEffect(() => {
     if (!isDefined(configuration)) return;
     console.log('survey config', configuration);
-    const { fields } = configuration;
-    const secondaryProps = { title: configuration?.title, body: fields[0] };
-    console.log('survey config', configuration);
-    window.dydu.ui.secondary(true, secondaryProps);
-    openSecondary(secondaryProps);
-    //toggleSecondary(true, secondaryProps)();
-  }, [configuration, configuration?.title, openSecondary]);
+    openSecondary({
+      title: configuration?.title,
+      bodyRenderer: () => <Survey configuration={configuration} />,
+    });
+  }, [configuration, openSecondary]);
 
   const dataContext = useMemo(() => {
     return {
