@@ -277,8 +277,8 @@
   "Voice": {
     "enable": true,
     "ssml": "true",
-    "sttServerUrl": "",
-    "ttsServerUrl": "",
+    "sttServerUrl": "https://voicebot.doyoudreamup.com/socket.io",
+    "ttsServerUrl": "https://voicebot.doyoudreamup.com/tts",
     "voice": "Damien",
     "voiceSpace": "default",
     "color": "black"

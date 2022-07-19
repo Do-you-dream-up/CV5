@@ -32,6 +32,7 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
+  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
@@ -121,7 +122,7 @@ export default function Teaser({ open, toggle }) {
               </div>
             )}
           </div>
-          {open && Voice.isEnabled && voice && (
+          {open && Voice.isEnabled && voice && disclaimerEnable && (
             <Voice
               DialogContext={DialogContext}
               configuration={configuration}
