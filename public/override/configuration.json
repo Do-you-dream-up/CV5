@@ -275,7 +275,7 @@
     "size": 3
   },
   "Voice": {
-    "enable": false,
+    "enable": true,
     "ssml": "true",
     "sttServerUrl": "",
     "ttsServerUrl": "",

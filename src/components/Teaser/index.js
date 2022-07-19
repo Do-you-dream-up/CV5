@@ -12,7 +12,7 @@ import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
-//import-voice
+import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -121,7 +121,15 @@ export default function Teaser({ open, toggle }) {
               </div>
             )}
           </div>
-          {open && voice && <voice />}
+          {open && Voice.isEnabled && voice && (
+            <Voice
+              DialogContext={DialogContext}
+              configuration={configuration}
+              Actions={Actions}
+              show={!!Local.get(Local.names.gdpr)}
+              t={t('input.actions.record')}
+            />
+          )}
         </div>
       </div>
     </Draggable>
