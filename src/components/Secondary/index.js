@@ -6,8 +6,6 @@ import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
-import Form from '@rjsf/core';
-import { isDefined, isOfTypeString } from '../../tools/helpers';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -20,7 +18,7 @@ export default function Secondary({ anchor, mode }) {
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
-  const { body, height, title, url, width } = secondaryContent || {};
+  const { bodyRenderer, body, height, title, url, width } = secondaryContent || {};
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
 
@@ -37,11 +35,9 @@ export default function Secondary({ anchor, mode }) {
   }
 
   const BodyComponent = useMemo(() => {
-    if (!isDefined(body)) return null;
-    if (isOfTypeString(body)) return <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />;
-    console.log('body for Form', body);
-    return <Form schema={body} />;
-  }, [body, classes.body]);
+    if (bodyRenderer) return bodyRenderer();
+    return <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />;
+  }, [body, bodyRenderer, classes.body]);
 
   return secondaryActive ? (
     <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>

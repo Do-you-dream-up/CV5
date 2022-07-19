@@ -14,7 +14,7 @@ const extractId = (data) => data?.values?.survey?.fromBase64();
 const getSurveyConfigurationById = (id) => dydu.getSurvey(id);
 
 export default function SurveyProvider({ children }) {
-  const { open: openSecondary } = useDialog();
+  const { open: openSecondary, close: closeSecondary } = useDialog();
   const [id, setId] = useState(null);
   const [configuration, setConfiguration] = useState(null);
 
@@ -26,18 +26,26 @@ export default function SurveyProvider({ children }) {
 
   useEffect(() => {
     if (!isDefined(configuration)) return;
-    console.log('survey config', configuration);
     openSecondary({
       title: configuration?.title,
       bodyRenderer: () => <Survey configuration={configuration} />,
     });
   }, [configuration, openSecondary]);
 
+  const send = useCallback(
+    (surveyResponse) => {
+      console.log('surveyResponse', surveyResponse);
+      closeSecondary();
+    },
+    [closeSecondary],
+  );
+
   const dataContext = useMemo(() => {
     return {
       showSurvey,
+      send,
     };
-  }, [showSurvey]);
+  }, [send, showSurvey]);
 
   return <SurveyContext.Provider value={dataContext}>{children}</SurveyContext.Provider>;
 }
