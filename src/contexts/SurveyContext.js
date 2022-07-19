@@ -11,24 +11,26 @@ export const useSurvey = () => useContext(SurveyContext);
 
 const extractId = (data) => data?.values?.survey?.fromBase64();
 
-const getSurveyConfigurationById = (id) => dydu.getSurvey(id);
+const getSurveyConfigurationById = (id) =>
+  dydu.getSurvey(id).then((response) => {
+    console.log('response ?', response);
+    return response;
+  });
 
 export default function SurveyProvider({ children }) {
   const { open: openSecondary, close: closeSecondary } = useDialog();
-  const [id, setId] = useState(null);
   const [configuration, setConfiguration] = useState(null);
 
-  const showSurvey = useCallback((data) => setId(extractId(data)), []);
+  const showSurvey = useCallback((data) => {
+    const id = extractId(data);
+    getSurveyConfigurationById(id).then(setConfiguration);
+  }, []);
 
   useEffect(() => {
-    if (isDefined(id)) getSurveyConfigurationById(id).then(setConfiguration);
-  }, [id]);
-
-  useEffect(() => {
-    if (!isDefined(configuration)) return;
+    if (!isDefined(configuration) || !isDefined(openSecondary)) return;
     openSecondary({
       title: configuration?.title,
-      bodyRenderer: () => <Survey configuration={configuration} />,
+      bodyRenderer: () => <Survey />,
     });
   }, [configuration, openSecondary]);
 
@@ -40,12 +42,17 @@ export default function SurveyProvider({ children }) {
     [closeSecondary],
   );
 
+  const updateField = useCallback((id, updates) => {
+    console.log('update for field', id, updates);
+  }, []);
+
   const dataContext = useMemo(() => {
     return {
+      updateField,
       showSurvey,
       send,
     };
-  }, [send, showSurvey]);
+  }, [send, showSurvey, updateField]);
 
   return <SurveyContext.Provider value={dataContext}>{children}</SurveyContext.Provider>;
 }

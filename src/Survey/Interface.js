@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-const Field = PropTypes.shape({
+import Input from './Input';
+
+export const Field = PropTypes.shape({
   id: PropTypes.number,
   label: PropTypes.string,
   type: PropTypes.string,
@@ -8,7 +10,7 @@ const Field = PropTypes.shape({
     masterOf: PropTypes.arrayOf(PropTypes.number),
     id: PropTypes.number,
     label: PropTypes.string,
-    type: PropTypes.string,
+    type: PropTypes.oneOf(Object.keys(Input.Types)),
     mandatory: PropTypes.bool,
   }),
 });

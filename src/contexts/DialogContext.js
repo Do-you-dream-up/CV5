@@ -329,8 +329,10 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [knowledgeName, teaserMode, welcomeContent, isLivechatOn]);
 
-  // watch closely: toggle secondary returns is a closure.
-  const close = useCallback(() => toggleSecondary(false)(), [toggleSecondary]);
+  const close = useCallback(() => {
+    if (secondaryActive) toggleSecondary(false)();
+  }, [secondaryActive, toggleSecondary]);
+
   const open = useCallback((...props) => toggleSecondary([true, ...props])(), [toggleSecondary]);
 
   return (
