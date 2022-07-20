@@ -10,7 +10,7 @@ export default function ContactsList({ icon, id, list, title }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
         <img alt={icon} src={`${process.env.PUBLIC_URL}${icon}`}></img>
         <h4>{title}</h4>
