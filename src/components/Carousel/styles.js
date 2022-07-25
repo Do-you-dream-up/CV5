@@ -49,12 +49,15 @@ export default createUseStyles((theme) => ({
     },
     '& > *': {
       flexGrow: 1,
-      margin: [[0, '.25em'], '!important'],
+      margin: '0 14.5px !important',
     },
     float: 'left',
     height: '100%',
     margin: [[0], '!important'],
     width: `${offsetBetweenCard / length}%`,
+  }),
+  stepTemplate: () => ({
+    width: 'initial',
   }),
   steps: ({ index, length, offsetBetweenCard }) => ({
     '& .dydu-bubble-response': {
@@ -69,5 +72,8 @@ export default createUseStyles((theme) => ({
     transitionDuration: '.25s',
     transitionProperty: 'transform',
     width: `${length * 100}%`,
+    paddingTop: 3,
+    paddingBottom: 5,
+    paddingLeft: 2,
   }),
 }));

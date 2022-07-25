@@ -286,6 +286,7 @@ export default function Interaction({
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
+          !!templatename && templatename !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },

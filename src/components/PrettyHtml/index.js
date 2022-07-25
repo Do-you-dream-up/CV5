@@ -15,6 +15,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
  * Basically an opinionated reset.
  */
 export default function PrettyHtml({
+  carousel,
   children,
   className,
   component,
@@ -68,14 +69,19 @@ export default function PrettyHtml({
           const interactiveElementsArray = Array.from(elementParent.querySelectorAll('a'));
 
           interactiveElementsArray.forEach((elementChild) => {
-            if (elementChild === interactiveElementsArray[0]) {
+            // focus() on carousel link make bugs on the width of the carousel or step actions
+            if (
+              elementChild === interactiveElementsArray[0] &&
+              !carousel &&
+              knownTemplates.includes(templatename) === false
+            ) {
               elementChild.focus();
             }
           });
         }
       });
     }
-  }, []);
+  }, [carousel, templatename]);
 
   const interactionType = type === 'response' ? displayScreenreaderBot() : displayScreenreaderUser();
   return React.createElement(
@@ -97,6 +103,7 @@ PrettyHtml.defaultProps = {
 };
 
 PrettyHtml.propTypes = {
+  carousel: PropTypes.bool,
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,
