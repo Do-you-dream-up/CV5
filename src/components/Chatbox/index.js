@@ -19,7 +19,7 @@ import Modal from '../Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding';
 import PropTypes from 'prop-types';
-import { RE_REWORD } from '../../tools/constants';
+import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import c from 'classnames';
@@ -87,7 +87,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
-          if (!RE_REWORD) {
+          if (!REGEX_URL.test(text)) {
             addRequest(text);
           }
         }
