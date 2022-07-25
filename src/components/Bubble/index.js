@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'react-jss';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
+import { QUICK_REPLY } from '../../tools/template';
 import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
 import Actions from '../Actions';
 import PrettyHtml from '../PrettyHtml';
 import Progress from '../Progress';
 import useStyles from './styles';
+import { isDefined } from '../../tools/helpers';
 
 /**
  * A conversation bubble.
@@ -66,7 +68,14 @@ export default function Bubble({
   return React.createElement(
     component,
     {
-      className: c('dydu-bubble', `dydu-bubble-${type}`, classes.base, classes[type], className),
+      className: c(
+        'dydu-bubble',
+        `dydu-bubble-${type}`,
+        classes.base,
+        classes[type],
+        isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
+        className,
+      ),
     },
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
@@ -78,6 +87,7 @@ export default function Bubble({
             html={html}
             templatename={templatename}
             type={type}
+            carousel={carousel}
           />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}

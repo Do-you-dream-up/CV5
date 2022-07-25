@@ -265,7 +265,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 94
+    "offsetBetweenCard": 80
   },
   "templateProduct": {
     "readmore": 100
