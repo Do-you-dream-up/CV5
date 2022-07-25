@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import { RE_REWORD } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
+import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { encode } from '../../tools/cipher';
@@ -294,12 +295,14 @@ Chatbox.propTypes = {
 };
 
 export function ChatboxWrapper(rest) {
+  const { zoomSrc } = useContext(DialogContext);
   return (
     <GdprProvider>
       <OnboardingProvider>
         <ModalProvider>
           <TabProvider>
             <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+            {zoomSrc && <Zoom src={zoomSrc} />}
           </TabProvider>
         </ModalProvider>
       </OnboardingProvider>

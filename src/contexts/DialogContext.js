@@ -60,6 +60,7 @@ export function DialogProvider({ children }) {
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
   const [welcomeContent, setWelcomeContent] = useState(null);
+  const [zoomSrc, setZoomSrc] = useState(null);
   const { knowledgeName } = configuration.welcome;
   const teaserMode = Local.get(Local.names.open) === 1;
   const { isLivechatOn } = useLivechat();
@@ -358,6 +359,8 @@ export function DialogProvider({ children }) {
         typeResponse,
         voiceContent,
         callWelcomeKnowledge,
+        zoomSrc,
+        setZoomSrc,
       }}
     />
   );
