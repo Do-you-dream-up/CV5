@@ -1,8 +1,8 @@
 ---
 
 stages:
-#  - preprod
-#  - prod
+  - preprod
+  - prod
   - build_base
   - publish_base_preprod
   - publish_base_prod
