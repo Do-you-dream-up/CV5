@@ -91,7 +91,11 @@ export default function Carousel({ children, className, steps, templatename, ...
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
       <div children={children} className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
         {children.map((it, i) => (
-          <div children={it} className={c('dydu-carousel-step', classes.step)} key={i} />
+          <div
+            children={it}
+            className={c('dydu-carousel-step', classes.step, templatename && classes.stepTemplate)}
+            key={i}
+          />
         ))}
       </div>
       {!!hasBullets && length > 0 && (

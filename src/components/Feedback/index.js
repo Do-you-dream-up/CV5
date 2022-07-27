@@ -35,6 +35,7 @@ export default function Feedback() {
   const voteNegative = t('feedback.vote.negative');
   const votePositive = t('feedback.vote.positive');
   const voteThanks = t('feedback.vote.thanks');
+  const { enable: enableCustom, positiveCustom, negativeCustom } = configuration.feedback.customFeedback;
 
   const onComment = ({ comment }) => {
     const value = comment ? comment.trim() : '';
@@ -58,7 +59,12 @@ export default function Feedback() {
   const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       setShowVote(false);
-      if (askChoices) {
+
+      if (enableCustom) {
+        dydu.talk(negativeCustom, { doNotSave: true, hide: true }).then((response) => {
+          addResponse(response);
+        });
+      } else if (askChoices) {
         setShowChoices(true);
       } else if (askComment) {
         setShowComment(true);
@@ -71,7 +77,12 @@ export default function Feedback() {
   const onVotePositive = () => {
     dydu.feedback(true).then(() => {
       setShowVote(false);
-      if (voteThanks) {
+
+      if (enableCustom) {
+        dydu.talk(positiveCustom, { doNotSave: true, hide: true }).then((response) => {
+          addResponse(response);
+        });
+      } else if (voteThanks) {
         addResponse({ text: voteThanks });
       }
     });
