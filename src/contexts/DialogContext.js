@@ -301,10 +301,11 @@ export function DialogProvider({ children }) {
   }, []);
 
   const toggleSecondary = useCallback(
-    (open, { body, height, title, url, width } = {}) =>
+    (open, { bodyRenderer, body, height, title, url, width } = {}) =>
       () => {
-        if (body !== undefined || title !== undefined || url !== undefined) {
-          setSecondaryContent({ body, height, title, url, width });
+        const someFieldsDefined = [bodyRenderer, body, height, title, url, width].some((v) => isDefined(v));
+        if (someFieldsDefined) {
+          setSecondaryContent({ bodyRenderer, body, height, title, url, width });
         }
         setSecondaryActive((previous) => {
           const should = open === undefined ? !previous : open;
@@ -333,7 +334,7 @@ export function DialogProvider({ children }) {
     if (secondaryActive) toggleSecondary(false)();
   }, [secondaryActive, toggleSecondary]);
 
-  const openSecondary = useCallback((...props) => toggleSecondary([true, ...props])(), [toggleSecondary]);
+  const openSecondary = useCallback((...props) => toggleSecondary(...[true].concat(props))(), [toggleSecondary]);
 
   return (
     <DialogContext.Provider
