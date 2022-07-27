@@ -64,3 +64,4 @@ export const LIVECHAT_NOTIFICATION = {
 };
 
 export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
+export const REGEX_URL = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm;
