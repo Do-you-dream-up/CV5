@@ -45,28 +45,22 @@ const renderApp = (theme) =>
     anchor,
   );
 
-configuration
-  .initialize()
-  .then((configuration) => {
-    _configuration = configuration;
-    anchor = getRootDiv(configuration);
-    if (anchor) {
-      Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
-        const data = res && res.data ? res.data : {};
-        data.palette.primary.main = css ? css.main : data.palette.primary.main;
-        data.breakpoints = breakpoints;
-        configuration.keycloak.enable
-          ? keycloak.initKeycloak(renderApp(data), configuration.keycloak)
-          : renderApp(data);
-      });
-    }
-  })
-  .then(() => {
+configuration.initialize().then((configuration) => {
+  _configuration = configuration;
+  anchor = getRootDiv(configuration);
+  if (anchor) {
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
+      const data = res && res.data ? res.data : {};
+      data.palette.primary.main = css ? css.main : data.palette.primary.main;
+      data.breakpoints = breakpoints;
+      configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
+    });
     Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
         style.textContent = res.data;
-        document.head.appendChild(style);
+        document.head?.appendChild(style);
       }
     });
-  });
+  }
+});

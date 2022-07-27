@@ -47,6 +47,9 @@ export default createUseStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       marginRight: '2em',
     },
+    '&.dydu-interaction-template': {
+      width: 'initial',
+    },
   }),
   wrapper: () => ({
     display: 'flex',

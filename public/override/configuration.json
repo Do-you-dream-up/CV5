@@ -92,7 +92,12 @@
   "feedback": {
     "active": true,
     "askChoices": true,
-    "askComment": true
+    "askComment": true,
+    "customFeedback": {
+      "enable": false,
+      "positiveCustom": "Connaissance suite satisfaction",
+      "negativeCustom": "Connaissance suite insatisfaction"
+    }
   },
   "font": {
     "url": ""
@@ -265,7 +270,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 94
+    "offsetBetweenCard": 80
   },
   "templateProduct": {
     "readmore": 100
