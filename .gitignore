@@ -7,3 +7,4 @@
 src/.DS_Store
 .idea/
 coverage/
+.vscode/

@@ -280,10 +280,10 @@
     "size": 3
   },
   "Voice": {
-    "enable": true,
+    "enable": false,
     "ssml": "true",
-    "sttServerUrl": "https://voicebot.doyoudreamup.com/socket.io",
-    "ttsServerUrl": "https://voicebot.doyoudreamup.com/tts",
+    "sttServerUrl": "",
+    "ttsServerUrl": "",
     "voice": "Damien",
     "voiceSpace": "default",
     "color": "black"
