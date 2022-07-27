@@ -18,7 +18,7 @@ const getSurveyConfigurationById = (id) =>
   });
 
 export default function SurveyProvider({ children }) {
-  const { open: openSecondary, close: closeSecondary } = useDialog();
+  const { openSecondary, closeSecondary } = useDialog();
   const [configuration, setConfiguration] = useState(null);
 
   const showSurvey = useCallback((data) => {

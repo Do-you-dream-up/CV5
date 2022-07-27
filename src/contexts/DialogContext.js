@@ -329,18 +329,18 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [knowledgeName, teaserMode, welcomeContent, isLivechatOn]);
 
-  const close = useCallback(() => {
+  const closeSecondary = useCallback(() => {
     if (secondaryActive) toggleSecondary(false)();
   }, [secondaryActive, toggleSecondary]);
 
-  const open = useCallback((...props) => toggleSecondary([true, ...props])(), [toggleSecondary]);
+  const openSecondary = useCallback((...props) => toggleSecondary([true, ...props])(), [toggleSecondary]);
 
   return (
     <DialogContext.Provider
       children={children}
       value={{
-        close,
-        open,
+        closeSecondary,
+        openSecondary,
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
