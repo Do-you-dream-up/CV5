@@ -1,3 +1,4 @@
+/* eslint-disable */
 import c from 'classnames';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +36,7 @@ export default function Feedback() {
   const voteNegative = t('feedback.vote.negative');
   const votePositive = t('feedback.vote.positive');
   const voteThanks = t('feedback.vote.thanks');
-  const { enable: enableCustom, positiveCustom, negativeCustom } = configuration.feedback.customFeedback;
+  const { enable: enableCustom, positiveCustom, negativeCustom } = configuration?.feedback?.customFeedback;
 
   const onComment = ({ comment }) => {
     const value = comment ? comment.trim() : '';
