@@ -52,13 +52,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onChatboxLoaded } = useEvent();
+  const { hasAfterLoadBeenCalled } = useEvent();
+  const { onChatboxLoaded, onAppReady } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
-  const [afterLoadTriggered, setAfterLoadTriggered] = useState(false);
+  const [afterLoadTriggered] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
@@ -70,11 +71,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const gdprRef = useRef();
 
   useEffect(() => {
-    if (ready && afterLoadTriggered) {
-      callWelcomeKnowledge();
-    }
-    // eslint-disable-next-line
-  }, [ready, afterLoadTriggered]);
+    if (hasAfterLoadBeenCalled) callWelcomeKnowledge();
+  }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
   const ask = useCallback(
     (text, options) => {
@@ -112,24 +110,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   }, [onChatboxLoaded, root]);
 
   useEffect(() => {
-    if (!ready) {
-      return;
-    }
-
-    if (typeof window.dyduAfterLoad === 'function') {
-      const dyduAfterLoad = async () => {
-        await window.dyduAfterLoad();
-      };
-      dyduAfterLoad().then(() => {
-        setAfterLoadTriggered(true);
-      });
-    } else {
-      setAfterLoadTriggered(true);
-    }
-  }, [ready]);
+    if (ready) onAppReady();
+  }, [onAppReady, ready]);
 
   useEffect(() => {
-    if (!ready && !afterLoadTriggered) {
+    if (!ready) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = {
