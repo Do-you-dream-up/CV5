@@ -1,17 +1,16 @@
 /* eslint-disable */
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Local } from '../storage';
 import dydu from '../dydu';
 import { _parse, isArray } from '../helpers';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 export default function useTopKnowledge() {
   const { configuration } = useConfiguration();
   const [result, setResult] = useState([]);
 
   const fetch = useCallback(() => {
-    const teaserMode = Local.get(Local.names.open) === 1;
-    if (teaserMode) return Promise.resolve();
     const { period, size } = configuration.top;
     return new Promise((resolve) => {
       dydu

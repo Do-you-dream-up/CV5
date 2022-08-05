@@ -1,20 +1,20 @@
 // eslint-disable-next-line import/no-unresolved
 import '../../../public/override/style.css';
 
-import React, { Suspense, useContext, useEffect, useState } from 'react';
+import React, { Suspense, useContext, useEffect } from 'react';
 
 import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
-import { Local } from '../../tools/storage';
 import Teaser from '../Teaser';
 import c from 'classnames';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -38,16 +38,20 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
-  const { active } = configuration.pushrules;
-  const { knowledgeName } = configuration.welcome;
+  const {
+    close: closeChatbox,
+    mode,
+    popin: popinChatbox,
+    isOpen: isChatboxOpen,
+    isFull: isChatboxFullScreen,
+    isMinimize: isChatboxMinimize,
+    toggle,
+  } = useViewMode();
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
   const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
-  const initialMode = Local.get(Local.names.open, ~~configuration.application.open);
-  const [mode, setMode] = useState(~~initialMode);
   // eslint-disable-next-line no-unused-vars
-  const [open, setOpen] = useState(~~initialMode > 1);
 
   let customFont = configuration.font.url;
 
@@ -70,25 +74,9 @@ export default function Application() {
     document.getElementById('font').href = customFont;
   }
 
-  const toggle = (value) => () => setMode(~~value);
-
   useEffect(() => {
-    if (hasAuthStorageCheck && !isAuthorized) {
-      setMode(0);
-      Local.set(Local.names.open, 0);
-    }
-  }, [hasAuthStorageCheck, isAuthorized]);
-
-  useEffect(() => {
-    setOpen(mode > 1);
-    Local.set(Local.names.open, Math.max(mode, 1));
-  }, [mode]);
-
-  useEffect(() => {
-    if (active && knowledgeName) {
-      setMode(2);
-    }
-  }, [active, knowledgeName]);
+    if (hasAuthStorageCheck && !isAuthorized) closeChatbox();
+  }, [closeChatbox, hasAuthStorageCheck, isAuthorized]);
 
   useEffect(() => {
     event('loadChatbox');
@@ -99,13 +87,13 @@ export default function Application() {
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
         {hasWizard && <Wizard />}
-        <DialogProvider>
+        <DialogProvider onPushrulesDataReceived={popinChatbox}>
           <AuthContext>
             <Authenticated>
               <LivechatProvider>
-                <Chatbox extended={mode > 2} open={mode > 1} toggle={toggle} mode={mode} />
+                <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
               </LivechatProvider>
-              <Teaser open={mode === 1} toggle={toggle} />
+              <Teaser open={isChatboxMinimize} toggle={toggle} />
             </Authenticated>
           </AuthContext>
         </DialogProvider>
