@@ -29,12 +29,14 @@ import { isDefined } from '../../tools/helpers';
 import talk from '../../tools/talk';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
 export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
+  const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
     addRequest,
@@ -100,7 +102,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   const onMinimize = () => {
     event('onMinimize', 'params', 'params2');
-    toggle(1)();
+    minimizeChatbox();
   };
 
   useEffect(() => {
@@ -275,7 +277,7 @@ Chatbox.propTypes = {
   extended: PropTypes.bool,
   open: PropTypes.bool,
   root: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-  toggle: PropTypes.func.isRequired,
+  toggle: PropTypes.func,
 };
 
 export function ChatboxWrapper(rest) {

@@ -46,9 +46,9 @@ export const DialogContext = React.createContext();
 
 export const useDialog = () => useContext(DialogContext);
 
-export function DialogProvider({ children }) {
+export function DialogProvider({ children, onPushrulesDataReceived }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { active } = configuration.pushrules;
+  const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage } = useEvent();
   const [disabled, setDisabled] = useState(false);
@@ -65,23 +65,25 @@ export function DialogProvider({ children }) {
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { exec, forceExec } = usePromiseQueue([fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory]);
+  const [pushrules, setPushrules] = useState(null);
 
-  const { knowledgeName } = configuration.welcome;
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
 
-  const triggerPushRule = () => {
+  const triggerPushRule = useCallback(() => {
+    if (isDefined(pushrules)) return;
     setTimeout(() => {
-      fetchPushrules();
-    }, 300);
-  };
+      fetchPushrules().then((rules) => {
+        setPushrules(rules);
+        onPushrulesDataReceived();
+      });
+    }, 5000);
+  }, [onPushrulesDataReceived, pushrules]);
 
   useEffect(() => {
-    if ((active && !knowledgeName) || (active && welcomeContent)) {
-      triggerPushRule();
-    }
-  }, [active, knowledgeName, welcomeContent]);
+    if (pushrulesConfigActive) triggerPushRule();
+  }, [triggerPushRule, pushrulesConfigActive]);
 
   const add = useCallback(
     (interaction) => {
@@ -370,6 +372,7 @@ export function DialogProvider({ children }) {
 DialogProvider.propTypes = {
   children: PropTypes.object,
   toggle: PropTypes.any,
+  onPushrulesDataReceived: PropTypes.func,
 };
 
 const addFieldTypeResponse = (interaction) => ({

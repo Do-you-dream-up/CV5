@@ -1,21 +1,25 @@
 import { useCallback, useMemo, useState } from 'react';
 import { isDefined, isEmptyString } from '../helpers';
 import dydu from '../dydu';
-import { Local } from '../storage';
 import { useLivechat } from '../../contexts/LivechatContext';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 export default function useWelcomeKnowledge() {
+  const { isMinimize } = useViewMode();
   const [result, setResult] = useState(null);
 
   const { configuration } = useConfiguration();
-  const teaserMode = Local.get(Local.names.open) === 1;
   const { isLivechatOn } = useLivechat();
   const tagWelcome = configuration.welcome?.knowledgeName || null;
   const tagWelcomeNotSet = useMemo(() => !isDefined(tagWelcome) || isEmptyString(tagWelcome), [tagWelcome]);
 
+  const canRequest = useMemo(() => {
+    return isDefined(result) || isMinimize || isLivechatOn || tagWelcomeNotSet;
+  }, [isMinimize, isLivechatOn, result, tagWelcomeNotSet]);
+
   const fetch = useCallback(() => {
-    const cannotRequest = isDefined(result) || teaserMode || isLivechatOn || tagWelcomeNotSet;
+    const cannotRequest = !canRequest;
     if (cannotRequest) return Promise.resolve();
 
     return new Promise((resolve) => {
@@ -30,7 +34,7 @@ export default function useWelcomeKnowledge() {
       });
     });
     // eslint-disable-next-line
-  }, [isLivechatOn, result, teaserMode]);
+  }, [canRequest, isLivechatOn, result]);
 
   return {
     result,
