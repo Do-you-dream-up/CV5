@@ -51,6 +51,7 @@ export function b64decode(str) {
   );
 }
 
+export const isArray = (s) => Object.prototype.toString.call(s) === '[object Array]';
 export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[object String]';
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';

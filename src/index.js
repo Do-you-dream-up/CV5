@@ -13,6 +13,7 @@ import { UserActionProvider } from './contexts/UserActionContext';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
+import ViewModeProvider from './contexts/ViewModeProvider';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
@@ -34,11 +35,13 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <EventsProvider>
-            <UserActionProvider>
-              <Application />
-            </UserActionProvider>
-          </EventsProvider>
+          <ViewModeProvider>
+            <EventsProvider>
+              <UserActionProvider>
+                <Application />
+              </UserActionProvider>
+            </EventsProvider>
+          </ViewModeProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,

@@ -20,14 +20,10 @@ export const configuration = new (class Configuration {
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
-
     return axios.get(path).then(({ data }) => {
-      if (Local.get(Local.names.wizard)) {
-        this.configuration = Local.get(Local.names.wizard);
-        return this.sanitize(JSON.parse(JSON.stringify(this.configuration)));
-      } else {
-        return this.sanitize(JSON.parse(JSON.stringify(data)));
-      }
+      const fromStorage = Local.get(Local.names.wizard);
+      this.configuration = fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+      return this.configuration;
     });
   };
 

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import dotget from '../tools/dotget';
 import { ConfigurationContext } from './ConfigurationContext';
-import { isDefined } from '../tools/helpers';
+import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 export const useEvent = () => {
   return useContext(EventsContext);
@@ -13,6 +13,12 @@ const NEW_TITLE_TAB = '1 nouveau message';
 
 const setDocumentTitle = (text) => (document.title = text);
 const getDocumentTitle = () => document.title;
+const dyduAfterLoad = () =>
+  new Promise((resolve) => {
+    const _fnAfterLoad = window?.dyduAfterLoad;
+    if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
+    resolve(true);
+  });
 
 const configureMouseListening = (elementDOM, configuration) => {
   const { isMouseIn, setMouseIn } = configuration;
@@ -64,14 +70,29 @@ export function EventsProvider({ children }) {
 
   const [event, setEvent] = useState();
   const [isMouseIn, setMouseIn] = useState(false);
+  const [afterLoadCalled, setAfterLoadCalled] = useState(false);
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  const [chatboxLoaded, setChatboxLoaded] = useState(false);
 
   useEffect(() => {
     if (isMouseIn) stopBlink();
   }, [isMouseIn]);
 
+  const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
+
+  useEffect(() => {
+    if (chatboxLoaded && isAppReady) {
+      if (!hasAfterLoadBeenCalled) dyduAfterLoad().then(setAfterLoadCalled);
+    }
+  }, [chatboxLoaded, hasAfterLoadBeenCalled, isAppReady]);
+
+  const onAppReady = useCallback(() => setIsAppReady(true), []);
+
   const onChatboxLoaded = useCallback(
     (chatboxNodeElement) => {
       configureMouseListening(chatboxNodeElement, { isMouseIn, setMouseIn });
+      setChatboxLoaded(true);
     },
     [isMouseIn],
   );
@@ -110,6 +131,8 @@ export function EventsProvider({ children }) {
     <EventsContext.Provider
       children={children}
       value={{
+        hasAfterLoadBeenCalled,
+        onAppReady,
         onChatboxLoaded,
         onNewMessage,
         onEvent,
