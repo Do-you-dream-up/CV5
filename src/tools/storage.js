@@ -1,4 +1,5 @@
 import cookie from 'js-cookie';
+import { _parse, isDefined } from './helpers';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -267,5 +268,13 @@ export class Local {
       return JSON.parse(d);
     },
     reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
+  });
+
+  static viewMode = Object.create({
+    load: () => {
+      const d = localStorage.getItem(Local.names.open);
+      return isDefined(d) ? _parse(d) : null;
+    },
+    save: (value) => localStorage.setItem(Local.names.open, value),
   });
 }

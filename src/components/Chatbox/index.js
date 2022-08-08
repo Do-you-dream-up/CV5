@@ -19,7 +19,7 @@ import Modal from '../Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding';
 import PropTypes from 'prop-types';
-import { RE_REWORD } from '../../tools/constants';
+import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import Zoom from '../Zoom';
@@ -30,12 +30,14 @@ import { isDefined } from '../../tools/helpers';
 import talk from '../../tools/talk';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
  */
 export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
+  const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
     addRequest,
@@ -53,13 +55,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onChatboxLoaded } = useEvent();
+  const { hasAfterLoadBeenCalled } = useEvent();
+  const { onChatboxLoaded, onAppReady } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState(false);
-  const [afterLoadTriggered, setAfterLoadTriggered] = useState(false);
+  const [afterLoadTriggered] = useState(false);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
@@ -71,11 +74,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const gdprRef = useRef();
 
   useEffect(() => {
-    if (ready && afterLoadTriggered) {
-      callWelcomeKnowledge();
-    }
-    // eslint-disable-next-line
-  }, [ready, afterLoadTriggered]);
+    if (hasAfterLoadBeenCalled) callWelcomeKnowledge();
+  }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
   const ask = useCallback(
     (text, options) => {
@@ -88,7 +88,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
-          if (!RE_REWORD) {
+          if (!REGEX_URL.test(text)) {
             addRequest(text);
           }
         }
@@ -103,7 +103,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
 
   const onMinimize = () => {
     event('onMinimize', 'params', 'params2');
-    toggle(1)();
+    minimizeChatbox();
   };
 
   useEffect(() => {
@@ -113,24 +113,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   }, [onChatboxLoaded, root]);
 
   useEffect(() => {
-    if (!ready) {
-      return;
-    }
-
-    if (typeof window.dyduAfterLoad === 'function') {
-      const dyduAfterLoad = async () => {
-        await window.dyduAfterLoad();
-      };
-      dyduAfterLoad().then(() => {
-        setAfterLoadTriggered(true);
-      });
-    } else {
-      setAfterLoadTriggered(true);
-    }
-  }, [ready]);
+    if (ready) onAppReady();
+  }, [onAppReady, ready]);
 
   useEffect(() => {
-    if (!ready && !afterLoadTriggered) {
+    if (!ready) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = {
@@ -291,7 +278,7 @@ Chatbox.propTypes = {
   extended: PropTypes.bool,
   open: PropTypes.bool,
   root: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-  toggle: PropTypes.func.isRequired,
+  toggle: PropTypes.func,
 };
 
 export function ChatboxWrapper(rest) {
