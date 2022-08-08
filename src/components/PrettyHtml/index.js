@@ -1,13 +1,16 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
+import React, { useCallback, useContext, useEffect } from 'react';
+
 import CarouselTemplate from '../CarouselTemplate';
-import ProductTemplate from '../ProductTemplate';
-import QuickreplyTemplate from '../QuickreplyTemplate';
-import useStyles from './styles';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import ProductTemplate from '../ProductTemplate';
+import PropTypes from 'prop-types';
+import QuickreplyTemplate from '../QuickreplyTemplate';
+import c from 'classnames';
+import customRenderer from './customRenderer';
+import parse from 'html-react-parser';
+import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Prettify children and string passed as parameter.
@@ -93,7 +96,7 @@ export default function PrettyHtml({
       {templatename === PRODUCT_TEMPLATE && <ProductTemplate html={html} />}
       {templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={html} />}
       {templatename === QUICK_REPLY && <QuickreplyTemplate html={html} />}
-      {!knownTemplates.includes(templatename) && <div dangerouslySetInnerHTML={{ __html: html }} />}
+      {!knownTemplates.includes(templatename) && html && parse(html, customRenderer())}
     </>,
   );
 }

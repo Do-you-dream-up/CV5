@@ -12,12 +12,12 @@ import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
-import { useTheme } from 'react-jss';
-import useViewport from '../tools/hooks/viewport';
-import useTopKnowledge from '../tools/hooks/useTopKnowledge';
-import usePromiseQueue from '../tools/hooks/usePromiseQueue';
-import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
+import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import { useTheme } from 'react-jss';
+import useTopKnowledge from '../tools/hooks/useTopKnowledge';
+import useViewport from '../tools/hooks/viewport';
+import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -61,6 +61,7 @@ export function DialogProvider({ children, onPushrulesDataReceived }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
+  const [zoomSrc, setZoomSrc] = useState(null);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
@@ -363,6 +364,8 @@ export function DialogProvider({ children, onPushrulesDataReceived }) {
         toggleSecondary,
         typeResponse,
         voiceContent,
+        zoomSrc,
+        setZoomSrc,
         callWelcomeKnowledge: () => null,
       }}
     />

@@ -79,7 +79,7 @@ export default createUseStyles((theme) => ({
     },
     // 'alignItems': 'center',
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     height: '100%',
   },
   srOnly: {
