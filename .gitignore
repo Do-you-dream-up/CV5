@@ -6,4 +6,5 @@
 /public/.DS_Store
 src/.DS_Store
 .idea/
+.vscode/
 coverage/
