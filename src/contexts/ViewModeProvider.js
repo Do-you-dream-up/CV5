@@ -1,12 +1,13 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+
 import { Local } from '../tools/storage';
+import PropTypes from 'prop-types';
 import { useConfiguration } from './ConfigurationContext';
 
 const ViewModeContext = React.createContext();
 export const useViewMode = () => useContext(ViewModeContext);
 
-const VIEW_MODE = {
+export const VIEW_MODE = {
   close: 0, // hidden
   minimize: 1, // teaser
   popin: 2,

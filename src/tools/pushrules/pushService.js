@@ -2,6 +2,7 @@ import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
+import { VIEW_MODE } from '../../contexts/ViewModeProvider';
 import dydu from '../dydu';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
@@ -192,7 +193,7 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 function pushKnowledge(ruleId) {
   if (canPush) {
-    window.dydu.ui.toggle(2);
+    window.dydu.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     canPush = false;
   }
