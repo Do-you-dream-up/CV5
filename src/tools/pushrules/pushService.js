@@ -1,7 +1,9 @@
-import dydu from '../dydu';
+import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
+
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
+import { VIEW_MODE } from '../../contexts/ViewModeProvider';
+import dydu from '../dydu';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
@@ -81,35 +83,34 @@ export function processRules(externInfos) {
       }
     }
   }
+
   //Push best compliant knowledges
   handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
-  if (delay !== -1 || idleDelay !== -1) {
-    if (delay === 0) {
-      pushKnowledge(delayRuleId);
-    } else if (idleDelay === 0) {
-      pushKnowledge(idleDelayRuleId);
-    } else {
-      if (delay !== -1) {
-        setTimeout(() => {
-          pushKnowledge(delayRuleId);
-        }, delay * 1000);
-      }
-      if (idleDelay !== -1 && !currentTimer.counter) {
-        for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
-          if (document.attachEvent) {
-            document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
-          } else {
-            document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
-          }
+  if (delay === 0) {
+    pushKnowledge(delayRuleId);
+  } else if (idleDelay === 0) {
+    pushKnowledge(idleDelayRuleId);
+  } else {
+    if (delay !== -1) {
+      setTimeout(() => {
+        pushKnowledge(delayRuleId);
+      }, delay * 1000);
+    }
+    if (idleDelay !== -1 && !currentTimer.counter) {
+      for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
+        if (document.attachEvent) {
+          document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
+        } else {
+          document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
         }
-        currentTimer.counter = setTimeout(() => {
-          pushKnowledge(idleDelayRuleId);
-        }, idleDelay * 1000);
-        currentTimer.duration = idleDelay * 1000;
       }
+      currentTimer.counter = setTimeout(() => {
+        pushKnowledge(idleDelayRuleId);
+      }, idleDelay * 1000);
+      currentTimer.duration = idleDelay * 1000;
     }
   }
 }
@@ -192,6 +193,7 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 function pushKnowledge(ruleId) {
   if (canPush) {
+    window.dydu.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     canPush = false;
   }

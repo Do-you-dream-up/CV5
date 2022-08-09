@@ -1,6 +1,6 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useState } from 'react';
-import { isDefined, isOfTypeString } from '../tools/helpers';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
@@ -8,13 +8,16 @@ import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
-import dydu from '../tools/dydu';
+import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
-import { useLivechat } from './LivechatContext';
+import useConversationHistory from '../tools/hooks/useConversationHistory';
+import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import { useTheme } from 'react-jss';
+import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/viewport';
+import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -45,6 +48,7 @@ export const useDialog = () => useContext(DialogContext);
 
 export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
+  const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage } = useEvent();
   const [disabled, setDisabled] = useState(false);
@@ -57,14 +61,27 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
-  const [welcomeContent, setWelcomeContent] = useState(null);
-  const { knowledgeName } = configuration.welcome;
-  const teaserMode = Local.get(Local.names.open) === 1;
-  const { isLivechatOn } = useLivechat();
+  const [zoomSrc, setZoomSrc] = useState(null);
+  const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
+  const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
+  const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { exec, forceExec } = usePromiseQueue([fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory]);
+  const [pushrules, setPushrules] = useState(null);
 
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { transient: secondaryTransient } = configuration.secondary;
+
+  const triggerPushRule = useCallback(() => {
+    if (isDefined(pushrules)) return;
+    fetchPushrules().then((rules) => {
+      setPushrules(rules);
+    });
+  }, [pushrules]);
+
+  useEffect(() => {
+    if (pushrulesConfigActive) triggerPushRule();
+  }, [triggerPushRule, pushrulesConfigActive]);
 
   const add = useCallback(
     (interaction) => {
@@ -127,13 +144,6 @@ export function DialogProvider({ children }) {
       };
       return <Interaction key={index} {...props} thinking />;
     });
-  }, []);
-
-  const createResponseOrRequestWithInteractionFromHistory = useCallback((interactionFromHistory) => {
-    return {
-      ...interactionFromHistory,
-      typeResponse: interactionFromHistory?.type,
-    };
   }, []);
 
   const addResponse = useCallback(
@@ -260,22 +270,6 @@ export function DialogProvider({ children }) {
     ],
   );
 
-  const flushInteractionList = useCallback(() => setInteractions([]), []);
-
-  const rebuildInteractionsListFromHistory = useCallback(
-    (interactionsListFromHistory) => {
-      if (interactions?.length > 0) flushInteractionList();
-      interactionsListFromHistory.forEach((interactionFromHistory) => {
-        const responseOrRequestWithInteractionFromHistory =
-          createResponseOrRequestWithInteractionFromHistory(interactionFromHistory);
-        addRequest(responseOrRequestWithInteractionFromHistory.user);
-        addResponse(responseOrRequestWithInteractionFromHistory);
-      });
-      return interactions;
-    },
-    [addRequest, addResponse, createResponseOrRequestWithInteractionFromHistory, flushInteractionList, interactions],
-  );
-
   const empty = useCallback(() => {
     setInteractions([]);
   }, []);
@@ -303,22 +297,47 @@ export function DialogProvider({ children }) {
     [],
   );
 
-  const callWelcomeKnowledge = useCallback(() => {
-    if (isDefined(welcomeContent) || teaserMode) return;
+  const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
-    if (isLivechatOn) return;
-
-    dydu.talk(knowledgeName, { doNotSave: true, hide: true }).then((response) => {
-      setWelcomeContent(response);
-      addResponse(response);
-    });
+  useEffect(() => {
+    if (isInteractionListEmpty && !welcomeContent) forceExec();
     // eslint-disable-next-line
-  }, [knowledgeName, teaserMode, welcomeContent, isLivechatOn]);
+  }, []);
+
+  useEffect(() => {
+    exec();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (welcomeContent) {
+      addResponse(welcomeContent);
+    }
+
+    // eslint-disable-next-line
+  }, [welcomeContent]);
+
+  useEffect(() => {
+    if (listInteractionHistory.length <= 0) return;
+
+    const welcomeContentHasBeenFetched = isDefined(welcomeContent) && !isEmptyObject(welcomeContent);
+    if (!welcomeContentHasBeenFetched) return fetchWelcomeKnowledge();
+
+    const addHistoryInteraction = (hinteraction) => {
+      const typedInteraction = addFieldTypeResponse(hinteraction);
+      addRequest(typedInteraction.user);
+      addResponse(typedInteraction);
+    };
+
+    listInteractionHistory.forEach(addHistoryInteraction);
+    // eslint-disable-next-line
+  }, [welcomeContent, listInteractionHistory]);
 
   return (
     <DialogContext.Provider
       children={children}
       value={{
+        topList,
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
@@ -331,7 +350,6 @@ export function DialogProvider({ children }) {
         locked,
         placeholder,
         prompt,
-        rebuildInteractionsListFromHistory,
         secondaryActive,
         secondaryContent,
         setDisabled,
@@ -343,7 +361,9 @@ export function DialogProvider({ children }) {
         toggleSecondary,
         typeResponse,
         voiceContent,
-        callWelcomeKnowledge,
+        zoomSrc,
+        setZoomSrc,
+        callWelcomeKnowledge: () => null,
       }}
     />
   );
@@ -351,4 +371,11 @@ export function DialogProvider({ children }) {
 
 DialogProvider.propTypes = {
   children: PropTypes.object,
+  toggle: PropTypes.any,
+  onPushrulesDataReceived: PropTypes.func,
 };
+
+const addFieldTypeResponse = (interaction) => ({
+  ...interaction,
+  typeResponse: interaction?.type,
+});

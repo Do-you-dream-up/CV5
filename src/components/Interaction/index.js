@@ -36,7 +36,6 @@ const templateNameToBubbleCreateAction = {
     if (shouldSplit(text)) {
       return textArray.reduce((result, text, i) => {
         if (i === textArray.length - 1) {
-          console.log('i', i, 'text array', textArray);
           return result.concat([jsonStringify({ text, separator: true, quick })]);
         }
 
@@ -287,6 +286,7 @@ export default function Interaction({
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
+          !!templatename && templatename !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },

@@ -1,65 +1,42 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
+import PoweredBy from '../PoweredBy';
 import PromptEmail from '../PromptEmail';
+import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
-import useStyles from './styles';
-import PropTypes from 'prop-types';
 import c from 'classnames';
-import dydu from '../../tools/dydu';
-import fetchPushrules from '../../tools/pushrules';
+import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import PoweredBy from '../PoweredBy';
+import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ dialogRef, interactions, onAdd, open, ...rest }) {
+export default function Dialog({ dialogRef, onAdd, open, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { rebuildInteractionsListFromHistory, prompt, setPrompt } = useContext(DialogContext);
+  const { interactions, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
-  const { active } = configuration.pushrules;
   const { t } = useTranslation('translation');
   // eslint-disable-next-line
-  const { active: spacesActive, detection: spacesDetection, items: spaces = [] } = configuration.spaces;
+  const { isAppReady } = useEvent();
+  const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
   const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
 
-  const fetch = useCallback(() => {
-    return dydu.history().then(({ interactions }) => {
-      if (Array.isArray(interactions)) {
-        interactions = rebuildInteractionsListFromHistory(interactions);
-        onAdd(interactions);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    });
-  }, [onAdd, rebuildInteractionsListFromHistory]);
-
   useEffect(() => {
-    if (interactions.length > 0) {
-      return;
-    }
-    fetch().finally(() => {
-      if (spacesActive) {
-        if (!window.dydu.space.get(spacesDetection)) {
-          setPrompt('spaces');
-        }
+    if (isAppReady && spacesActive) {
+      if (!window.dydu.space.get(spacesDetection)) {
+        setPrompt('spaces');
       }
-    });
+    }
     // eslint-disable-next-line
   }, [spacesActive, setPrompt, spacesDetection]);
-
-  useEffect(() => {
-    if (active && open)
-      setTimeout(() => {
-        fetchPushrules();
-      }, 300);
-  }, [active, open]);
 
   /**
    * scroll to bottom of dialog on open chatbox

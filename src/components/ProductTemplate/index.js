@@ -1,38 +1,63 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import ReadMore from '../ReadMore';
 import useStyles from './styles';
+import { isDefined } from '../../tools/helpers';
+
+const READ_MORE_CARACTERS_TEXT = {
+  readmore: 85,
+};
 
 export default function ProductTemplate({ classe = null, html }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
   const { product, text } = JSON.parse(html);
-  // max number of characters for the subtitle before inserting a read more option. It excludes html tags :
-  const { readmore: maxChar } = configuration.templateProduct;
   const strippedString = product.subtitle ? product.subtitle.replace(/(<([^>]+)>)/gi, '') : null;
-  const readMoreActive = strippedString ? strippedString.length > maxChar : false;
+  const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
+  const [isEmptyImage, setIsEmptyImage] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(true);
+
+  useEffect(() => {
+    const carouselImages = document.querySelectorAll('.dydu-product-template-image img');
+    carouselImages.forEach((image) => {
+      if (!isDefined(image.getAttribute('src'))) {
+        setIsEmptyImage(true);
+      }
+    });
+  }, [isEmptyImage]);
+
+  const toggleIsTruncated = () => {
+    setIsTruncated(!isTruncated);
+  };
 
   return (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
       <div className={c('dydu-product-template-image', classes.image)}>
-        <img src={product.imageLink} alt={product.imageName} />
+        <img src={product.imageLink} alt={product.imageName} className={c(isEmptyImage && 'empty-image')} />
       </div>
-      <div className={c('dydu-product-template-text', classes.text)}>
-        <h3> {product.title} </h3>
-        {!!product.numeric && <p>{product.numeric}</p>}
-        {!!product.subtitle && !!readMoreActive ? (
-          <ReadMore children={product.subtitle} maxChar={maxChar} />
-        ) : (
-          <div dangerouslySetInnerHTML={{ __html: product.subtitle }} />
-        )}
-      </div>
-      <div className={c('dydu-product-template-button', classes.button)}>
-        {!!product.buttonA && <div dangerouslySetInnerHTML={{ __html: product.buttonA }} />}
-        {!!product.buttonB && <div dangerouslySetInnerHTML={{ __html: product.buttonB }} />}
-        {!!product.buttonC && <div dangerouslySetInnerHTML={{ __html: product.buttonC }} />}
+      <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
+        <div className={c('dydu-product-template-text', classes.text)}>
+          <h3> {product.title} </h3>
+          {!!product.numeric && <p>{product.numeric}</p>}
+          {!!product.subtitle && !!readMoreActive ? (
+            <ReadMore
+              isTruncated={isTruncated}
+              toggleIsTruncated={toggleIsTruncated}
+              children={product.subtitle}
+              maxChar={READ_MORE_CARACTERS_TEXT.readmore}
+            />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: product.subtitle }} />
+          )}
+        </div>
+        <div className={c('dydu-product-template-button', classes.button)}>
+          {!!product.buttonA && <div dangerouslySetInnerHTML={{ __html: product.buttonA }} />}
+          {!!product.buttonB && <div dangerouslySetInnerHTML={{ __html: product.buttonB }} />}
+          {!!product.buttonC && <div dangerouslySetInnerHTML={{ __html: product.buttonC }} />}
+        </div>
       </div>
     </div>
   );

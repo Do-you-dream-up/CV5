@@ -20,13 +20,13 @@ export default createUseStyles((theme) => ({
           ],
         },
         {
-          fontFamily: 'Roboto Regular',
-          fontWeight: 400,
+          fontFamily: 'Roboto Medium',
+          fontWeight: 500,
           fontStyle: 'normal',
-          src: 'url("./fonts/Roboto/Roboto-Regular.ttf") format("truetype")',
+          src: 'url("./fonts/Roboto/Roboto-Medium.ttf") format("truetype")',
           fallbacks: [
-            { src: 'url("./fonts/Roboto/Roboto-Regular.woff") format("woff")' },
-            { src: 'url("./fonts/Roboto/Roboto-Regular.woff2") format("woff2")' },
+            { src: 'url("./fonts/Roboto/Roboto-Medium.woff") format("woff")' },
+            { src: 'url("./fonts/Roboto/Roboto-Medium.woff2") format("woff2")' },
           ],
         },
       ],
@@ -79,7 +79,7 @@ export default createUseStyles((theme) => ({
     },
     // 'alignItems': 'center',
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     height: '100%',
   },
   srOnly: {

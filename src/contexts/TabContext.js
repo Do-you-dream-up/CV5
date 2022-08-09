@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+
 import { ConfigurationContext } from './ConfigurationContext';
+import PropTypes from 'prop-types';
 
 export const TabContext = React.createContext();
 export function TabProvider({ children }) {
@@ -46,5 +47,5 @@ export function TabProvider({ children }) {
 }
 
 TabProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.array,
 };

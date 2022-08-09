@@ -229,6 +229,14 @@ export default function useDyduWebsocket() {
 
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
 
+  const onUserTyping = useCallback(
+    (userInput) => {
+      const message = LivechatPayload.create.userTypingMessage(userInput);
+      sendJsonMessage(message);
+    },
+    [sendJsonMessage],
+  );
+
   return {
     isConnected,
     isRunning,
@@ -237,5 +245,6 @@ export default function useDyduWebsocket() {
     open,
     send,
     close,
+    onUserTyping,
   };
 }

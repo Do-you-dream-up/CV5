@@ -1,15 +1,17 @@
-import c from 'classnames';
+/* eslint-disable */
 import React, { useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
-import dydu from '../../tools/dydu';
+
 import Bubble from '../Bubble';
 import Button from '../Button';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Scroll from '../Scroll';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Render interfaces for the user to submit feedback.
@@ -35,6 +37,7 @@ export default function Feedback() {
   const voteNegative = t('feedback.vote.negative');
   const votePositive = t('feedback.vote.positive');
   const voteThanks = t('feedback.vote.thanks');
+  const { enable: enableCustom, positiveCustom, negativeCustom } = configuration?.feedback?.customFeedback;
 
   const onComment = ({ comment }) => {
     const value = comment ? comment.trim() : '';
@@ -58,7 +61,12 @@ export default function Feedback() {
   const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       setShowVote(false);
-      if (askChoices) {
+
+      if (enableCustom) {
+        dydu.talk(negativeCustom, { doNotSave: true, hide: true }).then((response) => {
+          addResponse(response);
+        });
+      } else if (askChoices) {
         setShowChoices(true);
       } else if (askComment) {
         setShowComment(true);
@@ -71,7 +79,12 @@ export default function Feedback() {
   const onVotePositive = () => {
     dydu.feedback(true).then(() => {
       setShowVote(false);
-      if (voteThanks) {
+
+      if (enableCustom) {
+        dydu.talk(positiveCustom, { doNotSave: true, hide: true }).then((response) => {
+          addResponse(response);
+        });
+      } else if (voteThanks) {
         addResponse({ text: voteThanks });
       }
     });

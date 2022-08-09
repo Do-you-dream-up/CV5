@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { browserName, isOfTypeString, osName } from './helpers';
+import { browserName, isDefined, isEmptyString, isOfTypeString, osName } from './helpers';
 import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
 
 let PAYLOAD_COMMON_CONTENT = {
@@ -24,7 +24,27 @@ const getPayloadCommonContentBase64Encoded = () => {
 const nowTime = () => new Date().getTime();
 
 const LivechatPayloadCreator = {
-  talkMessage: (userInput) => ({
+  userTypingMessage: (userInput = '') => ({
+    type: 'typing',
+    parameters: {
+      typing: !isEmptyString(userInput),
+      ...getPayloadCommonContentBase64Encoded(),
+      content: userInput?.toBase64(),
+      alreadyCame: true,
+      contextType: 'V2Vi',
+      disableLanguageDetection: true,
+      mode: 'U3luY2hyb24=',
+      pureLivechat: false,
+      qualificationMode: true,
+      saml2_info: '',
+      solutionUsed: 'QVNTSVNUQU5U',
+      templateFormats: '',
+      timestamp: nowTime(),
+      useServerCookieForContext: false,
+    },
+  }),
+
+  talkMessage: (userInput = '') => ({
     type: 'talk',
     parameters: {
       ...getPayloadCommonContentBase64Encoded(),
@@ -39,7 +59,7 @@ const LivechatPayloadCreator = {
       templateFormats: '',
       timestamp: nowTime(),
       useServerCookieForContext: false,
-      userInput: userInput.toBase64(),
+      userInput: userInput?.toBase64(),
     },
   }),
 

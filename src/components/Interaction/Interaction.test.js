@@ -15,7 +15,7 @@ jest.mock('../../contexts/DialogContext', () => ({
 const AppProviderMock = ({ children }) => {
   const mockTheme = theme;
   const mockConfiguration = JSON.parse(JSON.stringify(configuration));
-  console.log('configuration', configuration);
+  //console.log('configuration', configuration);
   return (
     <JssProvider>
       <ThemeProvider theme={mockTheme}>
