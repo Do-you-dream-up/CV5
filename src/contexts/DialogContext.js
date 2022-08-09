@@ -46,7 +46,7 @@ export const DialogContext = React.createContext();
 
 export const useDialog = () => useContext(DialogContext);
 
-export function DialogProvider({ children, onPushrulesDataReceived }) {
+export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -74,13 +74,10 @@ export function DialogProvider({ children, onPushrulesDataReceived }) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
-    setTimeout(() => {
-      fetchPushrules().then((rules) => {
-        setPushrules(rules);
-        onPushrulesDataReceived();
-      });
-    }, 5000);
-  }, [onPushrulesDataReceived, pushrules]);
+    fetchPushrules().then((rules) => {
+      setPushrules(rules);
+    });
+  }, [pushrules]);
 
   useEffect(() => {
     if (pushrulesConfigActive) triggerPushRule();
