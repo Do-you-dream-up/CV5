@@ -1,6 +1,6 @@
 {
   "name": "dydu-bliss",
-  "version": "5.22.0",
+  "version": "5.23.0",
   "private": true,
   "license": "MIT",
   "start_url": ".",
@@ -13,6 +13,7 @@
     "classnames": "^2.2.6",
     "core-js": "^3.8.3",
     "debounce-promise": "^3.1.2",
+    "html-react-parser": "^3.0.1",
     "i18next": "^19.8.3",
     "i18next-browser-languagedetector": "^4.0.1",
     "i18next-xhr-backend": "^3.2.2",

@@ -129,6 +129,6 @@ export default function Teaser({ open, toggle }) {
 }
 
 Teaser.propTypes = {
-  open: PropTypes.bool.isRequired,
-  toggle: PropTypes.func.isRequired,
+  open: PropTypes.bool,
+  toggle: PropTypes.func,
 };
