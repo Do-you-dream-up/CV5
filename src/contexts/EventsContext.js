@@ -5,6 +5,7 @@ import dotget from '../tools/dotget';
 import { ConfigurationContext } from './ConfigurationContext';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
+import { useViewMode } from './ViewModeProvider';
 
 let chatboxRef = null;
 const saveChatboxRef = (ref) => (chatboxRef = ref);
@@ -52,6 +53,7 @@ export const EventsContext = React.createContext();
 let refBlinkInterval = null;
 
 export function EventsProvider({ children }) {
+  const { isOpen } = useViewMode();
   const { configuration } = useContext(ConfigurationContext);
   const { active, features = {}, verbosity = 0 } = configuration.events;
 
@@ -94,8 +96,8 @@ export function EventsProvider({ children }) {
   );
 
   const onNewMessage = useCallback(() => {
-    chatboxRef && chatboxRef.dispatchEvent(eventNewMessage);
-  }, []);
+    isOpen && chatboxRef && chatboxRef.dispatchEvent(eventNewMessage);
+  }, [isOpen]);
 
   const onEvent =
     (feature) =>
