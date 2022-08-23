@@ -1,8 +1,13 @@
+import { eventNewMessage } from '../events/chatboxIndex';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import dotget from '../tools/dotget';
 import { ConfigurationContext } from './ConfigurationContext';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
+import { CHATBOX_EVENT_NAME } from '../tools/constants';
+
+let chatboxRef = null;
+const saveChatboxRef = (ref) => (chatboxRef = ref);
 
 export const useEvent = () => {
   return useContext(EventsContext);
@@ -19,24 +24,6 @@ const dyduAfterLoad = () =>
     if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
     resolve(true);
   });
-
-const configureMouseListening = (elementDOM, configuration) => {
-  const { isMouseIn, setMouseIn } = configuration;
-
-  elementDOM.onmouseleave = () => {
-    if (isMouseIn) {
-      setMouseIn(false);
-    }
-  };
-
-  elementDOM.onmouseover = () => {
-    if (!isMouseIn) {
-      setMouseIn(true);
-    }
-  };
-
-  elementDOM.onmouseenter = elementDOM.onmouseover;
-};
 
 const stopBlink = () => {
   if (!isBlinking()) {
@@ -72,7 +59,6 @@ export function EventsProvider({ children }) {
   const [isMouseIn, setMouseIn] = useState(false);
   const [afterLoadCalled, setAfterLoadCalled] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
-
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
 
   useEffect(() => {
@@ -89,21 +75,27 @@ export function EventsProvider({ children }) {
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
+  const handleEventNewMessage = useCallback(() => {
+    if (!isMouseIn) return blink();
+    else stopBlink();
+  }, [isMouseIn]);
+
   const onChatboxLoaded = useCallback(
     (chatboxNodeElement) => {
-      configureMouseListening(chatboxNodeElement, { isMouseIn, setMouseIn });
+      saveChatboxRef(chatboxNodeElement);
+      chatboxNodeElement.addEventListener(CHATBOX_EVENT_NAME.newMessage, handleEventNewMessage);
+      chatboxNodeElement.onmousemove = () => setMouseIn(true);
+      chatboxNodeElement.onmouseleave = () => setMouseIn(false);
+      chatboxNodeElement.onmouseover = () => setMouseIn(true);
+      chatboxNodeElement.onmouseenter = chatboxNodeElement.onmouseover;
       setChatboxLoaded(true);
     },
-    [isMouseIn],
+    [handleEventNewMessage],
   );
 
   const onNewMessage = useCallback(() => {
-    if (isMouseIn) {
-      stopBlink();
-    } else {
-      blink();
-    }
-  }, [isMouseIn]);
+    chatboxRef && chatboxRef.dispatchEvent(eventNewMessage);
+  }, []);
 
   const onEvent =
     (feature) =>
