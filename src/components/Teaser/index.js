@@ -122,7 +122,7 @@ export default function Teaser({ open, toggle }) {
               </div>
             )}
           </div>
-          {open && Voice.isEnabled && voice && disclaimerEnable && (
+          {open && voice && disclaimerEnable && (
             <Voice
               DialogContext={DialogContext}
               configuration={configuration}
