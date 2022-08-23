@@ -17,6 +17,10 @@
       "enable": true,
       "background": false,
       "image": "dydu-logo.svg"
+    },
+    "teaser": {
+      "background": false,
+      "image": "dydu-logo.svg"
     }
   },
   "banner": {
