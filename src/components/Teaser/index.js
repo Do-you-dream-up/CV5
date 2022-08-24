@@ -38,9 +38,11 @@ export default function Teaser({ open, toggle }) {
 
   const teaserAvatar = configuration.avatar?.teaser?.image;
   const teaserAvatarBackground = configuration.avatar?.teaser?.background;
+  const responseImage = configuration.avatar?.response?.image;
+
   const logoTeaser = teaserAvatar?.includes('base64')
     ? teaserAvatar
-    : `${process.env.PUBLIC_URL}assets/${teaserAvatar}`;
+    : `${process.env.PUBLIC_URL}assets/${teaserAvatar || responseImage}`;
 
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState(null);
