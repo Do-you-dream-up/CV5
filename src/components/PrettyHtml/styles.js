@@ -77,9 +77,6 @@ export default createUseStyles((theme) => ({
         paddingLeft: '1.4em',
       },
     },
-    // 'alignItems': 'center',
-    display: 'flex',
-    flexDirection: 'column',
     height: '100%',
   },
   srOnly: {
