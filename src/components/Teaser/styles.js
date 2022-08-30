@@ -9,9 +9,11 @@ export default createUseStyles((theme) => ({
     marginLeft: '.5em',
     overflow: 'hidden',
     width: 64,
+    borderRadius: '50%',
     // eslint-disable-next-line sort-keys
     '& img': {
-      height: '100%',
+      width: '75%',
+      height: 'auto',
       pointerEvents: 'none',
     },
   }),
@@ -58,5 +60,8 @@ export default createUseStyles((theme) => ({
     position: 'fixed',
     zIndex: 10,
     right: configuration.teaser.right,
+  }),
+  backgroundAvatar: ({ color = 'primary' }) => ({
+    backgroundColor: `${theme.palette[color].main}33`,
   }),
 }));
