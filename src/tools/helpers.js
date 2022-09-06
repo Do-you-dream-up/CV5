@@ -2,8 +2,6 @@ import { VAR_TYPE } from './constants';
 
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
-export const isEmptyArray = (variable) => Array.isArray(variable) && variable.length <= 0;
-
 export const toFormUrlEncoded = (data) => {
   const mkAffectationStr = (key, value) => `${key}=${value}`;
   return Object.keys(data).reduce((resultStr, key) => {
@@ -75,10 +73,6 @@ export const extractDomainFromUrl = (url) => url.replace(/http[s]?:\/\//, '').sp
 
 export const _stringify = (data) => JSON.stringify(data);
 export const _parse = (data) => JSON.parse(data);
-
-export const isEmptyObject = (v) => isOfTypeObject(v) && Object.keys(v).length === 0;
-
-export const isEmptyString = (v) => isOfTypeString(v) && v.length === 0;
 
 export const objectExtractFields = (obj, fieldList) =>
   fieldList.reduce((resultMap, fieldName) => {
@@ -168,3 +162,17 @@ export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
 
 export const qualification =
   window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+
+export const isBoolean = (d) => Object.prototype.toString.call(d) === '[object Boolean]';
+
+export const isString = (d) => Object.prototype.toString.call(d) === '[object String]';
+
+export const isNumber = (d) => Object.prototype.toString.call(d) === '[object Number]';
+
+export const isEmptyArray = (d) => isArray(d) && d.length === 0;
+
+export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length > 0;
+
+export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
+
+export const isEmptyString = (d) => isString(d) && d.length === 0;

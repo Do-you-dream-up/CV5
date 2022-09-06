@@ -29,7 +29,7 @@
   "rules": {
     "keyword-spacing": "warn",
     "no-empty": ["warn", { "allowEmptyCatch": true }],
-    "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
+    "no-unused-vars": [0, { "ignoreRestSiblings": true }],
     "react/no-children-prop": 0,
     "react-hooks/exhaustive-deps": "warn",
     "react-hooks/rules-of-hooks": "warn"

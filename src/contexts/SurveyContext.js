@@ -9,8 +9,6 @@ const SurveyContext = React.createContext({});
 
 export const useSurvey = () => useContext(SurveyContext);
 
-const extractId = (data) => data?.values?.survey?.fromBase64();
-
 const getSurveyConfigurationById = (id) =>
   dydu.getSurvey(id).then((response) => {
     console.log('response ?', response);
@@ -60,3 +58,5 @@ export default function SurveyProvider({ children }) {
 SurveyProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
 };
+
+const extractId = (data) => data?.values?.survey?.fromBase64();

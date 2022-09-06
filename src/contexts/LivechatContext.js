@@ -7,7 +7,7 @@ import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
-import { useSurvey } from './SurveyContext';
+import { useSurvey } from '../Survey/SurveyProvider';
 
 export const TUNNEL_MODE = {
   polling: 'polling',

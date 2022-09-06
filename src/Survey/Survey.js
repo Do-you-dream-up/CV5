@@ -1,29 +1,27 @@
-import React, { useCallback, useMemo } from 'react';
-import Interface from './Interface';
-import { useSurvey } from '../contexts/SurveyContext';
-import Input from './Input';
+import React from 'react';
+import { useSurvey } from './SurveyProvider';
+import Field from './Field';
+import { isDefined } from '../tools/helpers';
 
 export default function Survey() {
-  const { send, configuration, updateField } = useSurvey();
-
-  console.log('survey component MF !');
-
-  const title = useMemo(() => configuration?.title || '', [configuration?.title]);
-  const inputs = useMemo(() => configuration?.fields || [], [configuration?.fields]);
-  const renderInputList = useCallback(() => {
-    console.log('rendering fields list !', inputs);
-    return inputs.map((input) => <Input onUpdate={updateField} key={input.id} field={input} />);
-  }, [updateField, inputs]);
-
-  return (
-    <>
-      <h1>{title}</h1>
-      {renderInputList()}
-      <button onClick={send}></button>
-    </>
+  const { fields, send: sendSurvey } = useSurvey();
+  return !isDefined(fields) ? null : (
+    <div style={Style.container}>
+      {fields.map((field) => (
+        <Field key={field.id} field={field} />
+      ))}
+      <button style={{ marginTop: '3rem' }} onClick={sendSurvey}>
+        valider
+      </button>
+    </div>
   );
 }
 
-Survey.propTypes = {
-  configuration: Interface.configuration,
+const Style = {
+  container: {
+    border: '1px solid grey',
+    width: 'min(90%, 1020px)',
+    marginInline: 'auto',
+    borderRadius: '.5rem',
+  },
 };

@@ -15,8 +15,9 @@ import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { SurveyProvider } from '../../Survey/SurveyProvider';
+import Survey from '../../Survey/Survey';
 // eslint-disable-next-line import/no-unresolved
-import SurveyProvider from '../../contexts/SurveyContext';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
