@@ -30,9 +30,20 @@ const getFilters = (utils) => [
   {
     test: ({ name }) => name === 'a',
     process: (props) => {
-      props.attribs = { ...props.attribs, onClick: new Function(props.attribs.onclick) };
+      // reword('coucou c'est par ici', {...}) => reword("coucou c'est par ici", {..});
+      //        ^--------------------^                   ^--------------------^
+      props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
+      props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
       delete props.attribs.onclick;
-      return <a {...props.attribs}>{props.children}</a>;
+      return <a {...props.attribsk}>{props.children}</a>;
     },
   },
 ];
+
+const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
+  const startPos = s.indexOf("'") + 1;
+  const endPos = s.lastIndexOf("'");
+  const string = s.substring(startPos, endPos);
+  const final = `"${string}"`;
+  return s.replace(/'.*'/, final);
+};
