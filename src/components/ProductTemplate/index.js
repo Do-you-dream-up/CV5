@@ -1,6 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useMemo, useContext, useEffect, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import ReadMore from '../ReadMore';
 import useStyles from './styles';
@@ -13,8 +13,8 @@ const READ_MORE_CARACTERS_TEXT = {
 export default function ProductTemplate({ classe = null, html }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
-  const { product, text } = JSON.parse(html);
-  const strippedString = product.subtitle ? product.subtitle.replace(/(<([^>]+)>)/gi, '') : null;
+  const { product, text } = JSON.parse(html || '{}');
+  const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);
   const [isTruncated, setIsTruncated] = useState(true);
@@ -31,6 +31,8 @@ export default function ProductTemplate({ classe = null, html }) {
   const toggleIsTruncated = () => {
     setIsTruncated(!isTruncated);
   };
+
+  if (!isDefined(product)) return null;
 
   return (
     <div className={classe || c('dydu-product-template', classes.root)}>
