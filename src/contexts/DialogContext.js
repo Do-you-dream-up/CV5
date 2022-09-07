@@ -338,7 +338,12 @@ export function DialogProvider({ children }) {
     if (secondaryActive) toggleSecondary(false)();
   }, [secondaryActive, toggleSecondary]);
 
-  const openSecondary = useCallback((...props) => toggleSecondary(...[true].concat(props))(), [toggleSecondary]);
+  const openSecondary = useCallback(
+    (...props) => {
+      if (!secondaryActive) toggleSecondary(...[true].concat(props))();
+    },
+    [secondaryActive, toggleSecondary],
+  );
 
   return (
     <DialogContext.Provider

@@ -29,20 +29,25 @@ export const SurveyProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (!isDefined(survey?.fields)) return;
+    if (!isDefined(survey?.fields)) return setFields(null);
     const { fields, addrToField } = parseFields(survey.fields);
     setFields(fields);
     setAddrToField(addrToField);
   }, [survey]);
 
+  const canShowSurvey = useMemo(
+    () => isDefined(survey) && isDefined(survey?.fields) && survey.fields.length > 0,
+    [survey],
+  );
+
   useEffect(() => {
-    if (isDefined(fields) && fields.length > 0) {
+    if (canShowSurvey) {
       openSecondary({
         title: survey?.title,
         bodyRenderer: () => <Survey />,
       });
     }
-  }, [survey, fields, openSecondary]);
+  }, [canShowSurvey, fields, openSecondary, closeSecondary, survey?.title]);
 
   const getFieldById = useCallback((id) => addrToField[id], [addrToField]);
 
@@ -52,7 +57,6 @@ export const SurveyProvider = ({ children }) => {
 
   const surveyAnswerRemoveList = useCallback(
     (ids = []) => {
-      console.log('ids ', ids);
       ids.forEach(surveyAnswerRemove);
     },
     [surveyAnswerRemove],
@@ -75,12 +79,6 @@ export const SurveyProvider = ({ children }) => {
     (id, updates, idListConcurent = []) => {
       surveyAnswerRemoveList(idListConcurent);
       surveyAnswerSave(id, updates);
-      console.log('update field', {
-        id,
-        updates,
-        idListConcurent,
-        result: surveyAnswer.current,
-      });
     },
     [surveyAnswerRemoveList, surveyAnswerSave],
   );
