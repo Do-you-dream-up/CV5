@@ -1,10 +1,12 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useMemo, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
 import ReadMore from '../ReadMore';
-import useStyles from './styles';
+import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { upercaseFirstLetter } from '../../tools/text';
+import useStyles from './styles';
 
 const READ_MORE_CARACTERS_TEXT = {
   readmore: 85,
@@ -42,7 +44,7 @@ export default function ProductTemplate({ classe = null, html }) {
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          <h3> {product.title} </h3>
+          <h3>{upercaseFirstLetter(product.title)}</h3>
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore
