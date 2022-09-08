@@ -16,8 +16,7 @@ import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { SurveyProvider } from '../../Survey/SurveyProvider';
-import Survey from '../../Survey/Survey';
-// eslint-disable-next-line import/no-unresolved
+import dydu from '../../tools/dydu';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -93,7 +92,7 @@ export default function Application() {
         <DialogProvider onPushrulesDataReceived={popinChatbox}>
           <AuthContext>
             <Authenticated>
-              <SurveyProvider>
+              <SurveyProvider api={dydu}>
                 <LivechatProvider>
                   <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
                 </LivechatProvider>

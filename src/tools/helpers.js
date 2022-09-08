@@ -49,11 +49,14 @@ export function b64decode(str) {
   );
 }
 
-export const isArray = (s) => Object.prototype.toString.call(s) === '[object Array]';
 export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[object String]';
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
 export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[object Function]';
+
+// aliases
+export const isFunction = isOfTypeFunction;
+export const isArray = isOfTypeArray;
 
 export const isOfType = (val, type) => {
   if (!isDefined(VAR_TYPE[type])) throw new Error('unknown type: type ' + type + ' is not in contant VAR_TYPE');

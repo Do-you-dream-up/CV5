@@ -24,6 +24,15 @@ const getPayloadCommonContentBase64Encoded = () => {
 const nowTime = () => new Date().getTime();
 
 const LivechatPayloadCreator = {
+  userSurveyAnswers: (surveyAnswer) => ({
+    type: 'survey',
+    parameters: {
+      ...getPayloadCommonContentBase64Encoded(),
+      surveyId: surveyAnswer.id,
+      //interactionSurveyAnswer: surveyConfiguration.interactionSurvey,
+      fields: surveyAnswer,
+    },
+  }),
   userTypingMessage: (userInput = '') => ({
     type: 'typing',
     parameters: {

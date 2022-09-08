@@ -44,7 +44,7 @@ InputText.formatProps = (field, onChange) => {
 };
 
 InputText.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.number,
   label: PropTypes.string,
   required: PropTypes.bool,
   onChange: PropTypes.func,

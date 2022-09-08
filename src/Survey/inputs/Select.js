@@ -48,7 +48,7 @@ Select.formatProps = (field, onSelect) => {
 };
 
 Select.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.number,
   label: PropTypes.string,
   required: PropTypes.bool,
   onSelect: PropTypes.func,

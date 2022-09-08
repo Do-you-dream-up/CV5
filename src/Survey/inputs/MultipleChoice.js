@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 
 export default function MultipleChoice({ field, onChange }) {
   const onChildrenChange = useCallback(
-    (childId, value, ...rest) => {
-      onChange(childId, value, ...rest);
+    (selectedChild, value, children) => {
+      const props = { selectedChild, value, children };
+      console.log('onChildren change', props);
+      onChange(selectedChild, value, children);
     },
     [onChange],
   );
@@ -16,14 +18,18 @@ export default function MultipleChoice({ field, onChange }) {
     [field, onChildrenChange],
   );
 
+  const getFieldGroupManagerOrNull = useCallback(() => {
+    return SurveyProvider.helper.getTypeComponent(field.children[0])?.GroupManager;
+  }, [field?.children]);
+
   const renderChoices = useCallback(() => {
-    const GroupManager = SurveyProvider.helper.getTypeComponent(field.children[0])?.GroupManager;
+    const GroupManager = getFieldGroupManagerOrNull();
     return !GroupManager ? (
       listInputChoice
     ) : (
       <GroupManager onItemChange={onChildrenChange}>{listInputChoice}</GroupManager>
     );
-  }, [field, listInputChoice, onChildrenChange]);
+  }, [getFieldGroupManagerOrNull, listInputChoice, onChildrenChange]);
 
   return (
     <>
@@ -41,6 +47,6 @@ MultipleChoice.formatProps = (field, onChange = () => {}) => {
 };
 
 MultipleChoice.propTypes = {
-  field: PropTypes.string,
+  field: PropTypes.object,
   onChange: PropTypes.func,
 };

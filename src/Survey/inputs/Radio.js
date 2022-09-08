@@ -14,7 +14,7 @@ export default function Radio({ id, label, required, onCheck, groupManager }) {
       id: id,
       name: label,
       value: id,
-      onClick: toggleCheck,
+      onChange: toggleCheck,
     };
     _props.checked = groupManager.currentCheck === id;
     return _props;
@@ -77,7 +77,7 @@ Radio.GroupManager = GroupManager;
 const extractIdPropFromReactComponent = (c) => c?.props?.data?.id;
 
 Radio.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.number,
   label: PropTypes.string,
   required: PropTypes.bool,
   onCheck: PropTypes.func,

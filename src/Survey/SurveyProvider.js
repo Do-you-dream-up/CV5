@@ -6,14 +6,14 @@ import PropTypes from 'prop-types';
 import { useDialog } from '../contexts/DialogContext';
 import dydu from '../tools/dydu';
 import Survey from './Survey';
-
-const fetchSurveyConfigById = dydu.getSurvey;
+import { Observable } from '../enities/Observable';
 
 const SurveyContext = createContext({});
 
 export const useSurvey = () => useContext(SurveyContext);
 
-export const SurveyProvider = ({ children }) => {
+export const SurveyProvider = ({ children, api }) => {
+  let observableInstance = useRef(new Observable());
   const { openSecondary, closeSecondary } = useDialog();
   const [fields, setFields] = useState(null);
   const [addrToField, setAddrToField] = useState(null);
@@ -23,9 +23,9 @@ export const SurveyProvider = ({ children }) => {
   const showSurvey = useCallback(
     (data) => {
       const id = extractId(data);
-      if (!isDefined(survey)) fetchSurveyConfigById(id).then(setSurvey);
+      if (!isDefined(survey)) api.getSurvey(id).then(setSurvey);
     },
-    [survey],
+    [api, survey],
   );
 
   useEffect(() => {
@@ -41,6 +41,14 @@ export const SurveyProvider = ({ children }) => {
   );
 
   useEffect(() => {
+    return () => {
+      observableInstance.current.removeAll();
+      observableInstance.current = null;
+      _ADDR_TO_FIELD = null;
+    };
+  }, []);
+
+  useEffect(() => {
     if (canShowSurvey) {
       openSecondary({
         title: survey?.title,
@@ -52,12 +60,15 @@ export const SurveyProvider = ({ children }) => {
   const getFieldById = useCallback((id) => addrToField[id], [addrToField]);
 
   const surveyAnswerRemove = useCallback((id) => {
+    console.log('removing', id);
     delete surveyAnswer.current[id];
   }, []);
 
   const surveyAnswerRemoveList = useCallback(
     (ids = []) => {
+      console.log('before remove ', surveyAnswer.current);
       ids.forEach(surveyAnswerRemove);
+      console.log('after remove ', surveyAnswer.current);
     },
     [surveyAnswerRemove],
   );
@@ -76,8 +87,9 @@ export const SurveyProvider = ({ children }) => {
   );
 
   const updateField = useCallback(
-    (id, updates, idListConcurent = []) => {
-      surveyAnswerRemoveList(idListConcurent);
+    (id, updates, childrenIdList = []) => {
+      const parentField = getFieldById(id);
+      if (isDefined()) surveyAnswerRemoveList(childrenIdList);
       surveyAnswerSave(id, updates);
     },
     [surveyAnswerRemoveList, surveyAnswerSave],
@@ -95,14 +107,49 @@ export const SurveyProvider = ({ children }) => {
 
   const flushSurvey = useCallback(() => setSurvey(null), []);
 
+  useEffect(() => console.log('survey ?', survey), [survey]);
+
+  const getSurveyAnswerCompleteWithMeta = useCallback(() => {
+    return {
+      ...surveyAnswer.current,
+      id: survey.surveyId,
+    };
+  }, [survey]);
+
+  const notifyObservers = useCallback((surveyPayload) => {
+    const observable = observableInstance.current;
+    const hasObservers = !observable.isEmpty();
+    if (hasObservers) observable.notify(surveyPayload);
+    return hasObservers;
+  }, []);
+
+  const validateSurveyForm = useCallback(() => {
+    const surveyFormObject = surveyAnswer.current;
+    console.log('validating !', surveyFormObject);
+  }, []);
+
   const send = useCallback(() => {
     console.log('answer sumary', surveyAnswer.current);
+    validateSurveyForm();
+    const payload = getSurveyAnswerCompleteWithMeta();
+    const hasObservers = notifyObservers(payload);
+    if (!hasObservers) console.log('no observers !');
     flushSurvey();
     closeSecondary();
-  }, [flushSurvey, closeSecondary]);
+  }, [validateSurveyForm, getSurveyAnswerCompleteWithMeta, notifyObservers, flushSurvey, closeSecondary]);
+
+  const removeSurveySubmitObserver = useCallback((key) => {
+    observableInstance.current.remove(key);
+  }, []);
+
+  const addSurveySubmitObserver = useCallback((key, callback) => {
+    observableInstance.current.add(Observable.createObserver(key, callback));
+  }, []);
 
   const context = useMemo(
     () => ({
+      removeSurveySubmitObserver,
+      addSurveySubmitObserver,
       send,
       getFieldSlaves,
       getFieldById,
@@ -110,7 +157,16 @@ export const SurveyProvider = ({ children }) => {
       fields,
       updateField,
     }),
-    [send, getFieldById, getFieldSlaves, showSurvey, fields, updateField],
+    [
+      removeSurveySubmitObserver,
+      addSurveySubmitObserver,
+      send,
+      getFieldById,
+      getFieldSlaves,
+      showSurvey,
+      fields,
+      updateField,
+    ],
   );
 
   return <SurveyContext.Provider value={context}>{children}</SurveyContext.Provider>;
@@ -129,10 +185,10 @@ SurveyProvider.helper = {
   },
 };
 
-let _addrToField = {};
+let _ADDR_TO_FIELD = {};
 const _saveItem = (item) => {
-  const alreadySaved = () => isDefined(_addrToField[item.id]);
-  if (!alreadySaved()) _addrToField[item.id] = item;
+  const alreadySaved = () => isDefined(_ADDR_TO_FIELD[item.id]);
+  if (!alreadySaved()) _ADDR_TO_FIELD[item.id] = item;
 };
 
 const saveItem = (item) => {
@@ -141,14 +197,14 @@ const saveItem = (item) => {
 };
 
 const flatMapByIdFromList = (list) => {
-  if (isEmptyObject(_addrToField)) return;
+  if (isEmptyObject(_ADDR_TO_FIELD)) return;
   for (let item of list) saveItem(item);
 };
 
 const parseFields = (fields) => {
   flatMapByIdFromList(fields);
   return {
-    addrToField: Object.create(_addrToField),
+    addrToField: Object.create(_ADDR_TO_FIELD),
     fields: fields.reduce(reducerReplaceIdReferencesByEntity, []),
   };
 };
@@ -172,7 +228,7 @@ const reducerReplaceIdReferencesByEntity = (storeList, field) => {
   if (ids.length > 0)
     field.masterOf = ids.map((id) => {
       saveReplaced(id);
-      return _addrToField[id];
+      return _ADDR_TO_FIELD[id];
     });
 
   storeList.push(field);
@@ -183,4 +239,5 @@ const extractId = (data) => data?.values?.survey?.fromBase64();
 
 SurveyProvider.propTypes = {
   children: PropTypes.element,
+  api: PropTypes.object.isRequired,
 };

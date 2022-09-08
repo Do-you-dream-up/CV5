@@ -42,7 +42,7 @@ Checkbox.formatProps = (field, onCheck) => {
 };
 
 Checkbox.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.number,
   label: PropTypes.string,
   required: PropTypes.bool,
   onCheck: PropTypes.func,

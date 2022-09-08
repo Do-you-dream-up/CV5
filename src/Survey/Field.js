@@ -18,7 +18,8 @@ export default function Field({ field }) {
   const onFieldChange = useCallback(
     (id, value, ...rest) => {
       console.log('Field: field changed', id, value);
-      if (!isDefined(id) || isEmptyString(id)) {
+      const isIdValidId = isDefined(id) && !isEmptyString(id);
+      if (!isIdValidId) {
         return setSlaves(null);
       }
       const _slaves = getFieldSlaves(value);

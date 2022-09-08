@@ -8,6 +8,7 @@ import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
 import { useSurvey } from '../Survey/SurveyProvider';
+import LivechatPayload from '../tools/LivechatPayload';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -23,12 +24,14 @@ const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
 const containsStartLivechatSpecialAction = (response) => response?.specialAction?.equals('StartPolling');
 
+const LIVECHAT_KEY_OBSERVER = 'livechat';
+
 export function LivechatProvider({ children }) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
-  const { showSurvey } = useSurvey();
+  const { showSurvey, removeSurveySubmitObserver, addSurveySubmitObserver } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
@@ -113,6 +116,19 @@ export function LivechatProvider({ children }) {
   useEffect(() => {
     if (shouldStartLivechat) startLivechat();
   }, [shouldStartLivechat, startLivechat]);
+
+  useEffect(() => {
+    if (isLivechatOn) {
+      addSurveySubmitObserver(LIVECHAT_KEY_OBSERVER, (survey) => {
+        const payload = LivechatPayload.create.userSurveyAnswers(survey);
+        console.log('notify received by livechat context !', { survey, payload });
+      });
+    } else {
+      removeSurveySubmitObserver(LIVECHAT_KEY_OBSERVER);
+    }
+
+    return () => removeSurveySubmitObserver(LIVECHAT_KEY_OBSERVER);
+  }, [addSurveySubmitObserver, isLivechatOn, removeSurveySubmitObserver]);
 
   useEffect(() => {
     if (!isQueueEmpty && isDefined(tunnel?.send)) tunnel.send(pop());
