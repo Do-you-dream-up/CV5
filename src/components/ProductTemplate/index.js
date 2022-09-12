@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReadMore from '../ReadMore';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
-import { upercaseFirstLetter } from '../../tools/text';
+import { uppercaseFirstLetter } from '../../tools/text';
 import useStyles from './styles';
 
 const READ_MORE_CARACTERS_TEXT = {
@@ -44,7 +44,7 @@ export default function ProductTemplate({ classe = null, html }) {
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          <h3>{upercaseFirstLetter(product.title)}</h3>
+          <h3>{uppercaseFirstLetter(product.title)}</h3>
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore
