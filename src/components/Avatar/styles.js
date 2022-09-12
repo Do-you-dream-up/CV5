@@ -1,8 +1,9 @@
 import { createUseStyles } from 'react-jss';
+import { isDefined } from '../../tools/helpers';
 
 export default createUseStyles((theme) => ({
-  background: ({ color = 'primary' }) => ({
-    backgroundColor: `${theme.palette[color].main}33`,
+  background: ({ color }) => ({
+    backgroundColor: isDefined(color) ? `${theme.palette[color].main}33` : 'transparent',
   }),
   base: () => ({
     '& > *': {
