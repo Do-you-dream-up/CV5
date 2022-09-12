@@ -132,6 +132,10 @@ export function DialogProvider({ children }) {
 
   const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList = []) => {
     return propsList.map((interactionAttributeObject, index) => {
+      console.log(
+        '🚀 ~ file: DialogContext.js ~ line 135 ~ returnpropsList.map ~ interactionAttributeObject',
+        interactionAttributeObject,
+      );
       const props = {
         type: 'response',
         ...interactionAttributeObject,

@@ -41,9 +41,9 @@ const getFilters = (utils) => [
 ];
 
 const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
-  const startPos = s.indexOf("'") + 1;
-  const endPos = s.lastIndexOf("'");
-  const string = s.substring(startPos, endPos);
+  const startPos = s?.indexOf("'") + 1;
+  const endPos = s?.lastIndexOf("'");
+  const string = s?.substring(startPos, endPos);
   const final = `"${string}"`;
-  return s.replace(/'.*'/, final);
+  return s?.replace(/'.*'/, final);
 };
