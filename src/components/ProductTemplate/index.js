@@ -35,7 +35,7 @@ export default function ProductTemplate({ classe = null, html }) {
   };
 
   if (!isDefined(product)) return null;
-
+  const productTitle = uppercaseFirstLetter(product.title);
   return (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
@@ -44,7 +44,7 @@ export default function ProductTemplate({ classe = null, html }) {
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          <h3>{uppercaseFirstLetter(product.title)}</h3>
+          {productTitle && <h3>{productTitle}</h3>}
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore
