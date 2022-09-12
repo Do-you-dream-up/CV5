@@ -7,6 +7,7 @@ export default createUseStyles({
     },
     display: 'flex',
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   arrowButtonRight: {
     '& .dydu-button-icon': {
