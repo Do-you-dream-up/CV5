@@ -15,8 +15,8 @@
     },
     "response": {
       "enable": true,
-      "background": true,
-      "image": "tiny-icon.svg"
+      "background": false,
+      "image": "dydu-logo.svg"
     },
     "teaser": {
       "background": false,
