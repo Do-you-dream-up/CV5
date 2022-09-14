@@ -1,15 +1,17 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
-import { useSwipeable } from 'react-swipeable';
+
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import Actions from '../Actions';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { useDebounce } from 'react-use';
 import useStyles from './styles';
+import { useSwipeable } from 'react-swipeable';
+import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/viewport';
 
 /**
  * Typically used with the `Interaction` component.
@@ -24,6 +26,7 @@ export default function Carousel({ children, className, steps, templatename, ...
   const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const [index, setIndex] = useState(0);
+  const [isReady, setIsReady] = useState(false);
   const [step, setStep] = useState(steps ? steps[0] : 0);
   const { t } = useTranslation('translation');
   const previous = t('carousel.previous');
@@ -87,37 +90,47 @@ export default function Carousel({ children, className, steps, templatename, ...
     }
   }, [index, steps, step, automaticSecondary, onToggle]);
 
+  useDebounce(
+    () => {
+      setIsReady(true);
+    },
+    700,
+    [children],
+  );
+
   return (
-    <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div children={children} className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
-        {children.map((it, i) => (
-          <div
-            children={it}
-            className={c('dydu-carousel-step', classes.step, templatename && classes.stepTemplate)}
-            key={i}
-          />
-        ))}
-      </div>
-      {!!hasBullets && length > 0 && (
-        <div className={c('dydu-carousel-bullets', classes.bullets)}>
+    isReady && (
+      <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
+        <div children={children} className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
           {children.map((it, i) => (
             <div
-              className={c('dydu-carousel-bullet', {
-                [classes.active]: i === index,
-              })}
+              children={it}
+              className={c('dydu-carousel-step', classes.step, templatename && classes.stepTemplate)}
               key={i}
-              onClick={() => setIndex(i)}
             />
           ))}
         </div>
-      )}
-      {!!hasControls && length > 1 && (
-        <>
-          <Actions actions={previousAction} targetStyleKey="arrowButtonLeft" />
-          <Actions actions={nextAction} targetStyleKey="arrowButtonRight" />
-        </>
-      )}
-    </div>
+        {!!hasBullets && length > 0 && (
+          <div className={c('dydu-carousel-bullets', classes.bullets)}>
+            {children.map((it, i) => (
+              <div
+                className={c('dydu-carousel-bullet', {
+                  [classes.active]: i === index,
+                })}
+                key={i}
+                onClick={() => setIndex(i)}
+              />
+            ))}
+          </div>
+        )}
+        {!!hasControls && length > 1 && (
+          <>
+            <Actions actions={previousAction} targetStyleKey="arrowButtonLeft" />
+            <Actions actions={nextAction} targetStyleKey="arrowButtonRight" />
+          </>
+        )}
+      </div>
+    )
   );
 }
 

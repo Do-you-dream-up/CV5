@@ -1,22 +1,23 @@
-import DotLoader from 'react-spinners/BeatLoader';
-import c from 'classnames';
-import PropTypes from 'prop-types';
+import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
+import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import sanitize from '../../tools/sanitize';
-import Bubble from '../Bubble';
-import Carousel from '../Carousel';
-import Feedback from '../Feedback';
-import Loader from '../Loader';
-import Scroll from '../Scroll';
-import useStyles from './styles';
+import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+
 import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
-import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
-import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
-import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+import Bubble from '../Bubble';
+import Carousel from '../Carousel';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import DotLoader from 'react-spinners/BeatLoader';
+import Feedback from '../Feedback';
+import Loader from '../Loader';
+import PropTypes from 'prop-types';
+import Scroll from '../Scroll';
+import c from 'classnames';
+import sanitize from '../../tools/sanitize';
 import { useLivechat } from '../../contexts/LivechatContext';
+import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+import useStyles from './styles';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -276,9 +277,12 @@ export default function Interaction({
       templatename: templatename,
     };
 
-    if (isCarousel) return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
+    if (isCarousel && ready) {
+      return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
+    }
+
     return <div {...wrapperProps}>{bubbleList}</div>;
-  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
+  }, [bubbleList, classes.bubbles, isCarousel, steps, ready, templatename]);
 
   return (
     (bubbles.length || hasLoader) && (
