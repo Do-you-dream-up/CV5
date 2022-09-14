@@ -277,12 +277,10 @@ export default function Interaction({
       templatename: templatename,
     };
 
-    if (isCarousel && ready) {
-      return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
-    }
+    if (isCarousel) return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
 
     return <div {...wrapperProps}>{bubbleList}</div>;
-  }, [bubbleList, classes.bubbles, isCarousel, steps, ready, templatename]);
+  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
 
   return (
     (bubbles.length || hasLoader) && (
