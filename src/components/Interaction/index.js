@@ -1,22 +1,23 @@
-import DotLoader from 'react-spinners/BeatLoader';
-import c from 'classnames';
-import PropTypes from 'prop-types';
+import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
+import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import sanitize from '../../tools/sanitize';
-import Bubble from '../Bubble';
-import Carousel from '../Carousel';
-import Feedback from '../Feedback';
-import Loader from '../Loader';
-import Scroll from '../Scroll';
-import useStyles from './styles';
+import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+
 import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
-import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
-import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
-import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+import Bubble from '../Bubble';
+import Carousel from '../Carousel';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import DotLoader from 'react-spinners/BeatLoader';
+import Feedback from '../Feedback';
+import Loader from '../Loader';
+import PropTypes from 'prop-types';
+import Scroll from '../Scroll';
+import c from 'classnames';
+import sanitize from '../../tools/sanitize';
 import { useLivechat } from '../../contexts/LivechatContext';
+import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
+import useStyles from './styles';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -230,7 +231,11 @@ export default function Interaction({
   }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes, type]);
 
   const _Feedback = useMemo(() => {
-    return !hasLoader && askFeedback ? <Feedback /> : null;
+    return !hasLoader && askFeedback ? (
+      <Scroll>
+        <Feedback />
+      </Scroll>
+    ) : null;
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
@@ -256,13 +261,9 @@ export default function Interaction({
       };
 
       return (
-        <Bubble
-          className={classes.bubble}
-          hasExternalLink={hasExternalLink}
-          key={index}
-          templatename={templatename}
-          {...attributes}
-        />
+        <Scroll key={index} className={classes.bubble}>
+          <Bubble hasExternalLink={hasExternalLink} templatename={templatename} {...attributes} />
+        </Scroll>
       );
     });
   }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);
