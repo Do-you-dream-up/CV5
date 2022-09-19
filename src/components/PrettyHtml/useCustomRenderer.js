@@ -7,13 +7,25 @@ export default function useCustomRenderer() {
 
   return {
     replace: (props) => {
-      const filter = getFilters({ setZoomSrc }).find((filter) => filter.test(props));
-      return filter?.process(props);
+      // const filter = getFilters({ setZoomSrc }).find((filter) => filter.test(props)); // TODO : Corriger le case du zoom
+      getFilters({ setZoomSrc }).forEach((filter) => {
+        const { test, process } = filter;
+        return test(props) && process(props);
+      });
     },
   };
 }
 
 const getFilters = (utils) => [
+  {
+    test: ({ name }) => name === 'a',
+    process: (props) => {
+      props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
+      props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
+      delete props.attribs.onclick;
+      return <a {...props.attribsk}>{props.children}</a>;
+    },
+  },
   {
     test: ({ name }) => name === 'img',
     process: (props) => {
@@ -23,15 +35,6 @@ const getFilters = (utils) => [
           <img src={attribs?.src} />
         </div>
       );
-    },
-  },
-  {
-    test: ({ name }) => name === 'a',
-    process: (props) => {
-      props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
-      props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
-      delete props.attribs.onclick;
-      return <a {...props.attribsk}>{props.children}</a>;
     },
   },
 ];
