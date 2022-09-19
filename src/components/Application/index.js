@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
+
 import '../../../public/override/style.css';
 
 import React, { Suspense, useContext, useEffect } from 'react';
@@ -55,9 +56,9 @@ export default function Application() {
 
   let customFont = configuration.font.url;
 
-  const hasAuthStorageCheck = configuration.checkAuthorization && configuration.checkAuthorization.active;
-  const sessionStorageKey = configuration.checkAuthorization && configuration.checkAuthorization.sessionStorageKey;
-  const searchKey = configuration.checkAuthorization && configuration.checkAuthorization.searchKey;
+  const hasAuthStorageCheck = configuration.checkAuthorization?.active;
+  const sessionStorageKey = configuration.checkAuthorization?.sessionStorageKey;
+  const searchKey = configuration.checkAuthorization?.searchKey;
 
   //const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
 

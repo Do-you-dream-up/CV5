@@ -233,7 +233,11 @@ export default function Interaction({
   }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes, type]);
 
   const _Feedback = useMemo(() => {
-    return !hasLoader && askFeedback ? <Feedback /> : null;
+    return !hasLoader && askFeedback ? (
+      <Scroll>
+        <Feedback />
+      </Scroll>
+    ) : null;
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
@@ -259,13 +263,9 @@ export default function Interaction({
       };
 
       return (
-        <Bubble
-          className={classes.bubble}
-          hasExternalLink={hasExternalLink}
-          key={index}
-          templatename={templatename}
-          {...attributes}
-        />
+        <Scroll key={index} className={classes.bubble}>
+          <Bubble hasExternalLink={hasExternalLink} templatename={templatename} {...attributes} />
+        </Scroll>
       );
     });
   }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);

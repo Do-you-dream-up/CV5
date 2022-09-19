@@ -30,6 +30,10 @@ export default createUseStyles((theme) => ({
       display: 'block',
       maxWidth: '100%',
     },
+    '& p > img': {
+      display: 'inline-block',
+      maxWidth: '100%',
+    },
     fontFamily: theme.font.sansSerif,
   }),
 }));
