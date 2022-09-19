@@ -7,10 +7,8 @@ export default function useCustomRenderer() {
 
   return {
     replace: (props) => {
-      getFilters({ setZoomSrc }).forEach((filter) => {
-        const { test, process } = filter;
-        return test(props) && process(props);
-      });
+      const filter = getFilters({ setZoomSrc }).find((filter) => filter.test(props));
+      return filter?.process(props);
     },
   };
 }
