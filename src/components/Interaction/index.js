@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
@@ -109,6 +110,7 @@ export default function Interaction({
   const [bubbles, setBubbles] = useState([]);
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
+  const [readyCarousel, setReadyCarousel] = useState(false);
   const [hasExternalLink, setHasExternalLink] = useState(false);
   const { isLivechatOn } = useLivechat();
 
@@ -268,6 +270,14 @@ export default function Interaction({
     });
   }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);
 
+  useDebounce(
+    () => {
+      setReadyCarousel(true);
+    },
+    700,
+    [bubbleList],
+  );
+
   const ListBubble = useMemo(() => {
     if (!isDefined(bubbleList)) return null;
 
@@ -277,12 +287,15 @@ export default function Interaction({
       templatename: templatename,
     };
 
-    if (isCarousel) return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
+    if (isCarousel) {
+      return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
+    }
+
     return <div {...wrapperProps}>{bubbleList}</div>;
   }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
 
   return (
-    (bubbles.length || hasLoader) && (
+    ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
       <div
         className={c(
           'dydu-interaction',

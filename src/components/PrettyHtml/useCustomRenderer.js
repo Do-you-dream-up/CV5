@@ -30,8 +30,6 @@ const getFilters = (utils) => [
   {
     test: ({ name }) => name === 'a',
     process: (props) => {
-      // reword('coucou c'est par ici', {...}) => reword("coucou c'est par ici", {..});
-      //        ^--------------------^                   ^--------------------^
       props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
       props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
       delete props.attribs.onclick;
