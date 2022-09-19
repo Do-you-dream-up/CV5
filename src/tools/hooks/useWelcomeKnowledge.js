@@ -1,22 +1,22 @@
-import { useCallback, useMemo, useState } from 'react';
 import { isDefined, isEmptyString } from '../helpers';
+import { useCallback, useMemo, useState } from 'react';
+
 import dydu from '../dydu';
-import { useLivechat } from '../../contexts/LivechatContext';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 export default function useWelcomeKnowledge() {
-  const { isMinimize } = useViewMode();
   const [result, setResult] = useState(null);
 
   const { configuration } = useConfiguration();
   const { isLivechatOn } = useLivechat();
   const tagWelcome = configuration.welcome?.knowledgeName || null;
+
   const tagWelcomeNotSet = useMemo(() => !isDefined(tagWelcome) || isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
-    return isDefined(result) || isMinimize || isLivechatOn || tagWelcomeNotSet;
-  }, [isMinimize, isLivechatOn, result, tagWelcomeNotSet]);
+    return isDefined(result) || isLivechatOn || !tagWelcomeNotSet;
+  }, [isLivechatOn, result, tagWelcomeNotSet]);
 
   const fetch = useCallback(() => {
     const cannotRequest = !canRequest;
