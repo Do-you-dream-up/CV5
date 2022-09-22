@@ -63,7 +63,6 @@ export default createUseStyles((theme) => ({
       },
       'h1, h2, h3, h4, h5, h6': {
         fontWeight: 'normal',
-        textTransform: 'capitalize',
       },
       img: {
         display: 'block',
@@ -77,9 +76,6 @@ export default createUseStyles((theme) => ({
         paddingLeft: '1.4em',
       },
     },
-    // 'alignItems': 'center',
-    display: 'flex',
-    flexDirection: 'column',
     height: '100%',
   },
   srOnly: {

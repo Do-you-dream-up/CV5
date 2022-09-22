@@ -31,7 +31,7 @@
     "no-empty": ["warn", { "allowEmptyCatch": true }],
     "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
     "react/no-children-prop": 0,
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "off",
     "react-hooks/rules-of-hooks": "warn"
   },
   "settings": {

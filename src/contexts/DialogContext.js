@@ -65,6 +65,7 @@ export function DialogProvider({ children }) {
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+
   const { exec, forceExec } = usePromiseQueue([fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory]);
   const [pushrules, setPushrules] = useState(null);
 
@@ -73,10 +74,11 @@ export function DialogProvider({ children }) {
   const { transient: secondaryTransient } = configuration.secondary;
 
   const triggerPushRule = useCallback(() => {
-    if (isDefined(pushrules)) return;
-    fetchPushrules().then((rules) => {
-      setPushrules(rules);
-    });
+    if (isDefined(pushrules)) {
+      fetchPushrules().then((rules) => {
+        setPushrules(rules);
+      });
+    }
   }, [pushrules]);
 
   useEffect(() => {

@@ -1,15 +1,16 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
-import { useSwipeable } from 'react-swipeable';
+
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import Actions from '../Actions';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import useStyles from './styles';
+import { useSwipeable } from 'react-swipeable';
+import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/viewport';
 
 /**
  * Typically used with the `Interaction` component.

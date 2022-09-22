@@ -9,3 +9,4 @@ src/.DS_Store
 .vscode/
 /.ssh/
 coverage/
+.vscode/

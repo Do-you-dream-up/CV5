@@ -1,10 +1,12 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
 import ReadMore from '../ReadMore';
-import useStyles from './styles';
+import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { uppercaseFirstLetter } from '../../tools/text';
+import useStyles from './styles';
 
 const READ_MORE_CARACTERS_TEXT = {
   readmore: 85,
@@ -13,8 +15,8 @@ const READ_MORE_CARACTERS_TEXT = {
 export default function ProductTemplate({ classe = null, html }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles({ configuration });
-  const { product, text } = JSON.parse(html);
-  const strippedString = product.subtitle ? product.subtitle.replace(/(<([^>]+)>)/gi, '') : null;
+  const { product, text } = JSON.parse(html || '{}');
+  const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);
   const [isTruncated, setIsTruncated] = useState(true);
@@ -32,6 +34,8 @@ export default function ProductTemplate({ classe = null, html }) {
     setIsTruncated(!isTruncated);
   };
 
+  if (!isDefined(product)) return null;
+  const productTitle = uppercaseFirstLetter(product.title);
   return (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
@@ -40,7 +44,7 @@ export default function ProductTemplate({ classe = null, html }) {
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          <h3> {product.title} </h3>
+          {productTitle && <h3>{productTitle}</h3>}
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore

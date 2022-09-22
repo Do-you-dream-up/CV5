@@ -1,8 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+
 import Button from '../Button';
 import Menu from '../Menu';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import useStyles from './styles';
 
 /**

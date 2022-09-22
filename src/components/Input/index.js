@@ -1,20 +1,21 @@
-import Voice from '../../modulesApi/VoiceModuleApi';
-import c from 'classnames';
-import PropTypes from 'prop-types';
+import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+
+import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';
-import { useTranslation } from 'react-i18next';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import { EventsContext, useEvent } from '../../contexts/EventsContext';
-import dydu from '../../tools/dydu';
-import useDebounce from '../../tools/hooks/debounce';
 // eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
+import PropTypes from 'prop-types';
+import Voice from '../../modulesApi/VoiceModuleApi';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
-import Actions from '../Actions';
-import useStyles from './styles';
+import useDebounce from '../../tools/hooks/debounce';
 import { useLivechat } from '../../contexts/LivechatContext';
+import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
@@ -41,6 +42,8 @@ export default function Input({ onRequest, onResponse }) {
   // eslint-disable-next-line no-unused-vars
   const [increment, setIncrement] = useState();
   const { event: chatbotEvent } = useEvent();
+
+  const voice = configuration.Voice ? configuration.Voice.enable : false;
 
   let incrementToUpdateRefOnRender = 0;
 
@@ -192,7 +195,7 @@ export default function Input({ onRequest, onResponse }) {
         suggestions={suggestions}
         theme={theme}
       />
-      {Voice.isEnabled && counter === maxLength ? (
+      {Voice.isEnabled && voice && counter === maxLength ? (
         <Voice
           DialogContext={DialogContext}
           configuration={configuration}

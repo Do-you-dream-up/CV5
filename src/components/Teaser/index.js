@@ -12,7 +12,7 @@ import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
-//import-voice
+import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -32,17 +32,17 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
+  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
 
-  // const teaserAvatar = configuration.avatar?.teaser?.image;
-  const teaserAvatarBackground = configuration.avatar?.teaser?.background;
-  const responseImage = configuration.avatar?.response?.image;
+  const teaserAvatar = configuration.avatar?.teaser?.image || configuration.avatar?.response?.image;
+  const teaserAvatarBackground = configuration.avatar?.teaser?.background || configuration.avatar?.response?.background;
 
-  const logoTeaser = responseImage?.includes('base64')
-    ? responseImage
-    : `${process.env.PUBLIC_URL}assets/${responseImage}`;
+  const logoTeaser = teaserAvatar?.includes('base64')
+    ? teaserAvatar
+    : `${process.env.PUBLIC_URL}assets/${teaserAvatar}`;
 
   const voice = configuration.Voice ? configuration.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState(null);
@@ -126,7 +126,15 @@ export default function Teaser({ open, toggle }) {
               </div>
             )}
           </div>
-          {open && voice && <voice />}
+          {open && voice && disclaimerEnable && (
+            <Voice
+              DialogContext={DialogContext}
+              configuration={configuration}
+              Actions={Actions}
+              show={!!Local.get(Local.names.gdpr)}
+              t={t('input.actions.record')}
+            />
+          )}
         </div>
       </div>
     </Draggable>

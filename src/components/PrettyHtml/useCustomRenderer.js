@@ -7,6 +7,7 @@ export default function useCustomRenderer() {
 
   return {
     replace: (props) => {
+      // const filter = getFilters({ setZoomSrc }).find((filter) => filter.test(props)); // TODO : Corriger le case du zoom
       getFilters({ setZoomSrc }).forEach((filter) => {
         const { test, process } = filter;
         return test(props) && process(props);
@@ -16,6 +17,15 @@ export default function useCustomRenderer() {
 }
 
 const getFilters = (utils) => [
+  {
+    test: ({ name }) => name === 'a',
+    process: (props) => {
+      props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
+      props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
+      delete props.attribs.onclick;
+      return <a {...props.attribsk}>{props.children}</a>;
+    },
+  },
   {
     test: ({ name }) => name === 'img',
     process: (props) => {
@@ -27,12 +37,12 @@ const getFilters = (utils) => [
       );
     },
   },
-  {
-    test: ({ name }) => name === 'a',
-    process: (props) => {
-      props.attribs = { ...props.attribs, onClick: new Function(props.attribs.onclick) };
-      delete props.attribs.onclick;
-      return <a {...props.attribs}>{props.children}</a>;
-    },
-  },
 ];
+
+const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
+  const startPos = s?.indexOf("'") + 1;
+  const endPos = s?.lastIndexOf("'");
+  const string = s?.substring(startPos, endPos);
+  const final = `"${string}"`;
+  return s?.replace(/'.*'/, final);
+};
