@@ -4,6 +4,7 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import useStyles from './styles';
+import { isBoolean } from '../../tools/helpers';
 
 /**
  * Avatar to display in the conversation. Usually next to the conversation
@@ -36,7 +37,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }) => {
 
   const _className = useMemo(() => {
     return c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
-      [classes.background]: background,
+      [classes.background]: isBoolean(background) ? null : background,
     });
   }, [background, classes, type]);
 

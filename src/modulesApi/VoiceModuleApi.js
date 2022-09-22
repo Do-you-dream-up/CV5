@@ -1,7 +1,7 @@
+import React from 'react';
 import { isDefined } from '../../dydu-module/helpers';
 
 <import-voice />;
-import React from 'react';
 
 const VoiceModule = (props) => {
   try {

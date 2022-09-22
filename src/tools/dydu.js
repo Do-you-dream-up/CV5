@@ -1,15 +1,16 @@
 /* eslint-disable */
-import axios from 'axios';
+
+import { Cookie, Local } from './storage';
+import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
+import { isDefined, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
+
 import Bowser from 'bowser';
+import axios from 'axios';
+import configuration from '../../public/override/configuration.json';
 import debounce from 'debounce-promise';
+import { decode } from './cipher';
 import qs from 'qs';
 import uuid4 from 'uuid4';
-
-import configuration from '../../public/override/configuration.json';
-import { decode } from './cipher';
-import { Cookie, Local } from './storage';
-import { toFormUrlEncoded, qualification, isEmptyString, isDefined } from './helpers';
-import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -103,7 +104,7 @@ export default new (class Dydu {
         if (BOT.backUpServer) {
           tries++;
           if (tries < 3) this.emit(verb, path, data, tries);
-          else if (tries < 6) {
+          else {
             const pathApi = path.startsWith('/servlet') ? path : '/servlet/api/';
             API.defaults.baseURL = `https://${BOT.backUpServer}${pathApi}`;
             this.emit(verb, path, data, tries);

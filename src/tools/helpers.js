@@ -49,6 +49,7 @@ export function b64decode(str) {
   );
 }
 
+export const isOfTypeBoolean = (v) => Object.prototype.toString.call(v) === '[object Boolean]';
 export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[object String]';
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
@@ -56,7 +57,17 @@ export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[o
 
 // aliases
 export const isFunction = isOfTypeFunction;
-export const isArray = isOfTypeArray;
+export const isBoolean = isOfTypeBoolean;
+
+export const isString = isOfTypeString;
+export const isEmptyString = (d) => isString(d) && d.length === 0;
+
+export const isNumber = (d) => Object.prototype.toString.call(d) === '[object Number]';
+export const isArray = (d) => Object.prototype.toString.call(d) === '[object Array]';
+export const isEmptyArray = (d) => isArray(d) && d.length === 0;
+
+export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
+export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length > 0;
 
 export const isOfType = (val, type) => {
   if (!isDefined(VAR_TYPE[type])) throw new Error('unknown type: type ' + type + ' is not in contant VAR_TYPE');
@@ -165,17 +176,3 @@ export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
 
 export const qualification =
   window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
-
-export const isBoolean = (d) => Object.prototype.toString.call(d) === '[object Boolean]';
-
-export const isString = (d) => Object.prototype.toString.call(d) === '[object String]';
-
-export const isNumber = (d) => Object.prototype.toString.call(d) === '[object Number]';
-
-export const isEmptyArray = (d) => isArray(d) && d.length === 0;
-
-export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length > 0;
-
-export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
-
-export const isEmptyString = (d) => isString(d) && d.length === 0;

@@ -75,7 +75,6 @@ export default createUseStyles((theme) => ({
       marginBottom: 10,
       fontSize: 14,
       fontFamily: 'Roboto Medium',
-      textTransform: 'uppercase !important',
       color: '#33333B',
       display: '-webkit-box',
       lineClamp: 2,

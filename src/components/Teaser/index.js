@@ -12,7 +12,7 @@ import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
-//import-voice
+import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,7 @@ export default function Teaser({ open, toggle }) {
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
+  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const title = t('teaser.title');
   const mouseover = t('teaser.mouseover');
@@ -125,7 +126,15 @@ export default function Teaser({ open, toggle }) {
               </div>
             )}
           </div>
-          {open && voice && <voice />}
+          {open && voice && disclaimerEnable && (
+            <Voice
+              DialogContext={DialogContext}
+              configuration={configuration}
+              Actions={Actions}
+              show={!!Local.get(Local.names.gdpr)}
+              t={t('input.actions.record')}
+            />
+          )}
         </div>
       </div>
     </Draggable>
