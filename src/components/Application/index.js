@@ -16,7 +16,7 @@ import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-import { SurveyProvider } from '../../Survey/SurveyProvider';
+import SurveyProvider from '../../Survey/SurveyProvider';
 import dydu from '../../tools/dydu';
 
 const { AuthContext, Authenticated } = AuthPayload;

@@ -1,56 +1,56 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { isDefined } from '../../tools/helpers';
 import PropTypes from 'prop-types';
+import Field from '../Field';
 
-export default function Select({ id, label, required, onSelect, optionList }) {
-  const optionIdList = useMemo(() => optionList.map(({ id: optionId }) => optionId), [optionList]);
+export default function Select({ fieldInstance }) {
+  const [idCurrentOption, setIdCurrentOption] = useState();
 
-  const onChange = useCallback(
-    (e) => {
-      onSelect(id, e.target.value, optionIdList);
-    },
-    [onSelect, optionIdList, id],
-  );
+  const asViewComponent = useCallback((field) => {
+    const Component = field.getComponentView();
+    return Component ? <Component key={field.getId()} fieldInstance={field} /> : null;
+  }, []);
+
+  const currentOptionFieldInstance = useMemo(() => {
+    console.log('currentOptionFieldInstance', idCurrentOption);
+    if (!isDefined(idCurrentOption)) return null;
+    return fieldInstance.find(idCurrentOption);
+  }, [idCurrentOption]);
+
+  const slaveComponent = useMemo(() => {
+    console.log('slaves!', currentOptionFieldInstance?.getSlaves());
+    return currentOptionFieldInstance?.getSlaves().map(asViewComponent);
+  }, [asViewComponent, currentOptionFieldInstance]);
+
+  const handleOptionChange = useCallback((event) => {
+    event.stopPropagation();
+    console.log('');
+    setIdCurrentOption(event.target.value);
+  }, []);
 
   const options = useMemo(() => {
-    if (!optionList || optionList.length === 0) return [];
-    return optionList.map((field) => {
-      return (
-        <option key={field.id} id={field.id} value={field.id}>
-          {field.label}
-        </option>
-      );
+    return fieldInstance.getChildren().map((field, index) => {
+      if (index === 0) setIdCurrentOption(field.getId());
+      return asViewComponent(field);
     });
-  }, [optionList]);
+  }, [asViewComponent, fieldInstance]);
+
+  const datasetAttributesProps = useMemo(() => {
+    return {
+      ...fieldInstance.getDataAttributes(),
+      'data-value': fieldInstance?.find(idCurrentOption)?.getId(),
+    };
+  }, [idCurrentOption]);
 
   return (
-    <>
-      <h1>{label}</h1>
-      <label hidden htmlFor={label}>
-        {label}
-      </label>
-
-      <select name={label} id={id} onChange={onChange}>
-        <option value="">--Please choose an option--</option>
-        {options}
-      </select>
-    </>
+    <fieldset {...datasetAttributesProps}>
+      <legend>{fieldInstance.getLabel()}</legend>
+      <select onChange={handleOptionChange}>{options}</select>
+      <div>{slaveComponent}</div>
+    </fieldset>
   );
 }
 
-Select.formatProps = (field, onSelect) => {
-  return {
-    id: field.id,
-    label: field.label,
-    required: field.mandatory || false,
-    onSelect,
-    optionList: field?.children || [],
-  };
-};
-
 Select.propTypes = {
-  id: PropTypes.number,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  onSelect: PropTypes.func,
-  optionList: PropTypes.array,
+  fieldInstance: PropTypes.instanceOf(Field),
 };

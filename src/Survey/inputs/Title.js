@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Field from '../Field';
 
-export default function Title({ label }) {
-  return <h1>{label}</h1>;
+export default function Title({ fieldInstance }) {
+  return <h1 {...fieldInstance.getDataAttributes()}>{fieldInstance.getLabel()}</h1>;
 }
-
 Title.propTypes = {
-  label: PropTypes.string,
+  fieldInstance: PropTypes.instanceOf(Field),
 };
