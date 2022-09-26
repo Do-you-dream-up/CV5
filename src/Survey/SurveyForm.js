@@ -11,6 +11,8 @@ export default function SurveyForm() {
     if (isDefined(formRef.current)) setForm(formRef.current);
   }, [setForm]);
 
+  useEffect(() => () => setForm(null), []);
+
   const inputs = useMemo(() => {
     return fields?.map((field) => {
       const FieldComponent = field.getComponentView();

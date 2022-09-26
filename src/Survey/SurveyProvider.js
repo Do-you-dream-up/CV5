@@ -33,10 +33,8 @@ export default function SurveyProvider({ children }) {
   }, [configuration?.fields]);
 
   const validateForm = useCallback(() => {
-    console.log('in validateFOrm function !');
     return new Promise((resolve, reject) => {
       const nodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
-      console.log('node form', nodeForm);
       let resultPayload = { listMissingRequired: [] };
       resultPayload = nodeForm.reduce((resultMap, inputNode) => {
         const fieldInstance = getFieldById(inputNode.dataset.id);
@@ -57,10 +55,8 @@ export default function SurveyProvider({ children }) {
 
   const sendForm = useCallback(
     (surveyPayload = {}) => {
-      console.log('in sendForm function !!', { livechatSendFn: isDefined(livechatSendSurveyFn) });
       const payload = {
         ...configuration,
-        surveyId: configuration.id,
         fields: surveyPayload,
       };
       if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
@@ -69,13 +65,28 @@ export default function SurveyProvider({ children }) {
     [livechatSendSurveyFn],
   );
 
+  const flushConfiguration = useCallback(() => setConfiguration(null), []);
+  const flushFields = useCallback(() => setFields(null), []);
+  const flushForm = useCallback(() => setForm(null), []);
+
+  const flushState = useCallback(() => {
+    flushForm();
+    flushConfiguration();
+    flushFields();
+  }, [flushConfiguration, flushFields, closeSecondary]);
+
+  const flushSurveyAndCloseSecondary = useCallback(() => {
+    flushState();
+    closeSecondary();
+  }, [closeSecondary, flushState]);
+
   const submitForm = useCallback(() => {
     validateForm()
       .then(sendForm)
+      .then(flushSurveyAndCloseSecondary)
       .catch((listMissingRequired) => {
         console.error('error!', listMissingRequired);
-      })
-      .finally(closeSecondary);
+      });
   }, [sendForm, validateForm]);
 
   const surveyTitle = useMemo(() => {
@@ -96,7 +107,6 @@ export default function SurveyProvider({ children }) {
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        console.log('on submit !', event);
         submitForm();
       });
   }, [form, submitForm]);
@@ -111,11 +121,12 @@ export default function SurveyProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log('livechatSendSurveyFn', livechatSendSurveyFn);
+    console.log(':: livechat listening on send survey ? ::', isDefined(livechatSendSurveyFn));
   }, [livechatSendSurveyFn]);
 
   const context = useMemo(
     () => ({
+      onSecondaryClosed: flushState,
       setLivechatSendSurveyFn,
       showSurvey,
       setForm,
@@ -171,11 +182,7 @@ const removeNodeSubmitButtonFromFormElementList = (nodelist) => {
 
 const extractId = (data) => data?.values?.survey?.fromBase64();
 
-const getSurveyConfigurationById = (id) =>
-  dydu.getSurvey(id).then((response) => {
-    console.log('response ?', response);
-    return response;
-  });
+const getSurveyConfigurationById = dydu.getSurvey;
 
 SurveyProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),

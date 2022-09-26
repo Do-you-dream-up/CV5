@@ -12,19 +12,16 @@ export default function Select({ fieldInstance }) {
   }, []);
 
   const currentOptionFieldInstance = useMemo(() => {
-    console.log('currentOptionFieldInstance', idCurrentOption);
     if (!isDefined(idCurrentOption)) return null;
     return fieldInstance.find(idCurrentOption);
   }, [idCurrentOption]);
 
   const slaveComponent = useMemo(() => {
-    console.log('slaves!', currentOptionFieldInstance?.getSlaves());
     return currentOptionFieldInstance?.getSlaves().map(asViewComponent);
   }, [asViewComponent, currentOptionFieldInstance]);
 
   const handleOptionChange = useCallback((event) => {
     event.stopPropagation();
-    console.log('');
     setIdCurrentOption(event.target.value);
   }, []);
 
@@ -42,7 +39,6 @@ export default function Select({ fieldInstance }) {
     };
   }, [idCurrentOption]);
   const getClassOf = Function.prototype.call.bind(Object.prototype.toString);
-  console.log('FIELD ??', getClassOf(Field));
   return (
     <fieldset {...datasetAttributesProps}>
       <legend>{fieldInstance.getLabel()}</legend>

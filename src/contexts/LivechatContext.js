@@ -104,21 +104,23 @@ export function LivechatProvider({ children }) {
     onSuccessOpenTunnel,
   ]);
 
-  const sendSurvey = useCallback((survey) => {
-    console.log('livechaaaaaaaaaat', survey);
-    dydu.sendSurvey(survey);
-  }, []);
+  const sendSurvey = useCallback(
+    (survey) => {
+      console.log('livechat sending survey !', survey);
+      send(survey);
+    },
+    [send],
+  );
 
   const onUnmount = useCallback(() => {
     SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
   }, []);
 
   useEffect(() => {
-    console.log('livechat ??', isLivechatOn);
+    console.log('livechat on ??', isLivechatOn);
   }, [isLivechatOn]);
 
   useEffect(() => {
-    console.log('is livechat on ??', isLivechatOn);
     if (!isLivechatOn) return SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
   }, [isLivechatOn, setLivechatSendSurveyFn, sendSurvey]);

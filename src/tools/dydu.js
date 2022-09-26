@@ -602,15 +602,14 @@ export default new (class Dydu {
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
   sendSurvey = async (surveyAnswer, options = {}) => {
-    console.log('dydu.js --- sendSurvey', surveyAnswer);
-
+    console.log('dydu.js: sendSurvey(answer)', surveyAnswer);
     const surveyQueryString = this.#toQueryString({
       type: RESPONSE_TYPE.survey,
       parameters: toFormUrlEncoded({
         botId: this.getBot().id,
-        surveyId: surveyAnswer.id,
+        surveyId: surveyAnswer.surveyId,
         interactionSurveyAnswer: false,
-        fields: JSON.stringify(surveyAnswer.fields),
+        fields: surveyAnswer.fields,
         contextId: await this.getContextId(),
         qualificationMode: options.qualification || false,
         language: this.getLocale(),

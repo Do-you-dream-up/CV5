@@ -7,6 +7,7 @@ import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
 import { isDefined } from '../../tools/helpers';
+import { useSurvey } from '../../Survey/SurveyProvider';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -15,7 +16,9 @@ import { isDefined } from '../../tools/helpers';
  */
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { secondaryActive, secondaryContent, toggleSecondary } = useContext(DialogContext);
+  const { secondaryActive, secondaryContent, closeSecondary } = useContext(DialogContext);
+  const { onSecondaryClosed } = useSurvey();
+
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
@@ -43,12 +46,17 @@ export default function Secondary({ anchor, mode }) {
     );
   }, [body, bodyRenderer, classes.body]);
 
+  const onClose = useCallback(() => {
+    onSecondaryClosed();
+    closeSecondary();
+  }, [closeSecondary, onSecondaryClosed]);
+
   return secondaryActive ? (
     <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
       <div className={c('dydu-secondary-header', classes.header)}>
         {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
+          <Button color="primary" onClick={onClose} type="button" variant="icon">
             <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>

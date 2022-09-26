@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Field from '../Field';
 
 export default function LongText({ fieldInstance }) {
-  console.log('checkbox', fieldInstance);
   const id = fieldInstance.getId();
   const label = fieldInstance.getLabel();
 

@@ -191,12 +191,10 @@ export default class Field {
   }
 
   validateInputNode(inputNode) {
-    console.log('validating field', inputNode);
     return true;
   }
 
   extractInputNodeValue(node) {
-    console.log('extracting value', node);
     if (this.hasOneOfType([Field.TYPE.checkbox, Field.TYPE.radio])) return this.getLabel();
 
     if (this.hasOneOfType([Field.TYPE.text, Field.TYPE.longText])) return node.dataset.value; // TODO: sanitize ?

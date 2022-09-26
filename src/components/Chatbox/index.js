@@ -225,7 +225,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,
   });
-  console.log('secondary Mode', secondaryMode);
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot}>
       <span className={classes.srOnly} tabIndex="-1">
