@@ -7,7 +7,7 @@ import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
-import { useSurvey } from '../Survey/SurveyProvider';
+import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
 import LivechatPayload from '../tools/LivechatPayload';
 
 export const TUNNEL_MODE = {
@@ -24,12 +24,14 @@ const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
 const containsStartLivechatSpecialAction = (response) => response?.specialAction?.equals('StartPolling');
 
+const LIVECHAT_ID_LISTENER = 'listener/livechat';
+
 export function LivechatProvider({ children }) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
-  const { showSurvey } = useSurvey();
+  const { showSurvey, setLivechatSendSurveyFn } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
@@ -101,6 +103,29 @@ export function LivechatProvider({ children }) {
     showSurvey,
     onSuccessOpenTunnel,
   ]);
+
+  const sendSurvey = useCallback((survey) => {
+    console.log('livechaaaaaaaaaat', survey);
+    dydu.sendSurvey(survey);
+  }, []);
+
+  const onUnmount = useCallback(() => {
+    SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
+  }, []);
+
+  useEffect(() => {
+    console.log('livechat ??', isLivechatOn);
+  }, [isLivechatOn]);
+
+  useEffect(() => {
+    console.log('is livechat on ??', isLivechatOn);
+    if (!isLivechatOn) return SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
+    SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
+  }, [isLivechatOn, setLivechatSendSurveyFn, sendSurvey]);
+
+  useEffect(() => {
+    return onUnmount;
+  }, []);
 
   useEffect(() => {
     const data = Local.livechat.load();

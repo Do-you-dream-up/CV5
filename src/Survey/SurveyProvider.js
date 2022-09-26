@@ -16,6 +16,7 @@ export default function SurveyProvider({ children }) {
   const { openSecondary, closeSecondary } = useDialog();
   const [form, setForm] = useState(null);
   const [fields, setFields] = useState(null);
+  const [livechatSendSurveyFn, setLivechatSendSurveyFn] = useState(null);
 
   const getFieldById = useCallback(
     (id) => {
@@ -32,9 +33,10 @@ export default function SurveyProvider({ children }) {
   }, [configuration?.fields]);
 
   const validateForm = useCallback(() => {
+    console.log('in validateFOrm function !');
     return new Promise((resolve, reject) => {
       const nodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
-
+      console.log('node form', nodeForm);
       let resultPayload = { listMissingRequired: [] };
       resultPayload = nodeForm.reduce((resultMap, inputNode) => {
         const fieldInstance = getFieldById(inputNode.dataset.id);
@@ -53,17 +55,27 @@ export default function SurveyProvider({ children }) {
     });
   }, [form, getFieldById]);
 
-  const sendForm = useCallback((formAsPayload = {}) => {
-    console.log('processing send form !', formAsPayload);
-    closeSecondary();
-  }, []);
+  const sendForm = useCallback(
+    (surveyPayload = {}) => {
+      console.log('in sendForm function !!', { livechatSendFn: isDefined(livechatSendSurveyFn) });
+      const payload = {
+        ...configuration,
+        surveyId: configuration.id,
+        fields: surveyPayload,
+      };
+      if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
+      else return Promise.resolve(SurveyProvider.notifyListeners(payload));
+    },
+    [livechatSendSurveyFn],
+  );
 
-  const sumbitForm = useCallback(() => {
+  const submitForm = useCallback(() => {
     validateForm()
       .then(sendForm)
       .catch((listMissingRequired) => {
         console.error('error!', listMissingRequired);
-      });
+      })
+      .finally(closeSecondary);
   }, [sendForm, validateForm]);
 
   const surveyTitle = useMemo(() => {
@@ -84,9 +96,10 @@ export default function SurveyProvider({ children }) {
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        sumbitForm();
+        console.log('on submit !', event);
+        submitForm();
       });
-  }, [form, sumbitForm]);
+  }, [form, submitForm]);
 
   const formName = useMemo(() => configuration?.name || '', [configuration]);
   const formTitle = useMemo(() => configuration?.title || '', [configuration]);
@@ -97,8 +110,13 @@ export default function SurveyProvider({ children }) {
     getSurveyConfigurationById(id).then(setConfiguration);
   }, []);
 
+  useEffect(() => {
+    console.log('livechatSendSurveyFn', livechatSendSurveyFn);
+  }, [livechatSendSurveyFn]);
+
   const context = useMemo(
     () => ({
+      setLivechatSendSurveyFn,
       showSurvey,
       setForm,
       fields,
@@ -162,3 +180,11 @@ const getSurveyConfigurationById = (id) =>
 SurveyProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
 };
+
+let listeners = {};
+SurveyProvider.hasListeners = () => Object.keys(listeners).length > 0;
+SurveyProvider.notifyListeners = (data) => {
+  if (SurveyProvider.hasListeners()) Object.values(listeners).forEach((callback) => callback(data));
+};
+SurveyProvider.removeListener = (listenerId) => delete listeners[listenerId];
+SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = callback);

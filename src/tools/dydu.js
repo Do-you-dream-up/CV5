@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { Cookie, Local } from './storage';
-import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
+import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import { isDefined, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
 
 import Bowser from 'bowser';
@@ -492,7 +492,6 @@ export default new (class Dydu {
     const qs = this.#toQueryString(typingPayload);
     const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
-    //return this.emit(API.get, path);
   };
 
   poll = async ({ serverTime, pollTime, contextId, context }) => {
@@ -599,8 +598,36 @@ export default new (class Dydu {
     };
   };
 
+  post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
+  get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
+
+  sendSurvey = async (surveyAnswer, options = {}) => {
+    console.log('dydu.js --- sendSurvey', surveyAnswer);
+
+    const surveyQueryString = this.#toQueryString({
+      type: RESPONSE_TYPE.survey,
+      parameters: toFormUrlEncoded({
+        botId: this.getBot().id,
+        surveyId: surveyAnswer.id,
+        interactionSurveyAnswer: false,
+        fields: JSON.stringify(surveyAnswer.fields),
+        contextId: await this.getContextId(),
+        qualificationMode: options.qualification || false,
+        language: this.getLocale(),
+        space: this.getSpace(),
+        solutionUsed: SOLUTION_TYPE.assistant,
+        clientId: this.getClientId(),
+        useServerCookieForContext: false,
+        saml2_info: '',
+        timestamp: new Date().getMilliseconds(),
+      }),
+    });
+
+    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${surveyQueryString}`;
+    return this.get(path);
+  };
+
   getSurvey = async (surveyId = '') => {
-    console.log('getSurvey', surveyId);
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
 
     const path = `/chat/survey/configuration/${this.getBotId()}`;
@@ -611,7 +638,8 @@ export default new (class Dydu {
       surveyId,
     });
 
-    // first get that survey configuration
+    console.log();
+    // first get that survey configuration : get survey is a POST
     return this.emit(API.post, path, data);
   };
 })();

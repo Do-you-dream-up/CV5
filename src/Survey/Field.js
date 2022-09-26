@@ -48,7 +48,7 @@ export default class Field {
   };
 
   static checkValidInstanceOrThrowError = (instance, callerMessage = '') => {
-    if (instance instanceof Field === false) throw new NotInstanceError(callerMessage);
+    if (!(instance instanceof Field)) throw new NotInstanceError(callerMessage);
   };
 
   constructor(field, fieldStore = {}) {
@@ -186,7 +186,7 @@ export default class Field {
     const isValid = this.validateInputNode(inputNode);
     if (!isValid) return { missing: true };
     return {
-      [this.getId()]: this.extractValueFromInputNode(inputNode),
+      [this.getId()]: this.extractInputNodeValue(inputNode),
     };
   }
 
@@ -195,15 +195,15 @@ export default class Field {
     return true;
   }
 
-  extractValueFromInputNode(node) {
+  extractInputNodeValue(node) {
     console.log('extracting value', node);
     if (this.hasOneOfType([Field.TYPE.checkbox, Field.TYPE.radio])) return this.getLabel();
 
-    if (this.hasOneOfType([Field.TYPE.text, Field.TYPE.longText])) return node.dataset.value; // TODO: sanitize !
+    if (this.hasOneOfType([Field.TYPE.text, Field.TYPE.longText])) return node.dataset.value; // TODO: sanitize ?
 
     if (this.hasType(Field.TYPE.select)) {
       const childrenId = node.dataset.value;
-      return this.find(childrenId).getLabel();
+      return this.find(childrenId)?.getLabel();
     }
 
     return '';

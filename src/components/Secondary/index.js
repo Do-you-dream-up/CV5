@@ -36,8 +36,11 @@ export default function Secondary({ anchor, mode }) {
   }
 
   const renderBody = useCallback(() => {
-    if (isDefined(bodyRenderer)) return bodyRenderer();
-    return <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />;
+    return isDefined(bodyRenderer) ? (
+      bodyRenderer()
+    ) : (
+      <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />
+    );
   }, [body, bodyRenderer, classes.body]);
 
   return secondaryActive ? (

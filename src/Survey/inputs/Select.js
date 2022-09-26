@@ -41,7 +41,8 @@ export default function Select({ fieldInstance }) {
       'data-value': fieldInstance?.find(idCurrentOption)?.getId(),
     };
   }, [idCurrentOption]);
-
+  const getClassOf = Function.prototype.call.bind(Object.prototype.toString);
+  console.log('FIELD ??', getClassOf(Field));
   return (
     <fieldset {...datasetAttributesProps}>
       <legend>{fieldInstance.getLabel()}</legend>
