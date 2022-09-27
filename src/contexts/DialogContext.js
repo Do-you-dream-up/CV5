@@ -74,11 +74,10 @@ export function DialogProvider({ children }) {
   const { transient: secondaryTransient } = configuration.secondary;
 
   const triggerPushRule = useCallback(() => {
-    if (isDefined(pushrules)) {
-      fetchPushrules().then((rules) => {
-        setPushrules(rules);
-      });
-    }
+    if (isDefined(pushrules)) return;
+    fetchPushrules().then((rules) => {
+      setPushrules(rules);
+    });
   }, [pushrules]);
 
   useEffect(() => {

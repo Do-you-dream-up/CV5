@@ -1,13 +1,10 @@
 import React, { useCallback, useContext, useState } from 'react';
 
-// eslint-disable-next-line no-unused-vars
 import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-// eslint-disable-next-line no-unused-vars
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
-// eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
@@ -96,7 +93,7 @@ export default function Teaser({ open, toggle }) {
   };
 
   return (
-    <Draggable bounds="body">
+    <Draggable bounds="html">
       <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}>
         <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
           <div
