@@ -10,10 +10,10 @@ import { EventsProvider } from './contexts/EventsContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { UserActionProvider } from './contexts/UserActionContext';
+import ViewModeProvider from './contexts/ViewModeProvider';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
-import ViewModeProvider from './contexts/ViewModeProvider';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
@@ -61,8 +61,12 @@ configuration.initialize().then((configuration) => {
     Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
+        style.setAttribute('id', 'css-client');
         style.textContent = res.data;
-        document.head?.appendChild(style);
+        window.onload = function () {
+          document.getElementById('css-client').addEventListener('load', document.getElementsByTagName('head'));
+        };
+        document.head?.append(style);
       }
     });
   }
