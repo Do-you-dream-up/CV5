@@ -16,7 +16,6 @@ export default function SurveyProvider({ children }) {
   const { openSecondary, closeSecondary } = useDialog();
   const [form, setForm] = useState(null);
   const [fields, setFields] = useState(null);
-  const [livechatSendSurveyFn, setLivechatSendSurveyFn] = useState(null);
 
   const getFieldById = useCallback(
     (id) => {
@@ -62,7 +61,7 @@ export default function SurveyProvider({ children }) {
       if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
       else return Promise.resolve(SurveyProvider.notifyListeners(payload));
     },
-    [livechatSendSurveyFn],
+    [configuration],
   );
 
   const flushConfiguration = useCallback(() => setConfiguration(null), []);
@@ -120,14 +119,9 @@ export default function SurveyProvider({ children }) {
     getSurveyConfigurationById(id).then(setConfiguration);
   }, []);
 
-  useEffect(() => {
-    console.log(':: livechat listening on send survey ? ::', isDefined(livechatSendSurveyFn));
-  }, [livechatSendSurveyFn]);
-
   const context = useMemo(
     () => ({
       onSecondaryClosed: flushState,
-      setLivechatSendSurveyFn,
       showSurvey,
       setForm,
       fields,

@@ -2,7 +2,7 @@
 
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
-import { isDefined, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
+import { isDefined, isEmptyObject, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
 
 import Bowser from 'bowser';
 import axios from 'axios';
@@ -601,15 +601,17 @@ export default new (class Dydu {
   post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
-  sendSurvey = async (surveyAnswer, options = {}) => {
-    console.log('dydu.js: sendSurvey(answer)', surveyAnswer);
-    const surveyQueryString = this.#toQueryString({
+  createSurveyRequestPayload = async (survey = {}, options = {}) => {
+    if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
+    if (isEmptyObject(options)) options = { qualification: qualification };
+
+    return {
       type: RESPONSE_TYPE.survey,
-      parameters: toFormUrlEncoded({
+      parameters: {
         botId: this.getBot().id,
-        surveyId: surveyAnswer.surveyId,
+        surveyId: survey.surveyId,
         interactionSurveyAnswer: false,
-        fields: surveyAnswer.fields,
+        fields: survey.fields,
         contextId: await this.getContextId(),
         qualificationMode: options.qualification || false,
         language: this.getLocale(),
@@ -619,9 +621,13 @@ export default new (class Dydu {
         useServerCookieForContext: false,
         saml2_info: '',
         timestamp: new Date().getMilliseconds(),
-      }),
-    });
+      },
+    };
+  };
 
+  sendSurvey = async (surveyAnswer, options = {}) => {
+    const payload = await this.createSurveyRequestPayload(surveyAnswer, options);
+    const surveyQueryString = this.#toQueryString(payload);
     const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${surveyQueryString}`;
     return this.get(path);
   };
@@ -636,9 +642,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       surveyId,
     });
-
-    console.log();
-    // first get that survey configuration : get survey is a POST
-    return this.emit(API.post, path, data);
+    // get survey is a POST
+    return this.post(path, data);
   };
 })();

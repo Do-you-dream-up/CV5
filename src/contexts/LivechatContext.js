@@ -27,11 +27,11 @@ const containsStartLivechatSpecialAction = (response) => response?.specialAction
 const LIVECHAT_ID_LISTENER = 'listener/livechat';
 
 export function LivechatProvider({ children }) {
-  const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
+  const [tunnelList] = useState([useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
-  const { showSurvey, setLivechatSendSurveyFn } = useSurvey();
+  const { showSurvey } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
@@ -105,11 +105,11 @@ export function LivechatProvider({ children }) {
   ]);
 
   const sendSurvey = useCallback(
-    (survey) => {
-      console.log('livechat sending survey !', survey);
-      send(survey);
+    (surveyResponse) => {
+      if (!isDefined(tunnel)) put(surveyResponse);
+      else tunnel?.sendSurvey(surveyResponse);
     },
-    [send],
+    [tunnel],
   );
 
   const onUnmount = useCallback(() => {
@@ -117,13 +117,9 @@ export function LivechatProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log('livechat on ??', isLivechatOn);
-  }, [isLivechatOn]);
-
-  useEffect(() => {
     if (!isLivechatOn) return SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
-  }, [isLivechatOn, setLivechatSendSurveyFn, sendSurvey]);
+  }, [isLivechatOn, sendSurvey]);
 
   useEffect(() => {
     return onUnmount;

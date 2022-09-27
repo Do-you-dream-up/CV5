@@ -4,15 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
 import LivechatPayload from '../LivechatPayload';
 
-const isNotificationOperatorWriting = (response) => {
-  const res = response?.code?.fromBase64()?.equals('OperatorWritingStatus') || false;
-  return res;
-};
-const isNotificationStopLivechat = (response) => {
-  const res = response?.specialAction?.fromBase64()?.equals('EndPolling') || false;
-  return res;
-};
-
 let onOperatorWriting = null;
 let displayResponse = null;
 let displayNotification = null;
@@ -154,6 +145,10 @@ export default function useDyduPolling() {
     });
   }, []);
 
+  const sendSurvey = useCallback((...props) => {
+    api.sendSurvey(...props);
+  }, []);
+
   const send = useCallback((...props) => {
     return api.talk(...props);
   }, []);
@@ -170,6 +165,7 @@ export default function useDyduPolling() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    sendSurvey,
     close,
     onUserTyping,
   };

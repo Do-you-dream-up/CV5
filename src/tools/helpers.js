@@ -3,7 +3,10 @@ import { VAR_TYPE } from './constants';
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
 export const toFormUrlEncoded = (data) => {
-  const mkAffectationStr = (key, value) => `${key}=${value}`;
+  const mkAffectationStr = (key, value) => {
+    if (!isDefined(value) || isEmptyString(value)) value = null;
+    return `${key}=${value}`;
+  };
   return Object.keys(data).reduce((resultStr, key) => {
     if (resultStr.length > 0) return resultStr + '&' + mkAffectationStr(key, data[key]);
     return mkAffectationStr(key, data[key]);
@@ -67,7 +70,7 @@ export const isArray = (d) => Object.prototype.toString.call(d) === '[object Arr
 export const isEmptyArray = (d) => isArray(d) && d.length === 0;
 
 export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
-export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length > 0;
+export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length <= 0;
 
 export const isOfType = (val, type) => {
   if (!isDefined(VAR_TYPE[type])) throw new Error('unknown type: type ' + type + ' is not in contant VAR_TYPE');

@@ -42,6 +42,7 @@ let onEndCommunication = null;
 let displayResponseText = null;
 let displayNotificationMessage = null;
 let onOperatorWriting = null;
+let _sendSurvey = null;
 
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
@@ -74,7 +75,6 @@ export default function useDyduWebsocket() {
   }, []);
 
   const messageType = useMemo(() => {
-    console.log('determinating message type');
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
@@ -211,6 +211,7 @@ export default function useDyduWebsocket() {
     onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
     handleSurvey = configuration.handleSurvey;
+    _sendSurvey = configuration.api.sendSurvey;
   }, []);
 
   const open = useCallback(
@@ -224,6 +225,11 @@ export default function useDyduWebsocket() {
     },
     [initSocketProps, setupOutputs],
   );
+
+  const sendSurvey = useCallback((surveyAnswer) => {
+    const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
+    sendJsonMessage(message);
+  }, []);
 
   const send = useCallback(
     (userInput) => {
@@ -252,6 +258,7 @@ export default function useDyduWebsocket() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    sendSurvey,
     close,
     onUserTyping,
   };
