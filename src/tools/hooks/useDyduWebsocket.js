@@ -42,7 +42,6 @@ let onEndCommunication = null;
 let displayResponseText = null;
 let displayNotificationMessage = null;
 let onOperatorWriting = null;
-let _sendSurvey = null;
 
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
@@ -211,7 +210,6 @@ export default function useDyduWebsocket() {
     onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
     handleSurvey = configuration.handleSurvey;
-    _sendSurvey = configuration.api.sendSurvey;
   }, []);
 
   const open = useCallback(

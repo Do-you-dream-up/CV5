@@ -6,7 +6,7 @@ import Title from './inputs/Title';
 import Checkbox from './inputs/Checkbox';
 import MultipleChoice from './inputs/MultipleChoice';
 import SelectOption from './inputs/SelectOption';
-import { isArray, isDefined } from '../tools/helpers';
+import { isArray, isDefined, isObject } from '../tools/helpers';
 
 export default class Field {
   id = -1;
@@ -166,7 +166,6 @@ export default class Field {
   getDataAttributes() {
     return {
       'data-id': this.getId(),
-      'data-children-count': this.numberOfChildren(),
     };
   }
 
@@ -185,9 +184,12 @@ export default class Field {
   extractPayloadFromInputNode(inputNode) {
     const isValid = this.validateInputNode(inputNode);
     if (!isValid) return { missing: true };
-    return {
-      [this.getId()]: this.extractInputNodeValue(inputNode),
-    };
+    const value = this.extractInputNodeValue(inputNode);
+    const extractedValueIsAlreadyPayload = isObject(value);
+    if (extractedValueIsAlreadyPayload) return value;
+
+    const makePayloadWithValue = (value) => ({ [this.getId()]: value });
+    return makePayloadWithValue(value);
   }
 
   validateInputNode(inputNode) {
@@ -201,10 +203,24 @@ export default class Field {
 
     if (this.hasType(Field.TYPE.select)) {
       const childrenId = node.dataset.value;
-      return this.find(childrenId)?.getLabel();
+      const child = this.find(childrenId);
+      return {
+        [child.getId()]: child.getLabel(),
+      };
     }
 
-    return '';
+    if (this.hasType(Field.TYPE.multipleChoice)) {
+      // can have either children of type |checkbox| or |radio|
+      const choiceInputListNode = Array.from(node.getElementsByTagName('input'));
+      return choiceInputListNode.reduce((mapResult, inputNode) => {
+        if (!inputNode.checked) return mapResult;
+        const field = this.find(inputNode.getAttribute('id'));
+        mapResult[field.getId()] = field.getLabel();
+        return mapResult;
+      }, {});
+    }
+
+    return this.getLabel();
   }
 }
 

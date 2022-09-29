@@ -152,6 +152,14 @@ export const osName = () => {
   return OSName;
 };
 
+export const b64encodeObject = (o) => {
+  return Object.keys(o).reduce((resultMap, key) => {
+    const value = o[key];
+    resultMap[key] = !isString(value) ? value : value.toBase64();
+    return resultMap;
+  }, {});
+};
+
 export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };

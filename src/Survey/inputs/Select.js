@@ -6,8 +6,8 @@ import Field from '../Field';
 export default function Select({ fieldInstance }) {
   const [idCurrentOption, setIdCurrentOption] = useState();
 
-  const asViewComponent = useCallback((field) => {
-    const Component = field.getComponentView();
+  const renderFieldInstanceAsViewComponent = useCallback((field) => {
+    const Component = field?.getComponentView();
     return Component ? <Component key={field.getId()} fieldInstance={field} /> : null;
   }, []);
 
@@ -17,8 +17,8 @@ export default function Select({ fieldInstance }) {
   }, [idCurrentOption]);
 
   const slaveComponent = useMemo(() => {
-    return currentOptionFieldInstance?.getSlaves().map(asViewComponent);
-  }, [asViewComponent, currentOptionFieldInstance]);
+    return currentOptionFieldInstance?.getSlaves().map(renderFieldInstanceAsViewComponent);
+  }, [renderFieldInstanceAsViewComponent, currentOptionFieldInstance]);
 
   const handleOptionChange = useCallback((event) => {
     event.stopPropagation();
@@ -28,9 +28,9 @@ export default function Select({ fieldInstance }) {
   const options = useMemo(() => {
     return fieldInstance.getChildren().map((field, index) => {
       if (index === 0) setIdCurrentOption(field.getId());
-      return asViewComponent(field);
+      return renderFieldInstanceAsViewComponent(field);
     });
-  }, [asViewComponent, fieldInstance]);
+  }, [renderFieldInstanceAsViewComponent, fieldInstance]);
 
   const datasetAttributesProps = useMemo(() => {
     return {
@@ -38,12 +38,12 @@ export default function Select({ fieldInstance }) {
       'data-value': fieldInstance?.find(idCurrentOption)?.getId(),
     };
   }, [idCurrentOption]);
-  const getClassOf = Function.prototype.call.bind(Object.prototype.toString);
+
   return (
     <fieldset {...datasetAttributesProps}>
       <legend>{fieldInstance.getLabel()}</legend>
       <select onChange={handleOptionChange}>{options}</select>
-      <div>{slaveComponent}</div>
+      {slaveComponent}
     </fieldset>
   );
 }

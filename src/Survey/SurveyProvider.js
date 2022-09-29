@@ -33,12 +33,16 @@ export default function SurveyProvider({ children }) {
 
   const validateForm = useCallback(() => {
     return new Promise((resolve, reject) => {
-      const nodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
+      const inputList = Array.from(form.getElementsByTagName('input'));
+
+      const listNodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
       let resultPayload = { listMissingRequired: [] };
-      resultPayload = nodeForm.reduce((resultMap, inputNode) => {
+      resultPayload = listNodeForm.reduce((resultMap, inputNode) => {
         const fieldInstance = getFieldById(inputNode.dataset.id);
-        // each fieldInstance is responsible of extracting
-        // usefull data from it corresponding node element
+        /*
+          each fieldInstance is responsible of extracting
+          usefull data from it corresponding node element
+         */
         const dataInput = fieldInstance.extractPayloadFromInputNode(inputNode);
         if (dataInput?.missing) resultMap.listMissingRequired.push(fieldInstance);
         else resultMap = { ...resultMap, ...dataInput };

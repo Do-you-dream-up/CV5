@@ -3,12 +3,10 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { useDialog } from './DialogContext';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 import dydu from '../tools/dydu';
-import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
-import LivechatPayload from '../tools/LivechatPayload';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -117,7 +115,7 @@ export function LivechatProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!isLivechatOn) return SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
+    if (!isLivechatOn) return onUnmount();
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
   }, [isLivechatOn, sendSurvey]);
 

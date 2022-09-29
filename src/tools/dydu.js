@@ -2,7 +2,7 @@
 
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
-import { isDefined, isEmptyObject, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
+import { b64encodeObject, isDefined, isEmptyObject, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
 
 import Bowser from 'bowser';
 import axios from 'axios';
@@ -610,7 +610,7 @@ export default new (class Dydu {
         botId: this.getBot().id,
         surveyId: survey.surveyId,
         interactionSurveyAnswer: false,
-        fields: survey.fields,
+        fields: b64encodeObject(survey.fields),
         contextId: await this.getContextId(),
         qualificationMode: options.qualification || false,
         language: this.getLocale(),
