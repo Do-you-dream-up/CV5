@@ -1,11 +1,14 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+
 import Actions from '../Actions';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { DialogContext } from '../../contexts/DialogContext';
 import Input from '../Input';
+import PropTypes from 'prop-types';
+import UploadInput from '../UploadInput';
+import c from 'classnames';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -16,6 +19,7 @@ import useStyles from './styles';
  */
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
+  const { isFileActive } = useContext(DialogContext);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
   const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
@@ -51,14 +55,18 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
       when: hasTranslate && languagesMenu.flat().length > 1,
     },
   ];
-
+  const inputRender = () => {
+    if (isFileActive) {
+      return <UploadInput />;
+    } else {
+      return <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />;
+    }
+  };
   return (
     <>
       <footer className={c('dydu-footer', classes.root)} {...rest}>
-        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
-        <div className={classes.content}>
-          <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
-        </div>
+        {!isFileActive && <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />}
+        <div className={classes.content}>{inputRender()}</div>
       </footer>
     </>
   );

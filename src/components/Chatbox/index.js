@@ -49,6 +49,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setLocked,
     setPlaceholder,
     setPrompt,
+    setUploadActive,
     setSecondary,
     toggleSecondary,
     callWelcomeKnowledge,
@@ -161,6 +162,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
         lock: (value = true) => setLocked(value),
+        upload: (value = true) => setUploadActive(value),
         placeholder: (value) => setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),
@@ -171,6 +173,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.reword = window.dydu.chat.ask;
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
+      window._dydu_uploadFile = window.dydu.ui.upload;
     }
 
     if (window.dydu.localization.get() && !configuration.application.languages.includes(window.dydu.localization.get()))

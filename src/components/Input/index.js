@@ -5,7 +5,6 @@ import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-// eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Voice from '../../modulesApi/VoiceModuleApi';
@@ -16,6 +15,8 @@ import useDebounce from '../../tools/hooks/debounce';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+
+// eslint-disable-next-line no-unused-vars
 
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.

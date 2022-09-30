@@ -22,6 +22,7 @@ export const INTERACTION_TEMPLATE = {
   carousel: 'dydu_carousel_001',
   product: 'dydu_product_001',
   quickReply: 'dydu_quick_reply_001',
+  uploadFile: 'dydu_upload_001',
 };
 
 export const knownTemplates = Object.values(INTERACTION_TEMPLATE);

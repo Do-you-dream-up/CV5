@@ -54,6 +54,9 @@ export function DialogProvider({ children }) {
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
+  const [uploadActive, setUploadActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isFileActive, setIsFileActive] = useState(false);
   const [placeholder, setPlaceholder] = useState(null);
   const [prompt, setPrompt] = useState('');
   const [secondaryActive, setSecondaryActive] = useState(false);
@@ -349,6 +352,9 @@ export function DialogProvider({ children }) {
         empty,
         interactions,
         locked,
+        uploadActive,
+        selectedFile,
+        isFileActive,
         placeholder,
         prompt,
         secondaryActive,
@@ -357,6 +363,9 @@ export function DialogProvider({ children }) {
         setLocked,
         setPlaceholder,
         setPrompt,
+        setUploadActive,
+        setSelectedFile,
+        setIsFileActive,
         setSecondary,
         setVoiceContent,
         toggleSecondary,

@@ -27,6 +27,7 @@
     "react-autosuggest": "^10.0.3",
     "react-dom": "^17.0.0",
     "react-draggable": "^4.4.5",
+    "react-dropzone": "^14.2.2",
     "react-i18next": "^11.3.3",
     "react-jss": "^10.0.4",
     "react-portal": "^4.2.1",
@@ -89,7 +90,7 @@
     "start:documentation": "styleguidist server --config .styleguide.config.js",
     "format:all": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "jest",
-    "test:CI": "CI=true npm test",
+    "test:CI": "set CI=true npm test",
     "prepare": "husky install",
     "pre-commit": "npm run test:CI && lint-staged"
   },

@@ -44,6 +44,7 @@ const templateNameToBubbleCreateAction = {
         if (text.indexOf('><') < 0) {
           result.push(jsonStringify(makeBubbleObjWithText(text)));
         }
+
         return result;
       }, []);
     }
@@ -84,6 +85,13 @@ const templateNameToBubbleCreateAction = {
       }
     });
     return bubbles;
+  },
+  [INTERACTION_TEMPLATE.uploadFile]: (list) => {
+    const bubble = {};
+    const item = list.pop();
+    if (isOfTypeString(item)) bubble.text = item;
+    if (isOfTypeObject(item)) bubble.product = item;
+    return [JSON.stringify(bubble)];
   },
 };
 
