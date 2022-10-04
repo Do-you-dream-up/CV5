@@ -55,6 +55,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
       when: hasTranslate && languagesMenu.flat().length > 1,
     },
   ];
+
   const inputRender = () => {
     if (isFileActive) {
       return <UploadInput />;

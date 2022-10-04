@@ -1,33 +1,46 @@
+import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 import React, { useContext } from 'react';
 
-import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import c from 'classnames';
-import useStyles from './styles';
 
 const UploadInput = () => {
-  const { configuration } = useContext(ConfigurationContext);
-  const classes = useStyles({ configuration });
-  const { selectedFile, setSelectedFile, setIsFileActive } = useContext(DialogContext);
-  const { name, size } = selectedFile;
+  const { selectedFile, setSelectedFile, setIsFileActive, errorFormatMessage, setErrorFormatMessage } =
+    useContext(DialogContext);
+  const name = selectedFile?.name;
+  const size = selectedFile?.size;
   const sizeFormat = Math.ceil(size / Math.pow(1024, 1));
 
   const handleCancel = () => {
     setSelectedFile(null);
     setIsFileActive(false);
+    setErrorFormatMessage(null);
   };
+
+  const rendererHeader = () => {
+    if (errorFormatMessage) {
+      return <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
+    } else {
+      return (
+        <>
+          <span className="overflow-hidden name-file">{name} </span>
+          <span className="overflow-hidden size-file">{sizeFormat} ko</span>
+        </>
+      );
+    }
+  };
+  const labelBtnUpload = errorFormatMessage ? 'Reupload' : 'Send';
   return (
-    <div className={c('dydu-input-field', classes.field)}>
-      <span>{name}</span>
-      <span>{sizeFormat} ko</span>
-      <div className={c('dydu-container-btns', classes.containerBtns)}>
-        <Button title="Cancel" onClick={handleCancel}>
+    <FileUploadContainer>
+      {rendererHeader()}
+      <div className="container-btns">
+        <Button cancel title="Cancel" onClick={handleCancel}>
           Cancel
         </Button>
-        <Button title="Send">Send</Button>
+        <Button send title={labelBtnUpload}>
+          {labelBtnUpload}
+        </Button>
       </div>
-    </div>
+    </FileUploadContainer>
   );
 };
 

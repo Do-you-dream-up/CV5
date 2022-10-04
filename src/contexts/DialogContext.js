@@ -57,6 +57,7 @@ export function DialogProvider({ children }) {
   const [uploadActive, setUploadActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isFileActive, setIsFileActive] = useState(false);
+  const [errorFormatMessage, setErrorFormatMessage] = useState(null);
   const [placeholder, setPlaceholder] = useState(null);
   const [prompt, setPrompt] = useState('');
   const [secondaryActive, setSecondaryActive] = useState(false);
@@ -355,6 +356,7 @@ export function DialogProvider({ children }) {
         uploadActive,
         selectedFile,
         isFileActive,
+        errorFormatMessage,
         placeholder,
         prompt,
         secondaryActive,
@@ -366,6 +368,7 @@ export function DialogProvider({ children }) {
         setUploadActive,
         setSelectedFile,
         setIsFileActive,
+        setErrorFormatMessage,
         setSecondary,
         setVoiceContent,
         toggleSecondary,
