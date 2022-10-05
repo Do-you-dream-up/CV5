@@ -1,5 +1,6 @@
-export const QUALIFICATION = {
-  text: `
-    From now on, all your conversations will no longer be considered as a test and will be counted in the analytics, even after you refresh the page. To reactivate qualification mode, please close the tab.
-    `,
+import i18next from 'i18next';
+
+export const QUALIFICATION = () => {
+  const text = i18next.t('qualification.disableQualification');
+  return text;
 };

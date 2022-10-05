@@ -47,7 +47,7 @@ export const ACTIONS = {
   '#steps#': null,
   '#template#': null,
   '#disableQualification#': () => {
-    window.dydu.chat.reply(QUALIFICATION.text);
+    window.dydu.chat.reply(QUALIFICATION());
     window.dydu.chat.setQualification(false);
   },
 };
