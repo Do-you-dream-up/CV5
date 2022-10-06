@@ -100,15 +100,12 @@ export default new (class Dydu {
         return data;
       })
       .catch(() => {
-        if (BOT.backUpServer) {
-          tries++;
-          if (tries < 3) this.emit(verb, path, data, tries);
-          else {
-            const pathApi = path.startsWith('/servlet') ? path : '/servlet/api/';
-            API.defaults.baseURL = `https://${BOT.backUpServer}${pathApi}`;
-            this.emit(verb, path, data, tries);
-          }
+        tries++;
+        if (tries >= 2 && BOT.backUpServer) {
+          const pathApi = path.startsWith('/servlet') ? path : '/servlet/api/';
+          API.defaults.baseURL = `https://${BOT.backUpServer}${pathApi}`;
         }
+        this.emit(verb, path, data, tries);
       });
 
   /**
@@ -251,8 +248,8 @@ export default new (class Dydu {
       return Local.get(Local.names.context);
     }
     const response = await this.emit(API.post, path, data);
-    this.setContextId(response.contextId);
-    return response.contextId;
+    this.setContextId(response?.contextId);
+    return response?.contextId;
   };
 
   /**

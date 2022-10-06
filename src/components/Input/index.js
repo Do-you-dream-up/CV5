@@ -114,7 +114,6 @@ export default function Input({ onRequest, onResponse }) {
       if (isLivechatOn) send(input);
       else {
         talk(input, { qualification }).then(onResponse);
-        console.log('🚀 ~ file: index.js ~ line 114 ~ Input ~ qualification', qualification);
       }
     },
     // eslint-disable-next-line
