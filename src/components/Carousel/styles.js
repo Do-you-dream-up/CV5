@@ -56,9 +56,6 @@ export default createUseStyles((theme) => ({
     margin: [[0], '!important'],
     width: `${offsetBetweenCard / length}%`,
   }),
-  stepTemplate: () => ({
-    width: 'initial',
-  }),
   steps: ({ index, length, offsetBetweenCard }) => ({
     '& .dydu-bubble-response': {
       alignItems: 'normal',
