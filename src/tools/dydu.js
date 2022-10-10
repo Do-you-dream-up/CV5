@@ -1,6 +1,15 @@
 import { Cookie, Local } from './storage';
-import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
-import { hasProperty, isDefined, isEmptyString, isPositiveNumber, qualification, toFormUrlEncoded } from './helpers';
+import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
+import {
+  b64encodeObject,
+  hasProperty,
+  isEmptyObject,
+  isDefined,
+  isEmptyString,
+  isPositiveNumber,
+  qualification,
+  toFormUrlEncoded,
+} from './helpers';
 
 import Bowser from 'bowser';
 import axios from 'axios';
@@ -87,6 +96,14 @@ export default new (class Dydu {
     this.space = this.getSpace();
   }
 
+  extractPayloadFromHttpResponse = (data = {}) => {
+    if (!hasProperty(data, 'values')) return data;
+
+    data.values = decode(data.values);
+    this.setContextId(data.values.contextId);
+    return data.values;
+  };
+
   /**
    * Request against the provided path with the specified data. When
    * the response contains values, decode it and refresh the context ID.
@@ -96,16 +113,8 @@ export default new (class Dydu {
    * @param {string} path - Path to send the request to.
    * @param {Object} data - Data to send.
    * @param {number} tries - number of tries to send the request.
-   * @returns {{}}
+   * @returns {Promise}
    */
-
-  extractPayloadFromHttpResponse = (data = {}) => {
-    if (!hasProperty(data, 'values')) return data;
-
-    data.values = decode(data.values);
-    this.setContextId(data.values.contextId);
-    return data.values;
-  };
 
   emit = (verb, path, data) =>
     verb(path, data).then((httpResponse) => this.extractPayloadFromHttpResponse(httpResponse.data));
@@ -491,7 +500,6 @@ export default new (class Dydu {
     const qs = this.#toQueryString(typingPayload);
     const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
-    //return this.emit(API.get, path);
   };
 
   poll = async ({ serverTime, pollTime, contextId, context }) => {
@@ -601,6 +609,54 @@ export default new (class Dydu {
   setCallbackOnServerChange(cb = null) {
     this.onServerChangeFn = cb;
   }
+
+  post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
+  get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
+
+  createSurveyRequestPayload = async (survey = {}, options = {}) => {
+    if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
+    if (isEmptyObject(options)) options = { qualification: qualification };
+
+    return {
+      type: RESPONSE_TYPE.survey,
+      parameters: {
+        botId: this.getBot().id,
+        surveyId: survey.surveyId,
+        interactionSurveyAnswer: false,
+        fields: b64encodeObject(survey.fields),
+        contextId: await this.getContextId(),
+        qualificationMode: options.qualification || false,
+        language: this.getLocale(),
+        space: this.getSpace(),
+        solutionUsed: SOLUTION_TYPE.assistant,
+        clientId: this.getClientId(),
+        useServerCookieForContext: false,
+        saml2_info: '',
+        timestamp: new Date().getMilliseconds(),
+      },
+    };
+  };
+
+  sendSurvey = async (surveyAnswer, options = {}) => {
+    const payload = await this.createSurveyRequestPayload(surveyAnswer, options);
+    const surveyQueryString = this.#toQueryString(payload);
+    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${surveyQueryString}`;
+    return this.get(path);
+  };
+
+  getSurvey = async (surveyId = '') => {
+    if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
+
+    const path = `/chat/survey/configuration/${this.getBotId()}`;
+    const data = toFormUrlEncoded({
+      contextUuid: await this.getContextId(),
+      solutionUsed: SOLUTION_TYPE.assistant,
+      language: this.getLocale(),
+      surveyId,
+    });
+    // get survey is a POST
+    return this.post(path, data);
+  };
 })();
 
 /====================================================================================================/;
