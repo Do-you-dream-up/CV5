@@ -63,9 +63,12 @@ configuration.initialize().then((configuration) => {
         const style = document.createElement('style');
         style.setAttribute('id', 'css-client');
         style.textContent = res.data;
-        window.onload = function () {
-          document.getElementById('css-client').addEventListener('load', document.getElementsByTagName('head'));
-        };
+        setTimeout(
+          (window.onload = function () {
+            document.getElementById('css-client').addEventListener('load', document.getElementsByTagName('head'));
+          }),
+          1000,
+        );
         document.head?.append(style);
       }
     });
