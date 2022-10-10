@@ -1,19 +1,20 @@
 import { addRule, getExternalInfos, processRules } from './pushService';
 
 import dydu from '../dydu';
+import { isEmptyArray } from '../helpers';
 
 export default function fetchPushrules() {
-  return new Promise((resolve, reject) => {
-    dydu.pushrules().then((data) => {
-      if (data && Object.keys(data).length > 0) {
-        const rules = JSON.parse(data);
-        rules.map((rule) => {
-          addRule(rule);
-        });
-        processRules(getExternalInfos(new Date().getTime()));
-        if (rules.length > 0) resolve(rules);
-        else reject();
-      }
+  return new Promise((resolve) => {
+    return dydu.pushrules().then((data) => {
+      const isEmptyPayload = data && Object.keys(data).length <= 0;
+      if (isEmptyPayload) return resolve(null);
+
+      const rules = JSON.parse(data);
+      if (isEmptyArray(rules)) return resolve();
+
+      rules.map(addRule);
+      processRules(getExternalInfos(new Date().getTime()));
+      resolve(rules);
     });
   });
 }

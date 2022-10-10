@@ -56,6 +56,9 @@ export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[obj
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
 export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[object Function]';
+export const isOfTypeNumber = (v) => Object.prototype.toString.call(v) === '[object Number]';
+
+export const isPositiveNumber = (v) => isOfTypeNumber(v) && v > 0;
 
 export const isArray = isOfTypeArray;
 export const isBoolean = isOfTypeBoolean;
@@ -171,3 +174,7 @@ export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
 
 export const qualification =
   window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+
+export const hasProperty = (o, propertyName) => {
+  return Object.hasOwnProperty.call(o, propertyName);
+};

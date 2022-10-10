@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
-import { isDefined, isEmptyString, qualification, toFormUrlEncoded } from './helpers';
+import { hasProperty, isDefined, isEmptyString, isPositiveNumber, qualification, toFormUrlEncoded } from './helpers';
 
 import Bowser from 'bowser';
 import axios from 'axios';
@@ -31,7 +29,7 @@ let BOT, protocol, API;
 
   const botData = {
     ...data,
-    backUpServer: getBackupServerForAppOne(data.server, data.backUpServer),
+    backUpServer: getBackupServerUrl(data),
   };
 
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
@@ -48,21 +46,30 @@ let BOT, protocol, API;
 
   protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
 
-  API = axios.create({
-    baseURL: `${protocol}://${BOT.server}/servlet/api/`,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+  API = getAxiosInstanceWithDyduConfig({
+    maxRetry: 2,
+    timeout: 5000,
+    server: `${protocol}://${BOT.server}/servlet/api/`,
+    backupServer: getBackupServerUrl(data),
+    axiosConf: {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+      },
     },
   });
 })();
 
-const getBackupServerForAppOne = (server, backupServer) => {
-  if (server && server.startsWith('app1') && isEmptyString(backupServer)) {
-    return server.replace('app1', 'app2');
-  } else {
-    return backupServer;
-  }
+const getBackupServerUrl = (botConf = {}) => {
+  const rootUrl = {
+    app1: 'app1',
+    app2: 'app2',
+  };
+
+  const getDefaultBackupServerUrl = () => botConf?.backupServer;
+  const getApp1BackupServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
+  const isApp1 = botConf?.server.startsWith(rootUrl.app1);
+  return isApp1 ? getApp1BackupServerUrl() : getDefaultBackupServerUrl();
 };
 
 const variables = {};
@@ -73,6 +80,7 @@ const variables = {};
  */
 export default new (class Dydu {
   constructor() {
+    this.onServerChangeFn = null;
     this.client = this.getClientId();
     this.emit = debounce(this.emit, 100, { leading: true });
     this.locale = this.getLocale();
@@ -88,27 +96,19 @@ export default new (class Dydu {
    * @param {string} path - Path to send the request to.
    * @param {Object} data - Data to send.
    * @param {number} tries - number of tries to send the request.
-   * @returns {Promise}
+   * @returns {{}}
    */
 
-  emit = (verb, path, data, tries = 0) =>
-    verb(path, data)
-      .then(({ data = {} }) => {
-        if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-          data.values = decode(data.values);
-          this.setContextId(data.values.contextId);
-          return data.values;
-        }
-        return data;
-      })
-      .catch(() => {
-        tries++;
-        if (tries >= 2 && BOT.backUpServer) {
-          const pathApi = path.startsWith('/servlet') ? path : '/servlet/api/';
-          API.defaults.baseURL = `https://${BOT.backUpServer}${pathApi}`;
-        }
-        this.emit(verb, path, data, tries);
-      });
+  extractPayloadFromHttpResponse = (data = {}) => {
+    if (!hasProperty(data, 'values')) return data;
+
+    data.values = decode(data.values);
+    this.setContextId(data.values.contextId);
+    return data.values;
+  };
+
+  emit = (verb, path, data) =>
+    verb(path, data).then((httpResponse) => this.extractPayloadFromHttpResponse(httpResponse.data));
 
   /**
    * Export conversation by email
@@ -597,4 +597,60 @@ export default new (class Dydu {
       variables: JSON.stringify(variables),
     };
   };
+
+  setCallbackOnServerChange(cb = null) {
+    this.onServerChangeFn = cb;
+  }
 })();
+
+/====================================================================================================/;
+
+const AXIOS_ERROR_CODE_RETRY = {
+  timeout: 'ECONNABORTED',
+  serverDown: 'ECONNREFUSED',
+};
+
+const getAxiosInstanceWithDyduConfig = (config = {}) => {
+  if (!isDefined(config?.maxRetry)) config.maxRetry = 2;
+  if (!isDefined(config?.axiosConf)) config.axiosConf = {};
+
+  const instance = axios.create({
+    baseURL: config?.server,
+    timeout: isPositiveNumber(config?.timeout) ? config.timeout : axios.defaults.timeout,
+    ...config.axiosConf,
+  });
+
+  const flipAxiosBaseUrl = () => {
+    instance.defaults.baseURL = instance.defaults.baseURL === config?.server ? config?.backupServer : config?.server;
+  };
+
+  let currentRetryCount = 0;
+
+  const hasReachedMaxRetry = () => currentRetryCount >= config.maxRetry - 1;
+
+  const resetRetryCounter = () => (currentRetryCount = 0);
+
+  const incrementRetryCounter = () => ++currentRetryCount;
+
+  const matchRetryConditions = (error) => Object.values(AXIOS_ERROR_CODE_RETRY).includes(error.code);
+
+  const retry = () => {
+    if (hasReachedMaxRetry()) {
+      flipAxiosBaseUrl();
+      resetRetryCounter();
+    }
+    incrementRetryCounter();
+    return instance();
+  };
+
+  // when response code in range of 2xx
+  const onSuccess = (response) => response;
+
+  // when timeout and response code out of range 2XX
+  const onError = (error) => {
+    return matchRetryConditions(error) ? retry() : Promise.reject();
+  };
+
+  instance.interceptors.response.use(onSuccess, onError);
+  return instance;
+};
