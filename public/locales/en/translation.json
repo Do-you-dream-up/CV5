@@ -62,8 +62,8 @@
     "feedback": {
         "choices": [
             "We did not understand your question",
-            "The proposed solution did not satisfy you",
-            "Our answer was not clear enough"
+            "Our answer was not clear enough",
+            "The proposed solution did not satisfy you"
         ],
         "comment": {
             "help": "What went wrong?",
