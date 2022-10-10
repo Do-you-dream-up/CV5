@@ -35,7 +35,7 @@ export default function Teaser({ open, toggle }) {
   const mouseover = t('teaser.mouseover');
 
   const teaserAvatar = configuration.avatar?.teaser?.image || configuration.avatar?.response?.image;
-  const teaserAvatarBackground = configuration.avatar?.teaser?.background || configuration.avatar?.response?.background;
+  const teaserAvatarBackground = configuration.avatar?.teaser?.background;
 
   const logoTeaser = teaserAvatar?.includes('base64')
     ? teaserAvatar
