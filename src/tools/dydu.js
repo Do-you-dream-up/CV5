@@ -53,7 +53,7 @@ let BOT, protocol, API;
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
-  protocol = BOT.server.startsWith('dev.dydu') ? 'http' : 'https';
+  protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
     maxRetry: 2,
