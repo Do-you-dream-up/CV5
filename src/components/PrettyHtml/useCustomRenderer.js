@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import { DialogContext } from '../../contexts/DialogContext';
+import { isDefined } from '../../tools/helpers';
 
 export default function useCustomRenderer() {
   const { setZoomSrc } = useContext(DialogContext);
@@ -20,8 +21,11 @@ const getFilters = (utils) => [
   {
     test: ({ name }) => name === 'a',
     process: (props) => {
-      props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
-      delete props.attribs.onclick;
+      if (isDefined(props?.attribs?.onclick)) {
+        props.attribs = { ...props.attribs, onClick: createFunctionWithString(props?.attribs?.onclick) };
+        delete props.attribs.onclick;
+      }
+      console.log(props.attribs);
       return <a {...props.attribs}>{props.children}</a>;
     },
   },
@@ -37,3 +41,12 @@ const getFilters = (utils) => [
     },
   },
 ];
+
+const createFunctionWithString = (bodyFuncString) => {
+  try {
+    const fn = new Function(bodyFuncString);
+    return fn;
+  } catch (e) {
+    return bodyFuncString;
+  }
+};
