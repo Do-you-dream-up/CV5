@@ -1,5 +1,5 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
-import React, { useMemo, useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -7,8 +7,8 @@ import ProductTemplate from '../ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import c from 'classnames';
-import useCustomRenderer from './useCustomRenderer';
 import parse from 'html-react-parser';
+import useCustomRenderer from './useCustomRenderer';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -21,17 +21,7 @@ const RE_HREF = /(<a href([^>]+)>)/g;
  *
  * Basically an opinionated reset.
  */
-export default function PrettyHtml({
-  carousel,
-  children,
-  className,
-  component,
-  hasExternalLink,
-  html,
-  templatename,
-  type,
-  ...rest
-}) {
+export default function PrettyHtml({ carousel, children, className, component, html, templatename, type, ...rest }) {
   const [htmlContent, setHtmlContent] = useState(null);
   const customRenderer = useCustomRenderer();
   const classes = useStyles();

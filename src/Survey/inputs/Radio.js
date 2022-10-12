@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+
 import Field from '../Field';
-import Select from './Select';
+import PropTypes from 'prop-types';
 
 export default function Radio({ fieldInstance, onChange, checked = false }) {
   const label = useMemo(() => fieldInstance.getLabel(), [fieldInstance]);
