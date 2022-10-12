@@ -20,10 +20,9 @@ const getFilters = (utils) => [
   {
     test: ({ name }) => name === 'a',
     process: (props) => {
-      props.attribs.onclick = replaceExternalSingleQuotesByDoubleQuotes(props.attribs.onclick);
       props.attribs = { ...props.attribs, onClick: new Function(`${props.attribs.onclick}`) };
       delete props.attribs.onclick;
-      return <a {...props.attribsk}>{props.children}</a>;
+      return <a {...props.attribs}>{props.children}</a>;
     },
   },
   {
@@ -38,11 +37,3 @@ const getFilters = (utils) => [
     },
   },
 ];
-
-const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
-  const startPos = s?.indexOf("'") + 1;
-  const endPos = s?.lastIndexOf("'");
-  const string = s?.substring(startPos, endPos);
-  const final = `"${string}"`;
-  return s?.replace(/'.*'/, final);
-};
