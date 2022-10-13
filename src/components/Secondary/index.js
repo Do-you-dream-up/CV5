@@ -1,11 +1,13 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
+import { isDefined } from '../../tools/helpers';
+import { useSurvey } from '../../Survey/SurveyProvider';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -14,11 +16,13 @@ import useStyles from './styles';
  */
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useContext(ConfigurationContext);
-  const { secondaryActive, secondaryContent, toggleSecondary } = useContext(DialogContext);
+  const { secondaryActive, secondaryContent, closeSecondary } = useContext(DialogContext);
+  const { onSecondaryClosed } = useSurvey();
+
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
-  const { body, height, title, url, width } = secondaryContent || {};
+  const { bodyRenderer, body, height, title, url, width } = secondaryContent || {};
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
 
@@ -34,17 +38,31 @@ export default function Secondary({ anchor, mode }) {
     }
   }
 
+  const renderBody = useCallback(() => {
+    return isDefined(bodyRenderer) ? (
+      bodyRenderer()
+    ) : (
+      <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />
+    );
+  }, [body, bodyRenderer, classes.body]);
+
+  const onClose = useCallback(() => {
+    onSecondaryClosed();
+    closeSecondary();
+  }, [closeSecondary, onSecondaryClosed]);
+
   return secondaryActive ? (
     <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
       <div className={c('dydu-secondary-header', classes.header)}>
         {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={toggleSecondary(false)} type="button" variant="icon">
+          <Button color="primary" onClick={onClose} type="button" variant="icon">
             <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>
       </div>
-      {body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />}
+      {renderBody()}
+      {/*body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />*/}
       {url && (
         <iframe
           allow="fullscreen"

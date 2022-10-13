@@ -16,6 +16,8 @@ import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import SurveyProvider from '../../Survey/SurveyProvider';
+import dydu from '../../tools/dydu';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -91,9 +93,11 @@ export default function Application() {
         <DialogProvider onPushrulesDataReceived={popinChatbox}>
           <AuthContext>
             <Authenticated>
-              <LivechatProvider>
-                <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-              </LivechatProvider>
+              <SurveyProvider api={dydu}>
+                <LivechatProvider>
+                  <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                </LivechatProvider>
+              </SurveyProvider>
               <Teaser open={isChatboxMinimize} toggle={toggle} />
             </Authenticated>
           </AuthContext>

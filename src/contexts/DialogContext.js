@@ -288,10 +288,11 @@ export function DialogProvider({ children }) {
   }, []);
 
   const toggleSecondary = useCallback(
-    (open, { body, height, title, url, width } = {}) =>
+    (open, { bodyRenderer, body, height, title, url, width } = {}) =>
       () => {
-        if (body !== undefined || title !== undefined || url !== undefined) {
-          setSecondaryContent({ body, height, title, url, width });
+        const someFieldsDefined = [bodyRenderer, body, height, title, url, width].some((v) => isDefined(v));
+        if (someFieldsDefined) {
+          setSecondaryContent({ bodyRenderer, body, height, title, url, width });
         }
         setSecondaryActive((previous) => {
           const should = open === undefined ? !previous : open;
@@ -340,10 +341,23 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [welcomeContent, listInteractionHistory]);
 
+  const closeSecondary = useCallback(() => {
+    if (secondaryActive) toggleSecondary(false)();
+  }, [secondaryActive, toggleSecondary]);
+
+  const openSecondary = useCallback(
+    (...props) => {
+      if (!secondaryActive) toggleSecondary(...[true].concat(props))();
+    },
+    [secondaryActive, toggleSecondary],
+  );
+
   return (
     <DialogContext.Provider
       children={children}
       value={{
+        closeSecondary,
+        openSecondary,
         topList,
         showAnimationOperatorWriting,
         displayNotification,
