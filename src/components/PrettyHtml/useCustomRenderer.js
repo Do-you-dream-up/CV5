@@ -22,8 +22,7 @@ const getFilters = (utils) => [
     test: ({ name }) => name === 'a',
     process: (props) => {
       if (isDefined(props?.attribs?.onclick)) {
-        props.attribs.onclick = { onClick: createFunctionWithString(props?.attribs?.onclick) };
-        props.attribs = { ...props.attribs };
+        props.attribs.onClick = createFunctionWithString(props?.attribs?.onclick);
         delete props.attribs.onclick;
       }
       return <a {...props.attribs}>{props.children}</a>;
@@ -44,9 +43,21 @@ const getFilters = (utils) => [
 
 const createFunctionWithString = (bodyFuncString) => {
   try {
-    const fn = new Function(bodyFuncString);
-    return fn;
+    try {
+      return new Function(bodyFuncString);
+    } catch (err) {
+      const bodyString = replaceExternalSingleQuotesByDoubleQuotes(bodyFuncString);
+      return new Function(bodyString);
+    }
   } catch (e) {
     return bodyFuncString;
   }
+};
+
+const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
+  const startPos = s?.indexOf("'") + 1;
+  const endPos = s?.lastIndexOf("'");
+  const string = s?.substring(startPos, endPos);
+  const final = `"${string}"`;
+  return s?.replace(/'.*'/, final);
 };
