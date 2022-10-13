@@ -199,5 +199,8 @@
     },
     "top": {
         "title": "Questions les plus posées :"
+    },
+    "qualification": {
+        "disableQualification": "A partir de maintenant, toutes vos conversations ne seront plus considérées comme test et seront comptabilisées dans les statistiques, même après que vous actualisez la page. Pour réactiver le mode de qualification, veuillez fermer l'onglet."
     }
 }

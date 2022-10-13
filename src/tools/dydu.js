@@ -3,8 +3,8 @@ import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants
 import {
   b64encodeObject,
   hasProperty,
-  isEmptyObject,
   isDefined,
+  isEmptyObject,
   isEmptyString,
   isPositiveNumber,
   qualification,
@@ -138,7 +138,6 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(options.extra && { extraParameters: options.extra }),
     });
-
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };

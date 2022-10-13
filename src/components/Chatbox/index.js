@@ -52,6 +52,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setSecondary,
     toggleSecondary,
     callWelcomeKnowledge,
+    qualification,
+    setQualification,
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -66,8 +68,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -126,6 +126,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         reply: (text) => addResponse({ text }),
         setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
         setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
+        setQualification: (value) => {
+          setQualification(value);
+        },
       };
 
       window.dydu.promptEmail = {

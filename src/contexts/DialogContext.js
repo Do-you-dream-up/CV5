@@ -1,11 +1,11 @@
 import { EventsContext, useEvent } from './EventsContext';
+import { Local, Session } from '../tools/storage';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
-import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
 import fetchPushrules from '../tools/pushrules';
@@ -62,6 +62,12 @@ export function DialogProvider({ children }) {
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
   const [zoomSrc, setZoomSrc] = useState(null);
+
+  const defaultQualification = sessionStorage.getItem(Session.names.qualification)
+    ? sessionStorage.getItem(Session.names.qualification)
+    : true;
+
+  const [qualification, setQualification] = useState(defaultQualification);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
@@ -378,6 +384,8 @@ export function DialogProvider({ children }) {
         voiceContent,
         zoomSrc,
         setZoomSrc,
+        qualification,
+        setQualification,
         callWelcomeKnowledge: () => null,
       }}
     />
