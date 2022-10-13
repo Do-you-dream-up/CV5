@@ -1,3 +1,7 @@
+export const RESPONSE_TYPE = {
+  survey: 'survey',
+};
+
 export const SOLUTION_TYPE = {
   assistant: 'ASSISTANT',
   livechat: 'LIVECHAT',

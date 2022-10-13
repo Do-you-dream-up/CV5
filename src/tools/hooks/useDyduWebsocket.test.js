@@ -36,6 +36,7 @@ const InterfaceTunnel = {
   mode: TUNNEL_MODE.websocket,
   open: jest.fn(),
   send: jest.fn(),
+  sendSurvey: jest.fn(),
   close: jest.fn(),
   isConnected: false,
 };
