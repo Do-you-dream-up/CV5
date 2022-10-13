@@ -22,10 +22,10 @@ const getFilters = (utils) => [
     test: ({ name }) => name === 'a',
     process: (props) => {
       if (isDefined(props?.attribs?.onclick)) {
-        props.attribs = { ...props.attribs, onClick: createFunctionWithString(props?.attribs?.onclick) };
+        props.attribs.onclick = { onClick: createFunctionWithString(props?.attribs?.onclick) };
+        props.attribs = { ...props.attribs };
         delete props.attribs.onclick;
       }
-      console.log(props.attribs);
       return <a {...props.attribs}>{props.children}</a>;
     },
   },
