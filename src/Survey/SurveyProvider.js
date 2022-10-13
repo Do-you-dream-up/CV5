@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Field from './Field';
-import { isDefined } from '../tools/helpers';
-import dydu from '../tools/dydu';
-import { useDialog } from '../contexts/DialogContext';
 import PropTypes from 'prop-types';
 import SurveyForm from './SurveyForm';
+import dydu from '../tools/dydu';
+import { isDefined } from '../tools/helpers';
+import { useDialog } from '../contexts/DialogContext';
 
 const SurveyContext = React.createContext();
 
@@ -33,8 +33,6 @@ export default function SurveyProvider({ children }) {
 
   const validateForm = useCallback(() => {
     return new Promise((resolve, reject) => {
-      const inputList = Array.from(form.getElementsByTagName('input'));
-
       const listNodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
       let resultPayload = { listMissingRequired: [] };
       resultPayload = listNodeForm.reduce((resultMap, inputNode) => {

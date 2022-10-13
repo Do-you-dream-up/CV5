@@ -1,12 +1,13 @@
-import Select from './inputs/Select';
-import Radio from './inputs/Radio';
-import Text from './inputs/Text';
-import LongText from './inputs/LongText';
-import Title from './inputs/Title';
-import Checkbox from './inputs/Checkbox';
-import MultipleChoice from './inputs/MultipleChoice';
-import SelectOption from './inputs/SelectOption';
 import { isArray, isDefined, isObject } from '../tools/helpers';
+
+import Checkbox from './inputs/Checkbox';
+import LongText from './inputs/LongText';
+import MultipleChoice from './inputs/MultipleChoice';
+import Radio from './inputs/Radio';
+import Select from './inputs/Select';
+import SelectOption from './inputs/SelectOption';
+import Text from './inputs/Text';
+import Title from './inputs/Title';
 
 export default class Field {
   id = -1;
@@ -182,7 +183,7 @@ export default class Field {
   }
 
   extractPayloadFromInputNode(inputNode) {
-    const isValid = this.validateInputNode(inputNode);
+    const isValid = this.validateInputNode();
     if (!isValid) return { missing: true };
     const value = this.extractInputNodeValue(inputNode);
     const extractedValueIsAlreadyPayload = isObject(value);
@@ -192,7 +193,7 @@ export default class Field {
     return makePayloadWithValue(value);
   }
 
-  validateInputNode(inputNode) {
+  validateInputNode() {
     return true;
   }
 

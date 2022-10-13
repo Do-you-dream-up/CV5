@@ -1,11 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useTheme } from 'react-jss';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
-import useEvent from '../../tools/hooks/event';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
+import PropTypes from 'prop-types';
+import useEvent from '../../tools/hooks/event';
+import { useTheme } from 'react-jss';
+import useViewport from '../../tools/hooks/viewport';
 
 /**
  * Wrapper to enable dragging on other components.
@@ -13,7 +14,7 @@ import { Local } from '../../tools/storage';
  * This works by capturing the delta of the pointer position and applying a
  * `translate3d` CSS property.
  */
-export default function Dragon({ children, component, reset, ...rest }) {
+export default function Dragon({ component, reset, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
