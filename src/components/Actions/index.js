@@ -21,7 +21,7 @@ export default function Actions({ actions, className, targetStyleKey }) {
   return (
     !!actions.length && (
       <div className={c('dydu-actions', _classes, className)}>
-        {actions.map(({ items, selected, type = 'button', when, title, ...rest }, index) =>
+        {actions.map(({ items, selected, type = 'button', title, ...rest }, index) =>
           React.createElement(items ? Menu : Button, {
             key: index,
             ...(items ? { component: Button, items, selected } : { type }),

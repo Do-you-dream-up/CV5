@@ -5,7 +5,6 @@ import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-// eslint-disable-next-line no-unused-vars
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Voice from '../../modulesApi/VoiceModuleApi';
@@ -17,6 +16,8 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
+// eslint-disable-next-line no-unused-vars
+
 /**
  * Wrapper around the input bar to contain the talk and suggest logic.
  */
@@ -24,7 +25,8 @@ export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { disabled, locked, placeholder } = useContext(DialogContext);
+  const { disabled, locked, placeholder, qualification } = useContext(DialogContext);
+
   const classes = useStyles({ configuration });
   const [counter = 100, setCounter] = useState(configuration.input.maxLength);
   const [input, setInput] = useState('');
@@ -33,8 +35,6 @@ export default function Input({ onRequest, onResponse }) {
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -53,6 +53,10 @@ export default function Input({ onRequest, onResponse }) {
     }
     setIncrement(incrementToUpdateRefOnRender++);
   }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
+
+  useEffect(() => {
+    Local.viewQualification.save(qualification);
+  }, [qualification]);
 
   const onChange = (event) => {
     setTyping(true);
@@ -108,10 +112,12 @@ export default function Input({ onRequest, onResponse }) {
   const sendInput = useCallback(
     (input) => {
       if (isLivechatOn) send(input);
-      else talk(input, { qualification }).then(onResponse);
+      else {
+        talk(input, { qualification }).then(onResponse);
+      }
     },
     // eslint-disable-next-line
-    [isLivechatOn, send],
+    [isLivechatOn, send, qualification],
   );
 
   const submit = useCallback(
@@ -125,7 +131,7 @@ export default function Input({ onRequest, onResponse }) {
       }
       setTyping(false);
     },
-    [event, onRequest, reset, sendInput],
+    [event, onRequest, reset, sendInput, qualification],
   );
 
   const suggest = useCallback(
