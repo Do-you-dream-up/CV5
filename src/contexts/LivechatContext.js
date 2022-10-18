@@ -3,10 +3,10 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { useDialog } from './DialogContext';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 import dydu from '../tools/dydu';
-import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import { Local } from '../tools/storage';
 import useQueue from '../tools/hooks/useQueue';
+import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -22,11 +22,14 @@ const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
 const containsStartLivechatSpecialAction = (response) => response?.specialAction?.equals('StartPolling');
 
+const LIVECHAT_ID_LISTENER = 'listener/livechat';
+
 export function LivechatProvider({ children }) {
-  const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
+  const [tunnelList] = useState([useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
+  const { showSurvey } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
@@ -81,21 +84,44 @@ export function LivechatProvider({ children }) {
       displayNotification,
       onFail: onFailOpenTunnel,
       showAnimationOperatorWriting,
+      handleSurvey: showSurvey,
     };
     _tunnel
       .open(tunnelInitialConfig)
       .then(() => onSuccessOpenTunnel(_tunnel))
       .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
   }, [
+    tunnelList,
+    lastResponse,
+    endLivechat,
     displayResponseText,
     displayNotification,
-    endLivechat,
-    lastResponse,
     onFailOpenTunnel,
-    onSuccessOpenTunnel,
     showAnimationOperatorWriting,
-    tunnelList,
+    showSurvey,
+    onSuccessOpenTunnel,
   ]);
+
+  const sendSurvey = useCallback(
+    (surveyResponse) => {
+      if (!isDefined(tunnel)) put(surveyResponse);
+      else tunnel?.sendSurvey(surveyResponse);
+    },
+    [tunnel],
+  );
+
+  const onUnmount = useCallback(() => {
+    SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
+  }, []);
+
+  useEffect(() => {
+    if (!isLivechatOn) return onUnmount();
+    SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
+  }, [isLivechatOn, sendSurvey]);
+
+  useEffect(() => {
+    return onUnmount;
+  }, []);
 
   useEffect(() => {
     const data = Local.livechat.load();

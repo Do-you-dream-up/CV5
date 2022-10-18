@@ -1,18 +1,19 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import dydu from '../../tools/dydu';
-import Button from '../Button';
 import MenuList from '../MenuList';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Footer menu. Display a list of hidden features.
  */
-export default function ModalFooterMenu({ className, component, onReject, onResolve, ...rest }) {
+export default function ModalFooterMenu({ className, component, onResolve, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const classes = useStyles();
   const { t } = useTranslation('translation');

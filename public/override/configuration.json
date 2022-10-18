@@ -5,7 +5,8 @@
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
     "cdn": "https://cdn.doyoudreamup.com/",
-    "directory": "development/"
+    "directory": "development/",
+    "qualification": true
   },
   "avatar": {
     "request": {

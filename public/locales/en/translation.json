@@ -62,8 +62,8 @@
     "feedback": {
         "choices": [
             "We did not understand your question",
-            "The proposed solution did not satisfy you",
-            "Our answer was not clear enough"
+            "Our answer was not clear enough",
+            "The proposed solution did not satisfy you"
         ],
         "comment": {
             "help": "What went wrong?",
@@ -204,5 +204,8 @@
     },
     "top": {
         "title": "Top-asked questions:"
+    },
+    "qualification": {
+        "disableQualification": "From now on, all your conversations will no longer be considered as a test and will be counted in the analytics, even after you refresh the page. To reactivate qualification mode, please close the tab."
     }
 }
