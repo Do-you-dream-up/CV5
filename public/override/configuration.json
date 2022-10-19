@@ -188,7 +188,7 @@
     "scopes": [""]
   },
   "saml": {
-    "enable": false
+    "enable": true
   },
   "onboarding": {
     "enable": false,

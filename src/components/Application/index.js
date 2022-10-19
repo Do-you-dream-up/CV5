@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line import/no-unresolved
 
 import '../../../public/override/style.css';
@@ -9,7 +10,6 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
-import { SamlProvider } from '../../contexts/Saml/SamlProvider';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
 import c from 'classnames';
@@ -17,6 +17,7 @@ import dydu from '../../tools/dydu';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
+import useSaml from '../../contexts/Saml/useSaml';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
@@ -42,6 +43,9 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+
+  const { checkSession } = useSaml();
+
   const {
     close: closeChatbox,
     mode,
@@ -83,6 +87,7 @@ export default function Application() {
   }, [closeChatbox, hasAuthStorageCheck, isAuthorized]);
 
   useEffect(() => {
+    configuration.saml?.enable && checkSession();
     event('loadChatbox');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -92,18 +97,16 @@ export default function Application() {
       <Suspense fallback={null}>
         {hasWizard && <Wizard />}
         <DialogProvider onPushrulesDataReceived={popinChatbox}>
-          <SamlProvider>
-            <AuthContext>
-              <Authenticated>
-                <SurveyProvider api={dydu}>
-                  <LivechatProvider>
-                    <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                  </LivechatProvider>
-                </SurveyProvider>
-                <Teaser open={isChatboxMinimize} toggle={toggle} />
-              </Authenticated>
-            </AuthContext>
-          </SamlProvider>
+          <AuthContext>
+            <Authenticated>
+              <SurveyProvider api={dydu}>
+                <LivechatProvider>
+                  <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                </LivechatProvider>
+              </SurveyProvider>
+              <Teaser open={isChatboxMinimize} toggle={toggle} />
+            </Authenticated>
+          </AuthContext>
         </DialogProvider>
       </Suspense>
     </div>
