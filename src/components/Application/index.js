@@ -17,7 +17,6 @@ import dydu from '../../tools/dydu';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
-import useSaml from '../../contexts/Saml/useSaml';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
@@ -43,8 +42,6 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
-
-  const { checkSession } = useSaml();
 
   const {
     close: closeChatbox,
@@ -87,7 +84,6 @@ export default function Application() {
   }, [closeChatbox, hasAuthStorageCheck, isAuthorized]);
 
   useEffect(() => {
-    configuration.saml?.enable && checkSession();
     event('loadChatbox');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
