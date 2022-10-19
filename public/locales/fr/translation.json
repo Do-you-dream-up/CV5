@@ -62,8 +62,8 @@
     "feedback": {
         "choices": [
             "Je n'ai pas compris votre question",
-            "J'ai bien compris mais la solution proposée ne vous satisfait pas",
-            "Ma réponse n'était pas claire"
+            "Ma réponse n'était pas claire",
+            "J'ai bien compris mais la solution proposée ne vous satisfait pas"
         ],
         "comment": {
             "help": "Avez-vous un commentaire ?",
@@ -199,5 +199,8 @@
     },
     "top": {
         "title": "Questions les plus posées :"
+    },
+    "qualification": {
+        "disableQualification": "A partir de maintenant, toutes vos conversations ne seront plus considérées comme test et seront comptabilisées dans les statistiques, même après que vous actualisez la page. Pour réactiver le mode de qualification, veuillez fermer l'onglet."
     }
 }

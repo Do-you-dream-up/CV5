@@ -27,6 +27,7 @@ countdownRetryHandshake.MAX_RETRY_HANDSHAKE_STEP = MAX_RETRY_HANDSHAKE_STEP;
 countdownRetryHandshake.maxRetry = MAX_RETRY_HANDSHAKE_STEP;
 
 const MESSAGE_TYPE = {
+  survey: 'survey',
   error: 'error',
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
@@ -35,6 +36,7 @@ const MESSAGE_TYPE = {
   endPolling: 'endPolling',
 };
 
+let handleSurvey = null;
 let onFail = null;
 let onEndCommunication = null;
 let displayResponseText = null;
@@ -75,6 +77,7 @@ export default function useDyduWebsocket() {
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
+    if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, messageData]);
@@ -145,6 +148,9 @@ export default function useDyduWebsocket() {
   useEffect(() => {
     if (!isDefined(messageType)) return;
     switch (messageType) {
+      case MESSAGE_TYPE.survey:
+        return handleSurvey(messageData);
+
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
 
@@ -162,7 +168,7 @@ export default function useDyduWebsocket() {
         return close();
       }
     }
-  }, [close, displayMessage, displayNotification, handleError, messageType, processHandshakeNextStep]);
+  }, [close, displayMessage, displayNotification, handleError, messageData, messageType, processHandshakeNextStep]);
 
   useEffect(() => {
     if (handshakeStepCountdown === 1) return sendFirstHandshake();
@@ -203,6 +209,7 @@ export default function useDyduWebsocket() {
     displayNotificationMessage = configuration.displayNotification;
     onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
+    handleSurvey = configuration.handleSurvey;
   }, []);
 
   const open = useCallback(
@@ -216,6 +223,11 @@ export default function useDyduWebsocket() {
     },
     [initSocketProps, setupOutputs],
   );
+
+  const sendSurvey = useCallback((surveyAnswer) => {
+    const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
+    sendJsonMessage(message);
+  }, []);
 
   const send = useCallback(
     (userInput) => {
@@ -244,6 +256,7 @@ export default function useDyduWebsocket() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    sendSurvey,
     close,
     onUserTyping,
   };

@@ -1,6 +1,7 @@
 import Bowser from 'bowser';
-import dydu from './dydu';
 import { LOREM_HTML } from './lorem';
+import { QUALIFICATION } from './qualification';
+import dydu from './dydu';
 
 /**
  * Forge the #meta# response and add it the conversation.
@@ -45,6 +46,10 @@ export const ACTIONS = {
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
   '#template#': null,
+  '#disableQualification#': () => {
+    window.dydu.chat.reply(QUALIFICATION());
+    window.dydu.chat.setQualification(false);
+  },
 };
 
 /**
