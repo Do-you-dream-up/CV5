@@ -67,7 +67,7 @@ configuration.initialize().then((configuration) => {
           (window.onload = function () {
             document.getElementById('css-client').addEventListener('load', document.getElementsByTagName('head'));
           }),
-          1000,
+          2000,
         );
         document.head?.append(style);
       }
