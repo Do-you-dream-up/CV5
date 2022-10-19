@@ -455,6 +455,22 @@ export default new (class Dydu {
   };
 
   /**
+   * Get auth status.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  saml2Auth = async (saml2Info) => {
+    const data = qs.stringify({
+      saml2Info,
+      botUUID: BOT.id,
+    });
+    const path = `saml2/status`;
+    return this.emit(API.post, path, data);
+  };
+
+  /**
    * Send the provided input with optional extra parameters.
    *
    * @param {string} text - Input to send.
