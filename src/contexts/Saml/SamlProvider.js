@@ -15,7 +15,6 @@ export const SamlProvider = ({ children }) => {
   const [redirectUrl, setRedirectUrl] = useState(null);
 
   const isSamlActive = () => configuration?.saml?.enable;
-  console.log('🚀 ~ file: SamlProvider.js ~ line 18 ~ SamlProvider ~ isSamlActive', isSamlActive());
 
   const checkSession = () => {
     try {
@@ -46,7 +45,7 @@ export const SamlProvider = ({ children }) => {
   useIdleTimer({
     debounce: 500,
     onIdle: () => isSamlActive() && checkSession(),
-    timeout: 30 * 60 * 1000, // 2H in milliseconds
+    timeout: 30 * 60 * 1000, // 30mn in milliseconds
   });
 
   const logout = () => setUser(null);

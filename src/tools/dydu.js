@@ -138,7 +138,7 @@ export default new (class Dydu {
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -157,7 +157,7 @@ export default new (class Dydu {
       contextUUID: contextId,
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -175,7 +175,7 @@ export default new (class Dydu {
       comment,
       contextUUID: contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -193,7 +193,7 @@ export default new (class Dydu {
       choiceKey,
       contextUUID: contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -216,7 +216,7 @@ export default new (class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       mail: email,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     };
     const path = `chat/gdpr/${BOT.id}/`;
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
@@ -257,7 +257,7 @@ export default new (class Dydu {
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
       qualificationMode: qualification,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -329,7 +329,7 @@ export default new (class Dydu {
       const data = qs.stringify({
         contextUuid: contextId,
         solutionUsed: SOLUTION_TYPE.assistant,
-        saml2_info: saml2Info,
+        ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
       });
       const path = `chat/history/${BOT.id}/`;
       return await this.emit(API.post, path, data);
@@ -458,7 +458,7 @@ export default new (class Dydu {
       search: text,
       space: this.getSpace(),
       onlyShowRewordables: true, // to display only the activates rewords / suggestions
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -473,7 +473,7 @@ export default new (class Dydu {
    */
   talk = async (text, options = {}) => {
     const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
-    const data = qs.stringify({ ...payload, saml2_info: saml2Info });
+    const data = qs.stringify({ ...payload, ...(configuration?.saml?.enable && { saml2_info: saml2Info }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
@@ -488,7 +488,7 @@ export default new (class Dydu {
    */
   getSaml2Status = (saml2Info) => {
     const data = qs.stringify({
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
       botUUID: BOT.id,
     });
     const path = `saml2/status?${data}`;
@@ -535,7 +535,7 @@ export default new (class Dydu {
       contextUuid: contextId || context?.fromBase64() || (await this.getContextId()),
       language: this.getLocale(),
       lastPoll: serverTime || pollTime,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     };
 
     const path = `/chat/poll/last/${this.getBot()?.id}`;
@@ -557,7 +557,7 @@ export default new (class Dydu {
       period: period,
       space: this.getSpace(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -579,7 +579,7 @@ export default new (class Dydu {
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/variable/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -598,7 +598,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
@@ -681,7 +681,7 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,
-      saml2_info: saml2Info,
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
     });
     // get survey is a POST
     return this.post(path, data);
@@ -728,38 +728,40 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     return instance();
   };
 
-  const redirectToUrl = (url) => {
-    Local.saml.remove();
+  const renewAuth = (auth) => {
+    if (auth) {
+      try {
+        Local.saml.save(atob(auth));
+      } catch {
+        Local.saml.save(auth);
+      }
+    }
+  };
+
+  const redirectAndRenewAuth = (values) => {
     try {
-      window.location.href = atob(url);
+      renewAuth(atob(values?.auth));
+      window.location.href = atob(values?.redirection_url);
     } catch {
-      window.location.href = url;
+      renewAuth(values?.auth);
+      window.location.href = values?.redirection_url;
     }
   };
 
   const samlRenewOrReject = ({ type, values }) => {
-    console.log('🚀 ~ file: dydu.js ~ line 732 ~ samlRenewOrReject ~ type', type);
-    console.log('🚀 ~ file: dydu.js ~ line 732 ~ samlRenewOrReject ~ values', values);
     switch (type) {
       case 'SAML_redirection':
-        redirectToUrl(values?.redirection_url);
+        redirectAndRenewAuth(values);
         break;
       default:
-        return true;
+        return renewAuth(values?.auth);
     }
-    // try {
-    //   Local.saml.save(atob(values?.auth));
-    // } catch (error) {
-    //   console.log('🚀 ~ file: dydu.js ~ line 739 ~ onSuccess ~ error', error);
-    //   console.log('🚀 ~ file: dydu.js ~ line 739 ~ onSuccess ~ data', data);
-    // }
   };
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
     const { data } = response;
     data && configuration?.saml?.enable && samlRenewOrReject(data);
-    console.log('🚀 ~ file: dydu.js ~ line 742 ~ onSuccess ~ response', response);
     return response;
   };
 
