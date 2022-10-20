@@ -486,9 +486,9 @@ export default new (class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  getSaml2Status = (saml2Info) => {
+  getSaml2Status = (saml2Info_token) => {
     const data = qs.stringify({
-      ...(configuration?.saml?.enable && { saml2_info: saml2Info }),
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info_token }),
       botUUID: BOT.id,
     });
     const path = `saml2/status?${data}`;
