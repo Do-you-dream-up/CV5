@@ -9,7 +9,7 @@ import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { SamlProvider } from './contexts/Saml/SamlProvider';
+import { SamlProvider } from './contexts/SamlContext';
 import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import breakpoints from './styles/breakpoints';
