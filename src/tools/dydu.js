@@ -728,10 +728,38 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     return instance();
   };
 
+  const redirectToUrl = (url) => {
+    Local.saml.remove();
+    try {
+      window.location.href = atob(url);
+    } catch {
+      window.location.href = url;
+    }
+  };
+
+  const samlRenewOrReject = ({ type, values }) => {
+    console.log('🚀 ~ file: dydu.js ~ line 732 ~ samlRenewOrReject ~ type', type);
+    console.log('🚀 ~ file: dydu.js ~ line 732 ~ samlRenewOrReject ~ values', values);
+    switch (type) {
+      case 'SAML_redirection':
+        redirectToUrl(values?.redirection_url);
+        break;
+      default:
+        return true;
+    }
+    // try {
+    //   Local.saml.save(atob(values?.auth));
+    // } catch (error) {
+    //   console.log('🚀 ~ file: dydu.js ~ line 739 ~ onSuccess ~ error', error);
+    //   console.log('🚀 ~ file: dydu.js ~ line 739 ~ onSuccess ~ data', data);
+    // }
+  };
+
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    const { values } = response;
-    values?.auth && console.log('🚀 ~ file: dydu.js ~ line 720 ~ onSuccess ~ response', response);
+    const { data } = response;
+    data && configuration?.saml?.enable && samlRenewOrReject(data);
+    console.log('🚀 ~ file: dydu.js ~ line 742 ~ onSuccess ~ response', response);
     return response;
   };
 

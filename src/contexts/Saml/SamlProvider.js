@@ -14,6 +14,9 @@ export const SamlProvider = ({ children }) => {
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
 
+  const isSamlActive = () => configuration?.saml?.enable;
+  console.log('🚀 ~ file: SamlProvider.js ~ line 18 ~ SamlProvider ~ isSamlActive', isSamlActive());
+
   const checkSession = () => {
     try {
       new Promise((resolve) => {
@@ -42,20 +45,20 @@ export const SamlProvider = ({ children }) => {
 
   useIdleTimer({
     debounce: 500,
-    onIdle: () => checkSession(),
+    onIdle: () => isSamlActive() && checkSession(),
     timeout: 30 * 60 * 1000, // 2H in milliseconds
   });
 
   const logout = () => setUser(null);
 
   useEffect(() => {
-    if (redirectUrl) {
+    if (isSamlActive() && redirectUrl) {
       window.location.href = redirectUrl;
     }
   }, [redirectUrl]);
 
   useEffect(async () => {
-    configuration?.saml?.enable && (await checkSession());
+    isSamlActive() && (await checkSession());
   }, []);
 
   const value = {
@@ -67,7 +70,12 @@ export const SamlProvider = ({ children }) => {
     checkSession,
   };
 
-  const renderChildren = () => (!saml2Info ? <></> : children);
+  const renderChildren = () => {
+    if (isSamlActive()) {
+      return !saml2Info ? <></> : children;
+    }
+    return children;
+  };
 
   return <SamlContext.Provider value={value}>{renderChildren()}</SamlContext.Provider>;
 };
