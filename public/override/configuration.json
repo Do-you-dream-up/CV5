@@ -187,6 +187,9 @@
     "preprodPorovider": "",
     "scopes": [""]
   },
+  "saml": {
+    "enable": false
+  },
   "onboarding": {
     "enable": false,
     "image1": "dydu-onboarding-1.svg",

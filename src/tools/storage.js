@@ -113,6 +113,7 @@ export class Local {
     secondary: 'dydu.secondary',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
+    saml: 'dydu.saml.auth',
   };
 
   /**
@@ -272,6 +273,12 @@ export class Local {
     reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
   });
 
+  static saml = Object.create({
+    save: (data) => localStorage.setItem(Local.names.saml, data),
+    load: () => localStorage.getItem(Local.names.saml) || null,
+    remove: () => localStorage.removeItem(Local.names.livechat),
+  });
+
   static viewMode = Object.create({
     load: () => {
       const d = localStorage.getItem(Local.names.open);
@@ -279,6 +286,7 @@ export class Local {
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
   });
+
   static viewQualification = Object.create({
     load: () => {
       const d = sessionStorage.getItem(Session.names.qualification);
