@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line import/no-unresolved
 
 import '../../../public/override/style.css';
@@ -9,15 +10,15 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
+import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-import SurveyProvider from '../../Survey/SurveyProvider';
-import dydu from '../../tools/dydu';
 
 const { AuthContext, Authenticated } = AuthPayload;
 
@@ -41,6 +42,7 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+
   const {
     close: closeChatbox,
     mode,
