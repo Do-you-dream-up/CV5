@@ -57,9 +57,9 @@ let BOT, protocol, API;
 
   API = getAxiosInstanceWithDyduConfig({
     maxRetry: 2,
-    timeout: 5000,
+    timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: getBackupServerUrl(data),
+    backupServer: `${protocol}://${getBackupServerUrl(data)}/servlet/api/`,
     axiosConf: {
       headers: {
         Accept: 'application/json',
@@ -692,6 +692,7 @@ export default new (class Dydu {
 const AXIOS_ERROR_CODE_RETRY = {
   timeout: 'ECONNABORTED',
   serverDown: 'ECONNREFUSED',
+  networkError: 'Network Error',
 };
 
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
@@ -716,7 +717,10 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   const incrementRetryCounter = () => ++currentRetryCount;
 
-  const matchRetryConditions = (error) => Object.values(AXIOS_ERROR_CODE_RETRY).includes(error.code);
+  const matchRetryConditions = (error) => {
+    const errors = Object.values(AXIOS_ERROR_CODE_RETRY);
+    return errors.includes(error.code) || errors.includes(error.message);
+  };
 
   const retry = () => {
     if (hasReachedMaxRetry()) {
@@ -766,7 +770,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when timeout and response code out of range 2XX
   const onError = (error) => {
-    return matchRetryConditions(error) ? retry() : Promise.reject();
+    return matchRetryConditions(error) ? retry(error) : Promise.reject();
   };
 
   instance.interceptors.response.use(onSuccess, onError);
