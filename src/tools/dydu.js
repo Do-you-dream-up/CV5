@@ -1,13 +1,16 @@
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
+  isPositiveNumber,
   b64encodeObject,
   hasProperty,
-  isDefined,
   isEmptyObject,
+  strContains,
+  isDefined,
   isEmptyString,
-  isPositiveNumber,
   qualification,
+  isOfTypeFunction,
+  isOfTypeString,
   toFormUrlEncoded,
 } from './helpers';
 
@@ -305,11 +308,18 @@ export default new (class Dydu {
             localstorage: (value) => Local.get(value),
             route: (value) => value[window.location.pathname],
             urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
+            urlpart: (value) => {
+              const currentHref = window.location.href;
+              if (isOfTypeString(value)) return strContains(currentHref, value);
+              const isPartOfCurrentHref = (v) => strContains(currentHref, v);
+              const result = Object.keys(value).find(isPartOfCurrentHref);
+              return value[result];
+            },
           }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space = typeof _get === 'function' ? _get(value) || this.space : this.space;
+            this.space = isOfTypeFunction(_get) ? _get(value) || this.space : this.space;
           }
         });
       }

@@ -218,6 +218,13 @@
     "detection": [
       {
         "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
+        }
+      },
+      {
+        "active": false,
         "mode": "cookie",
         "value": "dyduspace"
       },
