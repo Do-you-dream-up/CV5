@@ -38,7 +38,7 @@ const Wizard = React.lazy(() =>
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  *
- * Optionally render the Wizard when the `wizard` URL parameter is found.
+ * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
@@ -55,7 +55,7 @@ export default function Application() {
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
-  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
+  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).dydupanel !== undefined;
   // eslint-disable-next-line no-unused-vars
 
   let customFont = configuration.font.url;
