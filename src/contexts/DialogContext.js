@@ -61,6 +61,7 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
+  const [autoSuggestionActive, setAutoSuggestionActive] = useState(configuration?.suggestions?.limit !== 0);
   const [zoomSrc, setZoomSrc] = useState(null);
 
   const defaultQualification = sessionStorage.getItem(Session.names.qualification)
@@ -167,6 +168,7 @@ export function DialogProvider({ children }) {
         text,
         typeResponse,
         urlRedirect,
+        enableAutoSuggestion,
       } = response;
       const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
       const steps = parseSteps(response);
@@ -177,6 +179,7 @@ export function DialogProvider({ children }) {
           setVoiceContent({ templateData: null, text });
         }
       }
+      setAutoSuggestionActive(enableAutoSuggestion);
       setTypeResponse(typeResponse);
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
@@ -386,6 +389,8 @@ export function DialogProvider({ children }) {
         setZoomSrc,
         qualification,
         setQualification,
+        autoSuggestionActive,
+        setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
       }}
     />
