@@ -1,16 +1,16 @@
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
-  isPositiveNumber,
   b64encodeObject,
   hasProperty,
-  isEmptyObject,
-  strContains,
   isDefined,
+  isEmptyObject,
   isEmptyString,
-  qualification,
   isOfTypeFunction,
   isOfTypeString,
+  isPositiveNumber,
+  qualification,
+  strContains,
   toFormUrlEncoded,
 } from './helpers';
 
@@ -67,6 +67,9 @@ let BOT, protocol, API;
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+        ...(configuration?.oidc?.withAuth && {
+          Authorization: `Bearer ${Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null}`,
+        }),
       },
     },
   });

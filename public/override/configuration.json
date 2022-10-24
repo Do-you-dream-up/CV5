@@ -185,7 +185,8 @@
     "clientIdPreprod": "",
     "prodPorovider": "",
     "preprodPorovider": "",
-    "scopes": [""]
+    "scopes": [""],
+    "withAuth": false
   },
   "saml": {
     "enable": false
