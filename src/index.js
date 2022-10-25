@@ -9,11 +9,13 @@ import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { SamlProvider } from './contexts/SamlContext';
 import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
+import { prefixCssSelectors } from './tools/css';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
@@ -35,13 +37,15 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <ViewModeProvider>
-            <EventsProvider>
-              <UserActionProvider>
-                <Application />
-              </UserActionProvider>
-            </EventsProvider>
-          </ViewModeProvider>
+          <SamlProvider>
+            <ViewModeProvider>
+              <EventsProvider>
+                <UserActionProvider>
+                  <Application />
+                </UserActionProvider>
+              </EventsProvider>
+            </ViewModeProvider>
+          </SamlProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,
@@ -61,11 +65,7 @@ configuration.initialize().then((configuration) => {
     Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
-        style.setAttribute('id', 'css-client');
-        style.textContent = res.data;
-        window.onload = function () {
-          document.getElementById('css-client').addEventListener('load', document.getElementsByTagName('head'));
-        };
+        style.textContent = prefixCssSelectors(res.data, `#${configuration.root}`);
         document.head?.append(style);
       }
     });

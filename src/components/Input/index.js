@@ -25,7 +25,7 @@ export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { disabled, locked, placeholder, qualification } = useContext(DialogContext);
+  const { disabled, locked, placeholder, qualification, autoSuggestionActive } = useContext(DialogContext);
 
   const classes = useStyles({ configuration });
   const [counter = 100, setCounter] = useState(configuration.input.maxLength);
@@ -137,14 +137,14 @@ export default function Input({ onRequest, onResponse }) {
   const suggest = useCallback(
     (text) => {
       text = text.trim();
-      if (text && suggestionsLimit > 0) {
+      if (text && autoSuggestionActive) {
         dydu.suggest(text).then((suggestions) => {
           suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
         });
       }
     },
-    [suggestionsLimit],
+    [suggestionsLimit, autoSuggestionActive],
   );
 
   useEffect(() => {

@@ -194,3 +194,5 @@ export const qualification =
 export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };
+
+export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
