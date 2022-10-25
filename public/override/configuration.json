@@ -210,7 +210,8 @@
     },
     "fixedDimensions": false,
     "mode": "left",
-    "width": 500,
+    "width": 850,
+    "widthXL": 1200,
     "transient": true
   },
   "spaces": {
