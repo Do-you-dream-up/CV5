@@ -10,15 +10,15 @@ import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
+import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ dialogRef, onAdd, open, ...rest }) {
+export default function Dialog({ dialogRef, open, ...rest }) {
   const { configuration } = useContext(ConfigurationContext);
   const { interactions, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();

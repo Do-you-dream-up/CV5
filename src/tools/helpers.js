@@ -2,10 +2,11 @@ import { VAR_TYPE } from './constants';
 
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
-export const isEmptyArray = (variable) => Array.isArray(variable) && variable.length <= 0;
-
 export const toFormUrlEncoded = (data) => {
-  const mkAffectationStr = (key, value) => `${key}=${value}`;
+  const mkAffectationStr = (key, value) => {
+    if (!isDefined(value) || isEmptyString(value)) value = null;
+    return `${key}=${value}`;
+  };
   return Object.keys(data).reduce((resultStr, key) => {
     if (resultStr.length > 0) return resultStr + '&' + mkAffectationStr(key, data[key]);
     return mkAffectationStr(key, data[key]);
@@ -56,9 +57,23 @@ export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[obj
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
 export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[object Function]';
+export const isOfTypeNumber = (v) => Object.prototype.toString.call(v) === '[object Number]';
 
-export const isArray = isOfTypeArray;
+export const isPositiveNumber = (v) => isOfTypeNumber(v) && v > 0;
+
+// aliases
+export const isFunction = isOfTypeFunction;
 export const isBoolean = isOfTypeBoolean;
+
+export const isString = isOfTypeString;
+export const isEmptyString = (d) => isString(d) && d.length === 0;
+
+export const isNumber = (d) => Object.prototype.toString.call(d) === '[object Number]';
+export const isArray = (d) => Object.prototype.toString.call(d) === '[object Array]';
+export const isEmptyArray = (d) => isArray(d) && d.length === 0;
+
+export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
+export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length <= 0;
 
 export const isOfType = (val, type) => {
   if (!isDefined(VAR_TYPE[type])) throw new Error('unknown type: type ' + type + ' is not in contant VAR_TYPE');
@@ -78,10 +93,6 @@ export const extractDomainFromUrl = (url) => url.replace(/http[s]?:\/\//, '').sp
 
 export const _stringify = (data) => JSON.stringify(data);
 export const _parse = (data) => JSON.parse(data);
-
-export const isEmptyObject = (v) => isOfTypeObject(v) && Object.keys(v).length === 0;
-
-export const isEmptyString = (v) => isOfTypeString(v) && v.length === 0;
 
 export const objectExtractFields = (obj, fieldList) =>
   fieldList.reduce((resultMap, fieldName) => {
@@ -144,6 +155,14 @@ export const osName = () => {
   return OSName;
 };
 
+export const b64encodeObject = (o) => {
+  return Object.keys(o).reduce((resultMap, key) => {
+    const value = o[key];
+    resultMap[key] = !isString(value) ? value : value.toBase64();
+    return resultMap;
+  }, {});
+};
+
 export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
@@ -171,3 +190,9 @@ export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
 
 export const qualification =
   window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+
+export const hasProperty = (o, propertyName) => {
+  return Object.hasOwnProperty.call(o, propertyName);
+};
+
+export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;

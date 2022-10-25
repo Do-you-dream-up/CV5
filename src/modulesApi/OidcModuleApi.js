@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import React from 'react';
 
 /**
  * Conditionnal export:
@@ -7,7 +8,6 @@
  * if oidc has been enabled.
  */
 
-import React from 'react';
 <import-oidc-module />;
 
 // eslint-disable-next-line no-unused-vars

@@ -1,11 +1,11 @@
 import { EventsContext, useEvent } from './EventsContext';
+import { Local, Session } from '../tools/storage';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
-import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
 import fetchPushrules from '../tools/pushrules';
@@ -61,7 +61,14 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
+  const [autoSuggestionActive, setAutoSuggestionActive] = useState(configuration?.suggestions?.limit !== 0);
   const [zoomSrc, setZoomSrc] = useState(null);
+
+  const defaultQualification = sessionStorage.getItem(Session.names.qualification)
+    ? sessionStorage.getItem(Session.names.qualification)
+    : true;
+
+  const [qualification, setQualification] = useState(defaultQualification);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
@@ -161,6 +168,7 @@ export function DialogProvider({ children }) {
         text,
         typeResponse,
         urlRedirect,
+        enableAutoSuggestion,
       } = response;
       const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
       const steps = parseSteps(response);
@@ -171,6 +179,7 @@ export function DialogProvider({ children }) {
           setVoiceContent({ templateData: null, text });
         }
       }
+      setAutoSuggestionActive(enableAutoSuggestion);
       setTypeResponse(typeResponse);
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
@@ -282,10 +291,11 @@ export function DialogProvider({ children }) {
   }, []);
 
   const toggleSecondary = useCallback(
-    (open, { body, height, title, url, width } = {}) =>
+    (open, { bodyRenderer, body, height, title, url, width } = {}) =>
       () => {
-        if (body !== undefined || title !== undefined || url !== undefined) {
-          setSecondaryContent({ body, height, title, url, width });
+        const someFieldsDefined = [bodyRenderer, body, height, title, url, width].some((v) => isDefined(v));
+        if (someFieldsDefined) {
+          setSecondaryContent({ bodyRenderer, body, height, title, url, width });
         }
         setSecondaryActive((previous) => {
           const should = open === undefined ? !previous : open;
@@ -334,10 +344,23 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [welcomeContent, listInteractionHistory]);
 
+  const closeSecondary = useCallback(() => {
+    if (secondaryActive) toggleSecondary(false)();
+  }, [secondaryActive, toggleSecondary]);
+
+  const openSecondary = useCallback(
+    (...props) => {
+      if (!secondaryActive) toggleSecondary(...[true].concat(props))();
+    },
+    [secondaryActive, toggleSecondary],
+  );
+
   return (
     <DialogContext.Provider
       children={children}
       value={{
+        closeSecondary,
+        openSecondary,
         topList,
         showAnimationOperatorWriting,
         displayNotification,
@@ -364,6 +387,10 @@ export function DialogProvider({ children }) {
         voiceContent,
         zoomSrc,
         setZoomSrc,
+        qualification,
+        setQualification,
+        autoSuggestionActive,
+        setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
       }}
     />

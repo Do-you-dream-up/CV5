@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line import/no-unresolved
 
 import '../../../public/override/style.css';
@@ -9,8 +10,10 @@ import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
+import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
 import { findValueByKey } from '../../tools/findValueByKey';
 import { parseString } from '../../tools/parseString';
 import qs from 'qs';
@@ -35,10 +38,11 @@ const Wizard = React.lazy(() =>
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  *
- * Optionally render the Wizard when the `wizard` URL parameter is found.
+ * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+
   const {
     close: closeChatbox,
     mode,
@@ -51,7 +55,7 @@ export default function Application() {
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
-  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
+  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).dydupanel !== undefined;
   // eslint-disable-next-line no-unused-vars
 
   let customFont = configuration.font.url;
@@ -91,9 +95,11 @@ export default function Application() {
         <DialogProvider onPushrulesDataReceived={popinChatbox}>
           <AuthContext>
             <Authenticated>
-              <LivechatProvider>
-                <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-              </LivechatProvider>
+              <SurveyProvider api={dydu}>
+                <LivechatProvider>
+                  <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                </LivechatProvider>
+              </SurveyProvider>
               <Teaser open={isChatboxMinimize} toggle={toggle} />
             </Authenticated>
           </AuthContext>

@@ -1,5 +1,6 @@
-import cookie from 'js-cookie';
 import { _parse, isDefined } from './helpers';
+
+import cookie from 'js-cookie';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -8,6 +9,7 @@ export class Session {
   static names = {
     newMessage: 'dydu.newMessage',
     banner: 'dydu.banner',
+    qualification: 'dydu.qualification',
   };
 
   /**
@@ -111,6 +113,7 @@ export class Local {
     secondary: 'dydu.secondary',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
+    saml: 'dydu.saml.auth',
   };
 
   /**
@@ -270,11 +273,25 @@ export class Local {
     reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
   });
 
+  static saml = Object.create({
+    save: (data) => localStorage.setItem(Local.names.saml, data),
+    load: () => localStorage.getItem(Local.names.saml) || null,
+    remove: () => localStorage.removeItem(Local.names.livechat),
+  });
+
   static viewMode = Object.create({
     load: () => {
       const d = localStorage.getItem(Local.names.open);
       return isDefined(d) ? _parse(d) : null;
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
+  });
+
+  static viewQualification = Object.create({
+    load: () => {
+      const d = sessionStorage.getItem(Session.names.qualification);
+      return isDefined(d) ? _parse(d) : null;
+    },
+    save: (value) => sessionStorage.setItem(Session.names.qualification, value),
   });
 }
