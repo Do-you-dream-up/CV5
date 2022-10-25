@@ -6,6 +6,7 @@ import { ConfigurationContext } from './ConfigurationContext';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import { useViewMode } from './ViewModeProvider';
+import VisitManager from '../tools/RG/VisitManager';
 
 let chatboxRef = null;
 const saveChatboxRef = (ref) => (chatboxRef = ref);
@@ -69,11 +70,21 @@ export function EventsProvider({ children }) {
 
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
+  const processUserVisit = useCallback(async () => {
+    await VisitManager.refreshRegisterVisit();
+  }, []);
+
+  const processDyduAfterLoad = useCallback(() => {
+    if (!hasAfterLoadBeenCalled) dyduAfterLoad().then(setAfterLoadCalled);
+  }, [hasAfterLoadBeenCalled]);
+
+  const isChatboxLoadedAndReady = useMemo(() => chatboxLoaded && isAppReady, [chatboxLoaded, isAppReady]);
+
   useEffect(() => {
-    if (chatboxLoaded && isAppReady) {
-      if (!hasAfterLoadBeenCalled) dyduAfterLoad().then(setAfterLoadCalled);
-    }
-  }, [chatboxLoaded, hasAfterLoadBeenCalled, isAppReady]);
+    if (!isChatboxLoadedAndReady) return;
+    const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad, processUserVisit];
+    bootstrapAfterLoadAndReadyFnList.forEach((fn) => fn());
+  }, [isChatboxLoadedAndReady]);
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
