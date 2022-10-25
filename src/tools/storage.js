@@ -1,6 +1,7 @@
-import { _parse, isDefined } from './helpers';
+import { _parse, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
+import uuid4 from 'uuid4';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -294,4 +295,39 @@ export class Local {
     },
     save: (value) => sessionStorage.setItem(Session.names.qualification, value),
   });
+
+  static visit = Object.create({
+    getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
+    load: (keyString = '') => {
+      const content = localStorage.getItem(keyString);
+      return isDefined(content) ? content : null;
+    },
+    isSet: (keyString = '') => {
+      const content = Local.visit.load(keyString);
+      return [isDefined, (c) => !isEmptyObject(c)].every((fn) => fn(content));
+    },
+    save: (keyStringParams = {}) => {
+      const key = Local.visit.getKey(keyStringParams);
+      localStorage.setItem(key, Date.now().toString());
+    },
+  });
+
+  static clientId = Object.create({
+    getKey: ({ locale, space, botId }) => `DYDU_clientId_${[botId, space, locale].join('_')}`,
+    load: (keyString = '') => {
+      const content = localStorage.getItem(keyString);
+      return isDefined(content) ? content : '';
+    },
+    isSet: (keyString = '') => {
+      const content = Local.clientId.load(keyString);
+      return [isDefined, (c) => !isEmptyObject(c), (c) => !isEmptyString(c)].every((fn) => fn(content));
+    },
+    createAndSave: (keyString) => {
+      const ID_CHAR_SIZE = 15;
+      const generatedClientId = generateClientUuid(ID_CHAR_SIZE).toString();
+      localStorage.setItem(keyString, generatedClientId);
+    },
+  });
 }
+
+const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);
