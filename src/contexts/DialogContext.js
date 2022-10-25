@@ -66,7 +66,9 @@ export function DialogProvider({ children }) {
 
   const defaultQualification = sessionStorage.getItem(Session.names.qualification)
     ? sessionStorage.getItem(Session.names.qualification)
-    : true;
+    : window.location.href.includes('cdn.doyoudreamup.com') || window.location.href.includes('http://localhost:')
+    ? configuration?.application?.qualification
+    : false;
 
   const [qualification, setQualification] = useState(defaultQualification);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
