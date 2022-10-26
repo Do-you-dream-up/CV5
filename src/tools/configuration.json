@@ -4,8 +4,9 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn": "",
-    "directory": ""
+    "cdn": "https://cdn.doyoudreamup.com/",
+    "directory": "development/",
+    "qualification": true
   },
   "avatar": {
     "request": {
@@ -155,10 +156,6 @@
     "displayNameUser": false,
     "NameUser": "",
     "NameBot": "",
-    "avatar": {
-      "request": false,
-      "response": true
-    },
     "loader": [400, 600]
   },
   "keycloak": {
@@ -210,7 +207,8 @@
     },
     "fixedDimensions": false,
     "mode": "left",
-    "width": 500,
+    "width": 850,
+    "widthXL": 1200,
     "transient": true
   },
   "spaces": {
@@ -280,7 +278,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 94
+    "offsetBetweenCard": 80
   },
   "templateProduct": {
     "readmore": 100

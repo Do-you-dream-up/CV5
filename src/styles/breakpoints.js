@@ -1,6 +1,6 @@
-const KEYS = ['xs', 'sm', 'md', 'lg', 'xl'];
+const KEYS = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
 const UNIT = 'px';
-const VALUES = { lg: 1280, md: 960, sm: 600, xl: 1920, xs: 0 };
+const VALUES = { xxl: 1920, xl: 1630, lg: 1280, md: 960, sm: 600, xs: 0 };
 
 const between = (start, end) => {
   const next = KEYS.indexOf(end) + 1;
