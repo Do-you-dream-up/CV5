@@ -33,7 +33,7 @@ module.exports = new ModuleBuilder()
         return new webpack.DefinePlugin({
             'process.env': {
                 OIDC_CLIENT_ID: !QUALIFICATION ? jstr(configuration.oidc.clientIdProd) : jstr(configuration.oidc.clientIdPreprod),
-                OIDC_URL: !QUALIFICATION ? jstr(configuration.oidc.prodPorovider) : jstr(configuration.oidc.preprodPorovider),
+                OIDC_URL: !QUALIFICATION ? jstr(configuration.oidc.prodProvider) : jstr(configuration.oidc.preprodProvider),
                 QUALIFICATION
             }
         })

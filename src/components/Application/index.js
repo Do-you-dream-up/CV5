@@ -3,9 +3,9 @@
 
 import '../../../public/override/style.css';
 
-import React, { Suspense, useContext, useEffect } from 'react';
+import { AuthProtected, AuthProvider } from '../auth/context/AuthContext';
+import React, { Suspense, useContext, useEffect, useMemo } from 'react';
 
-import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -19,8 +19,6 @@ import { parseString } from '../../tools/parseString';
 import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-
-const { AuthContext, Authenticated } = AuthPayload;
 
 const Chatbox = React.lazy(() =>
   import(
@@ -88,22 +86,30 @@ export default function Application() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const authConfiguration = useMemo(() => {
+    return {
+      clientId: process.env.OIDC_CLIENT_ID,
+      provider: process.env.OIDC_URL,
+      scope: configuration?.oidc?.scope,
+    };
+  }, [configuration?.oidc?.scope]);
+
   return (
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
         {hasWizard && <Wizard />}
-        <DialogProvider onPushrulesDataReceived={popinChatbox}>
-          <AuthContext>
-            <Authenticated>
+        <AuthProvider configuration={authConfiguration}>
+          <AuthProtected enable={configuration?.oidc?.enable}>
+            <DialogProvider onPushrulesDataReceived={popinChatbox}>
               <SurveyProvider api={dydu}>
                 <LivechatProvider>
                   <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
                 </LivechatProvider>
               </SurveyProvider>
               <Teaser open={isChatboxMinimize} toggle={toggle} />
-            </Authenticated>
-          </AuthContext>
-        </DialogProvider>
+            </DialogProvider>
+          </AuthProtected>
+        </AuthProvider>
       </Suspense>
     </div>
   );

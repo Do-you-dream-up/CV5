@@ -12,7 +12,7 @@ module.exports = (env) => {
   const QUALIFICATION = env.prod ? false : true;
   const ONPREM = env.onprem ?  true : false;
   const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
-  const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
+  const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodProvider) : JSON.stringify(configuration.oidc.preprodProvider);
   if (process.env.ASSET_FULL_URL) {
     ASSET = process.env.ASSET_FULL_URL + '/';
     console.log(ASSET);

@@ -34,7 +34,7 @@ module.exports = env => Merge.smart(common(env), {
     new webpack.DefinePlugin({
       'process.env': {
         OIDC_CLIENT_ID: JSON.stringify(configuration.oidc.clientIdPreprod),
-        OIDC_URL: JSON.stringify(configuration.oidc.preprodPorovider),
+        OIDC_URL: JSON.stringify(configuration.oidc.preprodProvider),
         PUBLIC_URL: JSON.stringify('./'),
         QUALIFICATION: true
        }

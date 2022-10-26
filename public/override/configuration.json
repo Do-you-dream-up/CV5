@@ -180,13 +180,13 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": false,
+    "enable": true,
     "clientIdProd": "",
     "clientIdPreprod": "",
-    "prodPorovider": "",
-    "preprodPorovider": "",
+    "prodProvider": "",
+    "preprodProvider": "",
     "scopes": [""],
-    "withAuth": false
+    "withAuth": true
   },
   "saml": {
     "enable": false

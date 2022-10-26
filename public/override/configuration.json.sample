@@ -186,8 +186,8 @@
     "enable": false,
     "clientIdProd": "",
     "clientIdPreprod": "",
-    "prodPorovider": "",
-    "preprodPorovider": "",
+    "prodProvider": "",
+    "preprodProvider": "",
     "scopes": [""]
   },
   "onboarding": {
