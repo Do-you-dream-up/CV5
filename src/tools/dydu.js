@@ -67,9 +67,10 @@ let BOT, protocol, API;
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-        ...(configuration?.oidc?.withAuth && {
-          Authorization: `Bearer ${Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null}`,
-        }),
+        ...(configuration?.oidc?.withAuth &&
+          Cookie.get('dydu-oauth-token') && {
+            Authorization: `Bearer ${Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null}`,
+          }),
       },
     },
   });
