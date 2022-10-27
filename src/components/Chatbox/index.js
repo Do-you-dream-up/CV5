@@ -209,7 +209,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     [classes.rootHidden]: !open,
   });
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot}>
+    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot} id="dydu-chatbox">
       <span className={classes.srOnly} tabIndex="-1">
         {labelChatbot}
       </span>

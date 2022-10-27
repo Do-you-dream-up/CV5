@@ -1,7 +1,7 @@
-import c from 'classnames';
+import Progress from '../Progress';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Progress from '../Progress';
+import c from 'classnames';
 import useStyles from './styles';
 
 /**

@@ -306,9 +306,10 @@ export default function Interaction({
           { [classes.barf]: carousel && bubbles.length },
           className,
         )}
+        id="dydu-interaction"
       >
         {_Avatar}
-        <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        <div className={c('dydu-interaction-wrapper', classes.wrapper)} id="dydu-interaction-wrapper">
           {EmiterName}
           {ListBubble}
           {_Loader}

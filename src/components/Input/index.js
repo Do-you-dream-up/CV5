@@ -185,6 +185,7 @@ export default function Input({ onRequest, onResponse }) {
       type: 'submit',
       variant: 'icon',
       title: actionSend,
+      id: 'dydu-submit-action',
     },
   ];
 

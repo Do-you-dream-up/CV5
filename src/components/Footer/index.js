@@ -1,11 +1,12 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+
 import Actions from '../Actions';
+import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Input from '../Input';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -54,10 +55,10 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
 
   return (
     <>
-      <footer className={c('dydu-footer', classes.root)} {...rest}>
-        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
+      <footer className={c('dydu-footer', classes.root)} {...rest} id="dydu-footer">
+        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} id="dydu-language-selector" />
         <div className={classes.content}>
-          <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
+          <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
         </div>
       </footer>
     </>
