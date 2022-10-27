@@ -1,13 +1,15 @@
 import {
   extractObjectFields,
   extractParamFromUrl,
-  getPkce,
   isDefined,
+  loadPkce,
+  removeQueryFromUri,
   responseToJsonOrThrowError,
   snakeCaseFields,
 } from '../helpers';
 import { useCallback, useState } from 'react';
 
+import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 
 export default function useTokenRequest(configuration) {
@@ -15,30 +17,29 @@ export default function useTokenRequest(configuration) {
 
   const fetchToken = useCallback(() => {
     console.log('/* PREPARE FETCH TOKEN REQUEST */');
-
     /*
       construct payload
      */
     const payload = {
-      // ...snakeCaseFields(extractObjectFields(getPkce(), ['redirectUri', 'codeVerifier', 'state'])),
+      ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri', 'state'])),
       ...{
         client_id: configuration.clientId,
-        client_secret: 'f842ab4d-52f9-4eee-8a2b-50fed89b8b5d',
+        client_secret: '11c73203-8181-408f-a7be-c7f99d26f62d',
         code: extractParamFromUrl('code'),
         grant_type: 'authorization_code',
+        code_verifier: Cookie.get('dydu-code-verifier'),
         // scope: configuration.scope?.join(' '),
       },
     };
-    console.log('🚀 ~ file: useTokenRequest.js ~ line 24 ~ fetchToken ~ payload', payload);
+
     if (isDefined(configuration?.clientSecret)) payload.client_secret = configuration?.clientSecret;
 
     /*
       correct redirectUri
       TODO: fix it in |getPkce()|
      */
-    // const redirectUri = removeQueryFromUri(payload.redirect_uri);
-    // payload.redirect_uri = redirectUri;
-    // console.log('fetchtoken: payload', JSON.stringify(payload));
+    const redirectUri = removeQueryFromUri(payload.redirect_uri);
+    payload.redirect_uri = redirectUri;
 
     /*
       construct fetchOption
@@ -51,7 +52,6 @@ export default function useTokenRequest(configuration) {
       body: new URLSearchParams(payload),
     };
 
-    console.log('fetchtoken: optionFetch', JSON.stringify(optionFetch));
     /*
       construct url
      */

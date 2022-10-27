@@ -67,10 +67,6 @@ let BOT, protocol, API;
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-        ...(configuration?.oidc?.withAuth &&
-          Cookie.get('dydu-oauth-token') && {
-            Authorization: `Bearer ${Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null}`,
-          }),
       },
     },
   });
@@ -788,5 +784,21 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   instance.interceptors.response.use(onSuccess, onError);
+
+  axios.interceptors.request.use(
+    (config) => {
+      if (configuration?.oidc?.withAuth) {
+        console.log('in');
+        config.headers['Authorization'] = `Bearer ${
+          Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null
+        }`;
+      }
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
   return instance;
 };

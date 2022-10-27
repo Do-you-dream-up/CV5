@@ -3,15 +3,16 @@ import {
   currentLocationContainsError,
   extractObjectFields,
   extractParamFromUrl,
-  generateCodeChallenge,
-  getPkce,
   isDefined,
+  loadPkce,
   objectToQueryParam,
   snakeCaseFields,
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
+import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
+import getPkce from 'oauth-pkce';
 
 export default function useAuthorizeRequest(configuration) {
   const [authorizeDone, setAuthorizeDone] = useState(false);
@@ -30,8 +31,16 @@ export default function useAuthorizeRequest(configuration) {
   }, []);
 
   const authorize = useCallback(async () => {
-    const pkce = getPkce();
-    console.log('/* PREPARE AUTHORIZE REQUEST */', { pkce });
+    const pkce = loadPkce();
+    // console.log('/* PREPARE AUTHORIZE REQUEST */', { pkce });
+
+    getPkce(50, (error, { verifier, challenge }) => {
+      if (!Cookie.get('dydu-code-challenge')) {
+        Cookie.set('dydu-code-verifier', verifier);
+        Cookie.set('dydu-code-challenge', challenge);
+      }
+    });
+
     /*
       construct query params
      */
@@ -40,7 +49,7 @@ export default function useAuthorizeRequest(configuration) {
       ...extractObjectFields(configuration, ['clientId', 'scope']),
       ...extractObjectFields(pkce, ['state', 'redirectUri']),
       ...{
-        codeChallenge: await generateCodeChallenge(pkce.codeVerifier),
+        codeChallenge: Cookie.get('dydu-code-challenge'),
         codeChallengeMethod: 'S256',
       },
     };

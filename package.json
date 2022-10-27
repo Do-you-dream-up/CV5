@@ -23,6 +23,7 @@
     "jwt-decode": "^3.1.2",
     "keycloak-js": "^11.0.2",
     "node-modules-regexp": "^1.0.0",
+    "oauth-pkce": "^0.0.6",
     "qs": "^6.7.0",
     "react": "^17.0.0",
     "react-autosuggest": "^10.0.3",

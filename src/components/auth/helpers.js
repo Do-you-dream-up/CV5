@@ -55,11 +55,10 @@ const createPkce = (configuration = { redirectUri: null }) => {
     codeVerifier: createCodeVerifier(),
   };
   Storage.savePkce(pkce);
-  console.log('createPkce()', JSON.stringify(pkce));
   return pkce;
 };
 
-export const getPkce = (configuration) => Storage.loadPkce() || createPkce(configuration);
+export const loadPkce = (configuration) => Storage.loadPkce() || createPkce(configuration);
 
 export const cleanUrl = () => {};
 
@@ -77,6 +76,17 @@ export const hash = (string) => {
     const hashHex = hashArray.map((bytes) => bytes.toString(16).padStart(2, '0')).join('');
     return hashHex;
   });
+};
+
+export const getCharCodes = (s) => {
+  let charCodeArr = [];
+
+  for (let i = 0; i < s.length; i++) {
+    let code = s.charCodeAt(i);
+    charCodeArr.push(code);
+  }
+
+  return charCodeArr;
 };
 
 export const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
@@ -117,7 +127,7 @@ export const extractParamFromUrl = (optionalName = null) => {
 };
 
 export const checkProviderStateMatchWithGenerated = () => {
-  const { state: generated } = getPkce();
+  const { state: generated } = loadPkce();
   const { state: fromProvider } = extractParamFromUrl();
   return generated === fromProvider;
 };

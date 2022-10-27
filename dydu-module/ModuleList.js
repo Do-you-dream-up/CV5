@@ -1,11 +1,9 @@
-const Oidc = require('./module/oidc/OidcModule');
 const Voice = require('./module/voice/VoiceModule');
 const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 
 const NPM_SCOPE_NAME_DYDU = '@dydu_ai';
 
 const MODULE_LIST = [
-    Oidc,
     Voice
 ];
 
