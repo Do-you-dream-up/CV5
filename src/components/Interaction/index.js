@@ -340,8 +340,9 @@ Interaction.propTypes = {
 };
 
 const Writing = () => {
+  const { configuration } = useContext(ConfigurationContext);
   // eslint-disable
-  const avatarImageUrl = useMemo(() => asset('dydu-logo.svg'), []);
+  const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
 
   return (
     <Scroll>

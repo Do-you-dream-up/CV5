@@ -17,10 +17,10 @@ import {
 import Bowser from 'bowser';
 import axios from 'axios';
 import configuration from '../../public/override/configuration.json';
+import bot from '../../public/override/bot.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import qs from 'qs';
-import uuid4 from 'uuid4';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -93,10 +93,23 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
-    this.client = this.getClientId();
-    this.emit = debounce(this.emit, 100, { leading: true });
     this.locale = this.getLocale();
     this.space = this.getSpace();
+    this.emit = debounce(this.emit, 100, { leading: true });
+    this.initInfos();
+  }
+
+  alreadyCame() {
+    const clientIdKey = Local.clientId.getKey(this.infos);
+    return Local.clientId.isSet(clientIdKey);
+  }
+
+  initInfos() {
+    this.infos = {
+      locale: this.locale,
+      space: this.space,
+      botId: channelsBot || bot?.id,
+    };
   }
 
   extractPayloadFromHttpResponse = (data = {}) => {
@@ -227,24 +240,15 @@ export default new (class Dydu {
   getBot = () => BOT;
 
   /**
-   * Generate an id with uuid4 package, remove all '-'
-   * and keep only 15 characters (in the DB the clientId can have only 15 characters)
+   * Read the client ID from cookie and return it.
    *
-   * @returns {string} The new client ID
+   * @returns {string | boolean} The client ID.
    */
-  generateNewIdWithUuid4 = () => {
-    const generatedId = uuid4();
-    const newId = generatedId.replaceAll('-', '');
-    return newId.slice(0, 15);
+  getClientId = () => {
+    const clientIdKey = Local.clientId.getKey(this.infos);
+    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey);
+    return Local.clientId.load(clientIdKey);
   };
-
-  /**
-   * Read the client ID from the local storage and return it. Forge a new one
-   * using uuid4 if necessary.
-   *
-   * @returns {string} The client ID.
-   */
-  getClientId = () => Local.get(Local.names.client, this.generateNewIdWithUuid4(), true);
 
   /**
    * Read the context ID from the local storage and return it,
@@ -254,7 +258,8 @@ export default new (class Dydu {
    */
   getContextId = async (forced) => {
     const data = qs.stringify({
-      clientId: this.getClientId() ? this.getClientId() : null,
+      alreadyCame: this.alreadyCame(),
+      clientId: this.getClientId(),
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -509,6 +514,7 @@ export default new (class Dydu {
     return {
       type: 'typing',
       parameters: {
+        alreadyCame: this.alreadyCame(),
         typing: isDefined(input) && !isEmptyString(input),
         content: input?.toBase64(),
         contextId: await this.getContextId(),
@@ -517,7 +523,7 @@ export default new (class Dydu {
         language: this.getLocale().toBase64(),
         space: this.getSpace().toBase64(),
         solutionUsed: SOLUTION_TYPE.assistant,
-        clientId: 'TTFkVTNWZUdvSFBxaUJn',
+        clientId: this.getClientId(),
         useServerCookieForContext: false,
         saml2_info: '',
         timestamp: new Date().getMilliseconds(),
@@ -626,6 +632,7 @@ export default new (class Dydu {
 
   #makeTalkPayloadWithTextAndOption = (text, options) => {
     return {
+      alreadyCame: this.alreadyCame(),
       browser: `${browser.name} ${browser.version}`,
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
@@ -695,6 +702,21 @@ export default new (class Dydu {
     // get survey is a POST
     return this.post(path, data);
   };
+
+  getInfos = async () => {
+    return {
+      botId: await this.getBotId(),
+      locale: this.getLocale(),
+      space: this.getSpace(),
+    };
+  };
+
+  registerVisit() {
+    this.welcomeCall({ qualification }).then(async () => {
+      const keyInfos = await this.getInfos();
+      Local.visit.save(keyInfos);
+    });
+  }
 })();
 
 /====================================================================================================/;
