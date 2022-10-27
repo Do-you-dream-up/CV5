@@ -50,7 +50,7 @@ export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onNewMessage } = useEvent();
+  const { onNewMessage, hasAfterLoadBeenCalled } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -72,7 +72,10 @@ export function DialogProvider({ children }) {
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
 
-  const { exec, forceExec } = usePromiseQueue([fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory]);
+  const { exec, forceExec } = usePromiseQueue(
+    [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    hasAfterLoadBeenCalled,
+  );
   const [pushrules, setPushrules] = useState(null);
 
   const theme = useTheme();
@@ -313,9 +316,9 @@ export function DialogProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    exec();
+    if (hasAfterLoadBeenCalled) exec();
     // eslint-disable-next-line
-  }, []);
+  }, [hasAfterLoadBeenCalled]);
 
   useEffect(() => {
     if (welcomeContent) {

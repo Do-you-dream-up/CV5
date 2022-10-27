@@ -1,10 +1,11 @@
-import { eventNewMessage } from '../events/chatboxIndex';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import dotget from '../tools/dotget';
-import { ConfigurationContext } from './ConfigurationContext';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
+
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
+import { ConfigurationContext } from './ConfigurationContext';
+import PropTypes from 'prop-types';
+import dotget from '../tools/dotget';
+import { eventNewMessage } from '../events/chatboxIndex';
 import { useViewMode } from './ViewModeProvider';
 
 let chatboxRef = null;
@@ -19,7 +20,7 @@ const NEW_TITLE_TAB = '1 nouveau message';
 
 const setDocumentTitle = (text) => (document.title = text);
 const getDocumentTitle = () => document.title;
-const dyduAfterLoad = () =>
+const execDyduAfterLoad = () =>
   new Promise((resolve) => {
     const _fnAfterLoad = window?.dyduAfterLoad;
     if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
@@ -71,7 +72,7 @@ export function EventsProvider({ children }) {
 
   useEffect(() => {
     if (chatboxLoaded && isAppReady) {
-      if (!hasAfterLoadBeenCalled) dyduAfterLoad().then(setAfterLoadCalled);
+      if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);
     }
   }, [chatboxLoaded, hasAfterLoadBeenCalled, isAppReady]);
 
