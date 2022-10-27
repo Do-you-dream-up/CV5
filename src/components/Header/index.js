@@ -230,7 +230,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </h1>
           )}
         </div>
-        <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
+        <Actions
+          actions={actions}
+          className={c('dydu-header-actions', classes.actions)}
+          id="dydu-header-actions-wrapper"
+        />
       </div>
       {!minimal && (
         <>
