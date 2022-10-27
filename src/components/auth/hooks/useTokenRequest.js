@@ -3,7 +3,6 @@ import {
   extractParamFromUrl,
   getPkce,
   isDefined,
-  removeQueryFromUri,
   responseToJsonOrThrowError,
   snakeCaseFields,
 } from '../helpers';
@@ -21,33 +20,35 @@ export default function useTokenRequest(configuration) {
       construct payload
      */
     const payload = {
-      ...snakeCaseFields(extractObjectFields(getPkce(), ['redirectUri', 'codeVerifier', 'state'])),
-      ...snakeCaseFields({
-        clientId: configuration.clientId,
+      // ...snakeCaseFields(extractObjectFields(getPkce(), ['redirectUri', 'codeVerifier', 'state'])),
+      ...{
+        client_id: configuration.clientId,
+        client_secret: 'f842ab4d-52f9-4eee-8a2b-50fed89b8b5d',
         code: extractParamFromUrl('code'),
-        grantType: 'authorization_code',
-        scope: configuration.scope?.join(' '),
-      }),
+        grant_type: 'authorization_code',
+        // scope: configuration.scope?.join(' '),
+      },
     };
+    console.log('🚀 ~ file: useTokenRequest.js ~ line 24 ~ fetchToken ~ payload', payload);
     if (isDefined(configuration?.clientSecret)) payload.client_secret = configuration?.clientSecret;
 
     /*
       correct redirectUri
       TODO: fix it in |getPkce()|
      */
-    const redirectUri = removeQueryFromUri(payload.redirect_uri);
-    payload.redirect_uri = redirectUri;
-    console.log('fetchtoken: payload', JSON.stringify(payload));
+    // const redirectUri = removeQueryFromUri(payload.redirect_uri);
+    // payload.redirect_uri = redirectUri;
+    // console.log('fetchtoken: payload', JSON.stringify(payload));
 
     /*
       construct fetchOption
      */
     const optionFetch = {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
       method: 'POST',
-      body: new window.URLSearchParams(payload),
+      body: new URLSearchParams(payload),
     };
 
     console.log('fetchtoken: optionFetch', JSON.stringify(optionFetch));

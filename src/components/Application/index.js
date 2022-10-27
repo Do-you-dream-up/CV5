@@ -91,6 +91,7 @@ export default function Application() {
       clientId: process.env.OIDC_CLIENT_ID,
       provider: process.env.OIDC_URL,
       scope: configuration?.oidc?.scope,
+      authorizePath: '/auth',
     };
   }, [configuration?.oidc?.scope]);
 

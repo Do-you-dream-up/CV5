@@ -181,11 +181,11 @@
   },
   "oidc": {
     "enable": true,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "prodProvider": "",
-    "preprodProvider": "",
-    "scopes": [""],
+    "clientIdProd": "alex-auth",
+    "clientIdPreprod": "alex-auth",
+    "prodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
+    "preprodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
+    "scope": ["openid"],
     "withAuth": true
   },
   "saml": {
