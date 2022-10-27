@@ -7,7 +7,7 @@ export default createUseStyles((theme) => ({
   }),
   base: () => ({
     '& > *': {
-      height: '75%',
+      height: 'auto',
       width: '75%',
     },
     alignItems: 'center',
