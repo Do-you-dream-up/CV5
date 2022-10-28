@@ -180,13 +180,13 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": true,
-    "clientIdProd": "alex-auth",
-    "clientIdPreprod": "alex-auth",
-    "prodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
-    "preprodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
-    "scope": ["openid"],
-    "withAuth": true
+    "enable": false,
+    "clientIdProd": "",
+    "clientIdPreprod": "",
+    "prodProvider": "",
+    "preprodProvider": "",
+    "scopes": [""],
+    "withAuth": false
   },
   "saml": {
     "enable": false
