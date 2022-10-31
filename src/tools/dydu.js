@@ -1,16 +1,16 @@
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
-  isPositiveNumber,
   b64encodeObject,
   hasProperty,
-  isEmptyObject,
-  strContains,
   isDefined,
+  isEmptyObject,
   isEmptyString,
-  qualification,
   isOfTypeFunction,
   isOfTypeString,
+  isPositiveNumber,
+  qualification,
+  strContains,
   toFormUrlEncoded,
 } from './helpers';
 
