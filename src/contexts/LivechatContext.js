@@ -58,24 +58,6 @@ export function LivechatProvider({ children }) {
     setTunnel(tunnel);
   }, []);
 
-  const onFailOpenTunnel = useCallback(
-    (failedTunnel, err, configuration) => {
-      console.warn(err);
-      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
-      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
-      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
-    },
-    [onSuccessOpenTunnel, tunnelList],
-  );
-
-  const endLivechat = useCallback(() => {
-    console.warn('ending livechat...');
-    setIsWebsocket(false);
-    setIsLivechatOn(false);
-    setTunnel(null);
-  }, []);
-
   const tunnelInitialConfig = useMemo(() => {
     return {
       ...lastResponse,
@@ -97,6 +79,26 @@ export function LivechatProvider({ children }) {
     showAnimationOperatorWriting,
     showSurvey,
   ]);
+
+  const onFailOpenTunnel = useCallback(
+    (failedTunnel, err, configuration) => {
+      console.warn(err);
+      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
+      failedTunnel = failedTunnel || tunnel;
+      configuration = configuration || tunnelInitialConfig;
+      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
+      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
+      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+    },
+    [onSuccessOpenTunnel, tunnelList, tunnel],
+  );
+
+  const endLivechat = useCallback(() => {
+    console.warn('ending livechat...');
+    setIsWebsocket(false);
+    setIsLivechatOn(false);
+    setTunnel(null);
+  }, []);
 
   const startLivechat = useCallback(
     (tunnel = null) => {

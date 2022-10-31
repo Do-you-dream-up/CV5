@@ -231,10 +231,18 @@ export default function useDyduWebsocket() {
     sendJsonMessage(message);
   }, []);
 
+  const trySendMessage = useCallback((message) => {
+    try {
+      sendJsonMessage(message);
+    } catch (e) {
+      _onFail();
+    }
+  }, []);
+
   const send = useCallback(
     (userInput) => {
       const message = LivechatPayload.create.talkMessage(userInput);
-      sendJsonMessage(message);
+      trySendMessage(message);
     },
     [sendJsonMessage],
   );
@@ -246,7 +254,7 @@ export default function useDyduWebsocket() {
   const onUserTyping = useCallback(
     (userInput) => {
       const message = LivechatPayload.create.userTypingMessage(userInput);
-      sendJsonMessage(message);
+      trySendMessage(message);
     },
     [sendJsonMessage],
   );
