@@ -1,12 +1,13 @@
-import c from 'classnames';
 import React, { useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
+import Skeleton from '../Skeleton';
 import { TabContext } from '../../contexts/TabContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
-import Skeleton from '../Skeleton';
+import c from 'classnames';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Render clickable tabs to select the current tab content. The available tabs
@@ -27,7 +28,7 @@ export default function Tabs() {
 
   return (
     !!tabs.length && (
-      <div className={c('dydu-tabs', classes.root)}>
+      <div className={c('dydu-tabs', classes.root)} id="dydu-tabs">
         <div className={classes.indicator} />
         {tabs.map(({ icon, key }, index) => {
           const label = t(`tabs.${key}`);
@@ -48,6 +49,7 @@ export default function Tabs() {
               tabIndex="0"
               onKeyDown={onKeyDown}
               role="navigation"
+              id="dydu-tab"
             >
               <div
                 className={c('dydu-tab-label', classes.label, {
