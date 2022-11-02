@@ -63,7 +63,6 @@ export function DialogProvider({ children }) {
   const [lastResponse, setLastResponse] = useState(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState(configuration?.suggestions?.limit !== 0);
   const [zoomSrc, setZoomSrc] = useState(null);
-  const [qualification, setQualification] = useState(defaultQualification);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
@@ -385,7 +384,6 @@ export function DialogProvider({ children }) {
         voiceContent,
         zoomSrc,
         setZoomSrc,
-
         autoSuggestionActive,
         setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
