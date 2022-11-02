@@ -4,8 +4,8 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn":"https://cdn.doyoudreamup.com/",
-    "directory":"development/"
+    "cdn": "https://cdn.doyoudreamup.com/",
+    "directory": "development/"
   },
   "avatar": {
     "request": {
@@ -210,12 +210,12 @@
     "fixedDimensions": false,
     "mode": "left",
     "width": 850,
-    "widthXL": 1200,
     "transient": true
   },
   "spaces": {
     "active": true,
-    "detection": [{
+    "detection": [
+      {
         "active": false,
         "mode": "urlpart",
         "value": {
@@ -264,7 +264,8 @@
   },
   "tabs": {
     "hasContactTab": false,
-    "items": [{
+    "items": [
+      {
         "icon": "icons/dydu-message-text-white.svg",
         "key": "dialog"
       },
