@@ -1,6 +1,5 @@
 import Bowser from 'bowser';
 import { LOREM_HTML } from './lorem';
-import { QUALIFICATION } from './qualification';
 import dydu from './dydu';
 
 /**
@@ -46,10 +45,6 @@ export const ACTIONS = {
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
   '#template#': null,
-  '#disableQualification#': () => {
-    window.dydu.chat.reply(QUALIFICATION());
-    window.dydu.chat.setQualification(false);
-  },
 };
 
 /**

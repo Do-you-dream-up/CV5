@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Contact tab
@@ -24,7 +25,7 @@ export default function Contacts() {
 
   return (
     !!ready && (
-      <div className={classes.root}>
+      <div className={classes.root} id="dydu-contact-wrapper">
         <Paper elevation={4}>
           {showPhone && <ContactsList id="phone" title={phoneTitle} list={phones} icon="icons/dydu-phone-black.svg" />}
           {showEmail && <ContactsList id="email" title={emailTitle} list={emails} icon="icons/dydu-email-black.svg" />}

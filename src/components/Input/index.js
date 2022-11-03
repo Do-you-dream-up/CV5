@@ -25,7 +25,7 @@ export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { disabled, locked, placeholder, qualification, autoSuggestionActive } = useContext(DialogContext);
+  const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 
   const classes = useStyles({ configuration });
   const [counter = 100, setCounter] = useState(configuration.input.maxLength);
@@ -35,6 +35,8 @@ export default function Input({ onRequest, onResponse }) {
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const qualification =
+    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -53,10 +55,6 @@ export default function Input({ onRequest, onResponse }) {
     }
     setIncrement(incrementToUpdateRefOnRender++);
   }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
-
-  useEffect(() => {
-    Local.viewQualification.save(qualification);
-  }, [qualification]);
 
   const onChange = (event) => {
     setTyping(true);
@@ -117,7 +115,7 @@ export default function Input({ onRequest, onResponse }) {
       }
     },
     // eslint-disable-next-line
-    [isLivechatOn, send, qualification],
+    [isLivechatOn, send],
   );
 
   const submit = useCallback(
@@ -131,7 +129,7 @@ export default function Input({ onRequest, onResponse }) {
       }
       setTyping(false);
     },
-    [event, onRequest, reset, sendInput, qualification],
+    [event, onRequest, reset, sendInput],
   );
 
   const suggest = useCallback(
@@ -185,6 +183,7 @@ export default function Input({ onRequest, onResponse }) {
       type: 'submit',
       variant: 'icon',
       title: actionSend,
+      id: 'dydu-submit-action',
     },
   ];
 

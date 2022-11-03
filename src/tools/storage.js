@@ -10,7 +10,6 @@ export class Session {
   static names = {
     newMessage: 'dydu.newMessage',
     banner: 'dydu.banner',
-    qualification: 'dydu.qualification',
   };
 
   /**
@@ -287,15 +286,6 @@ export class Local {
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
   });
-
-  static viewQualification = Object.create({
-    load: () => {
-      const d = sessionStorage.getItem(Session.names.qualification);
-      return isDefined(d) ? _parse(d) : null;
-    },
-    save: (value) => sessionStorage.setItem(Session.names.qualification, value),
-  });
-
   static visit = Object.create({
     getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
     load: (keyString = '') => {

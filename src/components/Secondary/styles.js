@@ -41,7 +41,7 @@ export default createUseStyles((theme) => {
         maxHeight: '595px',
       },
       [theme.breakpoints.up('xl')]: {
-        maxWidth: configuration.secondary.widthXL,
+        maxWidth: '1200px',
       },
     }),
     body: () => ({
