@@ -194,3 +194,7 @@ export const qualification =
 export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };
+
+export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
+
+export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;

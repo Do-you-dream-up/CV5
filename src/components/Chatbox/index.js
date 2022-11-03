@@ -1,4 +1,3 @@
-import { Cookie, Local } from '../../tools/storage';
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
@@ -25,7 +24,6 @@ import Tab from '../Tab';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { encode } from '../../tools/cipher';
 import { isDefined } from '../../tools/helpers';
 import talk from '../../tools/talk';
 import useStyles from './styles';
@@ -52,8 +50,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setSecondary,
     toggleSecondary,
     callWelcomeKnowledge,
-    qualification,
-    setQualification,
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
@@ -68,6 +64,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
+  const qualification =
+    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -126,9 +124,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         reply: (text) => addResponse({ text }),
         setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
         setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
-        setQualification: (value) => {
-          setQualification(value);
-        },
       };
 
       window.dydu.promptEmail = {
@@ -206,30 +201,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     gdprPassed,
   ]);
 
-  const cookieStringKeyUniqueVisitor = useCallback(async () => {
-    const botId = await dydu.getBotId();
-    const currentSpace = Local.get(Local.names.space);
-    const currentLanguage = Local.get(Local.names.locale);
-    return `DYDU_lastvisitfor_${botId}_${currentSpace}_${currentLanguage}`;
-  }, []);
-
-  useEffect(() => {
-    cookieStringKeyUniqueVisitor().then((visitorCookieValue) => {
-      if (gdprPassed && !Cookie.get(visitorCookieValue)) {
-        dydu.welcomeCall({ qualification }).then(
-          () => Cookie.set(visitorCookieValue, encode(new Date().toISOString()), undefined),
-          () => {},
-        );
-      }
-    });
-  }, [cookieStringKeyUniqueVisitor, gdprPassed, qualification]);
-
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,
   });
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot}>
+    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot} id="dydu-chatbox">
       <span className={classes.srOnly} tabIndex="-1">
         {labelChatbot}
       </span>

@@ -1,12 +1,13 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
+
 import { EventsContext } from '../../contexts/EventsContext';
-import { UserActionContext } from '../../contexts/UserActionContext';
 import PrettyHtml from '../PrettyHtml';
-import useStyles from './styles';
-import { useDialog } from '../../contexts/DialogContext';
+import PropTypes from 'prop-types';
+import { UserActionContext } from '../../contexts/UserActionContext';
+import c from 'classnames';
 import { isEmptyArray } from '../../tools/helpers';
+import { useDialog } from '../../contexts/DialogContext';
+import useStyles from './styles';
 
 /**
  * Fetch the top-asked resources and display them in a numbered list.
@@ -31,7 +32,7 @@ export default function Top({ className, component, ...rest }) {
     !isEmptyArray(items) &&
     React.createElement(
       component,
-      { className: c('dydu-top', className), ...rest },
+      { className: c('dydu-top', className), ...rest, id: 'dydu-top-knowledge' },
       <PrettyHtml>
         <ol>
           {items.map(({ reword }, index) => {

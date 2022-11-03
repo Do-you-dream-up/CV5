@@ -1,7 +1,7 @@
 window.DYDU_QUALIFICATION_MODE = false;
 
-// hide the homepage if the wizard cards are displayed
-if (window.location.href.includes('?wizard')) {
+// hide the homepage if the dydupanel cards are displayed
+if (window.location.href.includes('?dydupanel')) {
   document.getElementById('iframeForm').style.display = 'none';
 }
 
@@ -64,7 +64,7 @@ const updateUrlParams = (status) => {
 
 const submitIframe = (status) => {
   if (
-    !window.location.href.includes('?wizard') &&
+    !window.location.href.includes('?dydupanel') &&
     ((status && document.getElementById('urlInput').value) || status === false)
   ) {
     updateUrlParams(status);

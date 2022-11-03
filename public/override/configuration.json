@@ -5,8 +5,7 @@
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
     "cdn": "https://cdn.doyoudreamup.com/",
-    "directory": "development/",
-    "qualification": true
+    "directory": "development/"
   },
   "avatar": {
     "request": {
@@ -187,6 +186,9 @@
     "preprodPorovider": "",
     "scopes": [""]
   },
+  "saml": {
+    "enable": false
+  },
   "onboarding": {
     "enable": false,
     "image1": "dydu-onboarding-1.svg",
@@ -207,12 +209,19 @@
     },
     "fixedDimensions": false,
     "mode": "left",
-    "width": 500,
+    "width": 850,
     "transient": true
   },
   "spaces": {
     "active": true,
     "detection": [
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
+        }
+      },
       {
         "active": false,
         "mode": "cookie",

@@ -6,18 +6,21 @@ import {
   isDefined,
   isEmptyObject,
   isEmptyString,
+  isOfTypeFunction,
+  isOfTypeString,
   isPositiveNumber,
   qualification,
+  strContains,
   toFormUrlEncoded,
 } from './helpers';
 
 import Bowser from 'bowser';
 import axios from 'axios';
 import configuration from '../../public/override/configuration.json';
+import bot from '../../public/override/bot.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import qs from 'qs';
-import uuid4 from 'uuid4';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -57,9 +60,9 @@ let BOT, protocol, API;
 
   API = getAxiosInstanceWithDyduConfig({
     maxRetry: 2,
-    timeout: 5000,
+    timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: getBackupServerUrl(data),
+    backupServer: `${protocol}://${getBackupServerUrl(data)}/servlet/api/`,
     axiosConf: {
       headers: {
         Accept: 'application/json',
@@ -90,10 +93,23 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
-    this.client = this.getClientId();
-    this.emit = debounce(this.emit, 100, { leading: true });
     this.locale = this.getLocale();
     this.space = this.getSpace();
+    this.emit = debounce(this.emit, 100, { leading: true });
+    this.initInfos();
+  }
+
+  alreadyCame() {
+    const clientIdKey = Local.clientId.getKey(this.infos);
+    return Local.clientId.isSet(clientIdKey);
+  }
+
+  initInfos() {
+    this.infos = {
+      locale: this.locale,
+      space: this.space,
+      botId: channelsBot || bot?.id,
+    };
   }
 
   extractPayloadFromHttpResponse = (data = {}) => {
@@ -116,8 +132,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = (verb, path, data) =>
-    verb(path, data).then((httpResponse) => this.extractPayloadFromHttpResponse(httpResponse.data));
+  emit = (verb, path, data) => {
+    return verb(path, data).then((httpResponse) => this.extractPayloadFromHttpResponse(httpResponse.data));
+  };
 
   /**
    * Export conversation by email
@@ -136,6 +153,7 @@ export default new (class Dydu {
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
@@ -154,6 +172,7 @@ export default new (class Dydu {
       contextUUID: contextId,
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -171,6 +190,7 @@ export default new (class Dydu {
       comment,
       contextUUID: contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -188,6 +208,7 @@ export default new (class Dydu {
       choiceKey,
       contextUUID: contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -210,6 +231,7 @@ export default new (class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       mail: email,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
     const path = `chat/gdpr/${BOT.id}/`;
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
@@ -218,24 +240,15 @@ export default new (class Dydu {
   getBot = () => BOT;
 
   /**
-   * Generate an id with uuid4 package, remove all '-'
-   * and keep only 15 characters (in the DB the clientId can have only 15 characters)
+   * Read the client ID from cookie and return it.
    *
-   * @returns {string} The new client ID
+   * @returns {string | boolean} The client ID.
    */
-  generateNewIdWithUuid4 = () => {
-    const generatedId = uuid4();
-    const newId = generatedId.replaceAll('-', '');
-    return newId.slice(0, 15);
+  getClientId = () => {
+    const clientIdKey = Local.clientId.getKey(this.infos);
+    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey);
+    return Local.clientId.load(clientIdKey);
   };
-
-  /**
-   * Read the client ID from the local storage and return it. Forge a new one
-   * using uuid4 if necessary.
-   *
-   * @returns {string} The client ID.
-   */
-  getClientId = () => Local.get(Local.names.client, this.generateNewIdWithUuid4(), true);
 
   /**
    * Read the context ID from the local storage and return it,
@@ -245,11 +258,13 @@ export default new (class Dydu {
    */
   getContextId = async (forced) => {
     const data = qs.stringify({
-      clientId: this.getClientId() ? this.getClientId() : null,
+      alreadyCame: this.alreadyCame(),
+      clientId: this.getClientId(),
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
       qualificationMode: qualification,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/context/${BOT.id}/`;
     if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
@@ -298,11 +313,18 @@ export default new (class Dydu {
             localstorage: (value) => Local.get(value),
             route: (value) => value[window.location.pathname],
             urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
+            urlpart: (value) => {
+              const currentHref = window.location.href;
+              if (isOfTypeString(value)) return strContains(currentHref, value);
+              const isPartOfCurrentHref = (v) => strContains(currentHref, v);
+              const result = Object.keys(value).find(isPartOfCurrentHref);
+              return value[result];
+            },
           }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space = typeof _get === 'function' ? _get(value) || this.space : this.space;
+            this.space = isOfTypeFunction(_get) ? _get(value) || this.space : this.space;
           }
         });
       }
@@ -321,6 +343,7 @@ export default new (class Dydu {
       const data = qs.stringify({
         contextUuid: contextId,
         solutionUsed: SOLUTION_TYPE.assistant,
+        ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
       });
       const path = `chat/history/${BOT.id}/`;
       return await this.emit(API.post, path, data);
@@ -449,6 +472,7 @@ export default new (class Dydu {
       search: text,
       space: this.getSpace(),
       onlyShowRewordables: true, // to display only the activates rewords / suggestions
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/search/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -463,10 +487,26 @@ export default new (class Dydu {
    */
   talk = async (text, options = {}) => {
     const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
-    const data = qs.stringify(payload);
+    const data = qs.stringify({ ...payload, ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data);
+  };
+
+  /**
+   * getSaml2Status - Get auth status.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  getSaml2Status = (saml2Info_token) => {
+    const data = qs.stringify({
+      ...(configuration?.saml?.enable && { saml2_info: saml2Info_token }),
+      botUUID: BOT.id,
+    });
+    const path = `saml2/status?${data}`;
+    return this.emit(API.get, path);
   };
 
   #makeTLivechatTypingPayloadWithInput = async (input = '') => {
@@ -474,6 +514,7 @@ export default new (class Dydu {
     return {
       type: 'typing',
       parameters: {
+        alreadyCame: this.alreadyCame(),
         typing: isDefined(input) && !isEmptyString(input),
         content: input?.toBase64(),
         contextId: await this.getContextId(),
@@ -482,7 +523,7 @@ export default new (class Dydu {
         language: this.getLocale().toBase64(),
         space: this.getSpace().toBase64(),
         solutionUsed: SOLUTION_TYPE.assistant,
-        clientId: 'TTFkVTNWZUdvSFBxaUJn',
+        clientId: this.getClientId(),
         useServerCookieForContext: false,
         saml2_info: '',
         timestamp: new Date().getMilliseconds(),
@@ -509,6 +550,7 @@ export default new (class Dydu {
       contextUuid: contextId || context?.fromBase64() || (await this.getContextId()),
       language: this.getLocale(),
       lastPoll: serverTime || pollTime,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
 
     const path = `/chat/poll/last/${this.getBot()?.id}`;
@@ -530,6 +572,7 @@ export default new (class Dydu {
       period: period,
       space: this.getSpace(),
       solutionUsed: SOLUTION_TYPE.assistant,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/topknowledge/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -551,6 +594,7 @@ export default new (class Dydu {
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/variable/${BOT.id}/`;
     return this.emit(API.post, path, data);
@@ -569,6 +613,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
@@ -587,6 +632,7 @@ export default new (class Dydu {
 
   #makeTalkPayloadWithTextAndOption = (text, options) => {
     return {
+      alreadyCame: this.alreadyCame(),
       browser: `${browser.name} ${browser.version}`,
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
@@ -645,17 +691,32 @@ export default new (class Dydu {
 
   getSurvey = async (surveyId = '') => {
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
-
     const path = `/chat/survey/configuration/${this.getBotId()}`;
     const data = toFormUrlEncoded({
       contextUuid: await this.getContextId(),
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,
+      ...(configuration?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     // get survey is a POST
     return this.post(path, data);
   };
+
+  getInfos = async () => {
+    return {
+      botId: await this.getBotId(),
+      locale: this.getLocale(),
+      space: this.getSpace(),
+    };
+  };
+
+  registerVisit() {
+    this.welcomeCall({ qualification }).then(async () => {
+      const keyInfos = await this.getInfos();
+      Local.visit.save(keyInfos);
+    });
+  }
 })();
 
 /====================================================================================================/;
@@ -663,6 +724,7 @@ export default new (class Dydu {
 const AXIOS_ERROR_CODE_RETRY = {
   timeout: 'ECONNABORTED',
   serverDown: 'ECONNREFUSED',
+  networkError: 'Network Error',
 };
 
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
@@ -687,7 +749,10 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   const incrementRetryCounter = () => ++currentRetryCount;
 
-  const matchRetryConditions = (error) => Object.values(AXIOS_ERROR_CODE_RETRY).includes(error.code);
+  const matchRetryConditions = (error) => {
+    const errors = Object.values(AXIOS_ERROR_CODE_RETRY);
+    return errors.includes(error.code) || errors.includes(error.message);
+  };
 
   const retry = () => {
     if (hasReachedMaxRetry()) {
@@ -698,12 +763,46 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     return instance();
   };
 
+  const renewAuth = (auth) => {
+    if (auth) {
+      try {
+        Local.saml.save(atob(auth));
+      } catch {
+        Local.saml.save(auth);
+      }
+    }
+  };
+
+  const redirectAndRenewAuth = (values) => {
+    try {
+      renewAuth(atob(values?.auth));
+      window.location.href = atob(values?.redirection_url);
+    } catch {
+      renewAuth(values?.auth);
+      window.location.href = values?.redirection_url;
+    }
+  };
+
+  const samlRenewOrReject = ({ type, values }) => {
+    switch (type) {
+      case 'SAML_redirection':
+        redirectAndRenewAuth(values);
+        break;
+      default:
+        return renewAuth(values?.auth);
+    }
+  };
+
   // when response code in range of 2xx
-  const onSuccess = (response) => response;
+  const onSuccess = (response) => {
+    const { data } = response;
+    data && configuration?.saml?.enable && samlRenewOrReject(data);
+    return response;
+  };
 
   // when timeout and response code out of range 2XX
   const onError = (error) => {
-    return matchRetryConditions(error) ? retry() : Promise.reject();
+    return matchRetryConditions(error) ? retry(error) : Promise.reject();
   };
 
   instance.interceptors.response.use(onSuccess, onError);
