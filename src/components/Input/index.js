@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import { escapeHTML } from '../../tools/helpers';
 import talk from '../../tools/talk';
 import useDebounce from '../../tools/hooks/debounce';
 import { useLivechat } from '../../contexts/LivechatContext';
@@ -120,7 +121,7 @@ export default function Input({ onRequest, onResponse }) {
 
   const submit = useCallback(
     (text) => {
-      text = text.trim();
+      text = escapeHTML(text.trim());
       if (text) {
         reset();
         onRequest(text);

@@ -198,3 +198,7 @@ export const hasProperty = (o, propertyName) => {
 export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
+
+export const escapeHTML = (html) => {
+  return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
