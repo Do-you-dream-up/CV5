@@ -668,7 +668,7 @@ export default new (class Dydu {
         botId: this.getBot().id,
         surveyId: survey.surveyId,
         interactionSurveyAnswer: false,
-        fields: b64encodeObject(survey.fields),
+        fields: b64encodeObject(survey),
         contextId: await this.getContextId(),
         qualificationMode: options.qualification || false,
         language: this.getLocale(),
