@@ -205,9 +205,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,
   });
+  const idLabel = 'dydu-window-label-bot';
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot} id="dydu-chatbox">
-      <span className={classes.srOnly} tabIndex="-1">
+    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
+      <span className={classes.srOnly} tabIndex="-1" id={idLabel}>
         {labelChatbot}
       </span>
       <div>
