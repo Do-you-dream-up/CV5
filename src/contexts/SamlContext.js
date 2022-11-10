@@ -3,18 +3,19 @@ import React, { createContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
-import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
 
 export const SamlContext = createContext({});
 
 export const SamlProvider = ({ children }) => {
-  const { configuration } = useConfiguration();
   const [user, setUser] = useState(null);
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
 
-  const isSamlActive = () => configuration?.saml?.enable;
+  const isSamlActive = () => {
+    const configuration = Local.get(Local.names.wizard);
+    return configuration?.saml?.enable;
+  };
 
   const checkSession = () => {
     try {
