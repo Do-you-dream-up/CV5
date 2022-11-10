@@ -73,8 +73,8 @@ let BOT, protocol, API;
 })();
 
 const getSamlEnableStatus = () => {
-  const configuration = Local.get(Local.names.wizard);
-  return configuration?.saml?.enable;
+  const localConfig = Local.get(Local.names.wizard);
+  return localConfig?.saml?.enable || configuration?.saml.enable;
 };
 
 const getBackupServerUrl = (botConf = {}) => {
