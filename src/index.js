@@ -15,7 +15,7 @@ import ViewModeProvider from './contexts/ViewModeProvider';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
-import { prefixCssSelectors } from './tools/css';
+import scope from 'scope-css';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
@@ -65,7 +65,7 @@ configuration.initialize().then((configuration) => {
     Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
-        style.textContent = prefixCssSelectors(res.data, `#${configuration.root}`);
+        style.textContent = scope(res.data, `#${configuration.root}`);
         document.head?.append(style);
       }
     });
