@@ -152,7 +152,7 @@ export function DialogProvider({ children }) {
   }, []);
 
   const addResponse = useCallback(
-    (response) => {
+    (response = {}) => {
       setLastResponse(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
       const {
