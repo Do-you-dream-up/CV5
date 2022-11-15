@@ -2,6 +2,8 @@ import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
   b64encodeObject,
+  escapeHTML,
+  escapeHTMLObject,
   hasProperty,
   isDefined,
   isEmptyObject,
@@ -49,11 +51,14 @@ let BOT, protocol, API;
   BOT = Object.assign(
     {},
     channelsBot ? channelsBot : botData,
-    (({ backUpServer, bot: id, server }) => ({
-      ...(id && { id }),
-      ...(server && { server }),
-      ...(backUpServer && { backUpServer }),
-    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
+    (({ backUpServer, bot: id, server }) => {
+      const result = escapeHTMLObject({ backUpServer, id, server });
+      return {
+        ...(id && { id: result.id }),
+        ...(server && { server: result.server }),
+        ...(backUpServer && { backUpServer: result.backUpServer }),
+      };
+    })(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
   protocol = 'https';
@@ -121,6 +126,7 @@ export default new (class Dydu {
     if (!hasProperty(data, 'values')) return data;
 
     data.values = decode(data.values);
+
     this.setContextId(data.values.contextId);
     return data.values;
   };
@@ -646,7 +652,7 @@ export default new (class Dydu {
       qualificationMode: options.qualification,
       space: this.getSpace(),
       tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
-      userInput: text,
+      userInput: escapeHTML(text),
       userUrl: getUrl,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(options.extra && {

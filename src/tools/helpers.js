@@ -200,5 +200,11 @@ export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
 export const escapeHTML = (html) => {
-  return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
+};
+
+export const escapeHTMLObject = (object) => {
+  const keys = Object.keys(object);
+  keys.forEach((key) => (object[key] = escapeHTML(object[key])));
+  return object;
 };
