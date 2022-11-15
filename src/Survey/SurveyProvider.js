@@ -1,187 +1,158 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { isArray, isDefined } from '../tools/helpers';
 
 import Field from './Field';
 import PropTypes from 'prop-types';
 import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
-import { isDefined } from '../tools/helpers';
 import { useDialog } from '../contexts/DialogContext';
 
-const SurveyContext = React.createContext();
-
+const SurveyContext = React.createContext({});
 export const useSurvey = () => React.useContext(SurveyContext);
 
 export default function SurveyProvider({ children }) {
-  const [configuration, setConfiguration] = useState(null);
+  const [surveyConfig, setSurveyConfig] = useState(null);
+  const [instances, setInstances] = useState(null);
   const { openSecondary, closeSecondary } = useDialog();
-  const [form, setForm] = useState(null);
-  const [fields, setFields] = useState(null);
 
-  const getFieldById = useCallback(
-    (id) => {
-      if (!isDefined(fields) || fields.length === 0) return null;
-      return fields.find((field) => field.hasId(id));
-    },
-    [fields],
-  );
-
-  useEffect(() => {
-    if (!isDefined(configuration?.fields)) return;
-    const _fields = parseFields(configuration.fields);
-    setFields(_fields);
-  }, [configuration?.fields]);
-
-  const validateForm = useCallback(() => {
-    return new Promise((resolve, reject) => {
-      const listNodeForm = removeNodeSubmitButtonFromFormElementList(Array.from(form.children));
-      let resultPayload = { listMissingRequired: [] };
-      resultPayload = listNodeForm.reduce((resultMap, inputNode) => {
-        const fieldInstance = getFieldById(inputNode.dataset.id);
-        /*
-          each fieldInstance is responsible of extracting
-          usefull data from it corresponding node element
-         */
-        const dataInput = fieldInstance.extractPayloadFromInputNode(inputNode);
-        if (dataInput?.missing) resultMap.listMissingRequired.push(fieldInstance);
-        else resultMap = { ...resultMap, ...dataInput };
-        return resultMap;
-      }, resultPayload);
-
-      const hasMissingFields = resultPayload.listMissingRequired.length > 0;
-      if (hasMissingFields) return reject(resultPayload.listMissingRequired);
-      delete resultPayload.listMissingRequired;
-      return resolve(resultPayload);
-    });
-  }, [form, getFieldById]);
-
-  const sendForm = useCallback(
-    (surveyPayload = {}) => {
-      const payload = {
-        ...configuration,
-        fields: surveyPayload,
-      };
-      if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
-      else return Promise.resolve(SurveyProvider.notifyListeners(payload));
-    },
-    [configuration],
-  );
-
-  const flushConfiguration = useCallback(() => setConfiguration(null), []);
-  const flushFields = useCallback(() => setFields(null), []);
-  const flushForm = useCallback(() => setForm(null), []);
-
-  const flushState = useCallback(() => {
-    flushForm();
-    flushConfiguration();
-    flushFields();
-  }, [flushConfiguration, flushFields, closeSecondary]);
-
-  const flushSurveyAndCloseSecondary = useCallback(() => {
-    flushState();
-    closeSecondary();
-  }, [closeSecondary, flushState]);
-
-  const submitForm = useCallback(() => {
-    validateForm()
-      .then(sendForm)
-      .then(flushSurveyAndCloseSecondary)
-      .catch((listMissingRequired) => {
-        console.error('error!', listMissingRequired);
-      });
-  }, [sendForm, validateForm]);
-
-  const surveyTitle = useMemo(() => {
-    return configuration?.title || null;
-  }, [configuration?.title]);
-
-  useEffect(() => {
-    const canShowForm = isDefined(fields) && isDefined(openSecondary);
-    if (canShowForm)
-      openSecondary({
-        title: surveyTitle,
-        bodyRenderer: () => <SurveyForm />,
-      });
-  }, [fields, surveyTitle, openSecondary]);
-
-  useEffect(() => {
-    if (isDefined(form))
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        submitForm();
-      });
-  }, [form, submitForm]);
-
-  const formName = useMemo(() => configuration?.name || '', [configuration]);
-  const formTitle = useMemo(() => configuration?.title || '', [configuration]);
-  const formDescription = useMemo(() => configuration?.text || '', [configuration]);
+  const flushStates = useCallback(() => {
+    setInstances(null);
+    setSurveyConfig(null);
+  }, []);
 
   const showSurvey = useCallback((data) => {
     const id = extractId(data);
-    getSurveyConfigurationById(id).then(setConfiguration);
+    getSurveyConfigurationById(id).then(setSurveyConfig);
   }, []);
 
-  const context = useMemo(
+  useEffect(() => {
+    const canShowForm = isDefined(instances) && isDefined(openSecondary);
+    if (canShowForm)
+      openSecondary({
+        title: surveyConfig?.title,
+        bodyRenderer: () => <SurveyForm />,
+      });
+  }, [instances, openSecondary]);
+
+  useEffect(() => {
+    const fields = surveyConfig?.fields;
+    const canInstanciateFields = isDefined(fields) && !isDefined(instances);
+    if (!canInstanciateFields) return;
+    const listFieldInstance = instanciateFields(fields);
+    setInstances(listFieldInstance);
+  }, [instances, surveyConfig]);
+
+  const getSurveyAnswer = useCallback(() => {
+    let result = {};
+    if (isDefined(instances)) {
+      instances.forEach((fieldInstance) => {
+        fieldInstance.feedStoreWithUserAnswer(result);
+      });
+    }
+    return result;
+  }, [instances]);
+
+  const createSurveyResponsePayloadWithUserAnswer = useCallback((userAnswerObj) => {
+    return userAnswerObj;
+  }, []);
+
+  const sendAnswer = useCallback((answer) => {
+    console.log('sending answer', answer);
+    const payload = createSurveyResponsePayloadWithUserAnswer(answer);
+    if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
+    else return Promise.resolve(SurveyProvider.notifyListeners(payload));
+  }, []);
+
+  const validateAnswer = useCallback(() => {
+    console.log('validating answer');
+    const answer = getSurveyAnswer();
+    return Promise.resolve(answer);
+  }, [getSurveyAnswer]);
+
+  const prepareResponsePayloadWithAnswerObject = useCallback((answerObj) => {
+    console.log('preparing payload');
+    return answerObj;
+  }, []);
+
+  const onAfterSend = useCallback(() => {
+    flushStates();
+    closeSecondary();
+  }, [closeSecondary, flushStates]);
+
+  const onSubmit = useCallback(() => {
+    validateAnswer()
+      .then(prepareResponsePayloadWithAnswerObject)
+      .then(sendAnswer)
+      .then(onAfterSend)
+      .catch((e) => {
+        console.error('TODO: treat required fields !', e);
+      });
+  }, [sendAnswer, validateAnswer, prepareResponsePayloadWithAnswerObject]);
+
+  const onSecondaryClosed = () => {
+    console.log('secondary closed');
+  };
+
+  const api = useMemo(
     () => ({
-      onSecondaryClosed: flushState,
       showSurvey,
-      setForm,
-      fields,
-      formName,
-      formTitle,
-      formDescription,
+      instances,
+      onSubmit,
+      onSecondaryClosed,
     }),
-    [formName, formTitle, formDescription, fields, setForm],
+    [showSurvey, instances, onSubmit],
   );
 
-  return <SurveyContext.Provider value={context}>{children}</SurveyContext.Provider>;
+  return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
 }
 
-const parseFields = (list) => {
-  const fieldStore = createMapStoreWithList(list);
-  return list.reduce((resultList, item) => {
-    // do not instanciate duplicate
-    if (fieldStore.exists(item.id)) resultList.push(new Field(item, fieldStore));
+//==================================================/
+// LOCAL HELPERS
+//==================================================/
+
+const instanciateFields = (listFieldObject = []) => {
+  if (!isArray(listFieldObject)) {
+    console.error('instanciateFields [type error]: array typed parameter expected');
+    return null;
+  }
+  Field.mapStoreFieldObject = flatMap(listFieldObject);
+  let listIdInstanceDone = [];
+  const hasAlreadyBeenInstanciated = (fieldObj) => listIdInstanceDone.includes(fieldObj?.id);
+  const addInstanciated = (listId) => (listIdInstanceDone = listIdInstanceDone.concat(listId));
+  const finalInstances = listFieldObject.reduce((resultList, fieldObj) => {
+    if (hasAlreadyBeenInstanciated(fieldObj)) return resultList;
+    const instance = Field.instanciate(fieldObj);
+    addInstanciated(instance.getGraphIdList());
+    resultList.push(instance);
     return resultList;
   }, []);
+
+  console.log(finalInstances);
+  return finalInstances;
 };
 
-const createMapStoreWithList = (list) => {
-  const fieldMapById = flatMapById(list);
-  return {
-    exists: (id) => isDefined(fieldMapById[id]),
-    // cut(id): returns item corresponding id and remove it
-    cut: (id) => {
-      const f = { ...fieldMapById[id] };
-      delete fieldMapById[id];
-      return f;
-    },
-    delete: (id) => delete fieldMapById[id],
-  };
-};
+const flatMap = (listFieldObject = []) => {
+  return listFieldObject.reduce((mapRes, fieldObject) => {
+    const children = fieldObject?.children || [];
+    const hasChildren = children?.length > 0;
+    const id = fieldObject?.id;
+    if (isDefined(id)) mapRes[id] = fieldObject;
+    if (!hasChildren) return mapRes;
 
-const flatMapById = (list) => {
-  const addItem = (item, map) => {
-    if (item?.id) map[item.id] = item;
-    if (item?.children) item.children.forEach((child) => addItem(child, map));
-  };
-  return list.reduce((resultMap, item) => {
-    addItem(item, resultMap);
-    return resultMap;
+    let childrenMapRes = {};
+    childrenMapRes = flatMap(children);
+    return {
+      ...mapRes,
+      ...childrenMapRes,
+    };
   }, {});
 };
 
-const removeNodeSubmitButtonFromFormElementList = (nodelist) => {
-  nodelist.pop(); // remove button submit node out
-  return nodelist;
-};
-
 const extractId = (data) => data?.values?.survey?.fromBase64();
-
 const getSurveyConfigurationById = dydu.getSurvey;
 
 SurveyProvider.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
+  children: PropTypes.element,
 };
 
 let listeners = {};
