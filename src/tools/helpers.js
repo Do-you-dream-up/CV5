@@ -202,9 +202,3 @@ export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
 };
-
-export const escapeHTMLObject = (object) => {
-  const keys = Object.keys(object);
-  keys.forEach((key) => (object[key] = escapeHTML(object[key])));
-  return object;
-};
