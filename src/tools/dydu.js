@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -85,8 +86,8 @@ const getBackupServerUrl = (botConf = {}) => {
     app2: 'app2',
   };
 
-  const getDefaultBackupServerUrl = () => botConf?.backupServer;
   const getApp1BackupServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
+  const getDefaultBackupServerUrl = () => botConf?.backupServer || getApp1BackupServerUrl();
   const isApp1 = botConf?.server.startsWith(rootUrl.app1);
   return isApp1 ? getApp1BackupServerUrl() : getDefaultBackupServerUrl();
 };
@@ -737,6 +738,7 @@ const AXIOS_ERROR_CODE_RETRY = {
 
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
   if (!isDefined(config?.maxRetry)) config.maxRetry = 2;
+  if (!isDefined(config?.maxFlip)) config.maxFlip = 10;
   if (!isDefined(config?.axiosConf)) config.axiosConf = {};
 
   const instance = axios.create({
@@ -750,12 +752,17 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   let currentRetryCount = 0;
+  let currentFlipCount = 0;
 
   const hasReachedMaxRetry = () => currentRetryCount >= config.maxRetry - 1;
+
+  const hasReachedMaxFlip = () => currentFlipCount >= config.maxFlip - 1;
 
   const resetRetryCounter = () => (currentRetryCount = 0);
 
   const incrementRetryCounter = () => ++currentRetryCount;
+
+  const incrementFlipCounter = () => ++currentFlipCount;
 
   const matchRetryConditions = (error) => {
     const errors = Object.values(AXIOS_ERROR_CODE_RETRY);
@@ -767,7 +774,9 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
       flipAxiosBaseUrl();
       resetRetryCounter();
     }
+
     incrementRetryCounter();
+    incrementFlipCounter();
     return instance();
   };
 
@@ -810,6 +819,10 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when timeout and response code out of range 2XX
   const onError = (error) => {
+    if (hasReachedMaxFlip()) {
+      console.log('--- MAX SERVER FLIP REACHED ---');
+      return Promise.reject();
+    }
     return matchRetryConditions(error) ? retry(error) : Promise.reject();
   };
 
