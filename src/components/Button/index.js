@@ -30,7 +30,6 @@ export function ButtonBase({
   title,
   type,
   variant,
-  testId,
   ...rest
 }) {
   const { configuration } = useContext(ConfigurationContext);
@@ -61,7 +60,6 @@ export function ButtonBase({
         { [classes.grow]: grow },
       ),
       ref: reference,
-      ...(testId && { id: testId }),
     },
     button,
   );
@@ -87,6 +85,5 @@ ButtonBase.propTypes = {
   target: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.string,
-  testId: PropTypes.string,
   variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };

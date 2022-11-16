@@ -26,11 +26,11 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
   const actions = [
     {
       children: t('gdpr.disclaimer.cancel'),
-      testId: 'dydu-disclaimer-refuse',
+      id: 'dydu-disclaimer-refuse',
       onClick: onDecline,
       secondary: true,
     },
-    { children: t('gdpr.disclaimer.ok'), onClick: onAccept, testId: 'dydu-disclaimer-ok' },
+    { children: t('gdpr.disclaimer.ok'), onClick: onAccept, id: 'dydu-disclaimer-ok' },
   ];
   const body = sanitize(t('gdpr.disclaimer.body'));
 
