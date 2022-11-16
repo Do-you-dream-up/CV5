@@ -145,8 +145,7 @@ export default new (class Dydu {
     return verb(path, data)
       .then(({ data = {} }) => {
         if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-          data.values = decode(data.values);
-          return data.values;
+          return this.extractPayloadFromHttpResponse(data);
         }
         return data;
       })
