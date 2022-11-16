@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 import React, { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
@@ -116,14 +117,14 @@ export default function Feedback() {
       <div className="dydu-feedback">
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
-            <Button color="error" onClick={onVoteNegative} variant="icon">
+            <Button color="error" onClick={onVoteNegative} variant="icon" id="dydu-feedback-negative-vote">
               <img
                 alt={voteNegative}
                 src={`${process.env.PUBLIC_URL}icons/dydu-thumb-down-white.svg`}
                 title={voteNegative}
               />
             </Button>
-            <Button color="success" onClick={onVotePositive} variant="icon">
+            <Button color="success" onClick={onVotePositive} variant="icon" id="dydu-feedback-positive-vote">
               <img
                 alt={votePositive}
                 src={`${process.env.PUBLIC_URL}icons/dydu-thumb-up-white.svg`}
