@@ -1,8 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
+import c from 'classnames';
 import useStyles from './styles';
 
 // eslint-disable-next-line react/display-name
@@ -29,6 +30,7 @@ export function ButtonBase({
   title,
   type,
   variant,
+  testId,
   ...rest
 }) {
   const { configuration } = useContext(ConfigurationContext);
@@ -59,6 +61,7 @@ export function ButtonBase({
         { [classes.grow]: grow },
       ),
       ref: reference,
+      ...(testId && { id: testId }),
     },
     button,
   );
@@ -84,5 +87,6 @@ ButtonBase.propTypes = {
   target: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.string,
+  testId: PropTypes.string,
   variant: PropTypes.oneOf(['contained', 'icon', 'text']),
 };
