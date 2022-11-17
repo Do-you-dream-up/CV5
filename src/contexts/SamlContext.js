@@ -57,10 +57,6 @@ export const SamlProvider = ({ children }) => {
   }, [redirectUrl]);
 
   useLayoutEffect(() => {
-    console.log(
-      '🚀 ~ file: SamlContext.js ~ line 61 ~ useLayoutEffect ~ configuration?.saml?.enable',
-      configuration?.saml?.enable,
-    );
     setSamlEnableCookie(configuration?.saml?.enable);
   }, []);
 
