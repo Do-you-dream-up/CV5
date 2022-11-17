@@ -91,9 +91,13 @@ export default function Input({ onRequest, onResponse }) {
         ...properties,
       };
 
+      const textareaId = 'dydu-textarea';
       return (
         <div className={c('dydu-input-field', classes.field)}>
-          <textarea {...data} disabled={prompt || locked} />
+          <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
+            textarea
+          </label>
+          <textarea {...data} disabled={prompt || locked} id={textareaId} />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>

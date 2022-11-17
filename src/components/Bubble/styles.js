@@ -57,6 +57,7 @@ export default createUseStyles((theme) => {
       backgroundColor: theme.palette.response.background,
       color: theme.palette.response.text,
       marginRight: 'auto',
+      width: 'fit-content',
 
       '&.template-style': {
         width: 270,
