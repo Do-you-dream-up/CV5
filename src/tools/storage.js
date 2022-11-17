@@ -287,6 +287,7 @@ export class Local {
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
   });
+
   static visit = Object.create({
     getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
     load: (keyString = '') => {

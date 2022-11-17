@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useLayoutEffect, useState } from 'react';
+import { getSamlEnableStatus, setSamlEnableCookie } from '../tools/saml';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
-import { getSamlEnableStatus } from '../tools/saml';
+import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
 
 export const SamlContext = createContext({});
 
 export const SamlProvider = ({ children }) => {
+  const { configuration } = useConfiguration();
+
   const [user, setUser] = useState(null);
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
@@ -52,6 +55,14 @@ export const SamlProvider = ({ children }) => {
       window.location.href = redirectUrl;
     }
   }, [redirectUrl]);
+
+  useLayoutEffect(() => {
+    console.log(
+      '🚀 ~ file: SamlContext.js ~ line 61 ~ useLayoutEffect ~ configuration?.saml?.enable',
+      configuration?.saml?.enable,
+    );
+    setSamlEnableCookie(configuration?.saml?.enable);
+  }, []);
 
   useEffect(async () => {
     getSamlEnableStatus() && (await checkSession());

@@ -64,6 +64,7 @@ configuration.initialize().then((configuration) => {
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });
+
     Axios.get(`${process.env.PUBLIC_URL}override/style.css`, axiosConfigNoCache).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
