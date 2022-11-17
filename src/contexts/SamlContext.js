@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
+import { getSamlEnableStatus } from '../tools/saml';
 import { useIdleTimer } from 'react-idle-timer';
 
 export const SamlContext = createContext({});
@@ -11,11 +12,6 @@ export const SamlProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
-
-  const isSamlActive = () => {
-    const configuration = Local.get(Local.names.wizard);
-    return configuration?.saml?.enable;
-  };
 
   const checkSession = () => {
     try {
@@ -45,20 +41,20 @@ export const SamlProvider = ({ children }) => {
 
   useIdleTimer({
     debounce: 500,
-    onIdle: () => isSamlActive() && checkSession(),
+    onIdle: () => getSamlEnableStatus() && checkSession(),
     timeout: 30 * 60 * 1000, // 30mn in milliseconds
   });
 
   const logout = () => setUser(null);
 
   useEffect(() => {
-    if (isSamlActive() && redirectUrl) {
+    if (getSamlEnableStatus() && redirectUrl) {
       window.location.href = redirectUrl;
     }
   }, [redirectUrl]);
 
   useEffect(async () => {
-    isSamlActive() && (await checkSession());
+    getSamlEnableStatus() && (await checkSession());
   }, []);
 
   const value = {
@@ -71,7 +67,7 @@ export const SamlProvider = ({ children }) => {
   };
 
   const renderChildren = () => {
-    if (isSamlActive()) {
+    if (getSamlEnableStatus()) {
       return !saml2Info ? <></> : children;
     }
     return children;
