@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -109,7 +110,7 @@ export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
     this.locale = this.getLocale();
-    this.space = this.getSpace();
+    this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.initInfos();
   }
