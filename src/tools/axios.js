@@ -4,4 +4,7 @@ export const axiosConfigNoCache = {
     Pragma: 'no-cache',
     Expires: '0',
   },
+  params: {
+    t: new Date().getTime(),
+  },
 };

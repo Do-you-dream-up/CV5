@@ -22,8 +22,8 @@ export const configuration = new (class Configuration {
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
-      const fromStorage = Local.get(Local.names.wizard);
-      this.configuration = fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+      this.configuration = data;
+      Local.set(Local.names.wizard, this.configuration);
       return this.configuration;
     });
   };
