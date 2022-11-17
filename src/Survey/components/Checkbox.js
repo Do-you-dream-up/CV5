@@ -23,10 +23,10 @@ export default function Checkbox({ field }) {
 
   const content = useMemo(() => {
     return (
-      <>
+      <div className={'checkbox'}>
         <input {...inputAttributes} />
         <label htmlFor={field.getId()}>{field.getLabel()}</label>
-      </>
+      </div>
     );
   }, [field, inputAttributes]);
 

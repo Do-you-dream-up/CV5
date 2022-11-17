@@ -88,8 +88,17 @@ const getBackupServerUrl = (botConf = {}) => {
 
   const getApp1BackupServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
   const getDefaultBackupServerUrl = () => botConf?.backupServer || getApp1BackupServerUrl();
-  const isApp1 = botConf?.server.startsWith(rootUrl.app1);
-  return isApp1 ? getApp1BackupServerUrl() : getDefaultBackupServerUrl();
+
+  const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
+  const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
+
+  if (isApp1) {
+    return getApp1BackupServerUrl();
+  }
+  if (isApp2) {
+    return getApp1BackupServerUrl();
+  }
+  return getDefaultBackupServerUrl();
 };
 
 const variables = {};
@@ -105,6 +114,10 @@ export default new (class Dydu {
     this.space = this.getSpace();
     this.emit = debounce(this.emit, 100, { leading: true });
     this.initInfos();
+  }
+
+  getVariables() {
+    return JSON.stringify(variables);
   }
 
   alreadyCame() {
@@ -142,7 +155,24 @@ export default new (class Dydu {
    */
 
   emit = (verb, path, data) => {
-    return verb(path, data).then((httpResponse) => this.extractPayloadFromHttpResponse(httpResponse.data));
+    return verb(path, data)
+      .then(({ data = {} }) => {
+        if (Object.prototype.hasOwnProperty.call(data, 'values')) {
+          return this.extractPayloadFromHttpResponse(data);
+        }
+        return data;
+      })
+      .catch(() => {
+        API.defaults.baseURL =
+          API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
+            ? `https://${BOT.server}/servlet/api/`
+            : `https://${BOT.backUpServer}/servlet/api/`;
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(this.emit(verb, path, data));
+          }, 3000);
+        });
+      });
   };
 
   /**
@@ -623,6 +653,7 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
       ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }),
+      variables: this.getVariables(),
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
@@ -656,7 +687,7 @@ export default new (class Dydu {
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
-      variables: JSON.stringify(variables),
+      variables: this.getVariables(),
     };
   };
 
@@ -730,12 +761,6 @@ export default new (class Dydu {
 
 /====================================================================================================/;
 
-const AXIOS_ERROR_CODE_RETRY = {
-  timeout: 'ECONNABORTED',
-  serverDown: 'ECONNREFUSED',
-  networkError: 'Network Error',
-};
-
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
   if (!isDefined(config?.maxRetry)) config.maxRetry = 2;
   if (!isDefined(config?.maxFlip)) config.maxFlip = 10;
@@ -746,39 +771,6 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     timeout: isPositiveNumber(config?.timeout) ? config.timeout : axios.defaults.timeout,
     ...config.axiosConf,
   });
-
-  const flipAxiosBaseUrl = () => {
-    instance.defaults.baseURL = instance.defaults.baseURL === config?.server ? config?.backupServer : config?.server;
-  };
-
-  let currentRetryCount = 0;
-  let currentFlipCount = 0;
-
-  const hasReachedMaxRetry = () => currentRetryCount >= config.maxRetry - 1;
-
-  const hasReachedMaxFlip = () => currentFlipCount >= config.maxFlip - 1;
-
-  const resetRetryCounter = () => (currentRetryCount = 0);
-
-  const incrementRetryCounter = () => ++currentRetryCount;
-
-  const incrementFlipCounter = () => ++currentFlipCount;
-
-  const matchRetryConditions = (error) => {
-    const errors = Object.values(AXIOS_ERROR_CODE_RETRY);
-    return errors.includes(error.code) || errors.includes(error.message);
-  };
-
-  const retry = () => {
-    if (hasReachedMaxRetry()) {
-      flipAxiosBaseUrl();
-      resetRetryCounter();
-    }
-
-    incrementRetryCounter();
-    incrementFlipCounter();
-    return instance();
-  };
 
   const renewAuth = (auth) => {
     if (auth) {
@@ -812,20 +804,11 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    const { data } = response;
-    data && getSamlEnableStatus() && samlRenewOrReject(data);
+    response?.data && configuration?.saml?.enable && samlRenewOrReject(response?.data);
+    API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
     return response;
   };
 
-  // when timeout and response code out of range 2XX
-  const onError = (error) => {
-    if (hasReachedMaxFlip()) {
-      console.log('--- MAX SERVER FLIP REACHED ---');
-      return Promise.reject();
-    }
-    return matchRetryConditions(error) ? retry(error) : Promise.reject();
-  };
-
-  instance.interceptors.response.use(onSuccess, onError);
+  instance.interceptors.response.use(onSuccess);
   return instance;
 };
