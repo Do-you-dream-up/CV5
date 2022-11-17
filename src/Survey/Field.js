@@ -9,7 +9,7 @@ import Radio from './components/Radio';
 import MultipleChoice from './components/MultipleChoice';
 import SelectOption from './components/SelectOption';
 
-import { isDefined } from '../tools/helpers';
+import { decodeHtml, isDefined } from '../tools/helpers';
 
 //================================================== /
 // TYPES stack
@@ -94,7 +94,7 @@ export default class Field {
     return this.mandatory || false;
   }
   getLabel() {
-    return this.label || '';
+    return decodeHtml(this.label || '');
   }
   getChildren() {
     return this.children || [];

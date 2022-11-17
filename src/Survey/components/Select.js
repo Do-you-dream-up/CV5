@@ -51,7 +51,7 @@ export default function Select({ field }) {
     return (
       <>
         <select {...selectAttributes}>{options}</select>
-        {slaves}
+        <div className="slaves">{slaves}</div>
       </>
     );
   }, [selectAttributes, options, slaves]);

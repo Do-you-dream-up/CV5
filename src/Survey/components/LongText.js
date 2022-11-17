@@ -3,9 +3,10 @@ import React, { useCallback, useMemo } from 'react';
 import FieldBlock from '../FieldBlock';
 import PropTypes from 'prop-types';
 import Field from '../Field';
+import { useTextInputConfig } from './useTextInputConfig';
 
 export default function LongText({ field }) {
-  console.log('text', field?.getId());
+  const { attributes } = useTextInputConfig();
 
   const onChange = useCallback(
     (event) => {
@@ -17,17 +18,20 @@ export default function LongText({ field }) {
 
   const inputTextAttributes = useMemo(() => {
     return {
+      ...attributes.root,
       onChange,
       maxLength: 200,
+      rows: 5,
+      style: attributes.style,
     };
   }, [onChange]);
 
   const content = useMemo(() => {
     return (
-      <>
+      <div className={'long-text'}>
         <p>{field.getLabel()}</p>
-        <input {...inputTextAttributes} />
-      </>
+        <textarea {...inputTextAttributes} />
+      </div>
     );
   }, [field, inputTextAttributes]);
 

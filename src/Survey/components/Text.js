@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
-import FieldBlock from '../FieldBlock';
 import PropTypes from 'prop-types';
 import Field from '../Field';
+import { useTextInputConfig } from './useTextInputConfig';
 
 export default function Text({ field }) {
-  console.log('text', field?.getId());
-
+  const { attributes } = useTextInputConfig();
   const onChange = useCallback(
     (event) => {
       const userInputString = event.target.value;
@@ -16,20 +15,18 @@ export default function Text({ field }) {
 
   const inputTextAttributes = useMemo(() => {
     return {
+      ...attributes.root,
+      style: { ...attributes.style, height: '2.3rem' },
       onChange,
     };
   }, [onChange]);
 
-  const content = useMemo(() => {
-    return (
-      <>
-        <p>{field.getLabel()}</p>
-        <input {...inputTextAttributes} />
-      </>
-    );
-  }, [field, inputTextAttributes]);
-
-  return <FieldBlock field={field}>{content}</FieldBlock>;
+  return (
+    <div className={'text'}>
+      <p>{field.getLabel()}</p>
+      <input {...inputTextAttributes} />
+    </div>
+  );
 }
 
 Text.propTypes = {

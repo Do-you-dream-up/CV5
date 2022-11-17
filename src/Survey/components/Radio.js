@@ -1,7 +1,6 @@
 import React, { useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import FieldBlock from '../FieldBlock';
 import Field from '../Field';
 
 export default function Radio({ field }) {
@@ -22,16 +21,12 @@ export default function Radio({ field }) {
     };
   }, [onChange, field]);
 
-  const content = useMemo(() => {
-    return (
-      <>
-        <input {...inputAttributes} />
-        <label htmlFor={field.getId()}>{field.getLabel()}</label>
-      </>
-    );
-  }, [field, inputAttributes]);
-
-  return <FieldBlock field={field}>{content}</FieldBlock>;
+  return (
+    <div className={'radio'}>
+      <input {...inputAttributes} />
+      <label htmlFor={field.getId()}>{field.getLabel()}</label>
+    </div>
+  );
 }
 
 Radio.propTypes = {

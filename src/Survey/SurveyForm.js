@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
+
 import { useSurvey } from './SurveyProvider';
-import { isDefined, isEmptyArray } from '../tools/helpers';
+import { asset, isDefined, isEmptyArray } from '../tools/helpers';
+import './style/survey.css';
 
 export default function SurveyForm() {
   const { instances, showSurvey, onSubmit } = useSurvey();
@@ -13,12 +16,23 @@ export default function SurveyForm() {
   return !isDefined(instances) ? (
     <button onClick={showSurvey}>click</button>
   ) : (
-    <form>
-      <h1>Survey Form</h1>
+    <form className="survey-form-container">
       {renderFields()}
-      <button type="button" onClick={onSubmit}>
-        Soumettre
-      </button>
+      <div className="btn-submit-container">
+        <ButtonSubmit onSubmit={onSubmit} />
+      </div>
     </form>
   );
 }
+
+const ButtonSubmit = ({ onSubmit }) => {
+  return (
+    <button type="button" className={'btn-submit-container'} onClick={onSubmit}>
+      <i>Envoyer mes réponses</i> <img src={asset('check-circle.svg')} />
+    </button>
+  );
+};
+
+ButtonSubmit.propTypes = {
+  onSubmit: PropTypes.func,
+};
