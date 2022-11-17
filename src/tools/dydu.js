@@ -114,6 +114,10 @@ export default new (class Dydu {
     this.initInfos();
   }
 
+  getVariables() {
+    return JSON.stringify(variables);
+  }
+
   alreadyCame() {
     const clientIdKey = Local.clientId.getKey(this.infos);
     return Local.clientId.isSet(clientIdKey);
@@ -646,6 +650,7 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
       ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }),
+      variables: this.getVariables(),
     });
     const path = `chat/welcomecall/${BOT.id}`;
     return this.emit(API.post, path, data);
@@ -679,7 +684,7 @@ export default new (class Dydu {
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
-      variables: JSON.stringify(variables),
+      variables: this.getVariables(),
     };
   };
 
