@@ -203,3 +203,21 @@ export const hasProperty = (o, propertyName) => {
 export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
+
+export const getChatboxWidth = (chatboxRef) => {
+  if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
+  const { left, right } = chatboxRef.getBoundingClientRect();
+  return Math.abs(right - left);
+};
+
+export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+  const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
+  if (error) throw new Error('getChatboxWidthTime: parameter error', time);
+  return getChatboxWidth(chatboxRef) * time;
+};
+
+export const decodeHtml = (html) => {
+  var txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+};

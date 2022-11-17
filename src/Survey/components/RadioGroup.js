@@ -33,7 +33,7 @@ export default function RadioGroup({ fields }) {
     ));
   }, [isCurrentActive, onChange, fields]);
 
-  return <>{render()}</>;
+  return <div className={'group'}>{render()}</div>;
 }
 
 const RadioItem = ({ field, onChange, checked }) => {
@@ -61,5 +61,5 @@ RadioItem.propTypes = {
 };
 
 RadioGroup.propTypes = {
-  fields: PropTypes.arrayOf(Field),
+  fields: PropTypes.arrayOf(PropTypes.instanceOf(Field)),
 };
