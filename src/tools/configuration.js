@@ -1,5 +1,8 @@
+import { hasWizard, isLoadedFromChannels } from './wizard';
+
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
+// import { Local } from './storage';
 import React from 'react';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
@@ -22,8 +25,9 @@ export const configuration = new (class Configuration {
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
-      this.configuration = data;
-      Local.set(Local.names.wizard, this.configuration);
+      const fromStorage = Local.get(Local.names.wizard);
+      this.configuration =
+        (isLoadedFromChannels() || hasWizard()) && fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
       return this.configuration;
     });
   };
