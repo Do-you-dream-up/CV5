@@ -1,21 +1,20 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useLayoutEffect, useState } from 'react';
+import { getSamlEnableStatus, setSamlEnableCookie } from '../tools/saml';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
+import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
 
 export const SamlContext = createContext({});
 
 export const SamlProvider = ({ children }) => {
+  const { configuration } = useConfiguration();
+
   const [user, setUser] = useState(null);
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
-
-  const isSamlActive = () => {
-    const configuration = Local.get(Local.names.wizard);
-    return configuration?.saml?.enable;
-  };
 
   const checkSession = () => {
     try {
@@ -45,20 +44,24 @@ export const SamlProvider = ({ children }) => {
 
   useIdleTimer({
     debounce: 500,
-    onIdle: () => isSamlActive() && checkSession(),
+    onIdle: () => getSamlEnableStatus() && checkSession(),
     timeout: 30 * 60 * 1000, // 30mn in milliseconds
   });
 
   const logout = () => setUser(null);
 
   useEffect(() => {
-    if (isSamlActive() && redirectUrl) {
+    if (getSamlEnableStatus() && redirectUrl) {
       window.location.href = redirectUrl;
     }
   }, [redirectUrl]);
 
+  useLayoutEffect(() => {
+    setSamlEnableCookie(configuration?.saml?.enable);
+  }, []);
+
   useEffect(async () => {
-    isSamlActive() && (await checkSession());
+    getSamlEnableStatus() && (await checkSession());
   }, []);
 
   const value = {
@@ -71,7 +74,7 @@ export const SamlProvider = ({ children }) => {
   };
 
   const renderChildren = () => {
-    if (isSamlActive()) {
+    if (getSamlEnableStatus()) {
       return !saml2Info ? <></> : children;
     }
     return children;

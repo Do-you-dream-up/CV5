@@ -21,6 +21,7 @@ import bot from '../../public/override/bot.json';
 import configuration from '../../public/override/configuration.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
+import { getSamlEnableStatus } from './saml';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -72,11 +73,6 @@ let BOT, protocol, API;
     },
   });
 })();
-
-const getSamlEnableStatus = () => {
-  const localConfig = Local.get(Local.names.wizard);
-  return localConfig?.saml?.enable || configuration?.saml.enable;
-};
 
 const getBackupServerUrl = (botConf = {}) => {
   const rootUrl = {
@@ -801,7 +797,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    response?.data && configuration?.saml?.enable && samlRenewOrReject(response?.data);
+    response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
     API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
     return response;
   };
