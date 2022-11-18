@@ -26,6 +26,10 @@ export const configuration = new (class Configuration {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
       const fromStorage = Local.get(Local.names.wizard);
+      console.log(
+        '🚀 ~ file: configuration.js ~ line 31 ~ Configuration ~ returnaxios.get ~ isLoadedFromChannels()',
+        isLoadedFromChannels(),
+      );
       this.configuration =
         (isLoadedFromChannels() || hasWizard()) && fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
       return this.configuration;

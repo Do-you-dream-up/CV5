@@ -26,6 +26,7 @@ import { getSamlEnableStatus } from './saml';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
+console.log('🚀 ~ file: dydu.js ~ line 29 ~ channelsBot', channelsBot);
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
 
