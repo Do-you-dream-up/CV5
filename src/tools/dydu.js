@@ -72,28 +72,31 @@ let BOT, protocol, API;
     backUpServer: getBackUpServerUrl(data),
   };
 
-  const mergedBot = { ...botData, ...channelsBot };
+  const overridedBot = { ...botData, ...channelsBot };
 
-  console.log('🚀 ~ file: dydu.js ~ line 104 ~ getBotInfo ~ channelsBot', channelsBot);
   console.log('🚀 ~ file: dydu.js ~ line 71 ~ getBotInfo ~ botData', botData);
+  console.log('🚀 ~ file: dydu.js ~ line 104 ~ getBotInfo ~ channelsBot', channelsBot);
+  console.log('🚀 ~ file: dydu.js ~ line 76 ~ getBotInfo ~ overridedBot', overridedBot);
 
   console.log('------------ LOADED BOT INFO ------------');
-  console.log(`BOT_ID: ${mergedBot?.id}`);
-  console.log(`SERVER: ${mergedBot?.server}`);
-  console.log(`BACKUP SERVER: ${mergedBot?.backUpServer}`);
+  console.log(`BOT_ID: ${overridedBot?.id}`);
+  console.log(`SERVER: ${overridedBot?.server}`);
+  console.log(`BACKUP SERVER: ${overridedBot?.backUpServer}`);
   console.log('-----------------------------------------');
 
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
     {},
-    channelsBot ? channelsBot : botData,
+    overridedBot,
     (({ backUpServer, bot: id, server }) => ({
       ...(id && { id }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
+
+  console.log('🚀 ~ file: dydu.js ~ line 98 ~ getBotInfo ~ BOT', BOT);
 
   Local.set(Local.names.botId, BOT.id);
 
