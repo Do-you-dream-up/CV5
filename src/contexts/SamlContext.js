@@ -19,7 +19,8 @@ export const SamlProvider = ({ children }) => {
   const relayState = JSON.stringify({
     redirection: encodeURI(window.location.href),
     bot: Local.get(Local.names.botId),
-  });
+  }).replaceAll(`"`, `'`);
+  // Added replace for double to single quotes besoin server parse it wrong and double it.
 
   const checkSession = () => {
     try {
