@@ -78,9 +78,9 @@ let BOT, protocol, API;
   console.log('🚀 ~ file: dydu.js ~ line 71 ~ getBotInfo ~ botData', botData);
 
   console.log('------------ LOADED BOT INFO ------------');
-  console.log(`------------${mergedBot?.id}-------------`);
-  console.log(`------------${mergedBot?.server}---------`);
-  console.log(`------------${mergedBot?.backUpServer}---`);
+  console.log(`BOT_ID: ${mergedBot?.id}`);
+  console.log(`SERVER: ${mergedBot?.server}`);
+  console.log(`BACKUP SERVER: ${mergedBot?.backUpServer}`);
   console.log('-----------------------------------------');
 
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
