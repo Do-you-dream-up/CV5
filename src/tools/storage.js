@@ -69,6 +69,7 @@ export class Session {
 export class Cookie {
   static names = {
     locale: 'dydu.locale',
+    samlEnable: 'dydu.saml.enable',
   };
 
   static duration = {
@@ -276,7 +277,7 @@ export class Local {
   static saml = Object.create({
     save: (data) => localStorage.setItem(Local.names.saml, data),
     load: () => localStorage.getItem(Local.names.saml) || null,
-    remove: () => localStorage.removeItem(Local.names.livechat),
+    remove: () => localStorage.removeItem(Local.names.saml),
   });
 
   static viewMode = Object.create({
@@ -286,6 +287,7 @@ export class Local {
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
   });
+
   static visit = Object.create({
     getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
     load: (keyString = '') => {

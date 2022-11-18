@@ -1,8 +1,10 @@
 /* eslint-disable */
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import LivechatPayload from '../LivechatPayload';
+import { TUNNEL_MODE } from '../../contexts/LivechatContext';
 
 let onOperatorWriting = null;
 let displayResponse = null;
@@ -162,7 +164,7 @@ export default function useDyduPolling() {
     isConnected,
     isRunning,
     isAvailable,
-    mode: TUNNEL_MODE.websocket,
+    mode: TUNNEL_MODE.polling,
     open,
     send,
     sendSurvey,

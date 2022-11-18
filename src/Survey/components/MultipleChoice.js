@@ -6,8 +6,13 @@ import Field from '../Field';
 
 export default function MultipleChoice({ field }) {
   const content = useMemo(() => field.renderChildren(), [field]);
-
-  return <FieldBlock field={field}>{content}</FieldBlock>;
+  const multipleChoiceLabel = useMemo(() => field.getLabel(), [field]);
+  return (
+    <div>
+      <p className={'query'}>{multipleChoiceLabel}</p>
+      <FieldBlock field={field}>{content}</FieldBlock>
+    </div>
+  );
 }
 
 MultipleChoice.propTypes = {

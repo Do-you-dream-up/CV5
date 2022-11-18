@@ -85,7 +85,8 @@ export function DialogProvider({ children }) {
   }, [pushrules]);
 
   useEffect(() => {
-    if (pushrulesConfigActive) triggerPushRule();
+    const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
+    if (canTriggerPushRules) triggerPushRule();
   }, [triggerPushRule, pushrulesConfigActive]);
 
   const add = useCallback(
@@ -152,7 +153,7 @@ export function DialogProvider({ children }) {
   }, []);
 
   const addResponse = useCallback(
-    (response) => {
+    (response = {}) => {
       setLastResponse(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
       const {

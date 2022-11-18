@@ -137,12 +137,14 @@ export function EventsProvider({ children }) {
     <EventsContext.Provider
       children={children}
       value={{
+        isChatboxLoadedAndReady,
         hasAfterLoadBeenCalled,
         onAppReady,
         onChatboxLoaded,
         onNewMessage,
         onEvent,
         event,
+        chatboxRef,
       }}
     />
   );

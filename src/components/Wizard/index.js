@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from 'react';
+
+import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { Local } from '../../tools/storage';
-import Button from '../Button';
 import WizardField from '../WizardField';
+import { setSamlEnableCookie } from '../../tools/saml';
 import useStyles from './styles';
 
 /**
@@ -14,6 +16,7 @@ export default function Wizard() {
 
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
+    setSamlEnableCookie(data?.saml?.enable);
   };
 
   useEffect(() => {

@@ -1,8 +1,12 @@
-import axios from 'axios';
-import React from 'react';
+import { hasWizard, isLoadedFromChannels } from './wizard';
+
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
-import json from './configuration.json';
 import { Local } from './storage';
+// import { Local } from './storage';
+import React from 'react';
+import axios from 'axios';
+import { axiosConfigNoCache } from './axios';
+import json from './configuration.json';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -20,9 +24,10 @@ export const configuration = new (class Configuration {
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
-    return axios.get(path).then(({ data }) => {
+    return axios.get(path, axiosConfigNoCache).then(({ data }) => {
       const fromStorage = Local.get(Local.names.wizard);
-      this.configuration = fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+      this.configuration =
+        (isLoadedFromChannels() || hasWizard()) && fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
       return this.configuration;
     });
   };
