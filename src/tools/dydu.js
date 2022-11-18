@@ -72,11 +72,7 @@ let BOT, protocol, API;
     backUpServer: getBackUpServerUrl(data),
   };
 
-  const overridedBot = { ...botData, ...channelsBot };
-
-  console.log('🚀 ~ file: dydu.js ~ line 71 ~ getBotInfo ~ botData', botData);
-  console.log('🚀 ~ file: dydu.js ~ line 104 ~ getBotInfo ~ channelsBot', channelsBot);
-  console.log('🚀 ~ file: dydu.js ~ line 76 ~ getBotInfo ~ overridedBot', overridedBot);
+  const overridedBot = channelsBot?.id && channelsBot?.server ? channelsBot : botData;
 
   console.log('------------ LOADED BOT INFO ------------');
   console.log(`BOT_ID: ${overridedBot?.id}`);
