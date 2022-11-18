@@ -1,8 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
+import c from 'classnames';
 import useStyles from './styles';
 
 // eslint-disable-next-line react/display-name
