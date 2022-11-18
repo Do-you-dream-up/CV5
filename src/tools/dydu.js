@@ -17,6 +17,7 @@ import {
 
 import Bowser from 'bowser';
 import axios from 'axios';
+import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
 import configuration from '../../public/override/configuration.json';
 import debounce from 'debounce-promise';
@@ -39,11 +40,36 @@ const getUrl = window.location.href;
 let BOT, protocol, API;
 
 (async function getBotInfo() {
-  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
+
+  const getBackUpServerUrl = (botConf = {}) => {
+    const rootUrl = {
+      app1: 'app1',
+      app2: 'app2',
+    };
+
+    const getDefaultBackupServerUrl = () => botConf?.backUpServer;
+
+    const getApp1BackUpServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
+    const getApp2BackUpServerUrl = () => botConf?.server.replace(rootUrl.app2, rootUrl.app1);
+
+    const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
+    const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
+
+    if (isApp1) {
+      return getApp1BackUpServerUrl();
+    }
+
+    if (isApp2) {
+      return getApp2BackUpServerUrl();
+    }
+
+    return getDefaultBackupServerUrl();
+  };
 
   const botData = {
     ...data,
-    backUpServer: getBackupServerUrl(data),
+    backUpServer: getBackUpServerUrl(data),
   };
 
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
@@ -57,6 +83,7 @@ let BOT, protocol, API;
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
+  console.log('🚀 ~ file: dydu.js ~ line 87 ~ getBotInfo ~ BOT', BOT);
 
   protocol = 'https';
 
@@ -64,7 +91,7 @@ let BOT, protocol, API;
     maxRetry: 2,
     timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: `${protocol}://${getBackupServerUrl(data)}/servlet/api/`,
+    backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
     axiosConf: {
       headers: {
         Accept: 'application/json',
@@ -73,27 +100,6 @@ let BOT, protocol, API;
     },
   });
 })();
-
-const getBackupServerUrl = (botConf = {}) => {
-  const rootUrl = {
-    app1: 'app1',
-    app2: 'app2',
-  };
-
-  const getApp1BackupServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
-  const getDefaultBackupServerUrl = () => botConf?.backupServer || getApp1BackupServerUrl();
-
-  const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
-  const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
-
-  if (isApp1) {
-    return getApp1BackupServerUrl();
-  }
-  if (isApp2) {
-    return getApp1BackupServerUrl();
-  }
-  return getDefaultBackupServerUrl();
-};
 
 const variables = {};
 
@@ -156,6 +162,7 @@ export default new (class Dydu {
         return data;
       })
       .catch(() => {
+        if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
         API.defaults.baseURL =
           API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
             ? `https://${BOT.server}/servlet/api/`
