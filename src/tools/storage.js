@@ -108,6 +108,7 @@ export class Local {
     dragon: 'dydu.dragon',
     fontSize: 'dydu.fontSize',
     gdpr: 'dydu.gdpr',
+    botId: 'dydu.botId',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',

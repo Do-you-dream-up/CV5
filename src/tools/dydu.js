@@ -84,6 +84,8 @@ let BOT, protocol, API;
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
+  Local.set(Local.names.botId, BOT.id);
+
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
@@ -782,12 +784,13 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   const redirectAndRenewAuth = (values) => {
+    const relayState = JSON.stringify({ redirection: encodeURI(window.location.href), bot: BOT.id });
     try {
       renewAuth(atob(values?.auth));
-      window.location.href = atob(values?.redirection_url);
+      window.location.href = `${atob(values?.redirection_url)}&RelayState=${relayState}`;
     } catch {
       renewAuth(values?.auth);
-      window.location.href = values?.redirection_url;
+      window.location.href = `${values?.redirection_url}&RelayState=${relayState}`;
     }
   };
 

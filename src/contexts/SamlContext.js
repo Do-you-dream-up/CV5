@@ -16,6 +16,11 @@ export const SamlProvider = ({ children }) => {
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
 
+  const relayState = JSON.stringify({
+    redirection: encodeURI(window.location.href),
+    bot: Local.get(Local.names.botId),
+  });
+
   const checkSession = () => {
     try {
       new Promise((resolve) => {
@@ -27,7 +32,7 @@ export const SamlProvider = ({ children }) => {
               const auth = atob(values?.auth);
               setSaml2Info(auth);
               Local.saml.save(auth);
-              setRedirectUrl(atob(values?.redirection_url));
+              setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
               resolve(true);
             } catch {
               console.log('valid saml token');
