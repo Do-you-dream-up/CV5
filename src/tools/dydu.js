@@ -92,8 +92,6 @@ let BOT, protocol, API;
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
-  console.log('🚀 ~ file: dydu.js ~ line 98 ~ getBotInfo ~ BOT', BOT);
-
   Local.set(Local.names.botId, BOT.id);
 
   protocol = 'https';
