@@ -72,6 +72,17 @@ let BOT, protocol, API;
     backUpServer: getBackUpServerUrl(data),
   };
 
+  const mergedBot = { ...botData, ...channelsBot };
+
+  console.log('🚀 ~ file: dydu.js ~ line 104 ~ getBotInfo ~ channelsBot', channelsBot);
+  console.log('🚀 ~ file: dydu.js ~ line 71 ~ getBotInfo ~ botData', botData);
+
+  console.log('------------ LOADED BOT INFO ------------');
+  console.log(`------------${mergedBot?.id}-------------`);
+  console.log(`------------${mergedBot?.server}---------`);
+  console.log(`------------${mergedBot?.backUpServer}---`);
+  console.log('-----------------------------------------');
+
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
