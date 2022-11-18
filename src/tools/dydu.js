@@ -26,7 +26,6 @@ import { getSamlEnableStatus } from './saml';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
-console.log('🚀 ~ file: dydu.js ~ line 29 ~ channelsBot', channelsBot);
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
 
@@ -73,8 +72,6 @@ let BOT, protocol, API;
     backUpServer: getBackUpServerUrl(data),
   };
 
-  console.log('🚀 ~ file: dydu.js ~ line 71 ~ getBotInfo ~ botData', botData);
-
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
@@ -86,7 +83,6 @@ let BOT, protocol, API;
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
-  console.log('🚀 ~ file: dydu.js ~ line 87 ~ getBotInfo ~ BOT', BOT);
 
   protocol = 'https';
 
@@ -170,7 +166,6 @@ export default new (class Dydu {
           API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
             ? `https://${BOT.server}/servlet/api/`
             : `https://${BOT.backUpServer}/servlet/api/`;
-        console.log('🚀 ~ file: dydu.js ~ line 169 ~ Dydu ~ API.defaults.baseURL', API.defaults.baseURL);
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));

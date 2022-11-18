@@ -16,6 +16,18 @@ export const configuration = new (class Configuration {
     this.configuration = {};
   }
 
+  getConfigFromStorage = () => Local.get(Local.names.wizard);
+
+  triggerLoadingLogs = () => {
+    isLoadedFromChannels() && console.log('---- CHATBOX LOADED FROM CHANNELS ----');
+    isLoadedFromChannels() && console.log('--------------------------------------');
+    hasWizard() && console.log('---- DYDUPANEL ACTIVE ----');
+    hasWizard() && console.log('--------------------------------------');
+    (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
+      ? console.log('---- BOT CONFIGURATION LOADED FROM LOCALSTORAGE  ----')
+      : console.log('---- BOT CONFIGURATION LOADED FROM CONFIGURATION.JSON  ----');
+  };
+
   /**
    * Fetch the configuration JSON and save its content.
    *
@@ -25,13 +37,11 @@ export const configuration = new (class Configuration {
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
-      const fromStorage = Local.get(Local.names.wizard);
-      console.log(
-        '🚀 ~ file: configuration.js ~ line 31 ~ Configuration ~ returnaxios.get ~ isLoadedFromChannels()',
-        isLoadedFromChannels(),
-      );
+      this.triggerLoadingLogs();
       this.configuration =
-        (isLoadedFromChannels() || hasWizard()) && fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+        (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
+          ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
+          : data;
       return this.configuration;
     });
   };
