@@ -16,10 +16,11 @@ export const SamlProvider = ({ children }) => {
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [redirectUrl, setRedirectUrl] = useState(null);
 
-  const relayState = JSON.stringify({
-    redirection: encodeURI(window.location.href),
-    bot: Local.get(Local.names.botId),
-  }).replaceAll(`"`, `'`);
+  const relayState = encodeURI(window.location.href);
+  // const relayState = JSON.stringify({
+  //   redirection: encodeURI(window.location.href),
+  //   bot: Local.get(Local.names.botId),
+  // }).replaceAll(`"`, `'`);
   // Added replace for double to single quotes besoin server parse it wrong and double it.
 
   const checkSession = () => {
