@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -17,10 +18,12 @@ import {
 
 import Bowser from 'bowser';
 import axios from 'axios';
+import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
 import configuration from '../../public/override/configuration.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
+import { getSamlEnableStatus } from './saml';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -38,26 +41,59 @@ const getUrl = window.location.href;
 let BOT, protocol, API;
 
 (async function getBotInfo() {
-  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`);
+  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
+
+  const getBackUpServerUrl = (botConf = {}) => {
+    const rootUrl = {
+      app1: 'app1',
+      app2: 'app2',
+    };
+
+    const getDefaultBackupServerUrl = () => botConf?.backUpServer;
+
+    const getApp1BackUpServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
+    const getApp2BackUpServerUrl = () => botConf?.server.replace(rootUrl.app2, rootUrl.app1);
+
+    const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
+    const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
+
+    if (isApp1) {
+      return getApp1BackUpServerUrl();
+    }
+
+    if (isApp2) {
+      return getApp2BackUpServerUrl();
+    }
+
+    return getDefaultBackupServerUrl();
+  };
 
   const botData = {
     ...data,
-    backUpServer: getBackupServerUrl(data),
+    backUpServer: getBackUpServerUrl(data),
   };
+
+  const overridedBot = channelsBot?.id && channelsBot?.server ? channelsBot : botData;
+
+  console.log('------------ LOADED BOT INFO ------------');
+  console.log(`BOT_ID: ${overridedBot?.id}`);
+  console.log(`SERVER: ${overridedBot?.server}`);
+  console.log(`BACKUP SERVER: ${overridedBot?.backUpServer}`);
+  console.log('-----------------------------------------');
 
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
     {},
-    channelsBot ? channelsBot : botData,
-    (({ backUpServer, bot: id, server }) => {
-      return {
-        ...(id && { id }),
-        ...(server && { server }),
-        ...(backUpServer && { backUpServer }),
-      };
-    })(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
+    overridedBot,
+    (({ backUpServer, bot: id, server }) => ({
+      ...(id && { id }),
+      ...(server && { server }),
+      ...(backUpServer && { backUpServer }),
+    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
+
+  Local.set(Local.names.botId, BOT.id);
 
   protocol = 'https';
 
@@ -65,7 +101,7 @@ let BOT, protocol, API;
     maxRetry: 2,
     timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: `${protocol}://${getBackupServerUrl(data)}/servlet/api/`,
+    backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
     axiosConf: {
       headers: {
         Accept: 'application/json',
@@ -74,32 +110,6 @@ let BOT, protocol, API;
     },
   });
 })();
-
-const getSamlEnableStatus = () => {
-  const localConfig = Local.get(Local.names.wizard);
-  return localConfig?.saml?.enable || configuration?.saml.enable;
-};
-
-const getBackupServerUrl = (botConf = {}) => {
-  const rootUrl = {
-    app1: 'app1',
-    app2: 'app2',
-  };
-
-  const getApp1BackupServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
-  const getDefaultBackupServerUrl = () => botConf?.backupServer || getApp1BackupServerUrl();
-
-  const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
-  const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
-
-  if (isApp1) {
-    return getApp1BackupServerUrl();
-  }
-  if (isApp2) {
-    return getApp1BackupServerUrl();
-  }
-  return getDefaultBackupServerUrl();
-};
 
 const variables = {};
 
@@ -163,6 +173,7 @@ export default new (class Dydu {
         return data;
       })
       .catch(() => {
+        if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
         API.defaults.baseURL =
           API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
             ? `https://${BOT.server}/servlet/api/`
@@ -783,12 +794,14 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   const redirectAndRenewAuth = (values) => {
+    const relayState = encodeURI(window.location.href);
+    // const relayState = JSON.stringify({ redirection: encodeURI(window.location.href), bot: BOT.id });
     try {
       renewAuth(atob(values?.auth));
-      window.location.href = atob(values?.redirection_url);
+      window.location.href = `${atob(values?.redirection_url)}&RelayState=${relayState}`;
     } catch {
       renewAuth(values?.auth);
-      window.location.href = values?.redirection_url;
+      window.location.href = `${values?.redirection_url}&RelayState=${relayState}`;
     }
   };
 
@@ -804,7 +817,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    response?.data && configuration?.saml?.enable && samlRenewOrReject(response?.data);
+    response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
     API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
     return response;
   };

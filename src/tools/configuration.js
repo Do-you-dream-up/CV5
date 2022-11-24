@@ -1,8 +1,12 @@
-import axios from 'axios';
-import React from 'react';
+import { hasWizard, isLoadedFromChannels } from './wizard';
+
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
-import json from './configuration.json';
 import { Local } from './storage';
+// import { Local } from './storage';
+import React from 'react';
+import axios from 'axios';
+import { axiosConfigNoCache } from './axios';
+import json from './configuration.json';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -12,6 +16,18 @@ export const configuration = new (class Configuration {
     this.configuration = {};
   }
 
+  getConfigFromStorage = () => Local.get(Local.names.wizard);
+
+  triggerLoadingLogs = () => {
+    isLoadedFromChannels() && console.log('---- CHATBOX LOADED FROM CHANNELS ----');
+    isLoadedFromChannels() && console.log('--------------------------------------');
+    hasWizard() && console.log('---- DYDUPANEL ACTIVE ----');
+    hasWizard() && console.log('--------------------------------------');
+    (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
+      ? console.log('---- BOT CONFIGURATION LOADED FROM LOCALSTORAGE  ----')
+      : console.log('---- BOT CONFIGURATION LOADED FROM CONFIGURATION.JSON  ----');
+  };
+
   /**
    * Fetch the configuration JSON and save its content.
    *
@@ -20,9 +36,12 @@ export const configuration = new (class Configuration {
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
-    return axios.get(path).then(({ data }) => {
-      const fromStorage = Local.get(Local.names.wizard);
-      this.configuration = fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+    return axios.get(path, axiosConfigNoCache).then(({ data }) => {
+      this.triggerLoadingLogs();
+      this.configuration =
+        (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
+          ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
+          : data;
       return this.configuration;
     });
   };
