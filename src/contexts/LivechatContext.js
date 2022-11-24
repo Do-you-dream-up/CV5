@@ -1,12 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useDialog } from './DialogContext';
-import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
-import dydu from '../tools/dydu';
-import useDyduPolling from '../tools/hooks/useDyduPolling';
-import { Local } from '../tools/storage';
-import useQueue from '../tools/hooks/useQueue';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
+import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
+
+import { Local } from '../tools/storage';
+import PropTypes from 'prop-types';
+import dydu from '../tools/dydu';
+import { useDialog } from './DialogContext';
+import useDyduPolling from '../tools/hooks/useDyduPolling';
+import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
+import useQueue from '../tools/hooks/useQueue';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
@@ -25,7 +27,7 @@ const containsStartLivechatSpecialAction = (response) => response?.specialAction
 const LIVECHAT_ID_LISTENER = 'listener/livechat';
 
 export function LivechatProvider({ children }) {
-  const [tunnelList] = useState([useDyduPolling()]);
+  const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
@@ -56,27 +58,8 @@ export function LivechatProvider({ children }) {
     setTunnel(tunnel);
   }, []);
 
-  const onFailOpenTunnel = useCallback(
-    (failedTunnel, err, configuration) => {
-      console.warn(err);
-      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
-      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
-      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
-    },
-    [onSuccessOpenTunnel, tunnelList],
-  );
-
-  const endLivechat = useCallback(() => {
-    console.warn('ending livechat...');
-    setIsWebsocket(false);
-    setIsLivechatOn(false);
-    setTunnel(null);
-  }, []);
-
-  const startLivechat = useCallback(() => {
-    const _tunnel = findFirstAvailableTunnelInList(tunnelList);
-    const tunnelInitialConfig = {
+  const tunnelInitialConfig = useMemo(() => {
+    return {
       ...lastResponse,
       api: dydu,
       endLivechat,
@@ -86,21 +69,57 @@ export function LivechatProvider({ children }) {
       showAnimationOperatorWriting,
       handleSurvey: showSurvey,
     };
-    _tunnel
-      .open(tunnelInitialConfig)
-      .then(() => onSuccessOpenTunnel(_tunnel))
-      .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
   }, [
-    tunnelList,
     lastResponse,
+    dydu,
+    onFailOpenTunnel,
     endLivechat,
     displayResponseText,
     displayNotification,
-    onFailOpenTunnel,
     showAnimationOperatorWriting,
     showSurvey,
-    onSuccessOpenTunnel,
   ]);
+
+  const onFailOpenTunnel = useCallback(
+    (failedTunnel, err, configuration) => {
+      console.warn(err);
+      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
+      failedTunnel = failedTunnel || tunnel;
+      configuration = configuration || tunnelInitialConfig;
+      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
+      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
+      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+    },
+    [onSuccessOpenTunnel, tunnelList, tunnel],
+  );
+
+  const endLivechat = useCallback(() => {
+    console.warn('ending livechat...');
+    setIsWebsocket(false);
+    setIsLivechatOn(false);
+    setTunnel(null);
+  }, []);
+
+  const startLivechat = useCallback(
+    (tunnel = null) => {
+      const _tunnel = tunnel || findFirstAvailableTunnelInList(tunnelList);
+      _tunnel
+        .open(tunnelInitialConfig)
+        .then(() => onSuccessOpenTunnel(_tunnel))
+        .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
+    },
+    [
+      tunnelList,
+      lastResponse,
+      endLivechat,
+      displayResponseText,
+      displayNotification,
+      onFailOpenTunnel,
+      showAnimationOperatorWriting,
+      showSurvey,
+      onSuccessOpenTunnel,
+    ],
+  );
 
   const sendSurvey = useCallback(
     (surveyResponse) => {
@@ -142,8 +161,15 @@ export function LivechatProvider({ children }) {
 
   const send = useCallback(
     (userInput) => {
-      if (!isDefined(tunnel)) put(userInput);
-      else tunnel?.send(userInput);
+      if (!isDefined(tunnel)) return put(userInput);
+
+      const _tunnel = findFirstAvailableTunnelInList(tunnelList);
+      const isTunnelStillAvailable = tunnel.mode === _tunnel.mode;
+      if (isTunnelStillAvailable) {
+        tunnel?.send(userInput);
+      } else {
+        startLivechat(_tunnel);
+      }
     },
     [put, tunnel],
   );

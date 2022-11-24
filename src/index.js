@@ -12,10 +12,11 @@ import ReactDOM from 'react-dom';
 import { SamlProvider } from './contexts/SamlContext';
 import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
+import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
-import { prefixCssSelectors } from './tools/css';
+import scope from 'scope-css';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
@@ -55,17 +56,19 @@ const renderApp = (theme) =>
 configuration.initialize().then((configuration) => {
   _configuration = configuration;
   anchor = getRootDiv(configuration);
+
   if (anchor) {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`).then((res) => {
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then((res) => {
       const data = res && res.data ? res.data : {};
       data.palette.primary.main = css ? css.main : data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });
-    Axios.get(`${process.env.PUBLIC_URL}override/style.css`).then((res) => {
+
+    Axios.get(`${process.env.PUBLIC_URL}override/style.css`, axiosConfigNoCache).then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
-        style.textContent = prefixCssSelectors(res.data, `#${configuration.root}`);
+        style.textContent = scope(res.data, `#${configuration.root}`);
         document.head?.append(style);
       }
     });

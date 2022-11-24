@@ -25,7 +25,7 @@ export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useContext(ConfigurationContext);
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { disabled, locked, placeholder, qualification } = useContext(DialogContext);
+  const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 
   const classes = useStyles({ configuration });
   const [counter = 100, setCounter] = useState(configuration.input.maxLength);
@@ -35,6 +35,8 @@ export default function Input({ onRequest, onResponse }) {
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const qualification =
+    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -53,10 +55,6 @@ export default function Input({ onRequest, onResponse }) {
     }
     setIncrement(incrementToUpdateRefOnRender++);
   }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
-
-  useEffect(() => {
-    Local.viewQualification.save(qualification);
-  }, [qualification]);
 
   const onChange = (event) => {
     setTyping(true);
@@ -93,9 +91,13 @@ export default function Input({ onRequest, onResponse }) {
         ...properties,
       };
 
+      const textareaId = 'dydu-textarea';
       return (
         <div className={c('dydu-input-field', classes.field)}>
-          <textarea {...data} disabled={prompt || locked} />
+          <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
+            textarea
+          </label>
+          <textarea {...data} disabled={prompt || locked} id={textareaId} />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>
@@ -117,7 +119,7 @@ export default function Input({ onRequest, onResponse }) {
       }
     },
     // eslint-disable-next-line
-    [isLivechatOn, send, qualification],
+    [isLivechatOn, send],
   );
 
   const submit = useCallback(
@@ -131,20 +133,20 @@ export default function Input({ onRequest, onResponse }) {
       }
       setTyping(false);
     },
-    [event, onRequest, reset, sendInput, qualification],
+    [event, onRequest, reset, sendInput],
   );
 
   const suggest = useCallback(
     (text) => {
       text = text.trim();
-      if (text && suggestionsLimit > 0) {
+      if (text && autoSuggestionActive) {
         dydu.suggest(text).then((suggestions) => {
           suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
         });
       }
     },
-    [suggestionsLimit],
+    [suggestionsLimit, autoSuggestionActive],
   );
 
   useEffect(() => {
@@ -185,11 +187,12 @@ export default function Input({ onRequest, onResponse }) {
       type: 'submit',
       variant: 'icon',
       title: actionSend,
+      id: 'dydu-submit-action',
     },
   ];
 
   return (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}

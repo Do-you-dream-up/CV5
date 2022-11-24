@@ -306,9 +306,10 @@ export default function Interaction({
           { [classes.barf]: carousel && bubbles.length },
           className,
         )}
+        id="dydu-interaction"
       >
         {_Avatar}
-        <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        <div className={c('dydu-interaction-wrapper', classes.wrapper)} id="dydu-interaction-wrapper">
           {EmiterName}
           {ListBubble}
           {_Loader}
@@ -340,8 +341,9 @@ Interaction.propTypes = {
 };
 
 const Writing = () => {
+  const { configuration } = useContext(ConfigurationContext);
   // eslint-disable
-  const avatarImageUrl = useMemo(() => asset('dydu-logo.svg'), []);
+  const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
 
   return (
     <Scroll>

@@ -1,206 +1,211 @@
 {
-    "general": {
-        "labelChatbot": "Fenêtre du chatbot"
-    },
-    "banner": {
-        "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",
-        "more": "En savoir plus",
-        "ok": "Merci"
-    },
-    "bubble": {
-        "sidebar": {
-            "more": "Plus",
-            "less": "Moins"
+  "general": {
+    "labelChatbot": "Fenêtre du chatbot"
+  },
+  "banner": {
+    "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",
+    "more": "En savoir plus",
+    "ok": "Merci"
+  },
+  "bubble": {
+    "sidebar": {
+      "more": "Plus",
+      "less": "Moins"
+    }
+  },
+  "carousel": {
+    "next": "Suivant",
+    "previous": "Précédent"
+  },
+  "close": {
+    "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
+    "no": "Annuler",
+    "title": "Faire disparaitre le chatbot ?",
+    "yes": "Fermer"
+  },
+  "contacts": {
+    "phone": {
+      "title": "Téléphones",
+      "list": [
+        {
+          "title": "Support Commercial",
+          "phone": "08.00.50.00.94"
+        },
+        {
+          "title": "Support Clientèle",
+          "phone": "02.78.49.06.28"
         }
+      ]
     },
-    "carousel": {
-        "next": "Suivant",
-        "previous": "Précédent"
-    },
-    "close": {
-        "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
-        "no": "Annuler",
-        "title": "Faire disparaitre le chatbot ?",
-        "yes": "Fermer"
-    },
-    "contacts": {
-        "phone": {
-            "title": "Téléphones",
-            "list": [{
-                    "title": "Support Commerciale",
-                    "phone": "08.00.50.00.94"
-                },
-                {
-                    "title": "Support Clientèle",
-                    "phone": "02.78.49.06.28"
-                }
-            ]
-        },
-        "email": {
-            "title": "Emails",
-            "list": [{
-                "title": "Une question? Une réclamation?",
-                "email": "support@chatbot.com"
-            }]
-        },
-        "socialNetwork": {
-            "title": "Réseaux Sociaux",
-            "list": [{
-                "title": "Linkedin",
-                "socialText": "linkedin.com/company/dydu/",
-                "socialUrl": "https://www.linkedin.com/company/dydu/"
-            }]
+    "email": {
+      "title": "Emails",
+      "list": [
+        {
+          "title": "Une question? Une réclamation?",
+          "email": "support@chatbot.com"
         }
+      ]
     },
-    "exportConv": {
-        "get": {
-            "error": "Désolé, il y a eu une erreur avec l'export.",
-            "success": "La conversation a bien été envoyée par email."
-        },
-        "welcome": "Pour recevoir la conversation, veuillez entrer votre adresse email ci-dessous : "
-    },
-    "feedback": {
-        "choices": [
-            "Je n'ai pas compris votre question",
-            "Ma réponse n'était pas claire",
-            "J'ai bien compris mais la solution proposée ne vous satisfait pas"
-        ],
-        "comment": {
-            "help": "Avez-vous un commentaire ?",
-            "placeholder": "Saisissez votre commentaire...",
-            "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
-        },
-        "question": "Je suis désolé de ne pas avoir su répondre à votre demande. Pouvez-vous nous dire pourquoi ?",
-        "vote": {
-            "negative": "Aide inutile",
-            "positive": "Aide utile",
-            "thanks": "Merci pour votre retour!"
+    "socialNetwork": {
+      "title": "Réseaux Sociaux",
+      "list": [
+        {
+          "title": "Linkedin",
+          "socialText": "linkedin.com/company/dydu/",
+          "socialUrl": "https://www.linkedin.com/company/dydu/"
         }
+      ]
+    }
+  },
+  "exportConv": {
+    "get": {
+      "error": "Désolé, il y a eu une erreur avec l'export.",
+      "success": "La conversation a bien été envoyée par email."
     },
-    "footer": {
-        "expand": "Ouvrir sous-menu",
-        "menu": {
-            "close": "Fermer",
-            "print": "Imprimer la conversation",
-            "email": "Exporter la conversation par email",
-            "gdpr": "RGPD (export, suppression)",
-            "spaces": "Changer d'espace de consultation",
-            "title": "Vos fonctionnalités"
-        },
-        "rosetta": {
-            "en": "English",
-            "fi": "suomi",
-            "fr": "Français",
-            "es": "Español",
-            "de": "Deutsch",
-            "it": "Italiano",
-            "nl": "Dutch",
-            "pt": "Português",
-            "pl": "Polski",
-            "ro": "Română"
-        },
-        "translate": "Langages"
+    "welcome": "Pour recevoir la conversation, veuillez entrer votre adresse email ci-dessous : "
+  },
+  "feedback": {
+    "choices": [
+      "Je n'ai pas compris votre question",
+      "Ma réponse n'était pas claire",
+      "J'ai bien compris mais la solution proposée ne vous satisfait pas"
+    ],
+    "comment": {
+      "help": "Avez-vous un commentaire ?",
+      "placeholder": "Saisissez votre commentaire...",
+      "thanks": "Vous pouvez compter sur moi pour faire remonter l'information !"
+    },
+    "question": "Je suis désolé de ne pas avoir su répondre à votre demande. Pouvez-vous nous dire pourquoi ?",
+    "vote": {
+      "negative": "Aide inutile",
+      "positive": "Aide utile",
+      "thanks": "Merci pour votre retour!"
+    }
+  },
+  "footer": {
+    "expand": "Ouvrir sous-menu",
+    "menu": {
+      "close": "Fermer",
+      "print": "Imprimer la conversation",
+      "email": "Exporter la conversation par email",
+      "gdpr": "RGPD (export, suppression)",
+      "spaces": "Changer d'espace de consultation",
+      "title": "Vos fonctionnalités"
+    },
+    "rosetta": {
+      "en": "English",
+      "fi": "suomi",
+      "fr": "Français",
+      "es": "Español",
+      "de": "Deutsch",
+      "it": "Italiano",
+      "nl": "Dutch",
+      "pt": "Português",
+      "pl": "Polski",
+      "ro": "Română"
+    },
+    "translate": "Langages"
+  },
+  "form": {
+    "cancel": "Fermer",
+    "submit": "Envoyer"
+  },
+  "gdpr": {
+    "disclaimer": {
+      "title": "Données personnelles",
+      "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site.<br/><br/> Les informations que vous nous transmettez permettent de traiter votre demande.<br/><br/> Cependant, aucune donnée personnelle ou sensible pouvant permettre votre identification ne doit être communiquée dans cet outil (comme par exemple des informations sur votre état de santé, vos coordonnées bancaires, vos opinions ou convictions personnelles).</p>",
+      "cancel": "Je refuse",
+      "ok": "J'accepte"
     },
     "form": {
-        "cancel": "Fermer",
-        "submit": "Envoyer"
+      "forget": {
+        "description": "Effacer mes données personnelles"
+      },
+      "get": {
+        "description": "Exporter mes données personnelles"
+      }
     },
-    "gdpr": {
-        "disclaimer": {
-            "title": "Données personnelles",
-            "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site.<br/><br/> Les informations que vous nous transmettez permettent de traiter votre demande.<br/><br/> Cependant, aucune donnée personnelle ou sensible pouvant permettre votre identification ne doit être communiquée dans cet outil (comme par exemple des informations sur votre état de santé, vos coordonnées bancaires, vos opinions ou convictions personnelles).</p>",
-            "cancel": "Je refuse",
-            "ok": "J'accepte"
-        },
-        "form": {
-            "forget": {
-                "description": "Effacer mes données personnelles"
-            },
-            "get": {
-                "description": "Exporter mes données personnelles"
-            }
-        },
-        "get": {
-            "error": "Une erreur est survenue.",
-            "success": "Votre demande a été envoyée."
-        }
-    },
-    "header": {
-        "actions": {
-            "close": "Fermer",
-            "expand": "Agrandir la fenêtre de discussion",
-            "minimize": "Réduire la fenêtre de discussion",
-            "more": "Plus d'options",
-            "shrink": "Diminuer",
-            "tests": "Tests",
-            "fontDecrease": "Réduire police",
-            "fontIncrease": "Agrandir police"
-        },
-        "title": "Besoin d'aide ?"
-    },
-    "input": {
-        "actions": {
-            "send": "Envoie",
-            "record": {
-                "pause": "Pause",
-                "play": "Lire",
-                "replay": "Relire",
-                "start": "Début de l'enregistrement",
-                "stop": "Fin de l'enregistrement"
-              }
-          },
-          "placeholder": "Tapez votre message ici"
-    },
-    "interaction": {
-        "languageChange": "A partir de maintenant, je vous répondrai en",
-        "spaceChange": "Vous êtes sur cet espace de consultation:"
-    },
-    "onboarding": {
-        "next": "Suivant",
-        "previous": "Précédent",
-        "skip": "Passer le onboarding",
-        "steps": [
-            {
-                "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
-                "title": "Quelques astuces"
-            },
-            {
-                "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus.</p>",
-                "title": "Astuces 2"
-            },
-            {
-                "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante.</p>",
-                "title": "Astuces 3"
-            } 
-        ]
-    },
-    "promptEmail": {
-        "placeholder": "Saisissez votre email..."
-    },
-    "screenReader":{
-        "chatbot": "bot dit",
-        "me": "moi dit",
-        "say": "dit"
-    },
-    "spaces": {
-        "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
-    },
-    "tabs": {
-        "contacts": "Contacts",
-        "dialog": "Conversation"
-    },
-    "teaser": {
-        "title": "Besoin d'aide ?",
-        "mouseover": "Aide ici"
-    },
-    "template": {
-        "readmore": "... Lire la suite",
-        "readless": "Lire moins"
-    },
-    "top": {
-        "title": "Questions les plus posées :"
-    },
-    "qualification": {
-        "disableQualification": "A partir de maintenant, toutes vos conversations ne seront plus considérées comme test et seront comptabilisées dans les statistiques, même après que vous actualisez la page. Pour réactiver le mode de qualification, veuillez fermer l'onglet."
+    "get": {
+      "error": "Une erreur est survenue.",
+      "success": "Votre demande a été envoyée."
     }
+  },
+  "header": {
+    "actions": {
+      "close": "Fermer",
+      "expand": "Agrandir la fenêtre de discussion",
+      "minimize": "Réduire la fenêtre de discussion",
+      "more": "Plus d'options",
+      "shrink": "Diminuer",
+      "tests": "Tests",
+      "fontDecrease": "Réduire police",
+      "fontIncrease": "Agrandir police"
+    },
+    "title": "Besoin d'aide ?"
+  },
+  "input": {
+    "actions": {
+      "send": "Envoie",
+      "record": {
+        "pause": "Pause",
+        "play": "Lire",
+        "replay": "Relire",
+        "start": "Début de l'enregistrement",
+        "stop": "Fin de l'enregistrement"
+      }
+    },
+    "placeholder": "Tapez votre message ici"
+  },
+  "interaction": {
+    "languageChange": "A partir de maintenant, je vous répondrai en",
+    "spaceChange": "Vous êtes sur cet espace de consultation:"
+  },
+  "onboarding": {
+    "next": "Suivant",
+    "previous": "Précédent",
+    "skip": "Passer le onboarding",
+    "steps": [
+      {
+        "body": "<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>",
+        "title": "Quelques astuces"
+      },
+      {
+        "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus.</p>",
+        "title": "Astuces 2"
+      },
+      {
+        "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante.</p>",
+        "title": "Astuces 3"
+      }
+    ]
+  },
+  "promptEmail": {
+    "placeholder": "Saisissez votre email..."
+  },
+  "screenReader": {
+    "chatbot": "bot dit",
+    "me": "moi dit",
+    "say": "dit"
+  },
+  "spaces": {
+    "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
+  },
+  "tabs": {
+    "contacts": "Contacts",
+    "dialog": "Conversation"
+  },
+  "teaser": {
+    "title": "Besoin d'aide ?",
+    "mouseover": "Aide ici"
+  },
+  "template": {
+    "readmore": "... Lire la suite",
+    "readless": "Lire moins"
+  },
+  "top": {
+    "title": "Questions les plus posées :"
+  },
+  "qualification": {
+    "disableQualification": "A partir de maintenant, toutes vos conversations ne seront plus considérées comme test et seront comptabilisées dans les statistiques, même après que vous actualisez la page. Pour réactiver le mode de qualification, veuillez fermer l'onglet."
+  }
 }

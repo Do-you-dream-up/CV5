@@ -186,7 +186,12 @@ const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   return _recursiveBase64DecodeString(o, keylist, res);
 };
 
-export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
+export const asset = (name) => {
+  if (name.includes('base64')) {
+    return name;
+  }
+  return `${process.env.PUBLIC_URL}/assets/${name}`;
+};
 
 export const qualification =
   window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
@@ -195,4 +200,24 @@ export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };
 
+export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
+
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
+
+export const getChatboxWidth = (chatboxRef) => {
+  if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
+  const { left, right } = chatboxRef.getBoundingClientRect();
+  return Math.abs(right - left);
+};
+
+export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+  const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
+  if (error) throw new Error('getChatboxWidthTime: parameter error', time);
+  return getChatboxWidth(chatboxRef) * time;
+};
+
+export const decodeHtml = (html) => {
+  var txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+};

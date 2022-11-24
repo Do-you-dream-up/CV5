@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
+var PACKAGE = require('./package.json');
 
 module.exports = (env) => {
 
@@ -34,6 +35,7 @@ module.exports = (env) => {
     output: {
       filename: 'bundle.min.js',
       chunkLoadingGlobal: 'dydu.bliss',
+      chunkFilename: `[name].${PACKAGE.version || 'lts'}.js`,
       path: Path.resolve(__dirname, 'build'),
       publicPath:  ASSET
     },

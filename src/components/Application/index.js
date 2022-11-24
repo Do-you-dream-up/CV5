@@ -15,8 +15,8 @@ import Teaser from '../Teaser';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { findValueByKey } from '../../tools/findValueByKey';
+import { hasWizard } from '../../tools/wizard';
 import { parseString } from '../../tools/parseString';
-import qs from 'qs';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
@@ -36,7 +36,7 @@ const Wizard = React.lazy(() =>
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  *
- * Optionally render the Wizard when the `wizard` URL parameter is found.
+ * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
@@ -53,7 +53,6 @@ export default function Application() {
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
-  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
   // eslint-disable-next-line no-unused-vars
 
   let customFont = configuration.font.url;
@@ -98,7 +97,7 @@ export default function Application() {
   return (
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
-        {hasWizard && <Wizard />}
+        {hasWizard() && <Wizard />}
         <AuthProvider configuration={authConfiguration}>
           <AuthProtected enable={configuration?.oidc?.enable}>
             <DialogProvider onPushrulesDataReceived={popinChatbox}>

@@ -10,7 +10,7 @@ module.exports = env => Merge.smart(common(env), {
     static: {
       directory: Path.resolve(__dirname, 'public'),
     },
-    open: ['/?wizard'],
+    open: ['/?dydupanel'],
     client: {
       overlay: {
         errors: true,

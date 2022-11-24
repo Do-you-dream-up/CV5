@@ -1,11 +1,11 @@
 import { EventsContext, useEvent } from './EventsContext';
-import { Local, Session } from '../tools/storage';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
 import { ConfigurationContext } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
+import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
 import fetchPushrules from '../tools/pushrules';
@@ -50,7 +50,7 @@ export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onNewMessage } = useEvent();
+  const { onNewMessage, hasAfterLoadBeenCalled } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -61,18 +61,16 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
+  const [autoSuggestionActive, setAutoSuggestionActive] = useState(configuration?.suggestions?.limit !== 0);
   const [zoomSrc, setZoomSrc] = useState(null);
-
-  const defaultQualification = sessionStorage.getItem(Session.names.qualification)
-    ? sessionStorage.getItem(Session.names.qualification)
-    : true;
-
-  const [qualification, setQualification] = useState(defaultQualification);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
 
-  const { exec, forceExec } = usePromiseQueue([fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory]);
+  const { exec, forceExec } = usePromiseQueue(
+    [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    hasAfterLoadBeenCalled,
+  );
   const [pushrules, setPushrules] = useState(null);
 
   const theme = useTheme();
@@ -87,7 +85,8 @@ export function DialogProvider({ children }) {
   }, [pushrules]);
 
   useEffect(() => {
-    if (pushrulesConfigActive) triggerPushRule();
+    const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
+    if (canTriggerPushRules) triggerPushRule();
   }, [triggerPushRule, pushrulesConfigActive]);
 
   const add = useCallback(
@@ -154,7 +153,7 @@ export function DialogProvider({ children }) {
   }, []);
 
   const addResponse = useCallback(
-    (response) => {
+    (response = {}) => {
       setLastResponse(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
       const {
@@ -167,6 +166,7 @@ export function DialogProvider({ children }) {
         text,
         typeResponse,
         urlRedirect,
+        enableAutoSuggestion,
       } = response;
       const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
       const steps = parseSteps(response);
@@ -177,6 +177,7 @@ export function DialogProvider({ children }) {
           setVoiceContent({ templateData: null, text });
         }
       }
+      setAutoSuggestionActive(enableAutoSuggestion);
       setTypeResponse(typeResponse);
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
@@ -313,9 +314,9 @@ export function DialogProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    exec();
+    if (hasAfterLoadBeenCalled) exec();
     // eslint-disable-next-line
-  }, []);
+  }, [hasAfterLoadBeenCalled]);
 
   useEffect(() => {
     if (welcomeContent) {
@@ -384,8 +385,8 @@ export function DialogProvider({ children }) {
         voiceContent,
         zoomSrc,
         setZoomSrc,
-        qualification,
-        setQualification,
+        autoSuggestionActive,
+        setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
       }}
     />

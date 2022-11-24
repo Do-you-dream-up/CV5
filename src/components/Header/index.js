@@ -127,6 +127,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
       title: actionTests,
+      id: 'dydu-dots',
     },
     {
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} />,
@@ -134,6 +135,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
       title: actionMore,
+      id: 'dydu-more',
     },
     {
       children: (
@@ -147,6 +149,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.fontChange,
       title: actionFontIncrease,
+      id: 'dydu-font-increase',
     },
     {
       children: (
@@ -160,6 +163,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.fontChange,
       title: actionFontDecrease,
+      id: 'dydu-font-decrease',
     },
     {
       children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} />,
@@ -167,6 +171,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
       title: actionExpand,
+      id: 'dydu-expand',
     },
     {
       children: (
@@ -176,6 +181,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
       title: actionShrink,
+      id: 'dydu-collapse',
     },
     {
       children: (
@@ -185,6 +191,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.minimize,
       title: actionMinimize,
+      id: 'dydu-minimize',
     },
     {
       children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`} />,
@@ -192,21 +199,23 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.close,
       title: actionClose,
+      id: 'dydu-close',
     },
   ];
 
   return (
-    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest}>
+    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,
         })}
+        id="dydu-header-body"
         onMouseDown={onDragStart && onDragStart(dragonZone)}
         ref={dragonZone}
       >
-        <div className={c('dydu-header-logo', classes.logo)}>
+        <div className={c('dydu-header-logo', classes.logo)} id="dydu-header-logo">
           {!!hasImage && (
-            <div className={c('dydu-header-image', classes.image)}>
+            <div className={c('dydu-header-image', classes.image)} id="dydu-header-image">
               <AvatarsMatchingRequest
                 typeResponse={typeResponse}
                 headerAvatar={true}
@@ -221,7 +230,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </h1>
           )}
         </div>
-        <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
+        <Actions
+          actions={actions}
+          className={c('dydu-header-actions', classes.actions)}
+          id="dydu-header-actions-wrapper"
+        />
       </div>
       {!minimal && (
         <>
