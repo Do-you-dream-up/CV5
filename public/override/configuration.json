@@ -182,6 +182,8 @@
     "enable": true,
     "clientIdProd": "alex-auth",
     "clientIdPreprod": "alex-auth",
+    "clientSecret": "11c73203-8181-408f-a7be-c7f99d26f62d",
+    "pkceActive": true,
     "prodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
     "preprodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
     "scope": ["openid"],

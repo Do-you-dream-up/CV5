@@ -46,17 +46,13 @@ export default function useAuthorizeRequest(configuration) {
       responseType: 'code',
       ...extractObjectFields(configuration, ['clientId', 'scope']),
       ...extractObjectFields(pkce, ['state', 'redirectUri']),
-      ...{
+      ...(configuration?.pkceActive && {
         codeChallenge: Cookie.get('dydu-code-challenge'),
         codeChallengeMethod: 'S256',
-      },
+      }),
     };
-    console.log('🚀 ~ file: useAuthorizeRequest.js ~ line 56 ~ authorize ~ query', query);
-
-    console.log('authorize: query', JSON.stringify(query));
 
     const queryParams = objectToQueryParam(snakeCaseFields(query));
-    console.log('authorize: queryParams', JSON.stringify(queryParams));
 
     /*
       construct url

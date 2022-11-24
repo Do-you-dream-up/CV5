@@ -24,7 +24,7 @@ export default function useTokenRequest(configuration) {
       ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri', 'state'])),
       ...{
         client_id: configuration.clientId,
-        client_secret: '11c73203-8181-408f-a7be-c7f99d26f62d',
+        client_secret: configuration.clientSecret,
         code: extractParamFromUrl('code'),
         grant_type: 'authorization_code',
         code_verifier: Cookie.get('dydu-code-verifier'),

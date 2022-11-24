@@ -52,7 +52,7 @@ const createPkce = (configuration = { redirectUri: null }) => {
   const pkce = {
     state,
     redirectUri: redirectUri || getRedirectUri(),
-    codeVerifier: createCodeVerifier(),
+    ...(configuration?.pkceActive && { codeVerifier: createCodeVerifier() }),
   };
   Storage.savePkce(pkce);
   return pkce;

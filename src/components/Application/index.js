@@ -88,6 +88,8 @@ export default function Application() {
   const authConfiguration = useMemo(() => {
     return {
       clientId: process.env.OIDC_CLIENT_ID,
+      clientSecret: configuration?.oidc?.clientSecret,
+      pkceActive: configuration?.oidc?.pkceActive,
       provider: process.env.OIDC_URL,
       scope: configuration?.oidc?.scope,
       authorizePath: '/auth',

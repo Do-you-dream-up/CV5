@@ -13,7 +13,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children, configuration }) {
   const [token, setToken] = useState(Storage.loadToken());
-  const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.id_token) || false);
+  const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
   const { authorize, error: errorAuthorize } = useAuthorizeRequest(configuration);
@@ -26,7 +26,6 @@ export function AuthProvider({ children, configuration }) {
       console.log(appBaseUrl);
       Storage.clearAll();
       setToken(() => {
-        // if (appBaseUrl) window.history.replaceState(null, document.title, appBaseUrl);
         return null;
       });
     }
@@ -36,7 +35,7 @@ export function AuthProvider({ children, configuration }) {
     const canRequestToken =
       currentLocationContainsCodeParamater() &&
       Storage.containsPkce() &&
-      !isDefined(token?.id_token) &&
+      !isDefined(token?.access_token) &&
       !currentLocationContainsError();
 
     if (canRequestToken)
@@ -44,12 +43,12 @@ export function AuthProvider({ children, configuration }) {
         setIsLoggedIn(true);
         setToken(tkn);
       });
-  }, [fetchToken, token, token?.id_token]);
+  }, [fetchToken, token, token?.access_token]);
 
   useEffect(() => {
     if (isLoggedIn && token) {
       try {
-        const userInfo = jwtDecode(token?.id_token);
+        const userInfo = jwtDecode(token?.access_token);
         setUserInfo(userInfo);
       } catch (error) {
         console.error(error);

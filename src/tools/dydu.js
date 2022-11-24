@@ -172,10 +172,12 @@ export default new (class Dydu {
       })
       .catch(() => {
         if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-        API.defaults.baseURL =
-          API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
-            ? `https://${BOT.server}/servlet/api/`
-            : `https://${BOT.backUpServer}/servlet/api/`;
+        if (BOT.backUpServer !== '') {
+          API.defaults.baseURL =
+            API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
+              ? `https://${BOT.server}/servlet/api/`
+              : `https://${BOT.backUpServer}/servlet/api/`;
+        }
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));
@@ -689,7 +691,7 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
+      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').access_token : null,
       userInput: text,
       userUrl: getUrl,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -813,18 +815,11 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     }
   };
 
-  // when response code in range of 2xx
-  const onSuccess = (response) => {
-    response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
-    API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
-    return response;
-  };
-
   instance.interceptors.request.use(
     (config) => {
       if (configuration?.oidc?.withAuth) {
         config.headers['Authorization'] = `Bearer ${
-          Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null
+          Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').access_token : null
         }`;
       }
       return config;
@@ -834,7 +829,19 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     },
   );
 
-  instance.interceptors.response.use(onSuccess);
+  // when response code in range of 2xx
+  const onSuccess = (response) => {
+    response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
+    API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
+    return response;
+  };
+
+  const onError = (error) => {
+    console.log('🚀 ~ file: dydu.js ~ line 840 ~ onError ~ error', error);
+    // return Promise.reject();
+  };
+
+  instance.interceptors.response.use(onSuccess, onError);
 
   return instance;
 };
