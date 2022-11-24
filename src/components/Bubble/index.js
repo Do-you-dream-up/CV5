@@ -1,18 +1,19 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
+
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
-import { QUICK_REPLY } from '../../tools/template';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import Actions from '../Actions';
 import PrettyHtml from '../PrettyHtml';
 import Progress from '../Progress';
-import useStyles from './styles';
+import PropTypes from 'prop-types';
+import { QUICK_REPLY } from '../../tools/template';
+import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import useStyles from './styles';
+import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/viewport';
 
 /**
  * A conversation bubble.
@@ -76,6 +77,7 @@ export default function Bubble({
         isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
         className,
       ),
+      id: `dydu-bubble-${type}`,
     },
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}

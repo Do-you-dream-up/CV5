@@ -1,6 +1,6 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
@@ -51,10 +51,17 @@ export default function Secondary({ anchor, mode }) {
     closeSecondary();
   }, [closeSecondary, onSecondaryClosed]);
 
+  const titleContent = useMemo(() => {
+    try {
+      return title();
+    } catch (e) {
+      return <h1 className={c('dydu-secondary-title', classes.title)}>{title}</h1>;
+    }
+  }, [title]);
   return secondaryActive ? (
     <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
       <div className={c('dydu-secondary-header', classes.header)}>
-        {title && <h1 children={title} className={c('dydu-secondary-title', classes.title)} />}
+        {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
           <Button color="primary" onClick={onClose} type="button" variant="icon">
             <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />

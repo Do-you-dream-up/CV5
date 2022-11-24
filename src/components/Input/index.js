@@ -192,7 +192,7 @@ export default function Input({ onRequest, onResponse }) {
   ];
 
   return (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}

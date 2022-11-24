@@ -85,7 +85,8 @@ export function DialogProvider({ children }) {
   }, [pushrules]);
 
   useEffect(() => {
-    if (pushrulesConfigActive) triggerPushRule();
+    const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
+    if (canTriggerPushRules) triggerPushRule();
   }, [triggerPushRule, pushrulesConfigActive]);
 
   const add = useCallback(

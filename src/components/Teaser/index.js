@@ -94,7 +94,7 @@ export default function Teaser({ open, toggle }) {
 
   return (
     <Draggable bounds="html">
-      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}>
+      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })} id="dydu-teaser">
         <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
           <div
             onMouseDown={handleButtonPress}

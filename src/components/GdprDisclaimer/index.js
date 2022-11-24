@@ -1,14 +1,15 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import Actions from '../Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
-import sanitize from '../../tools/sanitize';
-import Actions from '../Actions';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
+import c from 'classnames';
+import sanitize from '../../tools/sanitize';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * GDPR disclaimer. Prompt the user at first visit for clearance.
@@ -25,10 +26,11 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
   const actions = [
     {
       children: t('gdpr.disclaimer.cancel'),
+      id: 'dydu-disclaimer-refuse',
       onClick: onDecline,
       secondary: true,
     },
-    { children: t('gdpr.disclaimer.ok'), onClick: onAccept },
+    { children: t('gdpr.disclaimer.ok'), onClick: onAccept, id: 'dydu-disclaimer-ok' },
   ];
   const body = sanitize(t('gdpr.disclaimer.body'));
 

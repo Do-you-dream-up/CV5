@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import PropTypes from 'prop-types';
+import WizardFieldStatus from '../WizardFieldStatus';
 import useDebounce from '../../tools/hooks/debounce';
 import usePrevious from '../../tools/hooks/previous';
-import WizardFieldStatus from '../WizardFieldStatus';
 import useStyles from './styles';
 
 /**
