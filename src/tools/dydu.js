@@ -172,10 +172,12 @@ export default new (class Dydu {
       })
       .catch(() => {
         if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-        API.defaults.baseURL =
-          API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
-            ? `https://${BOT.server}/servlet/api/`
-            : `https://${BOT.backUpServer}/servlet/api/`;
+        if (BOT.backUpServer !== '') {
+          API.defaults.baseURL =
+            API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
+              ? `https://${BOT.server}/servlet/api/`
+              : `https://${BOT.backUpServer}/servlet/api/`;
+        }
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));
