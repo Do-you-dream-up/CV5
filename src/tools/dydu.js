@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -146,6 +147,7 @@ export default new (class Dydu {
     if (!hasProperty(data, 'values')) return data;
 
     data.values = decode(data.values);
+
     this.setContextId(data.values.contextId);
     return data.values;
   };

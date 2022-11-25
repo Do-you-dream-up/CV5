@@ -5,6 +5,7 @@ import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
+import { escapeHTML, isDefined } from '../../tools/helpers';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Contacts from '../Contacts';
@@ -24,7 +25,6 @@ import Tab from '../Tab';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { isDefined } from '../../tools/helpers';
 import talk from '../../tools/talk';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -117,13 +117,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   useEffect(() => {
     if (!ready) {
       window.dydu = { ...window.dydu };
-
       window.dydu.chat = {
-        ask: (text, options) => ask(text, options),
+        ask: (text, options) => {
+          ask(text, options);
+        },
         empty: () => empty(),
         reply: (text) => addResponse({ text }),
-        setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
-        setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
+        setDialogVariable: (name, value) => {
+          dydu.setDialogVariable(name, escapeHTML(value));
+        },
+        setRegisterContext: (name, value) => {
+          dydu.setRegisterContext(name, escapeHTML(value));
+        },
       };
 
       window.dydu.promptEmail = {
