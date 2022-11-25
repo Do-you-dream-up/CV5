@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { isDefined, isArray, isEmptyString, isString, getChatboxWidthTime, isPositiveNumber } from '../tools/helpers';
+import { getChatboxWidthTime, isArray, isDefined, isEmptyString, isPositiveNumber, isString } from '../tools/helpers';
+
 import Field from './Field';
 import PropTypes from 'prop-types';
+import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
 import { useDialog } from '../contexts/DialogContext';
-import SurveyForm from './SurveyForm';
 import { useEvent } from '../contexts/EventsContext';
 
 const SurveyContext = React.createContext({});
@@ -96,12 +97,17 @@ export default function SurveyProvider({ children }) {
       });
   }, [sendAnswer, validateAnswer, prepareResponsePayloadWithAnswerObject]);
 
+  const onSecondaryClosed = () => {
+    console.log('secondary closed');
+  };
+
   const api = useMemo(
     () => ({
       surveyConfig,
       showSurvey,
       instances,
       onSubmit,
+      onSecondaryClosed,
     }),
     [showSurvey, instances, onSubmit],
   );
