@@ -63,7 +63,7 @@ export default function Feedback() {
     dydu.feedback(false).then(() => {
       setShowVote(false);
 
-      if (customFeedback?.enable) {
+      if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
         dydu.talk(customFeedback?.negativeCustom, { doNotSave: true, hide: true }).then((response) => {
           addResponse(response);
         });
@@ -81,7 +81,7 @@ export default function Feedback() {
     dydu.feedback(true).then(() => {
       setShowVote(false);
 
-      if (customFeedback?.enable) {
+      if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
         dydu.talk(customFeedback?.positiveCustom, { doNotSave: true, hide: true }).then((response) => {
           addResponse(response);
         });
