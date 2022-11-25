@@ -95,6 +95,13 @@ export class Cookie {
     };
     cookie.set(name, value, options);
   };
+
+  /**
+   * Remove the specified cookie.
+   *
+   * @param {string} name - Name of the cookie.
+   */
+  static remove = (name) => cookie.remove(name);
 }
 
 /**

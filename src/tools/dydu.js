@@ -839,8 +839,14 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   const onError = (error) => {
-    console.log('🚀 ~ file: dydu.js ~ line 840 ~ onError ~ error', error);
-    // return Promise.reject();
+    if (error?.response?.status === 401 || error?.response?.status === 500) {
+      if (configuration?.oidc?.enable) {
+        Cookie.remove('dydu-oauth-token');
+        Cookie.remove('dydu-code-challenge');
+        Cookie.remove('dydu-code-verifier');
+        window.location.href = window.location.origin;
+      }
+    }
   };
 
   instance.interceptors.response.use(onSuccess, onError);
