@@ -221,3 +221,7 @@ export const decodeHtml = (html) => {
   txt.innerHTML = html;
   return txt.value;
 };
+
+export const escapeHTML = (html) => {
+  return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
+};
