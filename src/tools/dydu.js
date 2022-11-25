@@ -121,7 +121,7 @@ export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
     this.locale = this.getLocale();
-    this.space = this.getSpace();
+    this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.initInfos();
   }
