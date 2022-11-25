@@ -186,7 +186,7 @@
     "pkceActive": false,
     "prodProvider": "",
     "preprodProvider": "",
-    "scope": [],
+    "scope": [""],
     "withAuth": false
   },
   "saml": {
