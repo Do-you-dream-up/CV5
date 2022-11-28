@@ -16,20 +16,9 @@ export function AuthProvider({ children, configuration }) {
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
-  const { authorize, error: errorAuthorize } = useAuthorizeRequest(configuration);
-  const { fetchToken, error: errorToken } = useTokenRequest(configuration);
+  const { authorize } = useAuthorizeRequest(configuration);
+  const { fetchToken } = useTokenRequest(configuration);
   const { getUserInfoWithToken } = useUserInfo(configuration);
-
-  useEffect(() => {
-    if (errorAuthorize || errorToken) {
-      const appBaseUrl = Storage.loadPkce()?.redirectUri;
-      console.log(appBaseUrl);
-      Storage.clearAll();
-      setToken(() => {
-        return null;
-      });
-    }
-  }, [errorAuthorize, errorToken]);
 
   useEffect(() => {
     const canRequestToken =

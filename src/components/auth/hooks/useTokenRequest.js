@@ -7,13 +7,15 @@ import {
   responseToJsonOrThrowError,
   snakeCaseFields,
 } from '../helpers';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
+import dydu from '../../../tools/dydu';
 
 export default function useTokenRequest(configuration) {
   const [error, setError] = useState(false);
+  const [currentToken, setCurrentToken] = useState(null);
 
   const fetchToken = useCallback(() => {
     console.log('/* PREPARE FETCH TOKEN REQUEST */');
@@ -25,10 +27,10 @@ export default function useTokenRequest(configuration) {
       ...{
         client_id: configuration.clientId,
         client_secret: configuration.clientSecret,
-        code: extractParamFromUrl('code'),
-        grant_type: 'authorization_code',
+        ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
+        grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
         code_verifier: Cookie.get('dydu-code-verifier'),
-        // scope: configuration.scope?.join(' '),
+        ...(Storage.loadToken()?.refresh_token && { refresh_token: Storage.loadToken()?.refresh_token }),
       },
     };
 
@@ -72,7 +74,7 @@ export default function useTokenRequest(configuration) {
           // add 'expires_at', with the given slack
           token.expires_at = new Date(new Date().getTime() + expires_in * 1000 - slackSeconds * 1000);
         }
-        Storage.saveToken(token);
+        setCurrentToken(token);
         return token;
       })
       .catch((e) => {
@@ -81,6 +83,14 @@ export default function useTokenRequest(configuration) {
         throw new Error('error: fetching token', e);
       });
   }, [configuration]);
+
+  useEffect(() => {
+    if (currentToken) {
+      console.log('🚀 ~ file: useTokenRequest.js ~ line 92 ~ useEffect ~ fetchToken', fetchToken);
+      Storage.saveToken(currentToken);
+      currentToken?.refresh_token && dydu.setTokenRefresher(fetchToken);
+    }
+  }, [currentToken, fetchToken]);
 
   return {
     fetchToken,

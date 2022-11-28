@@ -394,7 +394,7 @@ export function DialogProvider({ children }) {
 }
 
 DialogProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.any,
   toggle: PropTypes.any,
   onPushrulesDataReceived: PropTypes.func,
 };

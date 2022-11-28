@@ -120,10 +120,15 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
+    this.tokenRefresher = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.initInfos();
+  }
+
+  setTokenRefresher(refreshToken) {
+    this.tokenRefresher = refreshToken;
   }
 
   getVariables() {
@@ -172,14 +177,39 @@ export default new (class Dydu {
         }
         return data;
       })
-      .catch(() => {
+      .catch((error) => {
         if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-        if (BOT.backUpServer !== '') {
+
+        /**
+         * NO 401 ERROR
+         */
+        if (BOT.backUpServer !== '' && error?.response?.status !== 401) {
           API.defaults.baseURL =
             API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
               ? `https://${BOT.server}/servlet/api/`
               : `https://${BOT.backUpServer}/servlet/api/`;
         }
+
+        /**
+         * IF 401 WITH OIDC
+         */
+        if (error?.response?.status === 401 && configuration?.oidc?.enable) {
+          this.tokenRefresher();
+          console.log('OIDC Refresh Token');
+        }
+
+        /**
+         * 500 ERROR
+         */
+        if (error?.response?.status === 500) {
+          if (configuration?.oidc?.enable) {
+            Cookie.remove('dydu-oauth-token');
+            Cookie.remove('dydu-code-challenge');
+            Cookie.remove('dydu-code-verifier');
+            window.location.href = window.location.origin;
+          }
+        }
+
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));
@@ -838,18 +868,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     return response;
   };
 
-  const onError = (error) => {
-    if (error?.response?.status === 401 || error?.response?.status === 500) {
-      if (configuration?.oidc?.enable) {
-        Cookie.remove('dydu-oauth-token');
-        Cookie.remove('dydu-code-challenge');
-        Cookie.remove('dydu-code-verifier');
-        window.location.href = window.location.origin;
-      }
-    }
-  };
-
-  instance.interceptors.response.use(onSuccess, onError);
+  instance.interceptors.response.use(onSuccess);
 
   return instance;
 };
