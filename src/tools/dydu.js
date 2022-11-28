@@ -191,11 +191,16 @@ export default new (class Dydu {
         }
 
         /**
-         * IF 401 WITH OIDC
+         * IF 401
          */
-        if (error?.response?.status === 401 && configuration?.oidc?.enable) {
-          this.tokenRefresher();
-          console.log('OIDC Refresh Token');
+        if (error?.response?.status === 401) {
+          /**
+           * IF OIDC ACTIVATED WITH REFRESH TOKEN
+           */
+          if (configuration?.oidc?.enable && Storage.loadToken()?.refresh_token) {
+            this.tokenRefresher();
+            console.log('OIDC Refresh Token');
+          }
         }
 
         /**
