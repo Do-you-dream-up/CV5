@@ -85,8 +85,7 @@ export default function useTokenRequest(configuration) {
   }, [configuration]);
 
   useEffect(() => {
-    if (currentToken) {
-      console.log('🚀 ~ file: useTokenRequest.js ~ line 92 ~ useEffect ~ fetchToken', fetchToken);
+    if (currentToken || Storage.loadToken()) {
       Storage.saveToken(currentToken);
       currentToken?.refresh_token && dydu.setTokenRefresher(fetchToken);
     }
