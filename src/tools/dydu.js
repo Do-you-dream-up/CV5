@@ -204,18 +204,6 @@ export default new (class Dydu {
           }
         }
 
-        /**
-         * 500 ERROR
-         */
-        if (error?.response?.status === 500) {
-          if (configuration?.oidc?.enable) {
-            Cookie.remove('dydu-oauth-token');
-            Cookie.remove('dydu-code-challenge');
-            Cookie.remove('dydu-code-verifier');
-            window.location.href = window.location.origin;
-          }
-        }
-
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));

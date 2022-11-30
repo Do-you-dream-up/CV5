@@ -17,12 +17,15 @@ import getPkce from 'oauth-pkce';
 export default function useAuthorizeRequest(configuration) {
   const [authorizeDone, setAuthorizeDone] = useState(false);
   const [error, setError] = useState(false);
+
   getPkce(50, (error, { verifier, challenge }) => {
+    error && console.log('getPkce ~ error', error);
     if (!Cookie.get('dydu-code-challenge')) {
       Cookie.set('dydu-code-verifier', verifier);
       Cookie.set('dydu-code-challenge', challenge);
     }
   });
+
   useEffect(() => {
     if (currentLocationContainsCodeParamater() && isDefined(Storage.loadPkce())) setAuthorizeDone(true);
     else if (currentLocationContainsError()) {
@@ -37,6 +40,7 @@ export default function useAuthorizeRequest(configuration) {
 
   const authorize = useCallback(async () => {
     const pkce = loadPkce();
+
     // console.log('/* PREPARE AUTHORIZE REQUEST */', { pkce });
 
     /*
@@ -48,7 +52,7 @@ export default function useAuthorizeRequest(configuration) {
       ...extractObjectFields(pkce, ['state', 'redirectUri']),
       ...(configuration?.pkceActive && {
         codeChallenge: Cookie.get('dydu-code-challenge'),
-        codeChallengeMethod: 'S256',
+        codeChallengeMethod: configuration?.pkceMode,
       }),
     };
 

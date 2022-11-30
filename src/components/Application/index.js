@@ -90,6 +90,7 @@ export default function Application() {
       clientId: process.env.OIDC_CLIENT_ID,
       clientSecret: configuration?.oidc?.clientSecret,
       pkceActive: configuration?.oidc?.pkceActive,
+      pkceMode: configuration?.oidc?.pkceMode,
       provider: process.env.OIDC_URL,
       scope: configuration?.oidc?.scopes,
       authorizePath: '/auth',

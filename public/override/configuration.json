@@ -179,15 +179,16 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": false,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "clientSecret": "",
-    "pkceActive": false,
-    "prodProvider": "",
-    "preprodProvider": "",
-    "scopes": [""],
-    "withAuth": false
+    "enable": true,
+    "clientIdProd": "alex-auth",
+    "clientIdPreprod": "alex-auth",
+    "clientSecret": "11c73203-8181-408f-a7be-c7f99d26f62d",
+    "pkceActive": true,
+    "pkceMode": "S256",
+    "prodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
+    "preprodProvider": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect",
+    "scopes": ["openid"],
+    "withAuth": true
   },
   "saml": {
     "enable": false
