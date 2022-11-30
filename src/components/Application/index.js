@@ -91,10 +91,10 @@ export default function Application() {
       clientSecret: configuration?.oidc?.clientSecret,
       pkceActive: configuration?.oidc?.pkceActive,
       provider: process.env.OIDC_URL,
-      scope: configuration?.oidc?.scope,
+      scope: configuration?.oidc?.scopes,
       authorizePath: '/auth',
     };
-  }, [configuration?.oidc?.scope]);
+  }, [configuration?.oidc?.scopes]);
 
   return (
     <div className={c('dydu-application', classes.root)}>
