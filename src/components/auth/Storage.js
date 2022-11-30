@@ -1,4 +1,5 @@
 import { cleanUrl, isDefined } from './helpers';
+
 import Cookie from 'js-cookie';
 
 const store = localStorage;
@@ -23,7 +24,13 @@ export default class Storage {
   static saveToken(token) {
     cleanUrl();
     Storage.clearPkce();
-    Cookie.set(TOKEN_KEY, JSON.stringify(token));
+    Cookie.set(
+      TOKEN_KEY,
+      JSON.stringify({
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token,
+      }),
+    );
   }
 
   static clearToken() {

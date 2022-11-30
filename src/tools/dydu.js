@@ -17,6 +17,7 @@ import {
 } from './helpers';
 
 import Bowser from 'bowser';
+import Storage from '../components/auth/Storage';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
