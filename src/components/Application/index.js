@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-unresolved
 
 import '../../../public/override/style.css';
+import '../../../public/chatboxHomepage.css';
 
 import React, { Suspense, useContext, useEffect } from 'react';
 
