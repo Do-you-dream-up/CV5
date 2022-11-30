@@ -11,7 +11,6 @@ const externalInfoProcessors = [...ExternalInfoProcessor];
 const externalInfos = {};
 const rules = [];
 const rulesDefinition = [...rulesDefintions];
-let canPush = true;
 
 //infoProcessor must be a function that takes externalInfos object as a parameter.
 // eslint-disable-next-line no-unused-vars
@@ -104,7 +103,7 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
         if (document.attachEvent) {
           document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
         } else {
-          document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
+          document.addEventListener(INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId));
         }
       }
       currentTimer.counter = setTimeout(() => {
@@ -192,11 +191,8 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 }
 
 function pushKnowledge(ruleId) {
-  if (canPush) {
-    window.dydu.ui.toggle(VIEW_MODE.popin);
-    window.reword('_pushcondition_:' + ruleId, { hide: true });
-    canPush = false;
-  }
+  window.dydu.ui.toggle(VIEW_MODE.popin);
+  window.reword('_pushcondition_:' + ruleId, { hide: true });
 }
 
 function urlCompliant(pattern, url) {
