@@ -48,7 +48,7 @@ export function AuthProvider({ children, configuration }) {
   const login = useCallback(() => {
     const canRequestAuthorize =
       !isLoggedIn &&
-      !Storage.containsPkce() &&
+      // !Storage.containsPkce() &&
       !currentLocationContainsCodeParamater() &&
       !currentLocationContainsError();
 

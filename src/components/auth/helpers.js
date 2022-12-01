@@ -183,3 +183,7 @@ export async function generateCodeChallenge(codeVerifier) {
   // you can extract this replacing code to a function
   return base64Digest.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
+
+export const base64_urlencode = (str) => {
+  return encodeURI(btoa(str));
+};

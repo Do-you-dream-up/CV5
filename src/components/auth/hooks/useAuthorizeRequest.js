@@ -1,4 +1,5 @@
 import {
+  base64_urlencode,
   currentLocationContainsCodeParamater,
   currentLocationContainsError,
   extractObjectFields,
@@ -18,14 +19,6 @@ export default function useAuthorizeRequest(configuration) {
   const [authorizeDone, setAuthorizeDone] = useState(false);
   const [error, setError] = useState(false);
 
-  getPkce(50, (error, { verifier, challenge }) => {
-    error && console.log('getPkce ~ error', error);
-    if (!Cookie.get('dydu-code-challenge')) {
-      Cookie.set('dydu-code-verifier', verifier);
-      Cookie.set('dydu-code-challenge', challenge);
-    }
-  });
-
   useEffect(() => {
     if (currentLocationContainsCodeParamater() && isDefined(Storage.loadPkce())) setAuthorizeDone(true);
     else if (currentLocationContainsError()) {
@@ -43,30 +36,48 @@ export default function useAuthorizeRequest(configuration) {
 
     // console.log('/* PREPARE AUTHORIZE REQUEST */', { pkce });
 
-    /*
+    getPkce(50, (error, { verifier, challenge }) => {
+      error && console.log('getPkce ~ error', error);
+      if (!Cookie.get('dydu-code-challenge')) {
+        console.log('🚀 ~ file: useAuthorizeRequest.js:43 ~ getPkce ~ verifier', verifier);
+        Cookie.set('dydu-code-verifier', verifier);
+        if (configuration?.pkceMode === 'S256') {
+          Cookie.set('dydu-code-challenge', challenge);
+        } else {
+          console.log(
+            '🚀 ~ file: useAuthorizeRequest.js:48 ~ getPkce ~ base64_urlencode(verifier)',
+            base64_urlencode(verifier),
+          );
+          Cookie.set('dydu-code-challenge', base64_urlencode(verifier));
+        }
+      }
+
+      /*
       construct query params
      */
-    const query = {
-      responseType: 'code',
-      ...extractObjectFields(configuration, ['clientId', 'scope']),
-      ...extractObjectFields(pkce, ['state', 'redirectUri']),
-      ...(configuration?.pkceActive && {
-        codeChallenge: Cookie.get('dydu-code-challenge'),
-        codeChallengeMethod: configuration?.pkceMode,
-      }),
-    };
+      const query = {
+        responseType: 'code',
+        ...extractObjectFields(configuration, ['clientId', 'scope']),
+        ...extractObjectFields(pkce, ['state', 'redirectUri']),
+        ...(configuration?.pkceActive && {
+          codeChallenge: Cookie.get('dydu-code-challenge'),
+          codeChallengeMethod: configuration?.pkceMode,
+        }),
+      };
+      console.log('🚀 ~ file: useAuthorizeRequest.js ~ line 72 ~ authorize ~ query', query);
 
-    const queryParams = objectToQueryParam(snakeCaseFields(query));
+      const queryParams = objectToQueryParam(snakeCaseFields(query));
 
-    /*
+      /*
       construct url
      */
-    let { provider, authorizePath = '/authorize' } = configuration;
-    if (!authorizePath.startsWith('/')) authorizePath = '/' + authorizePath;
-    const url = provider + authorizePath + '?' + queryParams;
-    console.log('authorize: url', url);
+      let { provider, authorizePath = '/authorize' } = configuration;
+      if (!authorizePath.startsWith('/')) authorizePath = '/' + authorizePath;
+      const url = provider + authorizePath + '?' + queryParams;
+      console.log('🚀 ~ file: useAuthorizeRequest.js ~ line 72 ~ getPkce ~ url', url);
 
-    window.location.replace(url);
+      window.location.replace(url);
+    });
   }, [configuration]);
 
   return {
