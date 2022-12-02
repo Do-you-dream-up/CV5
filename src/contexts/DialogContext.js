@@ -61,7 +61,8 @@ export function DialogProvider({ children }) {
   const [voiceContent, setVoiceContent] = useState(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
-  const [autoSuggestionActive, setAutoSuggestionActive] = useState(configuration?.suggestions?.limit !== 0);
+  const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
+  const [autoSuggestionActive, setAutoSuggestionActive] = useState(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState(null);
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
@@ -177,7 +178,11 @@ export function DialogProvider({ children }) {
           setVoiceContent({ templateData: null, text });
         }
       }
-      setAutoSuggestionActive(enableAutoSuggestion);
+
+      if (suggestionActiveOnConfig) {
+        setAutoSuggestionActive(enableAutoSuggestion ?? suggestionActiveOnConfig);
+      }
+
       setTypeResponse(typeResponse);
       if (secondaryTransient || isMobile) {
         toggleSecondary(false)();
