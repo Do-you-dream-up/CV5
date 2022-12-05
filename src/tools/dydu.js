@@ -355,7 +355,7 @@ export default new (class Dydu {
    */
   getSpace = (strategy) => {
     if (!this.space || strategy) {
-      this.space = Local.get(Local.names.space, '');
+      this.space = Local.get(Local.names.space, configuration?.spaces?.items[0] || 'default', true);
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
@@ -376,11 +376,12 @@ export default new (class Dydu {
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space = isOfTypeFunction(_get) ? _get(value) || this.space : this.space;
+            this.space = isDefined(_get) ? _get(value) : this.space;
           }
         });
       }
     }
+    Local.set(Local.names.space, this.space);
     return this.space;
   };
 
