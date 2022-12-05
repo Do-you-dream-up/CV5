@@ -53,7 +53,7 @@ export default function Onboarding({ children, render }) {
           className={c('dydu-onboarding-body', classes.body)}
           dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
         />
-        <button type="button" onClick={onEnd}>
+        <button type="button" onClick={onEnd} id="skip-onboarding">
           {skip}
         </button>
       </div>
@@ -72,8 +72,14 @@ export default function Onboarding({ children, render }) {
           </div>
         )}
         <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-          <Button children={previous} disabled={!index} secondary={true} onClick={hasPrevious ? onPrevious : null} />
-          <Button children={next} onClick={hasNext ? onNext : onEnd} />
+          <Button
+            children={previous}
+            disabled={!index}
+            secondary={true}
+            onClick={hasPrevious ? onPrevious : null}
+            id="onboarding-previous"
+          />
+          <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
         </div>
       </div>
     </div>
