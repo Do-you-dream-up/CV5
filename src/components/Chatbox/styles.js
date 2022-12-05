@@ -6,6 +6,7 @@ const extendedStyles = {
   maxHeight: 'inherit !important',
   right: 0,
   width: '100% !important',
+  minWidth: 'inherit',
 };
 
 export default createUseStyles((theme) => ({
@@ -34,6 +35,9 @@ export default createUseStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[6],
+    [theme.breakpoints.down('xs')]: {
+      minWidth: 'inherit',
+    },
   }),
   root: ({ configuration }) => ({
     '& > *': {
