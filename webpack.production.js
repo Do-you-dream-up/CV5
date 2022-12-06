@@ -15,8 +15,8 @@ module.exports = (env) => {
   const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
   const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
   
-  if (env.CHATBOX_VERSION) {
-    ASSET = `${configuration.application.cdn}/${env.CHATBOX_VERSION}/`;
+  if (env.CHATBOX_VERSION && env.CHATBOX_VERSION !== '$CHATBOX_VERSION') {
+    ASSET = `${configuration.application.cdn}${env.CHATBOX_VERSION}/`;
     console.log(ASSET);
   }
   else {
