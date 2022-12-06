@@ -1,5 +1,5 @@
 const Path = require('path');
-const { CleanWebpackPlugin: Clean } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin: Clean  } = require('clean-webpack-plugin');
 const Copy = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
@@ -7,37 +7,28 @@ const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
 module.exports = (env) => {
-  let ASSET = './';
 
+  let ASSET = './';
+  
   const QUALIFICATION = env.prod ? false : true;
-  // const ONPREM = env.onprem ?  true : false;
-  const OIDC_CLIENT_ID = !QUALIFICATION
-    ? JSON.stringify(configuration.oidc.clientIdProd)
-    : JSON.stringify(configuration.oidc.clientIdPreprod);
-  const OIDC_URL = !QUALIFICATION
-    ? JSON.stringify(configuration.oidc.prodPorovider)
-    : JSON.stringify(configuration.oidc.preprodPorovider);
-  // if (process.env.ASSET_FULL_URL) {
-  //   ASSET = process.env.ASSET_FULL_URL + '/';
-  //   console.log(ASSET);
-  // }
-  // else if (env[2]) {
-  //   ASSET = env[2] +  env.prod ? 'prod' : 'preprod' + '/';
-  //   console.log(ASSET);
-  // }
-  // else if (configuration.application.cdn && configuration.application.directory) {
-  //   ASSET =  configuration.application.cdn + configuration.application.directory;
-  //   if (!ONPREM ) {
-  //     ASSET += env.prod ? 'prod/' : 'preprod/';
-  //   }
-  // }
+  
+  const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
+  const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
+  
+  if (env.CHATBOX_VERSION) {
+    ASSET = `${configuration.application.cdn}/${env.CHATBOX_VERSION}/`;
+    console.log(ASSET);
+  }
+  else {
+    ASSET =  configuration.application.cdn + configuration.application.directory;
+  }
 
   return Merge.strategy({ plugins: 'prepend' })(common(env), {
     devtool: 'source-map',
     mode: 'production',
     output: {
       filename: 'bundle.min.js',
-      chunkLoadingGlobal: 'dydu.bliss',
+      chunkLoadingGlobal: 'dydu.chatbox',
       chunkFilename: `[name].${env.CHATBOX_VERSION || 'lts.xxxxxx'}.js`,
       path: Path.resolve(__dirname, 'build'),
       publicPath: ASSET,
