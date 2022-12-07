@@ -29,7 +29,7 @@ module.exports = (env) => {
     output: {
       filename: 'bundle.min.js',
       chunkLoadingGlobal: 'dydu.chatbox',
-      chunkFilename: `[name].${env.CHATBOX_VERSION || 'lts.xxxxxx'}.js`,
+      chunkFilename: `[name].${env.CHATBOX_VERSION || 'lts'}.${env.CHATBOX_REVISION || 'xxxxxx'}.js`,
       path: Path.resolve(__dirname, 'build'),
       publicPath: ASSET,
     },
