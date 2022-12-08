@@ -1,6 +1,6 @@
 {
   "name": "chatbox",
-  "version": "5.38.0",
+  "version": "chatbox_edge_2022-12-13",
   "private": true,
   "license": "MIT",
   "start_url": ".",
@@ -82,7 +82,7 @@
     "webpack-shell-plugin-next": "^1.2.0"
   },
   "scripts": {
-    "build": "webpack --env sass --env CHATBOX_VERSION='$CHATBOX_VERSION' CHATBOX_REVISION='$CHATBOX_REVISION' --config webpack.production.js",
+    "build": "webpack --env sass --env CHATBOX_VERSION=\"$CHATBOX_VERSION\" CHATBOX_REVISION=\"$CHATBOX_REVISION\" --config webpack.production.js",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
     "map": "source-map-explorer build/*bundle.min.js*",
     "start": "webpack-dev-server --config webpack.development.js",
