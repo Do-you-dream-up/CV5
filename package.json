@@ -1,6 +1,6 @@
 {
   "name": "chatbox",
-  "version": "$CHATBOX_VERSION.$CHATBOX_REVISION",
+  "version": "5.38.0",
   "private": true,
   "license": "MIT",
   "start_url": ".",
