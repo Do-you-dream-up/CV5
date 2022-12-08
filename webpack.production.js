@@ -58,6 +58,7 @@ module.exports = (env) => {
           OIDC_CLIENT_ID: OIDC_CLIENT_ID,
           OIDC_URL: OIDC_URL,
           PUBLIC_URL: JSON.stringify(ASSET),
+          RELEASE_NAME: JSON.stringify(env.CHATBOX_VERSION),
           QUALIFICATION,
         },
       }),

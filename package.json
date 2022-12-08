@@ -1,7 +1,6 @@
 {
   "name": "chatbox",
-  "version": "5.38.0",
-  "releaseName": "chatbox_edge_2022-12-13",
+  "version": "5.37.0",
   "private": true,
   "license": "MIT",
   "start_url": ".",
