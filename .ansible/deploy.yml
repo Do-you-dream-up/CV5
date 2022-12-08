@@ -1,5 +1,5 @@
 ---
-# deliver.yml: playbook file for ansible
+# deploy.yml: playbook file for ansible
 
 - name: "Deliver"
   hosts: uat:prod

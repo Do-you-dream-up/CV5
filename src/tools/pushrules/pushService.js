@@ -4,6 +4,8 @@ import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
 import { VIEW_MODE } from '../../contexts/ViewModeProvider';
 import dydu from '../dydu';
+import { isDefined } from '../helpers';
+import configuration from '../../../public/override/configuration.json';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
@@ -11,6 +13,7 @@ const externalInfoProcessors = [...ExternalInfoProcessor];
 const externalInfos = {};
 const rules = [];
 const rulesDefinition = [...rulesDefintions];
+let canPush = true;
 
 //infoProcessor must be a function that takes externalInfos object as a parameter.
 // eslint-disable-next-line no-unused-vars
@@ -87,6 +90,12 @@ export function processRules(externInfos) {
   handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
+let chatboxNodeElement = null;
+function getChatboxNodeElement() {
+  if (!isDefined(chatboxNodeElement)) chatboxNodeElement = document.getElementById(configuration?.root);
+  return chatboxNodeElement;
+}
+
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
   if (delay === 0) {
     pushKnowledge(delayRuleId);
@@ -103,7 +112,12 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
         if (document.attachEvent) {
           document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
         } else {
-          document.addEventListener(INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId));
+          const event = [INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId)];
+          try {
+            getChatboxNodeElement().addEventListener(...event);
+          } catch (e) {
+            document.addEventListener(...event);
+          }
         }
       }
       currentTimer.counter = setTimeout(() => {
@@ -191,8 +205,11 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 }
 
 function pushKnowledge(ruleId) {
-  window.dydu.ui.toggle(VIEW_MODE.popin);
-  window.reword('_pushcondition_:' + ruleId, { hide: true });
+  if (canPush) {
+    window.dydu.ui.toggle(VIEW_MODE.popin);
+    window.reword('_pushcondition_:' + ruleId, { hide: true });
+    canPush = false;
+  }
 }
 
 function urlCompliant(pattern, url) {

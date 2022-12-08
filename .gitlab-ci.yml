@@ -1,377 +1,69 @@
 ---
 
 stages:
-  - preprod
-  - prod
-  - build_base
-  - publish_base_preprod
-  - publish_base_prod
-  - prepare_demo_env
-  - build_demo
-  - publish_demo
-  - update_version
-  - replace
-  - mirror
-  - release
+  - integration
+  - delivery
 
-variables:
-  STORE_PATH: https://nexus.doyoudreamup.com/repository/front_artefacts/chatbot/bliss
-  KEY_TO_REPLACE: "<<<ASSET_FULL_URL_TO_REPLACE>>>"
-
-preprod:
-  stage: preprod
-  image: node:lts-alpine3.14
+build:
+  stage: integration
+  image: node:14-alpine
   before_script:
-    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - echo "//nexus.doyoudreamup.com/repository/npm-public/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - cat .npmrc
-    - npm ci --cache .npm --prefer-offline
-    - npm run buildPreprod
+    - export CHATBOX_VERSION="${CI_COMMIT_REF_NAME}"
+    - export CHATBOX_REVISION="${CI_COMMIT_SHORT_SHA}"
   script:
-    - apk update
-    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev libffi-dev rust cargo openssl-dev openssh-client
-    - pip3 --no-cache-dir install ansible
-    - chmod 0700 .ssh
-    - chmod 0600 .ssh/id_ed25519
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "project" deliverPreprod.yml'
-  only:
-    refs:
-      - /project\/.*/
-#      - development
-
-prod:
-  stage: prod
-  image: node:lts-alpine3.14
-  when: manual
-  before_script:
-    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - echo "//nexus.doyoudreamup.com/repository/npm-public/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
     - npm ci --cache .npm --prefer-offline
-    - npm run buildProd
-  script:
-    - apk update
-    - apk add --no-cache rsync python3-dev py3-pip gcc musl-dev libffi-dev rust cargo openssl-dev openssh-client
-    - pip3 --no-cache-dir install ansible
-    - chmod 0700 .ssh
-    - chmod 0600 .ssh/id_ed25519
-    - 'ansible-playbook --verbose --inventory hosts.yml --limit "project" deliverProd.yml'
-  only:
-    refs:
-      - /project\/.*/
-#      - development
-
-include:
-  - project: 'main-solution/build-and-tools/ci-cd-templates'
-    file:
-      - 'node/common.gitlab-ci.yml'
-
-build_base:prod:
-  stage: build_base
-  image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
-  tags:
-    - chatbot
-  script:
-    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - echo "//nexus.doyoudreamup.com/repository/npm-public/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - npm ci --cache .npm --prefer-offline
-    - export ASSET_FULL_URL="${KEY_TO_REPLACE}"
-    - npm run buildCi
-    - |
-      cat > build/metadata.txt << EOF
-      DATE=$(date +"%y%m%d_%H%M")
-      BUILD_TARGET=$BUILD_TARGET
-      JOB_ID=$CI_JOB_ID
-      CHATBOX_GIT_COMMIT=$CI_COMMIT_SHORT_SHA
-      CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
-      EOF
-  variables:
-    BUILD_TARGET: prod
+    - npm run build
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
-      - .npm
-  only:
-    - branches
-  except:
-    refs:
-      - test_ci-cd
-    variables:
-      - $DYDUBOX_TRIGGER == "true"
+      - build/
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   artifacts:
-    expire_in: 1h
     paths:
-      - build/**
+      - .npm/_logs/
+    expire_in: 24h
 
-build_base:preprod:
-  extends:
-    - build_base:prod
-  variables:
-    BUILD_TARGET: preprod
-
-push_base:preprod:
-  image: docker-registry.dydu-priv.com/devops/build/gitlab-docker:latest
-  stage: publish_base_preprod
-  dependencies: ["build_base:preprod"]
+pack:
+  stage: delivery
+  image: alpine:latest
   before_script:
-      - apk add curl zip
-      - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
-      - >
-        case $CI_COMMIT_REF_NAME in
-        master) export LATEST="latest" ;;
-        development) VERSION=$VERSION-SNAPSHOT ; export LATEST="latest-SNAPSHOT" ;;
-        esac
-      - echo "Will publish version $VERSION"
-      - /helper.sh loginGit
+    - apk add zip curl
   script:
-    - ZIP_FILE="base_${BUILD_TARGET}_${VERSION}.zip"
-    - ZIP_FILE_LATEST="base_${BUILD_TARGET}_${LATEST}.zip"
-    - zip -r $ZIP_FILE build
-    - cp $ZIP_FILE $ZIP_FILE_LATEST
-    - echo "$ZIP_FILE $STORE_PATH/$BUILD_TARGET/$ZIP_FILE"
-    - echo "$ZIP_FILE_LATEST $STORE_PATH/$BUILD_TARGET/$ZIP_FILE_LATEST"
-    - git fetch --all --tags -f
-    - git tag -f $VERSION ; git push --tags --force origin $VERSION
-    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
-    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${ZIP_FILE_LATEST}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE_LATEST}'
-  variables:
-    BUILD_TARGET: preprod
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-      when: on_success
-    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-      when: on_success
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-push_base:prod:
-  stage: publish_base_prod
-  extends:
-    - push_base:preprod
-  dependencies: ["build_base:prod"]
-  variables:
-    BUILD_TARGET: prod
-  rules:
-    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/"
-      when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-    - when: never
-
-
-#### trigger build and push demo ####
-build_publish_demo_preprod:
-  stage: prepare_demo_env
-  script:
-    - 'echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env'
-    - if [ "$DEMO_ENV" = "preprod" ]; then echo "CDN_HOST=uat.cdn" >> deploy.env; else echo "CDN_HOST=cdn" >> deploy.env; fi
-  variables:
-    DEMO_ENV: "preprod"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-      when: on_success
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-  artifacts:
-    reports:
-      dotenv: deploy.env
-
-build_publish_demo_prod:
-  extends:
-    - build_publish_demo_preprod
-  variables:
-    DEMO_ENV: "prod"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-      when: manual
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-      when: manual
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-#### build and push demo preprod latest ####
-build_demo_preprod:latest:
-  stage: build_demo
-  image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
-  needs: ["build_publish_demo_preprod"]
-  before_script:
-    - "export VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
-    - if [ "$LATEST" = true ]; then export DIR_NAME="latest"; else export DIR_NAME=$VERSION; fi
-    - if [ "$DEMO_ENV" = "preprod" ]; then export WP_SCRIPT="buildPreprod"; elif [ "$DEMO_ENV" = "prod" ]; then export WP_SCRIPT="buildProd"; fi
-    - 'echo "Will publish version ${VERSION} to https://${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"'
-    - export ASSET_FULL_URL="https://${CDN_HOST}.doyoudreamup.com/dydubox/configurations/demo/${DEMO_ENV}/${DIR_NAME}"
-    - echo "DIR_NAME=${DIR_NAME}" >> deploy.env
-    - echo "DEMO_ENV=${DEMO_ENV}" >> deploy.env
-    - echo "CDN_HOST=${CDN_HOST}" >> deploy.env
-    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/137/repository/files/public%2Foverride%2Fbot%2Ejson/raw?ref=development --output public/override/bot.json'
-    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/137/repository/files/public%2Foverride%2Fconfiguration%2Ejson/raw?ref=development --output public/override/configuration.json'
-  script:
-    - echo "//nexus.doyoudreamup.com/repository/npm-private/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - echo "//nexus.doyoudreamup.com/repository/npm-public/:_auth=${NEXUS_NPM_TOKEN}" >> .npmrc
-    - npm ci --cache .npm --prefer-offline
-    - echo "npm run ${WP_SCRIPT}"
-    - "npm run ${WP_SCRIPT}"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-  variables:
-    LATEST: "true"
-  artifacts:
-    reports:
-      dotenv: deploy.env
-    expire_in: 1h
+    - zip -v -r ${CI_COMMIT_REF_NAME}.zip build/*
+    # TODO: use front user/password
+    - curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${CI_COMMIT_REF_NAME}.zip" "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
-      - build/**
-
-publish_demo_preprod:latest:
-  stage: publish_demo
-  image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
-  needs: ["build_demo_preprod:latest"]
-  script:
-    - if [ "$CDN_HOST" = "uat.cdn" ]; then export ANSIBLE_GROUP="uat"; else export ANSIBLE_GROUP="prod"; fi
-    - 'ls -larth build/'
-    - 'echo "ansible-playbook --verbose --inventory cdn_hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}""'
-    - 'ansible-playbook -v --inventory cdn_hosts.yml --limit "${ANSIBLE_GROUP}" deliver.yml -e "env=${DEMO_ENV} version=${DIR_NAME}"'
+      - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(development).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+  needs:
+    - build
+  when: manual
 
-#### build and push demo preprod version ####
-build_demo_preprod:version:
-  extends:
-    - build_demo_preprod:latest
-  variables:
-    LATEST: "false"
-
-publish_demo_preprod:version:
-  extends:
-    - publish_demo_preprod:latest
-  needs: ["build_demo_preprod:version"]
-
-#### build and push demo prod latest ####
-build_demo_prod:latest:
-  extends:
-    - build_demo_preprod:latest
-  needs: ["build_publish_demo_prod"]
-  variables:
-    LATEST: "true"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-publish_demo_prod:latest:
-  extends:
-    - publish_demo_preprod:latest
-  needs: ["build_demo_prod:latest"]
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-#### build and push demo prod version ####
-build_demo_prod:version:
-  extends:
-    - build_demo_preprod:latest
-  needs: ["build_publish_demo_prod"]
-  variables:
-    LATEST: "false"
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-publish_demo_prod:version:
-  extends:
-    - publish_demo_preprod:latest
-  needs: ["build_demo_prod:version"]
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(test_ci-cd).*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-    - if: '$DYDUBOX_TRIGGER == "true"'
-      when: never
-    - when: never
-
-update_version:
-  image: docker-registry.doyoudreamup.com/devops/build/node-build-tools:latest
-  stage: update_version
+publish:
+  stage: delivery
+  image: alpine:latest
   before_script:
-    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
-    - chmod +x /helper.sh
-    - /helper.sh loginGit
+    - apk add openssh-client rsync
+    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
   script:
-    - "export VERSION=$(npm --no-git-tag-version version minor | sed s/^v//g)"
-    - git restore package.json package-lock.json
-    - git checkout development && git pull
-    - 'sed -i "s/\"version\":.*\,$/\"version\": \"${VERSION}\",/g" package.json && cat package.json | grep version'
-    - git add package.json
-    - 'git commit -m "ci(release): Upgraded to ${VERSION}" && git push origin development'
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master).*/'
-      when: on_success
-
-mirror:
-  stage: mirror
-  image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
-  before_script:
-    - 'curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" -L https://gitlab.ci.dydu-priv.com/api/v4/projects/102/repository/files/helper.sh/raw?ref=master --output /helper.sh'
-    - chmod +x /helper.sh
-  script:
-    - '/helper.sh loginGit'
-    - 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-    - 'git fetch -v || true'
-    - 'git clone git@github.com:Do-you-dream-up/CV5.git repopub'
-    - 'cd repopub'
-    - 'git remote add this ${CI_PROJECT_DIR}'
-    - 'git fetch this --tags || true'
-    - 'git merge --no-edit --allow-unrelated-histories this/master'
-    - 'git remote remove this'
-    - 'git push'
-  rules:
-    - if: "$CI_COMMIT_REF_NAME =~ /^(master).*/"
-
-dydubox:
-  stage: replace
-  image: alpine
-  script:
-    - apk add curl zip
-    - ZIP_FILE="base_${BUILD_TARGET}_${CI_COMMIT_REF_NAME}.zip"
-    - export ASSET_FULL_URL="$CDN_PUBLIC_URL/$BUILD_TARGET/$BOT_UUID/$CONFIGURATION_UUID"
-    - echo "Public path url $ASSET_FULL_URL"
-    - 'curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --output "${ZIP_FILE}" ${STORE_PATH}/${BUILD_TARGET}/${ZIP_FILE}'
-    - unzip $ZIP_FILE
-    - ls -la
-    - find build/ -type f -print0 | xargs -0 sed -i "s@$KEY_TO_REPLACE@$ASSET_FULL_URL@g"
-    - |
-      cat > build/metadata.txt << EOF
-      DATE=$(date +"%y%m%d_%H%M")
-      BOT_UUID=$BOT_UUID
-      CONFIGURATION_UUID=$CONFIGURATION_UUID
-      CDN_PUBLIC_URL=$CDN_PUBLIC_URL
-      BUILD_TARGET=$BUILD_TARGET
-      JOB_ID=$CI_JOB_ID
-      CHATBOX_GIT_COMMIT=$CI_COMMIT_SHORT_SHA
-      CHATBOX_GIT_REF=$CI_COMMIT_REF_NAME
-      ASSET_FULL_URL=$ASSET_FULL_URL
-      EOF
-    - mv build $CONFIGURATION_UUID
-  only:
-    variables:
-      - $DYDUBOX_TRIGGER == "true" && $CONFIGURATION_UUID && $BOT_UUID && $BUILD_TARGET && $CDN_PUBLIC_URL
-  artifacts:
-    expire_in: 1h
+    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node1.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node2.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
-      - $CONFIGURATION_UUID/**
+      - build/
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+  needs:
+    - build
+  when: manual
 
 ...
