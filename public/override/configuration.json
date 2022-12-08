@@ -4,7 +4,7 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn": "https://cdn.doyoudreamup.com/",
+    "cdn": "https://cdn.doyoudreamup.com/chatbox/",
     "directory": "main/"
   },
   "avatar": {
