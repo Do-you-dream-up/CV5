@@ -6,7 +6,7 @@ stages:
 
 build:
   stage: integration
-  image: node:14-alpine
+  image: node:alpine
   before_script:
     - export CHATBOX_VERSION="${CI_COMMIT_REF_NAME}"
     - export CHATBOX_REVISION="${CI_COMMIT_SHORT_SHA}"
@@ -20,6 +20,7 @@ build:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^main_.*/'
   artifacts:
     paths:
       - .npm/_logs/
