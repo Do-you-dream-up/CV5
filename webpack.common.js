@@ -3,7 +3,7 @@ const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Eslint = require('eslint-webpack-plugin');
 const Html = require('html-webpack-plugin');
-const { version } = require('./package');
+const { version, releaseName } = require('./package');
 const now = DayJs().format('YYYY-MM-DD HH:mm');
 const DYDU_MODULES = require('./dydu-module/ModuleList');
 
@@ -34,7 +34,7 @@ const COMMON_PLUGIN_LIST = [
   new Html({
     hash: true,
     template: Path.resolve(__dirname, 'public/index.html'),
-    templateParameters: {hash: getCommitHash(), now, version},
+    templateParameters: {hash: getCommitHash(), now, version, releaseName},
   }),
 ];
 
