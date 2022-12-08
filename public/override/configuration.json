@@ -151,10 +151,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "displayNameBot": true,
-    "displayNameUser": true,
-    "NameUser": "Maxou",
-    "NameBot": "Batou",
+    "displayNameBot": false,
+    "displayNameUser": false,
+    "NameUser": "",
+    "NameBot": "",
     "loader": [400, 600]
   },
   "keycloak": {

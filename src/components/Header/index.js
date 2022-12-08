@@ -226,7 +226,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           )}
           {!!hasTitle && (
             <h1 className={c('dydu-header-title', classes.title)}>
-              coucouc ceci est un test
               <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
             </h1>
           )}
