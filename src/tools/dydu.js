@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -8,7 +6,6 @@ import {
   isDefined,
   isEmptyObject,
   isEmptyString,
-  isOfTypeFunction,
   isOfTypeString,
   isPositiveNumber,
   qualification,
@@ -75,12 +72,6 @@ let BOT, protocol, API;
 
   const overridedBot = channelsBot?.id && channelsBot?.server ? channelsBot : botData;
 
-  console.log('------------ LOADED BOT INFO ------------');
-  console.log(`BOT_ID: ${overridedBot?.id}`);
-  console.log(`SERVER: ${overridedBot?.server}`);
-  console.log(`BACKUP SERVER: ${overridedBot?.backUpServer}`);
-  console.log('-----------------------------------------');
-
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
@@ -94,6 +85,12 @@ let BOT, protocol, API;
   );
 
   Local.set(Local.names.botId, BOT.id);
+
+  console.log('------------ LOADED BOT INFO ------------');
+  console.log(`BOT_ID: ${BOT?.id}`);
+  console.log(`SERVER: ${BOT?.server}`);
+  console.log(`BACKUP SERVER: ${BOT?.backUpServer}`);
+  console.log('-----------------------------------------');
 
   protocol = 'https';
 
