@@ -34,7 +34,7 @@ const COMMON_PLUGIN_LIST = [
   new Html({
     hash: true,
     template: Path.resolve(__dirname, 'public/index.html'),
-    templateParameters: {hash: getCommitHash(), now, version, releaseName},
+    templateParameters: {hash: getCommitHash(), now, version, releaseName },
   }),
 ];
 
