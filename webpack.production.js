@@ -22,6 +22,8 @@ module.exports = (env) => {
   else {
     ASSET =  configuration.application.cdn + configuration.application.directory;
   }
+  
+  console.log("ASSET CDN URL", ASSET)
 
   return Merge.strategy({ plugins: 'prepend' })(common(env), {
     devtool: 'source-map',
