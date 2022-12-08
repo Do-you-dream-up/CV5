@@ -3,7 +3,6 @@
 stages:
   - integration
   - delivery
-  - quality
 
 build:
   stage: integration
@@ -21,6 +20,10 @@ build:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+  artifacts:
+    paths:
+      - .npm/_logs/
+    expire_in: 24h
 
 pack:
   stage: delivery
