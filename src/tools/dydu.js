@@ -540,7 +540,15 @@ export default new (class Dydu {
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data);
+    return this.emit(API.post, path, data).then(this.processTalkResponse);
+  };
+
+  processTalkResponse = (response) => {
+    const guiCSName = response?.guiCSName?.fromBase64();
+    if (guiCSName) {
+      return this.setSpace(guiCSName).then(() => response);
+    }
+    return response;
   };
 
   /**
