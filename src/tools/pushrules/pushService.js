@@ -4,6 +4,8 @@ import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
 import { VIEW_MODE } from '../../contexts/ViewModeProvider';
 import dydu from '../dydu';
+import { isDefined } from '../helpers';
+import configuration from '../../../public/override/configuration.json';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
@@ -88,6 +90,12 @@ export function processRules(externInfos) {
   handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
+let chatboxNodeElement = null;
+function getChatboxNodeElement() {
+  if (!isDefined(chatboxNodeElement)) chatboxNodeElement = document.getElementById(configuration?.root);
+  return chatboxNodeElement;
+}
+
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
   if (delay === 0) {
     pushKnowledge(delayRuleId);
@@ -104,7 +112,12 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
         if (document.attachEvent) {
           document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
         } else {
-          document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
+          const event = [INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId)];
+          try {
+            getChatboxNodeElement().addEventListener(...event);
+          } catch (e) {
+            document.addEventListener(...event);
+          }
         }
       }
       currentTimer.counter = setTimeout(() => {

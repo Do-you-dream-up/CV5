@@ -27,7 +27,7 @@ module.exports = env => Merge.smart(common(env), {
   mode: 'development',
   output: {
     filename: 'bundle.min.js',
-    chunkLoadingGlobal: 'dydu.bliss',
+    chunkLoadingGlobal: 'dydu.chatbox',
     path: Path.resolve(__dirname, 'build/'),
   },
   plugins: [

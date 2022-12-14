@@ -32,11 +32,10 @@ const getFilters = (utils) => [
     test: ({ name }) => name === 'img',
     process: (props) => {
       const { attribs } = props;
-      return (
-        <div onClick={() => utils.setZoomSrc(attribs?.src)}>
-          <img src={attribs?.src} />
-        </div>
-      );
+      attribs.onClick = function onClickImg() {
+        utils.setZoomSrc(attribs?.src);
+      };
+      return props;
     },
   },
 ];

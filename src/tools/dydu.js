@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
 import {
@@ -8,7 +6,6 @@ import {
   isDefined,
   isEmptyObject,
   isEmptyString,
-  isOfTypeFunction,
   isOfTypeString,
   isPositiveNumber,
   qualification,
@@ -76,12 +73,6 @@ let BOT, protocol, API;
 
   const overridedBot = channelsBot?.id && channelsBot?.server ? channelsBot : botData;
 
-  console.log('------------ LOADED BOT INFO ------------');
-  console.log(`BOT_ID: ${overridedBot?.id}`);
-  console.log(`SERVER: ${overridedBot?.server}`);
-  console.log(`BACKUP SERVER: ${overridedBot?.backUpServer}`);
-  console.log('-----------------------------------------');
-
   // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
   // and merge the both sources together into a BOT object (source 2 has priority over source 1)
   BOT = Object.assign(
@@ -95,6 +86,12 @@ let BOT, protocol, API;
   );
 
   Local.set(Local.names.botId, BOT.id);
+
+  console.log('------------ LOADED BOT INFO ------------');
+  console.log(`BOT_ID: ${BOT?.id}`);
+  console.log(`SERVER: ${BOT?.server}`);
+  console.log(`BACKUP SERVER: ${BOT?.backUpServer}`);
+  console.log('-----------------------------------------');
 
   protocol = 'https';
 
@@ -379,7 +376,7 @@ export default new (class Dydu {
    */
   getSpace = (strategy) => {
     if (!this.space || strategy) {
-      this.space = Local.get(Local.names.space, '');
+      this.space = Local.get(Local.names.space, configuration?.spaces?.items[0] || 'default', true);
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
@@ -400,11 +397,12 @@ export default new (class Dydu {
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
-            this.space = isOfTypeFunction(_get) ? _get(value) || this.space : this.space;
+            this.space = isDefined(_get) ? _get(value) : this.space;
           }
         });
       }
     }
+    Local.set(Local.names.space, this.space);
     return this.space;
   };
 
@@ -566,7 +564,15 @@ export default new (class Dydu {
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data);
+    return this.emit(API.post, path, data).then(this.processTalkResponse);
+  };
+
+  processTalkResponse = (response) => {
+    const guiCSName = response?.guiCSName?.fromBase64();
+    if (guiCSName) {
+      return this.setSpace(guiCSName).then(() => response);
+    }
+    return response;
   };
 
   /**

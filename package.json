@@ -1,6 +1,6 @@
 {
-  "name": "dydu-bliss",
-  "version": "5.35.0",
+  "name": "chatbox",
+  "version": "5.37.0",
   "private": true,
   "license": "MIT",
   "start_url": ".",
@@ -83,10 +83,7 @@
     "webpack-shell-plugin-next": "^1.2.0"
   },
   "scripts": {
-    "build": "webpack --env prod --env onprem --config webpack.production.js",
-    "buildCi": "webpack --env $BUILD_TARGET --env onprem --config webpack.production.js",
-    "buildProd": "webpack --env prod --env sass  --config webpack.production.js",
-    "buildPreprod": "webpack --env preprod --env sass --config webpack.production.js",
+    "build": "webpack --env sass --env CHATBOX_VERSION=\"$CHATBOX_VERSION\" CHATBOX_REVISION=\"$CHATBOX_REVISION\" --config webpack.production.js",
     "build:documentation": "styleguidist build --config .styleguide.config.js",
     "map": "source-map-explorer build/*bundle.min.js*",
     "start": "webpack-dev-server --config webpack.development.js",

@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-unresolved
 
 import '../../../public/override/style.css';
+import '../../../public/chatboxHomepage.css';
 
 import { AuthProtected, AuthProvider } from '../auth/context/AuthContext';
 import React, { Suspense, useContext, useEffect, useMemo } from 'react';
