@@ -201,6 +201,9 @@
   "pushrules": {
     "active": true
   },
+  "qualification": {
+    "active": false
+  },
   "root": "dydu-root",
   "secondary": {
     "automatic": {

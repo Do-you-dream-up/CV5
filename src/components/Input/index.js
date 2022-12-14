@@ -36,8 +36,6 @@ export default function Input({ onRequest, onResponse }) {
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
@@ -116,7 +114,7 @@ export default function Input({ onRequest, onResponse }) {
     (input) => {
       if (isLivechatOn) send(input);
       else {
-        talk(input, { qualification }).then(onResponse);
+        talk(input).then(onResponse);
       }
     },
     // eslint-disable-next-line
