@@ -39,15 +39,10 @@ export default function useAuthorizeRequest(configuration) {
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
       if (!Cookie.get('dydu-code-challenge')) {
-        console.log('🚀 ~ file: useAuthorizeRequest.js:43 ~ getPkce ~ verifier', verifier);
         Cookie.set('dydu-code-verifier', verifier);
         if (configuration?.pkceMode === 'S256') {
           Cookie.set('dydu-code-challenge', challenge);
         } else {
-          console.log(
-            '🚀 ~ file: useAuthorizeRequest.js:48 ~ getPkce ~ base64_urlencode(verifier)',
-            base64_urlencode(verifier),
-          );
           Cookie.set('dydu-code-challenge', base64_urlencode(verifier));
         }
       }

@@ -7,11 +7,8 @@ import Application from './components/Application';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
-import { OidcProvider } from './contexts/OidcContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { SamlProvider } from './contexts/SamlContext';
-import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
@@ -40,15 +37,9 @@ const renderApp = (theme) =>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
           <ViewModeProvider>
-            <OidcProvider>
-              <SamlProvider>
-                <EventsProvider>
-                  <UserActionProvider>
-                    <Application />
-                  </UserActionProvider>
-                </EventsProvider>
-              </SamlProvider>
-            </OidcProvider>
+            <EventsProvider>
+              <Application />
+            </EventsProvider>
           </ViewModeProvider>
         </ConfigurationProvider>
       </ThemeProvider>

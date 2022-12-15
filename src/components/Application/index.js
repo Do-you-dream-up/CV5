@@ -1,17 +1,18 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// eslint-disable-next-line import/no-unresolved
-
 import '../../../public/override/style.css';
 import '../../../public/chatboxHomepage.css';
 
-import React, { Suspense, useContext, useEffect } from 'react';
+import { AuthProtected, AuthProvider } from '../../components/auth/context/AuthContext';
+import React, { Suspense, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
+import { OidcProvider } from '../../contexts/OidcContext';
+import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
+import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { hasWizard } from '../../tools/wizard';
@@ -38,6 +39,8 @@ const Wizard = React.lazy(() =>
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
+  const classes = useStyles({ configuration });
 
   const {
     mode,
@@ -48,8 +51,17 @@ export default function Application() {
     toggle,
   } = useViewMode();
 
-  const event = useContext(EventsContext).onEvent('chatbox');
-  const classes = useStyles({ configuration });
+  const authConfiguration = useMemo(() => {
+    return {
+      clientId: process.env.OIDC_CLIENT_ID,
+      clientSecret: configuration?.oidc?.clientSecret,
+      pkceActive: configuration?.oidc?.pkceActive,
+      pkceMode: configuration?.oidc?.pkceMode,
+      provider: process.env.OIDC_URL,
+      scope: configuration?.oidc?.scopes,
+      authorizePath: '/auth',
+    };
+  }, [configuration?.oidc?.scopes]);
 
   let customFont = configuration.font.url;
 
@@ -66,15 +78,24 @@ export default function Application() {
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
         {hasWizard() && <Wizard />}
-
-        <DialogProvider onPushrulesDataReceived={popinChatbox}>
-          <SurveyProvider api={dydu}>
-            <LivechatProvider>
-              <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-            </LivechatProvider>
-          </SurveyProvider>
-          <Teaser open={isChatboxMinimize} toggle={toggle} />
-        </DialogProvider>
+        <AuthProvider configuration={authConfiguration}>
+          <AuthProtected enable={configuration?.oidc?.enable}>
+            <OidcProvider>
+              <SamlProvider>
+                <UserActionProvider>
+                  <DialogProvider onPushrulesDataReceived={popinChatbox}>
+                    <SurveyProvider api={dydu}>
+                      <LivechatProvider>
+                        <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                      </LivechatProvider>
+                    </SurveyProvider>
+                    <Teaser open={isChatboxMinimize} toggle={toggle} />
+                  </DialogProvider>
+                </UserActionProvider>
+              </SamlProvider>
+            </OidcProvider>
+          </AuthProtected>
+        </AuthProvider>
       </Suspense>
     </div>
   );

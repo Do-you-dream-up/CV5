@@ -36,10 +36,6 @@ export default function useTokenRequest(configuration) {
 
     if (isDefined(configuration?.clientSecret)) payload.client_secret = configuration?.clientSecret;
 
-    /*
-      correct redirectUri
-      TODO: fix it in |getPkce()|
-     */
     const redirectUri = removeQueryFromUri(payload.redirect_uri);
     payload.redirect_uri = redirectUri;
 

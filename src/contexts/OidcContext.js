@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { AuthProtected, AuthProvider } from '../components/auth/context/AuthContext';
-import React, { createContext, useEffect, useMemo } from 'react';
+import React, { createContext, useEffect } from 'react';
 
 import Storage from '../components/auth/Storage';
 import { useConfiguration } from './ConfigurationContext';
@@ -20,18 +19,6 @@ export const OidcProvider = ({ children }) => {
     if (hasAuthStorageCheck && !token?.access_token) close();
   }, [close, hasAuthStorageCheck, token?.access_token]);
 
-  const authConfiguration = useMemo(() => {
-    return {
-      clientId: process.env.OIDC_CLIENT_ID,
-      clientSecret: configuration?.oidc?.clientSecret,
-      pkceActive: configuration?.oidc?.pkceActive,
-      pkceMode: configuration?.oidc?.pkceMode,
-      provider: process.env.OIDC_URL,
-      scope: configuration?.oidc?.scopes,
-      authorizePath: '/auth',
-    };
-  }, [configuration?.oidc?.scopes]);
-
   const value = {};
 
   const displayChatbox = () => {
@@ -46,11 +33,5 @@ export const OidcProvider = ({ children }) => {
 
   const renderChildren = () => (displayChatbox() ? children : <></>);
 
-  return (
-    <OidcContext.Provider value={value}>
-      <AuthProvider configuration={authConfiguration}>
-        <AuthProtected enable={configuration?.oidc?.enable}>{renderChildren()}</AuthProtected>
-      </AuthProvider>
-    </OidcContext.Provider>
-  );
+  return <OidcContext.Provider value={value}>{renderChildren()}</OidcContext.Provider>;
 };
