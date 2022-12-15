@@ -4,8 +4,7 @@
 import '../../../public/override/style.css';
 import '../../../public/chatboxHomepage.css';
 
-import { AuthProtected, AuthProvider } from '../auth/context/AuthContext';
-import React, { Suspense, useContext, useEffect, useMemo } from 'react';
+import React, { Suspense, useContext, useEffect } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
@@ -15,9 +14,7 @@ import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { findValueByKey } from '../../tools/findValueByKey';
 import { hasWizard } from '../../tools/wizard';
-import { parseString } from '../../tools/parseString';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
@@ -43,7 +40,6 @@ export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
 
   const {
-    close: closeChatbox,
     mode,
     popin: popinChatbox,
     isOpen: isChatboxOpen,
@@ -54,66 +50,31 @@ export default function Application() {
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const classes = useStyles({ configuration });
-  // eslint-disable-next-line no-unused-vars
 
   let customFont = configuration.font.url;
-
-  const hasAuthStorageCheck = configuration.checkAuthorization?.active;
-  const sessionStorageKey = configuration.checkAuthorization?.sessionStorageKey;
-  const searchKey = configuration.checkAuthorization?.searchKey;
-
-  //const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
-
-  // get the session storage value based on the sessionStorageKey
-  const sessionStorageValue = parseString(sessionStorage.getItem(sessionStorageKey));
-  // if the session storage value is a deep nested object, check for the searchKey
-  const sessionToken =
-    sessionStorageValue && typeof sessionStorageValue === 'object'
-      ? findValueByKey(sessionStorageValue, searchKey)
-      : sessionStorageValue;
-  const isAuthorized = sessionToken && !!sessionToken.length && !!sessionToken[0];
 
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
 
   useEffect(() => {
-    if (hasAuthStorageCheck && !isAuthorized) closeChatbox();
-  }, [closeChatbox, hasAuthStorageCheck, isAuthorized]);
-
-  useEffect(() => {
     event('loadChatbox');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const authConfiguration = useMemo(() => {
-    return {
-      clientId: process.env.OIDC_CLIENT_ID,
-      clientSecret: configuration?.oidc?.clientSecret,
-      pkceActive: configuration?.oidc?.pkceActive,
-      pkceMode: configuration?.oidc?.pkceMode,
-      provider: process.env.OIDC_URL,
-      scope: configuration?.oidc?.scopes,
-      authorizePath: '/auth',
-    };
-  }, [configuration?.oidc?.scopes]);
 
   return (
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
         {hasWizard() && <Wizard />}
-        <AuthProvider configuration={authConfiguration}>
-          <AuthProtected enable={configuration?.oidc?.enable}>
-            <DialogProvider onPushrulesDataReceived={popinChatbox}>
-              <SurveyProvider api={dydu}>
-                <LivechatProvider>
-                  <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                </LivechatProvider>
-              </SurveyProvider>
-              <Teaser open={isChatboxMinimize} toggle={toggle} />
-            </DialogProvider>
-          </AuthProtected>
-        </AuthProvider>
+
+        <DialogProvider onPushrulesDataReceived={popinChatbox}>
+          <SurveyProvider api={dydu}>
+            <LivechatProvider>
+              <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+            </LivechatProvider>
+          </SurveyProvider>
+          <Teaser open={isChatboxMinimize} toggle={toggle} />
+        </DialogProvider>
       </Suspense>
     </div>
   );

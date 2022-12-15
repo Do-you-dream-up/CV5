@@ -7,6 +7,7 @@ import Application from './components/Application';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
+import { OidcProvider } from './contexts/OidcContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { SamlProvider } from './contexts/SamlContext';
@@ -38,15 +39,17 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <SamlProvider>
-            <ViewModeProvider>
-              <EventsProvider>
-                <UserActionProvider>
-                  <Application />
-                </UserActionProvider>
-              </EventsProvider>
-            </ViewModeProvider>
-          </SamlProvider>
+          <ViewModeProvider>
+            <OidcProvider>
+              <SamlProvider>
+                <EventsProvider>
+                  <UserActionProvider>
+                    <Application />
+                  </UserActionProvider>
+                </EventsProvider>
+              </SamlProvider>
+            </OidcProvider>
+          </ViewModeProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,

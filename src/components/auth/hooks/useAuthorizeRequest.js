@@ -64,7 +64,6 @@ export default function useAuthorizeRequest(configuration) {
           codeChallengeMethod: configuration?.pkceMode,
         }),
       };
-      console.log('🚀 ~ file: useAuthorizeRequest.js ~ line 72 ~ authorize ~ query', query);
 
       const queryParams = objectToQueryParam(snakeCaseFields(query));
 
@@ -74,7 +73,6 @@ export default function useAuthorizeRequest(configuration) {
       let { provider, authorizePath = '/authorize' } = configuration;
       if (!authorizePath.startsWith('/')) authorizePath = '/' + authorizePath;
       const url = provider + authorizePath + '?' + queryParams;
-      console.log('🚀 ~ file: useAuthorizeRequest.js ~ line 72 ~ getPkce ~ url', url);
 
       window.location.replace(url);
     });
