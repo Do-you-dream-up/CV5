@@ -53,13 +53,13 @@ export default function Application() {
 
   const authConfiguration = useMemo(() => {
     return {
-      clientId: process.env.OIDC_CLIENT_ID,
+      clientId: configuration.oidc.clientId,
       clientSecret: configuration?.oidc?.clientSecret,
       pkceActive: configuration?.oidc?.pkceActive,
       pkceMode: configuration?.oidc?.pkceMode,
-      provider: process.env.OIDC_URL,
+      providerUrl: configuration.oidc.providerUrl,
+      tokenUrl: configuration.oidc.tokenUrl,
       scope: configuration?.oidc?.scopes,
-      authorizePath: '/auth',
     };
   }, [configuration?.oidc?.scopes]);
 

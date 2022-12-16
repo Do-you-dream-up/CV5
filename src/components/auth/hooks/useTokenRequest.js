@@ -53,15 +53,14 @@ export default function useTokenRequest(configuration) {
     /*
       construct url
      */
-    let { provider, tokenPath = '/token' } = configuration;
-    if (!tokenPath.startsWith('/')) tokenPath = '/' + tokenPath;
-    const url = provider + tokenPath;
+    let { tokenUrl } = configuration;
 
-    console.log('fetchtoken: url', url);
+    console.log('fetchtoken: url', tokenUrl);
+
     /*
       process fetch
      */
-    return fetch(url, optionFetch)
+    return fetch(tokenUrl, optionFetch)
       .then((r) => responseToJsonOrThrowError(r, 'token fetch'))
       .then((token) => {
         const { expires_in } = token;

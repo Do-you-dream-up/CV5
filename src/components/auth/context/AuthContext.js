@@ -84,10 +84,10 @@ AuthProvider.propTypes = {
   children: PropTypes.any,
   configuration: PropTypes.shape({
     clientId: PropTypes.string,
-    authorizePath: PropTypes.string,
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
-    provider: PropTypes.string,
+    providerUrl: PropTypes.string,
+    tokenUrl: PropTypes.string,
     scope: PropTypes.array,
   }),
 };

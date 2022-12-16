@@ -65,11 +65,8 @@ export default function useAuthorizeRequest(configuration) {
       /*
       construct url
      */
-      let { provider, authorizePath = '/authorize' } = configuration;
-      if (!authorizePath.startsWith('/')) authorizePath = '/' + authorizePath;
-      const url = provider + authorizePath + '?' + queryParams;
-
-      window.location.replace(url);
+      const { providerUrl } = configuration;
+      window.location.replace(providerUrl + '?' + queryParams);
     });
   }, [configuration]);
 

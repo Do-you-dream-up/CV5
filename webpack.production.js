@@ -11,10 +11,7 @@ module.exports = (env) => {
   let ASSET = './';
   
   const QUALIFICATION = env.prod ? false : true;
-  
-  const OIDC_CLIENT_ID = !QUALIFICATION ? JSON.stringify(configuration.oidc.clientIdProd) : JSON.stringify(configuration.oidc.clientIdPreprod);
-  const OIDC_URL = !QUALIFICATION ? JSON.stringify(configuration.oidc.prodPorovider) : JSON.stringify(configuration.oidc.preprodPorovider);
-  
+    
   console.log("env.CHATBOX_VERSION", env.CHATBOX_VERSION)
   console.log("env.CHATBOX_REVISION", env.CHATBOX_REVISION)
 
@@ -55,8 +52,6 @@ module.exports = (env) => {
       }),
       new webpack.DefinePlugin({
         'process.env': {
-          OIDC_CLIENT_ID: OIDC_CLIENT_ID,
-          OIDC_URL: OIDC_URL,
           PUBLIC_URL: JSON.stringify(ASSET),
           QUALIFICATION,
         },

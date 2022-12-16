@@ -181,11 +181,14 @@
   },
   "oidc": {
     "enable": false,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "prodProvider": "",
-    "preprodProvider": "",
-    "scopes": [""]
+    "clientId": "",
+    "clientSecret": "",
+    "pkceActive": false,
+    "pkceMode": "S256",
+    "providerUrl": "",
+    "tokenUrl": "",
+    "scopes": [""],
+    "withAuth": false
   },
   "onboarding": {
     "enable": false,
