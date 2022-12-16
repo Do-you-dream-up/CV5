@@ -22,13 +22,10 @@ export const OidcProvider = ({ children }) => {
   const value = {};
 
   const displayChatbox = () => {
-    if (configuration?.oidc?.enable && token?.access_token) {
-      return true;
-    }
     if (configuration?.oidc?.enable && !token?.access_token) {
       return false;
     }
-    return false;
+    return true;
   };
 
   const renderChildren = () => (displayChatbox() ? children : <></>);

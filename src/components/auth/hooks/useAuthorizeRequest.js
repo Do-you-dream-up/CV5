@@ -34,8 +34,6 @@ export default function useAuthorizeRequest(configuration) {
   const authorize = useCallback(async () => {
     const pkce = loadPkce();
 
-    // console.log('/* PREPARE AUTHORIZE REQUEST */', { pkce });
-
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
       if (!Cookie.get('dydu-code-challenge')) {
