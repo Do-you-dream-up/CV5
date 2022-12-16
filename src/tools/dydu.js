@@ -87,12 +87,6 @@ let BOT, protocol, API;
 
   Local.set(Local.names.botId, BOT.id);
 
-  console.log('------------ LOADED BOT INFO ------------');
-  console.log(`BOT_ID: ${BOT?.id}`);
-  console.log(`SERVER: ${BOT?.server}`);
-  console.log(`BACKUP SERVER: ${BOT?.backUpServer}`);
-  console.log('-----------------------------------------');
-
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
