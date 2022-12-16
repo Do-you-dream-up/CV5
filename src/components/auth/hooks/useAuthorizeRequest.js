@@ -65,8 +65,8 @@ export default function useAuthorizeRequest(configuration) {
       /*
       construct url
      */
-      const { providerUrl } = configuration;
-      window.location.replace(providerUrl + '?' + queryParams);
+      const { authUrl } = configuration;
+      window.location.replace(authUrl + '?' + queryParams);
     });
   }, [configuration]);
 

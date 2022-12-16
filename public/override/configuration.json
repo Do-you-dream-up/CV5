@@ -184,7 +184,7 @@
     "clientSecret": "11c73203-8181-408f-a7be-c7f99d26f62d",
     "pkceActive": true,
     "pkceMode": "S256",
-    "providerUrl": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect/auth",
+    "authUrl": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect/auth",
     "tokenUrl": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect/token",
     "scopes": ["openid"],
     "withAuth": true

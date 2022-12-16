@@ -188,7 +188,7 @@
     "clientSecret": "",
     "pkceActive": false,
     "pkceMode": "S256",
-    "providerUrl": "",
+    "authUrl": "",
     "tokenUrl": "",
     "scopes": [""],
     "withAuth": false

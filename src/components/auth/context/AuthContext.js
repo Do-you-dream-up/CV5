@@ -86,7 +86,7 @@ AuthProvider.propTypes = {
     clientId: PropTypes.string,
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
-    providerUrl: PropTypes.string,
+    authUrl: PropTypes.string,
     tokenUrl: PropTypes.string,
     scope: PropTypes.array,
   }),

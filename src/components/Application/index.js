@@ -57,7 +57,7 @@ export default function Application() {
       clientSecret: configuration?.oidc?.clientSecret,
       pkceActive: configuration?.oidc?.pkceActive,
       pkceMode: configuration?.oidc?.pkceMode,
-      providerUrl: configuration.oidc.providerUrl,
+      authUrl: configuration.oidc.authUrl,
       tokenUrl: configuration.oidc.tokenUrl,
       scope: configuration?.oidc?.scopes,
     };
