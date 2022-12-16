@@ -844,9 +844,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   instance.interceptors.request.use(
     (config) => {
       if (configuration?.oidc?.withAuth) {
-        config.headers['Authorization'] = `Bearer ${
-          Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').access_token : null
-        }`;
+        config.headers['Authorization'] = `Bearer ${Cookie.get('dydu-oauth-token')?.access_token}`;
       }
       return config;
     },
