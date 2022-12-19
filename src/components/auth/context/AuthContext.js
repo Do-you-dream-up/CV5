@@ -3,6 +3,7 @@ import { currentLocationContainsCodeParamater, currentLocationContainsError, isD
 
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
+import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 import useTokenRequest from '../hooks/useTokenRequest';
@@ -72,7 +73,7 @@ export function AuthProtected({ children, enable = false }) {
   useEffect(() => {
     console.log('AuthProtected/Effect() :', { isLoggedIn });
     if (!enable) return;
-    if (!isLoggedIn) login();
+    if (!isLoggedIn && !isLoadedFromChannels()) login();
   }, [isLoggedIn, login]);
 
   if (!enable) return children;

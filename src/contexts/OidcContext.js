@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useLayoutEffect } from 'react';
 import { getOidcEnableStatus, setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../tools/oidc';
 
 import Storage from '../components/auth/Storage';
+import { isLoadedFromChannels } from '../tools/wizard';
 import { useConfiguration } from './ConfigurationContext';
 import { useViewMode } from './ViewModeProvider';
 
@@ -28,6 +29,9 @@ export const OidcProvider = ({ children }) => {
   const value = {};
 
   const displayChatbox = () => {
+    if (isLoadedFromChannels()) {
+      return true;
+    }
     if (getOidcEnableStatus() && !token?.access_token) {
       return false;
     }
