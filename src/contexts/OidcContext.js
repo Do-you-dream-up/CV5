@@ -29,15 +29,14 @@ export const OidcProvider = ({ children }) => {
   const value = {};
 
   const displayChatbox = () => {
-    if (isLoadedFromChannels()) {
-      return true;
-    } else if (getOidcEnableStatus() && !token?.access_token) {
+    if (getOidcEnableStatus() && !token?.access_token) {
       return false;
     }
     return true;
   };
 
-  const renderChildren = () => (displayChatbox() ? children : <></>);
+  console.log('🚀 ~ file: OidcContext.js:39 ~ OidcProvider ~ isLoadedFromChannels()', isLoadedFromChannels());
+  const renderChildren = () => (isLoadedFromChannels() || displayChatbox() ? children : <></>);
 
   return <OidcContext.Provider value={value}>{renderChildren()}</OidcContext.Provider>;
 };
