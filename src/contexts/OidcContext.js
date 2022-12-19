@@ -35,7 +35,6 @@ export const OidcProvider = ({ children }) => {
     return true;
   };
 
-  console.log('🚀 ~ file: OidcContext.js:39 ~ OidcProvider ~ isLoadedFromChannels()', isLoadedFromChannels());
   const renderChildren = () => (isLoadedFromChannels() || displayChatbox() ? children : <></>);
 
   return <OidcContext.Provider value={value}>{renderChildren()}</OidcContext.Provider>;

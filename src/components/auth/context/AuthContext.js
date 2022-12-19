@@ -3,6 +3,8 @@ import { currentLocationContainsCodeParamater, currentLocationContainsError, isD
 
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
+import { getOidcEnableStatus } from '../../../tools/oidc';
+import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 import useTokenRequest from '../hooks/useTokenRequest';
@@ -55,7 +57,10 @@ export function AuthProvider({ children, configuration }) {
   const login = useCallback(() => {
     console.log('LOGIN TRY');
     const canRequestAuthorize =
-      !isLoggedIn && !currentLocationContainsCodeParamater() && !currentLocationContainsError();
+      getOidcEnableStatus() &&
+      !isLoggedIn &&
+      !currentLocationContainsCodeParamater() &&
+      !currentLocationContainsError();
 
     if (tokenRetries > 3 || canRequestAuthorize) authorize();
   }, [authorize, isLoggedIn, tokenRetries]);
@@ -83,9 +88,20 @@ export function AuthProtected({ children, enable = false }) {
     if (!isLoggedIn) login();
   }, [isLoggedIn, login]);
 
+  const canDisplayChatbot = () => {
+    if (isLoadedFromChannels()) {
+      return true;
+    } else if (isLoggedIn && enable) {
+      return true;
+    } else if (!enable) {
+      return true;
+    }
+    return false;
+  };
+
   if (!enable) return children;
 
-  return isLoggedIn && enable ? children : null;
+  return canDisplayChatbot() ? children : null;
 }
 
 AuthProvider.propTypes = {
