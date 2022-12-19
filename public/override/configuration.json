@@ -183,7 +183,7 @@
     "clientId": "",
     "clientSecret": "",
     "pkceActive": false,
-    "pkceMode": "S256",
+    "pkceMode": "",
     "authUrl": "",
     "tokenUrl": "",
     "scopes": [""],
