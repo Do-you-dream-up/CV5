@@ -81,7 +81,7 @@ export function AuthProtected({ children, enable = false }) {
   useEffect(() => {
     console.log('AuthProtected/Effect() :', { isLoggedIn });
     if (!enable) return;
-    if (!isLoggedIn && !isLoadedFromChannels()) login();
+    if (!isLoggedIn) login();
   }, [isLoggedIn, login]);
 
   if (!enable) return children;
