@@ -31,8 +31,7 @@ export const OidcProvider = ({ children }) => {
   const displayChatbox = () => {
     if (isLoadedFromChannels()) {
       return true;
-    }
-    if (getOidcEnableStatus() && !token?.access_token) {
+    } else if (getOidcEnableStatus() && !token?.access_token) {
       return false;
     }
     return true;
