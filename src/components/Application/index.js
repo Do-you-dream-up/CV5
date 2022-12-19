@@ -15,6 +15,7 @@ import Teaser from '../Teaser';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import { getOidcEnableStatus } from '../../tools/oidc';
 import { hasWizard } from '../../tools/wizard';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
@@ -79,7 +80,7 @@ export default function Application() {
       <Suspense fallback={null}>
         {hasWizard() && <Wizard />}
         <AuthProvider configuration={authConfiguration}>
-          <AuthProtected enable={configuration?.oidc?.enable}>
+          <AuthProtected enable={getOidcEnableStatus()}>
             <OidcProvider>
               <SamlProvider>
                 <UserActionProvider>

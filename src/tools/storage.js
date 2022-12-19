@@ -70,6 +70,8 @@ export class Cookie {
   static names = {
     locale: 'dydu.locale',
     samlEnable: 'dydu.saml.enable',
+    oidcEnable: 'dydu.oidc.enable',
+    oidcWithAuthEnable: 'dydu.oidcWithAuth.enable',
   };
 
   static duration = {

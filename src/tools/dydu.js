@@ -12,6 +12,7 @@ import {
   strContains,
   toFormUrlEncoded,
 } from './helpers';
+import { getOidcEnableStatus, getOidcEnableWithAuthStatus } from './oidc';
 
 import Bowser from 'bowser';
 import Storage from '../components/auth/Storage';
@@ -189,7 +190,7 @@ export default new (class Dydu {
           /**
            * IF OIDC ACTIVATED WITH REFRESH TOKEN
            */
-          if (configuration?.oidc?.enable && Storage.loadToken()?.refresh_token) {
+          if (getOidcEnableStatus() && Storage.loadToken()?.refresh_token) {
             this.tokenRefresher();
             console.log('OIDC Refresh Token');
           }
@@ -843,7 +844,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   instance.interceptors.request.use(
     (config) => {
-      if (configuration?.oidc?.withAuth) {
+      if (getOidcEnableWithAuthStatus()) {
         config.headers['Authorization'] = `Bearer ${Cookie.get('dydu-oauth-token')?.access_token}`;
       }
       return config;
