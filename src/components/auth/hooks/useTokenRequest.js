@@ -16,6 +16,7 @@ import dydu from '../../../tools/dydu';
 export default function useTokenRequest(configuration) {
   const [error, setError] = useState(false);
   const [currentToken, setCurrentToken] = useState(null);
+  const [tokenRetries, setTokenRetries] = useState(0);
 
   const fetchToken = useCallback(() => {
     console.log('/* PREPARE FETCH TOKEN REQUEST */');
@@ -56,6 +57,7 @@ export default function useTokenRequest(configuration) {
     let { tokenUrl } = configuration;
 
     console.log('fetchtoken: url', tokenUrl);
+    console.log('retries', tokenRetries);
 
     /*
       process fetch
@@ -69,15 +71,17 @@ export default function useTokenRequest(configuration) {
           // add 'expires_at', with the given slack
           token.expires_at = new Date(new Date().getTime() + expires_in * 1000 - slackSeconds * 1000);
         }
+        setTokenRetries(0);
         setCurrentToken(token);
         return token;
       })
       .catch((e) => {
         console.error('error fetching token');
+        setTokenRetries(tokenRetries + 1);
         setError(e);
         throw new Error('error: fetching token', e);
       });
-  }, [configuration]);
+  }, [configuration, tokenRetries]);
 
   useEffect(() => {
     const token = currentToken || Storage.loadToken();
@@ -89,6 +93,7 @@ export default function useTokenRequest(configuration) {
 
   return {
     fetchToken,
+    tokenRetries,
     error,
   };
 }

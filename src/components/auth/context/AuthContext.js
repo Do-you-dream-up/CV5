@@ -18,8 +18,15 @@ export function AuthProvider({ children, configuration }) {
   const [userInfo, setUserInfo] = useState(null);
 
   const { authorize } = useAuthorizeRequest(configuration);
-  const { fetchToken } = useTokenRequest(configuration);
+  const { fetchToken, tokenRetries } = useTokenRequest(configuration);
   const { getUserInfoWithToken } = useUserInfo(configuration);
+
+  useEffect(() => {
+    if (tokenRetries > 3) {
+      login();
+      Storage.clearToken();
+    }
+  }, [tokenRetries]);
 
   useEffect(() => {
     const canRequestToken =
@@ -47,11 +54,12 @@ export function AuthProvider({ children, configuration }) {
   }, [token, isLoggedIn, getUserInfoWithToken]);
 
   const login = useCallback(() => {
+    console.log('LOGIN TRY');
     const canRequestAuthorize =
       !isLoggedIn && !currentLocationContainsCodeParamater() && !currentLocationContainsError();
 
-    if (canRequestAuthorize) authorize();
-  }, [authorize, isLoggedIn]);
+    if (tokenRetries > 3 || canRequestAuthorize) authorize();
+  }, [authorize, isLoggedIn, tokenRetries]);
 
   const dataContext = useMemo(
     () => ({

@@ -192,7 +192,6 @@ export default new (class Dydu {
            */
           if (getOidcEnableStatus() && Storage.loadToken()?.refresh_token) {
             this.tokenRefresher();
-            console.log('OIDC Refresh Token');
           }
         }
 

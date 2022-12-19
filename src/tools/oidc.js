@@ -11,7 +11,10 @@ export const getOidcEnableWithAuthStatus = () => {
   const localConfig = Local.get(Local.names.wizard);
   const oidcWithAuthCookieEnable = Cookie.get(Cookie.names.oidcWithAuthEnable);
 
-  return oidcWithAuthCookieEnable ?? localConfig?.oidc?.withAuth;
+  if (getOidcEnableStatus()) {
+    return oidcWithAuthCookieEnable ?? localConfig?.oidc?.withAuth;
+  }
+  return false;
 };
 
 export const setOidcEnableCookie = (value) => {
