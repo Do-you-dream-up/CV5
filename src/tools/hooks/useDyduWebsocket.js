@@ -228,7 +228,7 @@ export default function useDyduWebsocket() {
 
   const sendSurvey = useCallback((surveyAnswer) => {
     const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
-    sendJsonMessage(message);
+    trySendMessage(message);
   }, []);
 
   const trySendMessage = useCallback((message) => {

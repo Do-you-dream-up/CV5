@@ -321,6 +321,14 @@ export class Local {
       localStorage.setItem(keyString, generatedClientId);
     },
   });
+  static secondary = Object.create({
+    getKey: () => Local.names.secondary,
+    load: () => localStorage.getItem(Local.secondary.getKey()) || false,
+    save: (newValue) => {
+      const currentSaved = Local.secondary.load();
+      if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
+    },
+  });
 }
 
 const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);

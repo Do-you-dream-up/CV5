@@ -72,4 +72,5 @@ export const REGEX_URL = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm;
 
 export const CHATBOX_EVENT_NAME = {
   newMessage: 'dydu/event__newMessage',
+  closeSecondary: 'dydu/event__closeSecondary',
 };
