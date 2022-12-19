@@ -56,9 +56,6 @@ export default function useTokenRequest(configuration) {
      */
     let { tokenUrl } = configuration;
 
-    console.log('fetchtoken: url', tokenUrl);
-    console.log('retries', tokenRetries);
-
     /*
       process fetch
      */
