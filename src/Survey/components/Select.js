@@ -3,6 +3,7 @@ import { isDefined } from '../../tools/helpers';
 import FieldBlock from '../FieldBlock';
 import PropTypes from 'prop-types';
 import Field from '../Field';
+import MessageRequired from '../MessageRequired';
 
 export default function Select({ field }) {
   const [currentOptionFieldInstance, setCurrentOptionFieldInstance] = useState();
@@ -50,6 +51,10 @@ export default function Select({ field }) {
   const content = useMemo(() => {
     return (
       <>
+        <p className={'question'}>
+          {field.getLabel()}
+          <MessageRequired field={field} />
+        </p>
         <select {...selectAttributes}>{options}</select>
         <div className="slaves">{slaves}</div>
       </>

@@ -1,5 +1,13 @@
 /* eslint-disable */
-import { browserName, isDefined, isEmptyString, isOfTypeString, osName } from './helpers';
+import {
+  browserName,
+  isDefined,
+  isEmptyString,
+  isOfTypeString,
+  osName,
+  recursiveBase64DecodeString,
+  recursiveBase64EncodeString,
+} from './helpers';
 import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
 
 let PAYLOAD_COMMON_CONTENT = {
@@ -32,15 +40,18 @@ const REQUEST_TYPE = {
 };
 
 const LivechatPayloadCreator = {
-  surveyAnswerMessage: (surveyAnswer) => ({
-    type: REQUEST_TYPE.survey,
-    parameters: {
-      ...getPayloadCommonContentBase64Encoded(),
-      surveyId: surveyAnswer.surveyId,
-      interactionSurveyAnswer: surveyAnswer.interactionSurvey,
-      fields: surveyAnswer.fields,
-    },
-  }),
+  surveyAnswerMessage: (surveyAnswer) => {
+    const fields = recursiveBase64EncodeString(surveyAnswer.fields);
+    return {
+      type: REQUEST_TYPE.survey,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        surveyId: surveyAnswer.surveyId,
+        interactionSurveyAnswer: surveyAnswer.interactionSurvey,
+        fields,
+      },
+    };
+  },
   userTypingMessage: (userInput = '') => ({
     type: REQUEST_TYPE.typing,
     parameters: {

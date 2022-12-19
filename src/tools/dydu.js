@@ -711,6 +711,17 @@ export default new (class Dydu {
   post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
+  createSurveyFormDataWithPayload = (payload) => {
+    const formData = new FormData();
+    try {
+      formData.append('contextUuid', payload.parameters.contextId);
+      formData.append('solutionUsed ', SOLUTION_TYPE.assistant);
+      formData.append('fields', payload.parameters.fields);
+    } catch (e) {
+      console.error('while creating form data with survey payload', e);
+      return;
+    }
+  };
   createSurveyRequestPayload = async (survey = {}, options = {}) => {
     if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
     if (isEmptyObject(options)) options = { qualification: qualification };
@@ -720,8 +731,8 @@ export default new (class Dydu {
       parameters: {
         botId: this.getBot().id,
         surveyId: survey.surveyId,
-        interactionSurveyAnswer: false,
-        fields: b64encodeObject(survey),
+        interactionSurveyAnswer: survey.interactionSurvey,
+        fields: b64encodeObject(survey.fields),
         contextId: await this.getContextId(),
         qualificationMode: options.qualification || false,
         language: this.getLocale(),
@@ -737,9 +748,9 @@ export default new (class Dydu {
 
   sendSurvey = async (surveyAnswer, options = {}) => {
     const payload = await this.createSurveyRequestPayload(surveyAnswer, options);
-    const surveyQueryString = this.#toQueryString(payload);
-    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${surveyQueryString}`;
-    return this.get(path);
+    const formData = this.createSurveyFormDataWithPayload(payload);
+    const path = `/chat/survey${BOT.id}`;
+    return this.post(path, formData);
   };
 
   getSurvey = async (surveyId = '') => {

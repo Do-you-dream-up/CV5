@@ -123,6 +123,7 @@ export function LivechatProvider({ children }) {
 
   const sendSurvey = useCallback(
     (surveyResponse) => {
+      console.log('livechat sending survey', surveyResponse);
       if (!isDefined(tunnel)) put(surveyResponse);
       else tunnel?.sendSurvey(surveyResponse);
     },

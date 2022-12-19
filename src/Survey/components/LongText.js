@@ -4,6 +4,7 @@ import FieldBlock from '../FieldBlock';
 import PropTypes from 'prop-types';
 import Field from '../Field';
 import { useTextInputConfig } from './useTextInputConfig';
+import MessageRequired from '../MessageRequired';
 
 export default function LongText({ field }) {
   const { attributes } = useTextInputConfig();
@@ -16,21 +17,25 @@ export default function LongText({ field }) {
     [field],
   );
 
-  const inputTextAttributes = useMemo(() => {
+  const inputTextAttributes = useCallback(() => {
     return {
       ...attributes.root,
       onChange,
+      defaultValue: field.getUserAnswerValue()?.value,
       maxLength: 200,
       rows: 5,
       style: attributes.style,
     };
-  }, [onChange]);
+  }, [onChange, field]);
 
   const content = useMemo(() => {
     return (
       <div className={'long-text'}>
-        <p>{field.getLabel()}</p>
-        <textarea {...inputTextAttributes} />
+        <p className={'question'}>
+          {field.getLabel()}
+          <MessageRequired field={field} />
+        </p>
+        <textarea {...inputTextAttributes()} />
       </div>
     );
   }, [field, inputTextAttributes]);

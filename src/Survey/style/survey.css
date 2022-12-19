@@ -77,6 +77,20 @@
   margin-bottom: 0.5rem;
 }
 
-.survey-form-container .query {
-  padding-left: 0.5rem;
+.survey-form-container .question .message-field-required {
+  font-style: normal;
+  position: absolute;
+  padding: 0.5rem 0.7rem;
+  top: -1.6rem;
+  right: 0;
+  color: rgba(242, 96, 85);
+  border-radius: 0.3rem;
+  font-size: 0.77rem;
+}
+
+.survey-form-container .question {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  padding: 0 0.5rem;
 }
