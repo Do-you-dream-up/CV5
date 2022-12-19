@@ -3,6 +3,7 @@ import '../../../public/chatboxHomepage.css';
 
 import { AuthProtected, AuthProvider } from '../../components/auth/context/AuthContext';
 import React, { Suspense, useContext, useEffect, useMemo } from 'react';
+import { hasWizard, isLoadedFromChannels } from '../../tools/wizard';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
@@ -16,7 +17,6 @@ import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { getOidcEnableStatus } from '../../tools/oidc';
-import { hasWizard } from '../../tools/wizard';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
@@ -80,7 +80,7 @@ export default function Application() {
       <Suspense fallback={null}>
         {hasWizard() && <Wizard />}
         <AuthProvider configuration={authConfiguration}>
-          <AuthProtected enable={getOidcEnableStatus()}>
+          <AuthProtected enable={!isLoadedFromChannels() || getOidcEnableStatus()}>
             <OidcProvider>
               <SamlProvider>
                 <UserActionProvider>
