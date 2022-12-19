@@ -179,15 +179,15 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": true,
-    "clientId": "alex-auth",
-    "clientSecret": "11c73203-8181-408f-a7be-c7f99d26f62d",
-    "pkceActive": true,
+    "enable": false,
+    "clientId": "",
+    "clientSecret": "",
+    "pkceActive": false,
     "pkceMode": "S256",
-    "authUrl": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect/auth",
-    "tokenUrl": "https://keycloak.security.dydu-priv.com/auth/realms/back_test/protocol/openid-connect/token",
+    "authUrl": "",
+    "tokenUrl": "",
     "scopes": ["openid"],
-    "withAuth": true
+    "withAuth": false
   },
   "saml": {
     "enable": false
