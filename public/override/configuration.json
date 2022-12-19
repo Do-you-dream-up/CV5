@@ -186,7 +186,7 @@
     "pkceMode": "S256",
     "authUrl": "",
     "tokenUrl": "",
-    "scopes": ["openid"],
+    "scopes": [""],
     "withAuth": false
   },
   "saml": {
