@@ -83,9 +83,11 @@ export function AuthProtected({ children, enable = false }) {
   const { isLoggedIn, login } = useAuth();
 
   useEffect(() => {
-    console.log('AuthProtected/Effect() :', { isLoggedIn });
-    if (!enable) return;
-    if (!isLoggedIn) login();
+    if (!isLoadedFromChannels()) {
+      console.log('AuthProtected/Effect() :', { isLoggedIn });
+      if (!enable) return;
+      if (!isLoggedIn) login();
+    }
   }, [isLoggedIn, login]);
 
   const canDisplayChatbot = () => {
