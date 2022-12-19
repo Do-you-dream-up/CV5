@@ -3,7 +3,6 @@ import { currentLocationContainsCodeParamater, currentLocationContainsError, isD
 
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
-import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 import useTokenRequest from '../hooks/useTokenRequest';
