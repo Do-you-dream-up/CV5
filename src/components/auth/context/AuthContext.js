@@ -4,7 +4,7 @@ import { currentLocationContainsCodeParamater, currentLocationContainsError, isD
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
 import { getOidcEnableStatus } from '../../../tools/oidc';
-import { isLoadedFromChannels } from '../../../tools/wizard';
+// import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 import useTokenRequest from '../hooks/useTokenRequest';
@@ -83,17 +83,18 @@ export function AuthProtected({ children, enable = false }) {
   const { isLoggedIn, login } = useAuth();
 
   useEffect(() => {
-    if (!isLoadedFromChannels()) {
-      console.log('AuthProtected/Effect() :', { isLoggedIn });
-      if (!enable) return;
-      if (!isLoggedIn) login();
-    }
+    // if (!isLoadedFromChannels()) {
+    console.log('AuthProtected/Effect() :', { isLoggedIn });
+    if (!enable) return;
+    if (!isLoggedIn) login();
+    // }
   }, [isLoggedIn, login]);
 
   const canDisplayChatbot = () => {
-    if (isLoadedFromChannels()) {
-      return true;
-    } else if (isLoggedIn && enable) {
+    // if (isLoadedFromChannels()) {
+    //   return true;
+    // } else
+    if (isLoggedIn && enable) {
       return true;
     } else if (!enable) {
       return true;
