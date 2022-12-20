@@ -4,6 +4,7 @@ import {
   b64dFields,
   b64decode,
   b64encode,
+  browserName,
   extractDomainFromUrl,
   isDefined,
   isEmptyArray,
