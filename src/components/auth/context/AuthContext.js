@@ -3,6 +3,7 @@ import { currentLocationContainsCodeParameter, currentLocationContainsError, isD
 
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
+import dydu from '../../../tools/dydu';
 import { getOidcEnableStatus } from '../../../tools/oidc';
 import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
@@ -25,9 +26,12 @@ export function AuthProvider({ children, configuration }) {
   useEffect(() => {
     if (tokenRetries > 3) {
       login();
-      Storage.clearToken();
     }
   }, [tokenRetries]);
+
+  useEffect(() => {
+    dydu.setOidcLogin(authorize);
+  }, []);
 
   useEffect(() => {
     const canRequestToken =

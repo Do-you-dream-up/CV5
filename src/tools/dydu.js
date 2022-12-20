@@ -114,6 +114,7 @@ export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
     this.tokenRefresher = null;
+    this.oidcLogin = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
@@ -122,6 +123,10 @@ export default new (class Dydu {
 
   setTokenRefresher(refreshToken) {
     this.tokenRefresher = refreshToken;
+  }
+
+  setOidcLogin(loginOidc) {
+    this.oidcLogin = loginOidc;
   }
 
   getVariables() {
@@ -188,10 +193,15 @@ export default new (class Dydu {
          */
         if (error?.response?.status === 401) {
           /**
-           * IF OIDC ACTIVATED WITH REFRESH TOKEN
+           * IF OIDC ACTIVATED With or Without REFRESH TOKEN
            */
-          if (getOidcEnableStatus() && Storage.loadToken()?.refresh_token) {
-            this.tokenRefresher();
+          if (getOidcEnableStatus()) {
+            if (Storage.loadToken()?.refresh_token) {
+              this.tokenRefresher();
+            } else {
+              Storage.clearToken();
+              this.oidcLogin();
+            }
           }
         }
 
