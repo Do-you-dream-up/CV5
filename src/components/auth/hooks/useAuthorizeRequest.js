@@ -57,6 +57,10 @@ export default function useAuthorizeRequest(configuration) {
           codeChallengeMethod: configuration?.pkceMode,
         }),
       };
+      console.log(
+        "🚀 ~ file: useAuthorizeRequest.js:60 ~ getPkce ~ extractObjectFields(pkce, ['state', 'redirectUri'])",
+        extractObjectFields(pkce, ['state', 'redirectUri']),
+      );
 
       const queryParams = objectToQueryParam(snakeCaseFields(query));
 
