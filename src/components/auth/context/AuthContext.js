@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { currentLocationContainsCodeParamater, currentLocationContainsError, isDefined } from '../helpers';
+import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from '../helpers';
 
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
@@ -31,7 +31,7 @@ export function AuthProvider({ children, configuration }) {
 
   useEffect(() => {
     const canRequestToken =
-      currentLocationContainsCodeParamater() &&
+      currentLocationContainsCodeParameter() &&
       Storage.containsPkce() &&
       !isDefined(token?.access_token) &&
       !currentLocationContainsError();
@@ -58,7 +58,7 @@ export function AuthProvider({ children, configuration }) {
     const canRequestAuthorize =
       getOidcEnableStatus() &&
       !isLoggedIn &&
-      !currentLocationContainsCodeParamater() &&
+      !currentLocationContainsCodeParameter() &&
       !currentLocationContainsError();
 
     if (tokenRetries > 3 || canRequestAuthorize) authorize();

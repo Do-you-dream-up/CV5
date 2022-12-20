@@ -44,7 +44,7 @@ const strContains = (s, sub) => s.indexOf(sub) >= 0;
 
 export const currentLocationContainsError = () => strContains(window.location.search, 'error=');
 
-export const currentLocationContainsCodeParamater = () => strContains(window.location.search, 'code=');
+export const currentLocationContainsCodeParameter = () => strContains(window.location.search, 'code=');
 
 const createPkce = (configuration = { redirectUri: null }) => {
   const { redirectUri } = configuration;

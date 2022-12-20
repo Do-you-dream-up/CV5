@@ -1,6 +1,6 @@
 import {
   base64_urlencode,
-  currentLocationContainsCodeParamater,
+  currentLocationContainsCodeParameter,
   currentLocationContainsError,
   extractObjectFields,
   extractParamFromUrl,
@@ -20,7 +20,7 @@ export default function useAuthorizeRequest(configuration) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (currentLocationContainsCodeParamater() && isDefined(Storage.loadPkce())) setAuthorizeDone(true);
+    if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) setAuthorizeDone(true);
     else if (currentLocationContainsError()) {
       Storage.clearPkce();
       setError(true);
