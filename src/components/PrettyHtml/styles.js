@@ -88,5 +88,8 @@ export default createUseStyles((theme) => ({
     position: 'absolute',
     'white-space': 'nowrap',
     width: '1px',
+    '& + .p1': {
+      marginTop: 0,
+    },
   },
 }));
