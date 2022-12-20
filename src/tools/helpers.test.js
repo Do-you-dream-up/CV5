@@ -222,7 +222,6 @@ describe('helpers', () => {
       expect(result).toEqual(false);
     });
   });
-  isEmptyObject;
 
   describe('isOfTypeBoolean', () => {
     it('should return true when param is type of boolean', () => {
@@ -427,9 +426,10 @@ describe('helpers', () => {
 
       //WHEN
       const result = secondsToMs(sec);
-
+      // global.console = { error: jest.fn() };
       //THEN
       expect(result).toEqual(5000);
+      // expect(console.error).toHaveBeenCalled();
     });
 
     it('should return 5000 when param is smaller than 0', () => {
@@ -465,6 +465,19 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(`${process.env.PUBLIC_URL}/assets/${assetName}`);
+    });
+  });
+
+  describe('escapeHTML', () => {
+    it('', () => {
+      //GIVEN
+      const html = '<a href="http://google.com" onClick="toto>click</a>';
+
+      //WHEN
+      const result = escapeHTML(html);
+
+      //THEN
+      expect(result).toEqual('&lt;a href="http://google.com" onClick="toto&gt;click&lt;/a&gt;');
     });
   });
 });
