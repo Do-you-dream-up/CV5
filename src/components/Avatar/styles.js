@@ -1,4 +1,4 @@
-import { createUseStyles } from 'react-jss';
+/* istanbul ignore file */ import { createUseStyles } from 'react-jss';
 import { isDefined } from '../../tools/helpers';
 
 export default createUseStyles((theme) => ({

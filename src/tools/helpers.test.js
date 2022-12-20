@@ -1,10 +1,11 @@
 import {
   _parse,
   _stringify,
+  asset,
   b64dFields,
   b64decode,
   b64encode,
-  browserName,
+  escapeHTML,
   extractDomainFromUrl,
   isDefined,
   isEmptyArray,
@@ -136,6 +137,17 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(expected);
+    });
+    it('should return null when param is empty string', () => {
+      //GIVEN
+      const target = null;
+      const expected = 'bnVsbA==';
+
+      //WHEN
+      const result = b64encode(target);
+
+      //THEN
+      expect(result).toEqual(null);
     });
   });
 
@@ -409,7 +421,7 @@ describe('helpers', () => {
       expect(result).toEqual(25000);
     });
 
-    it('should return 5000 when param is not a number', () => {
+    it('should return 5000 when param is not a number and console error message', () => {
       //GIVEN
       const sec = {};
 
@@ -429,6 +441,30 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(5000);
+    });
+  });
+
+  describe('asset', () => {
+    it('should return name of asset if it contains base64', () => {
+      //GIVEN
+      const assetName = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vc';
+
+      //WHEN
+      const result = asset(assetName);
+
+      //THEN
+      expect(result).toEqual('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vc');
+    });
+
+    it('should return url for asset if it NOT contains base64', () => {
+      //GIVEN
+      const assetName = 'dydu-logo.svg';
+
+      //WHEN
+      const result = asset(assetName);
+
+      //THEN
+      expect(result).toEqual(`${process.env.PUBLIC_URL}/assets/${assetName}`);
     });
   });
 });
