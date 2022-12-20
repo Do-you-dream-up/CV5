@@ -55,7 +55,6 @@ export function AuthProvider({ children, configuration }) {
   }, [token, isLoggedIn, getUserInfoWithToken]);
 
   const login = useCallback(() => {
-    console.log('LOGIN TRY');
     const canRequestAuthorize =
       getOidcEnableStatus() &&
       !isLoggedIn &&
@@ -84,7 +83,6 @@ export function AuthProtected({ children, enable = false }) {
 
   useEffect(() => {
     if (!isLoadedFromChannels()) {
-      console.log('AuthProtected/Effect() :', { isLoggedIn });
       if (!enable) return;
       if (!isLoggedIn) login();
     }
