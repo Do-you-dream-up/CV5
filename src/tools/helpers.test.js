@@ -1,7 +1,10 @@
 import {
+  _parse,
+  _stringify,
   b64dFields,
   b64decode,
   b64encode,
+  extractDomainFromUrl,
   isDefined,
   isEmptyArray,
   isEmptyObject,
@@ -13,6 +16,7 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  secondsToMs,
   strContains,
   toFormUrlEncoded,
 } from './helpers';
@@ -350,6 +354,80 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(false);
+    });
+  });
+
+  describe('_stringify', () => {
+    it('should converts a JavaScript value in param to a JSON string', () => {
+      //GIVEN
+      const jsValue = [new Number(3), new String('false'), new Boolean(false)];
+
+      //WHEN
+      const result = _stringify(jsValue);
+
+      //THEN
+      expect(result).toEqual('[3,"false",false]');
+    });
+  });
+
+  describe('_parse', () => {
+    it('should construct the JavaScript value or object described by the string in param', () => {
+      //GIVEN
+      const str = '{"result":true, "count":42}';
+
+      //WHEN
+      const result = _parse(str);
+
+      //THEN
+      expect(result).toEqual({ result: true, count: 42 });
+    });
+  });
+
+  describe('extractDomainFromUrl', () => {
+    it('should extract domain from url in param', () => {
+      //GIVEN
+      const url = 'http://localhost:1234///';
+
+      //WHEN
+      const result = extractDomainFromUrl(url);
+
+      //THEN
+      expect(result).toEqual('localhost:1234');
+    });
+  });
+
+  describe('secondsToMs', () => {
+    it('should converts param seconds in milliseconds', () => {
+      //GIVEN
+      const sec = 25;
+
+      //WHEN
+      const result = secondsToMs(sec);
+
+      //THEN
+      expect(result).toEqual(25000);
+    });
+
+    it('should return 5000 when param is not a number', () => {
+      //GIVEN
+      const sec = {};
+
+      //WHEN
+      const result = secondsToMs(sec);
+
+      //THEN
+      expect(result).toEqual(5000);
+    });
+
+    it('should return 5000 when param is smaller than 0', () => {
+      //GIVEN
+      const sec = -3;
+
+      //WHEN
+      const result = secondsToMs(sec);
+
+      //THEN
+      expect(result).toEqual(5000);
     });
   });
 });

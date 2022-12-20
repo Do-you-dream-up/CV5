@@ -105,7 +105,19 @@ export const objectContainFields = (obj, fieldList = []) => {
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
 };
 
-export const secondsToMs = (s) => s * 1000;
+export const secondsToMs = (s) => {
+  try {
+    if (s >= 0) {
+      return s * 1000;
+    } else {
+      console.log('not a valid number, please select a number bigger or equal than 0');
+      return 5000;
+    }
+  } catch (e) {
+    console.error(e);
+    return 5000;
+  }
+};
 
 export const browserName = () => {
   let sBrowser;
