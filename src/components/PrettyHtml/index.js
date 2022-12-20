@@ -105,7 +105,6 @@ PrettyHtml.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,
-  hasExternalLink: PropTypes.bool,
   html: PropTypes.string,
   templatename: PropTypes.string,
   type: PropTypes.string,

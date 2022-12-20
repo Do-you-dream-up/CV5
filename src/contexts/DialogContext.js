@@ -238,7 +238,7 @@ export function DialogProvider({ children }) {
             carousel: steps.length > 1,
             type: 'response',
             secondary: sidebar,
-            steps: steps,
+            steps,
             templateName,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
