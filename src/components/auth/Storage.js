@@ -1,11 +1,10 @@
 import { cleanUrl, isDefined } from './helpers';
 
-import Cookie from 'js-cookie';
-
 const store = localStorage;
 
 const PKCE_KEY = 'pkce';
-const TOKEN_KEY = 'dydu-oauth-token';
+const TOKEN_KEY_ACCESS = 'dydu-oauth-token-access';
+const TOKEN_KEY_REFRESH = 'dydu-oauth-token-refresh';
 
 export default class Storage {
   static savePkce(pkceData) {
@@ -21,25 +20,25 @@ export default class Storage {
     return isDefined(pkce) ? JSON.parse(pkce) : null;
   }
 
-  static saveToken(token) {
+  static saveToken = (token) => {
     cleanUrl();
     Storage.clearPkce();
-    Cookie.set(
-      TOKEN_KEY,
-      JSON.stringify({
-        access_token: token?.access_token,
-        refresh_token: token?.refresh_token,
-      }),
-    );
-  }
+    localStorage.setItem(TOKEN_KEY_ACCESS, token?.access_token);
+    localStorage.setItem(TOKEN_KEY_REFRESH, token?.refresh_token);
+  };
 
   static clearToken() {
-    Cookie.remove(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY_ACCESS);
+    localStorage.removeItem(TOKEN_KEY_REFRESH);
   }
 
   static loadToken() {
-    const token = Cookie.get(TOKEN_KEY);
-    return isDefined(token) ? JSON.parse(token) : null;
+    return (
+      isDefined(localStorage.getItem(TOKEN_KEY_ACCESS)) && {
+        access_token: isDefined(localStorage.getItem(TOKEN_KEY_ACCESS)) && localStorage.getItem(TOKEN_KEY_ACCESS),
+        refresh_token: isDefined(localStorage.getItem(TOKEN_KEY_REFRESH)) && localStorage.getItem(TOKEN_KEY_REFRESH),
+      }
+    );
   }
 
   static clearAll() {

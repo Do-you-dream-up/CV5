@@ -3,7 +3,7 @@ import { encode as base64encode } from 'base64-arraybuffer';
 
 const getRedirectUri = () => window.location.origin + window.location.pathname;
 
-export const isDefined = (d) => d !== null && typeof d !== 'undefined';
+export const isDefined = (d) => d !== null && typeof d !== 'undefined' && d !== 'undefined';
 
 export const generateUID = () => {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>

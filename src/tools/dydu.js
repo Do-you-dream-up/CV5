@@ -727,7 +727,6 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').access_token : null,
       userInput: text,
       userUrl: getUrl,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -854,7 +853,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {
-        config.headers['Authorization'] = `Bearer ${Cookie.get('dydu-oauth-token')?.access_token}`;
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
       }
       return config;
     },
