@@ -18,19 +18,21 @@ export default function useTokenRequest(configuration) {
   const [currentToken, setCurrentToken] = useState(null);
   const [tokenRetries, setTokenRetries] = useState(0);
 
+  let { tokenUrl, pkceActive } = configuration;
+
   const fetchToken = useCallback(() => {
     console.log('/* PREPARE FETCH TOKEN REQUEST */');
     /*
       construct payload
      */
     const payload = {
-      ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri', 'state'])),
+      ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri'])),
       ...{
         client_id: configuration.clientId,
         client_secret: configuration.clientSecret,
-        ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
         grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
-        code_verifier: Cookie.get('dydu-code-verifier'),
+        ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
+        ...(pkceActive && { code_verifier: Cookie.get('dydu-code-verifier') }),
         ...(Storage.loadToken()?.refresh_token && { refresh_token: Storage.loadToken()?.refresh_token }),
       },
     };
@@ -50,11 +52,6 @@ export default function useTokenRequest(configuration) {
       method: 'POST',
       body: new URLSearchParams(payload),
     };
-
-    /*
-      construct url
-     */
-    let { tokenUrl } = configuration;
 
     /*
       process fetch
