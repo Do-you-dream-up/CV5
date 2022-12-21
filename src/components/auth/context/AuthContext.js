@@ -4,7 +4,6 @@ import { currentLocationContainsCodeParameter, currentLocationContainsError, isD
 import PropTypes from 'prop-types';
 import Storage from '../Storage';
 import dydu from '../../../tools/dydu';
-import { getOidcEnableStatus } from '../../../tools/oidc';
 import { isLoadedFromChannels } from '../../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
@@ -60,10 +59,7 @@ export function AuthProvider({ children, configuration }) {
 
   const login = useCallback(() => {
     const canRequestAuthorize =
-      getOidcEnableStatus() &&
-      !isLoggedIn &&
-      !currentLocationContainsCodeParameter() &&
-      !currentLocationContainsError();
+      !isLoggedIn && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
 
     if (tokenRetries > 3 || canRequestAuthorize) authorize();
   }, [authorize, isLoggedIn, tokenRetries]);
