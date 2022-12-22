@@ -33,7 +33,7 @@ export default createUseStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     borderRadius: theme.shape.radius.inner,
     boxSizing: 'border-box',
-    height: '37px',
+    height: 'fit-content',
     padding: [['.5em', '1em']],
     position: 'relative',
   }),
