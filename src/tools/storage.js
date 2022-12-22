@@ -1,4 +1,4 @@
-import { _parse, isDefined, isEmptyObject, isEmptyString } from './helpers';
+import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
@@ -321,6 +321,7 @@ export class Local {
       localStorage.setItem(keyString, generatedClientId);
     },
   });
+
   static secondary = Object.create({
     getKey: () => Local.names.secondary,
     load: () => localStorage.getItem(Local.secondary.getKey()) || false,
@@ -328,6 +329,30 @@ export class Local {
       const currentSaved = Local.secondary.load();
       if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
     },
+  });
+
+  static welcomeKnowledge = Object.create({
+    isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
+    load: (botId) => {
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      return _parse(mapStore[botId]) || null;
+    },
+    save: (botId, wkInteraction) => {
+      if (Local.welcomeKnowledge.isSet(botId)) return;
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      mapStore[botId] = wkInteraction;
+      Local.welcomeKnowledge.saveMapStore(mapStore);
+    },
+    saveMapStore: (value) => localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify(value)),
+    loadMapStore: () => {
+      let mapStore = _parse(localStorage.getItem(Local.welcomeKnowledge.getKey()));
+      if (!isDefined(mapStore)) {
+        mapStore = {};
+        localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify({}));
+      }
+      return mapStore;
+    },
+    getKey: () => `dydu.welcomeKnowledge`,
   });
 }
 
