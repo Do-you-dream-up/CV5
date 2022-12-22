@@ -1,11 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
-  externalLinkIcon: {
-    height: '1em',
-    marginLeft: '0.5em',
-    width: '1em',
-  },
   root: {
     '@global': {
       '@font-face': [

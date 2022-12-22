@@ -239,7 +239,7 @@ export function DialogProvider({ children }) {
             carousel: steps.length > 1,
             type: 'response',
             secondary: sidebar,
-            steps: steps,
+            steps,
             templateName,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
@@ -423,7 +423,7 @@ export function DialogProvider({ children }) {
 }
 
 DialogProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.any,
   toggle: PropTypes.any,
   onPushrulesDataReceived: PropTypes.func,
 };

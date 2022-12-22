@@ -27,7 +27,6 @@ export default function Bubble({
   children,
   className,
   component,
-  hasExternalLink,
   history,
   html,
   secondary,
@@ -83,14 +82,7 @@ export default function Bubble({
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
-          <PrettyHtml
-            children={children}
-            hasExternalLink={hasExternalLink}
-            html={html}
-            templatename={templatename}
-            type={type}
-            carousel={carousel}
-          />
+          <PrettyHtml children={children} html={html} templatename={templatename} type={type} carousel={carousel} />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
@@ -108,7 +100,6 @@ Bubble.propTypes = {
   children: PropTypes.element,
   className: PropTypes.string,
   component: PropTypes.elementType,
-  hasExternalLink: PropTypes.bool,
   history: PropTypes.bool,
   html: PropTypes.string,
   secondary: PropTypes.object,

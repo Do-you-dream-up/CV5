@@ -12,8 +12,10 @@ import {
   strContains,
   toFormUrlEncoded,
 } from './helpers';
+import { getOidcEnableStatus, getOidcEnableWithAuthStatus } from './oidc';
 
 import Bowser from 'bowser';
+import Storage from '../components/auth/Storage';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
@@ -111,10 +113,20 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
+    this.tokenRefresher = null;
+    this.oidcLogin = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.initInfos();
+  }
+
+  setTokenRefresher(refreshToken) {
+    this.tokenRefresher = refreshToken;
+  }
+
+  setOidcLogin(loginOidc) {
+    this.oidcLogin = loginOidc;
   }
 
   getVariables() {
@@ -163,14 +175,36 @@ export default new (class Dydu {
         }
         return data;
       })
-      .catch(() => {
+      .catch((error) => {
         if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-        if (BOT.backUpServer !== '') {
+
+        /**
+         * NO 401 ERROR
+         */
+        if (BOT.backUpServer !== '' && error?.response?.status !== 401) {
           API.defaults.baseURL =
             API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
               ? `https://${BOT.server}/servlet/api/`
               : `https://${BOT.backUpServer}/servlet/api/`;
         }
+
+        /**
+         * IF 401
+         */
+        if (error?.response?.status === 401) {
+          /**
+           * IF OIDC ACTIVATED With or Without REFRESH TOKEN
+           */
+          if (getOidcEnableStatus()) {
+            if (Storage.loadToken()?.refresh_token) {
+              this.tokenRefresher();
+            } else {
+              Storage.clearToken();
+              this.oidcLogin();
+            }
+          }
+        }
+
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));
@@ -693,7 +727,6 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: options.qualification,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -828,6 +861,18 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     }
   };
 
+  instance.interceptors.request.use(
+    (config) => {
+      if (getOidcEnableWithAuthStatus()) {
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
+
   // when response code in range of 2xx
   const onSuccess = (response) => {
     response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
@@ -836,5 +881,6 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   instance.interceptors.response.use(onSuccess);
+
   return instance;
 };
