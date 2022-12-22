@@ -794,7 +794,7 @@ export default new (class Dydu {
       if (!isInteractionResponse) return null;
 
       delete talkResponse.contextId;
-      Local.welcomeKnowledge.save(talkResponse);
+      Local.welcomeKnowledge.save(this.getBotId(), talkResponse);
       return talkResponse;
     });
   };
