@@ -37,7 +37,9 @@ const getUrl = window.location.href;
  * - Protocol http is used when bliss is used in local with Channels.
  */
 
-let BOT, protocol, API;
+let BOT = {},
+  protocol,
+  API = {};
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
@@ -814,6 +816,21 @@ export default new (class Dydu {
       Local.visit.save(keyInfos);
     });
   }
+
+  getWelcomeKnowledge = (tagWelcome) => {
+    const foundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
+    if (foundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
+
+    const talkOption = { doNotSave: true, hide: true };
+    return this.talk(tagWelcome, talkOption).then((talkResponse) => {
+      const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
+      if (!isInteractionResponse) return null;
+
+      delete talkResponse.contextId;
+      Local.welcomeKnowledge.save(this.getBotId(), talkResponse);
+      return talkResponse;
+    });
+  };
 })();
 
 /====================================================================================================/;
