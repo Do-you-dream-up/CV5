@@ -1,1 +1,5 @@
-{ "id": "6f2a44de-80c5-40e9-9ff5-32fc12288968", "server": "app1.mars.doyoudreamup.com" }
+{
+    "id": "f1871fe8-cdea-4695-9ea6-529a4e9460dc",
+    "server": "dev.mercury.doyoudreamup.com",
+    "backUpServer": ""
+}
