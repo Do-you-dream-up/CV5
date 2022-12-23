@@ -91,8 +91,21 @@ export const isOfType = (val, type) => {
 
 export const extractDomainFromUrl = (url) => url.replace(/http[s]?:\/\//, '').split('/')[0];
 
-export const _stringify = (data) => JSON.stringify(data);
-export const _parse = (data) => JSON.parse(data);
+export const _stringify = (data) => {
+  try {
+    return JSON.stringify(data);
+  } catch (e) {
+    return data;
+  }
+};
+
+export const _parse = (data) => {
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    return data;
+  }
+};
 
 export const objectExtractFields = (obj, fieldList) =>
   fieldList.reduce((resultMap, fieldName) => {
