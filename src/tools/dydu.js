@@ -183,7 +183,7 @@ export default new (class Dydu {
         /**
          * NO 401 ERROR
          */
-        if (BOT.backUpServer !== '' && error?.response?.status !== 401) {
+        if (BOT.backUpServer && BOT.backUpServer !== '' && error?.response?.status !== 401) {
           API.defaults.baseURL =
             API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
               ? `https://${BOT.server}/servlet/api/`
