@@ -35,7 +35,7 @@ export default function Top({ className, component, ...rest }) {
       { className: c('dydu-top', className), ...rest, id: 'dydu-top-knowledge' },
       <PrettyHtml>
         <ol>
-          {items.map(({ reword }, index) => {
+          {items?.map(({ reword }, index) => {
             const onAsk = (event) => {
               onAskHandler(reword);
               event.preventDefault();
