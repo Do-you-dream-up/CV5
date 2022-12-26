@@ -93,7 +93,6 @@ let BOT = {},
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
-    maxRetry: 2,
     timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
     backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
@@ -120,6 +119,10 @@ export default new (class Dydu {
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
+    this.apiRetries = 0;
+    this.maxRetries = 3;
+    this.apiUrlFlip = 0;
+    this.maxUrlFlip = 10;
     this.initInfos();
   }
 
@@ -157,6 +160,64 @@ export default new (class Dydu {
     return data.values;
   };
 
+  handleUrlFlip = () => {
+    if (BOT.backUpServer && BOT.backUpServer !== '' && this.apiRetries === this.maxRetries) {
+      this.apiUrlFlip += 1;
+      this.apiRetries = 0;
+      API.defaults.baseURL =
+        API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
+          ? `https://${BOT.server}/servlet/api/`
+          : `https://${BOT.backUpServer}/servlet/api/`;
+    }
+  };
+
+  handleTokenRefresh = () => {
+    if (getOidcEnableStatus()) {
+      if (Storage.loadToken()?.refresh_token) {
+        this.tokenRefresher();
+      } else {
+        Storage.clearToken();
+        this.oidcLogin();
+      }
+    }
+  };
+
+  handleAxiosResponse = (data) => {
+    if (Object.prototype.hasOwnProperty.call(data, 'values')) {
+      return this.extractPayloadFromHttpResponse(data);
+    }
+    return data;
+  };
+
+  handleAxiosError = (error, verb, path, data) => {
+    if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
+
+    /**
+     * NO 401 ERROR
+     */
+    if (error?.response?.status !== 401) {
+      if (this.apiUrlFlip <= this.maxUrlFlip) this.handleUrlFlip();
+    }
+
+    /**
+     * IF 401
+     */
+    if (error?.response?.status === 401) {
+      this.handleTokenRefresh();
+    }
+
+    /* Add retry to count */
+    this.apiRetries++;
+
+    if (this.apiUrlFlip === this.maxUrlFlip) throw 'Max Url Flip Reached. Please Refresh Browser';
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.emit(verb, path, data));
+      }, 5000);
+    });
+  };
+
   /**
    * Request against the provided path with the specified data. When
    * the response contains values, decode it and refresh the context ID.
@@ -169,51 +230,10 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = (verb, path, data) => {
-    return verb(path, data)
-      .then(({ data = {} }) => {
-        if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-          return this.extractPayloadFromHttpResponse(data);
-        }
-        return data;
-      })
-      .catch((error) => {
-        if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-
-        /**
-         * NO 401 ERROR
-         */
-        if (BOT.backUpServer && BOT.backUpServer !== '' && error?.response?.status !== 401) {
-          API.defaults.baseURL =
-            API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
-              ? `https://${BOT.server}/servlet/api/`
-              : `https://${BOT.backUpServer}/servlet/api/`;
-        }
-
-        /**
-         * IF 401
-         */
-        if (error?.response?.status === 401) {
-          /**
-           * IF OIDC ACTIVATED With or Without REFRESH TOKEN
-           */
-          if (getOidcEnableStatus()) {
-            if (Storage.loadToken()?.refresh_token) {
-              this.tokenRefresher();
-            } else {
-              Storage.clearToken();
-              this.oidcLogin();
-            }
-          }
-        }
-
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(this.emit(verb, path, data));
-          }, 3000);
-        });
-      });
-  };
+  emit = (verb, path, data) =>
+    verb(path, data)
+      .then(({ data = {} }) => this.handleAxiosResponse(data))
+      .catch((error) => this.handleAxiosError(error, verb, path, data));
 
   /**
    * Export conversation by email
@@ -836,8 +856,6 @@ export default new (class Dydu {
 /====================================================================================================/;
 
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
-  if (!isDefined(config?.maxRetry)) config.maxRetry = 2;
-  if (!isDefined(config?.maxFlip)) config.maxFlip = 10;
   if (!isDefined(config?.axiosConf)) config.axiosConf = {};
 
   const instance = axios.create({
@@ -878,6 +896,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     }
   };
 
+  // when request is sent
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {
