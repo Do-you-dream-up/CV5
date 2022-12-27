@@ -90,7 +90,7 @@ let BOT, protocol, API;
 
   API = getAxiosInstanceWithDyduConfig({
     maxRetry: 2,
-    timeout: 3000,
+    timeout: 10000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
     backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
     axiosConf: {
