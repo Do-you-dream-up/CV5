@@ -540,8 +540,9 @@ export default new (class Dydu {
     });
 
   setQualificationMode = (value) => {
+    const locationHref = window.location.href;
     let isActive = value;
-    if (window.location.href.includes('/preprod')) {
+    if (locationHref.includes('/preprod') || locationHref.includes('localhost')) {
       isActive = true;
     }
     this.qualificationMode = isActive;
