@@ -199,11 +199,8 @@ export default new (class Dydu {
      * NO 401 ERROR
      */
     if (error?.response?.status !== 401) {
-      console.log('🚀 ~ file: dydu.js:204 ~ Dydu ~ API.defaults.baseURL', API.defaults.baseURL);
-      console.log('🚀 ~ file: dydu.js:205 ~ Dydu ~ BOT.server', BOT.server);
       if (API.defaults.baseURL === `https://${BOT.server}/servlet/api/`) {
-        console.log('in');
-        this.serverStatusChek();
+        this.mainServerStatus = 'Error';
       }
     }
 
