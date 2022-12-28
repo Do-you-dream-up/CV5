@@ -1,4 +1,3 @@
-
 // hide the homepage if the dydupanel cards are displayed
 if (window.location.href.includes('?dydupanel')) {
   document.getElementById('iframeForm').style.display = 'none';
