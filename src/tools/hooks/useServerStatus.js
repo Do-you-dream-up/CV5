@@ -16,7 +16,6 @@ export default function useServerStatus() {
   const fetch = useCallback(() => {
     return new Promise((resolve) => {
       dydu.getServerStatus().then((res) => {
-        console.log('🚀 ~ file: useServerStatus.js:22 ~ dydu.getServerStatus ~ res', res);
         setResult(res);
         return resolve(res);
       });
