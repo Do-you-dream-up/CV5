@@ -223,13 +223,6 @@
     "detection": [
       {
         "active": false,
-        "mode": "urlpart",
-        "value": {
-          "doyoudreamup.com/test/": "dydu"
-        }
-      },
-      {
-        "active": false,
         "mode": "cookie",
         "value": "dyduspace"
       },
@@ -260,6 +253,13 @@
         "mode": "hostname",
         "value": {
           "doyoudreamup.com": "dydu"
+        }
+      },
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
         }
       }
     ],
