@@ -93,7 +93,6 @@ let BOT = {},
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
-    timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
     backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
     axiosConf: {
@@ -114,17 +113,27 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
+    this.serverStatusChek = null;
     this.tokenRefresher = null;
     this.oidcLogin = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.apiTries = 0;
+    this.mainServerStatus = 'Ok';
     this.initInfos();
+  }
+
+  setServerStatusCheck(serverStatusChek) {
+    this.serverStatusChek = serverStatusChek;
   }
 
   setTokenRefresher(refreshToken) {
     this.tokenRefresher = refreshToken;
+  }
+
+  setMainServerStatus(value) {
+    this.mainServerStatus = value;
   }
 
   setOidcLogin(loginOidc) {
@@ -177,7 +186,7 @@ export default new (class Dydu {
 
   handleSetApiUrl = () => {
     let apiUrl = BOT.server;
-    if (this.apiTries > 3) {
+    if (this.mainServerStatus === 'Error') {
       if (BOT.backUpServer && BOT.backUpServer !== '') {
         apiUrl = BOT.backUpServer;
       }
@@ -190,7 +199,12 @@ export default new (class Dydu {
      * NO 401 ERROR
      */
     if (error?.response?.status !== 401) {
-      this.apiTries = this.apiTries + 1;
+      console.log('🚀 ~ file: dydu.js:204 ~ Dydu ~ API.defaults.baseURL', API.defaults.baseURL);
+      console.log('🚀 ~ file: dydu.js:205 ~ Dydu ~ BOT.server', BOT.server);
+      if (API.defaults.baseURL === `https://${BOT.server}/servlet/api/`) {
+        console.log('in');
+        this.serverStatusChek();
+      }
     }
 
     /**
@@ -222,7 +236,6 @@ export default new (class Dydu {
 
   emit = (verb, path, data) => {
     this.handleSetApiUrl();
-
     return verb(path, data)
       .then(({ data = {} }) => this.handleAxiosResponse(data))
       .catch((error) => this.handleAxiosError(error, verb, path, data));
