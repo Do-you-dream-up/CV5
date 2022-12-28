@@ -545,7 +545,9 @@ export default new (class Dydu {
     if (locationHref.includes('/preprod') || locationHref.includes('localhost')) {
       isActive = true;
     }
-    this.qualificationMode = isActive;
+    if (isDefined(isActive)) {
+      this.qualificationMode = isActive;
+    }
   };
   /**
    * Fetch candidates for auto-completion.
