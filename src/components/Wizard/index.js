@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
 
 import Button from '../Button';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -17,6 +18,8 @@ export default function Wizard() {
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
     setSamlEnableCookie(data?.saml?.enable);
+    setOidcEnableCookie(data?.oidc?.enable);
+    setOidcWithAuthEnableCookie(data?.oidc?.withAuth);
   };
 
   useEffect(() => {

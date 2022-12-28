@@ -2,8 +2,9 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { isDefined } from '../../tools/helpers';
 import PropTypes from 'prop-types';
 import Field from '../Field';
+import MessageRequired from '../MessageRequired';
 
-export default function RadioGroup({ fields }) {
+export default function RadioGroup({ showRequiredMessage, fields, parent }) {
   const [current, setCurrent] = useState();
 
   const isCurrentActive = useCallback((field) => current?.hasId(field.getId()), [current]);
@@ -21,16 +22,23 @@ export default function RadioGroup({ fields }) {
     (selectedFieldInstance) => {
       if (!isDefined(current)) return setCurrent(selectedFieldInstance);
       const alreadySelected = isCurrentActive(selectedFieldInstance);
-      if (alreadySelected) return;
-      setCurrent(selectedFieldInstance);
+      if (!alreadySelected) setCurrent(selectedFieldInstance);
     },
     [isCurrentActive, current],
   );
 
   const render = useCallback(() => {
-    return fields.map((field) => (
-      <RadioItem key={field.getId()} field={field} onChange={onChange} checked={isCurrentActive(field)} />
-    ));
+    return (
+      <>
+        <p className={'question'}>
+          {parent.getLabel()}
+          <MessageRequired show={showRequiredMessage} field={parent} />
+        </p>
+        {fields.map((field) => (
+          <RadioItem key={field.getId()} field={field} onChange={onChange} checked={isCurrentActive(field)} />
+        ))}
+      </>
+    );
   }, [isCurrentActive, onChange, fields]);
 
   return <div className={'group'}>{render()}</div>;
@@ -62,4 +70,6 @@ RadioItem.propTypes = {
 
 RadioGroup.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.instanceOf(Field)),
+  parent: PropTypes.instanceOf(Field),
+  showRequiredMessage: PropTypes.bool,
 };

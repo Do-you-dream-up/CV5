@@ -1,21 +1,32 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getChatboxWidthTime, isArray, isDefined, isEmptyString, isPositiveNumber, isString } from '../tools/helpers';
-
-import Field from './Field';
+/* eslint-disable */
 import PropTypes from 'prop-types';
-import SurveyForm from './SurveyForm';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import {
+  isDefined,
+  isArray,
+  isEmptyString,
+  isString,
+  getChatboxWidthTime,
+  isPositiveNumber,
+  isEmptyArray,
+} from '../tools/helpers';
+import Field from './Field';
 import dydu from '../tools/dydu';
 import { useDialog } from '../contexts/DialogContext';
+import SurveyForm from './SurveyForm';
 import { useEvent } from '../contexts/EventsContext';
+import { CHATBOX_EVENT_NAME } from '../tools/constants';
 
 const SurveyContext = React.createContext({});
 export const useSurvey = () => React.useContext(SurveyContext);
 
 export default function SurveyProvider({ children }) {
-  const { chatboxRef, isChatboxLoadedAndReady } = useEvent();
+  const { getChatboxRef, isChatboxLoadedAndReady } = useEvent();
   const [surveyConfig, setSurveyConfig] = useState(null);
   const [instances, setInstances] = useState(null);
-  const { openSecondary, closeSecondary } = useDialog();
+  const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
+  const { secondaryActive, openSecondary, closeSecondary } = useDialog();
 
   const flushStates = useCallback(() => {
     setInstances(null);
@@ -28,19 +39,47 @@ export default function SurveyProvider({ children }) {
   }, []);
 
   const secondaryWidth = useMemo(() => {
-    return isChatboxLoadedAndReady ? getChatboxWidthTime(chatboxRef, 1.4) : -1;
-  }, [isChatboxLoadedAndReady, chatboxRef]);
+    return isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4) : -1;
+  }, [isChatboxLoadedAndReady, getChatboxRef]);
+
+  const flushStatesAndClose = useCallback(() => {
+    flushStates();
+    closeSecondary();
+    answerResultManager.clear();
+  }, [closeSecondary, flushStates]);
+
+  const chatboxNode = useMemo(() => {
+    try {
+      return getChatboxRef();
+    } catch (e) {
+      return null;
+    }
+  }, [getChatboxRef]);
 
   useEffect(() => {
-    const canShowForm = isDefined(instances) && isDefined(openSecondary) && isPositiveNumber(secondaryWidth);
+    if (listeningCloseSecondary || !isDefined(chatboxNode)) return;
+    chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSecondary, flushStatesAndClose);
+    setListeningCloseSecondary(true);
+  }, [chatboxNode, flushStatesAndClose, listeningCloseSecondary]);
 
+  useEffect(() => {
+    return () => {
+      chatboxNode?.removeEventListener(CHATBOX_EVENT_NAME.closeSecondary);
+      setListeningCloseSecondary(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    const canShowForm =
+      !secondaryActive && [surveyConfig, instances, openSecondary].every(isDefined) && isPositiveNumber(secondaryWidth);
     if (canShowForm)
       openSecondary({
         width: secondaryWidth,
-        title: () => <SecondaryFormTitle />,
         bodyRenderer: () => <SurveyForm />,
+        title: () => <SecondaryFormTitle />,
+        headerTransparency: false,
       });
-  }, [instances, openSecondary, secondaryWidth]);
+  }, [surveyConfig, instances, openSecondary, secondaryWidth, flushStatesAndClose]);
 
   useEffect(() => {
     const fields = surveyConfig?.fields;
@@ -51,55 +90,55 @@ export default function SurveyProvider({ children }) {
   }, [instances, surveyConfig]);
 
   const getSurveyAnswer = useCallback(() => {
-    let result = {};
     if (isDefined(instances)) {
       instances.forEach((fieldInstance) => {
-        fieldInstance.feedStoreWithUserAnswer(result);
+        fieldInstance.gatherUserAnswers(answerResultManager);
       });
     }
-    return result;
+    return answerResultManager;
   }, [instances]);
 
-  const createSurveyResponsePayloadWithUserAnswer = useCallback((userAnswerObj) => {
-    return userAnswerObj;
-  }, []);
+  const createSurveyResponsePayloadWithUserAnswer = useCallback(
+    (userAnswerObj) => {
+      return {
+        surveyId: surveyConfig?.surveyId,
+        interactionSurvey: surveyConfig?.interactionSurvey || false,
+        fields: userAnswerObj,
+      };
+    },
+    [surveyConfig],
+  );
 
-  const sendAnswer = useCallback((answer) => {
-    console.log('sending answer', answer);
-    const payload = createSurveyResponsePayloadWithUserAnswer(answer);
-    if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
-    else return Promise.resolve(SurveyProvider.notifyListeners(payload));
-  }, []);
+  const sendAnswer = useCallback(
+    (answerObj) => {
+      console.log('sending answerObj', answerObj);
+      const payload = createSurveyResponsePayloadWithUserAnswer(answerObj);
+      if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
+      else return Promise.resolve(SurveyProvider.notifyListeners(payload));
+    },
+    [createSurveyResponsePayloadWithUserAnswer],
+  );
 
   const validateAnswer = useCallback(() => {
-    console.log('validating answer');
     const answer = getSurveyAnswer();
-    return Promise.resolve(answer);
+    return answer?.hasMissing() ? Promise.reject(answer) : Promise.resolve(answer);
   }, [getSurveyAnswer]);
 
-  const prepareResponsePayloadWithAnswerObject = useCallback((answerObj) => {
-    console.log('preparing payload');
-    return answerObj;
+  const prepareResponsePayloadWithAnswerObject = useCallback((answer) => {
+    return Promise.resolve(answer.getAnswer());
   }, []);
-
-  const onAfterSend = useCallback(() => {
-    flushStates();
-    closeSecondary();
-  }, [closeSecondary, flushStates]);
 
   const onSubmit = useCallback(() => {
     validateAnswer()
       .then(prepareResponsePayloadWithAnswerObject)
       .then(sendAnswer)
-      .then(onAfterSend)
-      .catch((e) => {
-        console.error('TODO: treat required fields !', e);
+      .then(flushStatesAndClose)
+      .catch((answerManagerInstance) => {
+        console.log('missing felds !', answerManagerInstance);
+        answerManagerInstance.forEachMissingField((fieldInstance) => fieldInstance.showRequiredMessageUi());
+        answerManagerInstance.clear();
       });
   }, [sendAnswer, validateAnswer, prepareResponsePayloadWithAnswerObject]);
-
-  const onSecondaryClosed = () => {
-    console.log('secondary closed');
-  };
 
   const api = useMemo(
     () => ({
@@ -107,7 +146,6 @@ export default function SurveyProvider({ children }) {
       showSurvey,
       instances,
       onSubmit,
-      onSecondaryClosed,
     }),
     [showSurvey, instances, onSubmit],
   );
@@ -139,7 +177,6 @@ const instanciateFields = (listFieldObject = []) => {
     return resultList;
   }, []);
 
-  console.log(finalInstances);
   return finalInstances;
 };
 
@@ -177,6 +214,8 @@ SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = 
 //==================================================/
 // LOCAL COMPONENTS
 //==================================================/
+const SecondaryHeader = () => <SecondaryFormTitle />;
+
 const SecondaryFormTitle = () => {
   const style = useRef({
     hgroup: {
@@ -193,24 +232,54 @@ const SecondaryFormTitle = () => {
   });
 
   const { surveyConfig = {} } = useSurvey();
-  const { title: formTitle, name: formName } = surveyConfig;
 
   const name = useMemo(() => {
+    const formName = surveyConfig?.name;
+    if (!isDefined(formName)) return null;
     const nameIsDefined = [isDefined, isString, (v) => !isEmptyString(v)].every((fn) => fn(formName));
     return nameIsDefined ? formName : null;
-  }, [formName]);
+  }, [surveyConfig?.name]);
 
   const title = useMemo(() => {
+    const formTitle = surveyConfig?.title;
+    if (!isDefined(formTitle)) return null;
     const titleIsDefined = [isDefined, isString, (v) => !isEmptyString(v)].every((fn) => fn(formTitle));
     return titleIsDefined ? formTitle : null;
-  }, [formTitle]);
+  }, [surveyConfig?.title]);
 
-  return (
+  return !isDefined(name) && !isDefined(title) ? null : (
     <header>
       <hgroup style={style.current.hgroup}>
         <h1 style={style.current.main}>{title}</h1>
-        <h2 style={style.current.sub}>{name}</h2>
       </hgroup>
     </header>
   );
 };
+
+class AnswerResultManager {
+  constructor() {
+    this.listMissings = [];
+    this.result = {};
+  }
+  getAnswer() {
+    return this.result;
+  }
+  addAnswer(answer) {
+    this.result[answer.id] = answer.value;
+  }
+  addMissingField(field) {
+    this.listMissings.push(field);
+  }
+  hasMissing() {
+    return !isEmptyArray(this.listMissings);
+  }
+  forEachMissingField(callback) {
+    this.listMissings.forEach(callback);
+  }
+  clear() {
+    this.listMissings = [];
+    this.result = {};
+  }
+}
+
+const answerResultManager = new AnswerResultManager();

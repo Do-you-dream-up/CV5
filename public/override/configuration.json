@@ -180,11 +180,14 @@
   },
   "oidc": {
     "enable": false,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "prodPorovider": "",
-    "preprodPorovider": "",
-    "scopes": [""]
+    "clientId": "",
+    "clientSecret": "",
+    "pkceActive": false,
+    "pkceMode": "",
+    "authUrl": "",
+    "tokenUrl": "",
+    "scopes": [""],
+    "withAuth": false
   },
   "saml": {
     "enable": false

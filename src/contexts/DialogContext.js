@@ -19,6 +19,7 @@ import { useTheme } from 'react-jss';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/viewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
+import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -51,7 +52,7 @@ export function DialogProvider({ children }) {
   const { configuration } = useContext(ConfigurationContext);
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onNewMessage, hasAfterLoadBeenCalled } = useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -241,7 +242,7 @@ export function DialogProvider({ children }) {
             carousel: steps.length > 1,
             type: 'response',
             secondary: sidebar,
-            steps: steps,
+            steps,
             templateName,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
@@ -296,19 +297,28 @@ export function DialogProvider({ children }) {
     }
   }, []);
 
+  useEffect(() => {
+    Local.secondary.save(secondaryActive);
+  }, [secondaryActive]);
+
   const toggleSecondary = useCallback(
-    (open, { bodyRenderer, body, height, title, url, width } = {}) =>
+    (open, { headerTransparency = true, headerRenderer, bodyRenderer, body, height, title, url, width } = {}) =>
       () => {
-        const someFieldsDefined = [bodyRenderer, body, height, title, url, width].some((v) => isDefined(v));
+        const someFieldsDefined = [
+          headerTransparency,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+        ].some((v) => isDefined(v));
         if (someFieldsDefined) {
-          setSecondaryContent({ bodyRenderer, body, height, title, url, width });
+          setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
         }
         setSecondaryActive((previous) => {
-          const should = open === undefined ? !previous : open;
-          if (Local.get(Local.names.secondary) !== should) {
-            Local.set(Local.names.secondary, should);
-          }
-          return should;
+          return open === undefined ? !previous : open;
         });
       },
     [],
@@ -350,9 +360,23 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [welcomeContent, listInteractionHistory]);
 
+  const chatboxNode = useMemo(() => {
+    try {
+      return getChatboxRef();
+    } catch (e) {
+      return null;
+    }
+  }, [getChatboxRef]);
+
   const closeSecondary = useCallback(() => {
-    if (secondaryActive) toggleSecondary(false)();
-  }, [secondaryActive, toggleSecondary]);
+    toggleSecondary(false)();
+    if (isDefined(chatboxNode))
+      try {
+        chatboxNode.dispatchEvent(eventOnSecondaryClosed);
+      } catch (e) {
+        // mute multiple call of dispatchEvent error
+      }
+  }, [toggleSecondary, chatboxNode]);
 
   const openSecondary = useCallback(
     (...props) => {
@@ -402,7 +426,7 @@ export function DialogProvider({ children }) {
 }
 
 DialogProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.any,
   toggle: PropTypes.any,
   onPushrulesDataReceived: PropTypes.func,
 };

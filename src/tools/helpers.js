@@ -176,6 +176,9 @@ export const b64encodeObject = (o) => {
   }, {});
 };
 
+export const recursiveBase64EncodeString = (obj) => {
+  return _recursiveBase64EncodeString(obj, Object.keys(obj), {});
+};
 export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
@@ -199,6 +202,25 @@ const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   return _recursiveBase64DecodeString(o, keylist, res);
 };
 
+const _recursiveBase64EncodeString = (o, keylist, res = {}) => {
+  if (keylist.length === 0) return res;
+
+  const key = keylist.pop();
+  let value = o[key];
+
+  if (isOfTypeString(value)) {
+    try {
+      res[key] = value.toBase64();
+    } catch (e) {
+      // Exception: malformed URI
+      res[key] = value;
+    }
+  } else if (isOfTypeObject(value)) res[key] = _recursiveBase64EncodeString(value, Object.keys(value), res[key]);
+  else res[key] = value;
+
+  return _recursiveBase64EncodeString(o, keylist, res);
+};
+
 export const asset = (name) => {
   if (name.includes('base64')) {
     return name;
@@ -219,6 +241,7 @@ export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
 export const getChatboxWidth = (chatboxRef) => {
   if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
+  if (!isDefined(chatboxRef)) return 0;
   const { left, right } = chatboxRef.getBoundingClientRect();
   return Math.abs(right - left);
 };
