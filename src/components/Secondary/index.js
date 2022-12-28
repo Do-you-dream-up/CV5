@@ -7,7 +7,6 @@ import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
 import useStyles from './styles';
 import { isDefined } from '../../tools/helpers';
-import { useSurvey } from '../../Survey/SurveyProvider';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -17,12 +16,20 @@ import { useSurvey } from '../../Survey/SurveyProvider';
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useContext(ConfigurationContext);
   const { secondaryActive, secondaryContent, closeSecondary } = useContext(DialogContext);
-  const { onSecondaryClosed } = useSurvey();
 
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
-  const { bodyRenderer, body, height, title, url, width } = secondaryContent || {};
+  const {
+    headerTransparency = true,
+    headerRenderer,
+    bodyRenderer,
+    body,
+    height,
+    title,
+    url,
+    width,
+  } = secondaryContent || {};
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
 
@@ -46,11 +53,6 @@ export default function Secondary({ anchor, mode }) {
     );
   }, [body, bodyRenderer, classes.body]);
 
-  const onClose = useCallback(() => {
-    onSecondaryClosed();
-    closeSecondary();
-  }, [closeSecondary, onSecondaryClosed]);
-
   const titleContent = useMemo(() => {
     try {
       return title();
@@ -58,16 +60,29 @@ export default function Secondary({ anchor, mode }) {
       return <h1 className={c('dydu-secondary-title', classes.title)}>{title}</h1>;
     }
   }, [title]);
-  return secondaryActive ? (
-    <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
-      <div className={c('dydu-secondary-header', classes.header)}>
+
+  const headerClass = useMemo(() => {
+    return headerTransparency ? classes.header : classes.headerWhite;
+  }, [headerTransparency]);
+
+  const renderHeader = useCallback(() => {
+    return isDefined(headerRenderer) ? (
+      headerRenderer()
+    ) : (
+      <div className={c('dydu-secondary-header', headerClass)}>
         {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={onClose} type="button" variant="icon">
+          <Button color="primary" onClick={closeSecondary} type="button" variant="icon">
             <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>
       </div>
+    );
+  }, [headerRenderer, titleContent, closeSecondary]);
+
+  return secondaryActive ? (
+    <div className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])} ref={root}>
+      {renderHeader()}
       {renderBody()}
       {/*body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />*/}
       {url && (

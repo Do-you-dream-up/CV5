@@ -9,8 +9,6 @@ import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { SamlProvider } from './contexts/SamlContext';
-import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
@@ -38,15 +36,11 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <SamlProvider>
-            <ViewModeProvider>
-              <EventsProvider>
-                <UserActionProvider>
-                  <Application />
-                </UserActionProvider>
-              </EventsProvider>
-            </ViewModeProvider>
-          </SamlProvider>
+          <ViewModeProvider>
+            <EventsProvider>
+              <Application />
+            </EventsProvider>
+          </ViewModeProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,

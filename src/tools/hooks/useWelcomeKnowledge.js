@@ -6,6 +6,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 
 const fetchWelcomeKnowledge = dydu.getWelcomeKnowledge;
+
 export default function useWelcomeKnowledge() {
   const [result, setResult] = useState(null);
 

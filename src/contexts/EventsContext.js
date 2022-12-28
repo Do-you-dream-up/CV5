@@ -144,7 +144,7 @@ export function EventsProvider({ children }) {
         onNewMessage,
         onEvent,
         event,
-        chatboxRef,
+        getChatboxRef: () => chatboxRef,
       }}
     />
   );

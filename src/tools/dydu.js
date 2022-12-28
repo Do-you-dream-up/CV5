@@ -11,8 +11,10 @@ import {
   strContains,
   toFormUrlEncoded,
 } from './helpers';
+import { getOidcEnableStatus, getOidcEnableWithAuthStatus } from './oidc';
 
 import Bowser from 'bowser';
+import Storage from '../components/auth/Storage';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
@@ -34,7 +36,9 @@ const getUrl = window.location.href;
  * - Protocol http is used when bliss is used in local with Channels.
  */
 
-let BOT, protocol, API;
+let BOT = {},
+  protocol,
+  API = {};
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
@@ -110,11 +114,21 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
+    this.tokenRefresher = null;
+    this.oidcLogin = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.qualificationMode = false;
     this.initInfos();
+  }
+
+  setTokenRefresher(refreshToken) {
+    this.tokenRefresher = refreshToken;
+  }
+
+  setOidcLogin(loginOidc) {
+    this.oidcLogin = loginOidc;
   }
 
   getVariables() {
@@ -163,14 +177,36 @@ export default new (class Dydu {
         }
         return data;
       })
-      .catch(() => {
+      .catch((error) => {
         if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-        if (BOT.backUpServer !== '') {
+
+        /**
+         * NO 401 ERROR
+         */
+        if (BOT.backUpServer !== '' && error?.response?.status !== 401) {
           API.defaults.baseURL =
             API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
               ? `https://${BOT.server}/servlet/api/`
               : `https://${BOT.backUpServer}/servlet/api/`;
         }
+
+        /**
+         * IF 401
+         */
+        if (error?.response?.status === 401) {
+          /**
+           * IF OIDC ACTIVATED With or Without REFRESH TOKEN
+           */
+          if (getOidcEnableStatus()) {
+            if (Storage.loadToken()?.refresh_token) {
+              this.tokenRefresher();
+            } else {
+              Storage.clearToken();
+              this.oidcLogin();
+            }
+          }
+        }
+
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(this.emit(verb, path, data));
@@ -699,7 +735,6 @@ export default new (class Dydu {
       os: `${os.name} ${os.version}`,
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
-      tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
       userInput: text,
       userUrl: getUrl,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -717,6 +752,17 @@ export default new (class Dydu {
   post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
+  createSurveyFormDataWithPayload = (payload) => {
+    const formData = new FormData();
+    try {
+      formData.append('contextUuid', payload.parameters.contextId);
+      formData.append('solutionUsed ', SOLUTION_TYPE.assistant);
+      formData.append('fields', payload.parameters.fields);
+    } catch (e) {
+      console.error('while creating form data with survey payload', e);
+      return;
+    }
+  };
   createSurveyRequestPayload = async (survey = {}, options = {}) => {
     if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
     if (isEmptyObject(options)) options = { qualification: this.qualificationMode };
@@ -726,8 +772,8 @@ export default new (class Dydu {
       parameters: {
         botId: this.getBot().id,
         surveyId: survey.surveyId,
-        interactionSurveyAnswer: false,
-        fields: b64encodeObject(survey),
+        interactionSurveyAnswer: survey.interactionSurvey,
+        fields: b64encodeObject(survey.fields),
         contextId: await this.getContextId(),
         qualificationMode: this.qualificationMode,
         language: this.getLocale(),
@@ -743,9 +789,9 @@ export default new (class Dydu {
 
   sendSurvey = async (surveyAnswer, options = {}) => {
     const payload = await this.createSurveyRequestPayload(surveyAnswer, options);
-    const surveyQueryString = this.#toQueryString(payload);
-    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${surveyQueryString}`;
-    return this.get(path);
+    const formData = this.createSurveyFormDataWithPayload(payload);
+    const path = `/chat/survey${BOT.id}`;
+    return this.post(path, formData);
   };
 
   getSurvey = async (surveyId = '') => {
@@ -838,6 +884,18 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     }
   };
 
+  instance.interceptors.request.use(
+    (config) => {
+      if (getOidcEnableWithAuthStatus()) {
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
+
   // when response code in range of 2xx
   const onSuccess = (response) => {
     response?.data && getSamlEnableStatus() && samlRenewOrReject(response?.data);
@@ -846,5 +904,6 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   };
 
   instance.interceptors.response.use(onSuccess);
+
   return instance;
 };
