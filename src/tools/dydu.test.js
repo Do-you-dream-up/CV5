@@ -61,7 +61,7 @@ Object.defineProperty(window, 'location', {
   },
 });
 
-describe('helpers', () => {
+describe('dydu.getSpace', () => {
   const { location } = window;
 
   it('should use the "urlpart" strategy for space consultation detection', () => {
