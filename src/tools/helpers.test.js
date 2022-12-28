@@ -17,6 +17,7 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  osName,
   secondsToMs,
   strContains,
   toFormUrlEncoded,
@@ -429,6 +430,85 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(5000);
+    });
+  });
+
+  describe('browserName', () => {
+    it('should return the correct browser name for a Mozilla Firefox user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Mozilla Firefox');
+    });
+
+    it('should return the correct browser name for a Samsung Internet user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-G955F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Samsung Internet');
+    });
+
+    it('should return the correct browser name for a Opera user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 OPR/57.0.3098.106',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Opera');
+    });
+
+    it('should return the correct browser name for a Microsoft Internet Explorer user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Zoom 3.6.0; wbx 1.0.0; rv:11.0) like Gecko',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Microsoft Internet Explorer');
+    });
+    it('should return the correct browser name for a Microsoft Edge (Legacy) user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Microsoft Edge (Legacy)');
+    });
+    it('should return the correct browser name for a Microsoft Edge (Chromium) user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.64',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Microsoft Edge (Chromium)');
+    });
+
+    it('should return the correct browser name for a Google Chrome or Chromium user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/66.0.3359.181 Chrome/66.0.3359.181 Safari/537.36',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Google Chrome or Chromium');
+    });
+
+    it('should return the correct browser name for a Apple Safari user agent', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1 980x1306',
+        configurable: true,
+      });
+
+      expect(browserName()).toEqual('Apple Safari');
     });
   });
 });
