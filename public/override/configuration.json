@@ -202,7 +202,7 @@
     "active": true
   },
   "qualification": {
-    "active": true
+    "active": false
   },
   "root": "dydu-root",
   "secondary": {
