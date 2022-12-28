@@ -582,6 +582,16 @@ export default new (class Dydu {
   };
 
   /**
+   * getServerStatus
+   *
+   * @returns {Promise}
+   */
+  getServerStatus = () => {
+    const path = `/serverstatus`;
+    return this.emit(API.get, path);
+  };
+
+  /**
    * getSaml2Status - Get auth status.
    *
    * @param {string} text - Input to send.
