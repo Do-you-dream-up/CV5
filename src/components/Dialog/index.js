@@ -27,7 +27,7 @@ export default function Dialog({ dialogRef, open, ...rest }) {
   // eslint-disable-next-line
   const { isAppReady } = useEvent();
   const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
-  const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
+  const poweredByActive = configuration.poweredBy?.active;
 
   useEffect(() => {
     if (isAppReady && spacesActive) {

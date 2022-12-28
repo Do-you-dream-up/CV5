@@ -33,7 +33,7 @@ export const configuration = new (class Configuration {
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
-      dydu.setQualificationMode(this.configuration.qualification.active);
+      dydu.setQualificationMode(this.configuration.qualification?.active);
       return this.configuration;
     });
   };

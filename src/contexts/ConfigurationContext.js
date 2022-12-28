@@ -42,7 +42,7 @@ export class ConfigurationProvider extends React.Component {
           },
         }),
         () => {
-          dydu.setQualificationMode(this.state.configuration.qualification.active);
+          dydu.setQualificationMode(this.state.configuration.qualification?.active);
           resolve(this.state.configuration);
         },
       ),
