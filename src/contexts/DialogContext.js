@@ -14,6 +14,7 @@ import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import useServerStatus from '../tools/hooks/useServerStatus';
 import { useTheme } from 'react-jss';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/viewport';
@@ -67,9 +68,10 @@ export function DialogProvider({ children }) {
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchServerStatus, result: serverStatus } = useServerStatus();
 
   const { exec, forceExec } = usePromiseQueue(
-    [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    [fetchServerStatus, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
     hasAfterLoadBeenCalled,
   );
   const [pushrules, setPushrules] = useState(null);
@@ -80,10 +82,11 @@ export function DialogProvider({ children }) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
+    if (!isDefined(serverStatus)) return;
     fetchPushrules().then((rules) => {
-      setPushrules(rules);
+      rules && setPushrules(rules);
     });
-  }, [pushrules]);
+  }, [pushrules, serverStatus]);
 
   useEffect(() => {
     const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
