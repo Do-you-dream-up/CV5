@@ -121,6 +121,7 @@ export default new (class Dydu {
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
+    this.triesCounter = 0;
     this.minTimeoutForAnswer = 3000;
     this.maxTimeoutForAnswer = 21000;
     this.initInfos();
@@ -196,6 +197,12 @@ export default new (class Dydu {
   };
 
   handleAxiosError = (error, verb, path, data) => {
+    this.triesCounter = this.triesCounter + 1;
+
+    if (this.triesCounter >= 10) {
+      throw 'API Unreachable';
+    }
+
     /**
      * NO 401 ERROR
      */
