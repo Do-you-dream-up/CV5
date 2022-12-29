@@ -542,11 +542,16 @@ export default new (class Dydu {
   setQualificationMode = (value) => {
     const locationHref = window.location.href;
     let isActive = value;
-    if (locationHref.includes('/preprod') || locationHref.includes('localhost')) {
-      isActive = true;
+    if (
+      window.DYDU_QUALIFICATION_MODE ||
+      locationHref.includes('cdn.doyoudreamup.com') ||
+      locationHref.includes('localhost')
+    ) {
+      isActive = window.DYDU_QUALIFICATION_MODE ?? true;
     }
     this.qualificationMode = isActive ?? false;
   };
+
   /**
    * Fetch candidates for auto-completion.
    *
