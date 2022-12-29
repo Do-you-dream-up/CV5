@@ -120,8 +120,9 @@ export default new (class Dydu {
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
-    this.apiTries = 0;
     this.mainServerStatus = 'Ok';
+    this.minTimeoutForAnswer = 3000;
+    this.maxTimeoutForAnswer = 21000;
     this.initInfos();
   }
 
@@ -187,7 +188,7 @@ export default new (class Dydu {
   };
 
   handleSetApiTimeout = (ms) => {
-    let timeout = 3000;
+    let timeout = this.minTimeoutForAnswer;
     if (ms) {
       timeout = ms;
     }
@@ -215,7 +216,7 @@ export default new (class Dydu {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(this.emit(verb, path, data));
-      }, 3000);
+      }, this.minTimeoutForAnswer);
     });
   };
 
@@ -594,7 +595,7 @@ export default new (class Dydu {
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data, 15000).then(this.processTalkResponse);
+    return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
   processTalkResponse = (response) => {
