@@ -88,16 +88,16 @@ export function DialogProvider({ children }) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
-    if (!isDefined(serverStatus)) return;
+    if (!hasAfterLoadBeenCalled && !serverStatus) return;
     fetchPushrules().then((rules) => {
       rules && setPushrules(rules);
     });
-  }, [pushrules, serverStatus]);
+  }, [pushrules, hasAfterLoadBeenCalled, serverStatus]);
 
   useEffect(() => {
     const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
-    if (canTriggerPushRules && serverStatus) triggerPushRule();
-  }, [triggerPushRule, pushrulesConfigActive, serverStatus]);
+    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatus) triggerPushRule();
+  }, [triggerPushRule, pushrulesConfigActive, hasAfterLoadBeenCalled, serverStatus]);
 
   const add = useCallback(
     (interaction) => {
