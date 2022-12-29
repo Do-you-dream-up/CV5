@@ -186,6 +186,14 @@ export default new (class Dydu {
     }
   };
 
+  handleSetApiTimeout = (ms) => {
+    let timeout = 3000;
+    if (ms) {
+      timeout = ms;
+    }
+    API.defaults.timeout = timeout;
+  };
+
   handleAxiosError = (error, verb, path, data) => {
     /**
      * NO 401 ERROR
@@ -223,8 +231,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = (verb, path, data) => {
+  emit = (verb, path, data, timeout) => {
     this.handleSetApiUrl();
+    this.handleSetApiTimeout(timeout);
     return verb(path, data)
       .then(({ data = {} }) => this.handleAxiosResponse(data))
       .catch((error) => this.handleAxiosError(error, verb, path, data));
@@ -585,7 +594,7 @@ export default new (class Dydu {
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: options.qualification });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data).then(this.processTalkResponse);
+    return this.emit(API.post, path, data, 15000).then(this.processTalkResponse);
   };
 
   processTalkResponse = (response) => {
