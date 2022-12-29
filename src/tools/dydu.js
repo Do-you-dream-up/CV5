@@ -92,10 +92,9 @@ let BOT = {},
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
-    maxRetry: 2,
-    timeout: 3000,
     server: `${protocol}://${BOT.server}/servlet/api/`,
     backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
+    timeout: 3000,
     axiosConf: {
       headers: {
         Accept: 'application/json',
@@ -114,17 +113,30 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.onServerChangeFn = null;
+    this.serverStatusChek = null;
     this.tokenRefresher = null;
     this.oidcLogin = null;
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
+    this.mainServerStatus = 'Ok';
+    this.triesCounter = 0;
+    this.minTimeoutForAnswer = 3000;
+    this.maxTimeoutForAnswer = 21000;
     this.qualificationMode = false;
     this.initInfos();
   }
 
+  setServerStatusCheck(serverStatusChek) {
+    this.serverStatusChek = serverStatusChek;
+  }
+
   setTokenRefresher(refreshToken) {
     this.tokenRefresher = refreshToken;
+  }
+
+  setMainServerStatus(value) {
+    this.mainServerStatus = value;
   }
 
   setOidcLogin(loginOidc) {
@@ -148,13 +160,71 @@ export default new (class Dydu {
     };
   }
 
-  extractPayloadFromHttpResponse = (data = {}) => {
+  handleTokenRefresh = () => {
+    if (getOidcEnableStatus()) {
+      if (Storage.loadToken()?.refresh_token) {
+        this.tokenRefresher();
+      } else {
+        Storage.clearToken();
+        this.oidcLogin();
+      }
+    }
+  };
+
+  handleAxiosResponse = (data = {}) => {
     if (!hasProperty(data, 'values')) return data;
-
     data.values = decode(data.values);
-
     this.setContextId(data.values.contextId);
     return data.values;
+  };
+
+  handleSetApiUrl = () => {
+    let apiUrl = BOT.server;
+    if (this.mainServerStatus === 'Error') {
+      if (BOT.backUpServer && BOT.backUpServer !== '') {
+        apiUrl = BOT.backUpServer;
+      }
+      API.defaults.baseURL = `https://${apiUrl}/servlet/api/`;
+    }
+  };
+
+  handleSetApiTimeout = (ms) => {
+    let timeout = this.minTimeoutForAnswer;
+    if (ms) {
+      timeout = ms;
+    }
+    API.defaults.timeout = timeout;
+  };
+
+  handleAxiosError = (error, verb, path, data, timeout) => {
+    this.triesCounter = this.triesCounter + 1;
+
+    if (this.triesCounter >= 10) {
+      throw 'API Unreachable';
+    }
+
+    /**
+     * NO 401 ERROR
+     */
+    if (error?.response?.status !== 401) {
+      if (API.defaults.baseURL === `https://${BOT.server}/servlet/api/`) {
+        this.mainServerStatus = 'Error';
+      }
+    }
+
+    /**
+     * IF 401
+     */
+    if (error?.response?.status === 401) {
+      this.handleTokenRefresh();
+    }
+
+    // Retry API Call
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.emit(verb, path, data, timeout));
+      }, this.minTimeoutForAnswer);
+    });
   };
 
   /**
@@ -169,50 +239,12 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = (verb, path, data) => {
+  emit = (verb, path, data, timeout) => {
+    this.handleSetApiUrl();
+    this.handleSetApiTimeout(timeout);
     return verb(path, data)
-      .then(({ data = {} }) => {
-        if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-          return this.extractPayloadFromHttpResponse(data);
-        }
-        return data;
-      })
-      .catch((error) => {
-        if (BOT.server === BOT.backUpServer) throw 'API Unreachable';
-
-        /**
-         * NO 401 ERROR
-         */
-        if (BOT.backUpServer !== '' && error?.response?.status !== 401) {
-          API.defaults.baseURL =
-            API.defaults.baseURL === `https://${BOT.backUpServer}/servlet/api/`
-              ? `https://${BOT.server}/servlet/api/`
-              : `https://${BOT.backUpServer}/servlet/api/`;
-        }
-
-        /**
-         * IF 401
-         */
-        if (error?.response?.status === 401) {
-          /**
-           * IF OIDC ACTIVATED With or Without REFRESH TOKEN
-           */
-          if (getOidcEnableStatus()) {
-            if (Storage.loadToken()?.refresh_token) {
-              this.tokenRefresher();
-            } else {
-              Storage.clearToken();
-              this.oidcLogin();
-            }
-          }
-        }
-
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(this.emit(verb, path, data));
-          }, 3000);
-        });
-      });
+      .then(({ data = {} }) => this.handleAxiosResponse(data))
+      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
   };
 
   /**
@@ -577,7 +609,7 @@ export default new (class Dydu {
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
     const contextId = await this.getContextId(false, { qualification: this.qualificationMode });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
-    return this.emit(API.post, path, data).then(this.processTalkResponse);
+    return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
   processTalkResponse = (response) => {
@@ -595,7 +627,7 @@ export default new (class Dydu {
    */
   getServerStatus = () => {
     const path = `/serverstatus`;
-    return this.emit(API.get, path);
+    return this.emit(API.get, path, null, 5000);
   };
 
   /**
@@ -853,8 +885,6 @@ export default new (class Dydu {
 /====================================================================================================/;
 
 const getAxiosInstanceWithDyduConfig = (config = {}) => {
-  if (!isDefined(config?.maxRetry)) config.maxRetry = 2;
-  if (!isDefined(config?.maxFlip)) config.maxFlip = 10;
   if (!isDefined(config?.axiosConf)) config.axiosConf = {};
 
   const instance = axios.create({
@@ -895,6 +925,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
     }
   };
 
+  // when request is sent
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {

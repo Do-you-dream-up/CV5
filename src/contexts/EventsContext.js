@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
+import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
 let chatboxRef = null;
@@ -64,6 +65,7 @@ export function EventsProvider({ children }) {
   const [afterLoadCalled, setAfterLoadCalled] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
+  const { result: serverStatus } = useServerStatus();
 
   useEffect(() => {
     if (isMouseIn) stopBlink();
@@ -72,8 +74,10 @@ export function EventsProvider({ children }) {
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
   const processUserVisit = useCallback(async () => {
-    await VisitManager.refreshRegisterVisit();
-  }, []);
+    if (serverStatus) {
+      await VisitManager.refreshRegisterVisit();
+    }
+  }, [serverStatus]);
 
   const processDyduAfterLoad = useCallback(() => {
     if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);

@@ -6,7 +6,11 @@ export default function useServerStatus() {
   const [result, setResult] = useState(null);
 
   useEffect(() => {
-    // dydu.
+    dydu.setServerStatusCheck(fetch);
+  }, []);
+
+  useEffect(() => {
+    result && dydu.setMainServerStatus(result.status);
   }, [result]);
 
   const fetch = useCallback(() => {

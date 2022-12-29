@@ -8,6 +8,7 @@ import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
+import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
@@ -19,7 +20,6 @@ import { useTheme } from 'react-jss';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/viewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
-import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 
 const isLastElementOfTypeAnimationWriting = (list) => {
   const last = list[list.length - 1];
@@ -72,9 +72,14 @@ export function DialogProvider({ children }) {
   const { fetch: fetchServerStatus, result: serverStatus } = useServerStatus();
 
   const { exec, forceExec } = usePromiseQueue(
-    [fetchServerStatus, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled,
+    [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    hasAfterLoadBeenCalled && serverStatus,
   );
+
+  useEffect(() => {
+    fetchServerStatus();
+  }, []);
+
   const [pushrules, setPushrules] = useState(null);
 
   const theme = useTheme();
@@ -83,16 +88,16 @@ export function DialogProvider({ children }) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
-    if (!isDefined(serverStatus)) return;
+    if (!hasAfterLoadBeenCalled && !serverStatus) return;
     fetchPushrules().then((rules) => {
       rules && setPushrules(rules);
     });
-  }, [pushrules, serverStatus]);
+  }, [pushrules, hasAfterLoadBeenCalled, serverStatus]);
 
   useEffect(() => {
     const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
-    if (canTriggerPushRules) triggerPushRule();
-  }, [triggerPushRule, pushrulesConfigActive]);
+    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatus) triggerPushRule();
+  }, [triggerPushRule, pushrulesConfigActive, hasAfterLoadBeenCalled, serverStatus]);
 
   const add = useCallback(
     (interaction) => {
