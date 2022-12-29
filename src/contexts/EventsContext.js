@@ -64,6 +64,7 @@ export function EventsProvider({ children }) {
   const [afterLoadCalled, setAfterLoadCalled] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
+  const { result: serverStatus } = useServerStatus();
 
   useEffect(() => {
     if (isMouseIn) stopBlink();
@@ -72,8 +73,10 @@ export function EventsProvider({ children }) {
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
   const processUserVisit = useCallback(async () => {
-    await VisitManager.refreshRegisterVisit();
-  }, []);
+    if (serverStatus) {
+      await VisitManager.refreshRegisterVisit();
+    }
+  }, [serverStatus]);
 
   const processDyduAfterLoad = useCallback(() => {
     if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);
