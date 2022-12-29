@@ -613,7 +613,7 @@ export default new (class Dydu {
    */
   getServerStatus = () => {
     const path = `/serverstatus`;
-    return this.emit(API.get, path);
+    return this.emit(API.get, path, null, 5000);
   };
 
   /**
