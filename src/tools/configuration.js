@@ -2,11 +2,13 @@ import { hasWizard, isLoadedFromChannels } from './wizard';
 
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
-// import { Local } from './storage';
 import React from 'react';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
+import dydu from './dydu';
 import json from './configuration.json';
+
+// import { Local } from './storage';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -31,6 +33,7 @@ export const configuration = new (class Configuration {
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
+      dydu.setQualificationMode(this.configuration.qualification?.active);
       return this.configuration;
     });
   };

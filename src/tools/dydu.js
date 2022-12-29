@@ -8,7 +8,6 @@ import {
   isEmptyString,
   isOfTypeString,
   isPositiveNumber,
-  qualification,
   strContains,
   toFormUrlEncoded,
 } from './helpers';
@@ -120,6 +119,7 @@ export default new (class Dydu {
     this.locale = this.getLocale();
     this.space = this.getSpace(configuration?.spaces?.detection);
     this.emit = debounce(this.emit, 100, { leading: true });
+    this.qualificationMode = false;
     this.initInfos();
   }
 
@@ -228,7 +228,7 @@ export default new (class Dydu {
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
       language: this.getLocale(),
-      qualificationMode: options.qualification,
+      qualificationMode: this.qualificationMode,
       space: this.getSpace(),
       userInput: `#dydumailto:${contextId}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -342,7 +342,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      qualificationMode: qualification,
+      qualificationMode: this.qualificationMode,
       ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/context/${BOT.id}/`;
@@ -356,7 +356,6 @@ export default new (class Dydu {
     this.setContextId(response?.contextId);
     return response?.contextId;
   };
-
   /**
    * Self-regeneratively return the currently selected locale.
    *
@@ -540,6 +539,14 @@ export default new (class Dydu {
       }
     });
 
+  setQualificationMode = (value) => {
+    let isActive = value;
+    if (window.DYDU_QUALIFICATION_MODE) {
+      isActive = window.DYDU_QUALIFICATION_MODE;
+    }
+    this.qualificationMode = isActive ?? false;
+  };
+
   /**
    * Fetch candidates for auto-completion.
    *
@@ -568,7 +575,7 @@ export default new (class Dydu {
   talk = async (text, options = {}) => {
     const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
     const data = qs.stringify({ ...payload, ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }) });
-    const contextId = await this.getContextId(false, { qualification: options.qualification });
+    const contextId = await this.getContextId(false, { qualification: this.qualificationMode });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data).then(this.processTalkResponse);
   };
@@ -617,7 +624,7 @@ export default new (class Dydu {
         content: input?.toBase64(),
         contextId: await this.getContextId(),
         botId: this.getBot()?.id?.toBase64(),
-        qualificationMode: true,
+        qualificationMode: this.qualificationMode,
         language: this.getLocale().toBase64(),
         space: this.getSpace().toBase64(),
         solutionUsed: SOLUTION_TYPE.assistant,
@@ -703,12 +710,12 @@ export default new (class Dydu {
    *
    * @returns {Promise}
    */
-  welcomeCall = async (options = {}) => {
+  welcomeCall = async () => {
     const contextId = await this.getContextId();
     const data = qs.stringify({
       contextUuid: contextId,
       language: this.getLocale(),
-      qualificationMode: options.qualification,
+      qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace() || 'default',
       ...(getSamlEnableStatus() && { saml2_info: Local.saml.load() }),
@@ -737,7 +744,7 @@ export default new (class Dydu {
       doNotRegisterInteraction: options.doNotSave,
       language: this.getLocale(),
       os: `${os.name} ${os.version}`,
-      qualificationMode: options.qualification,
+      qualificationMode: this.qualificationMode,
       space: this.getSpace(),
       userInput: text,
       userUrl: getUrl,
@@ -769,7 +776,7 @@ export default new (class Dydu {
   };
   createSurveyRequestPayload = async (survey = {}, options = {}) => {
     if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
-    if (isEmptyObject(options)) options = { qualification: qualification };
+    if (isEmptyObject(options)) options = { qualification: this.qualificationMode };
 
     return {
       type: RESPONSE_TYPE.survey,
@@ -779,7 +786,7 @@ export default new (class Dydu {
         interactionSurveyAnswer: survey.interactionSurvey,
         fields: b64encodeObject(survey.fields),
         contextId: await this.getContextId(),
-        qualificationMode: options.qualification || false,
+        qualificationMode: this.qualificationMode,
         language: this.getLocale(),
         space: this.getSpace(),
         solutionUsed: SOLUTION_TYPE.assistant,
@@ -821,7 +828,7 @@ export default new (class Dydu {
   };
 
   registerVisit() {
-    this.welcomeCall({ qualification }).then(async () => {
+    this.welcomeCall().then(async () => {
       const keyInfos = await this.getInfos();
       Local.visit.save(keyInfos);
     });

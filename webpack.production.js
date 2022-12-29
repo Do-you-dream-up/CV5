@@ -9,9 +9,7 @@ const common = require('./webpack.common');
 module.exports = (env) => {
 
   let ASSET = './';
-  
-  const QUALIFICATION = env.prod ? false : true;
-    
+      
   console.log("env.CHATBOX_VERSION", env.CHATBOX_VERSION)
   console.log("env.CHATBOX_REVISION", env.CHATBOX_REVISION)
 
@@ -53,7 +51,6 @@ module.exports = (env) => {
       new webpack.DefinePlugin({
         'process.env': {
           PUBLIC_URL: JSON.stringify(ASSET),
-          QUALIFICATION,
         },
       }),
     ],

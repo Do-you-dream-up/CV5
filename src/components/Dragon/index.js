@@ -26,7 +26,7 @@ export default function Dragon({ component, reset, ...rest }) {
   const [moving, setMoving] = useState(false);
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const active = !reset && configuration.dragon.active && !isMobile;
+  const active = !reset && configuration.dragon?.active && !isMobile;
 
   const onDrag = (event) => {
     if (moving && origin) {
