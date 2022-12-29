@@ -64,8 +64,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+  const qualification = configuration.qualification?.active;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -83,7 +82,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
           qualification,
           extra: options,
         };
-
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
           if (!REGEX_URL.test(text)) {

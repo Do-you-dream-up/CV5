@@ -4,9 +4,8 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn": "https://cdn.doyoudreamup.com/",
-    "directory": "development/",
-    "qualification": true
+    "cdn": "https://cdn.doyoudreamup.com/chatbox/",
+    "directory": "main/"
   },
   "avatar": {
     "request": {
@@ -190,6 +189,9 @@
     "scopes": [""],
     "withAuth": false
   },
+  "saml": {
+    "enable": false
+  },
   "onboarding": {
     "enable": false,
     "image1": "dydu-onboarding-1.svg",
@@ -201,6 +203,9 @@
   },
   "pushrules": {
     "active": true
+  },
+  "qualification": {
+    "active": false
   },
   "root": "dydu-root",
   "secondary": {
@@ -249,6 +254,13 @@
         "value": {
           "doyoudreamup.com": "dydu"
         }
+      },
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
+        }
       }
     ],
     "items": ["default"]
@@ -280,7 +292,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 80
+    "offsetBetweenCard": 82
   },
   "templateProduct": {
     "readmore": 100

@@ -228,9 +228,6 @@ export const asset = (name) => {
   return `${process.env.PUBLIC_URL}/assets/${name}`;
 };
 
-export const qualification =
-  window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
-
 export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };

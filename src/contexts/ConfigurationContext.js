@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
+import dydu from '../tools/dydu';
 
 export const useConfiguration = () => {
   return useContext(ConfigurationContext);
@@ -40,7 +41,10 @@ export class ConfigurationProvider extends React.Component {
             },
           },
         }),
-        () => resolve(this.state.configuration),
+        () => {
+          dydu.setQualificationMode(this.state.configuration.qualification?.active);
+          resolve(this.state.configuration);
+        },
       ),
     );
 

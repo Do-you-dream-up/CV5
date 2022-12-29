@@ -204,6 +204,9 @@
   "pushrules": {
     "active": true
   },
+  "qualification": {
+    "active": false
+  },
   "root": "dydu-root",
   "secondary": {
     "automatic": {
@@ -218,13 +221,6 @@
   "spaces": {
     "active": true,
     "detection": [
-      {
-        "active": false,
-        "mode": "urlpart",
-        "value": {
-          "doyoudreamup.com/test/": "dydu"
-        }
-      },
       {
         "active": false,
         "mode": "cookie",
@@ -257,6 +253,13 @@
         "mode": "hostname",
         "value": {
           "doyoudreamup.com": "dydu"
+        }
+      },
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
         }
       }
     ],
