@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
+import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
 let chatboxRef = null;
