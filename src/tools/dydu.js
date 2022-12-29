@@ -158,15 +158,6 @@ export default new (class Dydu {
     };
   }
 
-  extractPayloadFromHttpResponse = (data = {}) => {
-    if (!hasProperty(data, 'values')) return data;
-
-    data.values = decode(data.values);
-
-    this.setContextId(data.values.contextId);
-    return data.values;
-  };
-
   handleTokenRefresh = () => {
     if (getOidcEnableStatus()) {
       if (Storage.loadToken()?.refresh_token) {
@@ -178,11 +169,11 @@ export default new (class Dydu {
     }
   };
 
-  handleAxiosResponse = (data) => {
-    if (Object.prototype.hasOwnProperty.call(data, 'values')) {
-      return this.extractPayloadFromHttpResponse(data);
-    }
-    return data;
+  handleAxiosResponse = (data = {}) => {
+    if (!hasProperty(data, 'values')) return data;
+    data.values = decode(data.values);
+    this.setContextId(data.values.contextId);
+    return data.values;
   };
 
   handleSetApiUrl = () => {
