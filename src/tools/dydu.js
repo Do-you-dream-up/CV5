@@ -95,6 +95,7 @@ let BOT = {},
   API = getAxiosInstanceWithDyduConfig({
     server: `${protocol}://${BOT.server}/servlet/api/`,
     backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
+    timeout: 3000,
     axiosConf: {
       headers: {
         Accept: 'application/json',
