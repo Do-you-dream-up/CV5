@@ -540,14 +540,9 @@ export default new (class Dydu {
     });
 
   setQualificationMode = (value) => {
-    const locationHref = window.location.href;
     let isActive = value;
-    if (
-      window.DYDU_QUALIFICATION_MODE ||
-      locationHref.includes('cdn.doyoudreamup.com') ||
-      locationHref.includes('localhost')
-    ) {
-      isActive = window.DYDU_QUALIFICATION_MODE ?? true;
+    if (window.DYDU_QUALIFICATION_MODE) {
+      isActive = window.DYDU_QUALIFICATION_MODE;
     }
     this.qualificationMode = isActive ?? false;
   };
