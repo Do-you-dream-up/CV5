@@ -196,7 +196,7 @@ export default new (class Dydu {
     API.defaults.timeout = timeout;
   };
 
-  handleAxiosError = (error, verb, path, data) => {
+  handleAxiosError = (error, verb, path, data, timeout) => {
     this.triesCounter = this.triesCounter + 1;
 
     if (this.triesCounter >= 10) {
@@ -222,7 +222,7 @@ export default new (class Dydu {
     // Retry API Call
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(this.emit(verb, path, data));
+        resolve(this.emit(verb, path, data, timeout));
       }, this.minTimeoutForAnswer);
     });
   };
@@ -244,7 +244,7 @@ export default new (class Dydu {
     this.handleSetApiTimeout(timeout);
     return verb(path, data)
       .then(({ data = {} }) => this.handleAxiosResponse(data))
-      .catch((error) => this.handleAxiosError(error, verb, path, data));
+      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
   };
 
   /**
