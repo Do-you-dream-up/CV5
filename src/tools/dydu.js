@@ -565,7 +565,7 @@ export default new (class Dydu {
    */
   setSpace = (space) =>
     new Promise((resolve) => {
-      const value = space.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
+      const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
       Local.set(Local.names.space, value);
       this.space = value;
       resolve(value);
