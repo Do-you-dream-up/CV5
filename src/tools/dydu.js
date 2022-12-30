@@ -573,7 +573,7 @@ export default new (class Dydu {
 
   setQualificationMode = (value) => {
     let isActive = value;
-    if (window.DYDU_QUALIFICATION_MODE) {
+    if (window.DYDU_QUALIFICATION_MODE && !hasWizard()) {
       isActive = window.DYDU_QUALIFICATION_MODE;
     }
     this.qualificationMode = isActive ?? false;
