@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 
 import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
@@ -35,7 +35,7 @@ export default function Bubble({
   thinking,
   type,
 }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);

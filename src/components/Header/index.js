@@ -4,7 +4,7 @@ import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Banner from '../Banner';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { Local } from '../../tools/storage';
@@ -25,7 +25,7 @@ import useViewport from '../../tools/hooks/viewport';
  * closing the chatbox or changing the current language.
  */
 export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};

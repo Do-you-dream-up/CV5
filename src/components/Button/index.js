@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
@@ -32,7 +32,7 @@ export function ButtonBase({
   variant,
   ...rest
 }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles({ color, configuration });
   const icon = typeof getIcon === 'function' ? getIcon() : getIcon;

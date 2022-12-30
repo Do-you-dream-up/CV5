@@ -1,7 +1,7 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Button from '../Button';
 import PrettyHtml from '../PrettyHtml';
@@ -14,7 +14,7 @@ import { isDefined } from '../../tools/helpers';
  * side of the chatbox.
  */
 export default function Secondary({ anchor, mode }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { secondaryActive, secondaryContent, closeSecondary } = useContext(DialogContext);
 
   const root = useRef(null);

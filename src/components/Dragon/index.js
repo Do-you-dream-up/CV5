@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
@@ -15,7 +15,7 @@ import useViewport from '../../tools/hooks/viewport';
  * `translate3d` CSS property.
  */
 export default function Dragon({ component, reset, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const root = useRef(null);

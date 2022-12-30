@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
  * mount.
  */
 export default function Dialog({ dialogRef, open, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;

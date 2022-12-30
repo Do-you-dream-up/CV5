@@ -10,6 +10,8 @@ import json from './configuration.json';
 
 // import { Local } from './storage';
 
+// import { Local } from './storage';
+
 /**
  * Helper class to find values in a JSON configuration file.
  */
@@ -33,7 +35,12 @@ export const configuration = new (class Configuration {
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
-      dydu.setQualificationMode(this.configuration.qualification?.active);
+
+      if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
+        dydu.setSpace(configuration?.spaces?.items[0]);
+      }
+
+      dydu.setConfiguration(this.configuration);
       return this.configuration;
     });
   };

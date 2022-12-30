@@ -1,8 +1,8 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import ProductTemplate from '../ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
@@ -26,7 +26,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
   const customRenderer = useCustomRenderer();
   const classes = useStyles();
   const { t } = useTranslation('translation');
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { NameUser, NameBot } = configuration.interaction;
 
   const userName = useMemo(

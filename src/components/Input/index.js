@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 
 import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 

@@ -2,7 +2,7 @@ import { EventsContext, useEvent } from './EventsContext';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
-import { ConfigurationContext } from './ConfigurationContext';
+import { useConfiguration } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
@@ -49,7 +49,7 @@ export const DialogContext = React.createContext();
 export const useDialog = () => useContext(DialogContext);
 
 export function DialogProvider({ children }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();

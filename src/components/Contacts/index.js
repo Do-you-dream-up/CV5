@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
 import useStyles from './styles';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
  * Contact tab
  */
 export default function Contacts() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const showPhone = configuration.contacts.phone;
   const showEmail = configuration.contacts.email;
   const showSocial = configuration.contacts.socialNetwork;
