@@ -1,6 +1,6 @@
 import c from 'classnames';
 import React, { useContext, useEffect } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { ModalContext } from '../../contexts/ModalContext';
 import Paper from '../Paper';
 import useStyles from './styles';
@@ -11,7 +11,7 @@ import useStyles from './styles';
  * The modal comes with an backdrop overlay that self-dismiss on click.
  */
 export default function Modal() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { Component, onReject, onResolve, options, thinking } = useContext(ModalContext);
   const classes = useStyles({ configuration });
   const { dismissable, variant } = options;

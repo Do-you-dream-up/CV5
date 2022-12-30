@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import MenuList from '../MenuList';
 import PropTypes from 'prop-types';
@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
  * Footer menu. Display a list of hidden features.
  */
 export default function ModalFooterMenu({ className, component, onResolve, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const close = t('footer.menu.close');

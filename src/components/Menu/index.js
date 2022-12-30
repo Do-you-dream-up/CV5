@@ -1,8 +1,8 @@
 import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Portal } from 'react-portal';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import MenuList from '../MenuList';
 import useStyles from './styles';
 
@@ -15,7 +15,7 @@ import useStyles from './styles';
  * between categories.
  */
 export default function Menu({ component, items, selected, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const [geometry, setGeometry] = useState(null);
   const [open, setOpen] = useState(false);

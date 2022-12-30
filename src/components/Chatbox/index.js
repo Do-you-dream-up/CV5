@@ -7,7 +7,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import { escapeHTML, isDefined } from '../../tools/helpers';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -34,7 +34,7 @@ import { useViewMode } from '../../contexts/ViewModeProvider';
  * Root component of the chatbox. It implements the `window` API as well.
  */
 export default function Chatbox({ extended, open, root, toggle, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,

@@ -18,7 +18,6 @@ import Storage from '../components/auth/Storage';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
-import configuration from '../../public/override/configuration.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import { getSamlEnableStatus } from './saml';
@@ -112,12 +111,13 @@ const variables = {};
  */
 export default new (class Dydu {
   constructor() {
+    this.configuration = {};
     this.onServerChangeFn = null;
     this.serverStatusChek = null;
     this.tokenRefresher = null;
     this.oidcLogin = null;
     this.locale = this.getLocale();
-    this.space = this.getSpace(configuration?.spaces?.detection);
+    this.space = 'default';
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
@@ -395,9 +395,9 @@ export default new (class Dydu {
    */
   getLocale = () => {
     if (!this.locale) {
-      const { defaultLanguage, getDefaultLanguageFromSite } = configuration.application;
-      const locale = Local.get(Local.names.locale, `${defaultLanguage}`).split('-')[0];
-      getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
+      const { application } = this.getConfiguration();
+      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage}`).split('-')[0];
+      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale;
   };
@@ -413,7 +413,7 @@ export default new (class Dydu {
    */
   getSpace = (strategy) => {
     if (!this.space || strategy) {
-      this.space = Local.get(Local.names.space, configuration?.spaces?.items[0] || 'default', true);
+      this.space = Local.get(Local.names.space, this.getConfiguration()?.spaces?.items[0] || 'default', true);
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
@@ -553,6 +553,10 @@ export default new (class Dydu {
     return list;
   };
 
+  setInitialSpace(initialSpace = 'default') {
+    this.space = initialSpace;
+  }
+
   /**
    * Set the current space and save it in the local storage.
    *
@@ -560,15 +564,11 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   setSpace = (space) =>
-    new Promise((resolve, reject) => {
-      const value = String(space).trim().toLowerCase();
+    new Promise((resolve) => {
+      const value = space.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
       Local.set(Local.names.space, value);
-      if (this.space !== value) {
-        this.space = value;
-        resolve(value);
-      } else {
-        reject(value);
-      }
+      this.space = value;
+      resolve(value);
     });
 
   setQualificationMode = (value) => {
@@ -615,7 +615,7 @@ export default new (class Dydu {
   processTalkResponse = (response) => {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) {
-      return this.setSpace(guiCSName).then(() => response);
+      this.setSpace(guiCSName);
     }
     return response;
   };
@@ -864,6 +864,25 @@ export default new (class Dydu {
       const keyInfos = await this.getInfos();
       Local.visit.save(keyInfos);
     });
+  }
+
+  getConfiguration() {
+    return this.configuration;
+  }
+
+  onConfigurationLoaded() {
+    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setQualificationMode(this.getConfiguration().qualification?.active);
+  }
+
+  setConfiguration(configuration = {}) {
+    this.configuration = configuration;
+    this.onConfigurationLoaded();
+  }
+
+  setSpaceToDefault() {
+    const defaultSpaceName = 'default';
+    this.setInitialSpace(defaultSpaceName);
   }
 
   getWelcomeKnowledge = (tagWelcome) => {

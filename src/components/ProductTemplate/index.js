@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import ReadMore from '../ReadMore';
 import c from 'classnames';
@@ -13,7 +13,7 @@ const READ_MORE_CARACTERS_TEXT = {
 };
 
 export default function ProductTemplate({ classe = null, html }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { product, text } = JSON.parse(html || '{}');
   const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);

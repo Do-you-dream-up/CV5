@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 
 import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -24,7 +24,7 @@ const TEASER_TYPES = {
  * Minified version of the chatbox.
  */
 export default function Teaser({ open, toggle }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
