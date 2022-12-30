@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Form from '../Form';
 import Interaction from '../Interaction';
@@ -11,7 +11,7 @@ import useStyles from './styles';
  * Display a form and enable consulting space selection.
  */
 export default function Spaces({ onResolve, scroll, thinking }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');

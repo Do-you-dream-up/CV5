@@ -1,13 +1,13 @@
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
 
 import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
@@ -113,7 +113,7 @@ export default function Interaction({
   const [readyCarousel, setReadyCarousel] = useState(false);
   const { isLivechatOn } = useLivechat();
 
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
 
   const classes = useStyles({ configuration });
@@ -336,7 +336,7 @@ Interaction.propTypes = {
 };
 
 const Writing = () => {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   // eslint-disable
   const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
 

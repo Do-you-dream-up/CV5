@@ -1,6 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import useStyles from './styles';
@@ -14,7 +14,7 @@ import { isBoolean } from '../../tools/helpers';
  * should be next to its response.
  */
 const Avatar = ({ path, type, linkAvatarDependOnType }) => {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration, type });
   const background = configuration?.avatar[type]?.background;
 

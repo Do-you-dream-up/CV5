@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 
 import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
  * property is utilized on only one instance of this component.
  */
 export default function Onboarding({ children, render }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } =
     useContext(OnboardingContext) || {};
   const event = useContext(EventsContext).onEvent('onboarding');

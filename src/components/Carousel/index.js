@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
@@ -18,7 +18,7 @@ import useViewport from '../../tools/hooks/viewport';
  * Format children in a carousel UI with previous and next controls.
  */
 export default function Carousel({ children, className, steps, templatename, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const theme = useTheme();
   const isMobile = useViewport(theme.breakpoints.down('xs'));
   const { offset, offsetBetweenCard } = templatename ? configuration.templateCarousel : configuration.carousel;

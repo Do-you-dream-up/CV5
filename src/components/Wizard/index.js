@@ -1,18 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
 
 import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { Local } from '../../tools/storage';
 import WizardField from '../WizardField';
 import { setSamlEnableCookie } from '../../tools/saml';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**
  * Live-edit configuration widgets.
  */
 export default function Wizard() {
-  const { configuration, reset } = useContext(ConfigurationContext);
+  const { configuration, reset } = useConfiguration();
   const classes = useStyles({ configuration });
 
   const onSave = (data) => {

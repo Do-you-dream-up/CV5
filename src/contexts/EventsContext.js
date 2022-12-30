@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
-import { ConfigurationContext } from './ConfigurationContext';
+import { useConfiguration } from './ConfigurationContext';
 import PropTypes from 'prop-types';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
@@ -57,7 +57,7 @@ let refBlinkInterval = null;
 
 export function EventsProvider({ children }) {
   const { isOpen } = useViewMode();
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { active, features = {}, verbosity = 0 } = configuration.events;
 
   const [event, setEvent] = useState();
