@@ -21,7 +21,7 @@ import bot from '../../public/override/bot.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import { getSamlEnableStatus } from './saml';
-import { hasWizard } from '../tools/wizard';
+import { hasWizard } from './wizard';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
