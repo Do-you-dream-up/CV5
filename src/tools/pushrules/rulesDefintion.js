@@ -282,13 +282,12 @@ function getChildrenPageConditions(condition, conditions) {
 
 //Process only on demand
 function localisationProcessor(externalInfos) {
-  // eslint-disable-next-line no-unused-vars
-  function cityAndCountrySetter(data) {
-    contextPush.setCity(data.city);
-    contextPush.setCountry(data.country);
-    externalInfos.city = contextPush.getCity();
-    externalInfos.country = contextPush.getCountry();
-  }
+  // function cityAndCountrySetter(data) {
+  //   contextPush.setCity(data.city);
+  //   contextPush.setCountry(data.country);
+  //   externalInfos.city = contextPush.getCity();
+  //   externalInfos.country = contextPush.getCountry();
+  // }
 
   if (contextPush.getCity() === 'undefined') {
     /*$http.jsonp($configurations.get('servletUrl') + '/localisation?format=angular&callback=JSON_CALLBACK')

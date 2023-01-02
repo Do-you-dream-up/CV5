@@ -13,6 +13,7 @@ import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
+import { getCss } from './tools/css';
 import keycloak from './tools/keycloak';
 import scope from 'scope-css';
 
@@ -46,15 +47,13 @@ const renderApp = (theme) =>
   );
 
 configuration.initialize().then((configuration) => {
-  const css = JSON.parse(localStorage.getItem('dydu.css'));
-
   _configuration = configuration;
   anchor = getRootDiv(configuration);
 
   if (anchor) {
     Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then((res) => {
       const data = res && res.data ? res.data : {};
-      data.palette.primary.main = css ? css.main : data.palette.primary.main;
+      data.palette.primary.main = getCss()?.main || data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });

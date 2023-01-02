@@ -56,6 +56,10 @@ module.exports = (env = {}) => {
     performance: {
       hints: false,
     },
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js'],
+      modules: [Path.resolve('./node_modules'), Path.resolve('./')],
+    },
     plugins: getPluginList(env),
   };
 };

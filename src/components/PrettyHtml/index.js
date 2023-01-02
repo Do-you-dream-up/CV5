@@ -2,12 +2,12 @@ import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } fro
 import React, { useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import ProductTemplate from '../ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import c from 'classnames';
 import parse from 'html-react-parser';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useCustomRenderer from './useCustomRenderer';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,6 @@ export default function PrettyHtml({ carousel, children, className, component, h
     const hasEmptyHref = (el) => el.match(RE_HREF_EMPTY);
     if (hrefMatchs)
       hrefMatchs.forEach((el) => {
-        // eslint-disable-next-line
         if (hasEmptyHref(el)) _html = _html.replace(el, el.replace(RE_HREF_EMPTY, 'href="javascript:void(0)"'));
       });
 

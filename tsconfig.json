@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"]
+    },
     "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./typings"],
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -27,8 +30,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": true
   },
-  "include": ["./typings/**/*.d.ts", "src/**/*", "typings"],
+  "include": ["./typings/**/*.d.ts", "src"],
   "exclude": ["node_modules", "build"]
 }
