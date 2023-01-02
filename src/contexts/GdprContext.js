@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
-import { Local } from '../tools/storage';
-import { EventsContext } from './EventsContext';
+import { createContext, useCallback, useContext, useState } from 'react';
 
-export const GdprContext = React.createContext();
+import { EventsContext } from './EventsContext';
+import { Local } from '../tools/storage';
+import PropTypes from 'prop-types';
+
+export const GdprContext = createContext();
 export function GdprProvider({ children }) {
   const [gdprPassed, setGdprPassed] = useState(Local.get(Local.names.gdpr));
   const event = useContext(EventsContext).onEvent('gdpr');

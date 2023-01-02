@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
@@ -7,7 +7,7 @@ export const useConfiguration = () => {
   return useContext(ConfigurationContext);
 };
 
-export const ConfigurationContext = React.createContext();
+export const ConfigurationContext = createContext();
 
 export const ConfigurationProvider = ({ children, configuration: configurationProp }) => {
   const [configuration, setConfiguration] = useState(configurationProp);

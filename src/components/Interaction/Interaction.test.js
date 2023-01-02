@@ -3,7 +3,6 @@ import { JssProvider, ThemeProvider } from 'react-jss';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Interaction from './index';
-import React from 'react';
 import configuration from '../../../public/override/configuration.json';
 import { render } from '@testing-library/react';
 import theme from '../../../public/override/theme.json';

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -10,6 +9,7 @@ import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';

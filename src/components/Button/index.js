@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import { createElement, forwardRef, useContext } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 // eslint-disable-next-line react/display-name
-export default React.forwardRef((props, ref) => <ButtonBase {...props} reference={ref} />);
+export default forwardRef((props, ref) => <ButtonBase {...props} reference={ref} />);
 
 /**
  * Re-usable button component.
@@ -44,7 +44,7 @@ export function ButtonBase({
     </div>
   );
 
-  return React.createElement(
+  return createElement(
     href ? 'a' : component,
     {
       title,

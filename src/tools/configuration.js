@@ -2,7 +2,7 @@ import { hasWizard, isLoadedFromChannels } from './wizard';
 
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
-import React from 'react';
+import { PureComponent } from 'react';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import dydu from './dydu';
@@ -83,7 +83,7 @@ export const configuration = new (class Configuration {
  * High-order component to pass on configuration.
  */
 export const withConfiguration = (Component) =>
-  class InnerComponent extends React.PureComponent {
+  class InnerComponent extends PureComponent {
     static contextType = ConfigurationContext;
     render() {
       return <Component configuration={this.context.configuration} {...this.props} />;

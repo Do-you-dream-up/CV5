@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
 
 import Button from '../Button';
@@ -6,6 +5,7 @@ import { Local } from '../../tools/storage';
 import WizardField from '../WizardField';
 import { setSamlEnableCookie } from '../../tools/saml';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useEffect } from 'react';
 import useStyles from './styles';
 
 /**
@@ -30,12 +30,12 @@ export default function Wizard() {
     let filename = 'configuration.json';
     let contentType = 'application/json;charset=utf-8;';
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(Local.get(Wizard.storage.data))))], {
+      let blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(Local.get(Wizard.storage.data))))], {
         type: contentType,
       });
       navigator.msSaveOrOpenBlob(blob, filename);
     } else {
-      var a = document.createElement('a');
+      let a = document.createElement('a');
       a.download = filename;
       a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(Local.get(Wizard.storage.data)));
       a.target = '_blank';

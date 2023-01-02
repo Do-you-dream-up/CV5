@@ -62,8 +62,6 @@ Object.defineProperty(window, 'location', {
 });
 
 describe('helpers', () => {
-  const { location } = window;
-
   it('should use the "urlpart" strategy for space consultation detection', () => {
     // GIVEN
     const detectionStrategy = spaceConfiguration.detection;

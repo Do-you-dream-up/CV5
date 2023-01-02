@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { createElement, useCallback, useContext, useEffect } from 'react';
 
 import Actions from '../Actions';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
@@ -10,6 +9,7 @@ import PropTypes from 'prop-types';
 import { QUICK_REPLY } from '../../tools/template';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +65,7 @@ export default function Bubble({
     }
   }, [automaticSecondary, history, onToggle, sidebar]);
 
-  return React.createElement(
+  return createElement(
     component,
     {
       className: c(

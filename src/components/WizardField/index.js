@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { createElement, useCallback, useEffect, useState } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import WizardFieldStatus from '../WizardFieldStatus';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import usePrevious from '../../tools/hooks/previous';
 import useStyles from './styles';
@@ -86,14 +86,14 @@ function WizardField({ component, label, onSave, parent, value: oldValue }) {
     }[typeof oldValue] || {};
   return (
     ready &&
-    React.createElement(
+    createElement(
       component,
       null,
       !!attributes && (
         <label className={classes.field}>
           <div children={label} className={classes.text} />
           <div className={classes.input}>
-            {React.createElement(input, {
+            {createElement(input, {
               name: label,
               onChange,
               ...attributes,

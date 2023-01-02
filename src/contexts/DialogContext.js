@@ -1,8 +1,7 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
-import { useConfiguration } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
@@ -13,6 +12,7 @@ import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
+import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import useServerStatus from '../tools/hooks/useServerStatus';
@@ -44,7 +44,7 @@ const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
   }, 5000);
 };
 
-export const DialogContext = React.createContext();
+export const DialogContext = createContext();
 
 export const useDialog = () => useContext(DialogContext);
 
@@ -211,9 +211,8 @@ export function DialogProvider({ children }) {
               console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
             }
           });
-        }
-        // temporary solution which uses the dangerous eval() to eval guiaction code
-        else if (guiAction.match('^javascript:')) {
+        } else if (guiAction.match('^javascript:')) {
+          // temporary solution which uses the dangerous eval() to eval guiaction code
           const guiActionCode = guiAction.substr(11);
           eval(
             'try{' +

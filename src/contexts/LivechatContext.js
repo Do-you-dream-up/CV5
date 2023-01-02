@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
@@ -15,7 +15,7 @@ export const TUNNEL_MODE = {
   websocket: 'websocket',
 };
 
-const LivechatContext = React.createContext({});
+const LivechatContext = createContext({});
 export const useLivechat = () => useContext(LivechatContext);
 
 const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Actions from '../Actions';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import Input from '../Input';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 

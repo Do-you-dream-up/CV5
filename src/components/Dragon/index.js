@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createElement, useCallback, useEffect, useRef, useState } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useEvent from '../../tools/hooks/event';
 import { useTheme } from 'react-jss';
 import useViewport from '../../tools/hooks/viewport';
@@ -100,7 +100,7 @@ export default function Dragon({ component, reset, ...rest }) {
   return (
     !!current && (
       <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-        {React.createElement(component, {
+        {createElement(component, {
           ...rest,
           root,
           style: { transform },

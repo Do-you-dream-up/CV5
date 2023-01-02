@@ -1,10 +1,10 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import Actions from '../Actions';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useState } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Base form component.

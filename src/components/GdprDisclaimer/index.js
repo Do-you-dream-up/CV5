@@ -1,13 +1,13 @@
-import React, { useContext, useEffect } from 'react';
+import { createElement, useContext, useEffect } from 'react';
 
 import Actions from '../Actions';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -41,7 +41,7 @@ export default function GdprDisclaimer({ children, className, component, gdprRef
 
   return !enable || gdprPassed
     ? children
-    : React.createElement(
+    : createElement(
         component,
         {
           className: c('dydu-gdpr-disclaimer', className, classes.root),

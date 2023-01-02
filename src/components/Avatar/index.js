@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react';
-
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import useStyles from './styles';
 import { isBoolean } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useMemo } from 'react';
+import useStyles from './styles';
 
 /**
  * Avatar to display in the conversation. Usually next to the conversation

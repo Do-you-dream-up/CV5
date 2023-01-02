@@ -3,9 +3,9 @@ import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
 import { VIEW_MODE } from '../../contexts/ViewModeProvider';
+import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
-import configuration from '../../../public/override/configuration.json';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
@@ -14,22 +14,6 @@ const externalInfos = {};
 const rules = [];
 const rulesDefinition = [...rulesDefintions];
 let canPush = true;
-
-//infoProcessor must be a function that takes externalInfos object as a parameter.
-// eslint-disable-next-line no-unused-vars
-function addExternalInfoProcessor(infoProcessor) {
-  if (infoProcessor) {
-    externalInfoProcessors.push(infoProcessor);
-  }
-}
-
-//Rule definitions
-// eslint-disable-next-line no-unused-vars
-function addRuleDefinition(ruleDefinition) {
-  if (ruleDefinition) {
-    rulesDefinition.push(ruleDefinition);
-  }
-}
 
 //Rules from knowledge base
 export function addRule(rule) {

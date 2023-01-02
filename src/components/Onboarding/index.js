@@ -1,12 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import Button from '../Button';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 

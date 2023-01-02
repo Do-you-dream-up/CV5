@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Form from '../Form';
 import Interaction from '../Interaction';
+import PropTypes from 'prop-types';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useContext } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Display a form and enable consulting space selection.

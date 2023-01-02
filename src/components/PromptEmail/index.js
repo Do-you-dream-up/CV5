@@ -1,14 +1,14 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
 import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
-import dydu from '../../tools/dydu';
 import Form from '../Form';
 import Interaction from '../Interaction';
+import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
+import c from 'classnames';
+import dydu from '../../tools/dydu';
+import { useContext } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Form to prompt user for his email for gdpr requests or conversation export.
