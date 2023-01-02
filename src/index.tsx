@@ -16,8 +16,6 @@ import { configuration } from './tools/configuration';
 import keycloak from './tools/keycloak';
 import scope from 'scope-css';
 
-const css = JSON.parse(localStorage.getItem('dydu.css'));
-
 let _configuration;
 let anchor;
 
@@ -48,6 +46,8 @@ const renderApp = (theme) =>
   );
 
 configuration.initialize().then((configuration) => {
+  const css = JSON.parse(localStorage.getItem('dydu.css'));
+
   _configuration = configuration;
   anchor = getRootDiv(configuration);
 

@@ -20,7 +20,7 @@ const COMMON_RULE_LIST = [
   {
     include: Path.resolve(__dirname, 'src/'),
     use: ['babel-loader'],
-    test: /\.js$/,
+    test: /\.(js|jsx|tsx|ts)$/,
   },
   {
     use: ['style-loader', 'css-loader'],
@@ -48,7 +48,7 @@ const getPluginList = (env) => COMMON_PLUGIN_LIST.concat(DYDU_MODULES.getPlugins
 module.exports = (env = {}) => {
   return {
     bail: true,
-    entry: Path.resolve(__dirname, 'src/index.js'),
+    entry: Path.resolve(__dirname, 'src/index.tsx'),
     module: {
       rules: getRuleList(env),
       strictExportPresence: true,
