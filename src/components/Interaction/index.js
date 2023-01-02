@@ -1,13 +1,12 @@
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
@@ -15,6 +14,7 @@ import PropTypes from 'prop-types';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';

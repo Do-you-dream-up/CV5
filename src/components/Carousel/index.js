@@ -1,11 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
 import Actions from '../Actions';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
 import { useTheme } from 'react-jss';
@@ -29,7 +29,7 @@ export default function Carousel({ children, className, steps, templatename, ...
   const { t } = useTranslation('translation');
   const previous = t('carousel.previous');
   const next = t('carousel.next');
-  const length = React.Children.count(children);
+  const length = Children.count(children);
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
   const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;

@@ -1,5 +1,5 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
-import React, { useEffect, useMemo, useState } from 'react';
+import { createElement, useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate';
 import ProductTemplate from '../ProductTemplate';
@@ -81,7 +81,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
     return type === 'response' ? botName : userName;
   }, [botName, type, userName]);
 
-  return React.createElement(
+  return createElement(
     component,
     { className: c(classes.root, className), ...rest },
     <>

@@ -1,9 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import Button from '../Button';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { createElement } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Confirmation modal to close the chatbox.
@@ -16,7 +16,7 @@ export default function ModalClose({ className, component, onReject, onResolve, 
   const title = t('close.title', { defaultValue: '' });
   const yes = t('close.yes');
 
-  return React.createElement(
+  return createElement(
     component,
     { className: c('dydu-close', className), ...rest },
     <>

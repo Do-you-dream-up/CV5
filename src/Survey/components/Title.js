@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
-import { isDefined } from '../../tools/helpers';
-import PropTypes from 'prop-types';
+import { useEffect, useMemo } from 'react';
+
 import Field from '../Field';
+import PropTypes from 'prop-types';
+import { isDefined } from '../../tools/helpers';
 
 export default function Title({ field }) {
   useEffect(() => {

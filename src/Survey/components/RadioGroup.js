@@ -1,8 +1,9 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { isDefined } from '../../tools/helpers';
-import PropTypes from 'prop-types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import Field from '../Field';
 import MessageRequired from '../MessageRequired';
+import PropTypes from 'prop-types';
+import { isDefined } from '../../tools/helpers';
 
 export default function RadioGroup({ showRequiredMessage, fields, parent }) {
   const [current, setCurrent] = useState();

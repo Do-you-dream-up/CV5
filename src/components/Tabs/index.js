@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import Skeleton from '../Skeleton';
 import { TabContext } from '../../contexts/TabContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 

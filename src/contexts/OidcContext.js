@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect, useLayoutEffect } from 'react';
+import { createContext, useEffect, useLayoutEffect } from 'react';
 import { getOidcEnableStatus, setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../tools/oidc';
 
 import Storage from '../components/auth/Storage';

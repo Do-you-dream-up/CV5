@@ -1,8 +1,9 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
-import useStyles from './styles';
 import { isDefined, isOfTypeObject } from '../../tools/helpers';
+
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { useMemo } from 'react';
+import useStyles from './styles';
 
 export default function QuickreplyTemplate({ html }) {
   const classes = useStyles();

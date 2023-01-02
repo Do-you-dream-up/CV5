@@ -1,15 +1,14 @@
-import React from 'react';
+import { decodeHtml, isDefined, isEmptyString } from '../tools/helpers';
+
 import Checkbox from './components/Checkbox';
+import LongText from './components/LongText';
+import MultipleChoice from './components/MultipleChoice';
 import Radio from './components/Radio';
 import RadioGroup from './components/RadioGroup';
 import Select from './components/Select';
 import SelectOption from './components/SelectOption';
-import Title from './components/Title';
 import Text from './components/Text';
-import LongText from './components/LongText';
-import MultipleChoice from './components/MultipleChoice';
-
-import { decodeHtml, isDefined, isEmptyString } from '../tools/helpers';
+import Title from './components/Title';
 
 //================================================== /
 // TYPES stack

@@ -7,7 +7,6 @@ import Application from './components/Application';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';

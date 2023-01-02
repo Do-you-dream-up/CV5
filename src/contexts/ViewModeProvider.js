@@ -1,11 +1,11 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import { useConfiguration } from './ConfigurationContext';
 import { useCookie } from 'react-use';
 
-const ViewModeContext = React.createContext();
+const ViewModeContext = createContext();
 export const useViewMode = () => useContext(ViewModeContext);
 
 export const VIEW_MODE = {

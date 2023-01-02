@@ -2,7 +2,7 @@ import '../../../public/override/style.css';
 import '../../../public/chatboxHomepage.css';
 
 import { AuthProtected, AuthProvider } from '../../components/auth/context/AuthContext';
-import React, { Suspense, useContext, useEffect, useMemo } from 'react';
+import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
@@ -19,13 +19,13 @@ import { hasWizard } from '../../tools/wizard';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
-const Chatbox = React.lazy(() =>
+const Chatbox = lazy(() =>
   import(
     // webpackChunkName: "chatbox"
     '../Chatbox'
   ).then((module) => ({ default: module.ChatboxWrapper })),
 );
-const Wizard = React.lazy(() =>
+const Wizard = lazy(() =>
   import(
     // webpackChunkName: "wizard"
     '../Wizard'

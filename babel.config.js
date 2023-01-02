@@ -10,7 +10,12 @@ module.exports = (api) => {
           useBuiltIns: 'usage',
         },
       ],
-      '@babel/preset-react',
+      [
+        '@babel/preset-react',
+        {
+          runtime: 'automatic',
+        },
+      ],
       [
         '@babel/preset-typescript',
         {

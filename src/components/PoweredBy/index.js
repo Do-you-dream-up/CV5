@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
+
 import c from 'classnames';
-import React, { useEffect, useState } from 'react';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 

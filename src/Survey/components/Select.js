@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { isDefined } from '../../tools/helpers';
-import FieldBlock from '../FieldBlock';
-import PropTypes from 'prop-types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import Field from '../Field';
+import FieldBlock from '../FieldBlock';
 import MessageRequired from '../MessageRequired';
+import PropTypes from 'prop-types';
+import { isDefined } from '../../tools/helpers';
 
 export default function Select({ field }) {
   const [currentOptionFieldInstance, setCurrentOptionFieldInstance] = useState();

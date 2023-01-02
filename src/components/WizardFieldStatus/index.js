@@ -1,8 +1,8 @@
 import { mdiAlertCircleOutline, mdiCheck, mdiLoading } from '@mdi/js';
+
 import Icon from '@mdi/react';
-import c from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import c from 'classnames';
 import useStyles from './styles';
 
 /**

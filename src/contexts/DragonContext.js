@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import { Component, createContext } from 'react';
 
-export const DragonContext = React.createContext();
-export class DragonProvider extends React.Component {
+import PropTypes from 'prop-types';
+
+export const DragonContext = createContext();
+export class DragonProvider extends Component {
   static propTypes = {
     children: PropTypes.element,
     onDrag: PropTypes.func.isRequired,

@@ -1,8 +1,9 @@
-import c from 'classnames';
-import React, { useContext, useEffect } from 'react';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useContext, useEffect } from 'react';
+
 import { ModalContext } from '../../contexts/ModalContext';
 import Paper from '../Paper';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**

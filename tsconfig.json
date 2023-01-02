@@ -32,6 +32,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": true
   },
+  "compileOnSave": true,
   "include": ["./typings/**/*.d.ts", "src"],
   "exclude": ["node_modules", "build"]
 }

@@ -1,12 +1,13 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { DialogContext } from '../../contexts/DialogContext';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+
 import Button from '../Button';
+import { DialogContext } from '../../contexts/DialogContext';
 import PrettyHtml from '../PrettyHtml';
-import useStyles from './styles';
+import PropTypes from 'prop-types';
+import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import useStyles from './styles';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest

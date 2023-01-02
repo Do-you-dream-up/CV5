@@ -1,5 +1,5 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
 import Interaction from '../components/Interaction';
@@ -44,7 +44,7 @@ const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
   }, 5000);
 };
 
-export const DialogContext = React.createContext();
+export const DialogContext = createContext();
 
 export const useDialog = () => useContext(DialogContext);
 

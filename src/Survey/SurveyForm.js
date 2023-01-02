@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-
-import { useSurvey } from './SurveyProvider';
-import { asset, isDefined, isEmptyArray } from '../tools/helpers';
 import './style/survey.css';
+
+import { asset, isDefined, isEmptyArray } from '../tools/helpers';
+
+import PropTypes from 'prop-types';
+import { useCallback } from 'react';
+import { useSurvey } from './SurveyProvider';
 
 export default function SurveyForm() {
   const { instances, showSurvey, onSubmit } = useSurvey();

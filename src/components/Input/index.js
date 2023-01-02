@@ -1,5 +1,5 @@
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';

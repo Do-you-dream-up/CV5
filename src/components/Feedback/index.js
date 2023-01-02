@@ -1,16 +1,16 @@
 /* eslint-disable */
 
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
 import Button from '../Button';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 

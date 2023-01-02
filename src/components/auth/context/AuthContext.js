@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from '../helpers';
 
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 import useTokenRequest from '../hooks/useTokenRequest';
 import useUserInfo from '../hooks/useUserInfo';
 
-const AuthContext = React.createContext();
+const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children, configuration }) {

@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { useCallback, useMemo } from 'react';
 
 import Field from '../Field';
-import { useTextInputConfig } from './useTextInputConfig';
 import MessageRequired from '../MessageRequired';
+import PropTypes from 'prop-types';
+import { useTextInputConfig } from './useTextInputConfig';
 
 export default function Text({ field }) {
   const { attributes } = useTextInputConfig();

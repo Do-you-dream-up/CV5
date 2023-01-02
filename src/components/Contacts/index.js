@@ -1,8 +1,6 @@
-import React from 'react';
-
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 

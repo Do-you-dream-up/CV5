@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import ReadMore from '../ReadMore';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { uppercaseFirstLetter } from '../../tools/text';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 const READ_MORE_CARACTERS_TEXT = {

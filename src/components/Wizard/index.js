@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
 
 import Button from '../Button';
@@ -6,6 +5,7 @@ import { Local } from '../../tools/storage';
 import WizardField from '../WizardField';
 import { setSamlEnableCookie } from '../../tools/saml';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useEffect } from 'react';
 import useStyles from './styles';
 
 /**

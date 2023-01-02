@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { createElement, useContext, useEffect } from 'react';
 
 import { EventsContext } from '../../contexts/EventsContext';
 import PrettyHtml from '../PrettyHtml';
@@ -30,7 +30,7 @@ export default function Top({ className, component, ...rest }) {
 
   return (
     !isEmptyArray(items) &&
-    React.createElement(
+    createElement(
       component,
       { className: c('dydu-top', className), ...rest, id: 'dydu-top-knowledge' },
       <PrettyHtml>
