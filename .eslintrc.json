@@ -1,7 +1,11 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
