@@ -33,13 +33,10 @@ export function b64encode(str) {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
   // then we convert the percent encodings into raw bytes which
   // can be fed into btoa.
-  return (
-    str &&
-    btoa(
-      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
-        return String.fromCharCode('0x' + p1);
-      }),
-    )
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }),
   );
 }
 
@@ -109,16 +106,12 @@ export const objectContainFields = (obj, fieldList = []) => {
 };
 
 export const secondsToMs = (s) => {
-  try {
-    if (s >= 0) {
-      return s * 1000;
-    } else {
-      console.log('not a valid number, please select a number bigger or equal than 0');
-      return 5000;
-    }
-  } catch (e) {
-    console.error(e);
-    return 5000;
+  if (!isOfTypeNumber(s)) return 5000;
+
+  if (s >= 0) {
+    return s * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
   }
 };
 
@@ -173,7 +166,7 @@ export const osName = () => {
 export const b64encodeObject = (o) => {
   return Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = !isString(value) ? value : value.toBase64();
+    resultMap[key] = !isString(value) ? value : b64encode(value);
     return resultMap;
   }, {});
 };
@@ -215,7 +208,13 @@ export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };
 
-export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
+export const numberOfDayInMs = (count = 1) => {
+  if (count >= 0) {
+    return count * 24 * 60 * 60 * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
+  }
+};
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
