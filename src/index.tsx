@@ -50,8 +50,7 @@ configuration.initialize().then((configuration) => {
   anchor = getRootDiv(configuration);
 
   if (anchor) {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then((res) => {
-      const data = res && res.data ? res.data : {};
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then(({ data = {} }) => {
       data.palette.primary.main = getCss()?.main || data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
