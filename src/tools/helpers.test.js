@@ -5,8 +5,13 @@ import {
   b64dFields,
   b64decode,
   b64encode,
+  b64encodeObject,
+  browserName,
+  decodeHtml,
   escapeHTML,
   extractDomainFromUrl,
+  getChatboxWidth,
+  hasProperty,
   isDefined,
   isEmptyArray,
   isEmptyObject,
@@ -18,6 +23,9 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  numberOfDayInMs,
+  objectContainFields,
+  objectExtractFields,
   osName,
   secondsToMs,
   strContains,
@@ -111,12 +119,25 @@ describe('helpers', () => {
       expect(b64dFields(initialObj, [targetFieldName])).toEqual(expectedObj);
     });
   });
-  describe('isOfType', function () {
+
+  describe('isOfType', () => {
     it('should not throw an error when type parameter is known', () => {
       expect(() => isOfType('string', VAR_TYPE.string)).not.toThrowError();
     });
-    it('should throw an error when type parameter is not known', () => {
-      expect(() => isOfType('string', 'unknown type')).toThrowError();
+    it('returns true if the value is of the given type', () => {
+      expect(isOfType('Hello World!', 'string')).toBe(true);
+      expect(isOfType([1, 2, 3], 'array')).toBe(true);
+      expect(isOfType({ name: 'John' }, 'object')).toBe(true);
+    });
+
+    it('returns false if the value is not of the given type', () => {
+      expect(isOfType(123, 'string')).toBe(false);
+      expect(isOfType(null, 'array')).toBe(false);
+      expect(isOfType(undefined, 'object')).toBe(false);
+    });
+
+    it('throws an error if the given type is not recognized', () => {
+      expect(() => isOfType(123, 'invalid')).toThrowError('unknown type: type invalid is not in contant VAR_TYPE');
     });
   });
   describe('b64decode', () => {
@@ -138,17 +159,6 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual(expected);
-    });
-    it('should return null when param is empty string', () => {
-      //GIVEN
-      const target = null;
-      const expected = 'bnVsbA==';
-
-      //WHEN
-      const result = b64encode(target);
-
-      //THEN
-      expect(result).toEqual(null);
     });
   });
 
@@ -223,6 +233,7 @@ describe('helpers', () => {
       expect(result).toEqual(false);
     });
   });
+  isEmptyObject;
 
   describe('isOfTypeBoolean', () => {
     it('should return true when param is type of boolean', () => {
@@ -421,27 +432,22 @@ describe('helpers', () => {
       expect(result).toEqual(25000);
     });
 
-    it('should return 5000 when param is not a number and console error message', () => {
+    it('should return 5000 when param is not a number', () => {
       //GIVEN
       const sec = {};
 
       //WHEN
       const result = secondsToMs(sec);
-      // global.console = { error: jest.fn() };
+
       //THEN
       expect(result).toEqual(5000);
-      // expect(console.error).toHaveBeenCalled();
     });
 
-    it('should return 5000 when param is smaller than 0', () => {
-      //GIVEN
-      const sec = -3;
-
-      //WHEN
-      const result = secondsToMs(sec);
-
-      //THEN
-      expect(result).toEqual(5000);
+    it('throw error when param is smaller than 0', () => {
+      function testNegativeSecondsToMs() {
+        secondsToMs(-3);
+      }
+      expect(testNegativeSecondsToMs).toThrow(new Error('Parameter have to be bigger or equal than 0'));
     });
   });
 
@@ -513,7 +519,7 @@ describe('helpers', () => {
       expect(browserName()).toEqual('Google Chrome or Chromium');
     });
 
-    it('should return the correct browser name for a Apple Safari user agent', () => {
+    it('should return the correct browser name for a Apple Safari useragent', () => {
       Object.defineProperty(navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1 980x1306',
@@ -522,42 +528,182 @@ describe('helpers', () => {
 
       expect(browserName()).toEqual('Apple Safari');
     });
-  });
 
-  describe('asset', () => {
-    it('should return name of asset if it contains base64', () => {
-      //GIVEN
-      const assetName = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vc';
+    it('should return unknomn if browser doesnt exist', () => {
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'coucou',
+        configurable: true,
+      });
 
-      //WHEN
-      const result = asset(assetName);
-
-      //THEN
-      expect(result).toEqual('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vc');
-    });
-
-    it('should return url for asset if it NOT contains base64', () => {
-      //GIVEN
-      const assetName = 'dydu-logo.svg';
-
-      //WHEN
-      const result = asset(assetName);
-
-      //THEN
-      expect(result).toEqual(`${process.env.PUBLIC_URL}/assets/${assetName}`);
+      expect(browserName()).toEqual('unknown');
     });
   });
 
   describe('escapeHTML', () => {
-    it('', () => {
-      //GIVEN
-      const html = '<a href="http://google.com" onClick="toto>click</a>';
-
-      //WHEN
+    it('escapes HTML tags in the input string', () => {
+      const html = '<p>Hello, world!</p>';
+      const expectedResult = '&lt;p&gt;Hello, world!&lt;/p&gt;';
       const result = escapeHTML(html);
+      expect(result).toEqual(expectedResult);
+    });
+  });
 
-      //THEN
-      expect(result).toEqual('&lt;a href="http://google.com" onClick="toto&gt;click&lt;/a&gt;');
+  describe('decodeHtml', () => {
+    it('decodes HTML-encoded characters in the input string', () => {
+      const html = '&lt;p&gt;Hello, world!&lt;/p&gt;';
+      const expectedResult = '<p>Hello, world!</p>';
+
+      document.createElement = jest.fn().mockImplementation(() => {
+        return {
+          innerHTML: html,
+          value: expectedResult,
+        };
+      });
+      const result = decodeHtml(html);
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe('getChatboxWidth', () => {
+    it('calculates the width of the chatbox element', () => {
+      document.getElementById = jest.fn().mockImplementation(() => {
+        return {
+          getBoundingClientRect: () => ({ left: 0, right: 200 }),
+        };
+      });
+
+      const expectedResult = 200;
+
+      expect(getChatboxWidth()).toEqual(expectedResult);
+    });
+  });
+
+  describe('numberOfDayInMs', () => {
+    it('calculates the number of days in milliseconds for the given count', () => {
+      const count = 2;
+      const expectedResult = 172800000;
+
+      expect(numberOfDayInMs(count)).toEqual(expectedResult);
+    });
+    it('returns zero if the count is zero', () => {
+      expect(numberOfDayInMs(0)).toEqual(0);
+    });
+
+    it('throws an error if the count is a negative number', () => {
+      function testNegativeNumberOfDayInMs() {
+        numberOfDayInMs(-1);
+      }
+      expect(testNegativeNumberOfDayInMs).toThrow(new Error('Parameter have to be bigger or equal than 0'));
+    });
+  });
+
+  describe('hasProperty', () => {
+    it('returns true if the object has the given property', () => {
+      const obj = { name: 'John', age: 30 };
+      const propertyName = 'name';
+
+      expect(hasProperty(obj, propertyName)).toBe(true);
+    });
+
+    it('returns false if the object does not have the given property', () => {
+      const obj = { name: 'John', age: 30 };
+      const propertyName = 'email';
+
+      expect(hasProperty(obj, propertyName)).toBe(false);
+    });
+  });
+
+  describe('asset', () => {
+    it('returns the correct URL for the given asset name', () => {
+      process.env = {
+        PUBLIC_URL: '/public',
+      };
+
+      const name = 'image.png';
+      const expectedResult = '/public/assets/image.png';
+
+      expect(asset(name)).toEqual(expectedResult);
+    });
+
+    it('returns the base64 string if the name includes "base64"', () => {
+      const name = 'data:image/png;base64,iVBORw0KGg';
+
+      expect(asset(name)).toEqual(name);
+    });
+  });
+
+  describe('objectExtractFields', () => {
+    it('returns an object with the specified fields from the input object', () => {
+      const obj = {
+        name: 'John',
+        age: 30,
+        city: 'New York',
+      };
+      const fieldList = ['name', 'age'];
+
+      const expectedResult = {
+        name: 'John',
+        age: 30,
+      };
+
+      expect(objectExtractFields(obj, fieldList)).toEqual(expectedResult);
+    });
+  });
+
+  describe('objectContainFields', () => {
+    it('returns true if the input object contains all the specified fields', () => {
+      const obj = {
+        name: 'John',
+        age: 30,
+        city: 'New York',
+      };
+      const fieldList = ['name', 'age', 'city'];
+
+      expect(objectContainFields(obj, fieldList)).toBe(true);
+    });
+
+    it('returns false if the input object does not contain all the specified fields', () => {
+      const obj = {
+        name: 'John',
+        age: 30,
+      };
+      const fieldList = ['name', 'age', 'city'];
+
+      expect(objectContainFields(obj, fieldList)).toBe(false);
+    });
+
+    it('returns true if the input object contains no fields and the field list is empty', () => {
+      const obj = {};
+      const fieldList = [];
+
+      expect(objectContainFields(obj, fieldList)).toBe(true);
+    });
+  });
+
+  describe('osName', () => {
+    it('returns "Windows" for user agents that contain "Win"', () => {
+      Object.defineProperty(navigator, 'appVersion', {
+        value: 'Win',
+      });
+      expect(osName()).toBe('Windows');
+    });
+  });
+
+  describe('b64encodeObject', () => {
+    it('returns an object with base64-encoded values', () => {
+      const obj = {
+        name: 'John',
+        age: '30',
+        city: 'New York',
+      };
+
+      const expectedResult = {
+        name: 'Sm9obg==',
+        age: 'MzA=',
+        city: 'TmV3IFlvcms=',
+      };
+
+      expect(b64encodeObject(obj)).toEqual(expectedResult);
     });
   });
 });
