@@ -57,6 +57,10 @@ export default function SurveyProvider({ children }) {
   }, [getChatboxRef]);
 
   useEffect(() => {
+    dydu.setShowSurveyCallback(showSurvey);
+  }, [showSurvey]);
+
+  useEffect(() => {
     if (listeningCloseSecondary || !isDefined(chatboxNode)) return;
     chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSecondary, flushStatesAndClose);
     setListeningCloseSecondary(true);
@@ -197,7 +201,11 @@ const flatMap = (listFieldObject = []) => {
   }, {});
 };
 
-const extractId = (data) => data?.values?.survey?.fromBase64();
+const extractId = (data) => {
+  const id = data?.values?.survey?.fromBase64() || data?.survey;
+  return id || '';
+};
+
 const getSurveyConfigurationById = dydu.getSurvey;
 
 //==================================================/
