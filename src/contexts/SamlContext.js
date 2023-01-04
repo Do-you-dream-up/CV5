@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect, useLayoutEffect, useState } from 'react';
-import { getSamlEnableStatus, setSamlEnableCookie } from '../tools/saml';
+import React, { createContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
@@ -37,7 +36,7 @@ export const SamlProvider = ({ children }) => {
               setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
               resolve(true);
             } catch {
-              console.log('valid saml token');
+              /* console.log('valid saml token'); */
             }
           })
           .catch((error) => {
@@ -51,25 +50,21 @@ export const SamlProvider = ({ children }) => {
 
   useIdleTimer({
     debounce: 500,
-    onIdle: () => getSamlEnableStatus() && checkSession(),
+    onIdle: () => configuration?.saml?.enable && checkSession(),
     timeout: 30 * 60 * 1000, // 30mn in milliseconds
   });
 
   const logout = () => setUser(null);
 
   useEffect(() => {
-    if (getSamlEnableStatus() && redirectUrl) {
+    if (configuration?.saml?.enable && redirectUrl) {
       window.location.href = redirectUrl;
     }
   }, [redirectUrl]);
 
-  useLayoutEffect(() => {
-    setSamlEnableCookie(configuration?.saml?.enable);
-  }, []);
-
   useEffect(async () => {
-    getSamlEnableStatus() && (await checkSession());
-  }, []);
+    configuration?.saml?.enable && (await checkSession());
+  }, [configuration?.saml?.enable]);
 
   const value = {
     user,
@@ -81,7 +76,7 @@ export const SamlProvider = ({ children }) => {
   };
 
   const renderChildren = () => {
-    if (getSamlEnableStatus()) {
+    if (configuration?.saml?.enable) {
       return !saml2Info ? <></> : children;
     }
     return children;
