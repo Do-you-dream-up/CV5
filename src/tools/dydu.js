@@ -11,7 +11,6 @@ import {
   strContains,
   toFormUrlEncoded,
 } from './helpers';
-import { getOidcEnableStatus, getOidcEnableWithAuthStatus } from './oidc';
 
 import Bowser from 'bowser';
 import Storage from '../components/auth/Storage';
@@ -20,6 +19,7 @@ import { axiosConfigNoCache } from './axios';
 import bot from '../../public/override/bot.json';
 import debounce from 'debounce-promise';
 import { decode } from './cipher';
+import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import qs from 'qs';
 
@@ -161,7 +161,7 @@ export default new (class Dydu {
   }
 
   handleTokenRefresh = () => {
-    if (getOidcEnableStatus()) {
+    if (this.getConfiguration()?.oidc?.enable) {
       if (Storage.loadToken()?.refresh_token) {
         this.tokenRefresher();
       } else {

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
 
 import Button from '../Button';
 import { Local } from '../../tools/storage';
@@ -18,8 +17,6 @@ export default function Wizard() {
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
     dydu.setConfiguration(data);
-    setOidcEnableCookie(data?.oidc?.enable);
-    setOidcWithAuthEnableCookie(data?.oidc?.withAuth);
   };
 
   useEffect(() => {
