@@ -327,7 +327,7 @@ Interaction.propTypes = {
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
-  secondary: PropTypes.object,
+  secondary: PropTypes.bool,
   steps: PropTypes.array,
   templatename: PropTypes.string,
   thinking: PropTypes.bool,

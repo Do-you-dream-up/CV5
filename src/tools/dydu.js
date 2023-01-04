@@ -117,7 +117,7 @@ export default new (class Dydu {
     this.serverStatusChek = null;
     this.tokenRefresher = null;
     this.oidcLogin = null;
-    this.locale = this.getLocale();
+    this.locale = null;
     this.space = 'default';
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
@@ -395,12 +395,12 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
+    const { application } = this.getConfiguration();
     if (!this.locale) {
-      const { application } = this.getConfiguration();
-      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage}`).split('-')[0];
+      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
       application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
-    return this.locale;
+    return this.locale || application?.defaultLanguage;
   };
 
   /**

@@ -11,9 +11,8 @@ import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * A conversation bubble.
@@ -39,8 +38,7 @@ export default function Bubble({
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');

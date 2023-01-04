@@ -8,9 +8,8 @@ import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
-import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * Typically used with the `Interaction` component.
@@ -19,8 +18,7 @@ import useViewport from '../../tools/hooks/viewport';
  */
 export default function Carousel({ children, className, steps, templatename, ...rest }) {
   const { configuration } = useConfiguration();
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { offset, offsetBetweenCard } = templatename ? configuration.templateCarousel : configuration.carousel;
   const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
   const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;

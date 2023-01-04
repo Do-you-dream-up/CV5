@@ -7,6 +7,12 @@ export const SOLUTION_TYPE = {
   livechat: 'LIVECHAT',
 };
 
+export const FEEDBACK_RESPONSE = {
+  positive: 'positive',
+  negative: 'negative',
+  noResponseGiven: 'withoutAnswer',
+};
+
 export const RESPONSE_QUERY_FORMAT = {
   json: 'JSon',
   xml: 'XML',
