@@ -2,10 +2,10 @@ import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { VIEW_MODE } from '../../contexts/ViewModeProvider';
 import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
+import { VIEW_MODE } from '../constants';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
