@@ -4,7 +4,7 @@ import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oi
 import Button from '../Button';
 import { Local } from '../../tools/storage';
 import WizardField from '../WizardField';
-import dydu from 'src/tools/dydu';
+import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
