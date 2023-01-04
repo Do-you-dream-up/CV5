@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
 import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
-import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useQueue from '../tools/hooks/useQueue';
+import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 
 export const TUNNEL_MODE = {
   polling: 'polling',

@@ -166,6 +166,7 @@ export function DialogProvider({ children }) {
     (response = {}) => {
       setLastResponse(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
+
       const {
         askFeedback: _askFeedback,
         feedback,

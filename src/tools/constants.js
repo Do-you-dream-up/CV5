@@ -1,4 +1,4 @@
-export const RESPONSE_TYPE = {
+export const PAYLOAD_TYPE = {
   survey: 'survey',
 };
 

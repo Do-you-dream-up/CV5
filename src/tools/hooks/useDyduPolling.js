@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import LivechatPayload from '../LivechatPayload';
 import { TUNNEL_MODE } from '../../contexts/LivechatContext';
+import { SOLUTION_TYPE } from '../constants';
 
 let onOperatorWriting = null;
 let displayResponse = null;
@@ -147,12 +148,12 @@ export default function useDyduPolling() {
     });
   }, []);
 
-  const sendSurvey = useCallback((...props) => {
-    api.sendSurvey(...props);
+  const sendSurvey = useCallback((surveyUserAnswer) => {
+    api.sendSurveyPolling(surveyUserAnswer, { solutionUsed: SOLUTION_TYPE.livechat });
   }, []);
 
-  const send = useCallback((...props) => {
-    return api.talk(...props);
+  const send = useCallback((userInput) => {
+    return api.talk(userInput, { solutionUsed: SOLUTION_TYPE.livechat });
   }, []);
 
   const onUserTyping = useCallback((userInput) => {

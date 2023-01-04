@@ -169,11 +169,12 @@ export const osName = () => {
 };
 
 export const b64encodeObject = (o) => {
-  return Object.keys(o).reduce((resultMap, key) => {
+  const res = Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = !isString(value) ? value : value.toBase64();
+    resultMap[key] = isString(value) ? value.toBase64() : isObject(value) ? b64encodeObject(value) : value;
     return resultMap;
   }, {});
+  return res;
 };
 
 export const recursiveBase64EncodeString = (obj) => {
@@ -257,4 +258,18 @@ export const decodeHtml = (html) => {
 
 export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
+};
+
+export const prependObjectKeysWithTag = (tag, object) => {
+  try {
+    return Object.keys(object).reduce((resultObj, key) => {
+      return {
+        ...resultObj,
+        [`${tag}${key}`]: object[key],
+      };
+    }, {});
+  } catch (e) {
+    console.error('While executing prependObjectKeysWithTag()', e);
+    return {};
+  }
 };
