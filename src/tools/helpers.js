@@ -179,7 +179,7 @@ export const osName = () => {
 export const b64encodeObject = (o) => {
   const res = Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = !isString(value) ? value.b64encode() : isObject(value) ? b64encodeObject(value) : value;
+    resultMap[key] = !isString(value) ? value.toBase64() : isObject(value) ? b64encodeObject(value) : value;
 
     return resultMap;
   }, {});
