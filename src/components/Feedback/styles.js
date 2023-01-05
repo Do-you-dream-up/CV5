@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({

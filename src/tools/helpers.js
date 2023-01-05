@@ -118,7 +118,15 @@ export const objectContainFields = (obj, fieldList = []) => {
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
 };
 
-export const secondsToMs = (s) => s * 1000;
+export const secondsToMs = (s) => {
+  if (!isOfTypeNumber(s)) return 5000;
+
+  if (s >= 0) {
+    return s * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
+  }
+};
 
 export const browserName = () => {
   let sBrowser;
@@ -171,7 +179,8 @@ export const osName = () => {
 export const b64encodeObject = (o) => {
   const res = Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = isString(value) ? value.toBase64() : isObject(value) ? b64encodeObject(value) : value;
+    resultMap[key] = !isString(value) ? value.b64encode() : isObject(value) ? b64encodeObject(value) : value;
+
     return resultMap;
   }, {});
   return res;
@@ -233,7 +242,13 @@ export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
 };
 
-export const numberOfDayInMs = (count = 1) => count * 24 * 60 * 60 * 1000;
+export const numberOfDayInMs = (count = 1) => {
+  if (count >= 0) {
+    return count * 24 * 60 * 60 * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
+  }
+};
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
