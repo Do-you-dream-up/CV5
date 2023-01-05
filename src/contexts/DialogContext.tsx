@@ -10,9 +10,9 @@ import { Local } from 'src/tools/storage';
 import dotget from 'src/tools/dotget';
 import { eventOnSecondaryClosed } from 'src/events/chatboxIndex';
 import fetchPushrules from 'src/tools/pushrules';
+import { flattenSteps } from 'src/tools/steps';
 import { knownTemplates } from 'src/tools/template';
 import parseActions from 'src/tools/actions';
-import parseSteps from 'src/tools/steps';
 import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from 'src/tools/hooks/useConversationHistory';
 import usePromiseQueue from 'src/tools/hooks/usePromiseQueue';
@@ -26,6 +26,27 @@ interface DialogProviderProps {
 }
 
 interface DialogContextProps {}
+
+interface SecondaryContentProps {
+  headerTransparency?: boolean;
+  headerRenderer?: any;
+  bodyRenderer?: any;
+  body?: any;
+  title?: string;
+  url?: string;
+  height?: number;
+  width?: number;
+}
+
+interface InteractionProps {
+  askFeedback: boolean;
+  carousel: boolean;
+  children: any;
+  secondary: any;
+  steps: [];
+  templateName?: string;
+  type?: string;
+}
 
 export const DialogContext = createContext<DialogContextProps>({});
 
@@ -47,13 +68,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState([]);
+  const [interactions, setInteractions] = useState<ReactNode[]>([]);
   const [locked, setLocked] = useState(false);
   const [placeholder, setPlaceholder] = useState(null);
   const [prompt, setPrompt] = useState('');
   const [secondaryActive, setSecondaryActive] = useState(false);
-  const [secondaryContent, setSecondaryContent] = useState(null);
-  const [voiceContent, setVoiceContent] = useState(null);
+  const [secondaryContent, setSecondaryContent] = useState<SecondaryContentProps | null>(null);
+  const [voiceContent, setVoiceContent] = useState<{ templateData: string | null; text: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState(suggestionActiveOnConfig);
@@ -99,7 +120,19 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatus]);
 
   const toggleSecondary = useCallback(
-    (open, { headerTransparency = true, headerRenderer, bodyRenderer, body, height, title, url, width } = {}) =>
+    (
+        open,
+        {
+          headerTransparency = true,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+        }: SecondaryContentProps = {},
+      ) =>
       () => {
         const someFieldsDefined = [
           headerTransparency,
@@ -169,12 +202,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }));
   }, []);
 
-  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList = []) => {
+  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList: InteractionProps[] = []) => {
     return propsList.map((interactionAttributeObject, index) => {
       const props = {
         type: 'response',
         ...interactionAttributeObject,
-        templatename: isOfTypeString(interactionAttributeObject?.children)
+        templateName: isOfTypeString(interactionAttributeObject?.children)
           ? undefined
           : interactionAttributeObject.templateName,
         askFeedback: isOfTypeString(interactionAttributeObject?.children)
@@ -203,10 +236,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
         urlRedirect,
         enableAutoSuggestion,
       } = response;
+      console.log('🚀 ~ file: DialogContext.tsx:239 ~ DialogProvider ~ response', response);
 
       const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
-      const steps = parseSteps(response);
-      if (configuration.Voice.enable) {
+
+      const steps = flattenSteps(response);
+      console.log('🚀 ~ file: DialogContext.tsx:244 ~ DialogProvider ~ steps', steps);
+
+      if (configuration?.Voice.enable) {
         if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName?.toLowerCase()) {
           setVoiceContent({ templateData, text });
         } else {
@@ -255,10 +292,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
         event('rewordDisplay');
       }
 
-      const getContent = (text, templateData, templateName) => {
+      const getContent = (text: any, templateData: any, templateName: any) => {
         const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
         if (templateData && knownTemplates.includes(templateName)) {
-          list.push(JSON.parse(templateData));
+          try {
+            list.push(JSON.parse(templateData));
+          } catch (error) {
+            console.log('Error', error);
+          }
         }
         return list;
       };
@@ -289,7 +330,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               type="response"
               secondary={sidebar}
               steps={steps}
-              templatename={templateName}
+              templateName={templateName}
               thinking
               typeResponse={typeResponse}
             />
@@ -321,7 +362,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     setInteractions([]);
   }, []);
 
-  const setSecondary = useCallback(({ body, title, url } = {}) => {
+  const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
     if (body || title || url) {
       setSecondaryContent({ body, title, url });
     }

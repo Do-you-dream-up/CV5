@@ -16,12 +16,12 @@ import useViewport from '../../tools/hooks/useViewport';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({ children, className, steps, templatename, ...rest }) {
+export default function Carousel({ children, className, steps, templateName, ...rest }) {
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
-  const { offset, offsetBetweenCard } = templatename ? configuration.templateCarousel : configuration.carousel;
-  const hasBullets = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
-  const hasControls = templatename ? !!configuration.templateCarousel : !!configuration.carousel;
+  const { offset, offsetBetweenCard } = templateName ? configuration.templateCarousel : configuration.carousel;
+  const hasBullets = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
+  const hasControls = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState(steps ? steps[0] : 0);
   const { t } = useTranslation('translation');
@@ -92,7 +92,7 @@ export default function Carousel({ children, className, steps, templatename, ...
         {children.map((it, i) => (
           <div
             children={it}
-            className={c('dydu-carousel-step', classes.step, templatename && classes.stepTemplate)}
+            className={c('dydu-carousel-step', classes.step, templateName && classes.stepTemplate)}
             key={i}
           />
         ))}
@@ -124,5 +124,5 @@ Carousel.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
   className: PropTypes.string,
   steps: PropTypes.array,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
 };

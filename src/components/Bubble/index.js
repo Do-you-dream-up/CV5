@@ -30,7 +30,7 @@ export default function Bubble({
   html,
   secondary,
   step,
-  templatename,
+  templateName,
   thinking,
   type,
 }) {
@@ -71,7 +71,7 @@ export default function Bubble({
         `dydu-bubble-${type}`,
         classes.base,
         classes[type],
-        isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
+        isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
         className,
       ),
       id: `dydu-bubble-${type}`,
@@ -80,7 +80,7 @@ export default function Bubble({
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
-          <PrettyHtml children={children} html={html} templatename={templatename} type={type} carousel={carousel} />
+          <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
@@ -102,7 +102,7 @@ Bubble.propTypes = {
   html: PropTypes.string,
   secondary: PropTypes.object,
   step: PropTypes.object,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
