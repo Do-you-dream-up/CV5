@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Cookie, Local } from './storage';
-import { RESPONSE_QUERY_FORMAT, PAYLOAD_TYPE, SOLUTION_TYPE } from './constants';
+import { PAYLOAD_TYPE, RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
@@ -120,8 +120,8 @@ export default new (class Dydu {
     this.serverStatusChek = null;
     this.tokenRefresher = null;
     this.oidcLogin = null;
+    this.locale = null;
     this.showSurveyCallback = null;
-    this.locale = this.getLocale();
     this.space = 'default';
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
@@ -204,7 +204,7 @@ export default new (class Dydu {
   handleAxiosError = (error, verb, path, data, timeout) => {
     this.triesCounter = this.triesCounter + 1;
 
-    if (this.triesCounter >= 10) {
+    if (this.triesCounter >= 5) {
       throw 'API Unreachable';
     }
 
@@ -399,12 +399,12 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
+    const { application } = this.getConfiguration();
     if (!this.locale) {
-      const { application } = this.getConfiguration();
-      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage}`).split('-')[0];
+      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
       application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
-    return this.locale;
+    return this.locale || application?.defaultLanguage;
   };
 
   /**

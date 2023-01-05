@@ -102,7 +102,7 @@ export default function Interaction({
   scroll,
   secondary,
   steps,
-  templatename,
+  templateName,
   thinking,
   type,
   typeResponse,
@@ -135,9 +135,9 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
 
-  const carouselTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.carousel), [templatename]);
-  const productTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.product), [templatename]);
-  const quickTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.quickReply), [templatename]);
+  const carouselTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.carousel), [templateName]);
+  const productTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.product), [templateName]);
+  const quickTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.quickReply), [templateName]);
 
   const addBubbles = useCallback(
     (newBubbles) => {
@@ -180,7 +180,7 @@ export default function Interaction({
     if (!ready && children) {
       setReady(true);
 
-      const createBubbleListFn = templateNameToBubbleCreateAction[templatename] || createBubbleListNoTemplate;
+      const createBubbleListFn = templateNameToBubbleCreateAction[templateName] || createBubbleListNoTemplate;
 
       const bubbles = createBubbleListFn(children);
       addBubbles(bubbles);
@@ -193,7 +193,7 @@ export default function Interaction({
     children,
     productTemplate,
     ready,
-    templatename,
+    templateName,
     quickTemplate,
     secondary,
     createBubbleListNoTemplate,
@@ -259,11 +259,11 @@ export default function Interaction({
 
       return (
         <Scroll key={index} className={classes.bubble}>
-          <Bubble templatename={templatename} {...attributes} />
+          <Bubble templateName={templateName} {...attributes} />
         </Scroll>
       );
     });
-  }, [bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templatename, type]);
+  }, [bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templateName, type]);
 
   useDebounce(
     () => {
@@ -279,7 +279,7 @@ export default function Interaction({
     const wrapperProps = {
       className: c('dydu-interaction-bubbles', classes.bubbles),
       steps: steps,
-      templatename: templatename,
+      templateName: templateName,
     };
 
     if (isCarousel) {
@@ -287,7 +287,7 @@ export default function Interaction({
     }
 
     return <div {...wrapperProps}>{bubbleList}</div>;
-  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
+  }, [bubbleList, classes.bubbles, isCarousel, steps, templateName]);
 
   return (
     ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
@@ -295,7 +295,7 @@ export default function Interaction({
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
-          !!templatename && templatename !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
+          !!templateName && templateName !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },
@@ -327,9 +327,9 @@ Interaction.propTypes = {
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
-  secondary: PropTypes.object,
+  secondary: PropTypes.bool,
   steps: PropTypes.array,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,

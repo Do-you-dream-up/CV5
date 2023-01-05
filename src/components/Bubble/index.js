@@ -11,9 +11,8 @@ import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * A conversation bubble.
@@ -31,7 +30,7 @@ export default function Bubble({
   html,
   secondary,
   step,
-  templatename,
+  templateName,
   thinking,
   type,
 }) {
@@ -39,8 +38,7 @@ export default function Bubble({
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
@@ -73,7 +71,7 @@ export default function Bubble({
         `dydu-bubble-${type}`,
         classes.base,
         classes[type],
-        isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
+        isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
         className,
       ),
       id: `dydu-bubble-${type}`,
@@ -82,7 +80,7 @@ export default function Bubble({
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
-          <PrettyHtml children={children} html={html} templatename={templatename} type={type} carousel={carousel} />
+          <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
@@ -104,7 +102,7 @@ Bubble.propTypes = {
   html: PropTypes.string,
   secondary: PropTypes.object,
   step: PropTypes.object,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };
