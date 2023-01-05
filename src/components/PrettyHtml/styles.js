@@ -86,5 +86,8 @@ export default createUseStyles((theme) => ({
     '& + .p1': {
       marginTop: 0,
     },
+    '& + p': {
+      marginTop: 0,
+    },
   },
 }));
