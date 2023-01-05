@@ -18,7 +18,7 @@ build:
     paths:
       - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^main_.*/'
   artifacts:
