@@ -10,6 +10,7 @@ import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { escapeHTML } from '../../tools/helpers';
+import { isDefined } from 'dydu-module/helpers';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
@@ -40,6 +41,7 @@ export default function Input({ onRequest, onResponse }) {
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const { event: chatbotEvent } = useEvent();
 
@@ -152,6 +154,15 @@ export default function Input({ onRequest, onResponse }) {
     }
   }, [debouncedInput, suggest, typing]);
 
+  useEffect(() => {
+    const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
+    if (isDefined(nodeElementInputContainer)) {
+      nodeElementInputContainer.setAttribute('aria-label', 'dydu-input-container');
+      nodeElementInputContainer.setAttribute('aria-labelledby', 'dydu-input');
+      nodeElementInputContainer.setAttribute('title', 'dydu-input-container');
+    }
+  }, []);
+
   const theme = {
     container: c('dydu-input-container', classes.container),
     input: c('dydu-input-field-text', classes.fieldText),
@@ -200,6 +211,7 @@ export default function Input({ onRequest, onResponse }) {
         renderSuggestion={(suggestion) => suggestion.rootConditionReword || ''}
         suggestions={suggestions}
         theme={theme}
+        ref={containerRef}
       />
       {Voice.isEnabled && voice && counter === maxLength ? (
         <Voice
