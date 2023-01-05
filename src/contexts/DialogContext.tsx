@@ -55,7 +55,7 @@ export const useDialog = () => useContext(DialogContext);
 export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
-  const { transient: secondaryTransient } = configuration.secondary;
+  const secondaryTransient = configuration?.secondary?.transient;
 
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();
@@ -236,12 +236,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
         urlRedirect,
         enableAutoSuggestion,
       } = response;
-      console.log('🚀 ~ file: DialogContext.tsx:239 ~ DialogProvider ~ response', response);
 
       const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
 
       const steps = flattenSteps(response);
-      console.log('🚀 ~ file: DialogContext.tsx:244 ~ DialogProvider ~ steps', steps);
 
       if (configuration?.Voice.enable) {
         if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName?.toLowerCase()) {
@@ -293,7 +291,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
 
       const getContent = (text: any, templateData: any, templateName: any) => {
-        const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
+        const list: any[] = [].concat(text ? steps.map(({ text }) => text) : [text]);
         if (templateData && knownTemplates.includes(templateName)) {
           try {
             list.push(JSON.parse(templateData));
@@ -417,8 +415,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [toggleSecondary, chatboxNode]);
 
   const openSecondary = useCallback(
-    (...props) => {
-      if (!secondaryActive) toggleSecondary(...[true].concat(props))();
+    (props) => {
+      if (!secondaryActive) toggleSecondary(true, props)();
     },
     [secondaryActive, toggleSecondary],
   );

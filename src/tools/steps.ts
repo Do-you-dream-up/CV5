@@ -1,4 +1,7 @@
 /**
  * Recursive flatten for step actions.
  */
-export const flattenSteps = ({ nextStepResponse: next, ...rest }) => [rest, ...(next ? flattenSteps(next) : [])];
+export const flattenSteps = ({ nextStepResponse, ...rest }: { nextStepResponse?: any }) => [
+  rest,
+  ...(nextStepResponse ? flattenSteps(nextStepResponse) : []),
+];
