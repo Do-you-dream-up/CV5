@@ -5,6 +5,8 @@ import dydu from '../dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 
+const fetchWelcomeKnowledge = dydu.getWelcomeKnowledge;
+
 export default function useWelcomeKnowledge() {
   const [result, setResult] = useState(null);
 
@@ -12,26 +14,18 @@ export default function useWelcomeKnowledge() {
   const { isLivechatOn } = useLivechat();
   const tagWelcome = configuration.welcome?.knowledgeName || null;
 
-  const tagWelcomeNotSet = useMemo(() => !isDefined(tagWelcome) || isEmptyString(tagWelcome), [tagWelcome]);
+  const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
-    return isDefined(result) || isLivechatOn || !tagWelcomeNotSet;
-  }, [isLivechatOn, result, tagWelcomeNotSet]);
+    return isDefined(result) || isLivechatOn || isTagWelcomeDefined;
+  }, [isLivechatOn, result, isTagWelcomeDefined]);
 
   const fetch = useCallback(() => {
-    const cannotRequest = !canRequest;
-    if (cannotRequest) return Promise.resolve();
+    if (!canRequest) return Promise.resolve();
 
-    return new Promise((resolve) => {
-      dydu.talk(tagWelcome, { doNotSave: true, hide: true }).then((response) => {
-        const isInteractionObject = (r) => {
-          return isDefined(r?.text) && 'text' in r;
-        };
-        if (isInteractionObject(response)) {
-          setResult(response);
-        }
-        resolve();
-      });
+    return fetchWelcomeKnowledge(tagWelcome).then((wkResponse) => {
+      setResult(wkResponse);
+      return wkResponse;
     });
     // eslint-disable-next-line
   }, [canRequest, isLivechatOn, result]);

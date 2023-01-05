@@ -2,11 +2,15 @@ import { hasWizard, isLoadedFromChannels } from './wizard';
 
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
-// import { Local } from './storage';
-import React from 'react';
+import { PureComponent } from 'react';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
+import dydu from './dydu';
 import json from './configuration.json';
+
+// import { Local } from './storage';
+
+// import { Local } from './storage';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -31,6 +35,12 @@ export const configuration = new (class Configuration {
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
+
+      if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
+        dydu.setSpace(configuration?.spaces?.items[0]);
+      }
+
+      dydu.setConfiguration(this.configuration);
       return this.configuration;
     });
   };
@@ -73,7 +83,7 @@ export const configuration = new (class Configuration {
  * High-order component to pass on configuration.
  */
 export const withConfiguration = (Component) =>
-  class InnerComponent extends React.PureComponent {
+  class InnerComponent extends PureComponent {
     static contextType = ConfigurationContext;
     render() {
       return <Component configuration={this.context.configuration} {...this.props} />;

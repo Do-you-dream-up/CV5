@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { createElement, useCallback, useEffect, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import PropTypes from 'prop-types';
 import WizardFieldStatus from '../WizardFieldStatus';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import usePrevious from '../../tools/hooks/previous';
 import useStyles from './styles';
@@ -11,7 +11,7 @@ import useStyles from './styles';
  * A wizard field to live-edit the configuration.
  */
 function WizardField({ component, label, onSave, parent, value: oldValue }) {
-  const { update } = useContext(ConfigurationContext);
+  const { update } = useConfiguration();
   const classes = useStyles();
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(WizardField.status.success);
@@ -86,14 +86,14 @@ function WizardField({ component, label, onSave, parent, value: oldValue }) {
     }[typeof oldValue] || {};
   return (
     ready &&
-    React.createElement(
+    createElement(
       component,
       null,
       !!attributes && (
         <label className={classes.field}>
           <div children={label} className={classes.text} />
           <div className={classes.input}>
-            {React.createElement(input, {
+            {createElement(input, {
               name: label,
               onChange,
               ...attributes,

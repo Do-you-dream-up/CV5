@@ -1,15 +1,14 @@
-import React from 'react';
+import { decodeHtml, isDefined, isEmptyString } from '../tools/helpers';
+
 import Checkbox from './components/Checkbox';
+import LongText from './components/LongText';
+import MultipleChoice from './components/MultipleChoice';
+import Radio from './components/Radio';
 import RadioGroup from './components/RadioGroup';
 import Select from './components/Select';
-import Title from './components/Title';
-import Text from './components/Text';
-import LongText from './components/LongText';
-import Radio from './components/Radio';
-import MultipleChoice from './components/MultipleChoice';
 import SelectOption from './components/SelectOption';
-
-import { decodeHtml, isDefined } from '../tools/helpers';
+import Text from './components/Text';
+import Title from './components/Title';
 
 //================================================== /
 // TYPES stack
@@ -62,8 +61,11 @@ export default class Field {
   masterInstance = null;
 
   userAnswerValue = null;
+  _isShowingRequiredMessage = false;
 
   constructor(fieldData, parentInstance = null, masterInstance = null) {
+    this.uiShowRequiredMessage = null;
+    this.uiHideRequiredMessage = null;
     this.initialize(fieldData);
     if (isDefined(masterInstance)) this.masterInstance = masterInstance;
     if (isDefined(parentInstance)) this.parentInstance = parentInstance;
@@ -87,62 +89,84 @@ export default class Field {
   getId() {
     return this.id;
   }
+
   getType() {
     return this.type;
   }
+
   isMandatory() {
     return this.mandatory || false;
   }
+
   getLabel() {
     return decodeHtml(this.label || '');
   }
+
+  getParent() {
+    return this.parentInstance;
+  }
+
   getChildren() {
     return this.children || [];
   }
+
   getFirstChild() {
     if (!this.hasChildren()) return null;
     return this.getChildren()[0];
   }
+
   getSlaves() {
     return this.slaves || [];
   }
+
   isSlave() {
     return isDefined(this.masterInstance);
   }
+
   isChildren() {
     return isDefined(this.parentInstance);
   }
+
   hasChildren() {
     return this.getChildren().length > 0;
   }
+
   isParent() {
     return this.hasChildren();
   }
+
   hasSlaves() {
     return this.getSlaves().length > 0;
   }
+
   isMaster() {
     return this.hasSlaves();
   }
+
   hasId(id) {
     return +this.id === +id;
   }
+
   hasParent() {
     return isDefined(this.parentInstance);
   }
+
   hasMaster() {
     return isDefined(this.masterInstance);
   }
+
   find(id, result = { found: null }) {
     if (this.hasId(id)) return (result.found = this);
     this.findInChildren(id, result);
     if (!isDefined(result.found)) this.findInSlaves(id, result);
     if (!this.hasParent()) return result.found;
   }
+
   findInChildren(id, result) {
     if (isDefined(result.found) || !this.hasChildren()) return;
     this.getChildren().find((child) => child.find(id, result));
   }
+
   findInSlaves(id, result) {
     if (isDefined(result.found) || !this.hasSlaves()) return;
     this.getSlaves().find((slave) => slave.find(id, result));
@@ -151,8 +175,18 @@ export default class Field {
   render() {
     const componentKey = this.getId();
     const isRadioGroup = this.isMultipleChoiceType() && this.hasChildrenOfTypeRadio();
-    if (isRadioGroup) return <RadioGroup key={componentKey} fields={this.getChildren()} />;
+    if (isRadioGroup)
+      return (
+        <RadioGroup
+          showRequiredMessage={this.isShowingRequiredMessage()}
+          key={componentKey}
+          fields={this.getChildren()}
+          parent={this}
+        />
+      );
 
+    const isCheckboxGroup = this.isMultipleChoiceType() && this.hasChildrenOfTypeCheckbox();
+    if (isCheckboxGroup) console.log('TODO: checkboxgroup component');
     const Component = Field.getComponentForType(this.getType());
     return <Component key={componentKey} field={this} />;
   }
@@ -160,6 +194,12 @@ export default class Field {
   renderChildren() {
     return this.getChildren().map((child) => child.render());
   }
+
+  hasChildrenOfTypeCheckbox() {
+    if (!this.hasChildren()) return false;
+    return this.getChildren().every((child) => child.isCheckboxType());
+  }
+
   hasChildrenOfTypeRadio() {
     if (!this.hasChildren()) return false;
     return this.getChildren().every((child) => child.isRadioType());
@@ -172,10 +212,15 @@ export default class Field {
   isTitleType = () => this.getType() === types.title;
   isMultipleChoiceType = () => this.getType() === types.multipleChoice;
   isCheckboxType = () => this.getType() === types.checkbox;
+  isInputStringField = () => this.isTextType() || this.isLongTextType();
 
   saveAsUserAnswer(input = null) {
-    const value = isDefined(input) ? input : this.getLabel();
-    this.setUserAnswerValue(value);
+    if (this.isInputStringField()) {
+      const shouldUnset = [(v) => !isDefined(v), isEmptyString].some((fn) => fn(input));
+      if (shouldUnset) return this.unsetAsUserAnswer();
+      return this.setUserAnswerValue(input);
+    }
+    return this.setUserAnswerValue(this.getLabel());
   }
   setUserAnswerValue(value = null) {
     if (isDefined(value)) this.userAnswerValue = { id: this.getId(), value };
@@ -191,25 +236,166 @@ export default class Field {
     this.setUserAnswerValue(null);
     this.getBottomList().forEach((item) => item.unsetAsUserAnswer());
   }
-  feedStoreWithUserAnswer(store = {}) {
-    const answerObj = this.getUserAnswerValue();
-    if (isDefined(answerObj)) {
-      const { id, value } = answerObj;
-      store[id] = value;
-    }
-    this.getBottomList().forEach((field) => field.feedStoreWithUserAnswer(store));
+
+  setUiCallbackHideRequiredMessage(callback = null) {
+    this.uiHideRequiredMessage = callback;
   }
+
+  setUiCallbackShowRequiredMessage(callback = null) {
+    this.uiShowRequiredMessage = callback;
+  }
+
+  isShowingRequiredMessage() {
+    return this._isShowingRequiredMessage;
+  }
+
+  turnOffShowingRequiredMessage() {
+    this._isShowingRequiredMessage = false;
+  }
+
+  turnOnShowingRequiredMessage() {
+    this._isShowingRequiredMessage = true;
+  }
+
+  hideRequiredMessageUi() {
+    try {
+      this.uiHideRequiredMessage();
+    } catch (e) {
+      console.error('no callback to show ui, missing field: ', this.getId());
+    }
+  }
+
+  showRequiredMessageUi() {
+    try {
+      this.uiShowRequiredMessage();
+    } catch (e) {
+      console.error('no callback to show ui, missing field: ', this.getId());
+    }
+  }
+
+  getRootParent() {
+    if (this.hasParent()) return this.getParent().getRootParent();
+    else return this;
+  }
+
+  hasAnswer() {
+    return isDefined(this.getUserAnswerValue()?.value);
+  }
+
+  gatherUserAnswers(answerManagerInstance = {}) {
+    if (this.isTitleType()) return this.getTitleTypeUserValues(answerManagerInstance);
+    if (this.isSelectType()) return this.getSelectTypeUserValues(answerManagerInstance);
+    if (this.isSelectOptionType()) return this.getSelectOptionTypeUserValues(answerManagerInstance);
+    if (this.isMultipleChoiceType()) return this.getMultipleChoiceTypeUserValues(answerManagerInstance);
+    if (this.isRadioType()) return this.getRadioTypeUserValues(answerManagerInstance);
+    if (this.isCheckboxType()) return this.getCheckboxTypeUserValues(answerManagerInstance);
+    if (this.isInputStringField()) return this.getInputStringField(answerManagerInstance);
+  }
+
   renderSlaves() {
     if (!this.hasSlaves()) return null;
     return this.getSlaves().map((slaveInstance) => slaveInstance.render());
   }
   isRoot() {
-    return !this.hasParent() && !this.hasMaster();
+    return !this.hasParent();
+  }
+  isFree() {
+    return !this.hasMaster();
   }
   getGraphIdList(resultContainer = []) {
     resultContainer.push(this.getId());
     const bottomRes = this.getBottomList().map((field) => field.getGraphIdList(resultContainer));
     resultContainer.concat(bottomRes);
     return resultContainer;
+  }
+
+  getSelectTypeUserValues(answerManagerInstance = {}) {
+    if (this.isMandatory()) {
+      const hasAtLeastOneChildAnswer = this.getChildren().some((child) => child.hasAnswer());
+      if (!hasAtLeastOneChildAnswer) {
+        this.showRequiredMessageUi();
+        return answerManagerInstance.addMissingField(this);
+      } else this.hideRequiredMessageUi();
+    }
+
+    // when mandatory === false
+    return this.getChildren().forEach((child) => child.gatherUserAnswers(answerManagerInstance));
+  }
+
+  getSelectOptionTypeUserValues(answerManagerInstance = {}) {
+    const isRootAndMandatory = this.isRoot() && this.isMandatory();
+    if (isRootAndMandatory && !this.hasAnswer()) {
+      this.showRequiredMessageUi();
+      return answerManagerInstance.addMissingField(this);
+    }
+    if (this.hasAnswer()) {
+      this.hideRequiredMessageUi();
+      answerManagerInstance.addAnswer(this.getUserAnswerValue());
+      if (this.hasSlaves()) return this.getSlaves().forEach((slave) => slave.gatherUserAnswers(answerManagerInstance));
+    }
+  }
+
+  getMultipleChoiceTypeUserValues(answerManagerInstance = {}) {
+    const isRadioGroup = this.hasChildrenOfTypeRadio();
+    if (isRadioGroup) return this.getRadioGroupUserValue(answerManagerInstance);
+    const isCheckboxGroup = this.hasChildrenOfTypeCheckbox();
+    if (isCheckboxGroup) return this.getCheckboxGroupUserValue(answerManagerInstance);
+  }
+
+  getRadioGroupUserValue(answerManagerInstance = {}) {
+    if (this.isMandatory()) {
+      const hasAtLeastOneChildAnswer = this.getChildren().some((child) => child.hasAnswer());
+      if (!hasAtLeastOneChildAnswer) {
+        this.showRequiredMessageUi();
+        return answerManagerInstance.addMissingField(this);
+      } else this.hideRequiredMessageUi();
+    }
+    return this.getChildren().forEach((child) => child.gatherUserAnswers(answerManagerInstance));
+  }
+
+  getCheckboxGroupUserValue(answerManagerInstance = {}) {
+    if (this.isMandatory()) {
+      const hasAtLeastOneChildAnswer = this.getChildren().some((child) => child.hasAnswer());
+      if (!hasAtLeastOneChildAnswer) {
+        this.showRequiredMessageUi();
+        return answerManagerInstance.addMissingField(this);
+      }
+      this.hideRequiredMessageUi();
+    }
+    return this.getChildren().forEach((child) => child.gatherUserAnswers(answerManagerInstance));
+  }
+
+  getRadioTypeUserValues(answerManagerInstance = {}) {
+    const isRootAndMandatory = this.isRoot() && this.isMandatory();
+    if (isRootAndMandatory && !this.hasAnswer()) {
+      this.showRequiredMessageUi();
+      return answerManagerInstance.addMissingField(this);
+    }
+    this.hideRequiredMessageUi();
+    if (this.hasAnswer()) return answerManagerInstance.addAnswer(this.getUserAnswerValue());
+  }
+
+  getCheckboxTypeUserValues(answerManagerInstance = {}) {
+    const isRootAndMandatory = this.isRoot() && this.isMandatory();
+    if (isRootAndMandatory && !this.hasAnswer()) {
+      this.showRequiredMessageUi();
+      return answerManagerInstance.addMissingField(this);
+    }
+    this.hideRequiredMessageUi();
+    if (this.hasAnswer()) return answerManagerInstance.addAnswer(this.getUserAnswerValue());
+  }
+
+  getInputStringField(answerManagerInstance = {}) {
+    const isRootAndMandatory = this.isRoot() && this.isMandatory();
+    if (isRootAndMandatory && !this.hasAnswer()) {
+      this.showRequiredMessageUi();
+      return answerManagerInstance.addMissingField(this);
+    }
+    this.hideRequiredMessageUi();
+    if (this.hasAnswer()) return answerManagerInstance.addAnswer(this.getUserAnswerValue());
+  }
+
+  getTitleTypeUserValues(answerManagerInstance = {}) {
+    return answerManagerInstance.addAnswer(this.getUserAnswerValue());
   }
 }

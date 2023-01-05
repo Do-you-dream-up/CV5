@@ -1,10 +1,11 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Local } from '../tools/storage';
-import { EventsContext } from './EventsContext';
+import { createContext, useCallback, useContext, useState } from 'react';
 
-export const OnboardingContext = React.createContext();
+import { EventsContext } from './EventsContext';
+import { Local } from '../tools/storage';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+export const OnboardingContext = createContext();
 export function OnboardingProvider({ children }) {
   const [active, setActive] = useState(!Local.get(Local.names.onboarding));
   const event = useContext(EventsContext).onEvent('onboarding');

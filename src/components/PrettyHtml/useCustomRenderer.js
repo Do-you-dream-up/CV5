@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
-
 import { DialogContext } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
+import { useContext } from 'react';
 
 export default function useCustomRenderer() {
   const { setZoomSrc } = useContext(DialogContext);

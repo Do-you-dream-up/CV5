@@ -3,11 +3,10 @@ import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import { escapeHTML, isDefined } from '../../tools/helpers';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -26,6 +25,7 @@ import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
@@ -34,7 +34,7 @@ import { useViewMode } from '../../contexts/ViewModeProvider';
  * Root component of the chatbox. It implements the `window` API as well.
  */
 export default function Chatbox({ extended, open, root, toggle, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
@@ -64,8 +64,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+  const qualification = configuration.qualification?.active;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -83,7 +82,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
           qualification,
           extra: options,
         };
-
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
           if (!REGEX_URL.test(text)) {

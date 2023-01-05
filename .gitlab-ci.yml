@@ -3,6 +3,7 @@
 stages:
   - integration
   - delivery
+  - quality
 
 build:
   stage: integration
@@ -20,7 +21,7 @@ build:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^main_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
   artifacts:
     paths:
       - .npm/_logs/
@@ -65,6 +66,25 @@ publish:
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - build
+  when: manual
+
+test:
+  stage: quality
+  image: alpine:latest
+  before_script:
+    - apk add git openssh-client
+    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
+  script:
+    - git config --global user.email "infra@dydu.ai" && git config --global user.name "GitLab CI Bliss" && git config --global core.sshCommand 'ssh -o StrictHostKeyChecking=no'
+    - git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox && cd /autobox
+    - git switch -c ${CI_COMMIT_REF_NAME}
+    - echo "${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}" > revision.txt && git add revision.txt && git commit -m "Set revision to ${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHORT_SHA}.${CI_JOB_ID}."
+    - git rebase master && git push -f --set-upstream "origin" "${CI_COMMIT_REF_NAME}"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+  needs:
+    - pack
   when: manual
 
 ...

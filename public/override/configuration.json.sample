@@ -3,9 +3,9 @@
     "open": 1,
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
-    "getDefaultLanguageFromSite": false, 
-    "cdn":"",
-    "directory":""
+    "getDefaultLanguageFromSite": false,
+    "cdn": "https://cdn.doyoudreamup.com/chatbox/",
+    "directory": "main/"
   },
   "avatar": {
     "request": {
@@ -36,7 +36,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-     "offsetBetweenCard": 100
+    "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
@@ -70,7 +70,7 @@
         "questionSent": ["questionSent"],
         "rewordDisplay": ["rewordDisplay"]
       },
-      "gdpr":{
+      "gdpr": {
         "acceptGdpr": ["acceptGdpr"],
         "getPersonalData": ["getPersonalData"],
         "deletePersonalData": ["deletePersonalData"],
@@ -86,7 +86,7 @@
       "teaser": {
         "onClick": ["teaserClick"]
       },
-      "top":{
+      "top": {
         "topDisplay": ["topDisplay"],
         "topClicked": ["topClicked"]
       }
@@ -109,7 +109,7 @@
   "footer": {
     "translate": true
   },
-    "gdprDisclaimer": {
+  "gdprDisclaimer": {
     "enable": true
   },
   "header": {
@@ -137,12 +137,12 @@
     "logo": {
       "customAvatar": false,
       "title": true,
-      "image": true, 
+      "image": true,
       "imageLink": {
         "misunderstood": "dydu-misunderstood.svg",
         "reword": "dydu-reword.svg",
         "understood": "dydu-understood.svg"
-      } 
+      }
     }
   },
   "input": {
@@ -151,14 +151,10 @@
     "maxLength": 100
   },
   "interaction": {
-    "displayNameBot" : false,
-    "displayNameUser" : false,
-    "NameUser" : "",
-    "NameBot" : "",
-    "avatar": {
-      "request": false,
-      "response": true
-    },
+    "displayNameBot": false,
+    "displayNameUser": false,
+    "NameUser": "",
+    "NameBot": "",
     "loader": [400, 600]
   },
   "keycloak": {
@@ -184,11 +180,17 @@
   },
   "oidc": {
     "enable": false,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "prodPorovider": "",
-    "preprodPorovider": "",
-    "scopes": [""]
+    "clientId": "",
+    "clientSecret": "",
+    "pkceActive": false,
+    "pkceMode": "",
+    "authUrl": "",
+    "tokenUrl": "",
+    "scopes": [""],
+    "withAuth": false
+  },
+  "saml": {
+    "enable": false
   },
   "onboarding": {
     "enable": false,
@@ -197,10 +199,13 @@
     "image3": "dydu-onboarding-3.svg"
   },
   "poweredBy": {
-      "active": false
-    },
+    "active": false
+  },
   "pushrules": {
     "active": true
+  },
+  "qualification": {
+    "active": false
   },
   "root": "dydu-root",
   "secondary": {
@@ -210,12 +215,13 @@
     },
     "fixedDimensions": false,
     "mode": "left",
-    "width": 500,
+    "width": 850,
     "transient": true
   },
   "spaces": {
     "active": true,
-    "detection": [{
+    "detection": [
+      {
         "active": false,
         "mode": "cookie",
         "value": "dyduspace"
@@ -248,6 +254,13 @@
         "value": {
           "doyoudreamup.com": "dydu"
         }
+      },
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
+        }
       }
     ],
     "items": ["default"]
@@ -257,7 +270,8 @@
   },
   "tabs": {
     "hasContactTab": false,
-    "items": [{
+    "items": [
+      {
         "icon": "icons/dydu-message-text-white.svg",
         "key": "dialog"
       },
@@ -275,10 +289,10 @@
     "displayType": 0
   },
   "templateCarousel": {
-      "bullets": true,
-      "controls": true,
-      "offset": 5,
-      "offsetBetweenCard": 94
+    "bullets": true,
+    "controls": true,
+    "offset": 5,
+    "offsetBetweenCard": 82
   },
   "templateProduct": {
     "readmore": 100

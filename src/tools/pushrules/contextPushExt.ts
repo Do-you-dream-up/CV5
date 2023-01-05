@@ -1,6 +1,28 @@
+import { Local } from 'src/tools/storage';
+import bot from 'public/override/bot.json';
 import qs from 'qs';
-import bot from '../../../public/override/bot';
-import { Local } from '../storage';
+
+interface contextPushProps {
+  getGlobalVisitDuration?: any;
+  getGlobalVisitCount?: any;
+  setGlobalVisitCount?: any;
+  getLastVisitTime?: any;
+  setLastVisitTime?: any;
+  getLastPageLoadedTime?: any;
+  setLastPageLoadedTime?: any;
+  getPagesViewedCount?: any;
+  setPagesViewedCount?: any;
+  resetSessionCount?: any;
+  getCountry?: any;
+  setCountry?: any;
+  getCity?: any;
+  setCity?: any;
+  computeDurationSinceLastVisit?: any;
+  getDurationSinceLastVisit?: any;
+  setPushData?: any;
+  getPushData?: any;
+  processKeywords?: any;
+}
 
 const BOT = Object.assign(
   {},
@@ -10,7 +32,7 @@ const BOT = Object.assign(
   }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
 );
 
-const contextPush = {};
+const contextPush: contextPushProps = {};
 contextPush.getGlobalVisitDuration = getGlobalVisitDuration;
 contextPush.getGlobalVisitCount = getGlobalVisitCount;
 contextPush.setGlobalVisitCount = setGlobalVisitCount;
@@ -41,7 +63,7 @@ function getGlobalVisitCount() {
 
 function setGlobalVisitCount(count) {
   //Keep for 60days..
-  writeCookie('visit', 'count', count, 'global', 60);
+  writeCookie('visit', 'count', count, 'global');
 }
 
 function getLastVisitTime(now) {
@@ -49,7 +71,7 @@ function getLastVisitTime(now) {
 }
 
 function setLastVisitTime(now) {
-  writeCookie('lastvisit', 'time', now, 'global', 60);
+  writeCookie('lastvisit', 'time', now, 'global');
 }
 
 function getLastPageLoadedTime() {
@@ -83,14 +105,14 @@ function setCity(value) {
 function getPagesViewedCount() {
   //Should be used after getGlobalVisitCount
   //Should be used only once par page loaded...
-  var count = parseInt(readCookieValue('pagesViewed', 'count', 0, 'session')) + 1;
+  const count = parseInt(readCookieValue('pagesViewed', 'count', 0, 'session')) + 1;
   setPagesViewedCount(count);
   return count;
 }
 
 function computeDurationSinceLastVisit(now) {
-  var timeSinceLastVisit = now - getLastVisitTime(now);
-  writeCookie('lastvisit', 'durationsince', timeSinceLastVisit, 'global', 60);
+  const timeSinceLastVisit = now - getLastVisitTime(now);
+  writeCookie('lastvisit', 'durationsince', timeSinceLastVisit, 'global');
 }
 
 function getDurationSinceLastVisit() {
@@ -104,7 +126,7 @@ function resetSessionCount(now) {
 }
 
 function readCookie(space) {
-  var c = Local.get('DYDU_PUSH_' + space + BOT.id);
+  let c = Local.get('DYDU_PUSH_' + space + BOT.id, undefined, false);
   if (typeof c === 'undefined' || c === null || c === '') {
     c = {};
   }
@@ -113,8 +135,8 @@ function readCookie(space) {
 
 function readCookieValue(ruleId, conditionId, defaultValue, space) {
   space = space || '';
-  var c = readCookie(space);
-  var t = c['r_' + ruleId];
+  const c = readCookie(space);
+  let t = c['r_' + ruleId];
   if (typeof t === 'undefined' || t === null) {
     return defaultValue;
   } else {
@@ -129,8 +151,8 @@ function readCookieValue(ruleId, conditionId, defaultValue, space) {
 
 function writeCookie(ruleId, conditionId, value, space) {
   space = space || '';
-  var c = readCookie(space);
-  var t = c['r_' + ruleId] || {};
+  const c = readCookie(space);
+  const t = c['r_' + ruleId] || {};
   t[conditionId] = value;
   c['r_' + ruleId] = t;
   Local.set('DYDU_PUSH_' + space + BOT.id, c);
@@ -141,16 +163,16 @@ function processKeywords(ref) {
   if (ref.indexOf('?') === -1) {
     return [];
   }
-  var qs = ref.substr(ref.indexOf('?') + 1);
-  var qsa = qs.split('&');
-  for (var i = 0; i < qsa.length; i++) {
-    var qsip = qsa[i].split('=');
+  const qs = ref.substr(ref.indexOf('?') + 1);
+  const qsa = qs.split('&');
+  for (let i = 0; i < qsa.length; i++) {
+    const qsip = qsa[i].split('=');
     if (qsip.length === 1) {
       continue;
     }
     if (qsip[0] === 'q' || qsip[0] === 'p') {
       // q= for Google, p= for Yahoo
-      var wordstring = unescape(qsip[1].replace(/\+/g, ' '));
+      const wordstring = unescape(qsip[1].replace(/\+/g, ' '));
       return wordstring.split(' ');
     }
   }

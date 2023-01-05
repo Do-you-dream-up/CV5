@@ -1,7 +1,7 @@
-import React, { useRef, useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { useCallback, useMemo, useRef } from 'react';
 
 import Field from '../Field';
+import PropTypes from 'prop-types';
 
 export default function Radio({ field }) {
   const ref = useRef();

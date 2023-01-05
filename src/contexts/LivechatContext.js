@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
@@ -7,15 +7,15 @@ import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
 import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
-import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useQueue from '../tools/hooks/useQueue';
+import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
   websocket: 'websocket',
 };
 
-const LivechatContext = React.createContext({});
+const LivechatContext = createContext({});
 export const useLivechat = () => useContext(LivechatContext);
 
 const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;
@@ -123,6 +123,7 @@ export function LivechatProvider({ children }) {
 
   const sendSurvey = useCallback(
     (surveyResponse) => {
+      console.log('livechat sending survey', surveyResponse);
       if (!isDefined(tunnel)) put(surveyResponse);
       else tunnel?.sendSurvey(surveyResponse);
     },

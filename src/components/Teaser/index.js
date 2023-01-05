@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
 import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -11,6 +10,7 @@ import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ const TEASER_TYPES = {
  * Minified version of the chatbox.
  */
 export default function Teaser({ open, toggle }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');

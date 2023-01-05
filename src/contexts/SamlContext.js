@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect, useLayoutEffect, useState } from 'react';
+import { createContext, useEffect, useLayoutEffect, useState } from 'react';
 import { getSamlEnableStatus, setSamlEnableCookie } from '../tools/saml';
 
 import { Local } from '../tools/storage';

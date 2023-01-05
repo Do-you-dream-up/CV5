@@ -1,59 +1,64 @@
-import React, { useContext } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import PropTypes from 'prop-types';
+import dydu from '../tools/dydu';
 
 export const useConfiguration = () => {
   return useContext(ConfigurationContext);
 };
 
-export const ConfigurationContext = React.createContext();
-export class ConfigurationProvider extends React.Component {
-  static propTypes = {
-    children: PropTypes.object,
-    configuration: PropTypes.object.isRequired,
-  };
+export const ConfigurationContext = createContext();
 
-  constructor(props) {
-    super(props);
-    this.state = { configuration: props.configuration };
-  }
+export const ConfigurationProvider = ({ children, configuration: configurationProp }) => {
+  const [configuration, setConfiguration] = useState(configurationProp);
 
-  reset = (configuration) =>
-    new Promise((resolve) =>
-      this.setState(
-        (state) => ({
-          configuration: { ...state.configuration, ...configuration },
-        }),
-        () => resolve(this.state.configuration),
-      ),
-    );
+  useEffect(() => {
+    try {
+      dydu.setConfiguration(configurationProp);
+    } catch (e) {
+      dydu.setSpaceToDefault();
+    }
+  }, []);
 
-  update = (parent, key, value) =>
-    new Promise((resolve) =>
-      this.setState(
-        (state) => ({
-          configuration: {
-            ...state.configuration,
-            [parent]: {
-              ...state.configuration[parent],
-              [key]: value,
-            },
+  const reset = useCallback((_configuration) => {
+    return new Promise((resolve) => {
+      setConfiguration((configuration) => {
+        const merge = { ...configuration, ..._configuration };
+        resolve(merge); // does this end this function ?
+        return merge;
+      });
+    });
+  }, []);
+
+  const update = useCallback((parent, key, value) => {
+    return new Promise((resolve) => {
+      setConfiguration((configuration) => {
+        const merge = {
+          ...configuration,
+          [parent]: {
+            ...configuration[parent],
+            [key]: value,
           },
-        }),
-        () => resolve(this.state.configuration),
-      ),
-    );
+        };
+        dydu.setQualificationMode(merge.qualification?.active);
+        resolve(merge);
+        return merge;
+      });
+    });
+  }, []);
 
-  render() {
-    return (
-      <ConfigurationContext.Provider
-        children={this.props.children}
-        value={{
-          configuration: this.state.configuration,
-          reset: this.reset,
-          update: this.update,
-        }}
-      />
-    );
-  }
-}
+  const contextValue = useMemo(() => {
+    return {
+      configuration,
+      reset,
+      update,
+    };
+  }, [configuration, reset, update]);
+
+  return <ConfigurationContext.Provider value={contextValue}>{children}</ConfigurationContext.Provider>;
+};
+
+ConfigurationProvider.propTypes = {
+  children: PropTypes.element,
+  configuration: PropTypes.object.isRequired,
+};

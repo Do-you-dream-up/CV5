@@ -1,13 +1,12 @@
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Avatar from '../Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
@@ -15,6 +14,7 @@ import PropTypes from 'prop-types';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
@@ -111,10 +111,9 @@ export default function Interaction({
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [readyCarousel, setReadyCarousel] = useState(false);
-  const [hasExternalLink, setHasExternalLink] = useState(false);
   const { isLivechatOn } = useLivechat();
 
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
 
   const classes = useStyles({ configuration });
@@ -171,10 +170,6 @@ export default function Interaction({
       // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
       if (_children[0] === '' && secondary) {
         _children = ['&nbsp;'];
-      }
-
-      if (isOfTypeString(_children[0]) && _children[0].includes('target="_blank"')) {
-        setHasExternalLink(true);
       }
       return _children.filter((it) => it);
     },
@@ -264,11 +259,11 @@ export default function Interaction({
 
       return (
         <Scroll key={index} className={classes.bubble}>
-          <Bubble hasExternalLink={hasExternalLink} templatename={templatename} {...attributes} />
+          <Bubble templatename={templatename} {...attributes} />
         </Scroll>
       );
     });
-  }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);
+  }, [bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templatename, type]);
 
   useDebounce(
     () => {
@@ -328,7 +323,7 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.children]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
@@ -341,7 +336,7 @@ Interaction.propTypes = {
 };
 
 const Writing = () => {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   // eslint-disable
   const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
 

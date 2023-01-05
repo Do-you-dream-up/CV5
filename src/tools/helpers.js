@@ -91,8 +91,21 @@ export const isOfType = (val, type) => {
 
 export const extractDomainFromUrl = (url) => url.replace(/http[s]?:\/\//, '').split('/')[0];
 
-export const _stringify = (data) => JSON.stringify(data);
-export const _parse = (data) => JSON.parse(data);
+export const _stringify = (data) => {
+  try {
+    return JSON.stringify(data);
+  } catch (e) {
+    return data;
+  }
+};
+
+export const _parse = (data) => {
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    return data;
+  }
+};
 
 export const objectExtractFields = (obj, fieldList) =>
   fieldList.reduce((resultMap, fieldName) => {
@@ -164,13 +177,18 @@ export const osName = () => {
 };
 
 export const b64encodeObject = (o) => {
-  return Object.keys(o).reduce((resultMap, key) => {
+  const res = Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = !isString(value) ? value : b64encode(value);
+    resultMap[key] = !isString(value) ? value.b64encode() : isObject(value) ? b64encodeObject(value) : value;
+
     return resultMap;
   }, {});
+  return res;
 };
 
+export const recursiveBase64EncodeString = (obj) => {
+  return _recursiveBase64EncodeString(obj, Object.keys(obj), {});
+};
 export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
@@ -194,15 +212,31 @@ const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   return _recursiveBase64DecodeString(o, keylist, res);
 };
 
+const _recursiveBase64EncodeString = (o, keylist, res = {}) => {
+  if (keylist.length === 0) return res;
+
+  const key = keylist.pop();
+  let value = o[key];
+
+  if (isOfTypeString(value)) {
+    try {
+      res[key] = value.toBase64();
+    } catch (e) {
+      // Exception: malformed URI
+      res[key] = value;
+    }
+  } else if (isOfTypeObject(value)) res[key] = _recursiveBase64EncodeString(value, Object.keys(value), res[key]);
+  else res[key] = value;
+
+  return _recursiveBase64EncodeString(o, keylist, res);
+};
+
 export const asset = (name) => {
   if (name.includes('base64')) {
     return name;
   }
   return `${process.env.PUBLIC_URL}/assets/${name}`;
 };
-
-export const qualification =
-  window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
 
 export const hasProperty = (o, propertyName) => {
   return Object.hasOwnProperty.call(o, propertyName);
@@ -220,6 +254,7 @@ export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
 export const getChatboxWidth = (chatboxRef) => {
   if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
+  if (!isDefined(chatboxRef)) return 0;
   const { left, right } = chatboxRef.getBoundingClientRect();
   return Math.abs(right - left);
 };
@@ -231,11 +266,25 @@ export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
 };
 
 export const decodeHtml = (html) => {
-  var txt = document.createElement('textarea');
+  let txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
 };
 
 export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
+};
+
+export const prependObjectKeysWithTag = (tag, object) => {
+  try {
+    return Object.keys(object).reduce((resultObj, key) => {
+      return {
+        ...resultObj,
+        [`${tag}${key}`]: object[key],
+      };
+    }, {});
+  } catch (e) {
+    console.error('While executing prependObjectKeysWithTag()', e);
+    return {};
+  }
 };

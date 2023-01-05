@@ -1,4 +1,4 @@
-import { _parse, isDefined, isEmptyObject, isEmptyString } from './helpers';
+import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
@@ -70,6 +70,8 @@ export class Cookie {
   static names = {
     locale: 'dydu.locale',
     samlEnable: 'dydu.saml.enable',
+    oidcEnable: 'dydu.oidc.enable',
+    oidcWithAuthEnable: 'dydu.oidcWithAuth.enable',
   };
 
   static duration = {
@@ -95,6 +97,13 @@ export class Cookie {
     };
     cookie.set(name, value, options);
   };
+
+  /**
+   * Remove the specified cookie.
+   *
+   * @param {string} name - Name of the cookie.
+   */
+  static remove = (name) => cookie.remove(name);
 }
 
 /**
@@ -320,6 +329,39 @@ export class Local {
       const generatedClientId = generateClientUuid(ID_CHAR_SIZE).toString();
       localStorage.setItem(keyString, generatedClientId);
     },
+  });
+
+  static secondary = Object.create({
+    getKey: () => Local.names.secondary,
+    load: () => localStorage.getItem(Local.secondary.getKey()) || false,
+    save: (newValue) => {
+      const currentSaved = Local.secondary.load();
+      if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
+    },
+  });
+
+  static welcomeKnowledge = Object.create({
+    isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
+    load: (botId) => {
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      return _parse(mapStore[botId]) || null;
+    },
+    save: (botId, wkInteraction) => {
+      if (Local.welcomeKnowledge.isSet(botId)) return;
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      mapStore[botId] = wkInteraction;
+      Local.welcomeKnowledge.saveMapStore(mapStore);
+    },
+    saveMapStore: (value) => localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify(value)),
+    loadMapStore: () => {
+      let mapStore = _parse(localStorage.getItem(Local.welcomeKnowledge.getKey()));
+      if (!isDefined(mapStore)) {
+        mapStore = {};
+        localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify({}));
+      }
+      return mapStore;
+    },
+    getKey: () => `dydu.welcomeKnowledge`,
   });
 }
 

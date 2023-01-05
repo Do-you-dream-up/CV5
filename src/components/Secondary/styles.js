@@ -54,6 +54,15 @@ export default createUseStyles((theme) => {
       border: 0,
       flexGrow: 1,
     }),
+    headerWhite: () => ({
+      zIndex: 10,
+      backgroundColor: `${theme.palette.background.secondary}`,
+      display: 'flex',
+      padding: '1.6em',
+      paddingBottom: 10,
+      position: 'sticky',
+      top: 0,
+    }),
     header: () => ({
       backgroundColor: `${theme.palette.background.secondary}CC`,
       display: 'flex',

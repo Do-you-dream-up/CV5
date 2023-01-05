@@ -1,6 +1,6 @@
-import c from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import c from 'classnames';
+import { createElement } from 'react';
 import useStyles from './styles';
 
 function SkeletonCircle({ height, width }) {
@@ -58,7 +58,7 @@ export default function Skeleton({ children, height, hide, variant, width }) {
       paragraph: SkeletonParagraph,
       rectangle: SkeletonRectangle,
     }[variant] || SkeletonText;
-  return hide ? React.createElement(component, { height, width }) : children;
+  return hide ? createElement(component, { height, width }) : children;
 }
 
 Skeleton.defaultProps = {

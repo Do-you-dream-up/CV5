@@ -1,12 +1,13 @@
-import c from 'classnames';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import sanitize from '../../tools/sanitize';
-import { Session } from '../../tools/storage';
+import { useCallback, useEffect, useState } from 'react';
+
 import Actions from '../Actions';
+import { Session } from '../../tools/storage';
 import Skeleton from '../Skeleton';
+import c from 'classnames';
+import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral
@@ -16,7 +17,7 @@ import useStyles from './styles';
  * and its opening can be disabled in the presence of a storage.
  */
 export default function Banner() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const [show, setShow] = useState(false);
   const { ready, t } = useTranslation('translation');

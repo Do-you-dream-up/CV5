@@ -1,19 +1,21 @@
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
 
-import { ConfigurationContext } from './ConfigurationContext';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import dotget from '../tools/dotget';
+import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 import fetchPushrules from '../tools/pushrules';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import parseSteps from '../tools/steps';
+import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import useServerStatus from '../tools/hooks/useServerStatus';
 import { useTheme } from 'react-jss';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/viewport';
@@ -42,15 +44,15 @@ const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
   }, 5000);
 };
 
-export const DialogContext = React.createContext();
+export const DialogContext = createContext();
 
 export const useDialog = () => useContext(DialogContext);
 
 export function DialogProvider({ children }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { active: pushrulesConfigActive } = configuration.pushrules;
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { onNewMessage, hasAfterLoadBeenCalled } = useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [locked, setLocked] = useState(false);
@@ -67,11 +69,17 @@ export function DialogProvider({ children }) {
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchServerStatus, result: serverStatus } = useServerStatus();
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled,
+    hasAfterLoadBeenCalled && serverStatus,
   );
+
+  useEffect(() => {
+    fetchServerStatus();
+  }, []);
+
   const [pushrules, setPushrules] = useState(null);
 
   const theme = useTheme();
@@ -80,15 +88,16 @@ export function DialogProvider({ children }) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
+    if (!hasAfterLoadBeenCalled && !serverStatus) return;
     fetchPushrules().then((rules) => {
-      setPushrules(rules);
+      rules && setPushrules(rules);
     });
-  }, [pushrules]);
+  }, [pushrules, hasAfterLoadBeenCalled, serverStatus]);
 
   useEffect(() => {
     const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
-    if (canTriggerPushRules) triggerPushRule();
-  }, [triggerPushRule, pushrulesConfigActive]);
+    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatus) triggerPushRule();
+  }, [triggerPushRule, pushrulesConfigActive, hasAfterLoadBeenCalled, serverStatus]);
 
   const add = useCallback(
     (interaction) => {
@@ -157,6 +166,7 @@ export function DialogProvider({ children }) {
     (response = {}) => {
       setLastResponse(response);
       if (isStartLivechatResponse(response)) return displayNotification(response);
+
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -202,9 +212,8 @@ export function DialogProvider({ children }) {
               console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
             }
           });
-        }
-        // temporary solution which uses the dangerous eval() to eval guiaction code
-        else if (guiAction.match('^javascript:')) {
+        } else if (guiAction.match('^javascript:')) {
+          // temporary solution which uses the dangerous eval() to eval guiaction code
           const guiActionCode = guiAction.substr(11);
           eval(
             'try{' +
@@ -238,7 +247,7 @@ export function DialogProvider({ children }) {
             carousel: steps.length > 1,
             type: 'response',
             secondary: sidebar,
-            steps: steps,
+            steps,
             templateName,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
@@ -293,19 +302,28 @@ export function DialogProvider({ children }) {
     }
   }, []);
 
+  useEffect(() => {
+    Local.secondary.save(secondaryActive);
+  }, [secondaryActive]);
+
   const toggleSecondary = useCallback(
-    (open, { bodyRenderer, body, height, title, url, width } = {}) =>
+    (open, { headerTransparency = true, headerRenderer, bodyRenderer, body, height, title, url, width } = {}) =>
       () => {
-        const someFieldsDefined = [bodyRenderer, body, height, title, url, width].some((v) => isDefined(v));
+        const someFieldsDefined = [
+          headerTransparency,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+        ].some((v) => isDefined(v));
         if (someFieldsDefined) {
-          setSecondaryContent({ bodyRenderer, body, height, title, url, width });
+          setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
         }
         setSecondaryActive((previous) => {
-          const should = open === undefined ? !previous : open;
-          if (Local.get(Local.names.secondary) !== should) {
-            Local.set(Local.names.secondary, should);
-          }
-          return should;
+          return open === undefined ? !previous : open;
         });
       },
     [],
@@ -347,9 +365,23 @@ export function DialogProvider({ children }) {
     // eslint-disable-next-line
   }, [welcomeContent, listInteractionHistory]);
 
+  const chatboxNode = useMemo(() => {
+    try {
+      return getChatboxRef();
+    } catch (e) {
+      return null;
+    }
+  }, [getChatboxRef]);
+
   const closeSecondary = useCallback(() => {
-    if (secondaryActive) toggleSecondary(false)();
-  }, [secondaryActive, toggleSecondary]);
+    toggleSecondary(false)();
+    if (isDefined(chatboxNode))
+      try {
+        chatboxNode.dispatchEvent(eventOnSecondaryClosed);
+      } catch (e) {
+        // mute multiple call of dispatchEvent error
+      }
+  }, [toggleSecondary, chatboxNode]);
 
   const openSecondary = useCallback(
     (...props) => {
@@ -399,7 +431,7 @@ export function DialogProvider({ children }) {
 }
 
 DialogProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.any,
   toggle: PropTypes.any,
   onPushrulesDataReceived: PropTypes.func,
 };

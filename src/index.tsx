@@ -7,18 +7,14 @@ import Application from './components/Application';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { SamlProvider } from './contexts/SamlContext';
-import { UserActionProvider } from './contexts/UserActionContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
+import { getCss } from './tools/css';
 import keycloak from './tools/keycloak';
 import scope from 'scope-css';
-
-const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 let _configuration;
 let anchor;
@@ -38,15 +34,11 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <SamlProvider>
-            <ViewModeProvider>
-              <EventsProvider>
-                <UserActionProvider>
-                  <Application />
-                </UserActionProvider>
-              </EventsProvider>
-            </ViewModeProvider>
-          </SamlProvider>
+          <ViewModeProvider>
+            <EventsProvider>
+              <Application />
+            </EventsProvider>
+          </ViewModeProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,
@@ -60,7 +52,7 @@ configuration.initialize().then((configuration) => {
   if (anchor) {
     Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then((res) => {
       const data = res && res.data ? res.data : {};
-      data.palette.primary.main = css ? css.main : data.palette.primary.main;
+      data.palette.primary.main = getCss()?.main || data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });

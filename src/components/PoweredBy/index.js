@@ -1,13 +1,14 @@
+import { useEffect, useState } from 'react';
+
 import c from 'classnames';
-import React, { useContext, useEffect, useState } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**
  * Display the "powered by dydu" phrase at the end of the conversation, if this parameter is active into the Dialog component
  */
 export default function PoweredBy() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles();
   const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
   const lang = localStorage.getItem('dydu.locale');

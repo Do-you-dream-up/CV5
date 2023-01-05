@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
@@ -10,6 +9,7 @@ import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
  * mount.
  */
 export default function Dialog({ dialogRef, open, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
@@ -27,7 +27,7 @@ export default function Dialog({ dialogRef, open, ...rest }) {
   // eslint-disable-next-line
   const { isAppReady } = useEvent();
   const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
-  const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
+  const poweredByActive = configuration.poweredBy?.active;
 
   useEffect(() => {
     if (isAppReady && spacesActive) {

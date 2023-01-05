@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { createElement, useCallback, useContext, useEffect } from 'react';
 
 import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
@@ -10,6 +9,7 @@ import PropTypes from 'prop-types';
 import { QUICK_REPLY } from '../../tools/template';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,6 @@ export default function Bubble({
   children,
   className,
   component,
-  hasExternalLink,
   history,
   html,
   secondary,
@@ -36,7 +35,7 @@ export default function Bubble({
   thinking,
   type,
 }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
@@ -66,7 +65,7 @@ export default function Bubble({
     }
   }, [automaticSecondary, history, onToggle, sidebar]);
 
-  return React.createElement(
+  return createElement(
     component,
     {
       className: c(
@@ -83,14 +82,7 @@ export default function Bubble({
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
-          <PrettyHtml
-            children={children}
-            hasExternalLink={hasExternalLink}
-            html={html}
-            templatename={templatename}
-            type={type}
-            carousel={carousel}
-          />
+          <PrettyHtml children={children} html={html} templatename={templatename} type={type} carousel={carousel} />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
@@ -108,7 +100,6 @@ Bubble.propTypes = {
   children: PropTypes.element,
   className: PropTypes.string,
   component: PropTypes.elementType,
-  hasExternalLink: PropTypes.bool,
   history: PropTypes.bool,
   html: PropTypes.string,
   secondary: PropTypes.object,
