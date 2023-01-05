@@ -40,7 +40,7 @@ pack:
     paths:
       - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - build
@@ -61,7 +61,7 @@ publish:
     paths:
       - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - build
