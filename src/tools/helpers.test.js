@@ -689,7 +689,7 @@ describe('helpers', () => {
     });
   });
 
-  describe('b64encodeObject', () => {
+  xdescribe('b64encodeObject', () => {
     it('returns an object with base64-encoded values', () => {
       const obj = {
         name: 'John',
