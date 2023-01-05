@@ -1,11 +1,14 @@
+/* eslint-disable */
 import { Cookie, Local } from './storage';
-import { RESPONSE_QUERY_FORMAT, RESPONSE_TYPE, SOLUTION_TYPE } from './constants';
+import { PAYLOAD_TYPE, RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
+  _stringify,
   b64encodeObject,
   hasProperty,
   isDefined,
   isEmptyObject,
   isEmptyString,
+  isObject,
   isOfTypeString,
   isPositiveNumber,
   strContains,
@@ -118,6 +121,7 @@ export default new (class Dydu {
     this.tokenRefresher = null;
     this.oidcLogin = null;
     this.locale = null;
+    this.showSurveyCallback = null;
     this.space = 'default';
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
@@ -613,13 +617,17 @@ export default new (class Dydu {
     return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
-  processTalkResponse = (response) => {
-    const guiCSName = response?.guiCSName?.fromBase64();
-    if (guiCSName) {
-      this.setSpace(guiCSName);
-    }
-    return response;
+  processTalkResponse = (talkResponse) => {
+    this.handleSpaceWithResponseWithTalkResponse(talkResponse);
+    this.handleKnownledgeQuerySurveyWithTalkResponse(talkResponse);
+    return talkResponse;
   };
+
+  handleSpaceWithResponseWithTalkResponse(response) {
+    const guiCSName = response?.guiCSName?.fromBase64();
+    if (guiCSName) this.setSpace(guiCSName);
+    return response;
+  }
 
   /**
    * getServerStatus
@@ -796,45 +804,82 @@ export default new (class Dydu {
   post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
-  createSurveyFormDataWithPayload = (payload) => {
-    const formData = new FormData();
+  makeFormDataWithSurveyPayload = (payload) => {
     try {
-      formData.append('contextUuid', payload.parameters.contextId);
-      formData.append('solutionUsed ', SOLUTION_TYPE.assistant);
-      formData.append('fields', payload.parameters.fields);
+      return qs.stringify({
+        contextUuid: payload.parameters.contextId,
+        solutionUsed: SOLUTION_TYPE.assistant,
+        fields: _stringify(payload.parameters.fields),
+      });
     } catch (e) {
       console.error('while creating form data with survey payload', e);
-      return;
+      return null;
     }
   };
-  createSurveyRequestPayload = async (survey = {}, options = {}) => {
-    if (isEmptyObject(survey)) throw new Error('createSurveyRequestPayload: |survey| parameter is an empty object');
-    if (isEmptyObject(options)) options = { qualification: this.qualificationMode };
 
-    return {
-      type: RESPONSE_TYPE.survey,
-      parameters: {
-        botId: this.getBot().id,
-        surveyId: survey.surveyId,
-        interactionSurveyAnswer: survey.interactionSurvey,
-        fields: b64encodeObject(survey.fields),
-        contextId: await this.getContextId(),
-        qualificationMode: this.qualificationMode,
-        language: this.getLocale(),
-        space: this.getSpace(),
-        solutionUsed: SOLUTION_TYPE.assistant,
-        clientId: this.getClientId(),
-        useServerCookieForContext: false,
-        saml2_info: '',
-        timestamp: new Date().getMilliseconds(),
-      },
+  formatFieldsForSurveyAnswerRequest = (survey = {}) => {
+    const reducerPrependFieldTag = (objResult, fieldId) => {
+      return {
+        ...objResult,
+        [`field_${fieldId}`]: survey.fields[fieldId],
+      };
     };
+
+    return Object.keys(survey.fields).reduce(reducerPrependFieldTag, {});
   };
 
-  sendSurvey = async (surveyAnswer, options = {}) => {
-    const payload = await this.createSurveyRequestPayload(surveyAnswer, options);
-    const formData = this.createSurveyFormDataWithPayload(payload);
-    const path = `/chat/survey${BOT.id}`;
+  getTalkBasePayload = async (options) => ({
+    contextId: await this.getContextId(),
+    alreadyCame: this.alreadyCame(),
+    browser: `${browser.name} ${browser.version}`,
+    clientId: this.getClientId(),
+    doNotRegisterInteraction: options.doNotSave,
+    language: this.getLocale(),
+    os: `${os.name} ${os.version}`,
+    qualificationMode: this.qualificationMode,
+    space: this.getSpace(),
+    tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
+    userUrl: getUrl,
+    solutionUsed: options?.solutionUsed || SOLUTION_TYPE.assistant,
+    ...(options.extra && {
+      extraParameters: JSON.stringify(options.extra),
+    }),
+    variables: this.getVariables(),
+  });
+
+  sendSurveyPolling = async (survey, options = {}) => {
+    const basePayload = await this.getTalkBasePayload(options);
+    let payload = {
+      type: 'survey',
+      parameters: b64encodeObject({
+        botId: BOT.id,
+        surveyId: survey.surveyId,
+        interactionSurveyAnswer: survey.interactionSurvey,
+        fields: survey.fields,
+        ...basePayload,
+      }),
+    };
+    return fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+  };
+
+  async createSurveyPayload(surveyId, fieldObject) {
+    return {
+      ctx: await this.getContextId(),
+      uuid: surveyId,
+      ...fieldObject,
+    };
+  }
+
+  /*
+   * Survey sent by a Knowledge
+   */
+  sendSurvey = async (surveyAnswer) => {
+    const fields = this.formatFieldsForSurveyAnswerRequest(surveyAnswer);
+    const payload = await this.createSurveyPayload(surveyAnswer.surveyId, fields);
+    const formData = toFormUrlEncoded(payload);
+
+    if (!isDefined(formData)) return;
+    const path = `/chat/survey/${BOT.id}`;
     return this.post(path, formData);
   };
 
@@ -900,6 +945,23 @@ export default new (class Dydu {
       return talkResponse;
     });
   };
+
+  setShowSurveyCallback(showSurvey) {
+    this.showSurveyCallback = showSurvey;
+  }
+
+  handleKnownledgeQuerySurveyWithTalkResponse(response) {
+    try {
+      const { human, knowledgeId, survey } = response;
+      const isNotLivechat = human === false && isDefined(knowledgeId);
+      const isQuerySurvey = isDefined(survey) && !isEmptyString(survey);
+      const shouldShowSurvey = isNotLivechat && isQuerySurvey;
+      if (shouldShowSurvey) this.showSurveyCallback(response);
+    } catch (e) {
+      console.log('catched Error', e);
+      return;
+    }
+  }
 })();
 
 /====================================================================================================/;

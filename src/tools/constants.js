@@ -1,4 +1,4 @@
-export const RESPONSE_TYPE = {
+export const PAYLOAD_TYPE = {
   survey: 'survey',
 };
 
@@ -79,4 +79,11 @@ export const REGEX_URL = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm;
 export const CHATBOX_EVENT_NAME = {
   newMessage: 'dydu/event__newMessage',
   closeSecondary: 'dydu/event__closeSecondary',
+};
+
+export const VIEW_MODE = {
+  close: 0, // hidden
+  minimize: 1, // teaser
+  popin: 2,
+  full: 3,
 };

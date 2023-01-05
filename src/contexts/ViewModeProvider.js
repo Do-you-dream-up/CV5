@@ -4,16 +4,10 @@ import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import { useConfiguration } from './ConfigurationContext';
 import { useCookie } from 'react-use';
+import { VIEW_MODE } from '../tools/constants';
 
 const ViewModeContext = createContext();
 export const useViewMode = () => useContext(ViewModeContext);
-
-export const VIEW_MODE = {
-  close: 0, // hidden
-  minimize: 1, // teaser
-  popin: 2,
-  full: 3,
-};
 
 export default function ViewModeProvider({ children }) {
   const { configuration } = useConfiguration();
