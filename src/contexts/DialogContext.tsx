@@ -63,7 +63,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
-  const { fetch: fetchServerStatus, result: serverStatus } = useServerStatus();
+  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
 
   const { isMobile } = useViewport();
 
@@ -83,7 +83,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled && serverStatus,
+    hasAfterLoadBeenCalled && serverStatusChecked,
   );
 
   useEffect(() => {
@@ -108,16 +108,16 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
-    if (!hasAfterLoadBeenCalled && !serverStatus) return;
+    if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
     fetchPushrules().then((rules) => {
       rules && setPushrules(rules);
     });
-  }, [pushrules, hasAfterLoadBeenCalled, serverStatus]);
+  }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
 
   useEffect(() => {
     const canTriggerPushRules = configuration?.pushrules.active && !isDefined(pushrules);
-    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatus) triggerPushRule();
-  }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatus]);
+    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked) triggerPushRule();
+  }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatusChecked]);
 
   const toggleSecondary = useCallback(
     (

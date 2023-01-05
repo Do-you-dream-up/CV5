@@ -204,7 +204,7 @@ export default new (class Dydu {
   handleAxiosError = (error, verb, path, data, timeout) => {
     this.triesCounter = this.triesCounter + 1;
 
-    if (this.triesCounter >= 10) {
+    if (this.triesCounter >= 5) {
       throw 'API Unreachable';
     }
 
