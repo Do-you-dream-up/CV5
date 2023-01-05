@@ -8,10 +8,6 @@ import { axiosConfigNoCache } from './axios';
 import dydu from './dydu';
 import json from './configuration.json';
 
-// import { Local } from './storage';
-
-// import { Local } from './storage';
-
 /**
  * Helper class to find values in a JSON configuration file.
  */

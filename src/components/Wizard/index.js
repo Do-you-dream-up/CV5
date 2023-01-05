@@ -1,9 +1,7 @@
-import { setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../../tools/oidc';
-
 import Button from '../Button';
 import { Local } from '../../tools/storage';
 import WizardField from '../WizardField';
-import { setSamlEnableCookie } from '../../tools/saml';
+import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEffect } from 'react';
 import useStyles from './styles';
@@ -17,9 +15,7 @@ export default function Wizard() {
 
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
-    setSamlEnableCookie(data?.saml?.enable);
-    setOidcEnableCookie(data?.oidc?.enable);
-    setOidcWithAuthEnableCookie(data?.oidc?.withAuth);
+    dydu.setConfiguration(data);
   };
 
   useEffect(() => {
