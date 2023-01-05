@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
@@ -7,15 +7,15 @@ import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
 import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
-import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import useQueue from '../tools/hooks/useQueue';
+import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 
 export const TUNNEL_MODE = {
   polling: 'polling',
   websocket: 'websocket',
 };
 
-const LivechatContext = React.createContext({});
+const LivechatContext = createContext({});
 export const useLivechat = () => useContext(LivechatContext);
 
 const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;
@@ -58,6 +58,25 @@ export function LivechatProvider({ children }) {
     setTunnel(tunnel);
   }, []);
 
+  const onFailOpenTunnel = useCallback(
+    (failedTunnel, err, configuration) => {
+      console.warn(err);
+      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
+      failedTunnel = failedTunnel || tunnel;
+      configuration = configuration || tunnelInitialConfig;
+      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
+      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
+      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+    },
+    [onSuccessOpenTunnel, tunnelList, tunnel],
+  );
+
+  const endLivechat = useCallback(() => {
+    console.warn('ending livechat...');
+    setIsWebsocket(false);
+    setIsLivechatOn(false);
+    setTunnel(null);
+  }, []);
   const tunnelInitialConfig = useMemo(() => {
     return {
       ...lastResponse,
@@ -79,26 +98,6 @@ export function LivechatProvider({ children }) {
     showAnimationOperatorWriting,
     showSurvey,
   ]);
-
-  const onFailOpenTunnel = useCallback(
-    (failedTunnel, err, configuration) => {
-      console.warn(err);
-      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
-      failedTunnel = failedTunnel || tunnel;
-      configuration = configuration || tunnelInitialConfig;
-      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
-      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
-    },
-    [onSuccessOpenTunnel, tunnelList, tunnel],
-  );
-
-  const endLivechat = useCallback(() => {
-    console.warn('ending livechat...');
-    setIsWebsocket(false);
-    setIsLivechatOn(false);
-    setTunnel(null);
-  }, []);
 
   const startLivechat = useCallback(
     (tunnel = null) => {

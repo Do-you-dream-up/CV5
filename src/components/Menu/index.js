@@ -1,9 +1,10 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
-import { Portal } from 'react-portal';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { createElement, useEffect, useRef, useState } from 'react';
+
 import MenuList from '../MenuList';
+import { Portal } from 'react-portal';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**
@@ -70,7 +71,7 @@ export default function Menu({ component, items, selected, ...rest }) {
 
   return (
     <>
-      {React.createElement(component, {
+      {createElement(component, {
         onClick: toggle(),
         ref: anchorRef,
         ...rest,

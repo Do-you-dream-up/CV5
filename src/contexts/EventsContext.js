@@ -1,12 +1,12 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
-import { useConfiguration } from './ConfigurationContext';
 import PropTypes from 'prop-types';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
+import { useConfiguration } from './ConfigurationContext';
 import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
@@ -51,7 +51,7 @@ const blink = () => {
   }, 1000);
 };
 
-export const EventsContext = React.createContext();
+export const EventsContext = createContext();
 
 let refBlinkInterval = null;
 
@@ -65,7 +65,7 @@ export function EventsProvider({ children }) {
   const [afterLoadCalled, setAfterLoadCalled] = useState(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
-  const { result: serverStatus } = useServerStatus();
+  const { checked: serverStatusChecked } = useServerStatus();
 
   useEffect(() => {
     if (isMouseIn) stopBlink();
@@ -74,10 +74,10 @@ export function EventsProvider({ children }) {
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
   const processUserVisit = useCallback(async () => {
-    if (serverStatus) {
+    if (serverStatusChecked) {
       await VisitManager.refreshRegisterVisit();
     }
-  }, [serverStatus]);
+  }, [serverStatusChecked]);
 
   const processDyduAfterLoad = useCallback(() => {
     if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);

@@ -7,16 +7,14 @@ import Application from './components/Application';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
+import { getCss } from './tools/css';
 import keycloak from './tools/keycloak';
 import scope from 'scope-css';
-
-const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 let _configuration;
 let anchor;
@@ -52,9 +50,8 @@ configuration.initialize().then((configuration) => {
   anchor = getRootDiv(configuration);
 
   if (anchor) {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then((res) => {
-      const data = res && res.data ? res.data : {};
-      data.palette.primary.main = css ? css.main : data.palette.primary.main;
+    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then(({ data = {} }) => {
+      data.palette.primary.main = getCss()?.main || data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });

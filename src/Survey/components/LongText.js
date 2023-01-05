@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import FieldBlock from '../FieldBlock';
-import PropTypes from 'prop-types';
 import Field from '../Field';
-import { useTextInputConfig } from './useTextInputConfig';
+import FieldBlock from '../FieldBlock';
 import MessageRequired from '../MessageRequired';
+import PropTypes from 'prop-types';
+import { useTextInputConfig } from './useTextInputConfig';
 
 export default function LongText({ field }) {
   const { attributes } = useTextInputConfig();

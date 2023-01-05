@@ -1,9 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import useMessageFieldRequired from './hooks/useMessageFieldRequired';
-import { isDefined } from '../tools/helpers';
 import Field from './Field';
+import PropTypes from 'prop-types';
+import { isDefined } from '../tools/helpers';
+import useMessageFieldRequired from './hooks/useMessageFieldRequired';
 
 export default function MessageRequired({ show, field }) {
   const { message } = useMessageFieldRequired(field, show);

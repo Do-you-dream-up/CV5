@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
-
 import PropTypes from 'prop-types';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useMemo } from 'react';
 
 const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked)$/g;
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;

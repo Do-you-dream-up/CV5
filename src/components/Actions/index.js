@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { createElement, useMemo } from 'react';
 
 import Button from '../Button';
 import Menu from '../Menu';
@@ -22,7 +22,7 @@ export default function Actions({ actions, className, targetStyleKey }) {
     !!actions.length && (
       <div className={c('dydu-actions', _classes, className)}>
         {actions.map(({ items, selected, type = 'button', title, ...rest }, index) =>
-          React.createElement(items ? Menu : Button, {
+          createElement(items ? Menu : Button, {
             key: index,
             ...(items ? { component: Button, items, selected } : { type }),
             ...rest,

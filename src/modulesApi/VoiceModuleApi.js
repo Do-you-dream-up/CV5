@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable no-undef */
 import { isDefined } from '../../dydu-module/helpers';
 
 <import-voice />;

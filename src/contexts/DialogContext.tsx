@@ -1,103 +1,160 @@
+import * as Constants from 'src/tools/constants';
+
 import { EventsContext, useEvent } from './EventsContext';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { isDefined, isEmptyObject, isOfTypeString } from '../tools/helpers';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { isDefined, isOfTypeString } from 'src/tools/helpers';
 
+import Interaction from 'src/components/Interaction';
+import LivechatPayload from 'src/tools/LivechatPayload';
+import { Local } from 'src/tools/storage';
+import dotget from 'src/tools/dotget';
+import { eventOnSecondaryClosed } from 'src/events/chatboxIndex';
+import fetchPushrules from 'src/tools/pushrules';
+import { flattenSteps } from 'src/tools/steps';
+import { knownTemplates } from 'src/tools/template';
+import parseActions from 'src/tools/actions';
 import { useConfiguration } from './ConfigurationContext';
-import Interaction from '../components/Interaction';
-import LivechatPayload from '../tools/LivechatPayload';
-import { Local } from '../tools/storage';
-import PropTypes from 'prop-types';
-import dotget from '../tools/dotget';
-import { eventOnSecondaryClosed } from '../events/chatboxIndex';
-import fetchPushrules from '../tools/pushrules';
-import { knownTemplates } from '../tools/template';
-import parseActions from '../tools/actions';
-import parseSteps from '../tools/steps';
-import useConversationHistory from '../tools/hooks/useConversationHistory';
-import usePromiseQueue from '../tools/hooks/usePromiseQueue';
-import useServerStatus from '../tools/hooks/useServerStatus';
-import { useTheme } from 'react-jss';
-import useTopKnowledge from '../tools/hooks/useTopKnowledge';
-import useViewport from '../tools/hooks/viewport';
-import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
+import useConversationHistory from 'src/tools/hooks/useConversationHistory';
+import usePromiseQueue from 'src/tools/hooks/usePromiseQueue';
+import useServerStatus from 'src/tools/hooks/useServerStatus';
+import useTopKnowledge from 'src/tools/hooks/useTopKnowledge';
+import useViewport from 'src/tools/hooks/useViewport';
+import useWelcomeKnowledge from 'src/tools/hooks/useWelcomeKnowledge';
 
-const isLastElementOfTypeAnimationWriting = (list) => {
-  const last = list[list.length - 1];
-  return last?.type?.name === Interaction.Writing.name;
-};
+interface DialogProviderProps {
+  children: ReactNode;
+}
 
-const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
-const FEEDBACK_RESPONSE = {
-  positive: 'positive',
-  negative: 'negative',
-  noResponseGiven: 'withoutAnswer',
-};
+interface DialogContextProps {}
 
-const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
+interface SecondaryContentProps {
+  headerTransparency?: boolean;
+  headerRenderer?: any;
+  bodyRenderer?: any;
+  body?: any;
+  title?: string;
+  url?: string;
+  height?: number;
+  width?: number;
+}
 
-let isTimeoutRunning = false;
-const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
-  if (isTimeoutRunning) return;
-  isTimeoutRunning = setTimeout(() => {
-    stopAnimationCallback();
-    isTimeoutRunning = false;
-  }, 5000);
-};
+interface InteractionProps {
+  askFeedback: boolean;
+  carousel: boolean;
+  children: any;
+  secondary: any;
+  steps: [];
+  templateName?: string;
+  type?: string;
+}
 
-export const DialogContext = React.createContext();
+export const DialogContext = createContext<DialogContextProps>({});
 
 export const useDialog = () => useContext(DialogContext);
 
-export function DialogProvider({ children }) {
+export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
-  const { active: pushrulesConfigActive } = configuration.pushrules;
+  const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
+  const secondaryTransient = configuration?.secondary?.transient;
+
   const event = useContext(EventsContext).onEvent('chatbox');
   const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();
+
+  const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
+  const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
+  const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
+
+  const { isMobile } = useViewport();
+
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState([]);
+  const [interactions, setInteractions] = useState<ReactNode[]>([]);
   const [locked, setLocked] = useState(false);
   const [placeholder, setPlaceholder] = useState(null);
   const [prompt, setPrompt] = useState('');
   const [secondaryActive, setSecondaryActive] = useState(false);
-  const [secondaryContent, setSecondaryContent] = useState(null);
-  const [voiceContent, setVoiceContent] = useState(null);
+  const [secondaryContent, setSecondaryContent] = useState<SecondaryContentProps | null>(null);
+  const [voiceContent, setVoiceContent] = useState<{ templateData: string | null; text: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState(null);
-  const [lastResponse, setLastResponse] = useState(null);
-  const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
+  const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState(null);
-  const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
-  const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
-  const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
-  const { fetch: fetchServerStatus, result: serverStatus } = useServerStatus();
+  const [pushrules, setPushrules] = useState(null);
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled && serverStatus,
+    hasAfterLoadBeenCalled && serverStatusChecked,
   );
 
   useEffect(() => {
     fetchServerStatus();
   }, []);
 
-  const [pushrules, setPushrules] = useState(null);
+  const isLastElementOfTypeAnimationWriting = (list) => {
+    const last = list[list.length - 1];
+    return last?.type?.name === Interaction.Writing.name;
+  };
 
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const { transient: secondaryTransient } = configuration.secondary;
+  const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
+
+  let isTimeoutRunning: any = false;
+  const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
+    if (isTimeoutRunning) return;
+    isTimeoutRunning = setTimeout(() => {
+      stopAnimationCallback();
+      isTimeoutRunning = false;
+    }, 5000);
+  };
 
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
-    if (!hasAfterLoadBeenCalled && !serverStatus) return;
+    if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
     fetchPushrules().then((rules) => {
       rules && setPushrules(rules);
     });
-  }, [pushrules, hasAfterLoadBeenCalled, serverStatus]);
+  }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
 
   useEffect(() => {
-    const canTriggerPushRules = pushrulesConfigActive && !isDefined(pushrules);
-    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatus) triggerPushRule();
-  }, [triggerPushRule, pushrulesConfigActive, hasAfterLoadBeenCalled, serverStatus]);
+    const canTriggerPushRules = configuration?.pushrules.active && !isDefined(pushrules);
+    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked) triggerPushRule();
+  }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatusChecked]);
+
+  const toggleSecondary = useCallback(
+    (
+        open,
+        {
+          headerTransparency = true,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+        }: SecondaryContentProps = {},
+      ) =>
+      () => {
+        const someFieldsDefined = [
+          headerTransparency,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+        ].some((v) => isDefined(v));
+        if (someFieldsDefined) {
+          setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
+        }
+        setSecondaryActive((previous) => {
+          return open === undefined ? !previous : open;
+        });
+      },
+    [],
+  );
+
+  const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
   const add = useCallback(
     (interaction) => {
@@ -134,7 +191,6 @@ export function DialogProvider({ children }) {
         setPlaceholder(null);
         setLocked(false);
       }
-      // eslint-disable-next-line no-use-before-define
     },
     [add, isMobile, secondaryTransient, toggleSecondary],
   );
@@ -146,12 +202,12 @@ export function DialogProvider({ children }) {
     }));
   }, []);
 
-  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList = []) => {
+  const makeInteractionComponentForEachInteractionPropInList = useCallback((propsList: InteractionProps[] = []) => {
     return propsList.map((interactionAttributeObject, index) => {
       const props = {
         type: 'response',
         ...interactionAttributeObject,
-        templatename: isOfTypeString(interactionAttributeObject?.children)
+        templateName: isOfTypeString(interactionAttributeObject?.children)
           ? undefined
           : interactionAttributeObject.templateName,
         askFeedback: isOfTypeString(interactionAttributeObject?.children)
@@ -163,9 +219,11 @@ export function DialogProvider({ children }) {
   }, []);
 
   const addResponse = useCallback(
-    (response = {}) => {
+    (response: Servlet.ChatResponseValues = {}) => {
       setLastResponse(response);
+
       if (isStartLivechatResponse(response)) return displayNotification(response);
+
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -178,9 +236,12 @@ export function DialogProvider({ children }) {
         urlRedirect,
         enableAutoSuggestion,
       } = response;
-      const askFeedback = _askFeedback || feedback === FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
-      const steps = parseSteps(response);
-      if (configuration.Voice.enable) {
+
+      const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
+
+      const steps = flattenSteps(response);
+
+      if (configuration?.Voice.enable) {
         if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName?.toLowerCase()) {
           setVoiceContent({ templateData, text });
         } else {
@@ -211,9 +272,8 @@ export function DialogProvider({ children }) {
               console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
             }
           });
-        }
-        // temporary solution which uses the dangerous eval() to eval guiaction code
-        else if (guiAction.match('^javascript:')) {
+        } else if (guiAction.match('^javascript:')) {
+          // temporary solution which uses the dangerous eval() to eval guiaction code
           const guiActionCode = guiAction.substr(11);
           eval(
             'try{' +
@@ -226,14 +286,18 @@ export function DialogProvider({ children }) {
         }
       }
 
-      if (typeResponse && typeResponse.match(RE_REWORD)) {
+      if (typeResponse && typeResponse.match(Constants.RE_REWORD)) {
         event('rewordDisplay');
       }
 
-      const getContent = (text, templateData, templateName) => {
-        const list = [].concat(text ? steps.map(({ text }) => text) : [text]);
+      const getContent = (text: any, templateData: any, templateName: any) => {
+        const list: any[] = [].concat(text ? steps.map(({ text }) => text) : [text]);
         if (templateData && knownTemplates.includes(templateName)) {
-          list.push(JSON.parse(templateData));
+          try {
+            list.push(JSON.parse(templateData));
+          } catch (error) {
+            console.log('Error', error);
+          }
         }
         return list;
       };
@@ -264,7 +328,7 @@ export function DialogProvider({ children }) {
               type="response"
               secondary={sidebar}
               steps={steps}
-              templatename={templateName}
+              templateName={templateName}
               thinking
               typeResponse={typeResponse}
             />
@@ -280,8 +344,8 @@ export function DialogProvider({ children }) {
     },
     [
       displayNotification,
-      configuration.Voice.enable,
-      configuration.Voice.voiceSpace,
+      configuration?.Voice.enable,
+      configuration?.Voice.voiceSpace,
       secondaryTransient,
       isMobile,
       add,
@@ -296,7 +360,7 @@ export function DialogProvider({ children }) {
     setInteractions([]);
   }, []);
 
-  const setSecondary = useCallback(({ body, title, url } = {}) => {
+  const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
     if (body || title || url) {
       setSecondaryContent({ body, title, url });
     }
@@ -306,63 +370,30 @@ export function DialogProvider({ children }) {
     Local.secondary.save(secondaryActive);
   }, [secondaryActive]);
 
-  const toggleSecondary = useCallback(
-    (open, { headerTransparency = true, headerRenderer, bodyRenderer, body, height, title, url, width } = {}) =>
-      () => {
-        const someFieldsDefined = [
-          headerTransparency,
-          headerRenderer,
-          bodyRenderer,
-          body,
-          height,
-          title,
-          url,
-          width,
-        ].some((v) => isDefined(v));
-        if (someFieldsDefined) {
-          setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
-        }
-        setSecondaryActive((previous) => {
-          return open === undefined ? !previous : open;
-        });
-      },
-    [],
-  );
+  const addHistoryInteraction = (interaction) => {
+    const typedInteraction = {
+      ...interaction,
+      typeResponse: interaction?.type,
+    };
 
-  const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
-
-  useEffect(() => {
-    if (isInteractionListEmpty && !welcomeContent) forceExec();
-    // eslint-disable-next-line
-  }, []);
+    addRequest(typedInteraction.user);
+    addResponse(typedInteraction);
+  };
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) exec();
-    // eslint-disable-next-line
   }, [hasAfterLoadBeenCalled]);
 
   useEffect(() => {
-    if (welcomeContent) {
-      addResponse(welcomeContent);
-    }
+    if (isInteractionListEmpty && !welcomeContent) forceExec();
+  }, []);
 
-    // eslint-disable-next-line
+  useEffect(() => {
+    welcomeContent && addResponse(welcomeContent);
   }, [welcomeContent]);
 
   useEffect(() => {
-    if (listInteractionHistory.length <= 0) return;
-
-    const welcomeContentHasBeenFetched = isDefined(welcomeContent) && !isEmptyObject(welcomeContent);
-    if (!welcomeContentHasBeenFetched) return fetchWelcomeKnowledge();
-
-    const addHistoryInteraction = (hinteraction) => {
-      const typedInteraction = addFieldTypeResponse(hinteraction);
-      addRequest(typedInteraction.user);
-      addResponse(typedInteraction);
-    };
-
-    listInteractionHistory.forEach(addHistoryInteraction);
-    // eslint-disable-next-line
+    welcomeContent && listInteractionHistory.forEach(addHistoryInteraction);
   }, [welcomeContent, listInteractionHistory]);
 
   const chatboxNode = useMemo(() => {
@@ -384,8 +415,8 @@ export function DialogProvider({ children }) {
   }, [toggleSecondary, chatboxNode]);
 
   const openSecondary = useCallback(
-    (...props) => {
-      if (!secondaryActive) toggleSecondary(...[true].concat(props))();
+    (props) => {
+      if (!secondaryActive) toggleSecondary(true, props)();
     },
     [secondaryActive, toggleSecondary],
   );
@@ -429,14 +460,3 @@ export function DialogProvider({ children }) {
     />
   );
 }
-
-DialogProvider.propTypes = {
-  children: PropTypes.any,
-  toggle: PropTypes.any,
-  onPushrulesDataReceived: PropTypes.func,
-};
-
-const addFieldTypeResponse = (interaction) => ({
-  ...interaction,
-  typeResponse: interaction?.type,
-});

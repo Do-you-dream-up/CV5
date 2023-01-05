@@ -1,25 +1,25 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  getChatboxWidthTime,
+  isArray,
+  isDefined,
+  isEmptyArray,
+  isEmptyString,
+  isPositiveNumber,
+  isString,
+} from '../tools/helpers';
+
+import { CHATBOX_EVENT_NAME } from '../tools/constants';
+import Field from './Field';
 /* eslint-disable */
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import {
-  isDefined,
-  isArray,
-  isEmptyString,
-  isString,
-  getChatboxWidthTime,
-  isPositiveNumber,
-  isEmptyArray,
-} from '../tools/helpers';
-import Field from './Field';
+import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
 import { useDialog } from '../contexts/DialogContext';
-import SurveyForm from './SurveyForm';
 import { useEvent } from '../contexts/EventsContext';
-import { CHATBOX_EVENT_NAME } from '../tools/constants';
 
-const SurveyContext = React.createContext({});
-export const useSurvey = () => React.useContext(SurveyContext);
+const SurveyContext = createContext({});
+export const useSurvey = () => useContext(SurveyContext);
 
 export default function SurveyProvider({ children }) {
   const { getChatboxRef, isChatboxLoadedAndReady } = useEvent();
@@ -55,6 +55,10 @@ export default function SurveyProvider({ children }) {
       return null;
     }
   }, [getChatboxRef]);
+
+  useEffect(() => {
+    dydu.setShowSurveyCallback(showSurvey);
+  }, [showSurvey]);
 
   useEffect(() => {
     if (listeningCloseSecondary || !isDefined(chatboxNode)) return;
@@ -197,7 +201,11 @@ const flatMap = (listFieldObject = []) => {
   }, {});
 };
 
-const extractId = (data) => data?.values?.survey?.fromBase64();
+const extractId = (data) => {
+  const id = data?.values?.survey?.fromBase64() || data?.survey;
+  return id || '';
+};
+
 const getSurveyConfigurationById = dydu.getSurvey;
 
 //==================================================/

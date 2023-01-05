@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { createElement, useEffect, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 import useDebounce from '../../tools/hooks/debounce';
@@ -30,7 +30,7 @@ function Scroll({ component, delay, ...rest }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedReady]);
 
-  return React.createElement(component, { ...rest, ref: elementRef });
+  return createElement(component, { ...rest, ref: elementRef });
 }
 
 Scroll.defaultProps = {

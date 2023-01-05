@@ -1,7 +1,8 @@
-import React, { useRef, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
+
+import Field from '../Field';
 import FieldBlock from '../FieldBlock';
 import PropTypes from 'prop-types';
-import Field from '../Field';
 
 export default function Checkbox({ field }) {
   const ref = useRef();

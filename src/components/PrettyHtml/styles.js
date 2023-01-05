@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
@@ -84,6 +86,9 @@ export default createUseStyles((theme) => ({
     'white-space': 'nowrap',
     width: '1px',
     '& + .p1': {
+      marginTop: 0,
+    },
+    '& + p': {
       marginTop: 0,
     },
   },

@@ -1,9 +1,8 @@
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Actions from '../Actions';
 import Autosuggest from 'react-autosuggest';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
@@ -12,6 +11,7 @@ import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { escapeHTML } from '../../tools/helpers';
 import talk from '../../tools/talk';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
@@ -41,7 +41,6 @@ export default function Input({ onRequest, onResponse }) {
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
-  const [increment, setIncrement] = useState();
   const { event: chatbotEvent } = useEvent();
 
   const voice = configuration.Voice ? configuration.Voice.enable : false;
@@ -52,7 +51,6 @@ export default function Input({ onRequest, onResponse }) {
     if (chatbotEvent === 'teaser/onClick') {
       inputRef && inputRef?.current?.focus();
     }
-    setIncrement(incrementToUpdateRefOnRender++);
   }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
 
   const onChange = (event) => {

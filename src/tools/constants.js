@@ -1,10 +1,16 @@
-export const RESPONSE_TYPE = {
+export const PAYLOAD_TYPE = {
   survey: 'survey',
 };
 
 export const SOLUTION_TYPE = {
   assistant: 'ASSISTANT',
   livechat: 'LIVECHAT',
+};
+
+export const FEEDBACK_RESPONSE = {
+  positive: 'positive',
+  negative: 'negative',
+  noResponseGiven: 'withoutAnswer',
 };
 
 export const RESPONSE_QUERY_FORMAT = {
@@ -73,4 +79,11 @@ export const REGEX_URL = /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm;
 export const CHATBOX_EVENT_NAME = {
   newMessage: 'dydu/event__newMessage',
   closeSecondary: 'dydu/event__closeSecondary',
+};
+
+export const VIEW_MODE = {
+  close: 0, // hidden
+  minimize: 1, // teaser
+  popin: 2,
+  full: 3,
 };

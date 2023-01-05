@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useEffect } from 'react';
+import { createContext, useEffect } from 'react';
 
 import Storage from '../components/auth/Storage';
 import { isLoadedFromChannels } from '../tools/wizard';

@@ -2,14 +2,19 @@
   "env": {
     "browser": true,
     "es6": true,
-    "jest/globals": true
+    "jest": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
-    "plugin:jest/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
   "globals": {
     "__dirname": false,
@@ -17,26 +22,91 @@
     "process": false,
     "require": false
   },
-  "parser": "@babel/eslint-parser",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 2018,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
-  "plugins": ["import", "react", "react-hooks", "jest"],
+  "plugins": ["import", "prettier", "react", "react-hooks"],
   "rules": {
+    "import/prefer-default-export": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unresolved": "error",
+    "strictFunctionTypes": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "import/no-named-as-default-member": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "array-bracket-newline": ["warn", "consistent"],
+    "array-element-newline": ["warn", "consistent"],
+    "block-spacing": ["warn", "always"],
+    "brace-style": ["warn", "1tbs", { "allowSingleLine": true }],
+    "comma-spacing": "warn",
+    "eol-last": ["warn", "always"],
+    "import/no-named-as-default": 0,
     "keyword-spacing": "warn",
-    "no-empty": ["warn", { "allowEmptyCatch": true }],
-    "no-unused-vars": "error",
-    "no-extra-semi": "off",
+    "eslintreact/jsx-indent": "off",
+    "react/jsx-key": "off",
+    "no-console": "off",
+    "no-empty": [
+      "warn",
+      {
+        "allowEmptyCatch": true
+      }
+    ],
+    "no-eval": "off",
+    "no-lonely-if": "warn",
+    "no-multiple-empty-lines": [
+      "warn",
+      {
+        "max": 2,
+        "maxBOF": 0,
+        "maxEOF": 0
+      }
+    ],
+    "no-trailing-spaces": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "quotes": [
+      "off",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "react/display-name": ["off", { "ignoreTranspilerName": false }],
+    "react/jsx-indent": ["off", 2],
+    "react/jsx-indent-props": ["warn", "first"],
     "react/no-children-prop": 0,
     "react-hooks/exhaustive-deps": "off",
-    "react-hooks/rules-of-hooks": "warn"
+    "react-hooks/rules-of-hooks": "warn",
+    "semi": ["warn", "always"],
+    "space-before-blocks": ["warn", "always"],
+    "space-infix-ops": "warn",
+    "@typescript-eslint/no-empty-function": "off"
   },
   "settings": {
     "import/core-modules": ["rsg-components/Styled"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
     "react": {
       "version": "17"
     }
