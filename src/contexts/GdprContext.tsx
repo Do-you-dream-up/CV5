@@ -2,10 +2,25 @@ import { createContext, useCallback, useContext, useState } from 'react';
 
 import { EventsContext } from './EventsContext';
 import { Local } from '../tools/storage';
-import PropTypes from 'prop-types';
 
-export const GdprContext = createContext();
-export function GdprProvider({ children }) {
+interface GdprContextProps {
+  isChatboxLoadedAndReady?: boolean;
+  hasAfterLoadBeenCalled?: boolean;
+  onAppReady?: () => void;
+  onChatboxLoaded?: (chatboxNodeElement: any) => void;
+  onNewMessage?: () => void;
+  onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
+  event?: string | null;
+  getChatboxRef?: () => void;
+}
+
+interface GdprContextProps {
+  children: ReactElement;
+}
+
+export const GdprContext = createContext<GdprContextProps>({});
+
+export function GdprProvider({ children }: GdprContextProps) {
   const [gdprPassed, setGdprPassed] = useState(Local.get(Local.names.gdpr));
   const event = useContext(EventsContext).onEvent('gdpr');
   const onAccept = useCallback(() => {
@@ -30,7 +45,3 @@ export function GdprProvider({ children }) {
     />
   );
 }
-
-GdprProvider.propTypes = {
-  children: PropTypes.object,
-};
