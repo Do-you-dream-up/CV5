@@ -123,6 +123,7 @@ export default new (class Dydu {
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
+    this.maxTries = 3;
     this.minTimeoutForAnswer = 3000;
     this.maxTimeoutForAnswer = 21000;
     this.qualificationMode = false;
@@ -235,7 +236,7 @@ export default new (class Dydu {
   handleAxiosError = (error, verb, path, data, timeout) => {
     this.triesCounter = this.triesCounter + 1;
 
-    if (this.triesCounter >= 5) {
+    if (this.triesCounter >= this.maxTries) {
       throw 'API Unreachable';
     }
 
