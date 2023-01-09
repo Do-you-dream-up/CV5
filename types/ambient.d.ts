@@ -3,6 +3,7 @@ declare module '*.svg';
 declare module '*.gif';
 interface Window {
   dyduAfterLoad: any;
+  dydu: any;
 }
 
 declare global {

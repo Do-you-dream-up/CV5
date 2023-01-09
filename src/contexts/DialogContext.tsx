@@ -1,31 +1,73 @@
-import * as Constants from 'src/tools/constants';
+import * as Constants from '../tools/constants';
 
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { EventsContext, useEvent } from './EventsContext';
-import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { isDefined, isOfTypeString } from 'src/tools/helpers';
+import { isDefined, isOfTypeString } from '../tools/helpers';
 
-import Interaction from 'src/components/Interaction';
-import LivechatPayload from 'src/tools/LivechatPayload';
-import { Local } from 'src/tools/storage';
-import dotget from 'src/tools/dotget';
-import { eventOnSecondaryClosed } from 'src/events/chatboxIndex';
-import fetchPushrules from 'src/tools/pushrules';
-import { flattenSteps } from 'src/tools/steps';
-import { knownTemplates } from 'src/tools/template';
-import parseActions from 'src/tools/actions';
+import Interaction from '../components/Interaction';
+import LivechatPayload from '../tools/LivechatPayload';
+import { Local } from '../tools/storage';
+import dotget from '../tools/dotget';
+import { eventOnSecondaryClosed } from '../events/chatboxIndex';
+import fetchPushrules from '../tools/pushrules';
+import { flattenSteps } from '../tools/steps';
+import { knownTemplates } from '../tools/template';
+import parseActions from '../tools/actions';
 import { useConfiguration } from './ConfigurationContext';
-import useConversationHistory from 'src/tools/hooks/useConversationHistory';
-import usePromiseQueue from 'src/tools/hooks/usePromiseQueue';
-import useServerStatus from 'src/tools/hooks/useServerStatus';
-import useTopKnowledge from 'src/tools/hooks/useTopKnowledge';
-import useViewport from 'src/tools/hooks/useViewport';
-import useWelcomeKnowledge from 'src/tools/hooks/useWelcomeKnowledge';
+import useConversationHistory from '../tools/hooks/useConversationHistory';
+import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import useServerStatus from '../tools/hooks/useServerStatus';
+import useTopKnowledge from '../tools/hooks/useTopKnowledge';
+import useViewport from '../tools/hooks/useViewport';
+import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
 
 interface DialogProviderProps {
   children: ReactNode;
 }
 
-interface DialogContextProps {}
+interface DialogContextProps {
+  closeSecondary?;
+  openSecondary?;
+  topList?;
+  showAnimationOperatorWriting?;
+  displayNotification?;
+  lastResponse?;
+  add?;
+  addRequest?;
+  addResponse?;
+  disabled?;
+  empty?;
+  interactions?;
+  locked?: boolean;
+  placeholder?: string | null;
+  prompt?;
+  secondaryActive?: boolean;
+  secondaryContent?: any;
+  setDisabled?: Dispatch<SetStateAction<boolean>>;
+  setLocked?: Dispatch<SetStateAction<boolean>>;
+  setPlaceholder?: Dispatch<SetStateAction<any>>;
+  setPrompt?: Dispatch<SetStateAction<any>>;
+  setSecondary?: () => void;
+  setVoiceContent?: Dispatch<SetStateAction<any>>;
+  toggleSecondary?: Dispatch<SetStateAction<any>>;
+  typeResponse?: any;
+  voiceContent?: any;
+  zoomSrc?: string | null;
+  setZoomSrc?: Dispatch<SetStateAction<string | null>>;
+  autoSuggestionActive?: boolean;
+  setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
+  callWelcomeKnowledge?: () => null;
+}
 
 interface SecondaryContentProps {
   headerTransparency?: boolean;
@@ -57,7 +99,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const event = useContext(EventsContext).onEvent('chatbox');
+  const { event, onEvent } = useContext(EventsContext);
   const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled } = useEvent();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
@@ -77,8 +119,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [voiceContent, setVoiceContent] = useState<{ templateData: string | null; text: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
-  const [autoSuggestionActive, setAutoSuggestionActive] = useState(suggestionActiveOnConfig);
-  const [zoomSrc, setZoomSrc] = useState(null);
+  const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
+  const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [pushrules, setPushrules] = useState(null);
 
   const { exec, forceExec } = usePromiseQueue(
@@ -87,6 +129,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   );
 
   useEffect(() => {
+    onEvent && onEvent('chatbox');
     fetchServerStatus();
   }, []);
 
@@ -158,7 +201,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const add = useCallback(
     (interaction) => {
-      onNewMessage();
+      onNewMessage && onNewMessage();
       setInteractions((previous) => {
         if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
         return !isDefined(interaction)
@@ -287,7 +330,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
 
       if (typeResponse && typeResponse.match(Constants.RE_REWORD)) {
-        event('rewordDisplay');
+        event && event('rewordDisplay');
       }
 
       const getContent = (text: any, templateData: any, templateName: any) => {
@@ -396,9 +439,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     welcomeContent && listInteractionHistory.forEach(addHistoryInteraction);
   }, [welcomeContent, listInteractionHistory]);
 
-  const chatboxNode = useMemo(() => {
+  const chatboxNode: any = useMemo(() => {
     try {
-      return getChatboxRef();
+      return getChatboxRef && getChatboxRef();
     } catch (e) {
       return null;
     }

@@ -1,33 +1,32 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { ReactElement, createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { EventsContext } from './EventsContext';
 import { Local } from '../tools/storage';
 
 interface GdprContextProps {
-  isChatboxLoadedAndReady?: boolean;
-  hasAfterLoadBeenCalled?: boolean;
-  onAppReady?: () => void;
-  onChatboxLoaded?: (chatboxNodeElement: any) => void;
-  onNewMessage?: () => void;
-  onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
-  event?: string | null;
-  getChatboxRef?: () => void;
+  gdprPassed?: boolean | null;
+  onAccept?: () => void;
+  onDecline?: () => void;
 }
 
-interface GdprContextProps {
+interface GdprProviderProps {
   children: ReactElement;
 }
 
 export const GdprContext = createContext<GdprContextProps>({});
 
-export function GdprProvider({ children }: GdprContextProps) {
-  const [gdprPassed, setGdprPassed] = useState(Local.get(Local.names.gdpr));
-  const event = useContext(EventsContext).onEvent('gdpr');
+export function GdprProvider({ children }: GdprProviderProps) {
+  const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.get(Local.names.gdpr, undefined, true));
+  const { event, onEvent } = useContext(EventsContext);
+
+  useEffect(() => {
+    onEvent && onEvent('gdpr');
+  }, [event]);
+
   const onAccept = useCallback(() => {
     setGdprPassed(true);
-    event('acceptGdpr');
+    event && event('acceptGdpr');
     Local.set(Local.names.gdpr, undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDecline = useCallback(() => {

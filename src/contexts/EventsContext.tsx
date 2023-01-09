@@ -16,8 +16,8 @@ interface EventsContextProps {
   onChatboxLoaded?: (chatboxNodeElement: any) => void;
   onNewMessage?: () => void;
   onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
-  event?: string | null;
-  getChatboxRef?: () => void;
+  event?: (str: string) => void;
+  getChatboxRef?: () => null;
 }
 
 interface EventsProviderProps {
@@ -32,7 +32,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { isOpen } = useViewMode();
   const { configuration } = useConfiguration();
 
-  const [event, setEvent] = useState<string | null>();
+  const [event, setEvent] = useState<any | null>();
   const [isMouseIn, setMouseIn] = useState(false);
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
