@@ -186,7 +186,9 @@ export default class Field {
       );
 
     const isCheckboxGroup = this.isMultipleChoiceType() && this.hasChildrenOfTypeCheckbox();
-    if (isCheckboxGroup) console.log('TODO: checkboxgroup component');
+    if (isCheckboxGroup) {
+      console.log('TODO: checkboxgroup component');
+    }
     const Component = Field.getComponentForType(this.getType());
     return <Component key={componentKey} field={this} />;
   }
