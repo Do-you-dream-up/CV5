@@ -1,8 +1,7 @@
-import { createElement, useMemo } from 'react';
+import { ReactElement, createElement, useMemo } from 'react';
 
 import Button from '../Button';
 import Menu from '../Menu';
-import PropTypes from 'prop-types';
 import c from 'classnames';
 import useStyles from './styles';
 
@@ -12,7 +11,23 @@ import useStyles from './styles';
  * Usually these can take the form of a button list at the bottom of a paper component,
  * or at the top-right of a card component.
  */
-export default function Actions({ actions, className, targetStyleKey }) {
+
+interface ActionProps {
+  children: ReactElement;
+  items: any[] | (() => void);
+  selected: string | (() => void);
+  type: string;
+  when: boolean;
+  title?: string;
+}
+
+interface ActionsProps {
+  actions: ActionProps[];
+  className: string;
+  targetStyleKey: string;
+}
+
+const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
   const classes = useStyles();
   actions = actions.filter((it) => it.when === undefined || it.when);
 
@@ -32,22 +47,6 @@ export default function Actions({ actions, className, targetStyleKey }) {
       </div>
     )
   );
-}
-
-Actions.defaultProps = {
-  actions: [],
 };
 
-Actions.propTypes = {
-  actions: PropTypes.arrayOf(
-    PropTypes.shape({
-      children: PropTypes.any,
-      items: PropTypes.oneOfType([PropTypes.func, PropTypes.array]),
-      selected: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-      type: PropTypes.string,
-      when: PropTypes.bool,
-    }),
-  ),
-  className: PropTypes.string,
-  targetStyleKey: PropTypes.string,
-};
+export default Actions;
