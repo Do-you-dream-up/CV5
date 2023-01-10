@@ -1,8 +1,7 @@
-import { ReactElement, createElement, useMemo } from 'react';
-
 import Button from '../Button';
 import Menu from '../Menu';
 import c from 'classnames';
+import { useMemo } from 'react';
 import useStyles from './styles';
 
 /**
@@ -13,12 +12,22 @@ import useStyles from './styles';
  */
 
 interface ActionProps {
-  children: ReactElement;
-  items: any[] | (() => void);
-  selected: string | (() => void);
-  type: string;
-  when: boolean;
+  children?: any;
+  items?: any;
+  selected?: string | (() => void);
+  type?: any;
+  when?: boolean;
+  disabled?: boolean;
+  variant?: string;
+  secondary?: boolean;
+  spin?: boolean;
+  href?: string;
+  key?: string | number;
+  id?: string;
   title?: string;
+  icon?: string;
+  component: any;
+  onClick?: () => void;
 }
 
 interface ActionsProps {
@@ -29,21 +38,29 @@ interface ActionsProps {
 
 const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
   const classes = useStyles();
-  actions = actions.filter((it) => it.when === undefined || it.when);
+
+  const filteredActions = useMemo(() => actions.filter((it) => it.when === undefined || it.when), [actions]);
 
   const _classes = useMemo(() => classes[targetStyleKey] || classes.root, [targetStyleKey, classes]);
 
   return (
-    !!actions.length && (
+    actions?.length > 0 && (
       <div className={c('dydu-actions', _classes, className)}>
-        {actions.map(({ items, selected, type = 'button', title, ...rest }, index) =>
-          createElement(items ? Menu : Button, {
+        {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
+          delete rest.when;
+
+          const props = {
             key: index,
-            ...(items ? { component: Button, items, selected } : { type }),
             ...rest,
             title,
-          }),
-        )}
+            type,
+          };
+
+          if (items) {
+            return <Menu {...props} component={Button} items={items} selected={selected} />;
+          }
+          return <Button {...props} />;
+        })}
       </div>
     )
   );
