@@ -36,21 +36,21 @@ interface DialogProviderProps {
 }
 
 interface DialogContextProps {
-  closeSecondary?;
-  openSecondary?;
-  topList?;
-  showAnimationOperatorWriting?;
-  displayNotification?;
-  lastResponse?;
-  add?;
-  addRequest?;
-  addResponse?;
-  disabled?;
-  empty?;
-  interactions?;
+  closeSecondary?: () => void;
+  openSecondary?: (props: any) => void;
+  topList?: any[];
+  showAnimationOperatorWriting?: () => void;
+  displayNotification?: (notification: any) => void;
+  lastResponse?: Servlet.ChatResponseValues | null;
+  add?: (interaction: Servlet.ChatResponse) => void;
+  addRequest?: (str: string) => void;
+  addResponse?: (response: Servlet.ChatResponseValues) => void;
+  disabled?: boolean;
+  empty?: () => void;
+  interactions?: any;
   locked?: boolean;
   placeholder?: string | null;
-  prompt?;
+  prompt?: string;
   secondaryActive?: boolean;
   secondaryContent?: any;
   setDisabled?: Dispatch<SetStateAction<boolean>>;

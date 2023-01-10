@@ -43,7 +43,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   const displayNotification = useCallback(
     (notification) => {
-      notify(recursiveBase64DecodeString(notification));
+      notify && notify(recursiveBase64DecodeString(notification));
     },
     [notify],
   );
