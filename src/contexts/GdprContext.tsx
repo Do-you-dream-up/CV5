@@ -1,7 +1,7 @@
-import { ReactElement, createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { ReactElement, createContext, useCallback, useEffect, useState } from 'react';
 
-import { EventsContext } from './EventsContext';
 import { Local } from '../tools/storage';
+import { useEvent } from './EventsContext';
 
 interface GdprContextProps {
   gdprPassed?: boolean | null;
@@ -17,17 +17,17 @@ export const GdprContext = createContext<GdprContextProps>({});
 
 export function GdprProvider({ children }: GdprProviderProps) {
   const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.get(Local.names.gdpr, undefined, true));
-  const { event, onEvent } = useContext(EventsContext);
+  const { event, onEvent } = useEvent();
 
   useEffect(() => {
     onEvent && onEvent('gdpr');
-  }, [event]);
+  }, []);
 
   const onAccept = useCallback(() => {
     setGdprPassed(true);
     event && event('acceptGdpr');
     Local.set(Local.names.gdpr, undefined);
-  }, []);
+  }, [event]);
 
   const onDecline = useCallback(() => {
     window.dydu.ui.toggle(1);

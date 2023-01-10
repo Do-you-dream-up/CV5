@@ -17,7 +17,7 @@ interface LivechatContextProps {
   typing?: (input: any) => void;
 }
 
-interface LivechatProvidertProps {
+interface LivechatProviderProps {
   children?: ReactElement;
 }
 
@@ -31,7 +31,7 @@ const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
 const containsStartLivechatSpecialAction = (response) => response?.specialAction?.equals('StartPolling');
 
-export function LivechatProvider({ children }: LivechatProvidertProps) {
+export function LivechatProvider({ children }: LivechatProviderProps) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState<any>(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
