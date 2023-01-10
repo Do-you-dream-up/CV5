@@ -17,6 +17,7 @@ interface EventsContextProps {
   onNewMessage?: () => void;
   onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
   event?: (str: string) => void;
+  dispatchEvent?: (featureName: string, eventName: string) => void;
   getChatboxRef?: () => null;
 }
 
@@ -145,6 +146,11 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
       }
     };
 
+  const dispatchEvent = (featureName, eventName) => {
+    const eventHandler = onEvent(featureName);
+    eventHandler && eventHandler(eventName);
+  };
+
   return (
     <EventsContext.Provider
       children={children}
@@ -155,6 +161,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         onChatboxLoaded,
         onNewMessage,
         onEvent,
+        dispatchEvent,
         event,
         getChatboxRef: () => chatboxRef,
       }}

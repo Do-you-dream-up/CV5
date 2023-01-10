@@ -1,4 +1,4 @@
-import { ReactElement, createContext, useCallback, useEffect, useState } from 'react';
+import { ReactElement, createContext, useCallback, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import { useEvent } from './EventsContext';
@@ -17,15 +17,11 @@ export const GdprContext = createContext<GdprContextProps>({});
 
 export function GdprProvider({ children }: GdprProviderProps) {
   const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.get(Local.names.gdpr, undefined, true));
-  const { event, onEvent } = useEvent();
-
-  useEffect(() => {
-    onEvent && onEvent('gdpr');
-  }, []);
+  const { dispatchEvent } = useEvent();
 
   const onAccept = useCallback(() => {
     setGdprPassed(true);
-    event && event('acceptGdpr');
+    dispatchEvent && dispatchEvent('gdpr', 'acceptGdpr');
     Local.set(Local.names.gdpr, undefined);
   }, [event]);
 

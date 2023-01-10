@@ -99,7 +99,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, event, onEvent } = useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
@@ -130,10 +130,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   useEffect(() => {
     fetchServerStatus();
   }, []);
-
-  useEffect(() => {
-    onEvent && onEvent('chatbox');
-  }, [onEvent]);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
     const last = list[list.length - 1];
@@ -332,7 +328,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
 
       if (typeResponse && typeResponse.match(Constants.RE_REWORD)) {
-        event && event('rewordDisplay');
+        dispatchEvent && dispatchEvent('chatbox', 'rewordDisplay');
       }
 
       const getContent = (text: any, templateData: any, templateName: any) => {
@@ -395,7 +391,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       isMobile,
       add,
       toggleSecondary,
-      event,
+      dispatchEvent,
       makeInteractionPropsListWithInteractionChildrenListAndData,
       makeInteractionComponentForEachInteractionPropInList,
     ],
