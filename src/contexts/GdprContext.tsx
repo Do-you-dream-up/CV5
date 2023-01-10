@@ -23,7 +23,7 @@ export function GdprProvider({ children }: GdprProviderProps) {
     setGdprPassed(true);
     dispatchEvent && dispatchEvent('gdpr', 'acceptGdpr');
     Local.set(Local.names.gdpr, undefined);
-  }, [event]);
+  }, [dispatchEvent]);
 
   const onDecline = useCallback(() => {
     window.dydu.ui.toggle(1);
