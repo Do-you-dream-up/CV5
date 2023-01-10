@@ -185,8 +185,7 @@ export default new (class Dydu {
   };
 
   redirectAndRenewAuth = (values) => {
-    const relayState = encodeURI(window.location.href);
-    // const relayState = JSON.stringify({ redirection: encodeURI(window.location.href), bot: BOT.id });
+    const relayState = JSON.stringify({ redirection: encodeURI(window.location.href), bot: BOT.id });
     try {
       this.renewAuth(atob(values?.auth));
       window.location.href = `${atob(values?.redirection_url)}&RelayState=${relayState}`;
