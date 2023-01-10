@@ -56,11 +56,11 @@ interface DialogContextProps {
   setDisabled?: Dispatch<SetStateAction<boolean>>;
   setLocked?: Dispatch<SetStateAction<boolean>>;
   setPlaceholder?: Dispatch<SetStateAction<any>>;
-  setPrompt?: Dispatch<SetStateAction<any>>;
+  setPrompt?: Dispatch<SetStateAction<string>>;
   setSecondary?: () => void;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
   toggleSecondary?: Dispatch<SetStateAction<any>>;
-  typeResponse?: any;
+  typeResponse?: Servlet.ChatResponseType | null;
   voiceContent?: any;
   zoomSrc?: string | null;
   setZoomSrc?: Dispatch<SetStateAction<string | null>>;
@@ -110,13 +110,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState<ReactNode[]>([]);
-  const [locked, setLocked] = useState(false);
-  const [placeholder, setPlaceholder] = useState(null);
-  const [prompt, setPrompt] = useState('');
+  const [locked, setLocked] = useState<boolean>(false);
+  const [placeholder, setPlaceholder] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState<string>('');
   const [secondaryActive, setSecondaryActive] = useState(false);
   const [secondaryContent, setSecondaryContent] = useState<SecondaryContentProps | null>(null);
-  const [voiceContent, setVoiceContent] = useState<{ templateData: string | null; text: string } | null>(null);
-  const [typeResponse, setTypeResponse] = useState(null);
+  const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
+  const [typeResponse, setTypeResponse] = useState<Servlet.ChatResponseType | null | undefined>(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
