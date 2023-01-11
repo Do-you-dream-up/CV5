@@ -1,16 +1,24 @@
+import { JssProvider, ThemeProvider } from 'react-jss';
 import React, { ReactElement } from 'react';
 import { RenderOptions, render } from '@testing-library/react';
 
 import { ConfigurationProvider } from '../contexts/ConfigurationContext';
-import { ThemeProvider } from 'react-jss';
+import { EventsProvider } from '../contexts/EventsContext';
+import ViewModeProvider from '../contexts/ViewModeProvider';
 import configuration from '../../public/override/configuration.json';
 import theme from '../../public/override/theme.json';
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <ConfigurationProvider configuration={configuration}>{children}</ConfigurationProvider>
-    </ThemeProvider>
+    <JssProvider>
+      <ThemeProvider theme={theme}>
+        <ConfigurationProvider configuration={configuration}>
+          <ViewModeProvider>
+            <EventsProvider>{children}</EventsProvider>
+          </ViewModeProvider>
+        </ConfigurationProvider>
+      </ThemeProvider>
+    </JssProvider>
   );
 };
 
