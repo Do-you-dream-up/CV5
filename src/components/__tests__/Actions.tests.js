@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom';
 
-import { fireEvent, render, screen } from '../../tools/test-utils';
-
 import Actions from '../Actions/Actions';
+import { render } from '../../tools/test-utils';
 
 describe('Actions.tsx', () => {
   const onClick = (text) => () => alert(text);
@@ -32,6 +31,7 @@ describe('Actions.tsx', () => {
       children: <img src="icons/dots-vertical.png" />,
       color: 'primary',
       items: () => items,
+      classname: 'submenu',
       variant: 'icon',
     },
   ];
@@ -44,7 +44,7 @@ describe('Actions.tsx', () => {
 
   test('Load component with actions', async () => {
     const { container } = render(<Actions actions={actions} />);
-    expect(container.getElementsByClassName('dydu-actions').length).toBe(1);
+    expect(container.children[0]).toHaveClass('dydu-actions');
     expect(container.getElementsByClassName('dydu-button').length).toBe(3);
   });
 });
