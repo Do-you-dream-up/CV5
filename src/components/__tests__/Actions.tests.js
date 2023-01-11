@@ -37,17 +37,14 @@ describe('Actions.tsx', () => {
   ];
 
   test('Load component with no actions', async () => {
-    const { container } = render(<Actions actions={[]} />);
+    const renderElement = render(<Actions actions={[]} />);
+    const { container } = renderElement;
     expect(container.firstChild).toBeNull();
   });
 
   test('Load component with actions', async () => {
     const { container } = render(<Actions actions={actions} />);
     expect(container.getElementsByClassName('dydu-actions').length).toBe(1);
-  });
-
-  test('Load component with actions', async () => {
-    const { container } = render(<Actions actions={actions} />);
-    expect(container.getElementsByClassName('dydu-actions').length).toBe(1);
+    expect(container.getElementsByClassName('dydu-button').length).toBe(3);
   });
 });
