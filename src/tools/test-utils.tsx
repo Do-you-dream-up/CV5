@@ -1,6 +1,6 @@
 import { JssProvider, ThemeProvider } from 'react-jss';
 import React, { ReactElement } from 'react';
-import { RenderOptions, render } from '@testing-library/react';
+import { RenderOptions, render, screen } from '@testing-library/react';
 
 import { ConfigurationProvider } from '../contexts/ConfigurationContext';
 import { EventsProvider } from '../contexts/EventsContext';
@@ -26,4 +26,4 @@ const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>
   render(ui, { wrapper: AllTheProviders, ...options });
 
 export * from '@testing-library/react';
-export { customRender as render };
+export { customRender as render, screen };
