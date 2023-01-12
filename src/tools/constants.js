@@ -28,6 +28,13 @@ export const VAR_TYPE = {
   number: 'number',
 };
 
+export const TUNNEL_MODE = {
+  polling: 'polling',
+  websocket: 'websocket',
+};
+
+export const LIVECHAT_ID_LISTENER = 'listener/livechat';
+
 export const INTERACTION_TEMPLATE = {
   carousel: 'dydu_carousel_001',
   product: 'dydu_product_001',

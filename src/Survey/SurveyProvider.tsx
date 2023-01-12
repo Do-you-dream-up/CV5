@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getChatboxWidthTime,
   isArray,
@@ -11,20 +11,34 @@ import {
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';
-/* eslint-disable */
-import PropTypes from 'prop-types';
 import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
 import { useDialog } from '../contexts/DialogContext';
 import { useEvent } from '../contexts/EventsContext';
 
-const SurveyContext = createContext({});
+interface SurveyConfigProps {
+  fields?: any;
+  surveyId?: string;
+  interactionSurvey?: any;
+}
+
+interface SurveyContextProps {
+  showSurvey?: (data: any) => void;
+  surveyConfig?: any;
+}
+
+interface SurveyProviderProps {
+  children: ReactElement;
+}
+
 export const useSurvey = () => useContext(SurveyContext);
 
-export default function SurveyProvider({ children }) {
+const SurveyContext = createContext<SurveyContextProps>({});
+
+export default function SurveyProvider({ children }: SurveyProviderProps) {
   const { getChatboxRef, isChatboxLoadedAndReady } = useEvent();
-  const [surveyConfig, setSurveyConfig] = useState(null);
-  const [instances, setInstances] = useState(null);
+  const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
+  const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
   const { secondaryActive, openSecondary, closeSecondary } = useDialog();
 
@@ -39,7 +53,7 @@ export default function SurveyProvider({ children }) {
   }, []);
 
   const secondaryWidth = useMemo(() => {
-    return isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4) : -1;
+    return getChatboxRef && isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4) : -1;
   }, [isChatboxLoadedAndReady, getChatboxRef]);
 
   const flushStatesAndClose = useCallback(() => {
@@ -48,9 +62,9 @@ export default function SurveyProvider({ children }) {
     answerResultManager.clear();
   }, [closeSecondary, flushStates]);
 
-  const chatboxNode = useMemo(() => {
+  const chatboxNode: any = useMemo(() => {
     try {
-      return getChatboxRef();
+      return getChatboxRef && getChatboxRef();
     } catch (e) {
       return null;
     }
@@ -95,7 +109,7 @@ export default function SurveyProvider({ children }) {
 
   const getSurveyAnswer = useCallback(() => {
     if (isDefined(instances)) {
-      instances.forEach((fieldInstance) => {
+      instances?.forEach((fieldInstance) => {
         fieldInstance.gatherUserAnswers(answerResultManager);
       });
     }
@@ -157,20 +171,16 @@ export default function SurveyProvider({ children }) {
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
 }
 
-SurveyProvider.propTypes = {
-  children: PropTypes.element,
-};
-
 //==================================================/
 // LOCAL HELPERS
 //==================================================/
-const instanciateFields = (listFieldObject = []) => {
+const instanciateFields = (listFieldObject: any[] = []) => {
   if (!isArray(listFieldObject)) {
     console.error('instanciateFields [type error]: array typed parameter expected');
     return null;
   }
   Field.mapStoreFieldObject = flatMap(listFieldObject);
-  let listIdInstanceDone = [];
+  let listIdInstanceDone: any[] = [];
   const hasAlreadyBeenInstanciated = (fieldObj) => listIdInstanceDone.includes(fieldObj?.id);
   const addInstanciated = (listId) => (listIdInstanceDone = listIdInstanceDone.concat(listId));
   const finalInstances = listFieldObject.reduce((resultList, fieldObj) => {
@@ -184,7 +194,7 @@ const instanciateFields = (listFieldObject = []) => {
   return finalInstances;
 };
 
-const flatMap = (listFieldObject = []) => {
+const flatMap = (listFieldObject: any[] = []) => {
   return listFieldObject.reduce((mapRes, fieldObject) => {
     const children = fieldObject?.children || [];
     const hasChildren = children?.length > 0;
@@ -211,10 +221,10 @@ const getSurveyConfigurationById = dydu.getSurvey;
 //==================================================/
 // STATICS
 //==================================================/
-let listeners = {};
+const listeners = {};
 SurveyProvider.hasListeners = () => Object.keys(listeners).length > 0;
 SurveyProvider.notifyListeners = (data) => {
-  if (SurveyProvider.hasListeners()) Object.values(listeners).forEach((callback) => callback(data));
+  if (SurveyProvider.hasListeners()) Object.values(listeners).forEach((callback: any) => callback(data));
 };
 SurveyProvider.removeListener = (listenerId) => delete listeners[listenerId];
 SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = callback);
@@ -222,7 +232,7 @@ SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = 
 //==================================================/
 // LOCAL COMPONENTS
 //==================================================/
-const SecondaryHeader = () => <SecondaryFormTitle />;
+// const SecondaryHeader = () => <SecondaryFormTitle />;
 
 const SecondaryFormTitle = () => {
   const style = useRef({
@@ -265,6 +275,9 @@ const SecondaryFormTitle = () => {
 };
 
 class AnswerResultManager {
+  listMissings: any[];
+  result: any;
+
   constructor() {
     this.listMissings = [];
     this.result = {};

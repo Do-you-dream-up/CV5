@@ -1,5 +1,5 @@
-import { Local } from 'src/tools/storage';
-import bot from 'public/override/bot.json';
+import { Local } from '../../tools/storage';
+import bot from '../../../public/override/bot.json';
 import qs from 'qs';
 
 interface contextPushProps {

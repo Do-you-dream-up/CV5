@@ -6,7 +6,7 @@
       "test-utils": ["./src/tools/test-utils"]
     },
     "types": ["node", "jest"],
-    "typeRoots": ["./node_modules/@types", "./typings"],
+    "typeRoots": ["./node_modules/@types", "./types"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "sourceMap": true,
     "allowJs": true,
@@ -34,6 +34,6 @@
     "noUnusedParameters": true
   },
   "compileOnSave": true,
-  "include": ["./typings/**/*.d.ts", "src"],
+  "include": ["./types/**/*.d.ts", "src"],
   "exclude": ["node_modules", "build"]
 }

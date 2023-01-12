@@ -53,8 +53,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { hasAfterLoadBeenCalled } = useEvent();
-  const { onChatboxLoaded, onAppReady } = useEvent();
+  const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;

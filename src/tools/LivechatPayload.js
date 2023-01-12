@@ -1,4 +1,6 @@
 /* eslint-disable */
+
+import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
 import {
   browserName,
   isDefined,
@@ -8,7 +10,6 @@ import {
   recursiveBase64DecodeString,
   recursiveBase64EncodeString,
 } from './helpers';
-import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
 
 let PAYLOAD_COMMON_CONTENT = {
   contextId: null,
