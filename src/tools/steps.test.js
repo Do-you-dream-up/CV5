@@ -1,4 +1,4 @@
-import flatten from './steps';
+import { flattenSteps } from './steps';
 
 describe('flatten', () => {
   it('flattens an object with a nested structure into a single-level array', () => {
@@ -20,11 +20,11 @@ describe('flatten', () => {
       { e: 5, f: 6 },
     ];
 
-    expect(flatten(obj)).toEqual(expectedResult);
+    expect(flattenSteps(obj)).toEqual(expectedResult);
   });
 
   it('returns an array containing the input object if it has no nested structure', () => {
     const obj = { a: 1, b: 2 };
-    expect(flatten(obj)).toEqual([obj]);
+    expect(flattenSteps(obj)).toEqual([obj]);
   });
 });
