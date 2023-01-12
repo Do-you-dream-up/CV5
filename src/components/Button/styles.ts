@@ -1,7 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles((theme) => {
-  console.log('🚀 ~ file: styles.ts:6 ~ createUseStyles ~ theme', theme);
+export default createUseStyles<any, any>((theme: any): any => {
   const contained = ({ color = 'primary' } = {}) => ({
     borderRadius: theme.shape.radius.inner,
     padding: [['.5em', '1em']],
