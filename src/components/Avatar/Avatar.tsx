@@ -31,15 +31,23 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
       return path;
     } else {
       const requestImage = configuration?.avatar?.request?.image;
+      console.log('🚀 ~ file: Avatar.tsx:34 ~ const_path=useMemo ~ requestImage', requestImage);
       const responseImage = configuration?.avatar?.response?.image;
-      return {
+      const result = {
         request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,
         response: responseImage?.includes('base64')
           ? responseImage
           : `${process.env.PUBLIC_URL}assets/${configuration?.avatar?.response?.image}`,
       }[type];
+      return result;
     }
-  }, [configuration?.avatar.request.image, configuration?.avatar.response.image, linkAvatarDependOnType, path, type]);
+  }, [
+    configuration?.avatar?.request?.image,
+    configuration?.avatar?.response?.image,
+    linkAvatarDependOnType,
+    path,
+    type,
+  ]);
 
   const _className = useMemo(() => {
     return c('dydu-avatar', `dydu-avatar-${type}`, classes.base, classes[type], {
@@ -47,7 +55,11 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
     });
   }, [background, classes, type]);
 
-  return <div className={_className}>{!!_path && <img alt={`${type} avatar`} src={_path} />}</div>;
+  return (
+    <div className={_className}>
+      {!!_path && <img alt={`${type} avatar`} className="dydu-avatar-image" src={_path} />}
+    </div>
+  );
 };
 
 export default Avatar;

@@ -1,5 +1,5 @@
 import { JssProvider, ThemeProvider } from 'react-jss';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { RenderOptions, render, screen } from '@testing-library/react';
 
 import { ConfigurationProvider } from '../contexts/ConfigurationContext';

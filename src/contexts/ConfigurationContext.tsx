@@ -4,7 +4,7 @@ import dydu from '../tools/dydu';
 
 interface ConfigurationProviderProps {
   children: ReactNode;
-  configuration: Models.Configuration;
+  configuration: any;
 }
 
 interface ConfigurationContextProps {
