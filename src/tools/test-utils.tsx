@@ -8,7 +8,7 @@ import ViewModeProvider from '../contexts/ViewModeProvider';
 import configuration from '../../public/override/configuration.json';
 import theme from '../../public/override/theme.json';
 
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+const AllTheProviders = ({ children }: { children: any }) => {
   return (
     <JssProvider>
       <ThemeProvider theme={theme}>

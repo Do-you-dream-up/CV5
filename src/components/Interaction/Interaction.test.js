@@ -1,6 +1,6 @@
 import { ContextQuery, contextName } from '../../setupTests';
 
-import Interaction from '../Interaction/index';
+import Interaction from './index';
 import { render } from '../../tools/test-utils';
 
 jest.mock('../../contexts/DialogContext', () => ({

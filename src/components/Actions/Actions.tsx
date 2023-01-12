@@ -32,8 +32,8 @@ interface ActionProps {
 
 interface ActionsProps {
   actions: ActionProps[];
-  className: string;
-  targetStyleKey: string;
+  className?: string;
+  targetStyleKey?: string;
 }
 
 const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
@@ -41,7 +41,10 @@ const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
 
   const filteredActions = useMemo(() => actions.filter((it) => it.when === undefined || it.when), [actions]);
 
-  const _classes = useMemo(() => classes[targetStyleKey] || classes.root, [targetStyleKey, classes]);
+  const _classes = useMemo(
+    () => (targetStyleKey && classes[targetStyleKey]) || classes.root,
+    [targetStyleKey, classes],
+  );
 
   return (
     actions?.length > 0 && (

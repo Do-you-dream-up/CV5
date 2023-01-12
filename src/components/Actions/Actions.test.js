@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import Actions from '../Actions/Actions';
+import Actions from './Actions';
 import { render } from '../../tools/test-utils';
 
 describe('Actions.tsx', () => {
