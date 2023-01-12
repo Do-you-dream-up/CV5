@@ -31,7 +31,6 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
       return path;
     } else {
       const requestImage = configuration?.avatar?.request?.image;
-      console.log('🚀 ~ file: Avatar.tsx:34 ~ const_path=useMemo ~ requestImage', requestImage);
       const responseImage = configuration?.avatar?.response?.image;
       const result = {
         request: requestImage?.includes('base64') ? requestImage : `${process.env.PUBLIC_URL}assets/${requestImage}`,

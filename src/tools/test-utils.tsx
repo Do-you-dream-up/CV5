@@ -7,12 +7,20 @@ import { EventsProvider } from '../contexts/EventsContext';
 import ViewModeProvider from '../contexts/ViewModeProvider';
 import configuration from '../../public/override/configuration.json';
 import theme from '../../public/override/theme.json';
+import { mergeDeep } from './object';
 
-const AllTheProviders = ({ children }: { children: any }) => {
+interface CustomProps {
+  configuration?: Models.Configuration;
+  theme?: Models.Theme;
+}
+
+const ProviderWrapper = ({ children, customProp }: { children: any; customProp?: CustomProps }) => {
+  const mergedConfiguration = mergeDeep(configuration, customProp?.configuration);
+  const mergedTheme = mergeDeep(theme, customProp?.theme);
   return (
     <JssProvider>
-      <ThemeProvider theme={theme}>
-        <ConfigurationProvider configuration={configuration}>
+      <ThemeProvider theme={mergedTheme}>
+        <ConfigurationProvider configuration={mergedConfiguration}>
           <ViewModeProvider>
             <EventsProvider>{children}</EventsProvider>
           </ViewModeProvider>
@@ -22,7 +30,10 @@ const AllTheProviders = ({ children }: { children: any }) => {
   );
 };
 
-const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
-  render(ui, { wrapper: AllTheProviders, ...options });
+const customRender = (ui: ReactElement, customProp?: CustomProps, options?: Omit<RenderOptions, 'wrapper'>) =>
+  render(ui, {
+    wrapper: () => <ProviderWrapper children={ui} customProp={customProp} />,
+    ...options,
+  });
 
 export { customRender as render, screen };
