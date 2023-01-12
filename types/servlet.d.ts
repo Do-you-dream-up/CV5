@@ -7,6 +7,7 @@ declare namespace Servlet {
     | 'DMDisabledKnowledge'
     | 'RWOneReword'
     | 'DMRewordClickedAuto';
+
   export type ChatResponseFeedbackType = 'positive' | 'negative' | 'withoutAnswer';
 
   export interface ChatResponseValues {

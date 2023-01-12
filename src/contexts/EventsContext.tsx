@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
-import PropTypes from 'prop-types';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
@@ -10,62 +9,72 @@ import { useConfiguration } from './ConfigurationContext';
 import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
-let chatboxRef = null;
-const saveChatboxRef = (ref) => (chatboxRef = ref);
+interface EventsContextProps {
+  isChatboxLoadedAndReady?: boolean;
+  hasAfterLoadBeenCalled?: boolean;
+  onAppReady?: () => void;
+  onChatboxLoaded?: (chatboxNodeElement: any) => void;
+  onNewMessage?: () => void;
+  onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
+  event?: (str: string) => void;
+  dispatchEvent?: (featureName: string, eventName: string) => void;
+  getChatboxRef?: () => null;
+}
 
-export const useEvent = () => {
-  return useContext(EventsContext);
-};
+interface EventsProviderProps {
+  children: ReactElement;
+}
 
-const INITIAL_TITLE_TAB = document.title;
-const NEW_TITLE_TAB = '1 nouveau message';
+export const useEvent = () => useContext(EventsContext);
 
-const setDocumentTitle = (text) => (document.title = text);
-const getDocumentTitle = () => document.title;
-const execDyduAfterLoad = () =>
-  new Promise((resolve) => {
-    const _fnAfterLoad = window?.dyduAfterLoad;
-    if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
-    resolve(true);
-  });
+export const EventsContext = createContext<EventsContextProps>({});
 
-const stopBlink = () => {
-  if (!isBlinking()) {
-    return;
-  }
-
-  setDocumentTitle(INITIAL_TITLE_TAB);
-  clearInterval(refBlinkInterval);
-  refBlinkInterval = null;
-};
-
-const isBlinking = () => isDefined(refBlinkInterval);
-
-const blink = () => {
-  if (isBlinking()) {
-    return;
-  }
-
-  refBlinkInterval = setInterval(() => {
-    document.title = getDocumentTitle() === NEW_TITLE_TAB ? INITIAL_TITLE_TAB : NEW_TITLE_TAB;
-  }, 1000);
-};
-
-export const EventsContext = createContext();
-
-let refBlinkInterval = null;
-
-export function EventsProvider({ children }) {
+export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { isOpen } = useViewMode();
   const { configuration } = useConfiguration();
-  const { active, features = {}, verbosity = 0 } = configuration.events;
 
-  const [event, setEvent] = useState();
+  const [event, setEvent] = useState<any | null>();
   const [isMouseIn, setMouseIn] = useState(false);
-  const [afterLoadCalled, setAfterLoadCalled] = useState(false);
+  const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
   const { checked: serverStatusChecked } = useServerStatus();
+
+  let refBlinkInterval: any;
+  let chatboxRef: any;
+
+  const INITIAL_TITLE_TAB = document.title;
+  const NEW_TITLE_TAB = '1 nouveau message';
+
+  const saveChatboxRef = (ref: any) => (chatboxRef = ref);
+
+  const setDocumentTitle = (text: string) => (document.title = text);
+
+  const execDyduAfterLoad = () =>
+    new Promise((resolve) => {
+      const _fnAfterLoad = window?.dyduAfterLoad;
+      if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
+      resolve(true);
+    });
+
+  const stopBlink = () => {
+    if (!isBlinking()) return;
+    setDocumentTitle(INITIAL_TITLE_TAB);
+    clearInterval(refBlinkInterval);
+    refBlinkInterval = undefined;
+  };
+
+  const isBlinking = () => isDefined(refBlinkInterval);
+
+  const blink = () => {
+    if (isBlinking()) {
+      return;
+    }
+
+    refBlinkInterval = setInterval(() => {
+      document.title = document.title === NEW_TITLE_TAB ? INITIAL_TITLE_TAB : NEW_TITLE_TAB;
+    }, 1000);
+  };
 
   useEffect(() => {
     if (isMouseIn) stopBlink();
@@ -112,30 +121,35 @@ export function EventsProvider({ children }) {
   );
 
   const onNewMessage = useCallback(() => {
-    isOpen && chatboxRef && chatboxRef.dispatchEvent(eventNewMessage);
+    isOpen && chatboxRef?.dispatchEvent(eventNewMessage);
   }, [isOpen]);
 
   const onEvent =
     (feature) =>
     (event, ...rest) => {
       setEvent(`${feature}/${event}`);
-      if (active) {
-        const actions = (features[feature] || {})[event];
+      if (configuration?.events.active) {
+        const actions = (configuration?.events?.[feature] || {})[event];
         if (Array.isArray(actions)) {
           actions.forEach((action) => {
-            if (verbosity > 1) {
+            if (configuration?.events.verbosity > 1) {
               console.info(`[Dydu][${feature}:${event}] '${action}' ${rest}`);
             }
             const f = dotget(window, action);
             if (typeof f === 'function') {
               f(...rest);
-            } else if (verbosity > 0) {
+            } else if (configuration?.events.verbosity > 0) {
               console.warn(`[Dydu] Action '${action}' was not found in 'window' object.`);
             }
           });
         }
       }
     };
+
+  const dispatchEvent = (featureName, eventName) => {
+    const eventHandler = onEvent(featureName);
+    eventHandler && eventHandler(eventName);
+  };
 
   return (
     <EventsContext.Provider
@@ -147,13 +161,10 @@ export function EventsProvider({ children }) {
         onChatboxLoaded,
         onNewMessage,
         onEvent,
+        dispatchEvent,
         event,
         getChatboxRef: () => chatboxRef,
       }}
     />
   );
-}
-
-EventsProvider.propTypes = {
-  children: PropTypes.node,
 };

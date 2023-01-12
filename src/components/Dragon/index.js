@@ -1,11 +1,11 @@
 import { createElement, useCallback, useEffect, useRef, useState } from 'react';
 
-import { DragonProvider } from 'src/contexts/DragonContext';
-import { Local } from 'src/tools/storage';
+import { DragonProvider } from '../../contexts/DragonContext';
+import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
-import { useConfiguration } from 'src/contexts/ConfigurationContext';
-import useEvent from 'src/tools/hooks/event';
-import useViewport from 'src/tools/hooks/useViewport';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import useEvent from '../../tools/hooks/event';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * Wrapper to enable dragging on other components.

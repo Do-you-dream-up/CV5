@@ -330,6 +330,7 @@ Interaction.propTypes = {
   secondary: PropTypes.bool,
   steps: PropTypes.array,
   templateName: PropTypes.string,
+  contexts: PropTypes.any,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,

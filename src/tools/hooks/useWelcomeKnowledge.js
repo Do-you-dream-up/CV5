@@ -2,8 +2,8 @@ import { isDefined, isEmptyString } from '../helpers';
 import { useMemo, useState } from 'react';
 
 import dydu from '../dydu';
-import { useConfiguration } from 'src/contexts/ConfigurationContext';
-import { useLivechat } from 'src/contexts/LivechatContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 const useWelcomeKnowledge = () => {
   const { configuration } = useConfiguration();

@@ -2,7 +2,7 @@ import '../../tools/prototypes/strings';
 
 import { act, render } from '@testing-library/react';
 
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
+import { TUNNEL_MODE } from '../constants';
 import WS from 'jest-websocket-mock';
 import dydu from '../dydu';
 import { extractDomainFromUrl } from '../helpers';
