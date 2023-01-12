@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 
-import Button from '../Button';
+import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';

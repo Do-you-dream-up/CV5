@@ -1,4 +1,4 @@
-import Button from '../Button';
+import Button from '../Button/Button';
 import Menu from '../Menu';
 import c from 'classnames';
 import { useMemo } from 'react';
@@ -18,7 +18,7 @@ interface ActionProps {
   type?: any;
   when?: boolean;
   disabled?: boolean;
-  variant?: string;
+  variant?: 'contained' | 'icon' | 'text';
   secondary?: boolean;
   spin?: boolean;
   href?: string;
