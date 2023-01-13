@@ -3,7 +3,7 @@
 import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
-import Button from '../Button';
+import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';

@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["*"]
+      "*": ["*"],
+      "test-utils": ["./src/tools/test-utils"]
     },
     "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./types"],

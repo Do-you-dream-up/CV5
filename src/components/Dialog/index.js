@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
-import PoweredBy from '../PoweredBy';
+import PoweredBy from '../PoweredBy/PoweredBy';
 import PromptEmail from '../PromptEmail';
 import PropTypes from 'prop-types';
 import Spaces from '../Spaces';

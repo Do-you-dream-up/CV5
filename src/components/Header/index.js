@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ACTIONS } from '../../tools/talk';
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Banner from '../Banner';
 import { DialogContext } from '../../contexts/DialogContext';

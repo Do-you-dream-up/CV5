@@ -7,14 +7,16 @@ import useStyles from './styles';
 /**
  * Display the "powered by dydu" phrase at the end of the conversation, if this parameter is active into the Dialog component
  */
-export default function PoweredBy() {
+const PoweredBy = () => {
   const { configuration } = useConfiguration();
   const classes = useStyles();
-  const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(
+    configuration?.application.defaultLanguage[0],
+  );
   const lang = localStorage.getItem('dydu.locale');
 
   useEffect(() => {
-    setSelectedLanguage(lang);
+    lang && setSelectedLanguage(lang);
   }, [lang]);
 
   return (
@@ -49,4 +51,5 @@ export default function PoweredBy() {
       </p>
     </div>
   );
-}
+};
+export default PoweredBy;

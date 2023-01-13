@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';

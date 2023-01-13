@@ -1,6 +1,6 @@
 import { createElement, useCallback, useContext, useEffect } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';

@@ -30,9 +30,9 @@ import {
   secondsToMs,
   strContains,
   toFormUrlEncoded,
-} from './helpers';
+} from '../helpers';
 
-import { VAR_TYPE } from './constants';
+import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
 
 describe('helpers', () => {

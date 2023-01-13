@@ -1,6 +1,6 @@
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { Session } from '../../tools/storage';
 import Skeleton from '../Skeleton';
 import c from 'classnames';

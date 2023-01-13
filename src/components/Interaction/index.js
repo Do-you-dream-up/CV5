@@ -3,7 +3,7 @@ import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
 import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import Avatar from '../Avatar';
+import Avatar from '../Avatar/Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
