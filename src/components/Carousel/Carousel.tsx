@@ -3,7 +3,6 @@ import { Children, useCallback, useContext, useEffect, useState } from 'react';
 import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
-import PropTypes from 'prop-types';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
@@ -16,23 +15,34 @@ import useViewport from '../../tools/hooks/useViewport';
  *
  * Format children in a carousel UI with previous and next controls.
  */
-export default function Carousel({ children, className, steps, templateName, ...rest }) {
+
+interface CarouselProps {
+  children: any[];
+  className: string;
+  steps: [];
+  templateName: string;
+}
+
+const Carousel = ({ children, className, steps, templateName, ...rest }: CarouselProps) => {
+  const { t } = useTranslation('translation');
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
-  const { offset, offsetBetweenCard } = templateName ? configuration.templateCarousel : configuration.carousel;
-  const hasBullets = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
-  const hasControls = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState(steps ? steps[0] : 0);
-  const { t } = useTranslation('translation');
-  const previous = t('carousel.previous');
-  const next = t('carousel.next');
+
+  const { offset, offsetBetweenCard } = templateName ? configuration.templateCarousel : configuration.carousel;
+
+  const hasBullets = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
+  const hasControls = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
+
   const length = Children.count(children);
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
-  const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
-  const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
+  const automaticSecondary = isFullScreen
+    ? !!configuration?.secondary.automatic?.fullScreen
+    : !!configuration?.secondary.automatic?.desktop;
+
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const classes = useStyles({ index, length, offset, offsetBetweenCard });
+  const classes: any = useStyles({ index, length, offset, offsetBetweenCard });
 
   const handlers = useSwipeable({
     onSwipedLeft: () => onNext(),
@@ -50,7 +60,11 @@ export default function Carousel({ children, className, steps, templateName, ...
   const previousAction = [
     {
       children: (
-        <img alt={previous} src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`} title={previous} />
+        <img
+          alt={t('carousel.previous')}
+          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`}
+          title={t('carousel.previous')}
+        />
       ),
       disabled: !hasPrevious(),
       onClick: onPrevious,
@@ -60,7 +74,13 @@ export default function Carousel({ children, className, steps, templateName, ...
 
   const nextAction = [
     {
-      children: <img alt={next} src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`} title={next} />,
+      children: (
+        <img
+          alt={t('carousel.next')}
+          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`}
+          title={t('carousel.next')}
+        />
+      ),
       disabled: !hasNext(),
       onClick: onNext,
       variant: 'icon',
@@ -88,7 +108,7 @@ export default function Carousel({ children, className, steps, templateName, ...
 
   return (
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div children={children} className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
+      <div className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
         {children.map((it, i) => (
           <div
             children={it}
@@ -118,11 +138,6 @@ export default function Carousel({ children, className, steps, templateName, ...
       )}
     </div>
   );
-}
-
-Carousel.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.node),
-  className: PropTypes.string,
-  steps: PropTypes.array,
-  templateName: PropTypes.string,
 };
+
+export default Carousel;

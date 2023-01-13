@@ -15,7 +15,8 @@ const READ_MORE_CARACTERS_TEXT = {
 export default function ProductTemplate({ classe = null, html }) {
   const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
-  const { product, text } = JSON.parse(html || '{}');
+  const json = JSON.parse(html || '{}');
+  const { product, text } = json;
   const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);

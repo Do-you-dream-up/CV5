@@ -1,8 +1,8 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
 import { createElement, useEffect, useMemo, useState } from 'react';
 
-import CarouselTemplate from '../CarouselTemplate';
-import ProductTemplate from '../ProductTemplate';
+import CarouselTemplate from '../CarouselTemplate/CarouselTemplate';
+import ProductTemplate from '../ProductTemplate/ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import c from 'classnames';
