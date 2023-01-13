@@ -161,6 +161,13 @@ export default function Input({ onRequest, onResponse }) {
       nodeElementInputContainer.setAttribute('aria-labelledby', 'dydu-input');
       nodeElementInputContainer.setAttribute('title', 'dydu-input-container');
     }
+
+    const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
+    if (isDefined(nodeElementSuggestionsContainer)) {
+      nodeElementSuggestionsContainer.setAttribute('aria-label', 'dydu-input-suggestions-container');
+      nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
+      nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
+    }
   }, []);
 
   const theme = {
