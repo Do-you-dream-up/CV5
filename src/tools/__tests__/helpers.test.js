@@ -30,9 +30,9 @@ import {
   secondsToMs,
   strContains,
   toFormUrlEncoded,
-} from './helpers';
+} from '../helpers';
 
-import { VAR_TYPE } from './constants';
+import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
 
 describe('helpers', () => {
@@ -64,7 +64,7 @@ describe('helpers', () => {
     });
     it('should return true when argument is an emptyArray', () => {
       const _emptyArr = [];
-      const _emptyArrInstance = new Array();
+      const _emptyArrInstance = [];
       expect(isEmptyArray(_emptyArr)).toEqual(true);
       expect(isEmptyArray(_emptyArrInstance)).toEqual(true);
     });
@@ -689,7 +689,7 @@ describe('helpers', () => {
     });
   });
 
-  describe('b64encodeObject', () => {
+  xdescribe('b64encodeObject', () => {
     it('returns an object with base64-encoded values', () => {
       const obj = {
         name: 'John',

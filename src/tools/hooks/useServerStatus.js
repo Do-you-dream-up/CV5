@@ -4,6 +4,7 @@ import dydu from '../dydu';
 
 export default function useServerStatus() {
   const [result, setResult] = useState(null);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     dydu.setServerStatusCheck(fetch);
@@ -15,15 +16,21 @@ export default function useServerStatus() {
 
   const fetch = useCallback(() => {
     return new Promise((resolve) => {
-      dydu.getServerStatus().then((res) => {
-        setResult(res);
-        return resolve(res);
-      });
+      dydu
+        .getServerStatus()
+        .then((res) => {
+          setResult(res);
+          return resolve(res);
+        })
+        .finally(() => {
+          setChecked(true);
+        });
     });
   }, []);
 
   return {
     fetch,
     result,
+    checked,
   };
 }

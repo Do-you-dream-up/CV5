@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useLayoutEffect } from 'react';
-import { getOidcEnableStatus, setOidcEnableCookie, setOidcWithAuthEnableCookie } from '../tools/oidc';
+import { createContext, useEffect } from 'react';
 
 import Storage from '../components/auth/Storage';
 import { isLoadedFromChannels } from '../tools/wizard';
@@ -17,11 +16,6 @@ export const OidcProvider = ({ children }) => {
 
   const hasAuthStorageCheck = configuration.checkAuthorization?.active;
 
-  useLayoutEffect(() => {
-    setOidcEnableCookie(configuration?.oidc?.enable);
-    setOidcWithAuthEnableCookie(configuration?.oidc?.withAuth);
-  }, []);
-
   useEffect(() => {
     if (hasAuthStorageCheck && !token?.access_token) close();
   }, [close, hasAuthStorageCheck, token?.access_token]);
@@ -29,7 +23,7 @@ export const OidcProvider = ({ children }) => {
   const value = {};
 
   const displayChatbox = () => {
-    if (getOidcEnableStatus() && !token?.access_token) {
+    if (configuration?.oidc?.enable && !token?.access_token) {
       return false;
     }
     return true;

@@ -179,7 +179,7 @@ export const osName = () => {
 export const b64encodeObject = (o) => {
   const res = Object.keys(o).reduce((resultMap, key) => {
     const value = o[key];
-    resultMap[key] = !isString(value) ? value.b64encode() : isObject(value) ? b64encodeObject(value) : value;
+    resultMap[key] = !isString(value) ? value.toBase64() : isObject(value) ? b64encodeObject(value) : value;
 
     return resultMap;
   }, {});
@@ -287,4 +287,36 @@ export const prependObjectKeysWithTag = (tag, object) => {
     console.error('While executing prependObjectKeysWithTag()', e);
     return {};
   }
+};
+
+export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));
+
+export const removeStartingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeStartingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesStartsWithSlash = s.startsWith(slashTag);
+  const rmSlashAtStartString = (s) => s.slice(1);
+  return !doesStartsWithSlash ? s : removeStartingSlash(rmSlashAtStartString(s));
+};
+
+export const removeEndingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeEndingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesEndsWithSlash = s.endsWith(slashTag);
+  const rmSlashAtEndString = (s) => s.slice(0, s.length - 1);
+  return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };

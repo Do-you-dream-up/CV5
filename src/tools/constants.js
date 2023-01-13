@@ -7,6 +7,12 @@ export const SOLUTION_TYPE = {
   livechat: 'LIVECHAT',
 };
 
+export const FEEDBACK_RESPONSE = {
+  positive: 'positive',
+  negative: 'negative',
+  noResponseGiven: 'withoutAnswer',
+};
+
 export const RESPONSE_QUERY_FORMAT = {
   json: 'JSon',
   xml: 'XML',
@@ -21,6 +27,13 @@ export const VAR_TYPE = {
   array: 'array',
   number: 'number',
 };
+
+export const TUNNEL_MODE = {
+  polling: 'polling',
+  websocket: 'websocket',
+};
+
+export const LIVECHAT_ID_LISTENER = 'listener/livechat';
 
 export const INTERACTION_TEMPLATE = {
   carousel: 'dydu_carousel_001',

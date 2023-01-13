@@ -1,11 +1,10 @@
 /* eslint-disable */
 
+import { SOLUTION_TYPE, TUNNEL_MODE } from '../constants';
 import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import LivechatPayload from '../LivechatPayload';
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
-import { SOLUTION_TYPE } from '../constants';
 
 let onOperatorWriting = null;
 let displayResponse = null;

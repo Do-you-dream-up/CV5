@@ -1,6 +1,6 @@
 import { createElement, useContext, useEffect } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
 import PropTypes from 'prop-types';

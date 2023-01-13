@@ -1,6 +1,6 @@
 import { createElement, useContext } from 'react';
 
-import Button from '../Button';
+import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
 import MenuList from '../MenuList';
 import PropTypes from 'prop-types';

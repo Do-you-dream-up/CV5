@@ -1,10 +1,22 @@
-import { JssProvider, ThemeProvider } from 'react-jss';
-
-import { ConfigurationContext } from './contexts/ConfigurationContext';
-import { DialogContext } from './contexts/DialogContext';
-import { isDefined } from './tools/helpers';
+import { JSDOM } from 'jsdom';
+import React from 'react';
 import { render } from '@testing-library/react';
+import { DialogContext } from './contexts/DialogContext';
+import { ConfigurationContext } from './contexts/ConfigurationContext';
+import { isDefined } from './tools/helpers';
+import { JssProvider, ThemeProvider } from 'react-jss';
 import theme from '../public/override/theme.json';
+
+const config = {
+  url: 'https://www.example.com/',
+  domain: 'example.com',
+};
+
+const dom = new JSDOM('', config);
+global.document = dom.window.document;
+global.document.domain = config.domain;
+global.window = dom.window;
+global.location = dom.window.location;
 
 export const contextName = {
   dialogContext: 'dialogContext',

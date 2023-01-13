@@ -1,4 +1,4 @@
-import Button from '../Button';
+import Button from '../Button/Button';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import { createElement } from 'react';

@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 
-import Button from '../Button';
+import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';

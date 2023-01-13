@@ -1,4 +1,4 @@
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';

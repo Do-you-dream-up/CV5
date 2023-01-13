@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ACTIONS } from '../../tools/talk';
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Banner from '../Banner';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -16,9 +16,8 @@ import Tabs from '../Tabs';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -32,9 +31,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({ configuration });
-  const theme = useTheme();
   const { ready, t } = useTranslation('translation');
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { actions: hasActions = {} } = configuration.header;
   const { items: consultationSpaces = [] } = configuration.spaces;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;

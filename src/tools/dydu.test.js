@@ -1,4 +1,6 @@
-import dydu from './dydu';
+/* eslint-disable */
+import dydu from '../tools/dydu';
+import { fakeLocalStorage } from '../test/fixtures/globalFixtures';
 
 const test = {
   url: 'doyoudreamup.com/test/',
@@ -61,17 +63,54 @@ Object.defineProperty(window, 'location', {
   },
 });
 
-describe('dydu.getSpace', () => {
+describe('dydu.js', () => {
   const { location } = window;
 
-  it('should use the "urlpart" strategy for space consultation detection', () => {
-    // GIVEN
-    const detectionStrategy = spaceConfiguration.detection;
+  describe('getSpace', () => {
+    it('should use the "urlpart" strategy for space consultation detection', () => {
+      // GIVEN
+      const detectionStrategy = spaceConfiguration.detection;
 
-    // WHEN
-    const space = dydu.getSpace(detectionStrategy);
+      // WHEN
+      const space = dydu.getSpace(detectionStrategy);
 
-    // THEN
-    expect(space).toEqual(test.space);
+      // THEN
+      expect(space).toEqual(test.space);
+    });
+  });
+
+  describe('getContextId', () => {
+    beforeAll(() => {
+      Object.defineProperty(window, 'localStorage', {
+        value: fakeLocalStorage,
+      });
+    });
+
+    it('should get the botId by request', () => {
+      const contextId = dydu.getContextId();
+      // no lc
+      // with request
+    });
+
+    it('should get the botId by localStorage request', () => {
+      const k = 'somekey';
+      localStorage.setItem(k, JSON.stringify({ value: 'ok' }));
+      expect(JSON.parse(localStorage.getItem(k)).value).toEqual('ok');
+      // no request
+      // with lc
+    });
+
+    it('should combine botId and directoryId in a whole string to create contextIdKey', () => {
+      // bot; dir
+      // expect(Local.combineBotDir(bot,dir) === 'botid/dir')
+    });
+
+    it('should retrieve the correct contextId using botId and directoryId', () => {
+      // combine11 = boti1/dir1; context1=1
+      // combine12 = boti1/dir2; context2=2
+      // expect(get(combine1) !== combine2)
+    });
+
+    it('should', () => {});
   });
 });

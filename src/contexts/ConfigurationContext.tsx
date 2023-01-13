@@ -1,16 +1,26 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
+
+interface ConfigurationProviderProps {
+  children: ReactNode;
+  configuration: any;
+}
+
+interface ConfigurationContextProps {
+  configuration?: Models.Configuration;
+  reset?: any;
+  update?: any;
+}
 
 export const useConfiguration = () => {
   return useContext(ConfigurationContext);
 };
 
-export const ConfigurationContext = createContext();
+export const ConfigurationContext = createContext<ConfigurationContextProps>({});
 
-export const ConfigurationProvider = ({ children, configuration: configurationProp }) => {
-  const [configuration, setConfiguration] = useState(configurationProp);
+export const ConfigurationProvider = ({ children, configuration: configurationProp }: ConfigurationProviderProps) => {
+  const [configuration, setConfiguration] = useState<Models.Configuration>(configurationProp);
 
   useEffect(() => {
     try {
@@ -47,7 +57,7 @@ export const ConfigurationProvider = ({ children, configuration: configurationPr
     });
   }, []);
 
-  const contextValue = useMemo(() => {
+  const contextValue = useMemo<ConfigurationContextProps>(() => {
     return {
       configuration,
       reset,
@@ -56,9 +66,4 @@ export const ConfigurationProvider = ({ children, configuration: configurationPr
   }, [configuration, reset, update]);
 
   return <ConfigurationContext.Provider value={contextValue}>{children}</ConfigurationContext.Provider>;
-};
-
-ConfigurationProvider.propTypes = {
-  children: PropTypes.element,
-  configuration: PropTypes.object.isRequired,
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import Input from '../Input';
 import PropTypes from 'prop-types';
 import c from 'classnames';

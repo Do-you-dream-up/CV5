@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import useWebsocket, { ReadyState } from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
+import { TUNNEL_MODE } from '../constants';
 import { isDefined } from '../helpers';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];

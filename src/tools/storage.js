@@ -1,4 +1,4 @@
-import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString } from './helpers';
+import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString, trimSlashes } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
@@ -341,6 +341,27 @@ export class Local {
   });
 
   static welcomeKnowledge = Object.create({
+    getSessionStorageDefaultLocalStorage: () => {
+      const mockStorage = {
+        setItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to save in storage',
+            { key, value },
+          ),
+        getItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to load from storage',
+            { key, value },
+          ),
+        removeItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to remove from storage',
+            { key, value },
+          ),
+      };
+      let storage = window?.sessionStorage || window?.localStorage || mockStorage;
+      return storage;
+    },
     isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
     load: (botId) => {
       const mapStore = Local.welcomeKnowledge.loadMapStore();
@@ -352,16 +373,46 @@ export class Local {
       mapStore[botId] = wkInteraction;
       Local.welcomeKnowledge.saveMapStore(mapStore);
     },
-    saveMapStore: (value) => localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify(value)),
+    saveMapStore: (value) =>
+      Local.welcomeKnowledge
+        .getSessionStorageDefaultLocalStorage()
+        .setItem(Local.welcomeKnowledge.getKey(), _stringify(value)),
     loadMapStore: () => {
-      let mapStore = _parse(localStorage.getItem(Local.welcomeKnowledge.getKey()));
-      if (!isDefined(mapStore)) {
-        mapStore = {};
-        localStorage.setItem(Local.welcomeKnowledge.getKey(), _stringify({}));
+      const createInitialMapStore = () => {
+        const initialMapStore = {};
+        Local.welcomeKnowledge
+          .getSessionStorageDefaultLocalStorage()
+          .setItem(Local.welcomeKnowledge.getKey(), _stringify(initialMapStore));
+        return initialMapStore;
+      };
+
+      try {
+        let mapStore = _parse(
+          Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage().getItem(Local.welcomeKnowledge.getKey()),
+        );
+        return isDefined(mapStore) ? mapStore : createInitialMapStore();
+      } catch (e) {
+        return createInitialMapStore();
       }
-      return mapStore;
     },
     getKey: () => `dydu.welcomeKnowledge`,
+  });
+
+  static contextId = Object.create({
+    createKey: (botId = '', directoryId = '') => {
+      const separator = isEmptyString(directoryId) ? '' : '/';
+      return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
+    },
+    save: (key, value) => {
+      Local.byBotId(key).set(Local.names.context, value);
+      Local.set(Local.names.context, value);
+    },
+    isSet: (key) => {
+      return isDefined(Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context));
+    },
+    load: (key) => {
+      return Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context);
+    },
   });
 }
 

@@ -1,7 +1,7 @@
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import Autosuggest from 'react-autosuggest';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';

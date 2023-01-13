@@ -1,22 +1,29 @@
+import { LIVECHAT_ID_LISTENER, TUNNEL_MODE } from '../tools/constants';
+import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
-import PropTypes from 'prop-types';
 import dydu from '../tools/dydu';
 import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
-import useQueue from '../tools/hooks/useQueue';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
+import useQueue from '../tools/hooks/useQueue';
 
-export const TUNNEL_MODE = {
-  polling: 'polling',
-  websocket: 'websocket',
-};
+interface LivechatContextProps {
+  isWebsocket?: boolean;
+  send?: (str: string) => void;
+  isLivechatOn?: boolean;
+  typing?: (input: any) => void;
+}
 
-const LivechatContext = createContext({});
+interface LivechatProviderProps {
+  children?: ReactElement;
+}
+
 export const useLivechat = () => useContext(LivechatContext);
+
+const LivechatContext = createContext<LivechatContextProps>({});
 
 const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;
 const findFirstAvailableTunnelInList = (tunnelList) => tunnelList.find((tunnel) => tunnel.isAvailable());
@@ -24,11 +31,9 @@ const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
 const containsStartLivechatSpecialAction = (response) => response?.specialAction?.equals('StartPolling');
 
-const LIVECHAT_ID_LISTENER = 'listener/livechat';
-
-export function LivechatProvider({ children }) {
+export function LivechatProvider({ children }: LivechatProviderProps) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
-  const [tunnel, setTunnel] = useState(null);
+  const [tunnel, setTunnel] = useState<any>(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
   const { showSurvey } = useSurvey();
@@ -38,7 +43,7 @@ export function LivechatProvider({ children }) {
 
   const displayNotification = useCallback(
     (notification) => {
-      notify(recursiveBase64DecodeString(notification));
+      notify && notify(recursiveBase64DecodeString(notification));
     },
     [notify],
   );
@@ -192,7 +197,3 @@ export function LivechatProvider({ children }) {
   );
   return <LivechatContext.Provider value={dataContext}>{children}</LivechatContext.Provider>;
 }
-
-LivechatProvider.propTypes = {
-  children: PropTypes.object,
-};

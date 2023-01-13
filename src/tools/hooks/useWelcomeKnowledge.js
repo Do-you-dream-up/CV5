@@ -5,8 +5,6 @@ import dydu from '../dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 
-const fetchWelcomeKnowledge = dydu.getWelcomeKnowledge;
-
 export default function useWelcomeKnowledge() {
   const [result, setResult] = useState(null);
 
@@ -17,16 +15,16 @@ export default function useWelcomeKnowledge() {
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
-    return isDefined(result) || isLivechatOn || isTagWelcomeDefined;
+    return !isDefined(result) && !isLivechatOn && isTagWelcomeDefined;
   }, [isLivechatOn, result, isTagWelcomeDefined]);
 
   const fetch = useCallback(() => {
-    if (!canRequest) return Promise.resolve();
-
-    return fetchWelcomeKnowledge(tagWelcome).then((wkResponse) => {
-      setResult(wkResponse);
-      return wkResponse;
-    });
+    return !canRequest
+      ? Promise.resolve()
+      : dydu.getWelcomeKnowledge(tagWelcome).then((wkResponse) => {
+          setResult(wkResponse);
+          return wkResponse;
+        });
     // eslint-disable-next-line
   }, [canRequest, isLivechatOn, result]);
 
