@@ -36,15 +36,15 @@ describe('Actions.tsx', () => {
     },
   ];
 
-  test('Load component with no actions', async () => {
+  test('Should render no components because Array is empty', async () => {
     const renderElement = render(<Actions actions={[]} />);
     const { container } = renderElement;
     expect(container.firstChild).toBeNull();
   });
 
-  test('Load component with actions', async () => {
+  test('Should render the same number of elements as the length of the argument array', async () => {
     const { container } = render(<Actions actions={actions} />);
     expect(container.children[0]).toHaveClass('dydu-actions');
-    expect(container.getElementsByClassName('dydu-button').length).toBe(3);
+    expect(container.getElementsByClassName('dydu-button').length).toBe(actions.length);
   });
 });
