@@ -37,7 +37,7 @@ export default createUseStyles((theme) => ({
     position: 'absolute',
     right: 0,
     top: 0,
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
     },
   }),
