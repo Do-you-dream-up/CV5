@@ -288,3 +288,35 @@ export const prependObjectKeysWithTag = (tag, object) => {
     return {};
   }
 };
+
+export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));
+
+export const removeStartingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeStartingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesStartsWithSlash = s.startsWith(slashTag);
+  const rmSlashAtStartString = (s) => s.slice(1);
+  return !doesStartsWithSlash ? s : removeStartingSlash(rmSlashAtStartString(s));
+};
+
+export const removeEndingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeEndingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesEndsWithSlash = s.endsWith(slashTag);
+  const rmSlashAtEndString = (s) => s.slice(0, s.length - 1);
+  return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
+};

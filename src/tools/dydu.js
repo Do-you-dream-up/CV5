@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
@@ -398,6 +397,15 @@ export default new (class Dydu {
     return Local.clientId.load(clientIdKey);
   };
 
+  getContextIdStorageKey() {
+    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+  }
+
+  getContextIdFromLocalStorage() {
+    const lcContextIdKey = this.getContextIdStorageKey();
+    return Local.contextId.load(lcContextIdKey);
+  }
+
   /**
    * Read the context ID from the local storage and return it,
    * if the context ID not exist in local storage we fecth it from the API
@@ -405,6 +413,11 @@ export default new (class Dydu {
    * @returns {string} The context ID.
    */
   getContextId = async (forced) => {
+    if (!forced) {
+      const contextId = this.getContextIdFromLocalStorage();
+      if (isDefined(contextId)) return contextId;
+    }
+
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
@@ -415,16 +428,38 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/context/${BOT.id}/`;
-    if (Local.byBotId(BOT.id).get(Local.names.context) && !forced) {
-      return Local.byBotId(BOT.id).get(Local.names.context);
+    try {
+      const response = await this.emit(API.post, path, data);
+      this.setContextId(response?.contextId);
+      return response?.contextId;
+    } catch (e) {
+      console.error('While executing getContextId() ', e);
+      return '';
     }
-    if (Local.get(Local.names.context) && !forced) {
-      return Local.get(Local.names.context);
-    }
-    const response = await this.emit(API.post, path, data);
-    this.setContextId(response?.contextId);
-    return response?.contextId;
   };
+
+  saveContextIdToLocalStorage(value) {
+    try {
+      const lcContextIdKey = this.getContextIdStorageKey();
+      Local.contextId.save(lcContextIdKey, value);
+    } catch (e) {
+      return console.error('While executing setContextId : ', e);
+    }
+  }
+
+  /**
+   * Save the provided context ID in the local storage.
+   *
+   * @param {string} value - Context ID to save.
+   */
+  setContextId = (value) => {
+    if (isDefined(value)) this.saveContextIdToLocalStorage(value);
+  };
+
+  getConfiguration() {
+    return this.configuration;
+  }
+
   /**
    * Self-regeneratively return the currently selected locale.
    *
@@ -539,19 +574,6 @@ export default new (class Dydu {
   reset = async () => {
     return await this.getContextId(true);
   };
-
-  /**
-   * Save the provided context ID in the local storage.
-   *
-   * @param {string} value - Context ID to save.
-   */
-  setContextId = (value) => {
-    if (value !== undefined) {
-      Local.set(Local.names.context, value);
-      Local.byBotId(BOT.id).set(Local.names.context, value);
-    }
-  };
-
   /**
    * Save the currently selected locale in the local storage.
    *
@@ -839,19 +861,6 @@ export default new (class Dydu {
   post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
   get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
 
-  makeFormDataWithSurveyPayload = (payload) => {
-    try {
-      return qs.stringify({
-        contextUuid: payload.parameters.contextId,
-        solutionUsed: SOLUTION_TYPE.assistant,
-        fields: _stringify(payload.parameters.fields),
-      });
-    } catch (e) {
-      console.error('while creating form data with survey payload', e);
-      return null;
-    }
-  };
-
   formatFieldsForSurveyAnswerRequest = (survey = {}) => {
     const reducerPrependFieldTag = (objResult, fieldId) => {
       return {
@@ -947,10 +956,6 @@ export default new (class Dydu {
     });
   }
 
-  getConfiguration() {
-    return this.configuration;
-  }
-
   onConfigurationLoaded() {
     this.setInitialSpace(this.getConfiguration().spaces.items[0]);
     this.setQualificationMode(this.getConfiguration().qualification?.active);
@@ -967,14 +972,12 @@ export default new (class Dydu {
   }
 
   getWelcomeKnowledge = (tagWelcome) => {
-    const foundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
-    if (foundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
-
+    const wkFoundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
+    if (wkFoundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
     const talkOption = { doNotSave: true, hide: true };
     return this.talk(tagWelcome, talkOption).then((talkResponse) => {
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
       if (!isInteractionResponse) return null;
-
       delete talkResponse.contextId;
       Local.welcomeKnowledge.save(this.getBotId(), talkResponse);
       return talkResponse;
@@ -994,7 +997,6 @@ export default new (class Dydu {
       if (shouldShowSurvey) this.showSurveyCallback(response);
     } catch (e) {
       console.log('catched Error', e);
-      return;
     }
   }
 })();

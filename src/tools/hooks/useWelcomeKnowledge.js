@@ -1,42 +1,35 @@
 import { isDefined, isEmptyString } from '../helpers';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import dydu from '../dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 
-const useWelcomeKnowledge = () => {
-  const { configuration } = useConfiguration();
-  const { isLivechatOn } = useLivechat();
-
+export default function useWelcomeKnowledge() {
   const [result, setResult] = useState(null);
 
+  const { configuration } = useConfiguration();
+  const { isLivechatOn } = useLivechat();
   const tagWelcome = configuration.welcome?.knowledgeName || null;
 
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
-    if (isDefined(result)) {
-      return false;
-    }
-    return isLivechatOn || isTagWelcomeDefined;
+    return !isDefined(result) && !isLivechatOn && isTagWelcomeDefined;
   }, [isLivechatOn, result, isTagWelcomeDefined]);
 
-  const fetch = () => {
-    if (canRequest) {
-      return new Promise((resolve) => {
-        dydu.getWelcomeKnowledge(tagWelcome).then((response) => {
-          setResult(response);
-          return resolve();
+  const fetch = useCallback(() => {
+    return !canRequest
+      ? Promise.resolve()
+      : dydu.getWelcomeKnowledge(tagWelcome).then((wkResponse) => {
+          setResult(wkResponse);
+          return wkResponse;
         });
-      });
-    }
-  };
+    // eslint-disable-next-line
+  }, [canRequest, isLivechatOn, result]);
 
   return {
     result,
     fetch,
   };
-};
-
-export default useWelcomeKnowledge;
+}

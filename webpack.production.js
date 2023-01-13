@@ -6,6 +6,7 @@ const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 
+
 module.exports = (env) => {
 
   let ASSET = './';
@@ -18,7 +19,7 @@ module.exports = (env) => {
     console.log(ASSET);
   }
   else {
-    ASSET =  configuration.application.cdn + configuration.application.directory;
+    ASSET = configuration.application.cdn + "/" + configuration.application.directory;
   }
   
   console.log("ASSET CDN URL", ASSET)
