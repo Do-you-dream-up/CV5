@@ -33,13 +33,7 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
     });
   }, [isEmptyImage]);
 
-  const toggleIsTruncated = () => {
-    setIsTruncated(!isTruncated);
-  };
-
-  if (!isDefined(product)) return null;
-  const productTitle = uppercaseFirstLetter(product.title);
-  return (
+  return isDefined(product) ? (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
       <div className={c('dydu-product-template-image', classes.image)}>
@@ -47,12 +41,12 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          {productTitle && <h3>{productTitle}</h3>}
+          {product?.title && <h3>{uppercaseFirstLetter(product.title)}</h3>}
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore
               isTruncated={isTruncated}
-              toggleIsTruncated={toggleIsTruncated}
+              toggleIsTruncated={() => setIsTruncated(!isTruncated)}
               children={product.subtitle}
               maxChar={READ_MORE_CARACTERS_TEXT.readmore}
             />
@@ -67,5 +61,5 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
         </div>
       </div>
     </div>
-  );
+  ) : null;
 }

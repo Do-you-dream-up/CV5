@@ -19,7 +19,7 @@ import useViewport from '../../tools/hooks/useViewport';
 interface CarouselProps {
   children: any[];
   className: string;
-  steps: [];
+  steps: Servlet.ChatResponseValues[];
   templateName: string;
 }
 
@@ -28,12 +28,9 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
   const [index, setIndex] = useState(0);
-  const [step, setStep] = useState(steps ? steps[0] : 0);
+  const [step, setStep] = useState<any>(steps ? steps[0] : 0);
 
-  const { offset, offsetBetweenCard } = templateName ? configuration.templateCarousel : configuration.carousel;
-
-  const hasBullets = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
-  const hasControls = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
+  const carouselConfig = configuration && (templateName ? configuration.templateCarousel : configuration.carousel);
 
   const length = Children.count(children);
 
@@ -41,9 +38,14 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const automaticSecondary = isFullScreen
     ? !!configuration?.secondary.automatic?.fullScreen
     : !!configuration?.secondary.automatic?.desktop;
+  const classes: any = useStyles({
+    index,
+    length,
+    offset: carouselConfig?.offset,
+    offsetBetweenCard: carouselConfig?.offsetBetweenCard,
+  });
 
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const classes: any = useStyles({ index, length, offset, offsetBetweenCard });
 
   const handlers = useSwipeable({
     onSwipedLeft: () => triggerNext(),
@@ -91,52 +93,63 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const onToggle = useCallback(
     (open) => {
       if (secondaryActive) {
-        toggleSecondary(open, {
-          body: step.sidebar.content,
-          ...step.sidebar,
-        })();
+        toggleSecondary &&
+          toggleSecondary(open, {
+            body: step.sidebar.content,
+            ...step.sidebar,
+          })();
       }
     },
     [secondaryActive, step, toggleSecondary],
   );
 
   useEffect(() => {
-    if (steps && step && step.sidebar) {
+    if (steps && step?.sidebar) {
       setStep(steps[index]);
       onToggle(Local.get(Local.names.secondary) || automaticSecondary);
     }
   }, [index, steps, step, automaticSecondary, onToggle]);
 
-  return (
-    <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
-        {children.map((it, i) => (
+  const renderControls = () =>
+    carouselConfig?.controls &&
+    length > 1 && (
+      <>
+        <Actions className="dydu-carousel-controls" actions={previousAction} targetStyleKey="arrowButtonLeft" />
+        <Actions className="dydu-carousel-controls" actions={nextAction} targetStyleKey="arrowButtonRight" />
+      </>
+    );
+
+  const renderBullets = () =>
+    carouselConfig?.bullets &&
+    length > 0 && (
+      <div className={c('dydu-carousel-bullets', classes.bullets)}>
+        {children.map((item) => (
           <div
-            children={it}
-            className={c('dydu-carousel-step', classes.step, templateName && classes.stepTemplate)}
-            key={i}
+            className={c('dydu-carousel-bullet', {
+              [classes.active]: item.key === index,
+            })}
+            key={item.key}
+            onClick={() => setIndex(item.key)}
           />
         ))}
       </div>
-      {!!hasBullets && length > 0 && (
-        <div className={c('dydu-carousel-bullets', classes.bullets)}>
-          {children.map((it, i) => (
-            <div
-              className={c('dydu-carousel-bullet', {
-                [classes.active]: i === index,
-              })}
-              key={i}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
-      )}
-      {!!hasControls && length > 1 && (
-        <>
-          <Actions actions={previousAction} targetStyleKey="arrowButtonLeft" />
-          <Actions actions={nextAction} targetStyleKey="arrowButtonRight" />
-        </>
-      )}
+    );
+  const renderSteps = () =>
+    children?.map((item, i) => (
+      <div
+        children={item}
+        className={c('dydu-carousel-step', classes.step, templateName && classes.stepTemplate)}
+        key={i}
+      />
+    ));
+
+  return (
+    <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
+      <div className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
+        {renderSteps()}
+      </div>
+      {renderBullets()}
+      {renderControls()}
     </div>
   );
 };
