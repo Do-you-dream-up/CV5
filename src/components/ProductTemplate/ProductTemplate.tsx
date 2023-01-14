@@ -1,22 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import PropTypes from 'prop-types';
-import ReadMore from '../ReadMore';
+import ReadMore from '../ReadMore/ReadMore';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { uppercaseFirstLetter } from '../../tools/text';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { READ_MORE_CARACTERS_TEXT } from '../../tools/constants';
+interface ProductTemplateProps {
+  classe?: string | null;
+  html?: any;
+}
 
-const READ_MORE_CARACTERS_TEXT = {
-  readmore: 85,
-};
-
-export default function ProductTemplate({ classe = null, html }) {
+export default function ProductTemplate({ classe = null, html }: ProductTemplateProps) {
   const { configuration } = useConfiguration();
-  const classes = useStyles({ configuration });
+  const classes: any = useStyles({ configuration });
+
   const json = JSON.parse(html || '{}');
   const { product, text } = json;
+
   const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);
@@ -67,8 +69,3 @@ export default function ProductTemplate({ classe = null, html }) {
     </div>
   );
 }
-
-ProductTemplate.propTypes = {
-  classe: PropTypes.any,
-  html: PropTypes.string,
-};
