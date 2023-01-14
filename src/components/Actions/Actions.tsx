@@ -11,7 +11,7 @@ import useStyles from './styles';
  * or at the top-right of a card component.
  */
 
-interface ActionProps {
+export interface ActionProps {
   children?: any;
   items?: any;
   selected?: string | (() => void);
@@ -26,11 +26,11 @@ interface ActionProps {
   id?: string;
   title?: string;
   icon?: string;
-  component: any;
+  component?: any;
   onClick?: () => void;
 }
 
-interface ActionsProps {
+export interface ActionsProps {
   actions: ActionProps[];
   className?: string;
   targetStyleKey?: string;
@@ -46,27 +46,25 @@ const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
     [targetStyleKey, classes],
   );
 
-  return (
-    actions?.length > 0 && (
-      <div className={c('dydu-actions', _classes, className)}>
-        {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
-          delete rest.when;
+  return actions?.length > 0 ? (
+    <div className={c('dydu-actions', _classes, className)}>
+      {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
+        delete rest.when;
 
-          const props = {
-            key: index,
-            ...rest,
-            title,
-            type,
-          };
+        const props = {
+          key: index,
+          ...rest,
+          title,
+          type,
+        };
 
-          if (items) {
-            return <Menu {...props} component={Button} items={items} selected={selected} />;
-          }
-          return <Button {...props} />;
-        })}
-      </div>
-    )
-  );
+        if (items) {
+          return <Menu {...props} component={Button} items={items} selected={selected} />;
+        }
+        return <Button {...props} />;
+      })}
+    </div>
+  ) : null;
 };
 
 export default Actions;

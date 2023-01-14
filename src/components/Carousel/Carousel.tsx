@@ -1,6 +1,6 @@
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
-import Actions from '../Actions/Actions';
+import Actions, { ActionProps } from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
@@ -24,7 +24,7 @@ interface CarouselProps {
 }
 
 const Carousel = ({ children, className, steps, templateName, ...rest }: CarouselProps) => {
-  const { t } = useTranslation('translation');
+  const { t } = useTranslation();
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
   const [index, setIndex] = useState(0);
@@ -36,6 +36,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const hasControls = templateName ? !!configuration.templateCarousel : !!configuration.carousel;
 
   const length = Children.count(children);
+
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const automaticSecondary = isFullScreen
     ? !!configuration?.secondary.automatic?.fullScreen
@@ -45,8 +46,8 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const classes: any = useStyles({ index, length, offset, offsetBetweenCard });
 
   const handlers = useSwipeable({
-    onSwipedLeft: () => onNext(),
-    onSwipedRight: () => onPrevious(),
+    onSwipedLeft: () => triggerNext(),
+    onSwipedRight: () => triggerPrevious(),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
@@ -54,10 +55,10 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const hasNext = () => index < length - 1;
   const hasPrevious = () => index > 0;
 
-  const onNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
-  const onPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
+  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
+  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
 
-  const previousAction = [
+  const previousAction: ActionProps[] = [
     {
       children: (
         <img
@@ -67,12 +68,12 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
         />
       ),
       disabled: !hasPrevious(),
-      onClick: onPrevious,
+      onClick: triggerPrevious,
       variant: 'icon',
     },
   ];
 
-  const nextAction = [
+  const nextAction: ActionProps[] = [
     {
       children: (
         <img
@@ -82,7 +83,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
         />
       ),
       disabled: !hasNext(),
-      onClick: onNext,
+      onClick: triggerNext,
       variant: 'icon',
     },
   ];
