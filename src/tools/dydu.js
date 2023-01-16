@@ -8,6 +8,7 @@ import {
   isEmptyString,
   isOfTypeString,
   isPositiveNumber,
+  secondsToMs,
   strContains,
   toFormUrlEncoded,
 } from './helpers';
@@ -123,8 +124,8 @@ export default new (class Dydu {
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
     this.maxTries = 3;
-    this.minTimeoutForAnswer = 3000;
-    this.maxTimeoutForAnswer = 21000;
+    this.minTimeoutForAnswer = secondsToMs(3);
+    this.maxTimeoutForAnswer = secondsToMs(30);
     this.qualificationMode = false;
     this.initInfos();
   }
