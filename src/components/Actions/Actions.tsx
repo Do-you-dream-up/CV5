@@ -1,5 +1,7 @@
-import Button from '../Button/Button';
+import Button, { ButtonProps } from '../Button/Button';
+
 import Menu from '../Menu';
+import { ReactNode } from 'react';
 import c from 'classnames';
 import { useMemo } from 'react';
 import useStyles from './styles';
@@ -11,8 +13,8 @@ import useStyles from './styles';
  * or at the top-right of a card component.
  */
 
-interface ActionProps {
-  children?: any;
+export interface ActionProps {
+  children?: ReactNode | null;
   items?: any;
   selected?: string | (() => void);
   type?: any;
@@ -26,7 +28,7 @@ interface ActionProps {
   id?: string;
   title?: string;
   icon?: string;
-  component: any;
+  component?: any;
   onClick?: () => void;
 }
 
@@ -46,27 +48,25 @@ const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
     [targetStyleKey, classes],
   );
 
-  return (
-    actions?.length > 0 && (
-      <div className={c('dydu-actions', _classes, className)}>
-        {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
-          delete rest.when;
+  return actions?.length > 0 ? (
+    <div className={c('dydu-actions', _classes, className)}>
+      {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
+        delete rest.when;
 
-          const props = {
-            key: index,
-            ...rest,
-            title,
-            type,
-          };
+        const props: ButtonProps = {
+          key: index,
+          ...rest,
+          title,
+          type,
+        };
 
-          if (items) {
-            return <Menu {...props} component={Button} items={items} selected={selected} />;
-          }
-          return <Button {...props} />;
-        })}
-      </div>
-    )
-  );
+        if (items) {
+          return <Menu {...props} component={Button} items={items} selected={selected} />;
+        }
+        return <Button {...props} />;
+      })}
+    </div>
+  ) : null;
 };
 
 export default Actions;

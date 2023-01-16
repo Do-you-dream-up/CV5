@@ -1,7 +1,7 @@
+import Actions, { ActionProps } from '../Actions/Actions';
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import Actions from '../Actions/Actions';
 import Autosuggest from 'react-autosuggest';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
@@ -18,42 +18,32 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
-// eslint-disable-next-line no-unused-vars
+interface InputProps {
+  onRequest: (input: string) => void;
+  onResponse: (input: string) => void;
+}
 
-/**
- * Wrapper around the input bar to contain the talk and suggest logic.
- */
-export default function Input({ onRequest, onResponse }) {
+export default function Input({ onRequest, onResponse }: InputProps) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
-  const event = useContext(EventsContext).onEvent('chatbox');
+  const event = useContext<any>(EventsContext).onEvent('chatbox');
   const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 
-  const classes = useStyles({ configuration });
-  const [counter = 100, setCounter] = useState(configuration.input.maxLength);
+  const classes = useStyles();
+  const [counter = 100, setCounter] = useState(configuration?.input.maxLength);
   const [input, setInput] = useState('');
   const { prompt } = useContext(DialogContext);
   const [suggestions, setSuggestions] = useState([]);
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
-  const { limit: suggestionsLimit = 3 } = configuration.suggestions;
+  const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
+  const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
-  const containerRef = useRef(null);
-  // eslint-disable-next-line no-unused-vars
-  const { event: chatbotEvent } = useEvent();
+  const containerRef = useRef<null | any>(null);
 
-  const voice = configuration.Voice ? configuration.Voice.enable : false;
-
-  let incrementToUpdateRefOnRender = 0;
-
-  useEffect(() => {
-    if (chatbotEvent === 'teaser/onClick') {
-      inputRef && inputRef?.current?.focus();
-    }
-  }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
+  const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
   const onChange = (event) => {
     setTyping(true);
@@ -74,7 +64,7 @@ export default function Input({ onRequest, onResponse }) {
   };
 
   useEffect(() => {
-    if (isLivechatOn && typing) livechatTyping(input);
+    if (isLivechatOn && typing) livechatTyping?.(input);
   }, [input, isLivechatOn, livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
@@ -96,7 +86,7 @@ export default function Input({ onRequest, onResponse }) {
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
             textarea
           </label>
-          <textarea {...data} disabled={prompt || locked} id={textareaId} />
+          <textarea {...data} disabled={prompt || locked} id={textareaId} autoFocus />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>
@@ -106,18 +96,18 @@ export default function Input({ onRequest, onResponse }) {
   );
 
   const reset = useCallback(() => {
-    setCounter(configuration.input.maxLength);
+    setCounter(configuration?.input.maxLength);
     setInput('');
-  }, [configuration.input.maxLength]);
+  }, [configuration?.input.maxLength]);
 
   const sendInput = useCallback(
     (input) => {
-      if (isLivechatOn) send(input);
+      if (isLivechatOn) send?.(input);
       else {
         talk(input).then(onResponse);
       }
     },
-    // eslint-disable-next-line
+
     [isLivechatOn, send],
   );
 
@@ -178,18 +168,17 @@ export default function Input({ onRequest, onResponse }) {
     suggestionsContainer: c('dydu-suggestions', classes.suggestions),
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
-
   const inputProps = {
     ref: inputRef,
     disabled,
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ((ready && placeholder) || t('input.placeholder')).slice(0, 50),
+    placeholder: ((ready && placeholder) || t('input.placeholder') || '')?.slice?.(0, 50),
     value: input,
   };
 
-  const actions = [
+  const actions: ActionProps[] = [
     {
       children: (
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
@@ -225,7 +214,7 @@ export default function Input({ onRequest, onResponse }) {
           DialogContext={DialogContext}
           configuration={configuration}
           Actions={Actions}
-          show={!!Local.get(Local.names.gdpr)}
+          show={!!Local.byBotId(dydu.getBotId()).get(Local.names.gdpr)}
           t={t('input.actions.record')}
         />
       ) : (
@@ -234,13 +223,3 @@ export default function Input({ onRequest, onResponse }) {
     </form>
   );
 }
-
-Input.defaultProps = {
-  focus: true,
-};
-
-Input.propTypes = {
-  focus: PropTypes.bool,
-  onRequest: PropTypes.func.isRequired,
-  onResponse: PropTypes.func.isRequired,
-};

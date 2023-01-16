@@ -5,10 +5,10 @@ import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
-interface ButtonProps {
+export interface ButtonProps {
   children?: ReactNode;
   color?: 'error' | 'primary' | 'success' | 'warning';
-  component: any;
+  component?: any;
   grow?: boolean;
   href?: string;
   icon?: string | (() => void);
