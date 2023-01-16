@@ -8,9 +8,9 @@ stages:
 build:
   stage: integration
   image: node:alpine
-  before_script:
-    - export CHATBOX_VERSION="${CI_COMMIT_REF_NAME}"
-    - export CHATBOX_REVISION="${CI_COMMIT_SHORT_SHA}"
+  variables:
+    CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
+    CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
   script:
     - npm ci --cache .npm --prefer-offline
     - npm run build
@@ -35,7 +35,10 @@ pack:
   script:
     - zip -v -r ${CI_COMMIT_REF_NAME}.zip build/*
     # TODO: use front user/password
-    - curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}" --upload-file "${CI_COMMIT_REF_NAME}.zip" "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
+    - >
+      curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}"
+      --upload-file "${CI_COMMIT_REF_NAME}.zip"
+      "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
   cache:
     key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
@@ -54,9 +57,18 @@ publish:
     - apk add openssh-client rsync
     - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
   script:
-    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node1.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
-    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node2.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
-    - rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no" build/* dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+    - >
+      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+      build/*
+      dydu@node1.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+    - >
+      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+      build/*
+      dydu@node2.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+    - >
+      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+      build/*
+      dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
   cache:
     key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
@@ -71,20 +83,66 @@ publish:
 test:
   stage: quality
   image: alpine:latest
+  variables:
+    TEST_REVISION: "${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}"
+    TEST_TOKEN: "zspdHMbuc1EShADrYxSu"
+    TEST_URL: "https://gitlab.ci.dydu-priv.com/api/v4/projects/402"
   before_script:
-    - apk add git openssh-client
+    - apk add git openssh-client curl jq
     - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
+    - |
+      git config --global user.email "infra@dydu.ai"
+      git config --global user.name "GitLab CI Bliss"
+      git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
+      git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox
+    - |
+      cd /autobox
+      git switch -c "${CI_COMMIT_REF_NAME}"
+    - |
+      echo "${TEST_REVISION}" > revision.txt
+      git add revision.txt
+      git commit -m "feat(revision): #RDA-3444 Test revision ${TEST_REVISION}."
+    - |
+      git rebase master
+      git push -f --set-upstream "origin" "${CI_COMMIT_REF_NAME}"
   script:
-    - git config --global user.email "infra@dydu.ai" && git config --global user.name "GitLab CI Bliss" && git config --global core.sshCommand 'ssh -o StrictHostKeyChecking=no'
-    - git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox && cd /autobox
-    - git switch -c ${CI_COMMIT_REF_NAME}
-    - echo "${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}" > revision.txt && git add revision.txt && git commit -m "Set revision to ${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHORT_SHA}.${CI_JOB_ID}."
-    - git rebase master && git push -f --set-upstream "origin" "${CI_COMMIT_REF_NAME}"
+    - |
+      sleep 60
+      TEST_PIPELINE="$(curl --silent \
+      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+      "${TEST_URL}/pipelines?ref=${CI_COMMIT_REF_NAME}&order_by=id&sort=desc" \
+      | jq --raw-output '.[0].id')"
+      TEST_JOB="$(curl --silent \
+      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+      "${TEST_URL}/pipelines/${TEST_PIPELINE}/jobs?include_retried=true&order_by=id&sort=desc" \
+      | jq --raw-output '.[0].id')"
+      echo "Please check: \
+      https://gitlab.ci.dydu-priv.com/qa/autobox/-/jobs/${TEST_JOB}"
+      while true
+      do
+        sleep 60
+        TEST_STATUS="$(curl --silent --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+        "${TEST_URL}/jobs/${TEST_JOB}" | jq --raw-output '.status')"
+        case "${TEST_STATUS}" in
+          "success")
+            echo "Autobox status is success."
+            exit 0
+            ;;
+          "failed")
+            echo "Autobox status is failed."
+            exit 1
+            ;;
+          "canceled")
+            echo "Autobox status is canceled."
+            exit 1
+            ;;
+        esac
+      done
+  timeout: 1h
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - pack
-  when: manual
 
 ...
