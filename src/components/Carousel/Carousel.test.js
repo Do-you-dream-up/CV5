@@ -14,15 +14,6 @@ describe('Carousel.tsx', () => {
     expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
   });
 
-  test('Should render Carousel with children array of children to display and bullets and controls to navigate', async () => {
-    const { container } = render(<Carousel children={children} />, {
-      configuration: { carousel: { bullets: true, controls: true } },
-    });
-    expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
-    expect(container.getElementsByClassName('dydu-carousel-bullets').length).toBe(1);
-    expect(container.getElementsByClassName('dydu-carousel-bullet').length).toBe(children.length);
-    expect(container.getElementsByClassName('dydu-carousel-controls').length).toBe(2);
-  });
   test('Should render Carousel with children array of children to display and controls to navigate and bullets, with right number of bullets', async () => {
     const { container } = render(<Carousel children={children} />, {
       configuration: { carousel: { bullets: true, controls: true } },
