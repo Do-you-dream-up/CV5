@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
 const RE_HREF = /(<a href([^>]+)>)/g;
-
 /**
  * Prettify children and string passed as parameter.
  *
