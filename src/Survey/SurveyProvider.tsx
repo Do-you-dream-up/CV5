@@ -58,7 +58,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
 
   const flushStatesAndClose = useCallback(() => {
     flushStates();
-    closeSecondary();
+    closeSecondary && closeSecondary();
     answerResultManager.clear();
   }, [closeSecondary, flushStates]);
 
@@ -91,12 +91,13 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     const canShowForm =
       !secondaryActive && [surveyConfig, instances, openSecondary].every(isDefined) && isPositiveNumber(secondaryWidth);
     if (canShowForm)
-      openSecondary({
-        width: secondaryWidth,
-        bodyRenderer: () => <SurveyForm />,
-        title: () => <SecondaryFormTitle />,
-        headerTransparency: false,
-      });
+      openSecondary &&
+        openSecondary({
+          width: secondaryWidth,
+          bodyRenderer: () => <SurveyForm />,
+          title: () => <SecondaryFormTitle />,
+          headerTransparency: false,
+        });
   }, [surveyConfig, instances, openSecondary, secondaryWidth, flushStatesAndClose]);
 
   useEffect(() => {
