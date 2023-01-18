@@ -1,11 +1,9 @@
 import Actions, { ActionProps } from '../Actions/Actions';
-import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
-import PropTypes from 'prop-types';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -14,6 +12,7 @@ import { isDefined } from 'dydu-module/helpers';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
+import { useEvent } from '../../contexts/EventsContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -26,15 +25,15 @@ interface InputProps {
 export default function Input({ onRequest, onResponse }: InputProps) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
-  const event = useContext<any>(EventsContext).onEvent('chatbox');
+  const { dispatchEvent } = useEvent();
   const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 
   const classes = useStyles();
-  const [counter = 100, setCounter] = useState(configuration?.input.maxLength);
-  const [input, setInput] = useState('');
+  const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
+  const [input, setInput] = useState<string>('');
   const { prompt } = useContext(DialogContext);
-  const [suggestions, setSuggestions] = useState([]);
-  const [typing, setTyping] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
@@ -86,7 +85,14 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
             textarea
           </label>
-          <textarea {...data} disabled={prompt || locked} id={textareaId} autoFocus />
+          <textarea
+            {...data}
+            role="combobox"
+            aria-expanded="false"
+            disabled={prompt || locked}
+            id={textareaId}
+            autoFocus
+          />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>
@@ -117,12 +123,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       if (text) {
         reset();
         onRequest(text);
-        event('questionSent', text);
+        dispatchEvent && dispatchEvent('chatbox', 'questionSent', text);
         sendInput(text);
       }
       setTyping(false);
     },
-    [event, onRequest, reset, sendInput],
+    [dispatchEvent, onRequest, reset, sendInput],
   );
 
   const suggest = useCallback(
@@ -150,6 +156,9 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementInputContainer.setAttribute('aria-label', 'dydu-input-container');
       nodeElementInputContainer.setAttribute('aria-labelledby', 'dydu-input');
       nodeElementInputContainer.setAttribute('title', 'dydu-input-container');
+      nodeElementInputContainer.removeAttribute('role');
+      nodeElementInputContainer.removeAttribute('aria-haspopup');
+      nodeElementInputContainer.removeAttribute('aria-expanded');
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
