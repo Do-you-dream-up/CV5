@@ -1,11 +1,12 @@
-import React from 'react';
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
+import '../../tools/prototypes/strings';
+
 import { act, render } from '@testing-library/react';
+
+import { TUNNEL_MODE } from '../constants';
 import WS from 'jest-websocket-mock';
+import dydu from '../dydu';
 import { extractDomainFromUrl } from '../helpers';
 import useDyduWebsocket from './useDyduWebsocket';
-import '../../tools/prototypes/strings';
-import dydu from '../dydu';
 
 jest.mock('../../contexts/DialogContext', () => ({
   useDialog: jest.fn().mockReturnValue({ setStatusText: jest.fn(), flushStatusText: jest.fn() }),
@@ -36,6 +37,7 @@ const InterfaceTunnel = {
   mode: TUNNEL_MODE.websocket,
   open: jest.fn(),
   send: jest.fn(),
+  sendSurvey: jest.fn(),
   close: jest.fn(),
   isConnected: false,
 };

@@ -1,25 +1,25 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
-import PoweredBy from '../PoweredBy';
+import PoweredBy from '../PoweredBy/PoweredBy';
 import PromptEmail from '../PromptEmail';
 import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Container for the conversation and its interactions. Fetch the history on
  * mount.
  */
-export default function Dialog({ dialogRef, onAdd, open, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+export default function Dialog({ dialogRef, open, ...rest }) {
+  const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt } = useContext(DialogContext);
   const classes = useStyles();
   const { top } = configuration.dialog;
@@ -27,7 +27,7 @@ export default function Dialog({ dialogRef, onAdd, open, ...rest }) {
   // eslint-disable-next-line
   const { isAppReady } = useEvent();
   const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
-  const poweredByActive = configuration.poweredBy && configuration.poweredBy.active;
+  const poweredByActive = configuration.poweredBy?.active;
 
   useEffect(() => {
     if (isAppReady && spacesActive) {
@@ -50,7 +50,7 @@ export default function Dialog({ dialogRef, onAdd, open, ...rest }) {
 
   return (
     <>
-      <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite">
+      <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
         {interactions.map((it, index) => ({ ...it, key: index }))}
         {prompt === 'gdpr' && <PromptEmail type="gdpr" />}

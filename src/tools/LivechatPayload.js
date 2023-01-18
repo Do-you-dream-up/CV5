@@ -1,6 +1,15 @@
 /* eslint-disable */
-import { browserName, isDefined, isEmptyString, isOfTypeString, osName } from './helpers';
+
 import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
+import {
+  browserName,
+  isDefined,
+  isEmptyString,
+  isOfTypeString,
+  osName,
+  recursiveBase64DecodeString,
+  recursiveBase64EncodeString,
+} from './helpers';
 
 let PAYLOAD_COMMON_CONTENT = {
   contextId: null,
@@ -23,9 +32,29 @@ const getPayloadCommonContentBase64Encoded = () => {
 
 const nowTime = () => new Date().getTime();
 
+const REQUEST_TYPE = {
+  getContext: 'getContext',
+  addInternautEvent: 'addInternautEvent',
+  talk: 'talk',
+  survey: 'survey',
+  typing: 'typing',
+};
+
 const LivechatPayloadCreator = {
+  surveyAnswerMessage: (surveyAnswer) => {
+    const fields = recursiveBase64EncodeString(surveyAnswer.fields);
+    return {
+      type: REQUEST_TYPE.survey,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        surveyId: surveyAnswer.surveyId,
+        interactionSurveyAnswer: surveyAnswer.interactionSurvey,
+        fields,
+      },
+    };
+  },
   userTypingMessage: (userInput = '') => ({
-    type: 'typing',
+    type: REQUEST_TYPE.typing,
     parameters: {
       typing: !isEmptyString(userInput),
       ...getPayloadCommonContentBase64Encoded(),
@@ -45,7 +74,7 @@ const LivechatPayloadCreator = {
   }),
 
   talkMessage: (userInput = '') => ({
-    type: 'talk',
+    type: REQUEST_TYPE.talk,
     parameters: {
       ...getPayloadCommonContentBase64Encoded(),
       alreadyCame: true,
@@ -64,7 +93,7 @@ const LivechatPayloadCreator = {
   }),
 
   getContextMessage: () => ({
-    type: 'getContext',
+    type: REQUEST_TYPE.getContext,
     parameters: {
       ...getPayloadCommonContentBase64Encoded(),
       alreadyCame: false,
@@ -84,7 +113,7 @@ const LivechatPayloadCreator = {
   }),
 
   internautEventMessage: () => ({
-    type: 'addInternautEvent',
+    type: REQUEST_TYPE.addInternautEvent,
     parameters: {
       ...getPayloadCommonContentBase64Encoded(),
       eventName: 'ZGlhbG9nX3N0YXJ0',
@@ -99,6 +128,14 @@ const LivechatPayloadCreator = {
 };
 
 const LivechatPayloadChecker = {
+  operatorSendSurvey: (payload) => {
+    return (
+      payload?.type?.equals('notification') &&
+      payload?.values?.code?.fromBase64()?.equals('OperatorSendSurvey') &&
+      isDefined(payload?.values?.survey) &&
+      !isEmptyString(payload?.values?.survey)
+    );
+  },
   operatorAutomaticallyTransferredDialog: (payload) => {
     return (
       payload?.type?.equals('notification') &&

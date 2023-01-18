@@ -1,5 +1,7 @@
+import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString, trimSlashes } from './helpers';
+
 import cookie from 'js-cookie';
-import { _parse, isDefined } from './helpers';
+import uuid4 from 'uuid4';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -67,6 +69,9 @@ export class Session {
 export class Cookie {
   static names = {
     locale: 'dydu.locale',
+    samlEnable: 'dydu.saml.enable',
+    oidcEnable: 'dydu.oidc.enable',
+    oidcWithAuthEnable: 'dydu.oidcWithAuth.enable',
   };
 
   static duration = {
@@ -92,6 +97,13 @@ export class Cookie {
     };
     cookie.set(name, value, options);
   };
+
+  /**
+   * Remove the specified cookie.
+   *
+   * @param {string} name - Name of the cookie.
+   */
+  static remove = (name) => cookie.remove(name);
 }
 
 /**
@@ -105,12 +117,14 @@ export class Local {
     dragon: 'dydu.dragon',
     fontSize: 'dydu.fontSize',
     gdpr: 'dydu.gdpr',
+    botId: 'dydu.botId',
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
     secondary: 'dydu.secondary',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
+    saml: 'dydu.saml.auth',
   };
 
   /**
@@ -270,6 +284,12 @@ export class Local {
     reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
   });
 
+  static saml = Object.create({
+    save: (data) => localStorage.setItem(Local.names.saml, data),
+    load: () => localStorage.getItem(Local.names.saml) || null,
+    remove: () => localStorage.removeItem(Local.names.saml),
+  });
+
   static viewMode = Object.create({
     load: () => {
       const d = localStorage.getItem(Local.names.open);
@@ -277,4 +297,123 @@ export class Local {
     },
     save: (value) => localStorage.setItem(Local.names.open, value),
   });
+
+  static visit = Object.create({
+    getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
+    load: (keyString = '') => {
+      const content = localStorage.getItem(keyString);
+      return isDefined(content) ? content : null;
+    },
+    isSet: (keyString = '') => {
+      const content = Local.visit.load(keyString);
+      return [isDefined, (c) => !isEmptyObject(c)].every((fn) => fn(content));
+    },
+    save: (keyStringParams = {}) => {
+      const key = Local.visit.getKey(keyStringParams);
+      localStorage.setItem(key, Date.now().toString());
+    },
+  });
+
+  static clientId = Object.create({
+    getKey: ({ locale, space, botId }) => `DYDU_clientId_${[botId, space, locale].join('_')}`,
+    load: (keyString = '') => {
+      const content = localStorage.getItem(keyString);
+      return isDefined(content) ? content : '';
+    },
+    isSet: (keyString = '') => {
+      const content = Local.clientId.load(keyString);
+      return [isDefined, (c) => !isEmptyObject(c), (c) => !isEmptyString(c)].every((fn) => fn(content));
+    },
+    createAndSave: (keyString) => {
+      const ID_CHAR_SIZE = 15;
+      const generatedClientId = generateClientUuid(ID_CHAR_SIZE).toString();
+      localStorage.setItem(keyString, generatedClientId);
+    },
+  });
+
+  static secondary = Object.create({
+    getKey: () => Local.names.secondary,
+    load: () => localStorage.getItem(Local.secondary.getKey()) || false,
+    save: (newValue) => {
+      const currentSaved = Local.secondary.load();
+      if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
+    },
+  });
+
+  static welcomeKnowledge = Object.create({
+    getSessionStorageDefaultLocalStorage: () => {
+      const mockStorage = {
+        setItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to save in storage',
+            { key, value },
+          ),
+        getItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to load from storage',
+            { key, value },
+          ),
+        removeItem: (key, value) =>
+          console.error(
+            'While executing getSessionStorageDefaultLocalStorage(): window does not provides sessionStorage nor localStorage. App would like to remove from storage',
+            { key, value },
+          ),
+      };
+      let storage = window?.sessionStorage || window?.localStorage || mockStorage;
+      return storage;
+    },
+    isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
+    load: (botId) => {
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      return _parse(mapStore[botId]) || null;
+    },
+    save: (botId, wkInteraction) => {
+      if (Local.welcomeKnowledge.isSet(botId)) return;
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      mapStore[botId] = wkInteraction;
+      Local.welcomeKnowledge.saveMapStore(mapStore);
+    },
+    saveMapStore: (value) =>
+      Local.welcomeKnowledge
+        .getSessionStorageDefaultLocalStorage()
+        .setItem(Local.welcomeKnowledge.getKey(), _stringify(value)),
+    loadMapStore: () => {
+      const createInitialMapStore = () => {
+        const initialMapStore = {};
+        Local.welcomeKnowledge
+          .getSessionStorageDefaultLocalStorage()
+          .setItem(Local.welcomeKnowledge.getKey(), _stringify(initialMapStore));
+        return initialMapStore;
+      };
+
+      try {
+        let mapStore = _parse(
+          Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage().getItem(Local.welcomeKnowledge.getKey()),
+        );
+        return isDefined(mapStore) ? mapStore : createInitialMapStore();
+      } catch (e) {
+        return createInitialMapStore();
+      }
+    },
+    getKey: () => `dydu.welcomeKnowledge`,
+  });
+
+  static contextId = Object.create({
+    createKey: (botId = '', directoryId = '') => {
+      const separator = isEmptyString(directoryId) ? '' : '/';
+      return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
+    },
+    save: (key, value) => {
+      Local.byBotId(key).set(Local.names.context, value);
+      Local.set(Local.names.context, value);
+    },
+    isSet: (key) => {
+      return isDefined(Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context));
+    },
+    load: (key) => {
+      return Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context);
+    },
+  });
 }
+
+const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
@@ -55,9 +57,6 @@ export default createUseStyles((theme) => ({
     height: '100%',
     margin: [[0], '!important'],
     width: `${offsetBetweenCard / length}%`,
-  }),
-  stepTemplate: () => ({
-    width: 'initial',
   }),
   steps: ({ index, length, offsetBetweenCard }) => ({
     '& .dydu-bubble-response': {

@@ -1,0 +1,96 @@
+.survey-form-container {
+  padding: 2rem 0.7rem 2.8rem 0.7rem;
+  background-color: #f0f4fe;
+}
+
+.survey-form-container .btn-submit-container {
+  background-color: transparent;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.survey-form-container .btn-submit-container button {
+  padding: 0.7rem 2rem;
+  border: none;
+  border-radius: 0.2rem;
+  background-color: #758ed6;
+  color: white;
+  box-shadow: 1px 1px lightgray;
+  font-weight: 600;
+}
+
+.survey-form-container select:hover,
+.survey-form-container .btn-submit-container button:hover {
+  cursor: pointer;
+}
+
+.survey-form-container .btn-submit-container button > i {
+  display: block;
+  margin-right: 8px;
+  font-style: normal;
+}
+
+.survey-form-container > * {
+  background-color: white;
+  padding: 1rem 1rem 1.5rem 1rem;
+  border-radius: 0.3rem;
+}
+
+.survey-form-container > *:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.survey-form-container > article {
+  padding: 1.2rem 1.2rem;
+}
+
+.survey-form-container article .slaves {
+  padding: 1rem 0;
+  border-top: 1px solid #3131;
+}
+
+.survey-form-container .title {
+  margin-top: 2rem;
+  margin-bottom: 0px !important;
+  padding: 0px !important;
+  background-color: transparent;
+}
+
+.survey-form-container .group > *,
+.survey-form-container .checkbox {
+  padding: 0.2rem;
+  width: 100%;
+}
+
+.survey-form-container .group > * label,
+.survey-form-container .checkbox label {
+  margin-left: 0.4rem;
+}
+
+.survey-form-container select {
+  font-size: 1rem;
+  width: 100%;
+  border-color: #3131;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  background-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.survey-form-container .question .message-field-required {
+  font-style: normal;
+  position: absolute;
+  padding: 0.5rem 0.7rem;
+  top: -1.6rem;
+  right: 0;
+  color: rgba(242, 96, 85);
+  border-radius: 0.3rem;
+  font-size: 0.77rem;
+}
+
+.survey-form-container .question {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  padding: 0 0.5rem;
+}

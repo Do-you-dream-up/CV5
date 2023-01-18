@@ -31,10 +31,17 @@ export default createUseStyles((theme) => {
       flexDirection: 'column',
       height: configuration.secondary.fixedDimensions ? undefined : height,
       overflowY: 'auto',
+      maxHeight: '648px',
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
+      [theme.breakpoints.up('lg')]: {
+        minWidth: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
+        maxWidth: configuration.secondary.width,
+      },
       [theme.breakpoints.down('md')]: {
-        height: '100%',
-        maxHeight: 'initial',
+        maxHeight: '595px',
+      },
+      [theme.breakpoints.up('xl')]: {
+        maxWidth: '1200px',
       },
     }),
     body: () => ({
@@ -46,6 +53,15 @@ export default createUseStyles((theme) => {
     frame: () => ({
       border: 0,
       flexGrow: 1,
+    }),
+    headerWhite: () => ({
+      zIndex: 10,
+      backgroundColor: `${theme.palette.background.secondary}`,
+      display: 'flex',
+      padding: '1.6em',
+      paddingBottom: 10,
+      position: 'sticky',
+      top: 0,
     }),
     header: () => ({
       backgroundColor: `${theme.palette.background.secondary}CC`,

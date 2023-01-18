@@ -1,24 +1,18 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
+import { VIEW_MODE } from '../tools/constants';
 import { useConfiguration } from './ConfigurationContext';
-import { useCookie } from 'react-use';
+import { useLocalStorage } from 'react-use';
 
-const ViewModeContext = React.createContext();
+const ViewModeContext = createContext();
 export const useViewMode = () => useContext(ViewModeContext);
-
-export const VIEW_MODE = {
-  close: 0, // hidden
-  minimize: 1, // teaser
-  popin: 2,
-  full: 3,
-};
 
 export default function ViewModeProvider({ children }) {
   const { configuration } = useConfiguration();
-  const [value, updateCookie] = useCookie(Local.names.open);
-  const defaultMode = useMemo(() => parseInt(value) || configuration.application.open, [value]);
+  const [viewMode, updateViewMode] = useLocalStorage(Local.names.open);
+  const defaultMode = useMemo(() => parseInt(viewMode) || configuration.application.open, [viewMode]);
   const [mode, setMode] = useState(defaultMode);
   const isOpen = useMemo(() => mode > VIEW_MODE.minimize, [mode]);
   const isFull = useMemo(() => mode === VIEW_MODE.full, [mode]);
@@ -46,14 +40,14 @@ export default function ViewModeProvider({ children }) {
 
   useEffect(() => {
     Local.viewMode.save(mode);
-    updateCookie(mode);
+    updateViewMode(mode);
   }, [mode]);
 
   useEffect(() => {
-    if (value) {
+    if (viewMode) {
       setMode(mode);
     }
-  }, [value]);
+  }, [viewMode]);
 
   const context = useMemo(
     () => ({

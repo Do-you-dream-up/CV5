@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
 import ProductTemplate from '../ProductTemplate';
+import PropTypes from 'prop-types';
 
 export default function CarouselTemplate({ html }) {
   return <ProductTemplate html={html} />;

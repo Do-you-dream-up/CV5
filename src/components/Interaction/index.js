@@ -1,13 +1,12 @@
 import { AvatarContainer, BubbleContainer, InChatNotification, RowInteraction } from '../../styles/styledComponent';
 import { INTERACTION_TEMPLATE, INTERACTION_TYPE } from '../../tools/constants';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import Avatar from '../Avatar';
+import Avatar from '../Avatar/Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Loader from '../Loader';
@@ -15,6 +14,7 @@ import PropTypes from 'prop-types';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
@@ -110,7 +110,7 @@ export default function Interaction({
   scroll,
   secondary,
   steps,
-  templatename,
+  templateName,
   thinking,
   type,
   typeResponse,
@@ -119,10 +119,9 @@ export default function Interaction({
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [readyCarousel, setReadyCarousel] = useState(false);
-  const [hasExternalLink, setHasExternalLink] = useState(false);
   const { isLivechatOn } = useLivechat();
 
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
 
   const classes = useStyles({ configuration });
@@ -144,9 +143,9 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
 
-  const carouselTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.carousel), [templatename]);
-  const productTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.product), [templatename]);
-  const quickTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.quickReply), [templatename]);
+  const carouselTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.carousel), [templateName]);
+  const productTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.product), [templateName]);
+  const quickTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.quickReply), [templateName]);
 
   const addBubbles = useCallback(
     (newBubbles) => {
@@ -180,10 +179,6 @@ export default function Interaction({
       if (_children[0] === '' && secondary) {
         _children = ['&nbsp;'];
       }
-
-      if (isOfTypeString(_children[0]) && _children[0].includes('target="_blank"')) {
-        setHasExternalLink(true);
-      }
       return _children.filter((it) => it);
     },
     [secondary],
@@ -193,7 +188,7 @@ export default function Interaction({
     if (!ready && children) {
       setReady(true);
 
-      const createBubbleListFn = templateNameToBubbleCreateAction[templatename] || createBubbleListNoTemplate;
+      const createBubbleListFn = templateNameToBubbleCreateAction[templateName] || createBubbleListNoTemplate;
 
       const bubbles = createBubbleListFn(children);
       addBubbles(bubbles);
@@ -206,7 +201,7 @@ export default function Interaction({
     children,
     productTemplate,
     ready,
-    templatename,
+    templateName,
     quickTemplate,
     secondary,
     createBubbleListNoTemplate,
@@ -272,11 +267,11 @@ export default function Interaction({
 
       return (
         <Scroll key={index} className={classes.bubble}>
-          <Bubble hasExternalLink={hasExternalLink} templatename={templatename} {...attributes} />
+          <Bubble templateName={templateName} {...attributes} />
         </Scroll>
       );
     });
-  }, [bubbles, carousel, classes.bubble, hasExternalLink, history, scroll, secondary, steps, templatename, type]);
+  }, [bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templateName, type]);
 
   useDebounce(
     () => {
@@ -292,7 +287,7 @@ export default function Interaction({
     const wrapperProps = {
       className: c('dydu-interaction-bubbles', classes.bubbles),
       steps: steps,
-      templatename: templatename,
+      templateName: templateName,
     };
 
     if (isCarousel) {
@@ -300,7 +295,7 @@ export default function Interaction({
     }
 
     return <div {...wrapperProps}>{bubbleList}</div>;
-  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
+  }, [bubbleList, classes.bubbles, isCarousel, steps, templateName]);
 
   return (
     ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
@@ -308,15 +303,16 @@ export default function Interaction({
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
-          !!templatename && templatename !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
+          !!templateName && templateName !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },
           className,
         )}
+        id="dydu-interaction"
       >
         {_Avatar}
-        <div className={c('dydu-interaction-wrapper', classes.wrapper)}>
+        <div className={c('dydu-interaction-wrapper', classes.wrapper)} id="dydu-interaction-wrapper">
           {EmiterName}
           {ListBubble}
           {_Loader}
@@ -335,21 +331,23 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.children]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
-  secondary: PropTypes.object,
+  secondary: PropTypes.bool,
   steps: PropTypes.array,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
+  contexts: PropTypes.any,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,
 };
 
 const Writing = () => {
+  const { configuration } = useConfiguration();
   // eslint-disable
-  const avatarImageUrl = useMemo(() => asset('dydu-logo.svg'), []);
+  const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
 
   return (
     <Scroll>

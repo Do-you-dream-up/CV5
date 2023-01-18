@@ -1,23 +1,17 @@
 /* eslint-disable */
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
-import LivechatPayload from '../LivechatPayload';
 
-const isNotificationOperatorWriting = (response) => {
-  const res = response?.code?.fromBase64()?.equals('OperatorWritingStatus') || false;
-  return res;
-};
-const isNotificationStopLivechat = (response) => {
-  const res = response?.specialAction?.fromBase64()?.equals('EndPolling') || false;
-  return res;
-};
+import { SOLUTION_TYPE, TUNNEL_MODE } from '../constants';
+import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import LivechatPayload from '../LivechatPayload';
 
 let onOperatorWriting = null;
 let displayResponse = null;
 let displayNotification = null;
 let onEndLivechat = null;
 let api = null;
+let handleSurvey = null;
 
 const saveConfiguration = (configuration) => {
   onOperatorWriting = configuration.showAnimationOperatorWriting;
@@ -25,6 +19,7 @@ const saveConfiguration = (configuration) => {
   displayNotification = configuration.displayNotification;
   onEndLivechat = configuration.endLivechat;
   api = configuration.api;
+  handleSurvey = configuration.handleSurvey;
 };
 
 const RESPONSE_TYPE = {
@@ -69,9 +64,8 @@ const typeToHandler = {
     const notification = responseToLivechatPayload(response);
     notification.type = 'notification';
 
-    if (LivechatPayload.is.operatorWriting(notification)) {
-      return onOperatorWriting();
-    }
+    if (LivechatPayload.is.operatorWriting(notification)) return onOperatorWriting();
+    if (LivechatPayload.is.operatorSendSurvey(notification)) return handleSurvey(notification);
 
     displayNotification(notification);
 
@@ -153,8 +147,12 @@ export default function useDyduPolling() {
     });
   }, []);
 
-  const send = useCallback((...props) => {
-    return api.talk(...props);
+  const sendSurvey = useCallback((surveyUserAnswer) => {
+    api.sendSurveyPolling(surveyUserAnswer, { solutionUsed: SOLUTION_TYPE.livechat });
+  }, []);
+
+  const send = useCallback((userInput) => {
+    return api.talk(userInput, { solutionUsed: SOLUTION_TYPE.livechat });
   }, []);
 
   const onUserTyping = useCallback((userInput) => {
@@ -166,9 +164,10 @@ export default function useDyduPolling() {
     isConnected,
     isRunning,
     isAvailable,
-    mode: TUNNEL_MODE.websocket,
+    mode: TUNNEL_MODE.polling,
     open,
     send,
+    sendSurvey,
     close,
     onUserTyping,
   };

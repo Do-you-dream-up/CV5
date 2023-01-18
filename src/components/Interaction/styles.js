@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
@@ -41,6 +43,9 @@ export default createUseStyles((theme) => ({
     borderRadius: '15px',
     marginLeft: '2em',
     paddingLeft: 35,
+    '& .dydu-interaction-wrapper': {
+      marginLeft: 'auto',
+    },
   }),
   response: () => ({
     width: '85%',
@@ -54,7 +59,6 @@ export default createUseStyles((theme) => ({
   wrapper: () => ({
     display: 'flex',
     flexDirection: 'column',
-    flexGrow: 1,
     justifyContent: 'center',
   }),
 }));

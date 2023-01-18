@@ -1,10 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ACTIONS } from '../../tools/talk';
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Banner from '../Banner';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import { Local } from '../../tools/storage';
@@ -15,26 +14,25 @@ import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing the chatbox or changing the current language.
  */
 export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({ configuration });
-  const theme = useTheme();
   const { ready, t } = useTranslation('translation');
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { actions: hasActions = {} } = configuration.header;
   const { items: consultationSpaces = [] } = configuration.spaces;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;
@@ -127,6 +125,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
       title: actionTests,
+      id: 'dydu-dots',
     },
     {
       children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} />,
@@ -134,6 +133,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
       title: actionMore,
+      id: 'dydu-more',
     },
     {
       children: (
@@ -147,6 +147,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.fontChange,
       title: actionFontIncrease,
+      id: 'dydu-font-increase',
     },
     {
       children: (
@@ -160,6 +161,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.fontChange,
       title: actionFontDecrease,
+      id: 'dydu-font-decrease',
     },
     {
       children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} />,
@@ -167,6 +169,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
       title: actionExpand,
+      id: 'dydu-expand',
     },
     {
       children: (
@@ -176,6 +179,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
       title: actionShrink,
+      id: 'dydu-collapse',
     },
     {
       children: (
@@ -185,6 +189,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.minimize,
       title: actionMinimize,
+      id: 'dydu-minimize',
     },
     {
       children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`} />,
@@ -192,21 +197,23 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       variant: 'icon',
       when: !!hasActions.close,
       title: actionClose,
+      id: 'dydu-close',
     },
   ];
 
   return (
-    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest}>
+    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,
         })}
+        id="dydu-header-body"
         onMouseDown={onDragStart && onDragStart(dragonZone)}
         ref={dragonZone}
       >
-        <div className={c('dydu-header-logo', classes.logo)}>
+        <div className={c('dydu-header-logo', classes.logo)} id="dydu-header-logo">
           {!!hasImage && (
-            <div className={c('dydu-header-image', classes.image)}>
+            <div className={c('dydu-header-image', classes.image)} id="dydu-header-image">
               <AvatarsMatchingRequest
                 typeResponse={typeResponse}
                 headerAvatar={true}
@@ -221,7 +228,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </h1>
           )}
         </div>
-        <Actions actions={actions} className={c('dydu-header-actions', classes.actions)} />
+        <Actions
+          actions={actions}
+          className={c('dydu-header-actions', classes.actions)}
+          id="dydu-header-actions-wrapper"
+        />
       </div>
       {!minimal && (
         <>

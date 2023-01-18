@@ -43,6 +43,10 @@ export default createUseStyles((theme) => ({
     width: '100%',
   }),
 
+  label: () => ({
+    display: 'none',
+  }),
+
   fieldBase: {
     boxSizing: 'border-box',
     display: 'block',

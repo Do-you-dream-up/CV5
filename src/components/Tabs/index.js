@@ -1,19 +1,20 @@
-import c from 'classnames';
-import React, { useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { useContext, useEffect } from 'react';
+
 import { EventsContext } from '../../contexts/EventsContext';
+import Skeleton from '../Skeleton';
 import { TabContext } from '../../contexts/TabContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
-import Skeleton from '../Skeleton';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Render clickable tabs to select the current tab content. The available tabs
  * are pulled from the configuration.
  */
 export default function Tabs() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('tab');
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({ configuration, current, length: tabs.length });
@@ -27,7 +28,7 @@ export default function Tabs() {
 
   return (
     !!tabs.length && (
-      <div className={c('dydu-tabs', classes.root)}>
+      <div className={c('dydu-tabs', classes.root)} id="dydu-tabs">
         <div className={classes.indicator} />
         {tabs.map(({ icon, key }, index) => {
           const label = t(`tabs.${key}`);
@@ -48,6 +49,7 @@ export default function Tabs() {
               tabIndex="0"
               onKeyDown={onKeyDown}
               role="navigation"
+              id="dydu-tab"
             >
               <div
                 className={c('dydu-tab-label', classes.label, {

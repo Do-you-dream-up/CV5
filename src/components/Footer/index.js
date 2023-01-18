@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Input from '../Input';
 import PropTypes from 'prop-types';
 import UploadInput from '../UploadInput';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +19,7 @@ import { useTranslation } from 'react-i18next';
  * function to handle the response.
  */
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { isFileActive } = useContext(DialogContext);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
@@ -66,7 +67,13 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   return (
     <>
       <footer className={c('dydu-footer', classes.root)} {...rest}>
-        {!isFileActive && <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />}
+        {!isFileActive && (
+          <Actions
+            actions={actions}
+            className={c('dydu-footer-actions', classes.actions)}
+            id="dydu-language-selector"
+          />
+        )}
         <div className={classes.content}>{inputRender()}</div>
       </footer>
     </>

@@ -1,6 +1,6 @@
 import Bowser from 'bowser';
-import dydu from './dydu';
 import { LOREM_HTML } from './lorem';
+import dydu from './dydu';
 
 /**
  * Forge the #meta# response and add it the conversation.

@@ -1,19 +1,21 @@
-import React, { useContext, useEffect } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Button from '../Button/Button';
 import { Local } from '../../tools/storage';
-import Button from '../Button';
 import WizardField from '../WizardField';
+import dydu from '../../tools/dydu';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useEffect } from 'react';
 import useStyles from './styles';
 
 /**
  * Live-edit configuration widgets.
  */
 export default function Wizard() {
-  const { configuration, reset } = useContext(ConfigurationContext);
+  const { configuration, reset } = useConfiguration();
   const classes = useStyles({ configuration });
 
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
+    dydu.setConfiguration(data);
   };
 
   useEffect(() => {
@@ -24,12 +26,12 @@ export default function Wizard() {
     let filename = 'configuration.json';
     let contentType = 'application/json;charset=utf-8;';
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(Local.get(Wizard.storage.data))))], {
+      let blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(Local.get(Wizard.storage.data))))], {
         type: contentType,
       });
       navigator.msSaveOrOpenBlob(blob, filename);
     } else {
-      var a = document.createElement('a');
+      let a = document.createElement('a');
       a.download = filename;
       a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(Local.get(Wizard.storage.data)));
       a.target = '_blank';

@@ -1,31 +1,31 @@
-// eslint-disable-next-line import/no-unresolved
-
 import '../../../public/override/style.css';
+import '../../../public/chatboxHomepage.css';
 
-import React, { Suspense, useContext, useEffect } from 'react';
+import { AuthProtected, AuthProvider } from '../../components/auth/context/AuthContext';
+import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
-import AuthPayload from '../../modulesApi/OidcModuleApi';
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
+import { OidcProvider } from '../../contexts/OidcContext';
+import { SamlProvider } from '../../contexts/SamlContext';
+import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser';
+import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
-import { findValueByKey } from '../../tools/findValueByKey';
-import { parseString } from '../../tools/parseString';
-import qs from 'qs';
+import dydu from '../../tools/dydu';
+import { hasWizard } from '../../tools/wizard';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
-const { AuthContext, Authenticated } = AuthPayload;
-
-const Chatbox = React.lazy(() =>
+const Chatbox = lazy(() =>
   import(
     // webpackChunkName: "chatbox"
     '../Chatbox'
   ).then((module) => ({ default: module.ChatboxWrapper })),
 );
-const Wizard = React.lazy(() =>
+const Wizard = lazy(() =>
   import(
     // webpackChunkName: "wizard"
     '../Wizard'
@@ -35,12 +35,14 @@ const Wizard = React.lazy(() =>
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
  *
- * Optionally render the Wizard when the `wizard` URL parameter is found.
+ * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
 export default function Application() {
   const { configuration } = useContext(ConfigurationContext);
+  const event = useContext(EventsContext).onEvent('chatbox');
+  const classes = useStyles({ configuration });
+
   const {
-    close: closeChatbox,
     mode,
     popin: popinChatbox,
     isOpen: isChatboxOpen,
@@ -49,35 +51,23 @@ export default function Application() {
     toggle,
   } = useViewMode();
 
-  const event = useContext(EventsContext).onEvent('chatbox');
-  const classes = useStyles({ configuration });
-  const hasWizard = qs.parse(window.location.search, { ignoreQueryPrefix: true }).wizard !== undefined;
-  // eslint-disable-next-line no-unused-vars
+  const authConfiguration = useMemo(() => {
+    return {
+      clientId: configuration.oidc.clientId,
+      clientSecret: configuration?.oidc?.clientSecret,
+      pkceActive: configuration?.oidc?.pkceActive,
+      pkceMode: configuration?.oidc?.pkceMode,
+      authUrl: configuration.oidc.authUrl,
+      tokenUrl: configuration.oidc.tokenUrl,
+      scope: configuration?.oidc?.scopes,
+    };
+  }, [configuration?.oidc?.scopes]);
 
   let customFont = configuration.font.url;
-
-  const hasAuthStorageCheck = configuration.checkAuthorization?.active;
-  const sessionStorageKey = configuration.checkAuthorization?.sessionStorageKey;
-  const searchKey = configuration.checkAuthorization?.searchKey;
-
-  //const oidcEnabled = configuration.oidc ? configuration.oidc.enable : false;
-
-  // get the session storage value based on the sessionStorageKey
-  const sessionStorageValue = parseString(sessionStorage.getItem(sessionStorageKey));
-  // if the session storage value is a deep nested object, check for the searchKey
-  const sessionToken =
-    sessionStorageValue && typeof sessionStorageValue === 'object'
-      ? findValueByKey(sessionStorageValue, searchKey)
-      : sessionStorageValue;
-  const isAuthorized = sessionToken && !!sessionToken.length && !!sessionToken[0];
 
   if (customFont && document.getElementById('font') && customFont !== document.getElementById('font').href) {
     document.getElementById('font').href = customFont;
   }
-
-  useEffect(() => {
-    if (hasAuthStorageCheck && !isAuthorized) closeChatbox();
-  }, [closeChatbox, hasAuthStorageCheck, isAuthorized]);
 
   useEffect(() => {
     event('loadChatbox');
@@ -87,17 +77,25 @@ export default function Application() {
   return (
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
-        {hasWizard && <Wizard />}
-        <DialogProvider onPushrulesDataReceived={popinChatbox}>
-          <AuthContext>
-            <Authenticated>
-              <LivechatProvider>
-                <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-              </LivechatProvider>
-              <Teaser open={isChatboxMinimize} toggle={toggle} />
-            </Authenticated>
-          </AuthContext>
-        </DialogProvider>
+        {hasWizard() && <Wizard />}
+        <AuthProvider configuration={authConfiguration}>
+          <AuthProtected enable={configuration?.oidc?.enable}>
+            <OidcProvider>
+              <SamlProvider>
+                <UserActionProvider>
+                  <DialogProvider onPushrulesDataReceived={popinChatbox}>
+                    <SurveyProvider api={dydu}>
+                      <LivechatProvider>
+                        <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                      </LivechatProvider>
+                    </SurveyProvider>
+                    <Teaser open={isChatboxMinimize} toggle={toggle} />
+                  </DialogProvider>
+                </UserActionProvider>
+              </SamlProvider>
+            </OidcProvider>
+          </AuthProtected>
+        </AuthProvider>
       </Suspense>
     </div>
   );

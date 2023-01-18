@@ -2,10 +2,11 @@ import { VAR_TYPE } from './constants';
 
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
-export const isEmptyArray = (variable) => Array.isArray(variable) && variable.length <= 0;
-
 export const toFormUrlEncoded = (data) => {
-  const mkAffectationStr = (key, value) => `${key}=${value}`;
+  const mkAffectationStr = (key, value) => {
+    if (!isDefined(value) || isEmptyString(value)) value = null;
+    return `${key}=${value}`;
+  };
   return Object.keys(data).reduce((resultStr, key) => {
     if (resultStr.length > 0) return resultStr + '&' + mkAffectationStr(key, data[key]);
     return mkAffectationStr(key, data[key]);
@@ -56,9 +57,23 @@ export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[obj
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
 export const isOfTypeObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
 export const isOfTypeFunction = (v) => Object.prototype.toString.call(v) === '[object Function]';
+export const isOfTypeNumber = (v) => Object.prototype.toString.call(v) === '[object Number]';
 
-export const isArray = isOfTypeArray;
+export const isPositiveNumber = (v) => isOfTypeNumber(v) && v > 0;
+
+// aliases
+export const isFunction = isOfTypeFunction;
 export const isBoolean = isOfTypeBoolean;
+
+export const isString = isOfTypeString;
+export const isEmptyString = (d) => isString(d) && d.length === 0;
+
+export const isNumber = (d) => Object.prototype.toString.call(d) === '[object Number]';
+export const isArray = (d) => Object.prototype.toString.call(d) === '[object Array]';
+export const isEmptyArray = (d) => isArray(d) && d.length === 0;
+
+export const isObject = (d) => Object.prototype.toString.call(d) === '[object Object]';
+export const isEmptyObject = (d) => isObject(d) && Object.keys(d).length <= 0;
 
 export const isOfType = (val, type) => {
   if (!isDefined(VAR_TYPE[type])) throw new Error('unknown type: type ' + type + ' is not in contant VAR_TYPE');
@@ -76,12 +91,21 @@ export const isOfType = (val, type) => {
 
 export const extractDomainFromUrl = (url) => url.replace(/http[s]?:\/\//, '').split('/')[0];
 
-export const _stringify = (data) => JSON.stringify(data);
-export const _parse = (data) => JSON.parse(data);
+export const _stringify = (data) => {
+  try {
+    return JSON.stringify(data);
+  } catch (e) {
+    return data;
+  }
+};
 
-export const isEmptyObject = (v) => isOfTypeObject(v) && Object.keys(v).length === 0;
-
-export const isEmptyString = (v) => isOfTypeString(v) && v.length === 0;
+export const _parse = (data) => {
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    return data;
+  }
+};
 
 export const objectExtractFields = (obj, fieldList) =>
   fieldList.reduce((resultMap, fieldName) => {
@@ -94,7 +118,15 @@ export const objectContainFields = (obj, fieldList = []) => {
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
 };
 
-export const secondsToMs = (s) => s * 1000;
+export const secondsToMs = (s) => {
+  if (!isOfTypeNumber(s)) return 5000;
+
+  if (s >= 0) {
+    return s * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
+  }
+};
 
 export const browserName = () => {
   let sBrowser;
@@ -144,6 +176,19 @@ export const osName = () => {
   return OSName;
 };
 
+export const b64encodeObject = (o) => {
+  const res = Object.keys(o).reduce((resultMap, key) => {
+    const value = o[key];
+    resultMap[key] = !isString(value) ? value.toBase64() : isObject(value) ? b64encodeObject(value) : value;
+
+    return resultMap;
+  }, {});
+  return res;
+};
+
+export const recursiveBase64EncodeString = (obj) => {
+  return _recursiveBase64EncodeString(obj, Object.keys(obj), {});
+};
 export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
@@ -167,7 +212,111 @@ const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   return _recursiveBase64DecodeString(o, keylist, res);
 };
 
-export const asset = (name) => `${process.env.PUBLIC_URL}/assets/${name}`;
+const _recursiveBase64EncodeString = (o, keylist, res = {}) => {
+  if (keylist.length === 0) return res;
 
-export const qualification =
-  window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+  const key = keylist.pop();
+  let value = o[key];
+
+  if (isOfTypeString(value)) {
+    try {
+      res[key] = value.toBase64();
+    } catch (e) {
+      // Exception: malformed URI
+      res[key] = value;
+    }
+  } else if (isOfTypeObject(value)) res[key] = _recursiveBase64EncodeString(value, Object.keys(value), res[key]);
+  else res[key] = value;
+
+  return _recursiveBase64EncodeString(o, keylist, res);
+};
+
+export const asset = (name) => {
+  if (name.includes('base64')) {
+    return name;
+  }
+  return `${process.env.PUBLIC_URL}/assets/${name}`;
+};
+
+export const hasProperty = (o, propertyName) => {
+  return Object.hasOwnProperty.call(o, propertyName);
+};
+
+export const numberOfDayInMs = (count = 1) => {
+  if (count >= 0) {
+    return count * 24 * 60 * 60 * 1000;
+  } else {
+    throw new Error('Parameter have to be bigger or equal than 0');
+  }
+};
+
+export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
+
+export const getChatboxWidth = (chatboxRef) => {
+  if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
+  if (!isDefined(chatboxRef)) return 0;
+  const { left, right } = chatboxRef.getBoundingClientRect();
+  return Math.abs(right - left);
+};
+
+export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+  const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
+  if (error) throw new Error('getChatboxWidthTime: parameter error', time);
+  return getChatboxWidth(chatboxRef) * time;
+};
+
+export const decodeHtml = (html) => {
+  let txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+};
+
+export const escapeHTML = (html) => {
+  return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
+};
+
+export const prependObjectKeysWithTag = (tag, object) => {
+  try {
+    return Object.keys(object).reduce((resultObj, key) => {
+      return {
+        ...resultObj,
+        [`${tag}${key}`]: object[key],
+      };
+    }, {});
+  } catch (e) {
+    console.error('While executing prependObjectKeysWithTag()', e);
+    return {};
+  }
+};
+
+export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));
+
+export const removeStartingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeStartingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesStartsWithSlash = s.startsWith(slashTag);
+  const rmSlashAtStartString = (s) => s.slice(1);
+  return !doesStartsWithSlash ? s : removeStartingSlash(rmSlashAtStartString(s));
+};
+
+export const removeEndingSlash = (s) => {
+  const isValid = [isDefined, isString].every((f) => f(s));
+  if (!isValid) {
+    console.error('While executing removeEndingSlash(): parameter must be a string');
+    return s;
+  }
+
+  if (isEmptyString(s)) return s;
+
+  const slashTag = '/';
+  const doesEndsWithSlash = s.endsWith(slashTag);
+  const rmSlashAtEndString = (s) => s.slice(0, s.length - 1);
+  return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
+};

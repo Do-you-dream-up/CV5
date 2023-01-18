@@ -1,14 +1,14 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
-import React, { useMemo, useContext, useState, useEffect } from 'react';
+import { createElement, useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import ProductTemplate from '../ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import c from 'classnames';
-import useCustomRenderer from './useCustomRenderer';
 import parse from 'html-react-parser';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import useCustomRenderer from './useCustomRenderer';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -21,22 +21,12 @@ const RE_HREF = /(<a href([^>]+)>)/g;
  *
  * Basically an opinionated reset.
  */
-export default function PrettyHtml({
-  carousel,
-  children,
-  className,
-  component,
-  hasExternalLink,
-  html,
-  templatename,
-  type,
-  ...rest
-}) {
+export default function PrettyHtml({ carousel, children, className, component, html, templateName, type, ...rest }) {
   const [htmlContent, setHtmlContent] = useState(null);
   const customRenderer = useCustomRenderer();
   const classes = useStyles();
   const { t } = useTranslation('translation');
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { NameUser, NameBot } = configuration.interaction;
 
   const userName = useMemo(
@@ -56,7 +46,6 @@ export default function PrettyHtml({
     const hasEmptyHref = (el) => el.match(RE_HREF_EMPTY);
     if (hrefMatchs)
       hrefMatchs.forEach((el) => {
-        // eslint-disable-next-line
         if (hasEmptyHref(el)) _html = _html.replace(el, el.replace(RE_HREF_EMPTY, 'href="javascript:void(0)"'));
       });
 
@@ -78,7 +67,7 @@ export default function PrettyHtml({
             if (
               elementChild === interactiveElementsArray[0] &&
               !carousel &&
-              knownTemplates.includes(templatename) === false
+              knownTemplates.includes(templateName) === false
             ) {
               elementChild.focus();
             }
@@ -86,22 +75,22 @@ export default function PrettyHtml({
         }
       });
     }
-  }, [carousel, templatename]);
+  }, [carousel, templateName]);
 
   const interactionType = useMemo(() => {
     return type === 'response' ? botName : userName;
   }, [botName, type, userName]);
 
-  return React.createElement(
+  return createElement(
     component,
     { className: c(classes.root, className), ...rest },
     <>
       {children}
       {<span className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></span>}
-      {templatename === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
-      {templatename === CAROUSSEL_TEMPLATE && <CarouselTemplate html={htmlContent} />}
-      {templatename === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
-      {!knownTemplates.includes(templatename) && htmlContent && parse(htmlContent, customRenderer)}
+      {templateName === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
+      {templateName === CAROUSSEL_TEMPLATE && <CarouselTemplate html={htmlContent} />}
+      {templateName === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
+      {!knownTemplates.includes(templateName) && htmlContent && parse(htmlContent, customRenderer)}
     </>,
   );
 }
@@ -115,8 +104,7 @@ PrettyHtml.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   component: PropTypes.elementType,
-  hasExternalLink: PropTypes.bool,
   html: PropTypes.string,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
   type: PropTypes.string,
 };

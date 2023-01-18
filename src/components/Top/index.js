@@ -1,12 +1,13 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
+import { createElement, useContext, useEffect } from 'react';
+
 import { EventsContext } from '../../contexts/EventsContext';
-import { UserActionContext } from '../../contexts/UserActionContext';
 import PrettyHtml from '../PrettyHtml';
-import useStyles from './styles';
-import { useDialog } from '../../contexts/DialogContext';
+import PropTypes from 'prop-types';
+import { UserActionContext } from '../../contexts/UserActionContext';
+import c from 'classnames';
 import { isEmptyArray } from '../../tools/helpers';
+import { useDialog } from '../../contexts/DialogContext';
+import useStyles from './styles';
 
 /**
  * Fetch the top-asked resources and display them in a numbered list.
@@ -29,28 +30,30 @@ export default function Top({ className, component, ...rest }) {
 
   return (
     !isEmptyArray(items) &&
-    React.createElement(
+    createElement(
       component,
-      { className: c('dydu-top', className), ...rest },
+      { className: c('dydu-top', className), ...rest, id: 'dydu-top-knowledge' },
       <PrettyHtml>
         <ol>
-          {items.map(({ reword }, index) => {
+          {items?.map((item, index) => {
             const onAsk = (event) => {
-              onAskHandler(reword);
+              item?.reword && onAskHandler(item?.reword);
               event.preventDefault();
             };
             return (
-              <li key={index}>
-                <a
-                  href="#"
-                  className={c('dydu-top-items', classes.accessibility, {
-                    [classes.hideOutline]: !tabbing,
-                  })}
-                  children={reword}
-                  onClick={onAsk}
-                  tabIndex="0"
-                />
-              </li>
+              item?.reword && (
+                <li key={index}>
+                  <a
+                    href="#"
+                    className={c('dydu-top-items', classes.accessibility, {
+                      [classes.hideOutline]: !tabbing,
+                    })}
+                    children={item?.reword}
+                    onClick={onAsk}
+                    tabIndex="0"
+                  />
+                </li>
+              )
             );
           })}
         </ol>

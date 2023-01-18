@@ -1,13 +1,12 @@
-import { Cookie, Local } from '../../tools/storage';
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
+import { escapeHTML, isDefined } from '../../tools/helpers';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -25,9 +24,8 @@ import Tab from '../Tab';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { encode } from '../../tools/cipher';
-import { isDefined } from '../../tools/helpers';
 import talk from '../../tools/talk';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
@@ -36,7 +34,7 @@ import { useViewMode } from '../../contexts/ViewModeProvider';
  * Root component of the chatbox. It implements the `window` API as well.
  */
 export default function Chatbox({ extended, open, root, toggle, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
@@ -56,8 +54,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   } = useContext(DialogContext);
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { hasAfterLoadBeenCalled } = useEvent();
-  const { onChatboxLoaded, onAppReady } = useEvent();
+  const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration.onboarding.enable;
@@ -67,8 +64,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
+  const qualification = configuration.qualification?.active;
   const { expandable } = configuration.chatbox;
   const secondaryMode = configuration.secondary.mode;
   const dialogRef = useRef();
@@ -86,7 +82,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
           qualification,
           extra: options,
         };
-
         options = Object.assign({ hide: false }, options);
         if (!options.hide) {
           if (!REGEX_URL.test(text)) {
@@ -120,13 +115,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
   useEffect(() => {
     if (!ready) {
       window.dydu = { ...window.dydu };
-
       window.dydu.chat = {
-        ask: (text, options) => ask(text, options),
+        ask: (text, options) => {
+          ask(text, options);
+        },
         empty: () => empty(),
         reply: (text) => addResponse({ text }),
-        setDialogVariable: (name, value) => dydu.setDialogVariable(name, value),
-        setRegisterContext: (name, value) => dydu.setRegisterContext(name, value),
+        setDialogVariable: (name, value) => {
+          dydu.setDialogVariable(name, escapeHTML(value));
+        },
+        setRegisterContext: (name, value) => {
+          dydu.setRegisterContext(name, escapeHTML(value));
+        },
       };
 
       window.dydu.promptEmail = {
@@ -176,13 +176,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window._dydu_uploadFile = window.dydu.ui.upload;
     }
 
-    if (window.dydu.localization.get() && !configuration.application.languages.includes(window.dydu.localization.get()))
-      window.dydu.localization.set(configuration.application.defaultLanguage[0], configuration.application.languages);
-
-    if (configuration.spaces.items && configuration.spaces.items.length === 1)
-      window.dydu.space.set(window.dydu.space.get() ? window.dydu.space.get() : configuration.spaces.items[0], {
-        quiet: true,
-      });
     setReady(true);
   }, [
     addResponse,
@@ -206,31 +199,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     gdprPassed,
   ]);
 
-  const cookieStringKeyUniqueVisitor = useCallback(async () => {
-    const botId = await dydu.getBotId();
-    const currentSpace = Local.get(Local.names.space);
-    const currentLanguage = Local.get(Local.names.locale);
-    return `DYDU_lastvisitfor_${botId}_${currentSpace}_${currentLanguage}`;
-  }, []);
-
-  useEffect(() => {
-    cookieStringKeyUniqueVisitor().then((visitorCookieValue) => {
-      if (gdprPassed && !Cookie.get(visitorCookieValue)) {
-        dydu.welcomeCall({ qualification }).then(
-          () => Cookie.set(visitorCookieValue, encode(new Date().toISOString()), undefined),
-          () => {},
-        );
-      }
-    });
-  }, [cookieStringKeyUniqueVisitor, gdprPassed, qualification]);
-
   const classnames = c('dydu-chatbox', classes.root, {
     [classes.rootExtended]: extended,
     [classes.rootHidden]: !open,
   });
+  const idLabel = 'dydu-window-label-bot';
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={labelChatbot}>
-      <span className={classes.srOnly} tabIndex="-1">
+    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
+      <span className={classes.srOnly} tabIndex="-1" id={idLabel}>
         {labelChatbot}
       </span>
       <div>

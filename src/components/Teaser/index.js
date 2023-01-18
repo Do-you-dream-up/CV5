@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
-import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -11,6 +10,7 @@ import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ const TEASER_TYPES = {
  * Minified version of the chatbox.
  */
 export default function Teaser({ open, toggle }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
@@ -35,7 +35,7 @@ export default function Teaser({ open, toggle }) {
   const mouseover = t('teaser.mouseover');
 
   const teaserAvatar = configuration.avatar?.teaser?.image || configuration.avatar?.response?.image;
-  const teaserAvatarBackground = configuration.avatar?.teaser?.background || configuration.avatar?.response?.background;
+  const teaserAvatarBackground = configuration.avatar?.teaser?.background;
 
   const logoTeaser = teaserAvatar?.includes('base64')
     ? teaserAvatar
@@ -94,7 +94,7 @@ export default function Teaser({ open, toggle }) {
 
   return (
     <Draggable bounds="html">
-      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}>
+      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })} id="dydu-teaser">
         <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
           <div
             onMouseDown={handleButtonPress}

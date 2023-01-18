@@ -1,7 +1,7 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React from 'react';
 import Progress from '../Progress';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { createElement } from 'react';
 import useStyles from './styles';
 
 /**
@@ -11,7 +11,7 @@ import useStyles from './styles';
  */
 export default function Paper({ children, className, component, elevation, thinking, title, ...rest }) {
   const classes = useStyles({ elevation });
-  return React.createElement(
+  return createElement(
     component,
     { className: c('dydu-paper', classes.root, className), ...rest },
     <>

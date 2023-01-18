@@ -1,16 +1,17 @@
 import { EventsContext, useEvent } from '../../contexts/EventsContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import Actions from '../Actions';
+import Actions from '../Actions/Actions';
 import Autosuggest from 'react-autosuggest';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import { escapeHTML } from '../../tools/helpers';
 import talk from '../../tools/talk';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
@@ -23,9 +24,10 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Input({ onRequest, onResponse }) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('chatbox');
-  const { disabled, locked, placeholder } = useContext(DialogContext);
+  const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
+
   const classes = useStyles({ configuration });
   const [counter = 100, setCounter] = useState(configuration.input.maxLength);
   const [input, setInput] = useState('');
@@ -34,14 +36,11 @@ export default function Input({ onRequest, onResponse }) {
   const [typing, setTyping] = useState(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
-  const qualification =
-    window.DYDU_QUALIFICATION_MODE !== undefined ? window.DYDU_QUALIFICATION_MODE : process.env.QUALIFICATION;
   const { counter: showCounter, delay, maxLength = 100 } = configuration.input;
   const { limit: suggestionsLimit = 3 } = configuration.suggestions;
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
-  const [increment, setIncrement] = useState();
   const { event: chatbotEvent } = useEvent();
 
   const voice = configuration.Voice ? configuration.Voice.enable : false;
@@ -52,7 +51,6 @@ export default function Input({ onRequest, onResponse }) {
     if (chatbotEvent === 'teaser/onClick') {
       inputRef && inputRef?.current?.focus();
     }
-    setIncrement(incrementToUpdateRefOnRender++);
   }, [chatbotEvent, incrementToUpdateRefOnRender, inputRef]);
 
   const onChange = (event) => {
@@ -90,9 +88,13 @@ export default function Input({ onRequest, onResponse }) {
         ...properties,
       };
 
+      const textareaId = 'dydu-textarea';
       return (
         <div className={c('dydu-input-field', classes.field)}>
-          <textarea {...data} disabled={prompt || locked} />
+          <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
+            textarea
+          </label>
+          <textarea {...data} disabled={prompt || locked} id={textareaId} />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>
@@ -109,7 +111,9 @@ export default function Input({ onRequest, onResponse }) {
   const sendInput = useCallback(
     (input) => {
       if (isLivechatOn) send(input);
-      else talk(input, { qualification }).then(onResponse);
+      else {
+        talk(input).then(onResponse);
+      }
     },
     // eslint-disable-next-line
     [isLivechatOn, send],
@@ -117,7 +121,7 @@ export default function Input({ onRequest, onResponse }) {
 
   const submit = useCallback(
     (text) => {
-      text = text.trim();
+      text = escapeHTML(text.trim());
       if (text) {
         reset();
         onRequest(text);
@@ -132,14 +136,14 @@ export default function Input({ onRequest, onResponse }) {
   const suggest = useCallback(
     (text) => {
       text = text.trim();
-      if (text && suggestionsLimit > 0) {
+      if (text && autoSuggestionActive) {
         dydu.suggest(text).then((suggestions) => {
           suggestions = Array.isArray(suggestions) ? suggestions : [suggestions];
           setSuggestions(suggestions.slice(0, suggestionsLimit));
         });
       }
     },
-    [suggestionsLimit],
+    [suggestionsLimit, autoSuggestionActive],
   );
 
   useEffect(() => {
@@ -180,11 +184,12 @@ export default function Input({ onRequest, onResponse }) {
       type: 'submit',
       variant: 'icon',
       title: actionSend,
+      id: 'dydu-submit-action',
     },
   ];
 
   return (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit}>
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}

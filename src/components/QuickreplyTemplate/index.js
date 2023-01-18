@@ -1,8 +1,11 @@
-// import c from 'classnames';
+import { isDefined, isOfTypeObject } from '../../tools/helpers';
 
 import PropTypes from 'prop-types';
 import React from 'react';
 import UploadFileTemplate from '../UploadFileTemplate';
+import c from 'classnames';
+import { useMemo } from 'react';
+import useStyles from './styles';
 
 // import useStyles from './styles';
 // import { isDefined, isOfTypeObject } from '../../tools/helpers';
