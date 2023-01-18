@@ -55,9 +55,9 @@ interface DialogContextProps {
   prompt?: string;
   secondaryActive?: boolean;
   secondaryContent?: any;
-  selectedFile?: File;
+  selectedFile?: any;
   setDisabled?: Dispatch<SetStateAction<boolean>>;
-  setErrorFormatMessage?: Dispatch<SetStateAction<string>>;
+  setErrorFormatMessage?: Dispatch<SetStateAction<string | null>>;
   setIsFileActive?: Dispatch<SetStateAction<boolean>>;
   setLocked?: Dispatch<SetStateAction<boolean>>;
   setPlaceholder?: Dispatch<SetStateAction<any>>;
@@ -116,10 +116,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { isMobile } = useViewport();
 
-  const [uploadActive, setUploadActive] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isFileActive, setIsFileActive] = useState(false);
-  const [errorFormatMessage, setErrorFormatMessage] = useState(null);
+  const [uploadActive, setUploadActive] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [isFileActive, setIsFileActive] = useState<boolean>(false);
+  const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState<ReactNode[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
@@ -489,20 +489,28 @@ export function DialogProvider({ children }: DialogProviderProps) {
         addResponse,
         disabled,
         empty,
+        errorFormatMessage,
         interactions,
+        isFileActive,
         locked,
         placeholder,
         prompt,
         secondaryActive,
         secondaryContent,
+        selectedFile,
         setDisabled,
+        setErrorFormatMessage,
+        setIsFileActive,
         setLocked,
         setPlaceholder,
         setPrompt,
         setSecondary,
+        setSelectedFile,
+        setUploadActive,
         setVoiceContent,
         toggleSecondary,
         typeResponse,
+        uploadActive,
         voiceContent,
         zoomSrc,
         setZoomSrc,
