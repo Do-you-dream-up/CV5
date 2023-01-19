@@ -1,8 +1,8 @@
 import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
 import { createElement, useEffect, useMemo, useState } from 'react';
 
-import CarouselTemplate from '../CarouselTemplate';
-import ProductTemplate from '../ProductTemplate';
+import CarouselTemplate from '../CarouselTemplate/CarouselTemplate';
+import ProductTemplate from '../ProductTemplate/ProductTemplate';
 import PropTypes from 'prop-types';
 import QuickreplyTemplate from '../QuickreplyTemplate';
 import c from 'classnames';
@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
 const RE_HREF = /(<a href([^>]+)>)/g;
-
 /**
  * Prettify children and string passed as parameter.
  *

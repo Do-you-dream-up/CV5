@@ -3,7 +3,7 @@ import './tools/internationalization';
 
 import { JssProvider, ThemeProvider } from 'react-jss';
 
-import Application from './components/Application';
+import App from './components/App/App';
 import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
@@ -36,7 +36,7 @@ const renderApp = (theme) =>
         <ConfigurationProvider configuration={_configuration}>
           <ViewModeProvider>
             <EventsProvider>
-              <Application />
+              <App />
             </EventsProvider>
           </ViewModeProvider>
         </ConfigurationProvider>

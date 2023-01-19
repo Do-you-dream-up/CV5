@@ -231,7 +231,9 @@ export default new (class Dydu {
     if (ms) {
       timeout = ms;
     }
-    API.defaults.timeout = timeout;
+    if (API?.defaults) {
+      API.defaults.timeout = timeout;
+    }
   };
 
   handleAxiosError = (error, verb, path, data, timeout) => {
@@ -280,9 +282,12 @@ export default new (class Dydu {
   emit = (verb, path, data, timeout) => {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
-    return verb(path, data)
-      .then(({ data = {} }) => this.handleAxiosResponse(data))
-      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    return (
+      verb &&
+      verb(path, data)
+        .then(({ data = {} }) => this.handleAxiosResponse(data))
+        .catch((error) => this.handleAxiosError(error, verb, path, data, timeout))
+    );
   };
 
   /**
