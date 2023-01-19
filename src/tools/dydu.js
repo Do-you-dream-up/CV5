@@ -3,6 +3,7 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
+  getBrowserLocale,
   hasProperty,
   isDefined,
   isEmptyString,
@@ -38,7 +39,7 @@ const getUrl = window.location.href;
 
 let BOT = {},
   protocol,
-  API = {};
+  API = { defaults: {} };
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
@@ -467,12 +468,7 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    const { application } = this.getConfiguration();
-    if (!this.locale) {
-      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
-    }
-    return this.locale || application?.defaultLanguage;
+    return this.locale;
   };
 
   /**
@@ -581,9 +577,10 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages) =>
+  setLocale = (locale, languages = []) =>
     new Promise((resolve, reject) => {
-      if (!this.locale || languages.includes(locale)) {
+      if (isDefined(this.locale)) resolve(this.locale);
+      if (languages.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);
@@ -957,14 +954,40 @@ export default new (class Dydu {
     });
   }
 
-  onConfigurationLoaded() {
-    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
-    this.setQualificationMode(this.getConfiguration().qualification?.active);
-  }
-
   setConfiguration(configuration = {}) {
     this.configuration = configuration;
     this.onConfigurationLoaded();
+  }
+
+  onConfigurationLoaded() {
+    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setQualificationMode(this.getConfiguration().qualification?.active);
+    this.initLocaleWithConfiguration(this.getConfiguration());
+  }
+
+  initLocaleWithConfiguration(configuration) {
+    let locale = getBrowserLocale();
+    try {
+      const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
+      locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      return this.locale;
+    } catch (e) {
+      console.info('Error while initializing locale, fallback to browser locale');
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      return this.locale;
+    }
+  }
+
+  getConfigurationDefaultLocal() {
+    try {
+      return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
+    } catch (e) {
+      console.info('No default language from configuration file, fallback to browser locale');
+      return getBrowserLocale();
+    }
   }
 
   setSpaceToDefault() {
