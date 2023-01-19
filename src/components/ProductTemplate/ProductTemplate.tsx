@@ -1,21 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import PropTypes from 'prop-types';
-import ReadMore from '../ReadMore';
+import ReadMore from '../ReadMore/ReadMore';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { uppercaseFirstLetter } from '../../tools/text';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { READ_MORE_CARACTERS_TEXT } from '../../tools/constants';
+interface ProductTemplateProps {
+  classe?: string | null;
+  html?: any;
+}
 
-const READ_MORE_CARACTERS_TEXT = {
-  readmore: 85,
-};
-
-export default function ProductTemplate({ classe = null, html }) {
+export default function ProductTemplate({ classe = null, html }: ProductTemplateProps) {
   const { configuration } = useConfiguration();
-  const classes = useStyles({ configuration });
-  const { product, text } = JSON.parse(html || '{}');
+  const classes: any = useStyles({ configuration });
+
+  const json = JSON.parse(html || '{}');
+  const { product, text } = json;
+
   const strippedString = useMemo(() => product?.subtitle?.replace(/(<([^>]+)>)/gi, '') || null, [product]);
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);
@@ -30,13 +33,7 @@ export default function ProductTemplate({ classe = null, html }) {
     });
   }, [isEmptyImage]);
 
-  const toggleIsTruncated = () => {
-    setIsTruncated(!isTruncated);
-  };
-
-  if (!isDefined(product)) return null;
-  const productTitle = uppercaseFirstLetter(product.title);
-  return (
+  return isDefined(product) ? (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
       <div className={c('dydu-product-template-image', classes.image)}>
@@ -44,12 +41,12 @@ export default function ProductTemplate({ classe = null, html }) {
       </div>
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
-          {productTitle && <h3>{productTitle}</h3>}
+          {product?.title && <h3>{uppercaseFirstLetter(product.title)}</h3>}
           {!!product.numeric && <p>{product.numeric}</p>}
           {!!product.subtitle && !!readMoreActive ? (
             <ReadMore
               isTruncated={isTruncated}
-              toggleIsTruncated={toggleIsTruncated}
+              toggleIsTruncated={() => setIsTruncated(!isTruncated)}
               children={product.subtitle}
               maxChar={READ_MORE_CARACTERS_TEXT.readmore}
             />
@@ -64,10 +61,5 @@ export default function ProductTemplate({ classe = null, html }) {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 }
-
-ProductTemplate.propTypes = {
-  classe: PropTypes.any,
-  html: PropTypes.string,
-};

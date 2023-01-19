@@ -94,3 +94,7 @@ export const VIEW_MODE = {
   popin: 2,
   full: 3,
 };
+
+export const READ_MORE_CARACTERS_TEXT = {
+  readmore: 85,
+};
