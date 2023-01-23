@@ -29,6 +29,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -47,11 +48,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
     setLocked,
     setPlaceholder,
     setPrompt,
-    setUploadActive,
     setSecondary,
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
+  const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext(EventsContext).onEvent('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
@@ -162,7 +163,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
         disable: () => setDisabled(true),
         enable: () => setDisabled(false),
         lock: (value = true) => setLocked(value),
-        upload: (value = true) => setUploadActive(value),
+        upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),

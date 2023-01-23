@@ -31,6 +31,7 @@ import useServerStatus from '../tools/hooks/useServerStatus';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
+import FileUploader from '../components/FileUploader';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -76,6 +77,7 @@ interface DialogContextProps {
   autoSuggestionActive?: boolean;
   setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
   callWelcomeKnowledge?: () => null;
+  showUploadFileButton?: () => void;
 }
 
 interface SecondaryContentProps {
@@ -145,13 +147,17 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
-  useEffect(() => {
-    if (uploadActive)
-      setInteractions((list) => {
-        list.push(<UploadFileTemplate />);
-        return list;
-      });
-  }, [uploadActive]);
+  const onUploadFileSelected = useCallback((file) => {
+    console.log('file !', file);
+  }, []);
+
+  const showUploadFileButton = useCallback(() => {
+    setInteractions((list) => {
+      list.push(<FileUploader onSelect={onUploadFileSelected} />);
+      return list;
+    });
+  }, []);
+
   const isLastElementOfTypeAnimationWriting = (list) => {
     const last = list[list.length - 1];
     return last?.type?.name === Interaction.Writing.name;
@@ -526,6 +532,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         autoSuggestionActive,
         setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
+        showUploadFileButton,
       }}
     />
   );

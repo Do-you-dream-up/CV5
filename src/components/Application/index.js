@@ -18,6 +18,7 @@ import dydu from '../../tools/dydu';
 import { hasWizard } from '../../tools/wizard';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import UploadFileProvider from '../../contexts/UploadFileContext';
 
 const Chatbox = lazy(() =>
   import(
@@ -86,7 +87,9 @@ export default function Application() {
                   <DialogProvider onPushrulesDataReceived={popinChatbox}>
                     <SurveyProvider api={dydu}>
                       <LivechatProvider>
-                        <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                        <UploadFileProvider>
+                          <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                        </UploadFileProvider>
                       </LivechatProvider>
                     </SurveyProvider>
                     <Teaser open={isChatboxMinimize} toggle={toggle} />
