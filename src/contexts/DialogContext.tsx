@@ -16,6 +16,7 @@ import { isDefined, isOfTypeString } from '../tools/helpers';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
+import UploadFileTemplate from 'src/components/UploadFileTemplate';
 import dotget from '../tools/dotget';
 import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 import fetchPushrules from '../tools/pushrules';
@@ -117,6 +118,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isMobile } = useViewport();
 
   const [uploadActive, setUploadActive] = useState<boolean>(false);
+
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [isFileActive, setIsFileActive] = useState<boolean>(false);
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
@@ -143,6 +145,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
+  useEffect(() => {
+    if (uploadActive)
+      setInteractions((list) => {
+        list.push(<UploadFileTemplate />);
+        return list;
+      });
+  }, [uploadActive]);
   const isLastElementOfTypeAnimationWriting = (list) => {
     const last = list[list.length - 1];
     return last?.type?.name === Interaction.Writing.name;

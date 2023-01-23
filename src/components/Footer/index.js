@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogContext } from '../../contexts/DialogContext';
 import Input from '../Input';
 import PropTypes from 'prop-types';
@@ -58,6 +57,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   ];
 
   const inputRender = () => {
+    console.log('isFileActive', isFileActive);
     if (isFileActive) {
       return <UploadInput />;
     } else {

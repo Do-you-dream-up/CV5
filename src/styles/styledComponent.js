@@ -85,6 +85,23 @@ export const Button = styled.button`
     `};
 `;
 
+export const InputFile = styled.input`
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: #41479b;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  ${(props) =>
+    props.cancel &&
+    css`
+      background: transparent;
+      color: #41479b;
+      border-color: #41479b;
+    `};
+`;
+
 export const ErrorMessage = styled.div`
   background: rgb(255, 0, 0, 0.3);
   color: red;
