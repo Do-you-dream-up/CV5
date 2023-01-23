@@ -1,25 +1,35 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import FileUploader from '../FileUploader';
+import { useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { isDefined } from '../../tools/helpers';
 
 const UploadInput = () => {
-  const { file, flush, errorFormatMessage = false } = useUploadFile();
-  const name = file?.name;
-  const size = file?.size;
-  const sizeFormat = Math.ceil(size / Math.pow(1024, 1));
+  const { file, flush, isFileValid, errorFormatMessage = false } = useUploadFile();
 
-  const rendererHeader = () => {
+  const fileName = useMemo(() => file?.name || '', [file]);
+  const fileSize = useMemo(() => file?.size || '', [file]);
+
+  const rendererHeader = useCallback(() => {
+    if (!isDefined(file)) return null;
     if (errorFormatMessage) {
       return <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
     } else {
       return (
         <>
-          <span className="overflow-hidden name-file">{name} </span>
-          <span className="overflow-hidden size-file">{sizeFormat} ko</span>
+          <span className="overflow-hidden name-file">{fileName} </span>
+          <span className="overflow-hidden size-file">{formatFileSize(fileSize)} ko</span>
         </>
       );
     }
-  };
+  }, [file]);
+
+  const label = useMemo(() => (isFileValid() ? 'Send' : 'Reupload'), [isFileValid]);
+
+  const renderAction = useCallback(() => {
+    return isFileValid() ? <SendButton title={label} /> : <FileUploader label={label} />;
+  }, [isFileValid, label]);
 
   const rendererButtons = () => {
     return (
@@ -27,17 +37,12 @@ const UploadInput = () => {
         <Button cancel title="Cancel" onClick={flush}>
           Cancel
         </Button>
-        {labelBtnUpload === 'Send' ? (
-          <Button send title={labelBtnUpload}>
-            {labelBtnUpload}
-          </Button>
-        ) : (
-          <FileUploader />
-        )}
+        {renderAction()}
       </div>
     );
   };
-  const labelBtnUpload = errorFormatMessage ? 'Reupload' : 'Send';
+
+  if (!isDefined(file)) return null;
   return (
     <FileUploadContainer>
       {rendererHeader()}
@@ -47,3 +52,15 @@ const UploadInput = () => {
 };
 
 export default UploadInput;
+
+const SendButton = ({ title }) => (
+  <Button send title={title}>
+    {title}
+  </Button>
+);
+
+SendButton.propTypes = {
+  title: PropTypes.string.isRequired,
+};
+
+const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));

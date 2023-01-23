@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 
 const inputId = 'btn-fileuploader';
 
-export default function FileUploader({ maxSize, accept }) {
+export default function FileUploader({ label = 'upload', maxSize, accept }) {
   const { onSelectFile } = useUploadFile();
 
   const onSelect = useCallback(

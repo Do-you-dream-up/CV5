@@ -7,7 +7,7 @@ import { isDefined } from '../tools/helpers';
 const UploadFileContext = React.createContext();
 export const useUploadFile = () => React.useContext(UploadFileContext);
 
-const DEFAULT_MAX_SIZE = 1024 * 10;
+const DEFAULT_MAX_SIZE = 1024 * 1;
 
 export default function UploadFileProvider({ children }) {
   const { showUploadFileButton: appendButtonUploadFileAsInteraction } = useDialog();
@@ -40,7 +40,6 @@ export default function UploadFileProvider({ children }) {
   const onSelectFile = useCallback(
     (file, maxSize, accept) => {
       try {
-        validateFileThrowError(file, maxSize, accept);
         // onSelect(file);
         console.log('FILE', file);
         setSelected(file);
@@ -57,8 +56,14 @@ export default function UploadFileProvider({ children }) {
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
+  const isFileValid = useCallback(() => {
+    return validateFileSizeThrowError(selected);
+  }, [validateFileExtensionThrowError, selected]);
+
   const dataContext = useMemo(() => {
     return {
+      isFileValid,
+      validateFileThrowError,
       onSelectFile,
       showConfirmSelectedFile,
       showUploadFileButton: appendButtonUploadFileAsInteraction,
