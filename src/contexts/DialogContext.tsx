@@ -147,13 +147,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
-  const onUploadFileSelected = useCallback((file) => {
-    console.log('file !', file);
-  }, []);
-
   const showUploadFileButton = useCallback(() => {
     setInteractions((list) => {
-      list.push(<FileUploader onSelect={onUploadFileSelected} />);
+      list.push(<FileUploader />);
       return list;
     });
   }, []);

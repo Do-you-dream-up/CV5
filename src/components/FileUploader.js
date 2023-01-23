@@ -1,49 +1,24 @@
 /* eslint-disable */
-import { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useUploadFile } from '../contexts/UploadFileContext';
+import { useCallback } from 'react';
 
-const DEFAULT_ACCEPT = '.jpg, .png';
 const inputId = 'btn-fileuploader';
 
-export default function FileUploader({ maxSize = 50000, accept = DEFAULT_ACCEPT, onSelect }) {
-  const validateFileSizeThrowError = useCallback(
-    (file) => {
-      // check extension + size
-      const fs = getFileSize(file);
-      if (fs > maxSize) throw new Error('Maximum size reached, cannot upload the file');
+export default function FileUploader({ maxSize, accept }) {
+  const { onSelectFile } = useUploadFile();
+
+  const onSelect = useCallback(
+    (event) => {
+      console.log('event selection', event.target.files);
+      try {
+        onSelectFile(event.target.files[0], maxSize, accept);
+      } catch (e) {
+        console.error('While handling file selection', e);
+      }
     },
-    [maxSize],
+    [maxSize, accept],
   );
-
-  const validateFileExtensionThrowError = useCallback(
-    (file) => {
-      const allowedFormat = [
-        'image/png',
-        'image/jpg',
-        'image/jpeg',
-        'image/svg+xml',
-        'application/pdf',
-        'application/msword',
-      ];
-      // TODO: check file extension
-    },
-    [accept],
-  );
-
-  const validateFileThrowError = useCallback((file) => {
-    validateFileSizeThrowError(file);
-    validateFileExtensionThrowError(file);
-  }, []);
-
-  const onSelectFile = useCallback((eventFileSelection) => {
-    try {
-      const file = eventFileSelection.target.files[0];
-      validateFileThrowError(file);
-      onSelect(file);
-    } catch (e) {
-      console.log('Error while getting file from event');
-    }
-  }, []);
 
   return (
     <button>
@@ -52,7 +27,7 @@ export default function FileUploader({ maxSize = 50000, accept = DEFAULT_ACCEPT,
         id={inputId}
         type="file"
         hidden
-        onChange={onSelectFile}
+        onChange={onSelect}
         //disabled={isFileActive}
         //ref={inputRef}
       />
@@ -66,5 +41,3 @@ FileUploader.propTypes = {
   maxSize: PropTypes.number,
   onSelect: PropTypes.func,
 };
-
-const getFileSize = (file) => Math.ceil(file.size / Math.pow(1024, 1));

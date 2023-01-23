@@ -1,26 +1,12 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
-import React, { useCallback, useContext, useState } from 'react';
-
-import { DialogContext } from '../../contexts/DialogContext';
-import UploadFileTemplate from '../UploadFileTemplate';
-import UseUploadFile from 'src/tools/hooks/useUploadFile';
+import { useUploadFile } from '../../contexts/UploadFileContext';
+import FileUploader from '../FileUploader';
 
 const UploadInput = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isFileActive, setIsFileActive] = useState(false);
-  const [errorFormatMessage, setErrorFormatMessage] = useState(null);
-  const handleSelectFile = useCallback((filename) => {
-    console.log('selected file ', filename);
-  }, []);
-  const name = selectedFile?.name;
-  const size = selectedFile?.size;
+  const { file, flush, errorFormatMessage = false } = useUploadFile();
+  const name = file?.name;
+  const size = file?.size;
   const sizeFormat = Math.ceil(size / Math.pow(1024, 1));
-
-  const handleCancel = () => {
-    setSelectedFile(null);
-    setIsFileActive(false);
-    setErrorFormatMessage(null);
-  };
 
   const rendererHeader = () => {
     if (errorFormatMessage) {
@@ -38,7 +24,7 @@ const UploadInput = () => {
   const rendererButtons = () => {
     return (
       <div className="container-btns">
-        <Button cancel title="Cancel" onClick={handleCancel}>
+        <Button cancel title="Cancel" onClick={flush}>
           Cancel
         </Button>
         {labelBtnUpload === 'Send' ? (
@@ -46,7 +32,7 @@ const UploadInput = () => {
             {labelBtnUpload}
           </Button>
         ) : (
-          <UseUploadFile onSelect={handleSelectFile} disabled={false} label="coucou" />
+          <FileUploader />
         )}
       </div>
     );

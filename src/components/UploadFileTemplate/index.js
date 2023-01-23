@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';

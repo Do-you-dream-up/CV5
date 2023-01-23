@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
-import { DialogContext } from '../../contexts/DialogContext';
 import Input from '../Input';
 import PropTypes from 'prop-types';
 import UploadInput from '../UploadInput';
@@ -9,6 +8,7 @@ import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -18,8 +18,8 @@ import { useTranslation } from 'react-i18next';
  * function to handle the response.
  */
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
+  const { showConfirmSelectedFile } = useUploadFile();
   const { configuration } = useConfiguration();
-  const { isFileActive } = useContext(DialogContext);
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
   const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
@@ -56,26 +56,22 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
     },
   ];
 
-  const inputRender = () => {
-    console.log('isFileActive', isFileActive);
-    if (isFileActive) {
-      return <UploadInput />;
-    } else {
-      return <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />;
-    }
-  };
+  const renderInput = useCallback(() => {
+    return showConfirmSelectedFile ? (
+      <UploadInput />
+    ) : (
+      <div className={classes.content}>
+        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
+      </div>
+    );
+  }, [showConfirmSelectedFile]);
+
   return (
     <>
-      <footer className={c('dydu-footer', classes.root)} {...rest}>
-        {!isFileActive && (
-          <Actions
-            actions={actions}
-            className={c('dydu-footer-actions', classes.actions)}
-            id="dydu-language-selector"
-          />
-        )}
-        <div className={classes.content}>{inputRender()}</div>
-      </footer>
+      <div className={c('dydu-footer', classes.root)} {...rest}>
+        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} id="dydu-language-selector" />
+        {renderInput()}
+      </div>
     </>
   );
 }
