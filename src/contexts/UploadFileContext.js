@@ -38,22 +38,7 @@ export default function UploadFileProvider({ children }) {
     validateFileExtensionThrowError(file, accept);
   }, []);
 
-  const onSelectFile = useCallback(
-    (file, maxSize, accept, options) => {
-      try {
-        // onSelect(file);
-        console.log('FILE', file);
-        setSelected(file);
-      } catch (e) {
-        console.log('Error while getting file from event', e);
-      }
-    },
-    [validateFileThrowError],
-  );
-
-  useEffect(() => {
-    console.log('selected !', selected);
-  }, [selected]);
+  const onSelectFile = useCallback((file, maxSize, accept, options) => setSelected(file), []);
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
@@ -73,7 +58,7 @@ export default function UploadFileProvider({ children }) {
   }, []);
 
   const addToDisabledList = useCallback((id) => {
-    setDisabledList(listDisabledInstance.concat([id]));
+    setDisabledList((list) => list.concat([id]));
   }, []);
 
   const dataContext = useMemo(() => {
