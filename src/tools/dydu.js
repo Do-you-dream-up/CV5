@@ -208,8 +208,7 @@ export default new (class Dydu {
     }
   };
 
-  handleAxiosResponse = (axiosResponse) => {
-    const { data = {} } = axiosResponse;
+  handleAxiosResponse = (data = {}) => {
     data && this.getConfiguration()?.saml?.enable && this.samlRenewOrReject(data);
 
     if (!hasProperty(data, 'values')) return data;
@@ -279,13 +278,16 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = (verb, path, data, timeout) => {
+  emit = async (verb, path, data, timeout) => {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
-    return verb(path, data)
-      .then(this.setLastResponse)
-      .then((axiosResponse) => this.handleAxiosResponse(axiosResponse))
-      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    try {
+      const axiosResponse = await verb(path, data);
+      this.setLastResponse(axiosResponse);
+      return this.handleAxiosResponse(axiosResponse);
+    } catch (error) {
+      return this.handleAxiosError(error, verb, path, data, timeout);
+    }
   };
 
   setLastResponse = (res) => {
@@ -913,12 +915,15 @@ export default new (class Dydu {
         ...basePayload,
       }),
     };
-    return fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`)
-      .then((r) => r.json())
-      .then((response) => {
-        return this.setLastResponse(response);
-      })
-      .then(this.displaySurveySent);
+    try {
+      const response = await fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+      const jsonResponse = await response.json();
+      this.setLastResponse(jsonResponse);
+      return this.displaySurveySent();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   async createSurveyPayload(surveyId, fieldObject) {
