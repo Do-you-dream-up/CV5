@@ -278,16 +278,14 @@ export default new (class Dydu {
    * @returns {Promise}
    */
 
-  emit = async (verb, path, data, timeout) => {
+  emit = (verb, path, data, timeout) => {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
-    try {
-      const axiosResponse = await verb(path, data);
-      this.setLastResponse(axiosResponse);
-      return this.handleAxiosResponse(axiosResponse);
-    } catch (error) {
-      return this.handleAxiosError(error, verb, path, data, timeout);
-    }
+    return verb(path, data)
+      .then(({ data = {} }) => this.handleAxiosResponse(data))
+      .then(this.setLastResponse)
+      .then((axiosResponse) => this.handleAxiosResponse(axiosResponse))
+      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
   };
 
   setLastResponse = (res) => {
