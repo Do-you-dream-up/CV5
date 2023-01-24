@@ -7,11 +7,12 @@ import { isDefined } from '../tools/helpers';
 const UploadFileContext = React.createContext();
 export const useUploadFile = () => React.useContext(UploadFileContext);
 
-const DEFAULT_MAX_SIZE = 1024 * 1;
+const DEFAULT_MAX_SIZE = 1024 * 6;
 
 export default function UploadFileProvider({ children }) {
   const { showUploadFileButton: appendButtonUploadFileAsInteraction } = useDialog();
   const [selected, setSelected] = useState(null);
+  const [listDisabledInstance, setDisabledList] = useState([]);
 
   const validateFileSizeThrowError = useCallback((file, maxSize) => {
     // check extension + size
@@ -38,7 +39,7 @@ export default function UploadFileProvider({ children }) {
   }, []);
 
   const onSelectFile = useCallback(
-    (file, maxSize, accept) => {
+    (file, maxSize, accept, options) => {
       try {
         // onSelect(file);
         console.log('FILE', file);
@@ -60,15 +61,41 @@ export default function UploadFileProvider({ children }) {
     return validateFileSizeThrowError(selected);
   }, [validateFileExtensionThrowError, selected]);
 
+  const isInDisabledList = useCallback(
+    (id) => {
+      return listDisabledInstance.includes(id);
+    },
+    [listDisabledInstance],
+  );
+
+  const removeFromDisabledList = useCallback((id) => {
+    setDisabledList((list) => list.filter((lid) => lid !== id));
+  }, []);
+
+  const addToDisabledList = useCallback((id) => {
+    setDisabledList(listDisabledInstance.concat([id]));
+  }, []);
+
   const dataContext = useMemo(() => {
     return {
+      removeFromDisabledList,
+      isInDisabledList,
+      addToDisabledList,
       isFileValid,
       validateFileThrowError,
       onSelectFile,
       showConfirmSelectedFile,
       showUploadFileButton: appendButtonUploadFileAsInteraction,
     };
-  }, [onSelectFile, showConfirmSelectedFile, appendButtonUploadFileAsInteraction]);
+  }, [
+    removeFromDisabledList,
+    isInDisabledList,
+    addToDisabledList,
+    onSelectFile,
+    showConfirmSelectedFile,
+    appendButtonUploadFileAsInteraction,
+    listDisabledInstance,
+  ]);
 
   return <UploadFileContext.Provider value={dataContext}>{children}</UploadFileContext.Provider>;
 }

@@ -29,7 +29,7 @@ const UploadInput = () => {
   const label = useMemo(() => (isFileValid() ? 'Send' : 'Reupload'), [isFileValid]);
 
   const renderAction = useCallback(() => {
-    return isFileValid() ? <SendButton title={label} /> : <FileUploader label={label} />;
+    return isFileValid() ? <SendButton title={label} /> : <FileUploader label={label} disableOnFileSelection={false} />;
   }, [isFileValid, label]);
 
   const rendererButtons = () => {

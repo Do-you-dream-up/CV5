@@ -1,33 +1,48 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 import { useUploadFile } from '../contexts/UploadFileContext';
+import useId from '../tools/hooks/useId';
+import { isDefined } from '../tools/helpers';
 
-const inputId = 'btn-fileuploader';
+export default function FileUploader({ label = 'upload', maxSize, accept, disableOnFileSelection = true }) {
+  const { onSelectFile, isInDisabledList, addToDisabledList } = useUploadFile();
+  const inputId = useId();
 
-export default function FileUploader({ label = 'upload', maxSize, accept, disabled = false }) {
-  const { onSelectFile } = useUploadFile();
-
-  const onSelect = useCallback(
-    (event) => {
-      console.log('event selection', event.target.files);
+  const processUserFileSelection = useCallback(
+    (file) => {
       try {
-        onSelectFile(event.target.files[0], maxSize, accept);
+        onSelectFile(file, maxSize, accept);
+        addToDisabledList(label);
       } catch (e) {
         console.error('While handling file selection', e);
       }
     },
-    [maxSize, accept],
+    [onSelectFile, addToDisabledList, maxSize, accept],
   );
 
+  const onSelect = useCallback(
+    (event) => {
+      const file = extractFileFromEvent(event);
+      const hasUserCanceledFileSelection = !isDefined(file?.name);
+      if (hasUserCanceledFileSelection) return;
+      processUserFileSelection(file);
+    },
+    [maxSize, accept, label, addToDisabledList, onSelectFile, processUserFileSelection],
+  );
+
+  const disabled = useCallback(() => {
+    return disableOnFileSelection && isInDisabledList(label);
+  }, [disableOnFileSelection, label, isInDisabledList]);
+
   return (
-    <button disabled={disabled}>
+    <button disabled={disabled()}>
       <input
         accept={accept}
         id={inputId}
         type="file"
         hidden
         onChange={onSelect}
-        disabled={disabled}
+        disabled={disabled()}
         //ref={inputRef}
       />
       <label htmlFor={inputId}>{label}</label>
@@ -40,5 +55,7 @@ FileUploader.propTypes = {
   maxSize: PropTypes.number,
   onSelect: PropTypes.func,
   label: PropTypes.string,
-  disabled: PropTypes.boolean,
+  disableOnFileSelection: PropTypes.bool,
 };
+
+const extractFileFromEvent = (event) => event.target.files[0];
