@@ -1,12 +1,13 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
-import { useUploadFile } from '../../contexts/UploadFileContext';
-import FileUploader from '../FileUploader';
 import { useCallback, useMemo } from 'react';
+
+import FileUploader from '../FileUploader';
 import PropTypes from 'prop-types';
 import { isDefined } from '../../tools/helpers';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const UploadInput = () => {
-  const { file, flush, isFileValid, errorFormatMessage = false } = useUploadFile();
+  const { file, flush, isFileValid, showConfirmSelectedFile, errorFormatMessage = false } = useUploadFile();
 
   const fileName = useMemo(() => file?.name || '', [file]);
   const fileSize = useMemo(() => file?.size || '', [file]);
@@ -42,7 +43,7 @@ const UploadInput = () => {
     );
   };
 
-  if (!isDefined(file)) return null;
+  if (!showConfirmSelectedFile) return null;
   return (
     <FileUploadContainer>
       {rendererHeader()}

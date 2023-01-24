@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 
+import FileUploader from '../components/FileUploader';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
@@ -31,7 +32,6 @@ import useServerStatus from '../tools/hooks/useServerStatus';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
-import FileUploader from '../components/FileUploader';
 
 interface DialogProviderProps {
   children: ReactNode;
