@@ -215,5 +215,9 @@
     "errorFormatAndSizeMessage": "Document size is too large and invalid format",
     "errorFormatMessage": "The selected format is not allowed",
     "errorSizeMessage": "The document size is too high, Max 100kB"
+  },
+  "survey": {
+    "sentMessage": "Your answer to the survey has been sent.",
+    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent."
   }
 }

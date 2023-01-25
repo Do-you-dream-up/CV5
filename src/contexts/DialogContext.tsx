@@ -67,7 +67,7 @@ interface DialogContextProps {
   setSelectedFile?: Dispatch<SetStateAction<File>>;
   setUploadActive?: Dispatch<SetStateAction<boolean>>;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
-  toggleSecondary?: Dispatch<SetStateAction<any>>;
+  toggleSecondary?: (open: boolean, props?: any) => any;
   typeResponse?: Servlet.ChatResponseType | null;
   uploadActive?: boolean;
   voiceContent?: any;

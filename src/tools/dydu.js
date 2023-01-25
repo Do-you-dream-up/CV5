@@ -22,6 +22,7 @@ import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
+import i18n from 'i18next';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -126,6 +127,7 @@ export default new (class Dydu {
     this.maxTries = 3;
     this.minTimeoutForAnswer = secondsToMs(3);
     this.maxTimeoutForAnswer = secondsToMs(30);
+    this.lastResponse = null;
     this.qualificationMode = false;
     this.initInfos();
   }
@@ -230,7 +232,9 @@ export default new (class Dydu {
     if (ms) {
       timeout = ms;
     }
-    API.defaults.timeout = timeout;
+    if (API?.defaults) {
+      API.defaults.timeout = timeout;
+    }
   };
 
   handleAxiosError = (error, verb, path, data, timeout) => {
@@ -280,8 +284,14 @@ export default new (class Dydu {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
     return verb(path, data)
+      .then(this.setLastResponse)
       .then(({ data = {} }) => this.handleAxiosResponse(data))
       .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+  };
+
+  setLastResponse = (res) => {
+    this.lastResponse = res;
+    return res;
   };
 
   /**
@@ -904,7 +914,15 @@ export default new (class Dydu {
         ...basePayload,
       }),
     };
-    return fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+    try {
+      const response = await fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+      const jsonResponse = await response.json();
+      this.setLastResponse(jsonResponse);
+      return this.displaySurveySent();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   async createSurveyPayload(surveyId, fieldObject) {
@@ -915,6 +933,19 @@ export default new (class Dydu {
     };
   }
 
+  displaySurveySent = (res, status = null) => {
+    return new Promise((resolve) => {
+      status = status || this.getLastResponse().status;
+      const statusOk = status >= 200 && status <= 206;
+      if (statusOk) window.dydu.chat.reply(i18n.t('survey.sentMessage'));
+      else window.dydu.chat.reply(i18n.t('survey.errorMessage'));
+      resolve(res);
+    });
+  };
+
+  getLastResponse = () => {
+    return this.lastResponse || {};
+  };
   /*
    * Survey sent by a Knowledge
    */
@@ -925,7 +956,7 @@ export default new (class Dydu {
 
     if (!isDefined(formData)) return;
     const path = `/chat/survey/${BOT.id}`;
-    return this.post(path, formData);
+    return this.post(path, formData).then(this.displaySurveySent);
   };
 
   getSurvey = async (surveyId = '') => {

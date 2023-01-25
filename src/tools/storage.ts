@@ -36,7 +36,7 @@ export class Session {
       }
     }
     try {
-      return JSON.parse(value);
+      return value && JSON.parse(value);
     } catch {
       return value;
     }
@@ -47,12 +47,11 @@ export class Session {
    *
    * @param {string} name - Name of the session storage variable.
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
-   * @param {*} [rest] - Extra options to pass to `sessionStorage.setItem`.
    */
-  static set = (name, value, ...rest) => {
+  static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
     value = typeof value === 'object' ? JSON.stringify(value) : value;
-    sessionStorage.setItem(name, value, ...rest);
+    sessionStorage.setItem(name, value);
   };
 
   /**
@@ -150,7 +149,7 @@ export class Local {
    * @returns {*} Value of the variable that was found.
    * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.get instead
    */
-  static get = (name, fallback, save) => {
+  static get = (name: string, fallback?: any, save?: any) => {
     let value = localStorage.getItem(name);
     if (!value && fallback !== undefined) {
       value = typeof fallback === 'function' ? fallback() : fallback;
@@ -159,7 +158,7 @@ export class Local {
       }
     }
     try {
-      return JSON.parse(value);
+      return value && JSON.parse(value);
     } catch {
       return value;
     }
@@ -170,13 +169,12 @@ export class Local {
    *
    * @param {string} name - Name of the local storage variable.
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
-   * @param {*} [rest] - Extra options to pass to `localStorage.setItem`.
    * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.set instead
    */
-  static set = (name, value, ...rest) => {
+  static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
     value = typeof value === 'object' ? JSON.stringify(value) : value;
-    localStorage.setItem(name, value, ...rest);
+    localStorage.setItem(name, value);
   };
 
   // TODO: review with someone
@@ -202,7 +200,7 @@ export class Local {
       localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(initialStore));
     }
     try {
-      const parsedBots = JSON.parse(botsById);
+      const parsedBots = botsById && JSON.parse(botsById);
       if (typeof parsedBots !== 'object') {
         throw new Error('botsById is not an object. It should be');
       }
@@ -221,7 +219,8 @@ export class Local {
    */
   static _getBotsById = () => {
     Local._populateBotsById();
-    return JSON.parse(localStorage.getItem(Local._BOTS_BY_ID_KEY));
+    const botById = localStorage.getItem(Local._BOTS_BY_ID_KEY);
+    return botById && JSON.parse(botById);
   };
 
   /**
@@ -359,7 +358,7 @@ export class Local {
             { key, value },
           ),
       };
-      let storage = window?.sessionStorage || window?.localStorage || mockStorage;
+      const storage = window?.sessionStorage || window?.localStorage || mockStorage;
       return storage;
     },
     isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
@@ -387,7 +386,7 @@ export class Local {
       };
 
       try {
-        let mapStore = _parse(
+        const mapStore = _parse(
           Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage().getItem(Local.welcomeKnowledge.getKey()),
         );
         return isDefined(mapStore) ? mapStore : createInitialMapStore();

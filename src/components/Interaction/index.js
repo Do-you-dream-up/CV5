@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Avatar from '../Avatar/Avatar';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Bubble from '../Bubble';
-import Carousel from '../Carousel';
+import Carousel from '../Carousel/Carousel';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Loader from '../Loader';

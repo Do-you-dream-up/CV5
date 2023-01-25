@@ -6,7 +6,7 @@ export default createUseStyles((theme) => {
     bottom: 0,
     position: 'absolute',
     top: 0,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints?.down('md')]: {
       borderRadius: 0,
       left: 0,
       marginRight: 'unset',
@@ -33,14 +33,14 @@ export default createUseStyles((theme) => {
       overflowY: 'auto',
       maxHeight: '648px',
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints?.up('lg')]: {
         minWidth: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
         maxWidth: configuration.secondary.width,
       },
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints?.down('md')]: {
         maxHeight: '595px',
       },
-      [theme.breakpoints.up('xl')]: {
+      [theme.breakpoints?.up('xl')]: {
         maxWidth: '1200px',
       },
     }),
