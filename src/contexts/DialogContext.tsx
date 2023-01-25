@@ -13,11 +13,10 @@ import {
 } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 
-import FileUploader from '../components/FileUploader';
+import FileUploadButton from '../components/FileUploadButton';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
-import UploadFileTemplate from 'src/components/UploadFileTemplate';
 import dotget from '../tools/dotget';
 import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 import fetchPushrules from '../tools/pushrules';
@@ -149,7 +148,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const showUploadFileButton = useCallback(() => {
     setInteractions((list) => {
-      list.push(<FileUploader />);
+      list.push(<FileUploadButton />);
       return list;
     });
   }, []);

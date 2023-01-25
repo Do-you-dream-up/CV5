@@ -1,8 +1,10 @@
 /* eslint-disable */
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import PropTypes from 'prop-types';
-import { useDialog } from './DialogContext';
 import { isDefined } from '../tools/helpers';
+import { useDialog } from './DialogContext';
 
 const UploadFileContext = React.createContext();
 export const useUploadFile = () => React.useContext(UploadFileContext);
@@ -12,6 +14,8 @@ const DEFAULT_MAX_SIZE = 1024 * 6;
 export default function UploadFileProvider({ children }) {
   const { showUploadFileButton: appendButtonUploadFileAsInteraction } = useDialog();
   const [selected, setSelected] = useState(null);
+  const [inputRef, setInputRef] = useState(null);
+
   const [listDisabledInstance, setDisabledList] = useState([]);
 
   const validateFileSizeThrowError = useCallback((file, maxSize) => {
@@ -38,7 +42,16 @@ export default function UploadFileProvider({ children }) {
     validateFileExtensionThrowError(file, accept);
   }, []);
 
-  const onSelectFile = useCallback((file, maxSize, accept, options) => setSelected(file), []);
+  const onSelectFile = (file, maxSize, accept, inputRef) => {
+    setSelected(file);
+    setInputRef(inputRef);
+  };
+
+  const handleCancel = () => {
+    setSelected(null);
+    inputRef.current.value = null;
+    removeFromDisabledList();
+  };
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
@@ -54,7 +67,7 @@ export default function UploadFileProvider({ children }) {
   );
 
   const removeFromDisabledList = useCallback((id) => {
-    setDisabledList((list) => list.filter((lid) => lid !== id));
+    setDisabledList([]);
   }, []);
 
   const addToDisabledList = useCallback((id) => {
@@ -69,6 +82,7 @@ export default function UploadFileProvider({ children }) {
       isFileValid,
       validateFileThrowError,
       onSelectFile,
+      handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton: appendButtonUploadFileAsInteraction,
     };
@@ -78,6 +92,7 @@ export default function UploadFileProvider({ children }) {
     addToDisabledList,
     onSelectFile,
     showConfirmSelectedFile,
+    handleCancel,
     appendButtonUploadFileAsInteraction,
     listDisabledInstance,
   ]);

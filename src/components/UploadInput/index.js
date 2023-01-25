@@ -1,13 +1,13 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 import { useCallback, useMemo } from 'react';
 
-import FileUploader from '../FileUploader';
+import FileUploadButton from '../FileUploadButton';
 import PropTypes from 'prop-types';
 import { isDefined } from '../../tools/helpers';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const UploadInput = () => {
-  const { file, flush, isFileValid, showConfirmSelectedFile, errorFormatMessage = false } = useUploadFile();
+  const { file, handleCancel, isFileValid, showConfirmSelectedFile, errorFormatMessage = false } = useUploadFile();
 
   const fileName = useMemo(() => file?.name || '', [file]);
   const fileSize = useMemo(() => file?.size || '', [file]);
@@ -29,13 +29,13 @@ const UploadInput = () => {
   const label = useMemo(() => (isFileValid() ? 'Send' : 'Reupload'), [isFileValid]);
 
   const renderAction = useCallback(() => {
-    return isFileValid() ? <SendButton title={label} /> : <FileUploader label={label} disableOnFileSelection={false} />;
+    return isFileValid() ? <SendButton title={label} /> : <FileUploadButton label={label} keepActive />;
   }, [isFileValid, label]);
 
   const rendererButtons = () => {
     return (
       <div className="container-btns">
-        <Button cancel title="Cancel" onClick={flush}>
+        <Button cancel title="Cancel" onClick={handleCancel}>
           Cancel
         </Button>
         {renderAction()}

@@ -57,6 +57,7 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   ];
 
   const renderInput = useCallback(() => {
+    console.log(showConfirmSelectedFile);
     return showConfirmSelectedFile ? (
       <UploadInput />
     ) : (
