@@ -37,7 +37,7 @@ export default createUseStyles((theme) => ({
   text: () => ({
     lineHeight: '24px',
     minWidth: 140,
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints?.down('xs')]: {
       minWidth: 100,
     },
   }),

@@ -32,7 +32,7 @@ export interface ActionProps {
   onClick?: () => void;
 }
 
-interface ActionsProps {
+export interface ActionsProps {
   actions: ActionProps[];
   className?: string;
   targetStyleKey?: string;

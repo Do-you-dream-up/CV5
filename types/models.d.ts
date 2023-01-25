@@ -88,10 +88,10 @@ declare namespace Models {
   }
 
   export interface Carousel {
-    bullets: boolean;
-    controls: boolean;
-    offset: number;
-    offsetBetweenCard: number;
+    bullets?: boolean;
+    controls?: boolean;
+    offset?: number;
+    offsetBetweenCard?: number;
   }
 
   export interface ConfigurationChatbox {
