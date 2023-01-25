@@ -49,7 +49,7 @@ export default createUseStyles((theme) => ({
   }),
   response: () => ({
     width: '85%',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints?.up('sm')]: {
       marginRight: '2em',
     },
     '&.dydu-interaction-template': {

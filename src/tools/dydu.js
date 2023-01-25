@@ -232,7 +232,9 @@ export default new (class Dydu {
     if (ms) {
       timeout = ms;
     }
-    API.defaults.timeout = timeout;
+    if (API?.defaults) {
+      API.defaults.timeout = timeout;
+    }
   };
 
   handleAxiosError = (error, verb, path, data, timeout) => {

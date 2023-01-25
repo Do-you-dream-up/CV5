@@ -8,7 +8,7 @@ import useStyles from './styles';
 interface ButtonProps {
   children?: ReactNode;
   color?: 'error' | 'primary' | 'success' | 'warning';
-  component: any;
+  component?: any;
   grow?: boolean;
   href?: string;
   icon?: string | (() => void);

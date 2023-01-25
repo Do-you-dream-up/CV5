@@ -7,7 +7,7 @@ export default createUseStyles((theme) => ({
     boxShadow: theme.shadows[1],
     margin: '.5em',
     padding: '1em',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
       marginLeft: 0,
       marginRight: 0,
@@ -35,7 +35,7 @@ export default createUseStyles((theme) => ({
       paddingTop: '2em',
       position: 'absolute',
       top: 0,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints?.down('xs')]: {
         paddingBottom: 0,
         paddingLeft: 0,
         paddingRight: 0,

@@ -16,7 +16,7 @@ const useViewport = () => {
   const hasSupport = !!window.matchMedia;
 
   const isMobile = useMemo(() => {
-    const query = theme?.breakpoints.down('xs').replace(/^@media( ?)/m, '');
+    const query = theme?.breakpoints?.down('xs').replace(/^@media( ?)/m, '');
     return hasSupport && window.matchMedia(query).matches;
   }, [size]);
 

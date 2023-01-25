@@ -59,7 +59,7 @@ interface DialogContextProps {
   setPrompt?: Dispatch<SetStateAction<string>>;
   setSecondary?: () => void;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
-  toggleSecondary?: Dispatch<SetStateAction<any>>;
+  toggleSecondary?: (open: boolean, props?: any) => any;
   typeResponse?: Servlet.ChatResponseType | null;
   voiceContent?: any;
   zoomSrc?: string | null;
