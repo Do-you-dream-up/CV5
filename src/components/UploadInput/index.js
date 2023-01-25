@@ -1,5 +1,5 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import FileUploadButton from '../FileUploadButton';
 import PropTypes from 'prop-types';
@@ -7,30 +7,32 @@ import { isDefined } from '../../tools/helpers';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const UploadInput = () => {
-  const { file, handleCancel, isFileValid, showConfirmSelectedFile, errorFormatMessage = false } = useUploadFile();
+  const { fileSelected, handleCancel, showConfirmSelectedFile, validateFile, errorFormatMessage } = useUploadFile();
+  const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
 
-  const fileName = useMemo(() => file?.name || '', [file]);
-  const fileSize = useMemo(() => file?.size || '', [file]);
+  const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
 
-  const rendererHeader = useCallback(() => {
-    if (!isDefined(file)) return null;
+  const rendererHeader = () => {
+    validateFile(fileSelected);
+    if (!isDefined(fileSelected)) return null;
+
     if (errorFormatMessage) {
       return <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
     } else {
       return (
         <>
           <span className="overflow-hidden name-file">{fileName} </span>
-          <span className="overflow-hidden size-file">{formatFileSize(fileSize)} ko</span>
+          <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
         </>
       );
     }
-  }, [file]);
+  };
 
-  const label = useMemo(() => (isFileValid() ? 'Send' : 'Reupload'), [isFileValid]);
+  const label = useMemo(() => (!errorFormatMessage ? 'Send' : 'Reupload'), [errorFormatMessage]);
 
-  const renderAction = useCallback(() => {
-    return isFileValid() ? <SendButton title={label} /> : <FileUploadButton label={label} keepActive />;
-  }, [isFileValid, label]);
+  const renderAction = () => {
+    return !errorFormatMessage ? <SendButton title={label} /> : <FileUploadButton label={label} keepActive />;
+  };
 
   const rendererButtons = () => {
     return (
@@ -63,5 +65,3 @@ const SendButton = ({ title }) => (
 SendButton.propTypes = {
   title: PropTypes.string.isRequired,
 };
-
-const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));

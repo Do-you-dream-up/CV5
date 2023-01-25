@@ -11,7 +11,7 @@ import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
-import Footer from '../Footer';
+import Footer from '../Footer/Footer';
 import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
@@ -28,8 +28,8 @@ import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.

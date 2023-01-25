@@ -204,5 +204,10 @@
   },
   "top": {
     "title": "Questions les plus posées :"
+  },
+  "uploadFile": {
+    "errorFormatAndSizeMessage": "La taille du document est trop élevée et format invalide",
+    "errorFormatMessage": "Le format selectionné n'est pas autorisé",
+    "errorSizeMessage": "La taille du document est trop élevée, Max 100ko"
   }
 }

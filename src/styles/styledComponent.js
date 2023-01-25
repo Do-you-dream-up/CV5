@@ -42,6 +42,7 @@ export const BubbleContainer = styled.div`
 export const AvatarContainer = styled.div``;
 
 export const FileUploadContainer = styled.div`
+  width: 100%;
   padding: 0 1em;
   .overflow-hidden {
     display: -webkit-box;
@@ -76,12 +77,20 @@ export const Button = styled.button`
   color: white;
   padding: 10px;
   cursor: pointer;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
   ${(props) =>
     props.cancel &&
     css`
       background: transparent;
       color: #41479b;
       border-color: #41479b;
+    `};
+  ${(props) =>
+    props.disabled &&
+    css`
+      background: grey;
     `};
 `;
 
