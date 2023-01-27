@@ -1,6 +1,6 @@
+import Actions, { ActionProps } from '../Actions/Actions';
 import { useCallback, useEffect, useState } from 'react';
 
-import Actions from '../Actions/Actions';
 import Input from '../Input/Input';
 import UploadInput from '../UploadInput';
 import c from 'classnames';
@@ -24,7 +24,7 @@ interface FooterProps {
   [key: string]: any;
 }
 
-export default function Footer({ focus = true, onRequest, onResponse, ...rest }: FooterProps) {
+export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) {
   const { showConfirmSelectedFile } = useUploadFile() || {};
 
   const { configuration } = useConfiguration();
@@ -50,7 +50,7 @@ export default function Footer({ focus = true, onRequest, onResponse, ...rest }:
       })),
   ];
 
-  const actions = [
+  const actions: ActionProps[] = [
     {
       children: (
         <img
@@ -71,7 +71,7 @@ export default function Footer({ focus = true, onRequest, onResponse, ...rest }:
       <UploadInput />
     ) : (
       <div className={classes.content}>
-        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} />
+        <Input onRequest={onRequest} onResponse={onResponse} />
       </div>
     );
   }, [showConfirmSelectedFile]);
@@ -79,7 +79,7 @@ export default function Footer({ focus = true, onRequest, onResponse, ...rest }:
   return (
     <>
       <div className={c('dydu-footer', classes.root)} {...rest}>
-        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} id="dydu-language-selector" />
+        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
         {renderInput()}
       </div>
     </>
