@@ -3,6 +3,7 @@ import useWebsocket, { ReadyState } from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
 import { TUNNEL_MODE } from '../constants';
+import dydu from '../dydu';
 import { isDefined } from '../helpers';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
@@ -228,7 +229,12 @@ export default function useDyduWebsocket() {
 
   const sendSurvey = useCallback((surveyAnswer) => {
     const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
-    trySendMessage(message);
+    try {
+      trySendMessage(message);
+      dydu.displaySurveySent({}, 200);
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
   const trySendMessage = useCallback((message) => {

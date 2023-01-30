@@ -1,5 +1,7 @@
-import Button from '../Button/Button';
+import Button, { ButtonProps } from '../Button/Button';
+
 import Menu from '../Menu';
+import { ReactNode } from 'react';
 import c from 'classnames';
 import { useMemo } from 'react';
 import useStyles from './styles';
@@ -12,7 +14,7 @@ import useStyles from './styles';
  */
 
 export interface ActionProps {
-  children?: any;
+  children?: ReactNode | null;
   items?: any;
   selected?: string | (() => void);
   type?: any;
@@ -51,7 +53,7 @@ const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
       {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
         delete rest.when;
 
-        const props = {
+        const props: ButtonProps = {
           key: index,
           ...rest,
           title,

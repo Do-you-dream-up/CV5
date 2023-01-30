@@ -1,208 +1,218 @@
 {
-    "general": {
-        "labelChatbot": "Chatbot window"
-    },
-    "banner": {
-        "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",
-        "more": "More information",
-        "ok": "Thanks"
-    },
-    "bubble": {
-        "sidebar": {
-            "more": "More",
-            "less": "Less"
+  "general": {
+    "labelChatbot": "Chatbot window"
+  },
+  "banner": {
+    "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",
+    "more": "More information",
+    "ok": "Thanks"
+  },
+  "bubble": {
+    "sidebar": {
+      "more": "More",
+      "less": "Less"
+    }
+  },
+  "carousel": {
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "close": {
+    "body": "If you would like to re-open the chatbox, please refresh the page.",
+    "no": "Cancel",
+    "title": "Close the chatbox?",
+    "yes": "Close"
+  },
+  "contacts": {
+    "phone": {
+      "title": "Phone Numbers",
+      "list": [
+        {
+          "title": "Business Support",
+          "phone": "06.00.00.00.34"
+        },
+        {
+          "title": "Client Support",
+          "phone": "08.12.44.56.28"
         }
+      ]
     },
-    "carousel": {
-        "next": "Next",
-        "previous": "Previous"
-    },
-    "close": {
-        "body": "If you would like to re-open the chatbox, please refresh the page.",
-        "no": "Cancel",
-        "title": "Close the chatbox?",
-        "yes": "Close"
-    },
-    "contacts": {
-        "phone": {
-            "title": "Phone Numbers",
-            "list": [{
-                    "title": "Business Support",
-                    "phone": "06.00.00.00.34"
-                },
-                {
-                    "title": "Client Support",
-                    "phone": "08.12.44.56.28"
-                }
-            ]
-        },
-        "email": {
-            "title": "Emails",
-            "list": [{
-                "title": "A question?",
-                "email": "support@chatbox.com"
-            }]
-        },
-        "socialNetwork": {
-            "title": "Social Networks",
-            "list": [{
-                "title": "Instagram",
-                "socialText": "linkedin.com/company/dydu/",
-                "socialUrl": "https://www.linkedin.com/company/dydu/"
-            }]
+    "email": {
+      "title": "Emails",
+      "list": [
+        {
+          "title": "A question?",
+          "email": "support@chatbox.com"
         }
+      ]
     },
-    "exportConv": {
-        "get": {
-            "error": "We apologize, there was an error with the export.",
-            "success": "The conversation was successfully sent by email."
-        },
-        "welcome": "Please type in your email to receive the conversation: "
-    },
-    "feedback": {
-        "choices": [
-            "We did not understand your question",
-            "Our answer was not clear enough",
-            "The proposed solution did not satisfy you"
-        ],
-        "comment": {
-            "help": "What went wrong?",
-            "placeholder": "Comment here...",
-            "thanks": "Thank you for your detailed feedback!"
-        },
-        "question": "I'm sorry that I couldn't answer your request. Can you tell us why?",
-        "vote": {
-            "negative": "Useless help",
-            "positive": "Useful help",
-            "thanks": "Thank you for your feedback!"
+    "socialNetwork": {
+      "title": "Social Networks",
+      "list": [
+        {
+          "title": "Instagram",
+          "socialText": "linkedin.com/company/dydu/",
+          "socialUrl": "https://www.linkedin.com/company/dydu/"
         }
+      ]
+    }
+  },
+  "exportConv": {
+    "get": {
+      "error": "We apologize, there was an error with the export.",
+      "success": "The conversation was successfully sent by email."
     },
-    "footer": {
-        "expand": "Expand menu",
-        "menu": {
-            "close": "Close",
-            "print": "Print the conversation",
-            "email": "Export the conversation by email",
-            "gdpr": "GDPR (export, delete)",
-            "spaces": "Switch consulting space",
-            "title": "Your features"
-        },
-        "rosetta": {
-            "en": "English",
-            "fi": "suomi",
-            "fr": "Français",
-            "es": "Español",
-            "de": "Deutsch",
-            "it": "Italiano",
-            "nl": "Dutch",
-            "pt": "Português",
-            "pl": "Polski",
-            "ro": "Română"
-        },
-        "translate": "Languages"
+    "welcome": "Please type in your email to receive the conversation: "
+  },
+  "feedback": {
+    "choices": [
+      "We did not understand your question",
+      "Our answer was not clear enough",
+      "The proposed solution did not satisfy you"
+    ],
+    "comment": {
+      "help": "What went wrong?",
+      "placeholder": "Comment here...",
+      "thanks": "Thank you for your detailed feedback!"
+    },
+    "question": "I'm sorry that I couldn't answer your request. Can you tell us why?",
+    "vote": {
+      "negative": "Useless help",
+      "positive": "Useful help",
+      "thanks": "Thank you for your feedback!"
+    }
+  },
+  "footer": {
+    "expand": "Expand menu",
+    "menu": {
+      "close": "Close",
+      "print": "Print the conversation",
+      "email": "Export the conversation by email",
+      "gdpr": "GDPR (export, delete)",
+      "spaces": "Switch consulting space",
+      "title": "Your features"
+    },
+    "rosetta": {
+      "en": "English",
+      "fi": "suomi",
+      "fr": "Français",
+      "es": "Español",
+      "de": "Deutsch",
+      "it": "Italiano",
+      "nl": "Dutch",
+      "pt": "Português",
+      "pl": "Polski",
+      "ro": "Română"
+    },
+    "translate": "Languages"
+  },
+  "form": {
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "gdpr": {
+    "disclaimer": {
+      "title": "Personal data",
+      "body": "<p>This dialog box is there to guide you as best as possible on our site.<br/><br/> The information you send us allows us to process your request.<br/><br/> However, no personal or sensitive data that could allow your identification should be communicated in this tool (such as for example information on your state of health, your bank details, your opinions or personal convictions).</p>",
+      "cancel": "I refuse",
+      "ok": "I accept"
     },
     "form": {
-        "cancel": "Cancel",
-        "submit": "Submit"
+      "email": {
+        "placeholder": "Enter your address..."
+      },
+      "forget": {
+        "description": "Erase my personal data"
+      },
+      "get": {
+        "description": "Export my personal data"
+      }
     },
-    "gdpr": {
-        "disclaimer": {
-            "title": "Personal data",
-            "body": "<p>This dialog box is there to guide you as best as possible on our site.<br/><br/> The information you send us allows us to process your request.<br/><br/> However, no personal or sensitive data that could allow your identification should be communicated in this tool (such as for example information on your state of health, your bank details, your opinions or personal convictions).</p>",
-            "cancel": "I refuse",
-            "ok": "I accept"
-        },
-        "form": {
-            "email": {
-                "placeholder": "Enter your address..."
-            },
-            "forget": {
-                "description": "Erase my personal data"
-            },
-            "get": {
-                "description": "Export my personal data"
-            }
-        },
-        "get": {
-            "error": "We apologize, there was an error with your GDPR request.",
-            "success": "Your GDPR request has been submitted successfully."
-        }
-    },
-    "header": {
-        "actions": {
-            "close": "Close",
-            "expand": "Expand chat window",
-            "minimize": "Minimize chat window",
-            "more": "More options",
-            "shrink": "Shrink",
-            "tests": "Tests",
-            "fontDecrease": "Decrease font",
-            "fontIncrease": "Increase font"
-        },
-        "title": "Need help?"
-    },
-    "input": {
-        "actions": {
-            "send": "Send",
-            "record": {
-                "pause": "Pause",
-                "play": "Play",
-                "replay": "Replay",
-                "start": "Record start",
-                "stop": "Record stop"
-              }
-          },
-          "placeholder": "Type your message here"
-    },
-    "interaction": {
-        "languageChange": "From now on, I will answer you in",
-        "spaceChange": "You are on this space:"
-    },
-    "onboarding": {
-        "next": "Next",
-        "previous": "Previous",
-        "skip": "Skip Onboarding",
-        "steps": [{
-                "body": "<p>That way I can provide you with better content.</p>",
-                "image": "dydu-onboarding-1.svg",
-                "title": "Use at best complete sentences"
-            },
-            {
-                "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus pellentesque.</p>",
-                "image": "dydu-onboarding-2.svg",
-                "title": "Tips 2"
-            },
-            {
-                "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante ipsum primis.</p>",
-                "image": "dydu-onboarding-3.svg",
-                "title": "Tips 3"
-            }
-        ]
-    },
-    "promptEmail": {
-        "placeholder": "Enter your email..."
-    },
-    "screenReader": {
-        "chatbot":  "chatbot says",
-        "me": "me says",
-        "say": "says"
-    },
-    "spaces": {
-        "welcome": "Welcome to the chatbot, please select a space before chatting :"
-    },
-    "tabs": {
-        "contacts": "Contacts",
-        "dialog": "Dialog"
-    },
-    "teaser": {
-        "mouseover": "Help here",
-        "title": "Need help?"
-    },
-    "template": {
-        "readmore": "... Read more",
-        "readless": "Read less"
-    },
-    "top": {
-        "title": "Top-asked questions:"
+    "get": {
+      "error": "We apologize, there was an error with your GDPR request.",
+      "success": "Your GDPR request has been submitted successfully."
     }
+  },
+  "header": {
+    "actions": {
+      "close": "Close",
+      "expand": "Expand chat window",
+      "minimize": "Minimize chat window",
+      "more": "More options",
+      "shrink": "Shrink",
+      "tests": "Tests",
+      "fontDecrease": "Decrease font",
+      "fontIncrease": "Increase font"
+    },
+    "title": "Need help?"
+  },
+  "input": {
+    "actions": {
+      "send": "Send",
+      "record": {
+        "pause": "Pause",
+        "play": "Play",
+        "replay": "Replay",
+        "start": "Record start",
+        "stop": "Record stop"
+      }
+    },
+    "placeholder": "Type your message here"
+  },
+  "interaction": {
+    "languageChange": "From now on, I will answer you in",
+    "spaceChange": "You are on this space:"
+  },
+  "onboarding": {
+    "next": "Next",
+    "previous": "Previous",
+    "skip": "Skip Onboarding",
+    "steps": [
+      {
+        "body": "<p>That way I can provide you with better content.</p>",
+        "image": "dydu-onboarding-1.svg",
+        "title": "Use at best complete sentences"
+      },
+      {
+        "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend mauris arcu, at semper tortor eleifend a. Nullam luctus pellentesque.</p>",
+        "image": "dydu-onboarding-2.svg",
+        "title": "Tips 2"
+      },
+      {
+        "body": "<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante ipsum primis.</p>",
+        "image": "dydu-onboarding-3.svg",
+        "title": "Tips 3"
+      }
+    ]
+  },
+  "promptEmail": {
+    "placeholder": "Enter your email..."
+  },
+  "screenReader": {
+    "chatbot": "chatbot says",
+    "me": "me says",
+    "say": "says"
+  },
+  "spaces": {
+    "welcome": "Welcome to the chatbot, please select a space before chatting :"
+  },
+  "tabs": {
+    "contacts": "Contacts",
+    "dialog": "Dialog"
+  },
+  "teaser": {
+    "mouseover": "Help here",
+    "title": "Need help?"
+  },
+  "template": {
+    "readmore": "... Read more",
+    "readless": "Read less"
+  },
+  "top": {
+    "title": "Top-asked questions:"
+  },
+  "survey": {
+    "sentMessage": "Your answer to the survey has been sent.",
+    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent."
+  }
 }

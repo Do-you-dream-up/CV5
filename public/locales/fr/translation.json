@@ -204,5 +204,9 @@
   },
   "top": {
     "title": "Questions les plus posées :"
+  },
+  "survey": {
+    "sentMessage": "Votre réponse au questionnaire a bien été envoyée.",
+    "errorMessage": "Une erreur est survenue votre réponse au questionnaire n’a malheureusement pas été envoyée."
   }
 }

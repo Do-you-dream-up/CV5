@@ -90,13 +90,14 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   useEffect(() => {
     const canShowForm =
       !secondaryActive && [surveyConfig, instances, openSecondary].every(isDefined) && isPositiveNumber(secondaryWidth);
-    if (canShowForm && openSecondary)
-      openSecondary({
-        width: secondaryWidth,
-        bodyRenderer: () => <SurveyForm />,
-        title: () => <SecondaryFormTitle />,
-        headerTransparency: false,
-      });
+    if (canShowForm)
+      openSecondary &&
+        openSecondary({
+          width: secondaryWidth,
+          bodyRenderer: () => <SurveyForm />,
+          title: () => <SecondaryFormTitle />,
+          headerTransparency: false,
+        });
   }, [surveyConfig, instances, openSecondary, secondaryWidth, flushStatesAndClose]);
 
   useEffect(() => {

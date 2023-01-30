@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
-import Input from '../Input';
+import Input from '../Input/Input';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
