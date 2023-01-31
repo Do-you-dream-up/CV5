@@ -44,7 +44,7 @@ export default function Banner() {
   }, [active, storage, dismiss, transient]);
 
   const actions = [
-    ...(dismissable ? [{ children: t('banner.ok'), onClick: onDismiss, secondary: true }] : []),
+    ...(dismissable ? [{ children: t('banner.ok'), onClick: onDismiss, secondary: true, id: 'dydu-banner-ok' }] : []),
     ...(more
       ? [
           {
