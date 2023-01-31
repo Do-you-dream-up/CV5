@@ -73,7 +73,7 @@ export default function Secondary({ anchor, mode }) {
       <div className={c('dydu-secondary-header', headerClass)}>
         {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={closeSecondary} type="button" variant="icon">
+          <Button color="primary" onClick={closeSecondary} type="button" variant="icon" id="dydu-close-secondary">
             <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
           </Button>
         </div>
