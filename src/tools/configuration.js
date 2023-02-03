@@ -32,8 +32,10 @@ export const configuration = new (class Configuration {
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
 
-      if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
-        dydu.setSpace(configuration?.spaces?.items[0]);
+      if (!isLoadedFromChannels()) {
+        if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
+          dydu.setSpace(configuration?.spaces?.items[0]);
+        }
       }
 
       dydu.setConfiguration(this.configuration);
