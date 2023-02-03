@@ -399,7 +399,7 @@ export class Local {
 
   static contextId = Object.create({
     createKey: (botId = '', directoryId = '') => {
-      const separator = isEmptyString(directoryId) ? '' : '/';
+      const separator = isEmptyString(directoryId) ? '' : '.';
       return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
     },
     save: (key, value) => {
