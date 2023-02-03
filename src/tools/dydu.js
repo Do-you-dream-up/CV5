@@ -81,8 +81,9 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server }) => ({
+    (({ backUpServer, bot: id, server, configId }) => ({
       ...(id && { id }),
+      ...(configId && { configId }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
