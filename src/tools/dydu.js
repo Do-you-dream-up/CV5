@@ -409,7 +409,13 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    try {
+      return Local.contextId.createKey(this.getBotId(), BOT.configId);
+    } catch {
+      return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    } finally {
+      console.error('error while creating contextId storage key');
+    }
   }
 
   getContextIdFromLocalStorage() {
