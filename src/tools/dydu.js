@@ -480,7 +480,9 @@ export default new (class Dydu {
     const { application } = this.getConfiguration();
     if (!this.locale) {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
+      application?.getDefaultLanguageFromSite
+        ? this.setLocale(document.documentElement.lang, application?.languages)
+        : this.setLocale(locale, application?.languages);
     }
     return this.locale || application?.defaultLanguage;
   };
