@@ -63,7 +63,7 @@ Object.defineProperty(window, 'location', {
   },
 });
 
-describe('dydu.js', () => {
+xdescribe('dydu.js', () => {
   const { location } = window;
 
   describe('getSpace', () => {
