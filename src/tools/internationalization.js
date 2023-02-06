@@ -1,4 +1,5 @@
 import { Cookie, Local } from './storage';
+import dydu from '../tools/dydu';
 
 import Backend from 'i18next-xhr-backend';
 import BrowserLanguage from 'i18next-browser-languagedetector';
@@ -25,7 +26,7 @@ i18next
       lookupQuerystring: 'language',
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
     },
-    fallbackLng: 'en',
+    fallbackLng: dydu.getConfigurationDefaultLocal() | 'en',
     interpolation: { escapeValue: false },
     load: 'languageOnly',
     lowerCaseLng: true,
