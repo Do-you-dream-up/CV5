@@ -321,4 +321,6 @@ export const removeEndingSlash = (s) => {
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
 
-export const getBrowserLocale = () => document.documentElement.lang;
+export const getBrowserLocale = () => {
+  return document.documentElement.lang;
+};

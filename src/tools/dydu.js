@@ -25,6 +25,7 @@ import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
 import qs from 'qs';
+import { initI18N } from './internationalization';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -1007,11 +1008,13 @@ export default new (class Dydu {
       locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
       this.setLocale(locale).catch(console.error);
       this.locale = locale;
+      initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
       console.info('Error while initializing locale, fallback to browser locale');
       this.setLocale(locale).catch(console.error);
       this.locale = locale;
+      initI18N({ defaultLang: this.locale });
       return this.locale;
     }
   }

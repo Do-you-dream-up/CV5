@@ -1,16 +1,21 @@
 import { Cookie, Local } from './storage';
-import dydu from '../tools/dydu';
 
 import Backend from 'i18next-xhr-backend';
 import BrowserLanguage from 'i18next-browser-languagedetector';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-const wording = JSON.parse(localStorage.getItem('dydu.wording'));
-i18next
-  .use(initReactI18next)
-  .use(Backend)
-  .use(BrowserLanguage)
-  .init({
+
+const setupResource = () => {
+  const wording = JSON.parse(localStorage.getItem('dydu.wording'));
+  wording &&
+    wording.length &&
+    wording.map((item) => {
+      i18next.addResourceBundle(item.language, 'translation', item.translation);
+    });
+};
+
+const getInitOptionsMerge = (options = {}) => {
+  return {
     backend: {
       crossDomain: true,
       loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json?t=${Date.now()}`,
@@ -26,15 +31,17 @@ i18next
       lookupQuerystring: 'language',
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
     },
-    fallbackLng: dydu.getConfigurationDefaultLocal() | 'en',
+    fallbackLng: options?.defaultLang || 'en',
     interpolation: { escapeValue: false },
     load: 'languageOnly',
     lowerCaseLng: true,
     react: { useSuspense: false },
     returnObjects: true,
-  });
-wording &&
-  wording.length &&
-  wording.map((item) => {
-    i18next.addResourceBundle(item.language, 'translation', item.translation);
-  });
+  };
+};
+
+export const initI18N = (options) => {
+  const initOptions = getInitOptionsMerge(options);
+  i18next.use(initReactI18next).use(Backend).use(BrowserLanguage).init(initOptions);
+  setupResource();
+};
