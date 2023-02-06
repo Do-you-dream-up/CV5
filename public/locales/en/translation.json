@@ -149,6 +149,7 @@
   "input": {
     "actions": {
       "send": "Send",
+      "reupload": "Reupload",
       "record": {
         "pause": "Pause",
         "play": "Play",

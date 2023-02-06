@@ -2,7 +2,7 @@ import Actions, { ActionProps } from '../Actions/Actions';
 import { useCallback, useEffect, useState } from 'react';
 
 import Input from '../Input/Input';
-import UploadInput from '../UploadInput';
+import UploadInput from '../UploadInput/UploadInput';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';

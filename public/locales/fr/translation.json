@@ -146,6 +146,7 @@
   "input": {
     "actions": {
       "send": "Envoie",
+      "reupload": "Reupload",
       "record": {
         "pause": "Pause",
         "play": "Lire",

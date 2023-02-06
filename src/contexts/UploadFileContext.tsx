@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
 
-interface DataContextProps {
+interface UploadFileContextProps {
   removeFromDisabledList?: (id: any) => void;
   isInDisabledList?: (id: any) => boolean;
   addToDisabledList?: (id: any) => void;
@@ -19,12 +19,12 @@ interface DataContextProps {
   showUploadFileButton?: any;
 }
 
-const UploadFileContext = React.createContext<DataContextProps | null>(null);
-export const useUploadFile = () => React.useContext(UploadFileContext);
-
 interface UploadFileProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
+
+const UploadFileContext = createContext({} as UploadFileContextProps);
+export const useUploadFile = () => useContext(UploadFileContext);
 
 export default function UploadFileProvider({ children }: UploadFileProviderProps) {
   const [t] = useTranslation('translation');
