@@ -40,7 +40,7 @@ const getUrl = window.location.href;
 
 let BOT = {},
   protocol,
-  API = { defaults: {} };
+  API = {};
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
@@ -478,7 +478,12 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    return this.locale;
+    const { application } = this.getConfiguration();
+    if (!this.locale) {
+      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
+      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
+    }
+    return this.locale || application?.defaultLanguage;
   };
 
   /**
@@ -587,10 +592,9 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages = []) =>
+  setLocale = (locale, languages) =>
     new Promise((resolve, reject) => {
-      if (isDefined(this.locale)) resolve(this.locale);
-      if (languages.includes(locale)) {
+      if (!this.locale || languages.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);

@@ -5,9 +5,23 @@ const webpack = require('webpack');
 const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
+const GitRevision = require('git-revision-webpack-plugin');
+  
+
+
 
 
 module.exports = (env) => {
+
+  const getCommitHash = () => {
+    if (process.env.CI_COMMIT_SHORT_SHA) return process.env.CI_COMMIT_SHORT_SHA;
+    return new GitRevision().commithash().substring(0, 7);
+  };
+  
+  const getBranchName = () => {
+    if (process.env.CHATBOX_VERSION) return process.env.CHATBOX_VERSION;
+    return new GitRevision().branch();
+  };
 
   let ASSET = './';
       
@@ -30,7 +44,7 @@ module.exports = (env) => {
     output: {
       filename: 'bundle.min.js',
       chunkLoadingGlobal: 'dydu.chatbox',
-      chunkFilename: `[name].${env.CHATBOX_VERSION || 'lts'}.${env.CHATBOX_REVISION || 'xxxxxx'}.js`,
+      chunkFilename: `[name].${env.CHATBOX_VERSION || getBranchName().replace('/','.')}.${env.CHATBOX_REVISION || getCommitHash()}.js`,
       path: Path.resolve(__dirname, 'build'),
       publicPath: ASSET,
     },

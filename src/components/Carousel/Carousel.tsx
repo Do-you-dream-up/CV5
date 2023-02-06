@@ -1,6 +1,6 @@
+import Actions, { ActionProps } from '../Actions/Actions';
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
-import Actions, { ActionProps } from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
@@ -72,6 +72,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       disabled: !hasPrevious(),
       onClick: triggerPrevious,
       variant: 'icon',
+      id: 'dydu-arrow-left',
     },
   ];
 
@@ -87,6 +88,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       disabled: !hasNext(),
       onClick: triggerNext,
       variant: 'icon',
+      id: 'dydu-arrow-right',
     },
   ];
 
