@@ -5,8 +5,8 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles((theme) => ({
   commentField: {
     height: '100%',
-    minHeight: '2.1em',
-    minWidth: '10em',
+    minHeight: '7em',
+    minWidth: '17em',
     position: 'relative',
     width: '100%',
   },
