@@ -20,8 +20,8 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
   const processUserFileSelection = useCallback(
     (file) => {
       try {
-        onSelectFile(file, inputRef);
-        !keepActive && addToDisabledList(label);
+        onSelectFile && onSelectFile(file, inputRef);
+        !keepActive && addToDisabledList && addToDisabledList(label);
       } catch (e) {
         console.error('While handling file selection', e);
       }
@@ -31,7 +31,7 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
 
   const onSelect = useCallback(
     (event) => {
-      const file = extractFileFromEvent(event);
+      const file = extractFileFromEvent && extractFileFromEvent(event);
       const hasUserCanceledFileSelection = !isDefined(file?.name);
       if (hasUserCanceledFileSelection) return;
       processUserFileSelection(file);
@@ -40,8 +40,15 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
   );
 
   return (
-    <Button disabled={isInDisabledList(label)}>
-      <input id={inputId} type="file" hidden onChange={onSelect} disabled={isInDisabledList(label)} ref={inputRef} />
+    <Button disabled={isInDisabledList && isInDisabledList(label)}>
+      <input
+        id={inputId}
+        type="file"
+        hidden
+        onChange={onSelect}
+        disabled={isInDisabledList && isInDisabledList(label)}
+        ref={inputRef}
+      />
       <label htmlFor={inputId}>{label}</label>
     </Button>
   );
