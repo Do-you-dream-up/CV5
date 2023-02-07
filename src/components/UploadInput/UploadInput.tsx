@@ -12,7 +12,7 @@ const UploadInput = () => {
   const no = t('close.no');
   const send = t('input.actions.send');
   const reupload = t('input.actions.reupload');
-  const { fileSelected, handleCancel, showConfirmSelectedFile, validateFile, errorFormatMessage } = useUploadFile();
+  const { fileSelected, handleCancel, validateFile, errorFormatMessage } = useUploadFile();
   const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
@@ -50,7 +50,6 @@ const UploadInput = () => {
     );
   };
 
-  if (!showConfirmSelectedFile) return null;
   return (
     <FileUploadContainer data-testid="footer-upload-input">
       {rendererHeader()}
