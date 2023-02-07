@@ -28,7 +28,7 @@ export default createUseStyles((theme) => ({
       opacity: 1,
     },
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette?.action?.hover,
     },
     cursor: 'pointer',
   }),

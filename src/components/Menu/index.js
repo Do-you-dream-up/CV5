@@ -22,8 +22,8 @@ export default function Menu({ component, items, selected, ...rest }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const menuRef = useRef(null);
-  const node = document && document.getElementById(configuration.root);
-  const spacing = ~~configuration.menu.spacing;
+  const node = document && document.getElementById(configuration?.root);
+  const spacing = ~~configuration?.menu?.spacing;
   items = typeof items === 'function' ? items() : items;
 
   const onClose = () => setOpen(false);

@@ -1,4 +1,5 @@
 import Actions, { ActionProps } from '../Actions/Actions';
+import { escapeHTML, isDefined } from '../../tools/helpers';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
@@ -7,8 +8,6 @@ import { Local } from '../../tools/storage';
 import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { escapeHTML } from '../../tools/helpers';
-import { isDefined } from 'dydu-module/helpers';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
@@ -81,7 +80,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
       const textareaId = 'dydu-textarea';
       return (
-        <div className={c('dydu-input-field', classes.field)}>
+        <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
             textarea
           </label>
@@ -205,7 +204,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   ];
 
   return (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input" data-testid="footer-form">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}

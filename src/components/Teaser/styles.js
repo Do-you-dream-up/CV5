@@ -19,7 +19,7 @@ export default createUseStyles((theme) => ({
   }),
   button: () => ({
     '&:hover:before': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette?.action?.hover,
       bottom: 0,
       content: '""',
       left: 0,

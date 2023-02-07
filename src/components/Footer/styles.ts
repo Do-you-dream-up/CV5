@@ -26,10 +26,10 @@ export default createUseStyles<any, any>((theme: any): any => ({
   }),
   root: () => ({
     backgroundColor: '#EDF1F5',
-    borderBottomLeftRadius: theme.shape.radius.outer,
-    borderBottomRightRadius: theme.shape.radius.outer,
-    boxShadow: theme.shadows[1],
-    color: theme.palette.primary.text,
+    borderBottomLeftRadius: theme.shape?.radius?.outer,
+    borderBottomRightRadius: theme.shape?.radius?.outer,
+    boxShadow: theme?.shadows?.[1],
+    color: theme.palette?.primary?.text,
     display: 'flex',
     flexShrink: 0,
     position: 'relative',
@@ -37,7 +37,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     heigth: 60,
     minHeight: 60,
     maxHeight: 160,
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
     },
   }),

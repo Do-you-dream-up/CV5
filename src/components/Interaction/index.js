@@ -331,7 +331,7 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.children]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,

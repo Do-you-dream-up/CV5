@@ -52,7 +52,7 @@ const UploadInput = () => {
 
   if (!showConfirmSelectedFile) return null;
   return (
-    <FileUploadContainer>
+    <FileUploadContainer data-testid="footer-upload-input">
       {rendererHeader()}
       {rendererButtons()}
     </FileUploadContainer>
