@@ -174,7 +174,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
       window.reword = window.dydu.chat.ask;
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
-      window.dyduknowledgeUploadFile = window.dydu.ui.upload;
+      window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
     }
 
     setReady(true);
