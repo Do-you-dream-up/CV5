@@ -1,9 +1,9 @@
 import { useCallback, useRef } from 'react';
 
-import { Button } from '../styles/styledComponent';
-import { isDefined } from '../tools/helpers';
-import useId from '../tools/hooks/useId';
-import { useUploadFile } from '../contexts/UploadFileContext';
+import { Button } from '../../styles/styledComponent';
+import { isDefined } from '../../tools/helpers';
+import useId from '../../tools/hooks/useId';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 interface FileUploadButtonProps {
   onSelect?: () => void;

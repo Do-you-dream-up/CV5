@@ -1,6 +1,6 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 
-import FileUploadButton from '../FileUploadButton';
+import FileUploadButton from '../FileUploadButton/FileUploadButton';
 import PropTypes from 'prop-types';
 import { isDefined } from '../../tools/helpers';
 import { useMemo } from 'react';

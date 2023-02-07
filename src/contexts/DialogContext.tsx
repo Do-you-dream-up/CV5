@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
 
-import FileUploadButton from '../components/FileUploadButton';
+import FileUploadButton from '../components/FileUploadButton/FileUploadButton';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
