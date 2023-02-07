@@ -40,7 +40,7 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
   );
 
   return (
-    <Button disabled={isInDisabledList && isInDisabledList(label)}>
+    <Button disabled={isInDisabledList && isInDisabledList(label)} data-testid="file-upload-button">
       <input
         id={inputId}
         type="file"
