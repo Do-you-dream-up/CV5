@@ -36,6 +36,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const counterRemaining = t('input.actions.counterRemaining');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const debouncedInput = useDebounce(input, delay);
@@ -95,7 +96,14 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             autoFocus
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && <span id="characters-remaining" children={counter} className={classes.counter} />}
+          {!!showCounter && (
+            <span
+              id="characters-remaining"
+              children={counter}
+              className={classes.counter}
+              placeholder={`${counter} ${counterRemaining}`}
+            />
+          )}
         </div>
       );
     },
