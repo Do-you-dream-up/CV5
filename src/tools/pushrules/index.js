@@ -14,7 +14,7 @@ export default function fetchPushrules() {
 
       rules.map(addRule);
       processRules(getExternalInfos(new Date().getTime()));
-      resolve(rules);
+      return resolve(rules);
     });
   });
 }
