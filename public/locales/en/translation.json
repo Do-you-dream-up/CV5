@@ -189,8 +189,8 @@
     "placeholder": "Enter your email..."
   },
   "screenReader": {
-    "chatbot": "chatbot says",
-    "me": "me says",
+    "chatbot": "chatbot answers",
+    "me": "I write",
     "say": "says"
   },
   "spaces": {
