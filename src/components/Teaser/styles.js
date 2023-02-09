@@ -16,6 +16,11 @@ export default createUseStyles((theme) => ({
       height: 'auto',
       pointerEvents: 'none',
     },
+    '& h1': {
+      visibility: 'hidden',
+      width: '0',
+      height: '0',
+    },
   }),
   button: () => ({
     '&:hover:before': {

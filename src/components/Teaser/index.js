@@ -32,6 +32,7 @@ export default function Teaser({ open, toggle }) {
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
 
   const title = t('teaser.title');
+  const titleHidden = t('teaser.titleHidden');
   const mouseover = t('teaser.mouseover');
 
   const teaserAvatar = configuration.avatar?.teaser?.image || configuration.avatar?.response?.image;
@@ -94,8 +95,12 @@ export default function Teaser({ open, toggle }) {
 
   return (
     <Draggable bounds="html">
-      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })} id="dydu-teaser">
-        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
+      <div
+        className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
+        id="dydu-teaser"
+        aria-labelledby="teaser-chatbot"
+      >
+        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)} id="teaser-chatbot">
           <div
             onMouseDown={handleButtonPress}
             onMouseUp={handleButtonRelease}
@@ -119,6 +124,7 @@ export default function Teaser({ open, toggle }) {
               <div
                 className={c('dydu-teaser-brand', classes.brand, teaserAvatarBackground && classes.backgroundAvatar)}
               >
+                <h1>{titleHidden}</h1>
                 <img onKeyDown={onKeyDown} alt="" src={logoTeaser} />
               </div>
             )}
