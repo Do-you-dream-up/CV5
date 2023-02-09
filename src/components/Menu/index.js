@@ -1,9 +1,10 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Portal } from 'react-portal';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { createElement, useEffect, useRef, useState } from 'react';
+
 import MenuList from '../MenuList';
+import { Portal } from 'react-portal';
+import PropTypes from 'prop-types';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**
@@ -15,7 +16,7 @@ import useStyles from './styles';
  * between categories.
  */
 export default function Menu({ component, items, selected, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const [geometry, setGeometry] = useState(null);
   const [open, setOpen] = useState(false);
@@ -70,7 +71,7 @@ export default function Menu({ component, items, selected, ...rest }) {
 
   return (
     <>
-      {React.createElement(component, {
+      {createElement(component, {
         onClick: toggle(),
         ref: anchorRef,
         ...rest,

@@ -1,8 +1,10 @@
-import useWebsocket, { ReadyState } from 'react-use-websocket';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { TUNNEL_MODE } from '../../contexts/LivechatContext';
-import { isDefined } from '../helpers';
+import useWebsocket, { ReadyState } from 'react-use-websocket';
+
 import LivechatPayload from '../LivechatPayload';
+import { TUNNEL_MODE } from '../constants';
+import dydu from '../dydu';
+import { isDefined } from '../helpers';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
 
@@ -183,11 +185,12 @@ export default function useDyduWebsocket() {
         decrementHandshakeCountDown();
       },
       onClose: (closeEvent) => {
+        _onFail();
         if (closeEvent.wasClean) close();
         console.log('websocket: on close !', closeEvent);
       },
       onError: (errorEvent) => {
-        console.log('websocket: on error !', errorEvent);
+        _onFail(), console.log('websocket: on error !', errorEvent);
       },
     };
   }, [_onFail, close, decrementHandshakeCountDown]);
@@ -226,13 +229,26 @@ export default function useDyduWebsocket() {
 
   const sendSurvey = useCallback((surveyAnswer) => {
     const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
-    sendJsonMessage(message);
+    try {
+      trySendMessage(message);
+      dydu.displaySurveySent({}, 200);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const trySendMessage = useCallback((message) => {
+    try {
+      sendJsonMessage(message);
+    } catch (e) {
+      _onFail();
+    }
   }, []);
 
   const send = useCallback(
     (userInput) => {
       const message = LivechatPayload.create.talkMessage(userInput);
-      sendJsonMessage(message);
+      trySendMessage(message);
     },
     [sendJsonMessage],
   );
@@ -244,7 +260,7 @@ export default function useDyduWebsocket() {
   const onUserTyping = useCallback(
     (userInput) => {
       const message = LivechatPayload.create.userTypingMessage(userInput);
-      sendJsonMessage(message);
+      trySendMessage(message);
     },
     [sendJsonMessage],
   );
@@ -252,7 +268,7 @@ export default function useDyduWebsocket() {
   return {
     isConnected,
     isRunning,
-    isAvailable: () => true,
+    isAvailable: () => isDefined(window.WebSocket),
     mode: TUNNEL_MODE.websocket,
     open,
     send,

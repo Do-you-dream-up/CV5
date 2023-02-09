@@ -3,30 +3,33 @@ const DayJs = require('dayjs');
 const GitRevision = require('git-revision-webpack-plugin');
 const Eslint = require('eslint-webpack-plugin');
 const Html = require('html-webpack-plugin');
-const { version } = require('./package');
 const now = DayJs().format('YYYY-MM-DD HH:mm');
 const DYDU_MODULES = require('./dydu-module/ModuleList');
 
-function getCommitHash() {
-  if (process.env.CI_COMMIT_SHORT_SHA)
-    return process.env.CI_COMMIT_SHORT_SHA;
+const getCommitHash = () => {
+  if (process.env.CI_COMMIT_SHORT_SHA) return process.env.CI_COMMIT_SHORT_SHA;
   return new GitRevision().commithash().substring(0, 7);
-}
+};
+
+const getBranchName = () => {
+  if (process.env.CHATBOX_VERSION) return process.env.CHATBOX_VERSION;
+  return new GitRevision().branch();
+};
 
 const COMMON_RULE_LIST = [
-    {
-      include: Path.resolve(__dirname, 'src/'),
-      use: ["babel-loader"],
-      test: /\.js$/,
-    },
-    {
-      use: ["style-loader", "css-loader"],
-      test: /\.css$/,
-    },
-    {
-      type: "asset/resource",
-      test: /\.(eot|png|svg|ttf|woff|woff2)$/,
-    },
+  {
+    include: Path.resolve(__dirname, 'src/'),
+    use: ['babel-loader'],
+    test: /\.(js|jsx|tsx|ts)$/,
+  },
+  {
+    use: ['style-loader', 'css-loader'],
+    test: /\.css$/,
+  },
+  {
+    type: 'asset/resource',
+    test: /\.(eot|png|svg|ttf|woff|woff2)$/,
+  },
 ];
 
 const COMMON_PLUGIN_LIST = [
@@ -34,18 +37,18 @@ const COMMON_PLUGIN_LIST = [
   new Html({
     hash: true,
     template: Path.resolve(__dirname, 'public/index.html'),
-    templateParameters: {hash: getCommitHash(), now, version},
+    templateParameters: { hash: getCommitHash(), now, version: getBranchName() },
   }),
 ];
 
-const getRuleList = env => (COMMON_RULE_LIST.concat(DYDU_MODULES.getRules(env)));
+const getRuleList = (env) => COMMON_RULE_LIST.concat(DYDU_MODULES.getRules(env));
 
-const getPluginList = env => (COMMON_PLUGIN_LIST.concat(DYDU_MODULES.getPlugins(env)));
+const getPluginList = (env) => COMMON_PLUGIN_LIST.concat(DYDU_MODULES.getPlugins(env));
 
 module.exports = (env = {}) => {
   return {
     bail: true,
-    entry: Path.resolve(__dirname, 'src/index.js'),
+    entry: Path.resolve(__dirname, 'src/index.tsx'),
     module: {
       rules: getRuleList(env),
       strictExportPresence: true,
@@ -53,6 +56,10 @@ module.exports = (env = {}) => {
     performance: {
       hints: false,
     },
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js'],
+      modules: [Path.resolve('./node_modules'), Path.resolve('./')],
+    },
     plugins: getPluginList(env),
-  }
+  };
 };

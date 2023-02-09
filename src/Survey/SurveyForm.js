@@ -1,53 +1,39 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import './style/survey.css';
 
+import { asset, isDefined, isEmptyArray } from '../tools/helpers';
+
+import PropTypes from 'prop-types';
+import { useCallback } from 'react';
 import { useSurvey } from './SurveyProvider';
-import { isDefined } from '../tools/helpers';
 
 export default function SurveyForm() {
-  const formRef = useRef();
-  const { fields, setForm, formName, formTitle, formDescription } = useSurvey();
+  const { instances, showSurvey, onSubmit } = useSurvey();
 
-  useEffect(() => {
-    if (isDefined(formRef.current)) setForm(formRef.current);
-  }, [setForm]);
+  const renderFields = useCallback(() => {
+    if (!isDefined(instances) || isEmptyArray(instances)) return null;
+    return instances.map((instance) => instance.render());
+  }, [instances]);
 
-  useEffect(() => () => setForm(null), []);
-
-  const inputs = useMemo(() => {
-    return fields?.map((field) => {
-      const FieldComponent = field.getComponentView();
-      return !isDefined(FieldComponent) ? null : <FieldComponent key={field.getId()} fieldInstance={field} />;
-    });
-  }, [fields]);
-
-  const headerProps = useMemo(
-    () => ({
-      name: formName,
-      title: formTitle,
-      description: formDescription,
-    }),
-    [formName, formTitle, formDescription],
-  );
-
-  return (
-    <>
-      <FormHeader {...headerProps} />
-      <form ref={formRef}>
-        {inputs}
-        <div>
-          <button>Soumettre</button>
-        </div>
-      </form>
-    </>
+  return !isDefined(instances) ? (
+    <button onClick={showSurvey}>click</button>
+  ) : (
+    <form className="survey-form-container">
+      {renderFields()}
+      <div className="btn-submit-container">
+        <ButtonSubmit onSubmit={onSubmit} />
+      </div>
+    </form>
   );
 }
 
-const _FormHeader = ({ name, title, description }) => (
-  <>
-    <h1>{name}</h1>
-    <h2>{title}</h2>
-    <p>{description}</p>
-  </>
-);
+const ButtonSubmit = ({ onSubmit }) => {
+  return (
+    <button type="button" className={'btn-submit-container'} onClick={onSubmit}>
+      <i>Envoyer mes réponses</i> <img src={asset('check-circle.svg')} />
+    </button>
+  );
+};
 
-const FormHeader = React.memo(_FormHeader);
+ButtonSubmit.propTypes = {
+  onSubmit: PropTypes.func,
+};

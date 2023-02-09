@@ -2,8 +2,10 @@ import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { VIEW_MODE } from '../../contexts/ViewModeProvider';
+import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
+import { isDefined } from '../helpers';
+import { VIEW_MODE } from '../constants';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 const currentTimer = {};
@@ -12,22 +14,6 @@ const externalInfos = {};
 const rules = [];
 const rulesDefinition = [...rulesDefintions];
 let canPush = true;
-
-//infoProcessor must be a function that takes externalInfos object as a parameter.
-// eslint-disable-next-line no-unused-vars
-function addExternalInfoProcessor(infoProcessor) {
-  if (infoProcessor) {
-    externalInfoProcessors.push(infoProcessor);
-  }
-}
-
-//Rule definitions
-// eslint-disable-next-line no-unused-vars
-function addRuleDefinition(ruleDefinition) {
-  if (ruleDefinition) {
-    rulesDefinition.push(ruleDefinition);
-  }
-}
 
 //Rules from knowledge base
 export function addRule(rule) {
@@ -88,6 +74,12 @@ export function processRules(externInfos) {
   handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
+let chatboxNodeElement = null;
+function getChatboxNodeElement() {
+  if (!isDefined(chatboxNodeElement)) chatboxNodeElement = document.getElementById(configuration?.root);
+  return chatboxNodeElement;
+}
+
 function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
   if (delay === 0) {
     pushKnowledge(delayRuleId);
@@ -104,7 +96,12 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
         if (document.attachEvent) {
           document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
         } else {
-          document.addEventListener(INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
+          const event = [INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId)];
+          try {
+            getChatboxNodeElement().addEventListener(...event);
+          } catch (e) {
+            document.addEventListener(...event);
+          }
         }
       }
       currentTimer.counter = setTimeout(() => {

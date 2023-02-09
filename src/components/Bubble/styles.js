@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => {
@@ -57,6 +59,7 @@ export default createUseStyles((theme) => {
       backgroundColor: theme.palette.response.background,
       color: theme.palette.response.text,
       marginRight: 'auto',
+      width: 'fit-content',
 
       '&.template-style': {
         width: 270,

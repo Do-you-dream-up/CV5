@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import Skeleton from '../Skeleton';
 import { TabContext } from '../../contexts/TabContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
  * are pulled from the configuration.
  */
 export default function Tabs() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const event = useContext(EventsContext).onEvent('tab');
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({ configuration, current, length: tabs.length });

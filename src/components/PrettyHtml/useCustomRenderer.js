@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
-
 import { DialogContext } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
+import { useContext } from 'react';
 
 export default function useCustomRenderer() {
   const { setZoomSrc } = useContext(DialogContext);
@@ -32,11 +31,10 @@ const getFilters = (utils) => [
     test: ({ name }) => name === 'img',
     process: (props) => {
       const { attribs } = props;
-      return (
-        <div onClick={() => utils.setZoomSrc(attribs?.src)}>
-          <img src={attribs?.src} />
-        </div>
-      );
+      attribs.onClick = function onClickImg() {
+        utils.setZoomSrc(attribs?.src);
+      };
+      return props;
     },
   },
 ];

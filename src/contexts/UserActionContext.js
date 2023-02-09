@@ -1,9 +1,10 @@
+import { createContext, useEffect, useState } from 'react';
+
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
 
 /* THIS CONTEXT IS USED TO CHECK WHETHER THE USER IS NAVIGATING VIA CLICKS OR TAB KEY FOR ACCESSIBILITY REASONS */
 
-export const UserActionContext = React.createContext();
+export const UserActionContext = createContext();
 export function UserActionProvider({ children }) {
   const [tabbing, setTabbing] = useState(false);
 

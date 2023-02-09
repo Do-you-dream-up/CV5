@@ -1,10 +1,10 @@
-import c from 'classnames';
+import Actions from '../Actions/Actions';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import Actions from '../Actions';
+import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useState } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Base form component.
@@ -13,7 +13,7 @@ import useStyles from './styles';
  * onchange callback as parameters.
  */
 export default function Form({ children, className, onDismiss, onReject, onResolve, thinking }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles();
   const currentSpace = window.dydu ? window.dydu.space.get() : configuration.spaces.items[0];
   const [data, setData] = useState({ space: currentSpace });

@@ -1,18 +1,18 @@
-import c from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'react-jss';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { createElement, useCallback, useContext, useEffect } from 'react';
+
+import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
-import { QUICK_REPLY } from '../../tools/template';
-import useViewport from '../../tools/hooks/viewport';
 import { Local } from '../../tools/storage';
-import Actions from '../Actions';
 import PrettyHtml from '../PrettyHtml';
 import Progress from '../Progress';
-import useStyles from './styles';
+import PropTypes from 'prop-types';
+import { QUICK_REPLY } from '../../tools/template';
+import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * A conversation bubble.
@@ -26,21 +26,19 @@ export default function Bubble({
   children,
   className,
   component,
-  hasExternalLink,
   history,
   html,
   secondary,
   step,
-  templatename,
+  templateName,
   thinking,
   type,
 }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
+  const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
@@ -65,7 +63,7 @@ export default function Bubble({
     }
   }, [automaticSecondary, history, onToggle, sidebar]);
 
-  return React.createElement(
+  return createElement(
     component,
     {
       className: c(
@@ -73,22 +71,16 @@ export default function Bubble({
         `dydu-bubble-${type}`,
         classes.base,
         classes[type],
-        isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
+        isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
         className,
       ),
+      id: `dydu-bubble-${type}`,
     },
     <>
       {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
       <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
         {(children || html) && (
-          <PrettyHtml
-            children={children}
-            hasExternalLink={hasExternalLink}
-            html={html}
-            templatename={templatename}
-            type={type}
-            carousel={carousel}
-          />
+          <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
         )}
         {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
       </div>
@@ -106,12 +98,11 @@ Bubble.propTypes = {
   children: PropTypes.element,
   className: PropTypes.string,
   component: PropTypes.elementType,
-  hasExternalLink: PropTypes.bool,
   history: PropTypes.bool,
   html: PropTypes.string,
   secondary: PropTypes.object,
   step: PropTypes.object,
-  templatename: PropTypes.string,
+  templateName: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
 };

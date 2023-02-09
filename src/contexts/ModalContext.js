@@ -1,9 +1,10 @@
+import { createContext, useState } from 'react';
+
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 
 const OPTIONS = { dismissable: true, variant: 'center' };
 
-export const ModalContext = React.createContext();
+export const ModalContext = createContext();
 export function ModalProvider({ children }) {
   const [Component, setComponent] = useState(null);
   const [onReject, setOnReject] = useState(null);

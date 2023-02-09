@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { createElement, useContext, useEffect } from 'react';
 
 import { EventsContext } from '../../contexts/EventsContext';
 import PrettyHtml from '../PrettyHtml';
@@ -30,28 +30,30 @@ export default function Top({ className, component, ...rest }) {
 
   return (
     !isEmptyArray(items) &&
-    React.createElement(
+    createElement(
       component,
       { className: c('dydu-top', className), ...rest, id: 'dydu-top-knowledge' },
       <PrettyHtml>
         <ol>
-          {items.map(({ reword }, index) => {
+          {items?.map((item, index) => {
             const onAsk = (event) => {
-              onAskHandler(reword);
+              item?.reword && onAskHandler(item?.reword);
               event.preventDefault();
             };
             return (
-              <li key={index}>
-                <a
-                  href="#"
-                  className={c('dydu-top-items', classes.accessibility, {
-                    [classes.hideOutline]: !tabbing,
-                  })}
-                  children={reword}
-                  onClick={onAsk}
-                  tabIndex="0"
-                />
-              </li>
+              item?.reword && (
+                <li key={index}>
+                  <a
+                    href="#"
+                    className={c('dydu-top-items', classes.accessibility, {
+                      [classes.hideOutline]: !tabbing,
+                    })}
+                    children={item?.reword}
+                    onClick={onAsk}
+                    tabIndex="0"
+                  />
+                </li>
+              )
             );
           })}
         </ol>

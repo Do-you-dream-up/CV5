@@ -1,8 +1,12 @@
-import axios from 'axios';
-import React from 'react';
+import { hasWizard, isLoadedFromChannels } from './wizard';
+
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
-import json from './configuration.json';
 import { Local } from './storage';
+import { PureComponent } from 'react';
+import axios from 'axios';
+import { axiosConfigNoCache } from './axios';
+import dydu from './dydu';
+import json from './configuration.json';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -12,6 +16,8 @@ export const configuration = new (class Configuration {
     this.configuration = {};
   }
 
+  getConfigFromStorage = () => Local.get(Local.names.wizard);
+
   /**
    * Fetch the configuration JSON and save its content.
    *
@@ -20,9 +26,19 @@ export const configuration = new (class Configuration {
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
-    return axios.get(path).then(({ data }) => {
-      const fromStorage = Local.get(Local.names.wizard);
-      this.configuration = fromStorage ? JSON.parse(JSON.stringify(fromStorage)) : data;
+    return axios.get(path, axiosConfigNoCache).then(({ data }) => {
+      this.configuration =
+        (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
+          ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
+          : data;
+
+      if (!isLoadedFromChannels()) {
+        if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
+          dydu.setSpace(configuration?.spaces?.items[0]);
+        }
+      }
+
+      dydu.setConfiguration(this.configuration);
       return this.configuration;
     });
   };
@@ -65,7 +81,7 @@ export const configuration = new (class Configuration {
  * High-order component to pass on configuration.
  */
 export const withConfiguration = (Component) =>
-  class InnerComponent extends React.PureComponent {
+  class InnerComponent extends PureComponent {
     static contextType = ConfigurationContext;
     render() {
       return <Component configuration={this.context.configuration} {...this.props} />;
