@@ -12,7 +12,10 @@ i18next
   .init({
     backend: {
       crossDomain: true,
-      loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json?t=${Date.now()}`,
+      requestOptions: {
+        cache: 'no-store',
+      },
     },
     cleanCode: true,
     debug: false,

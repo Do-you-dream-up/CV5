@@ -1,12 +1,11 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createElement, useCallback, useEffect, useRef, useState } from 'react';
 
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DragonProvider } from '../../contexts/DragonContext';
 import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useEvent from '../../tools/hooks/event';
-import { useTheme } from 'react-jss';
-import useViewport from '../../tools/hooks/viewport';
+import useViewport from '../../tools/hooks/useViewport';
 
 /**
  * Wrapper to enable dragging on other components.
@@ -15,7 +14,7 @@ import useViewport from '../../tools/hooks/viewport';
  * `translate3d` CSS property.
  */
 export default function Dragon({ component, reset, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { boundaries: withBoundaries, factor: defaultFactor = 1, persist } = configuration.dragon;
   const factor = Math.max(defaultFactor, 1);
   const root = useRef(null);
@@ -24,9 +23,8 @@ export default function Dragon({ component, reset, ...rest }) {
   const [offset, setOffset] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [moving, setMoving] = useState(false);
-  const theme = useTheme();
-  const isMobile = useViewport(theme.breakpoints.down('xs'));
-  const active = !reset && configuration.dragon.active && !isMobile;
+  const { isMobile } = useViewport();
+  const active = !reset && configuration.dragon?.active && !isMobile;
 
   const onDrag = (event) => {
     if (moving && origin) {
@@ -100,7 +98,7 @@ export default function Dragon({ component, reset, ...rest }) {
   return (
     !!current && (
       <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-        {React.createElement(component, {
+        {createElement(component, {
           ...rest,
           root,
           style: { transform },

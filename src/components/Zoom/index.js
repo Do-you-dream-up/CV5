@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
-
 import { DialogContext } from '../../contexts/DialogContext';
 import PropTypes from 'prop-types';
+import { useContext } from 'react';
 import useStyles from './styles';
 
 const Zoom = ({ src }) => {

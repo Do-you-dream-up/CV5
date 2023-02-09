@@ -1,8 +1,8 @@
-import c from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import Scroll from '../Scroll';
+import c from 'classnames';
+import { createElement } from 'react';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 
 /**
@@ -12,10 +12,10 @@ import useStyles from './styles';
  * The loader size determines the number of bullets.
  */
 export default function Loader({ className, scroll, size, variant }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { size: defaultSize } = configuration.loader;
-  return React.createElement(
+  return createElement(
     scroll ? Scroll : 'div',
     { className: c('dydu-loader', classes.root, className) },
     <>

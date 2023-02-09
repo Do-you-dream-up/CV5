@@ -1,12 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
  * property is utilized on only one instance of this component.
  */
 export default function Onboarding({ children, render }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } =
     useContext(OnboardingContext) || {};
   const event = useContext(EventsContext).onEvent('onboarding');
@@ -53,7 +53,7 @@ export default function Onboarding({ children, render }) {
           className={c('dydu-onboarding-body', classes.body)}
           dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
         />
-        <button type="button" onClick={onEnd}>
+        <button type="button" onClick={onEnd} id="skip-onboarding">
           {skip}
         </button>
       </div>
@@ -72,8 +72,14 @@ export default function Onboarding({ children, render }) {
           </div>
         )}
         <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-          <Button children={previous} disabled={!index} secondary={true} onClick={hasPrevious ? onPrevious : null} />
-          <Button children={next} onClick={hasNext ? onNext : onEnd} />
+          <Button
+            children={previous}
+            disabled={!index}
+            secondary={true}
+            onClick={hasPrevious ? onPrevious : null}
+            id="onboarding-previous"
+          />
+          <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
         </div>
       </div>
     </div>

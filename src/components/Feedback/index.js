@@ -1,15 +1,16 @@
 /* eslint-disable */
-import React, { useContext, useState } from 'react';
+
+import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
-import Button from '../Button';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +24,7 @@ import { useTranslation } from 'react-i18next';
  * 1. Comment
  */
 export default function Feedback() {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { addResponse } = useContext(DialogContext);
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -62,7 +63,7 @@ export default function Feedback() {
     dydu.feedback(false).then(() => {
       setShowVote(false);
 
-      if (customFeedback?.enableCustom) {
+      if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
         dydu.talk(customFeedback?.negativeCustom, { doNotSave: true, hide: true }).then((response) => {
           addResponse(response);
         });
@@ -80,7 +81,7 @@ export default function Feedback() {
     dydu.feedback(true).then(() => {
       setShowVote(false);
 
-      if (customFeedback?.enableCustom) {
+      if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
         dydu.talk(customFeedback?.positiveCustom, { doNotSave: true, hide: true }).then((response) => {
           addResponse(response);
         });
@@ -116,14 +117,14 @@ export default function Feedback() {
       <div className="dydu-feedback">
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
-            <Button color="error" onClick={onVoteNegative} variant="icon">
+            <Button color="error" onClick={onVoteNegative} variant="icon" id="dydu-feedback-negative-vote">
               <img
                 alt={voteNegative}
                 src={`${process.env.PUBLIC_URL}icons/dydu-thumb-down-white.svg`}
                 title={voteNegative}
               />
             </Button>
-            <Button color="success" onClick={onVotePositive} variant="icon">
+            <Button color="success" onClick={onVotePositive} variant="icon" id="dydu-feedback-positive-vote">
               <img
                 alt={votePositive}
                 src={`${process.env.PUBLIC_URL}icons/dydu-thumb-up-white.svg`}

@@ -1,11 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
-import { ConfigurationContext } from './ConfigurationContext';
 import PropTypes from 'prop-types';
+import { useConfiguration } from './ConfigurationContext';
 
-export const TabContext = React.createContext();
+export const TabContext = createContext();
 export function TabProvider({ children }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const { hasContactTab, items, selected = 0 } = configuration.tabs;
   const [current, setCurrent] = useState();
   const [tabs, setTabs] = useState();

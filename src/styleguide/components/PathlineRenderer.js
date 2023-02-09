@@ -1,6 +1,5 @@
-import Styled from 'rsg-components/Styled';
 import PropTypes from 'prop-types';
-import React from 'react';
+import Styled from 'rsg-components/Styled';
 
 export const styles = ({ color, fontFamily, fontSize }) => ({
   pathline: {

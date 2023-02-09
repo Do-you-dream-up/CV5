@@ -4,8 +4,8 @@
     "languages": ["en", "fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn": "https://cdn.doyoudreamup.com/",
-    "directory": "development/"
+    "cdn": "https://cdn.doyoudreamup.com/chatbox/",
+    "directory": "main/"
   },
   "avatar": {
     "request": {
@@ -180,11 +180,14 @@
   },
   "oidc": {
     "enable": false,
-    "clientIdProd": "",
-    "clientIdPreprod": "",
-    "prodPorovider": "",
-    "preprodPorovider": "",
-    "scopes": [""]
+    "clientId": "",
+    "clientSecret": "",
+    "pkceActive": false,
+    "pkceMode": "",
+    "authUrl": "",
+    "tokenUrl": "",
+    "scopes": [""],
+    "withAuth": false
   },
   "saml": {
     "enable": false
@@ -201,6 +204,9 @@
   "pushrules": {
     "active": true
   },
+  "qualification": {
+    "active": false
+  },
   "root": "dydu-root",
   "secondary": {
     "automatic": {
@@ -215,13 +221,6 @@
   "spaces": {
     "active": true,
     "detection": [
-      {
-        "active": false,
-        "mode": "urlpart",
-        "value": {
-          "doyoudreamup.com/test/": "dydu"
-        }
-      },
       {
         "active": false,
         "mode": "cookie",
@@ -254,6 +253,13 @@
         "mode": "hostname",
         "value": {
           "doyoudreamup.com": "dydu"
+        }
+      },
+      {
+        "active": false,
+        "mode": "urlpart",
+        "value": {
+          "doyoudreamup.com/test/": "dydu"
         }
       }
     ],

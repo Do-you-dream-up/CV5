@@ -53,7 +53,7 @@ export default createUseStyles((theme) => ({
     boxShadow: theme.shadows[1],
     color: theme.palette.primary.text,
     width: '100%',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
     },
     zIndex: 1,

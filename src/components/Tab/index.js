@@ -1,5 +1,6 @@
+import { createElement, useContext } from 'react';
+
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
 import { TabContext } from '../../contexts/TabContext';
 
 /**
@@ -11,7 +12,7 @@ function Tab({ children, component, render, value, ...rest }) {
   const display = should(value);
 
   return render || display
-    ? React.createElement(component, { ...(render && !display && { style: { display: 'none' } }), ...rest }, children)
+    ? createElement(component, { ...(render && !display && { style: { display: 'none' } }), ...rest }, children)
     : null;
 }
 

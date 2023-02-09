@@ -6,6 +6,7 @@ const extendedStyles = {
   maxHeight: 'inherit !important',
   right: 0,
   width: '100% !important',
+  minWidth: 'inherit',
 };
 
 export default createUseStyles((theme) => ({
@@ -34,6 +35,9 @@ export default createUseStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[6],
+    [theme.breakpoints?.down('xs')]: {
+      minWidth: 'inherit',
+    },
   }),
   root: ({ configuration }) => ({
     '& > *': {
@@ -43,7 +47,7 @@ export default createUseStyles((theme) => ({
       position: 'absolute',
       right: ~~configuration.chatbox.margin,
       top: ~~configuration.chatbox.margin,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints?.down('xs')]: {
         bottom: 0,
         left: 0,
         right: 0,
@@ -60,7 +64,7 @@ export default createUseStyles((theme) => ({
     transitionProperty: 'bottom, height, right, transform, width',
     width: 430,
     zIndex: 10,
-    [theme.breakpoints.down('xs')]: extendedStyles,
+    [theme.breakpoints?.down('xs')]: extendedStyles,
   }),
   rootExtended: () => extendedStyles,
   rootHidden: () => ({

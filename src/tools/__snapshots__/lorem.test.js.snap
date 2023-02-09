@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LOREM has the expected properties and values 1`] = `
+"
+    <h2>Links</h2>
+    <p>
+      Internal link: <a href>click</a>
+      <br />
+      External link: <a href target=\\"_blank\\">click</a>
+    </p>
+  "
+`;
+
+exports[`LOREM has the expected properties and values 2`] = `
+"
+    <h2>Lists</h2>
+    <ol>
+      <li>Quis lectus nulla at volutpat diam ut venenatis!</li>
+      <li>Nibh nisl.</li>
+    </ol>
+    <ul>
+      <li>Pretium quam vulputate dignissim suspendisse in est ante in nibh mauris.</li>
+      <li>Cursus mattis molestie a, iaculis at erat?</li>
+    </ul>
+  "
+`;
+
+exports[`LOREM has the expected properties and values 3`] = `
+"
+    <h2>Paragraphs</h2>
+    <p>Pellentesque massa placerat duis ultricies lacus sed turpis tinciduntid aliquet risus.</p>
+    <p>Dictum at tempor commodo.</p>
+    <p>Ullamcorper a lacus vestibulum sed? Ullamcorper eget nulla facilisi etiam!</p>
+  "
+`;

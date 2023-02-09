@@ -1,16 +1,18 @@
-import Axios from 'axios';
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import '../../tools/internationalization';
+
 import { ThemeProvider, createUseStyles } from 'react-jss';
+import { useEffect, useState } from 'react';
+
+import Axios from 'axios';
 import { ConfigurationProvider } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { EventsProvider } from '../../contexts/EventsContext';
 import { ModalProvider } from '../../contexts/ModalContext';
+import PropTypes from 'prop-types';
 import { TabProvider } from '../../contexts/TabContext';
 import breakpoints from '../../styles/breakpoints';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
-import '../../tools/internationalization';
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 const useStyles = createUseStyles({

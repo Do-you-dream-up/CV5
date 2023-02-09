@@ -1,10 +1,9 @@
+import { _parse, isArray } from '../helpers';
+import { useCallback, useState } from 'react';
+
+import dydu from '../dydu';
 /* eslint-disable */
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Local } from '../storage';
-import dydu from '../dydu';
-import { _parse, isArray } from '../helpers';
-import { useViewMode } from '../../contexts/ViewModeProvider';
 
 export default function useTopKnowledge() {
   const { configuration } = useConfiguration();

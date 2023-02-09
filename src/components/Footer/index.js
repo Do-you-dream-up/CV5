@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import Actions from '../Actions';
-import { ConfigurationContext } from '../../contexts/ConfigurationContext';
-import Input from '../Input';
+import Actions from '../Actions/Actions';
+import Input from '../Input/Input';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
  * function to handle the response.
  */
 export default function Footer({ focus, onRequest, onResponse, ...rest }) {
-  const { configuration } = useContext(ConfigurationContext);
+  const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
   const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
