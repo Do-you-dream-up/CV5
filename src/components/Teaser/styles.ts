@@ -17,9 +17,12 @@ export default createUseStyles<any, any>((theme: any): any => ({
       pointerEvents: 'none',
     },
     '& h1': {
-      visibility: 'hidden',
-      width: '0',
-      height: '0',
+      position: 'absolute',
+      left: '-10000em',
+      top: 'auto',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
     },
   }),
   button: () => ({
