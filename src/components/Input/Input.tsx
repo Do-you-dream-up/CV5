@@ -87,6 +87,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           </label>
           <textarea
             {...data}
+            aria-describedby="characters-remaining"
             role="combobox"
             aria-expanded="false"
             disabled={prompt || locked}
@@ -94,7 +95,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             autoFocus
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && <span children={counter} className={classes.counter} />}
+          {!!showCounter && <span id="characters-remaining" children={counter} className={classes.counter} />}
         </div>
       );
     },
