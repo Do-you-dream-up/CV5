@@ -15,18 +15,18 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Tabs() {
   const { configuration } = useConfiguration();
-  const event = useContext(EventsContext).onEvent('tab');
+  const event = useContext?.(EventsContext)?.onEvent?.('tab');
   const { current, select, tabs = [] } = useContext(TabContext) || {};
   const classes = useStyles({ configuration, current, length: tabs.length });
   const { ready, t } = useTranslation('translation');
-  const { title: hasTitle } = configuration.tabs;
+  const { title: hasTitle } = configuration?.tabs || {};
   const { tabbing } = useContext(UserActionContext) || false;
   const activeTab = t('tabs.activeTab');
 
   useEffect(() => {
-    if (current === 1) event('contactDisplay');
+    if (current === 1) event && event('contactDisplay');
   }, [current, event]);
-
+  const tabIndex = parseInt('0', 10);
   return (
     !!tabs.length && (
       <div className={c('dydu-tabs', classes.root)} id="dydu-tabs">
@@ -47,7 +47,7 @@ export default function Tabs() {
               key={index}
               onClick={select(key)}
               title={label}
-              tabIndex="0"
+              tabIndex={tabIndex}
               onKeyDown={onKeyDown}
               role="navigation"
               id="dydu-tab"
