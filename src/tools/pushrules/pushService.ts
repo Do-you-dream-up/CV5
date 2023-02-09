@@ -1,22 +1,36 @@
-import { isValidStringOperator, rulesDefintions } from './rulesDefintion';
+import { isValidStringOperator, rulesDefinitions } from './rulesDefinition';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
+import { Session } from '../storage';
+import { VIEW_MODE } from '../constants';
 import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
-import { VIEW_MODE } from '../constants';
 
 const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
-const currentTimer = {};
+const currentTimer: any = {};
 const externalInfoProcessors = [...ExternalInfoProcessor];
 const externalInfos = {};
-const rules = [];
-const rulesDefinition = [...rulesDefintions];
+const rules: any = [];
+const rulesDefinition = [...rulesDefinitions];
 let canPush = true;
 
+interface Rule {
+  conditions?: any;
+  kId?: number;
+  bgpId?: number;
+}
+interface ExternInfos {
+  windowLocation?: string;
+  durationSinceLastVisit?: number;
+  pagesViewedCount?: number;
+  visitcount?: number;
+  visitduration?: number;
+}
+
 //Rules from knowledge base
-export function addRule(rule) {
+export function addRule(rule: Rule) {
   if (rule) {
     rules.push(rule);
   }
@@ -24,13 +38,13 @@ export function addRule(rule) {
 
 export function getExternalInfos(now) {
   while (externalInfoProcessors.length > 0) {
-    let infoProcessor = externalInfoProcessors.pop();
+    const infoProcessor: any = externalInfoProcessors.pop();
     infoProcessor(externalInfos, now);
   }
   return externalInfos;
 }
 
-function processGoalPage(rule, externInfos) {
+function processGoalPage(rule: Rule, externInfos: ExternInfos) {
   const id = rule.bgpId;
   const urlToCheck = rule.conditions[0].param_1;
   if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
@@ -38,21 +52,21 @@ function processGoalPage(rule, externInfos) {
   }
 }
 
-export function processRules(externInfos) {
+export function processRules(externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
-  let bestCompliance = new ComplianceInfo();
+  const bestCompliance = new ComplianceInfo();
   for (let cpt = 0; cpt < rules.length; cpt++) {
-    let rule = rules[cpt];
-    let id = rule.kId;
+    const rule = rules[cpt];
+    const id = rule.kId;
     if (id === undefined) {
       processGoalPage(rule, externInfos);
     } else {
-      let conditionsContainer = {
+      const conditionsContainer = {
         children: rule.conditions,
         type: 'Container',
       };
-      let ruleCompliance = computeRuleCompliance(conditionsContainer, id, externInfos);
+      const ruleCompliance = computeRuleCompliance(conditionsContainer, id, externInfos);
       if (ruleCompliance.hasHigherPriorityThan(bestCompliance)) {
         if (ruleCompliance.isDelayValid()) {
           bestDelayId = id;
@@ -74,7 +88,7 @@ export function processRules(externInfos) {
   handlePush(bestCompliance.getDelay(), bestDelayId, bestCompliance.getIdleDelay(), bestIdleDelayId);
 }
 
-let chatboxNodeElement = null;
+let chatboxNodeElement: HTMLElement | null = null;
 function getChatboxNodeElement() {
   if (!isDefined(chatboxNodeElement)) chatboxNodeElement = document.getElementById(configuration?.root);
   return chatboxNodeElement;
@@ -93,12 +107,12 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
     }
     if (idleDelay !== -1 && !currentTimer.counter) {
       for (let i = 0; i < INTERACTION_EVENTS.length; i++) {
-        if (document.attachEvent) {
-          document.attachEvent('on' + INTERACTION_EVENTS[i], interaction(idleDelayRuleId));
+        if ((<any>document).attachEvent) {
+          (<any>document).attachEvent('on' + INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId));
         } else {
-          const event = [INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId)];
+          const event: [string, () => void] = [INTERACTION_EVENTS[i], () => interaction(idleDelayRuleId)];
           try {
-            getChatboxNodeElement().addEventListener(...event);
+            getChatboxNodeElement()?.addEventListener(...event);
           } catch (e) {
             document.addEventListener(...event);
           }
@@ -122,7 +136,7 @@ function interaction(ruleId) {
 }
 
 function computeRuleCompliance(condition, ruleId, externInfos) {
-  let bestChildCompliance = computeChildrenCompliance(condition, ruleId, externInfos);
+  const bestChildCompliance = computeChildrenCompliance(condition, ruleId, externInfos);
   return computeConditionCompliance(condition, ruleId, externInfos, bestChildCompliance);
 }
 
@@ -131,7 +145,7 @@ function computeChildrenCompliance(condition, ruleId, externInfos) {
   if (condition.children) {
     for (let c = 0; c < condition.children.length; c++) {
       condition.children[c].parent = condition;
-      let childCompliance = computeRuleCompliance(condition.children[c], ruleId, externInfos);
+      const childCompliance = computeRuleCompliance(condition.children[c], ruleId, externInfos);
       if (childCompliance.hasHigherPriorityThan(bestCompliance)) {
         if (childCompliance.isDelayValid()) {
           // Use childDelays
@@ -152,7 +166,7 @@ function computeChildrenCompliance(condition, ruleId, externInfos) {
 }
 
 function computeConditionCompliance(condition, ruleId, externInfos, childCompliance) {
-  let conditionCompliance = new ComplianceInfo();
+  const conditionCompliance = new ComplianceInfo();
   // Ignore PastPage type
   if (condition.type === 'PastPage' && !(condition.parent.type === 'Container' && !condition.children)) {
     conditionCompliance.mergeDelaysForOrCondition(childCompliance);
@@ -179,7 +193,7 @@ function computeConditionCompliance(condition, ruleId, externInfos, childComplia
 export function processConditionCompliance(condition, ruleId, externInfos) {
   let result = new ComplianceInfo();
   for (let i = 0; i < rulesDefinition.length; i++) {
-    let ruleDefinition = rulesDefinition[i];
+    const ruleDefinition = rulesDefinition[i];
     if (condition.type === ruleDefinition.name) {
       result = new ComplianceInfo(ruleDefinition.processDelays(condition, ruleId, externInfos));
       break;
@@ -189,9 +203,12 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 }
 
 function pushKnowledge(ruleId) {
-  if (canPush) {
+  const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
+  const shouldDisplay = canPush && !isDefined(Session.get(sessionKey));
+  if (shouldDisplay) {
     window.dydu.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
+    Session.set(sessionKey, ruleId);
     canPush = false;
   }
 }

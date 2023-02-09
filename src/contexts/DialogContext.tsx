@@ -153,7 +153,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchPushrules().then((rules) => {
       rules && setPushrules(rules);
     });
-  }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
+  }, [fetchPushrules, pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
 
   useEffect(() => {
     const canTriggerPushRules = configuration?.pushrules.active && !isDefined(pushrules);
