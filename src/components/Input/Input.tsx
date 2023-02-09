@@ -97,12 +97,15 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
-            <span
-              id="characters-remaining"
-              children={counter}
-              className={classes.counter}
-              placeholder={`${counter} ${counterRemaining}`}
-            />
+            <>
+              <span
+                id="characters-remaining"
+                children={counter}
+                className={classes.counter}
+                placeholder={`${counter} ${counterRemaining}`}
+              />
+              <span className={c('dydu-counter-hidden', classes.hidden)}>{`${counterRemaining}`}</span>
+            </>
           )}
         </div>
       );
