@@ -44,7 +44,12 @@ export default function Onboarding({ children, render }) {
     children
   ) : should ? (
     <div className={c('dydu-onboarding', classes.root)}>
-      <div className={c('dydu-onboarding-carousel', classes.carousel)}>
+      <div
+        className={c('dydu-onboarding-carousel', classes.carousel)}
+        id={`step-${index.toString()}`}
+        aria-labelledby={`bullet-${index.toString()}`}
+        role="tabpanel"
+      >
         <div className={c('dydu-onboarding-image', classes.image)}>
           <img src={path} alt={path} />
         </div>
@@ -59,7 +64,7 @@ export default function Onboarding({ children, render }) {
       </div>
       <div className={c('dydu-onboarding-actions', classes.actions)}>
         {steps.length > 1 && (
-          <div className={c('dydu-carousel-bullets', classes.bullets)}>
+          <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
             {steps.map((it, i) => (
               <div
                 className={c('dydu-carousel-bullet', {
@@ -67,9 +72,12 @@ export default function Onboarding({ children, render }) {
                 })}
                 key={i}
                 onClick={() => onStep(i)}
+                id={`bullet-${i.toString()}`}
+                role="tab"
+                aria-controls={`step-${i.toString()}`}
               />
             ))}
-          </div>
+          </ol>
         )}
         <div className={c('dydu-onboarding-buttons', classes.buttons)}>
           <Button
