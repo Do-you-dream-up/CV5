@@ -21,6 +21,7 @@ export default function Tabs() {
   const { ready, t } = useTranslation('translation');
   const { title: hasTitle } = configuration.tabs;
   const { tabbing } = useContext(UserActionContext) || false;
+  const activeTab = t('tabs.activeTab');
 
   useEffect(() => {
     if (current === 1) event('contactDisplay');
@@ -31,7 +32,7 @@ export default function Tabs() {
       <div className={c('dydu-tabs', classes.root)} id="dydu-tabs">
         <div className={classes.indicator} />
         {tabs.map(({ icon, key }, index) => {
-          const label = t(`tabs.${key}`);
+          const label = current === index ? t(`tabs.${key}`) + activeTab : t(`tabs.${key}`);
           const onKeyDown = (event) => {
             if (event.keyCode === 32 || event.keyCode === 13) {
               event.preventDefault();

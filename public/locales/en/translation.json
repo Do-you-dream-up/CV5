@@ -198,7 +198,8 @@
   },
   "tabs": {
     "contacts": "Contacts",
-    "dialog": "Dialog"
+    "dialog": "Dialog",
+    "activeTab": " - active tab"
   },
   "teaser": {
     "mouseover": "Help here",
