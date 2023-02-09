@@ -4,4 +4,5 @@ declare module '*.gif';
 interface Window {
   dyduAfterLoad: () => void | null;
   dydu: any;
+  reword: (str: string, options: any) => void;
 }
