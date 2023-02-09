@@ -36,6 +36,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const counterRemaining = t('input.actions.counterRemaining');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const debouncedInput = useDebounce(input, delay);
@@ -87,6 +88,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           </label>
           <textarea
             {...data}
+            aria-describedby="characters-remaining"
             role="combobox"
             aria-expanded="false"
             disabled={prompt || locked}
@@ -94,7 +96,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             autoFocus
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && <span children={counter} className={classes.counter} />}
+          {!!showCounter && (
+            <div id="characters-remaining">
+              <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
+              <span className={c('dydu-counter-hidden', classes.hidden)}>{`${counterRemaining}`}</span>
+            </div>
+          )}
         </div>
       );
     },
