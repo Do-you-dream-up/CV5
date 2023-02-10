@@ -14,7 +14,7 @@ const OPERATOR = {
   StartsWith: 'StartsWith',
 };
 
-export const rulesDefintions = [
+export const rulesDefinitions = [
   {
     name: 'Container',
     processDelays: function () {

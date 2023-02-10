@@ -31,7 +31,7 @@ describe('Actions.tsx', () => {
       children: <img src="icons/dots-vertical.png" />,
       color: 'primary',
       items: () => items,
-      classname: 'submenu',
+      className: 'submenu',
       variant: 'icon',
     },
   ];

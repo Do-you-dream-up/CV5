@@ -149,6 +149,7 @@
   "input": {
     "actions": {
       "send": "Send",
+      "counterRemaining": "remaining characters",
       "record": {
         "pause": "Pause",
         "play": "Play",
