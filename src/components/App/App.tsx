@@ -6,15 +6,15 @@ import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { DialogProvider } from '../../contexts/DialogContext';
-import { useEvent } from '../../contexts/EventsContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
 import { OidcProvider } from '../../contexts/OidcContext';
 import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
-import Teaser from '../Teaser';
+import Teaser from '../Teaser/Teaser';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { hasWizard } from '../../tools/wizard';
+import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 

@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles((theme) => ({
+export default createUseStyles<any, any>((theme: any): any => ({
   brand: () => ({
     alignItems: 'center',
     display: 'flex',
@@ -15,6 +15,14 @@ export default createUseStyles((theme) => ({
       width: '75%',
       height: 'auto',
       pointerEvents: 'none',
+    },
+    '& h1': {
+      position: 'absolute',
+      left: '-10000em',
+      top: 'auto',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
     },
   }),
   button: () => ({

@@ -204,7 +204,8 @@
   },
   "teaser": {
     "mouseover": "Help here",
-    "title": "Need help?"
+    "title": "Need help?",
+    "titleHidden": "Chatbot window"
   },
   "template": {
     "readmore": "... Read more",
