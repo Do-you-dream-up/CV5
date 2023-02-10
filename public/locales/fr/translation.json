@@ -146,6 +146,7 @@
   "input": {
     "actions": {
       "send": "Envoie",
+      "counterRemaining": "caractères restants",
       "record": {
         "pause": "Pause",
         "play": "Lire",
@@ -183,8 +184,8 @@
     "placeholder": "Saisissez votre email..."
   },
   "screenReader": {
-    "chatbot": "bot dit",
-    "me": "moi dit",
+    "chatbot": "l'assistant répond",
+    "me": "J'écris",
     "say": "dit"
   },
   "spaces": {
@@ -192,7 +193,8 @@
   },
   "tabs": {
     "contacts": "Contacts",
-    "dialog": "Conversation"
+    "dialog": "Conversation",
+    "activeTab": " - onglet actif"
   },
   "teaser": {
     "title": "Besoin d'aide ?",

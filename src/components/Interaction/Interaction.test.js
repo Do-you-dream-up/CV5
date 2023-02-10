@@ -10,7 +10,7 @@ jest.mock('../../contexts/DialogContext', () => ({
 describe('Interaction', function () {
   describe('Writing', function () {
     it('should show loader', function () {
-      const { debug } = render(<Interaction.Writing />);
+      const { debug } = render(<Interaction.Writing />, { configuration: { application: { open: true } } });
       debug();
     });
 
