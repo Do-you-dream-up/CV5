@@ -1,9 +1,8 @@
 import Button, { ButtonProps } from '../Button/Button';
+import { ReactNode, useMemo } from 'react';
 
 import Menu from '../Menu';
-import { ReactNode } from 'react';
 import c from 'classnames';
-import { useMemo } from 'react';
 import useStyles from './styles';
 
 /**
@@ -36,9 +35,10 @@ export interface ActionsProps {
   actions: ActionProps[];
   className?: string;
   targetStyleKey?: string;
+  testId?: string;
 }
 
-const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
+const Actions = ({ actions = [], className, targetStyleKey, testId }: ActionsProps) => {
   const classes = useStyles();
 
   const filteredActions = useMemo(() => actions.filter((it) => it.when === undefined || it.when), [actions]);
@@ -49,7 +49,7 @@ const Actions = ({ actions = [], className, targetStyleKey }: ActionsProps) => {
   );
 
   return actions?.length > 0 ? (
-    <div className={c('dydu-actions', _classes, className)}>
+    <div className={c('dydu-actions', _classes, className)} aria-labelledby={testId}>
       {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
         delete rest.when;
 
