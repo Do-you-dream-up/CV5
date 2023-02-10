@@ -320,3 +320,7 @@ export const removeEndingSlash = (s) => {
   const rmSlashAtEndString = (s) => s.slice(0, s.length - 1);
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
+
+export const getBrowserLocale = () => {
+  return document.documentElement.lang;
+};
