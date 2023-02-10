@@ -10,6 +10,8 @@ export interface ButtonProps {
   color?: 'error' | 'primary' | 'success' | 'warning';
   component?: any;
   grow?: boolean;
+  disabled?: boolean;
+  id?: string;
   href?: string;
   icon?: string | (() => void);
   onClick?: () => void;
@@ -35,6 +37,8 @@ const Button = ({
   color,
   component = 'button',
   grow,
+  disabled,
+  id,
   href,
   icon: getIcon,
   onClick,
@@ -75,6 +79,8 @@ const Button = ({
         { [classes.grow]: grow },
       ),
       ref: reference,
+      disabled,
+      id,
     },
     button,
   );

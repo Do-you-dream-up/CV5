@@ -16,7 +16,7 @@ import GdprDisclaimer from '../GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
 import ModalClose from '../ModalClose';
-import Onboarding from '../Onboarding';
+import Onboarding from '../Onboarding/Onboarding';
 import PropTypes from 'prop-types';
 import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
