@@ -193,7 +193,8 @@
   },
   "tabs": {
     "contacts": "Contacts",
-    "dialog": "Conversation"
+    "dialog": "Conversation",
+    "activeTab": " - onglet actif"
   },
   "teaser": {
     "title": "Besoin d'aide ?",

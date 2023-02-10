@@ -12,7 +12,7 @@ import ModalFooterMenu from '../ModalFooterMenu';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
-import Tabs from '../Tabs';
+import Tabs from '../Tabs/Tabs';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';

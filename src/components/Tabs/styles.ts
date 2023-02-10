@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles((theme) => ({
+export default createUseStyles<any, any>((theme: any): any => ({
   disabled: () => ({
     cursor: 'not-allowed',
     opacity: 0.5,
