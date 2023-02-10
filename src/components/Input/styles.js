@@ -37,6 +37,15 @@ export default createUseStyles((theme) => ({
     zIndex: 0,
   }),
 
+  hidden: () => ({
+    position: 'absolute',
+    left: '-10000em',
+    top: 'auto',
+    width: '1px',
+    height: '1px',
+    overflow: 'hidden',
+  }),
+
   field: () => ({
     height: '100%',
     position: 'relative',

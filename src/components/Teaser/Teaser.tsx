@@ -14,6 +14,11 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
+interface TeaserProps {
+  open?: boolean;
+  toggle?: any;
+}
+
 const TEASER_TYPES = {
   AVATAR_AND_TEXT: 0,
   AVATAR_ONLY: 1,
@@ -23,41 +28,46 @@ const TEASER_TYPES = {
 /**
  * Minified version of the chatbox.
  */
-export default function Teaser({ open, toggle }) {
+export default function Teaser({ open, toggle }: TeaserProps) {
   const { configuration } = useConfiguration();
-  const event = useContext(EventsContext).onEvent('teaser');
-  const classes = useStyles({ configuration });
+  const event = useContext?.(EventsContext)?.onEvent?.('teaser');
+  const classes: any = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
-  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
+  const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
 
   const title = t('teaser.title');
+  const titleHidden = t('teaser.titleHidden');
   const mouseover = t('teaser.mouseover');
 
-  const teaserAvatar = configuration.avatar?.teaser?.image || configuration.avatar?.response?.image;
-  const teaserAvatarBackground = configuration.avatar?.teaser?.background;
+  const teaserAvatar = configuration?.avatar?.teaser?.image || configuration?.avatar?.response?.image;
+  const teaserAvatarBackground = configuration?.avatar?.teaser?.background;
 
   const logoTeaser = teaserAvatar?.includes('base64')
     ? teaserAvatar
     : `${process.env.PUBLIC_URL}assets/${teaserAvatar}`;
 
-  const voice = configuration.Voice ? configuration.Voice.enable : false;
-  const [isCommandHandled, setIsCommandHandled] = useState(null);
-  const [buttonPressTimer, setButtonPressTimer] = useState(null);
+  const voice = configuration?.Voice ? configuration?.Voice.enable : false;
+  const [isCommandHandled, setIsCommandHandled] = useState<boolean>(false);
+  const [buttonPressTimer, setButtonPressTimer] = useState<number>();
 
   // DISPLAY TEASER TYPE
   const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
   const initialTeaserType =
-    !configuration.teaser.displayType ||
-    configuration.teaser.displayType > TEXT_ONLY ||
-    configuration.teaser.displayType < AVATAR_AND_TEXT
+    !configuration?.teaser?.displayType ||
+    configuration?.teaser?.displayType > TEXT_ONLY ||
+    configuration?.teaser?.displayType < AVATAR_AND_TEXT
       ? AVATAR_AND_TEXT
-      : configuration.teaser.displayType;
+      : configuration?.teaser?.displayType;
 
   const openChatboxOnClickOrTouch = useCallback(() => {
-    event('onClick');
+    event && event('onClick');
     toggle(2)();
   }, [event, toggle]);
+
+  const handleLongPress = useCallback(() => {
+    setIsCommandHandled(true);
+  }, []);
 
   const handleButtonPress = useCallback(
     (e) => {
@@ -69,10 +79,6 @@ export default function Teaser({ open, toggle }) {
     },
     [buttonPressTimer, handleLongPress],
   );
-
-  const handleLongPress = useCallback(() => {
-    setIsCommandHandled(true);
-  }, []);
 
   const handleButtonRelease = useCallback(() => {
     if (!isCommandHandled) {
@@ -92,10 +98,16 @@ export default function Teaser({ open, toggle }) {
     }
   };
 
+  const tabIndex = parseInt('0', 10);
+
   return (
     <Draggable bounds="html">
-      <div className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })} id="dydu-teaser">
-        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)}>
+      <div
+        className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
+        id="dydu-teaser"
+        aria-labelledby="teaser-chatbot"
+      >
+        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)} id="teaser-chatbot">
           <div
             onMouseDown={handleButtonPress}
             onMouseUp={handleButtonRelease}
@@ -104,7 +116,7 @@ export default function Teaser({ open, toggle }) {
             onTouchEnd={handleButtonRelease}
             title={mouseover}
             role="button"
-            tabIndex="0"
+            tabIndex={tabIndex}
             aria-pressed={!open}
             className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
               [classes.hideOutline]: !tabbing,
@@ -119,6 +131,7 @@ export default function Teaser({ open, toggle }) {
               <div
                 className={c('dydu-teaser-brand', classes.brand, teaserAvatarBackground && classes.backgroundAvatar)}
               >
+                <h1>{titleHidden}</h1>
                 <img onKeyDown={onKeyDown} alt="" src={logoTeaser} />
               </div>
             )}
