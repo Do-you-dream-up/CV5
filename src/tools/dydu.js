@@ -3,6 +3,7 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
+  getBrowserLocale,
   hasProperty,
   isDefined,
   isEmptyString,
@@ -24,6 +25,7 @@ import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
 import qs from 'qs';
+import { initI18N } from './internationalization';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -990,14 +992,42 @@ export default new (class Dydu {
     });
   }
 
-  onConfigurationLoaded() {
-    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
-    this.setQualificationMode(this.getConfiguration().qualification?.active);
-  }
-
   setConfiguration(configuration = {}) {
     this.configuration = configuration;
     this.onConfigurationLoaded();
+  }
+
+  onConfigurationLoaded() {
+    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setQualificationMode(this.getConfiguration().qualification?.active);
+    this.initLocaleWithConfiguration(this.getConfiguration());
+  }
+
+  initLocaleWithConfiguration(configuration) {
+    let locale = getBrowserLocale();
+    try {
+      const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
+      locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      initI18N({ defaultLang: this.locale });
+      return this.locale;
+    } catch (e) {
+      console.info('Error while initializing locale, fallback to browser locale');
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      initI18N({ defaultLang: this.locale });
+      return this.locale;
+    }
+  }
+
+  getConfigurationDefaultLocal() {
+    try {
+      return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
+    } catch (e) {
+      console.info('No default language from configuration file, fallback to browser locale');
+      return getBrowserLocale();
+    }
   }
 
   setSpaceToDefault() {
