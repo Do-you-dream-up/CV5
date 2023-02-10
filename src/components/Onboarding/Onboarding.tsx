@@ -3,7 +3,6 @@ import { useContext, useEffect } from 'react';
 import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
-import PropTypes from 'prop-types';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
@@ -19,16 +18,27 @@ import { useTranslation } from 'react-i18next';
  * children, use the property `render` on this component. Ideally the `render`
  * property is utilized on only one instance of this component.
  */
-export default function Onboarding({ children, render }) {
+
+interface OnboardingProps {
+  children?: any[];
+  render?: boolean;
+}
+
+interface Steps {
+  title: string;
+  body: string;
+}
+
+export default function Onboarding({ children, render }: OnboardingProps) {
   const { configuration } = useConfiguration();
   const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } =
     useContext(OnboardingContext) || {};
-  const event = useContext(EventsContext).onEvent('onboarding');
+  const event = useContext?.(EventsContext)?.onEvent?.('onboarding');
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
   const should = render && active;
-  const { enable, image1, image2, image3 } = configuration.onboarding;
-  const steps = t('onboarding.steps');
+  const { enable, image1, image2, image3 } = configuration?.onboarding || {};
+  const steps: Steps[] = t('onboarding.steps');
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
@@ -37,7 +47,7 @@ export default function Onboarding({ children, render }) {
   const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 
   useEffect(() => {
-    if (active && enable) event('onboardingDisplay');
+    if (active && enable) event?.('onboardingDisplay');
   }, [active, enable, event]);
 
   return !enable ? (
@@ -95,8 +105,3 @@ export default function Onboarding({ children, render }) {
     !active && children
   );
 }
-
-Onboarding.propTypes = {
-  children: PropTypes.node,
-  render: PropTypes.bool,
-};
