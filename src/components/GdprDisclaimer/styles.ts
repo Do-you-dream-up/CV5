@@ -22,6 +22,7 @@ export default createUseStyles({
     justifyContent: 'center',
     alignItems: 'end',
     fontSize: 25,
+    fontWeight: 'inherit',
   },
   root: {
     overflowY: 'auto',
