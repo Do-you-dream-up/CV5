@@ -77,6 +77,7 @@ export default function GdprDisclaimer({
             actions={actions}
             claria-labelledbyassName={c('dydu-gdpr-disclaimer-actions', classes.actions)}
             testId={idLabel}
+            role="group"
           />
         </>,
       );
