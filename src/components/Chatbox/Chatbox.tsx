@@ -12,7 +12,7 @@ import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer';
-import GdprDisclaimer from '../GdprDisclaimer';
+import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
 import Modal from '../Modal';
 import ModalClose from '../ModalClose';
