@@ -65,7 +65,7 @@ export default function GdprDisclaimer({
         <>
           {body && (
             <>
-              <h2 className={c('dydu-gdpr-disclaimer-body', classes.title)}>{titleDisclaimer}</h2>
+              <h2 className={c('dydu-gdpr-disclaimer-title', classes.title)}>{titleDisclaimer}</h2>
               <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
                 <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
                   <p dangerouslySetInnerHTML={{ __html: body }} id={idLabel} />
