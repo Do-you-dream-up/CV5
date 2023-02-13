@@ -9,7 +9,7 @@ const extendedStyles = {
   minWidth: 'inherit',
 };
 
-export default createUseStyles((theme) => ({
+export default createUseStyles<any, any>((theme: any): any => ({
   body: () => ({
     '&:focus': {
       outline: 'none',

@@ -18,7 +18,7 @@ import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
-const Chatbox = lazy(() => import('../Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
+const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
 
 /**
