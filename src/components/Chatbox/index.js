@@ -218,7 +218,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
               onMinimize={onMinimize}
             />
-            {/* <GdprDisclaimer gdprRef={gdprRef}>
+            <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div
                   tabIndex="0"
@@ -226,7 +226,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                     [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
                   })}
                 >
-                  <Tab
+                  {/* <Tab
                     component={Dialog}
                     dialogRef={dialogRef}
                     interactions={interactions}
@@ -234,13 +234,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                     open={open}
                     render
                     value="dialog"
-                  />
+                  /> */}
                   <Tab component={Contacts} value="contacts" />
                 </div>
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
                 {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
-            </GdprDisclaimer> */}
+            </GdprDisclaimer>
           </>
           <Modal />
           {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
