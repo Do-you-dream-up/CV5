@@ -1,7 +1,8 @@
-import { createElement, useEffect, useRef } from 'react';
+import { createElement, useRef } from 'react';
 
 import PropTypes from 'prop-types';
-import useDebounce from '../../tools/hooks/debounce';
+
+// import useDebounce from '../../tools/hooks/debounce';
 
 /**
  * Small wrapper to apply `Element.scrollIntoView` on an element. This feature
@@ -12,24 +13,24 @@ import useDebounce from '../../tools/hooks/debounce';
  */
 function Scroll({ component, delay, ...rest }) {
   const elementRef = useRef(null);
-  const debouncedReady = useDebounce(elementRef, delay);
+  // const debouncedReady = useDebounce(elementRef, delay);
 
-  const scroll = () => {
-    setTimeout(() => {
-      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
-      console.log('🚀 ~ file: index.js:21 ~ setTimeout ~ chatboxDiv', chatboxDiv);
-      if (chatboxDiv) {
-        chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
-      }
-    }, delay);
-  };
+  // const scroll = () => {
+  //   setTimeout(() => {
+  //     const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+  //     console.log('🚀 ~ file: index.js:21 ~ setTimeout ~ chatboxDiv', chatboxDiv);
+  //     if (chatboxDiv) {
+  //       chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
+  //     }
+  //   }, delay);
+  // };
 
-  useEffect(() => {
-    if (debouncedReady) {
-      scroll();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedReady]);
+  // useEffect(() => {
+  //   if (debouncedReady) {
+  //     scroll();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [debouncedReady]);
 
   return createElement(component, { ...rest, ref: elementRef });
 }
