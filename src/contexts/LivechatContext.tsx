@@ -8,6 +8,7 @@ import dydu from '../tools/dydu';
 import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
+import { useEvent } from './EventsContext';
 import useQueue from '../tools/hooks/useQueue';
 
 interface LivechatContextProps {
@@ -39,7 +40,15 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { showSurvey } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
-  const displayResponseText = useCallback((text) => window.dydu.chat.reply(text), []);
+  const { onNewMessage } = useEvent();
+
+  const displayResponseText = useCallback(
+    (text) => {
+      onNewMessage && onNewMessage();
+      window.dydu.chat.reply(text);
+    },
+    [onNewMessage],
+  );
 
   const displayNotification = useCallback(
     (notification) => {
