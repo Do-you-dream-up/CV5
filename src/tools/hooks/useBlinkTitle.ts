@@ -1,40 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-interface BlinkingProps {
-  title: string;
-  trigger: any;
-  interval?: number;
+const originalTitle = document.title;
+
+function revertOriginalTitle() {
+  document.title = originalTitle;
 }
 
-const useBlinkTitle = ({ title = document.title, trigger, interval = 500 }: BlinkingProps) => {
-  console.log('🚀 ~ file: useBlinkTitle.ts:10 ~ useBlinkTitle ~ trigger', trigger);
-  const [isBlinking, setIsBlinking] = useState(false);
-  let id = 0;
+function tick(message) {
+  document.title = document.title === message ? originalTitle : message;
+}
+
+function useTabNotification(interval = 1000) {
+  const [message, setMessage] = useState(null);
+  const notificationIntervalId = useRef<any>();
+
+  function setTabNotification(message) {
+    setMessage(message);
+  }
+
+  function clearTabNotification() {
+    revertOriginalTitle();
+    setMessage(null);
+  }
+
+  function startNotifying() {
+    notificationIntervalId.current = setInterval(tick, interval, message);
+  }
+
+  function stopNotifying() {
+    clearInterval(notificationIntervalId.current);
+    notificationIntervalId.current = null;
+  }
 
   useEffect(() => {
-    changeTitle();
+    if (notificationIntervalId.current && !message) stopNotifying();
+
+    if (!notificationIntervalId.current && message) startNotifying();
+  }, [message]);
+
+  useEffect(() => {
+    return () => {
+      if (document.title !== originalTitle) revertOriginalTitle();
+
+      if (notificationIntervalId.current) clearInterval(notificationIntervalId.current);
+    };
   }, []);
 
-  useEffect(() => {
-    if (document.title === title) {
-      document.title = title;
-    }
-    if (id) window.clearTimeout(id);
-  }, [title]);
+  return { setTabNotification, clearTabNotification };
+}
 
-  const changeTitle = () => {
-    if (document.title !== title) {
-      title = document.title;
-      document.title = title;
-    } else {
-      document.title = title;
-    }
-    id = window.setTimeout(changeTitle, interval);
-  };
-
-  return {
-    isBlinking,
-  };
-};
-
-export default useBlinkTitle;
+export default useTabNotification;
