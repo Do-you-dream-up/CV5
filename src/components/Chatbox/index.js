@@ -218,7 +218,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
               onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
               onMinimize={onMinimize}
             />
-            <GdprDisclaimer gdprRef={gdprRef}>
+            {/* <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div
                   tabIndex="0"
@@ -240,7 +240,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
                 {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
-            </GdprDisclaimer>
+            </GdprDisclaimer> */}
           </>
           <Modal />
           {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
@@ -263,10 +263,10 @@ export function ChatboxWrapper(rest) {
     <GdprProvider>
       <OnboardingProvider>
         <ModalProvider>
-          {/* <TabProvider>
+          <TabProvider>
             <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
             {zoomSrc && <Zoom src={zoomSrc} />}
-          </TabProvider> */}
+          </TabProvider>
         </ModalProvider>
       </OnboardingProvider>
     </GdprProvider>
