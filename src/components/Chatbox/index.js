@@ -220,7 +220,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
             />
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
-                {/* <div
+                <div
                   tabIndex="0"
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
@@ -236,9 +236,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
                     value="dialog"
                   />
                   <Tab component={Contacts} value="contacts" />
-                </div> */}
-                {/* {(secondaryMode === 'over' || extended) && <Secondary mode="over" />} */}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
+                </div>
+                {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+                {/* {!current && <Footer onRequest={addRequest} onResponse={addResponse} />} */}
               </Onboarding>
             </GdprDisclaimer>
           </>

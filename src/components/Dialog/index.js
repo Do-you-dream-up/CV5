@@ -41,21 +41,21 @@ export default function Dialog({ dialogRef, open, ...rest }) {
   /**
    * scroll to bottom of dialog on open chatbox
    */
-  // useEffect(() => {
-  //   const chatboxDiv = document.querySelector('.dydu-chatbox-body');
-  //   if (open && chatboxDiv) {
-  //     chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
-  //   }
-  // }, [open]);
+  useEffect(() => {
+    const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    if (open && chatboxDiv) {
+      chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
+    }
+  }, [open]);
 
   return (
     <>
       <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
-        {/* {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
+        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
         {interactions.map((it, index) => ({ ...it, key: index }))}
         {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
         {prompt === 'spaces' && <Spaces />}
-        {prompt === 'exportConv' && <PromptEmail type="exportConv" />} */}
+        {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
       </div>
       {poweredByActive && <PoweredBy />}
     </>
