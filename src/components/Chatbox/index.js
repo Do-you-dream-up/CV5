@@ -263,10 +263,10 @@ export function ChatboxWrapper(rest) {
     <GdprProvider>
       <OnboardingProvider>
         <ModalProvider>
-          <TabProvider>
+          {/* <TabProvider>
             <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
             {zoomSrc && <Zoom src={zoomSrc} />}
-          </TabProvider>
+          </TabProvider> */}
         </ModalProvider>
       </OnboardingProvider>
     </GdprProvider>
