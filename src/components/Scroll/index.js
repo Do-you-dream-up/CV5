@@ -17,6 +17,7 @@ function Scroll({ component, delay, ...rest }) {
   const scroll = () => {
     setTimeout(() => {
       const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+      console.log('🚀 ~ file: index.js:21 ~ setTimeout ~ chatboxDiv', chatboxDiv);
       if (chatboxDiv) {
         chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
       }
