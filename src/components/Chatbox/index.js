@@ -220,6 +220,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }) {
             />
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
+                <>sdsds</>
                 {/* <div
                   tabIndex="0"
                   className={c('dydu-chatbox-body', classes.body, {
