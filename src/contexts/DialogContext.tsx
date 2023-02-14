@@ -26,7 +26,6 @@ import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
-import useServerStatus from '../tools/hooks/useServerStatus';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
@@ -99,12 +98,11 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
+  const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, serverStatusChecked } = useEvent();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
-  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
 
   const { isMobile } = useViewport();
 
@@ -126,10 +124,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
     hasAfterLoadBeenCalled && serverStatusChecked,
   );
-
-  useEffect(() => {
-    fetchServerStatus();
-  }, []);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
     const last = list[list.length - 1];
