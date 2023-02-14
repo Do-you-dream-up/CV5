@@ -19,6 +19,8 @@ interface EventsContextProps {
   event?: (str: string) => void;
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;
   getChatboxRef?: () => null;
+  fetchServerStatus?: any;
+  serverStatusChecked?: boolean;
 }
 
 interface EventsProviderProps {
@@ -38,7 +40,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
-  const { checked: serverStatusChecked } = useServerStatus();
+  const { checked: serverStatusChecked, fetch: fetchServerStatus } = useServerStatus();
 
   let refBlinkInterval: any;
   let chatboxRef: any;
@@ -98,7 +100,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     if (!isChatboxLoadedAndReady) return;
     const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad, processUserVisit];
     bootstrapAfterLoadAndReadyFnList.forEach((fn) => fn());
-  }, [isChatboxLoadedAndReady]);
+  }, [isChatboxLoadedAndReady, processDyduAfterLoad, processUserVisit]);
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
@@ -151,6 +153,10 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     eventHandler && eventHandler(eventName, ...rest);
   };
 
+  useEffect(() => {
+    fetchServerStatus();
+  }, [fetchServerStatus]);
+
   return (
     <EventsContext.Provider
       children={children}
@@ -164,6 +170,8 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         dispatchEvent,
         event,
         getChatboxRef: () => chatboxRef,
+        fetchServerStatus,
+        serverStatusChecked,
       }}
     />
   );
