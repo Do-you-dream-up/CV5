@@ -85,14 +85,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
             textarea
           </label>
-          <textarea
-            {...data}
-            role="combobox"
-            aria-expanded="false"
-            disabled={prompt || locked}
-            id={textareaId}
-            // autoFocus
-          />
+          <textarea {...data} role="combobox" aria-expanded="false" disabled={prompt || locked} id={textareaId} />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && <span children={counter} className={classes.counter} />}
         </div>
