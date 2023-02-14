@@ -285,10 +285,14 @@ export default new (class Dydu {
   emit = (verb, path, data, timeout) => {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
-    return verb(path, data)
-      .then(this.setLastResponse)
-      .then(({ data = {} }) => this.handleAxiosResponse(data))
-      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    try {
+      return verb(path, data)
+        .then(this.setLastResponse)
+        .then(({ data = {} }) => this.handleAxiosResponse(data))
+        .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    } catch (e) {
+      console.error('while executing |emit()|', e);
+    }
   };
 
   setLastResponse = (res) => {
