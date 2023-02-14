@@ -10,4 +10,5 @@ src/.DS_Store
 /.ssh/
 coverage/
 .npmrc
-
+.ansible/
+.gitlab-ci.yml
