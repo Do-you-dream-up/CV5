@@ -17,7 +17,7 @@ interface GdprDisclaimerProps {
   component?: any;
   className?: string;
   children?: any;
-  gdprRef?: MutableRefObject<undefined>;
+  gdprRef?: MutableRefObject<HTMLDivElement | undefined>;
 }
 
 export default function GdprDisclaimer({

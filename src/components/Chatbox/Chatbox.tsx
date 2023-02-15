@@ -14,7 +14,7 @@ import Dragon from '../Dragon';
 import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
-import Modal from '../Modal';
+import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
 import { REGEX_URL } from '../../tools/constants';
