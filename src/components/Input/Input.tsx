@@ -93,7 +93,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             aria-expanded="false"
             disabled={prompt || locked}
             id={textareaId}
-            autoFocus
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
