@@ -29,7 +29,7 @@ export default function SurveyForm() {
 const ButtonSubmit = ({ onSubmit }) => {
   return (
     <button type="button" className={'btn-submit-container'} onClick={onSubmit}>
-      <i>Envoyer mes réponses</i> <img src={asset('check-circle.svg')} />
+      <i>Envoyer mes réponses</i> <img src={asset('check-circle.svg')} alt="submit" />
     </button>
   );
 };

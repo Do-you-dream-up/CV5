@@ -41,7 +41,7 @@ export default createUseStyles((theme) => ({
       fontWeight: 'normal',
       margin: '0',
     },
-    '& > img': {
+    '& > div:before': {
       marginRight: '0.4em',
       maxHeight: 24,
       width: 24,

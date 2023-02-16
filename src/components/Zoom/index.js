@@ -11,7 +11,7 @@ const Zoom = ({ src }) => {
 
   return (
     <div className={classes.zoom} onClick={closeZoom}>
-      <img src={src} className={classes.image} onClick={closeZoom} />
+      <img src={src} className={classes.image} onClick={closeZoom} alt="closeZoom" />
     </div>
   );
 };

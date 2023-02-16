@@ -7,11 +7,13 @@ import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
+import Icon from '../Icon/Icon';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -25,6 +27,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Feedback() {
   const { configuration } = useConfiguration();
+  const configurationThumb = configuration?.feedback?.customFeedback?.icons;
   const { addResponse } = useContext(DialogContext);
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -39,6 +42,7 @@ export default function Feedback() {
   const votePositive = t('feedback.vote.positive');
   const voteThanks = t('feedback.vote.thanks');
   const { customFeedback } = configuration?.feedback;
+  const theme = useTheme();
 
   const onComment = ({ comment }) => {
     const value = comment ? comment.trim() : '';
@@ -117,19 +121,11 @@ export default function Feedback() {
       <div className="dydu-feedback">
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
-            <Button color="error" onClick={onVoteNegative} variant="icon" id="dydu-feedback-negative-vote">
-              <img
-                alt={voteNegative}
-                src={`${process.env.PUBLIC_URL}icons/dydu-thumb-down-white.svg`}
-                title={voteNegative}
-              />
+            <Button color="error" onClick={onVoteNegative} variant="icon">
+              <Icon icon={configurationThumb?.thumbDown} color={theme.palette.primary.text} alt="downVote" />
             </Button>
-            <Button color="success" onClick={onVotePositive} variant="icon" id="dydu-feedback-positive-vote">
-              <img
-                alt={votePositive}
-                src={`${process.env.PUBLIC_URL}icons/dydu-thumb-up-white.svg`}
-                title={votePositive}
-              />
+            <Button color="success" onClick={onVotePositive} variant="icon">
+              <Icon icon={configurationThumb?.thumbUp} color={theme.palette.primary.text} alt="upVote" />
             </Button>
           </div>
         )}

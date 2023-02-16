@@ -324,3 +324,18 @@ export const removeEndingSlash = (s) => {
 export const getBrowserLocale = () => {
   return document.documentElement.lang;
 };
+
+export const isImageUrl = (url) => {
+  if (!isString(url)) return false;
+  return strContainsOneOfList(url, ['png', 'jpg', 'svg']);
+};
+
+const isArrayOfString = (list) => {
+  if (!isArray(list)) return false;
+  return list.every(isString);
+};
+
+const strContainsOneOfList = (str, testList = []) => {
+  if (!isArrayOfString(testList)) testList = [];
+  return testList.some((strItem) => strContains(str, strItem));
+};

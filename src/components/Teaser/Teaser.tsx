@@ -1,18 +1,18 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 
 import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
 import { EventsContext } from '../../contexts/EventsContext';
-import { Local } from '../../tools/storage';
+import dydu from '../../tools/dydu';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
-import Voice from '../../modulesApi/VoiceModuleApi';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import Voice from '../Voice';
 
 interface TeaserProps {
   open?: boolean;
@@ -30,8 +30,8 @@ const TEASER_TYPES = {
  */
 export default function Teaser({ open, toggle }: TeaserProps) {
   const { configuration } = useConfiguration();
-  const event = useContext?.(EventsContext)?.onEvent?.('teaser');
-  const classes: any = useStyles({ configuration });
+  const event = useContext(EventsContext).onEvent('teaser');
+  const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
   const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
@@ -100,6 +100,16 @@ export default function Teaser({ open, toggle }: TeaserProps) {
 
   const tabIndex = parseInt('0', 10);
 
+  const showVoiceInput = useMemo(() => {
+    return dydu.hasUserAcceptedGdpr() && open && voice && disclaimerEnable;
+  }, [open, disclaimerEnable, voice]);
+
+  const renderVoiceInput = useCallback(() => {
+    return showVoiceInput ? (
+      <Voice configuration={configuration} show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
+    ) : null;
+  }, [configuration]);
+
   return (
     <Draggable bounds="html">
       <div
@@ -136,15 +146,7 @@ export default function Teaser({ open, toggle }: TeaserProps) {
               </div>
             )}
           </div>
-          {open && voice && disclaimerEnable && (
-            <Voice
-              DialogContext={DialogContext}
-              configuration={configuration}
-              Actions={Actions}
-              show={!!Local.get(Local.names.gdpr)}
-              t={t('input.actions.record')}
-            />
-          )}
+          {renderVoiceInput()}
         </div>
       </div>
     </Draggable>

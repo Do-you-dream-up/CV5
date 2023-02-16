@@ -4,7 +4,7 @@ The application lists a number of components with dependencies between one
 another. All components are located under `src/components/` and are composed of
 the following:
 
-- `index.js`  
+- `Icon.tsx`  
   React code implementing the logic of said component.
 - `styles.js`  
   React-Jss code applied to the component.
