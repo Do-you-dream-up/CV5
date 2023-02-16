@@ -1,5 +1,7 @@
+import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import useStyles from './styles';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 
 /**
  * Contact list for phone numbers, emails and social networks
@@ -7,11 +9,11 @@ import useStyles from './styles';
 
 export default function ContactsList({ icon, id, list, title }) {
   const classes = useStyles();
-
+  const { configuration } = useConfiguration();
   return (
     <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
-        <img alt={icon} src={`${process.env.PUBLIC_URL}${icon}`}></img>
+        <Icon icon={icon} alt={id} />
         <h4>{title}</h4>
       </div>
       {list.map((item, index) => (
@@ -24,10 +26,7 @@ export default function ContactsList({ icon, id, list, title }) {
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">
                 {item.socialText}
               </a>
-              <img
-                alt="icons/dydu-open-in-new-black.svg"
-                src={`${process.env.PUBLIC_URL}icons/dydu-open-in-new-black.svg`}
-              />
+              <Icon icon={configuration?.contacts?.openInNew} alt="open_in_new" />
             </div>
           )}
         </div>

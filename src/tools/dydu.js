@@ -401,6 +401,11 @@ export default new (class Dydu {
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
+  hasUserAcceptedGdpr() {
+    const gdprSources = [Local.byBotId(this.getBotId()).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
+    return gdprSources.some(isDefined);
+  }
+
   getBot = () => BOT;
 
   /**

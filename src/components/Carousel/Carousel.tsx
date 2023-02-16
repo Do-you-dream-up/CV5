@@ -9,6 +9,7 @@ import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
+import Icon from '../Icon/Icon';
 
 /**
  * Typically used with the `Interaction` component.
@@ -63,9 +64,9 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const previousAction: ActionProps[] = [
     {
       children: (
-        <img
+        <Icon
+          icon={configuration?.carousel.iconCaretLeft || ''}
           alt={t('carousel.previous')}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`}
           title={t('carousel.previous')}
         />
       ),
@@ -79,9 +80,9 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const nextAction: ActionProps[] = [
     {
       children: (
-        <img
+        <Icon
+          icon={configuration?.carousel?.iconCaretRight || ''}
           alt={t('carousel.next')}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`}
           title={t('carousel.next')}
         />
       ),
@@ -125,12 +126,12 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
     carouselConfig?.bullets &&
     length > 0 && (
       <div className={c('dydu-carousel-bullets', classes.bullets)}>
-        {children.map((item) => (
+        {children.map((item, idx) => (
           <div
             className={c('dydu-carousel-bullet', {
               [classes.active]: item.key === index,
             })}
-            key={item.key}
+            key={item?.key || idx}
             onClick={() => setIndex(item.key)}
           />
         ))}

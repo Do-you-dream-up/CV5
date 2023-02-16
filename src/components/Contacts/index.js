@@ -10,8 +10,11 @@ import { useTranslation } from 'react-i18next';
 export default function Contacts() {
   const { configuration } = useConfiguration();
   const showPhone = configuration.contacts.phone;
+  const phoneIcon = configuration.contacts.phoneIcon;
   const showEmail = configuration.contacts.email;
+  const emailIcon = configuration.contacts.emailIcon;
   const showSocial = configuration.contacts.socialNetwork;
+  const socialNetworkIcon = configuration.contacts.socialNetworkIcon;
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
   const phoneTitle = t('contacts.phone.title');
@@ -25,10 +28,10 @@ export default function Contacts() {
     !!ready && (
       <div className={classes.root} id="dydu-contact-wrapper">
         <Paper elevation={4}>
-          {showPhone && <ContactsList id="phone" title={phoneTitle} list={phones} icon="icons/dydu-phone-black.svg" />}
-          {showEmail && <ContactsList id="email" title={emailTitle} list={emails} icon="icons/dydu-email-black.svg" />}
+          {showPhone && <ContactsList id="phone" title={phoneTitle} list={phones} icon={phoneIcon} />}
+          {showEmail && <ContactsList id="email" title={emailTitle} list={emails} icon={emailIcon} />}
           {showSocial && (
-            <ContactsList id="social" title={socialTitle} list={socialNetworks} icon="icons/dydu-account-black.svg" />
+            <ContactsList id="social" title={socialTitle} list={socialNetworks} icon={socialNetworkIcon} />
           )}
         </Paper>
       </div>
