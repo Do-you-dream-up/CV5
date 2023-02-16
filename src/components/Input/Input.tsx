@@ -3,19 +3,19 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import { DialogContext } from '../../contexts/DialogContext';
-import { Local } from '../../tools/storage';
-import Voice from '../../modulesApi/VoiceModuleApi';
+import Icon from '../Icon/Icon';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { escapeHTML } from '../../tools/helpers';
-import { isDefined } from 'dydu-module/helpers';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
 import { useEvent } from '../../contexts/EventsContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { escapeHTML, isDefined } from '../../tools/helpers';
+import Voice from '../Voice';
 
 interface InputProps {
   onRequest: (input: string) => void;
@@ -36,8 +36,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const counterRemaining = t('input.actions.counterRemaining');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
+  const themeColor = useTheme<Models.Theme>();
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
   const containerRef = useRef<null | any>(null);
@@ -87,14 +89,19 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           </label>
           <textarea
             {...data}
+            aria-describedby="characters-remaining"
             role="combobox"
             aria-expanded="false"
             disabled={prompt || locked}
             id={textareaId}
-            autoFocus
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && <span children={counter} className={classes.counter} />}
+          {!!showCounter && (
+            <div id="characters-remaining">
+              <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
+              <span className={c('dydu-counter-hidden', classes.hidden)}>{`${counterRemaining}`}</span>
+            </div>
+          )}
         </div>
       );
     },
@@ -190,12 +197,11 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const actions: ActionProps[] = [
     {
       children: (
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
-          <path
-            fill="#7091D8"
-            d="M9.78,18.65L10.06,14.42L17.74,7.5C18.08,7.19 17.67,7.04 17.22,7.31L7.74,13.3L3.64,12C2.76,11.75 2.75,11.14 3.84,10.7L19.81,4.54C20.54,4.21 21.24,4.72 20.96,5.84L18.24,18.65C18.05,19.56 17.5,19.78 16.74,19.36L12.6,16.3L10.61,18.23C10.38,18.46 10.19,18.65 9.78,18.65Z"
-          />
-        </svg>
+        <Icon
+          icon={configuration?.footer?.icons?.submit || ''}
+          color={themeColor?.palette?.primary.main}
+          alt="submit"
+        />
       ),
       type: 'submit',
       variant: 'icon',
@@ -203,6 +209,14 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       id: 'dydu-submit-action',
     },
   ];
+
+  const renderVoiceInput = useCallback(() => {
+    return voice && counter === maxLength ? (
+      <Voice show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
+    ) : (
+      counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+    );
+  }, [voice, counter, maxLength]);
 
   return (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
@@ -218,17 +232,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         theme={theme}
         ref={containerRef}
       />
-      {Voice.isEnabled && voice && counter === maxLength ? (
-        <Voice
-          DialogContext={DialogContext}
-          configuration={configuration}
-          Actions={Actions}
-          show={!!Local.byBotId(dydu.getBotId()).get(Local.names.gdpr)}
-          t={t('input.actions.record')}
-        />
-      ) : (
-        counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
-      )}
+      {renderVoiceInput()}
     </form>
   );
 }

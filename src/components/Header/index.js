@@ -1,23 +1,26 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
+import dydu from '../../tools/dydu';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
 import Banner from '../Banner';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
+import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import { ModalContext } from '../../contexts/ModalContext';
 import ModalFooterMenu from '../ModalFooterMenu';
 import { OnboardingContext } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
-import Tabs from '../Tabs';
+import Tabs from '../Tabs/Tabs';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
+import { useTheme } from 'react-jss';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -47,11 +50,14 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
   const [fontSize, setFontSize] = useState(1);
-  const gdprPassed = Local.get(Local.names.gdpr);
+  const gdprPassed = dydu.hasUserAcceptedGdpr();
   const singleTab = !configuration.tabs.hasContactTab;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions, typeResponse } = useContext(DialogContext);
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
+  const configurationHeaderIcons = configuration?.header?.icons;
+  const theme = useTheme();
+  const iconColorWhite = theme.palette.primary.text;
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
@@ -120,7 +126,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: <img alt={actionTests} src={`${process.env.PUBLIC_URL}icons/dydu-dots-vertical-white.svg`} />,
+      children: <Icon icon={configurationHeaderIcons?.dots} color={iconColorWhite} alt="dots" />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
@@ -128,7 +134,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-dots',
     },
     {
-      children: <img alt={actionMore} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.more}`} />,
+      children: <Icon icon={configurationHeaderIcons?.more} color={iconColorWhite} alt="more" />,
       onClick: onToggleMore,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
@@ -136,12 +142,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-more',
     },
     {
-      children: (
-        <img
-          alt={actionFontIncrease}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontIncrease}`}
-        />
-      ),
+      children: <Icon icon={configurationHeaderIcons?.fontIncrease} color={iconColorWhite} alt="increaseFont" />,
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
@@ -150,12 +151,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-increase',
     },
     {
-      children: (
-        <img
-          alt={actionFontDecrease}
-          src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.fontDecrease}`}
-        />
-      ),
+      children: <Icon icon={configurationHeaderIcons?.fontDecrease} color={iconColorWhite} alt="decreaseFont" />,
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
@@ -164,7 +160,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-decrease',
     },
     {
-      children: <img alt={actionExpand} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.expand}`} />,
+      children: <Icon icon={configurationHeaderIcons?.expand} color={iconColorWhite} alt="expand" />,
+
       onClick: () => onExpand(true)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
@@ -172,9 +169,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-expand',
     },
     {
-      children: (
-        <img alt={actionShrink} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.collapse}`} />
-      ),
+      children: <Icon icon={configurationHeaderIcons?.collapse} color={iconColorWhite} alt="collapse" />,
       onClick: () => onExpand(false)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
@@ -182,9 +177,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-collapse',
     },
     {
-      children: (
-        <img alt={actionMinimize} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.minimize}`} />
-      ),
+      children: <Icon icon={configurationHeaderIcons?.minimize} color={iconColorWhite} alt="minimize" />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
@@ -192,7 +185,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-minimize',
     },
     {
-      children: <img alt={actionClose} src={`${process.env.PUBLIC_URL}icons/${configuration.header.icons.close}`} />,
+      children: <Icon icon={configurationHeaderIcons?.close} color={iconColorWhite} alt="close" />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,

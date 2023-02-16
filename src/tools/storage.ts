@@ -10,6 +10,7 @@ export class Session {
   static names = {
     newMessage: 'dydu.newMessage',
     banner: 'dydu.banner',
+    pushruleTrigger: 'pushruleTrigger',
   };
 
   /**
@@ -27,7 +28,7 @@ export class Session {
    * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
    */
-  static get = (name, fallback, save) => {
+  static get = (name: string, fallback?: any, save?: any) => {
     let value = sessionStorage.getItem(name);
     if (!value && fallback !== undefined) {
       value = typeof fallback === 'function' ? fallback() : fallback;

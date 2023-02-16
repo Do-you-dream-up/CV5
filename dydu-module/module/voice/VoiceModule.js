@@ -1,3 +1,9 @@
+/*
+
+===========================
+This is for sample purpose
+===========================
+
 const configuration = require("../../../public/override/configuration.json");
 const ModuleBuilder = require("../../ModuleBuilder");
 
@@ -18,3 +24,4 @@ module.exports = new ModuleBuilder()
         },
     ])
     .build();
+ */

@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types';
+import Icon from '../Icon/Icon';
 import c from 'classnames';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
+import { isImageUrl } from '../../tools/helpers';
 
 /**
  * Form a list of actions within a menu as list elements.
  */
 export default function MenuList({ items, onClose, selected }) {
+  const theme = useTheme();
+
   const classes = useStyles();
   items = items.filter((it) => it.when === undefined || it.when);
   selected = typeof selected === 'function' ? selected() : selected;
@@ -37,7 +42,11 @@ export default function MenuList({ items, onClose, selected }) {
           tabIndex="0"
           title={text}
         >
-          {!!icon && <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
+          {isImageUrl(icon) ? (
+            <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
+          ) : (
+            <Icon icon={icon} color={theme.palette.text.primary} className={classes.icon} alt={icon} />
+          )}
           {text}
         </li>
       ))}
