@@ -18,7 +18,7 @@ the user closes it.
 The modal workflow requires you to make a modal component in order to insert it
 as you trigger the modal system. You can look at the existing ones for
 reference, they're all prefixed with `Modal`. eg.
-`src/components/ModalClose/index.js`
+`src/components/ModalClose/Icon.tsx`
 
 Here is a simple one for our example:
 

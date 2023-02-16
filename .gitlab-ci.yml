@@ -12,7 +12,7 @@ build:
     CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
     CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
   script:
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     - npm run build
   cache:
     key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"

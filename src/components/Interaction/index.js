@@ -363,7 +363,7 @@ export const InteractionNotification = ({ notification }) => {
   return !canRender ? null : (
     <Scroll>
       <InChatNotification>
-        <img className="icon" src={iconSrc} />
+        <img className="icon" src={iconSrc} alt="notificationIcon" />
         <p>{text}</p>
       </InChatNotification>
     </Scroll>

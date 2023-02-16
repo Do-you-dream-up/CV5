@@ -1,12 +1,14 @@
 import { useContext, useEffect } from 'react';
 
 import { EventsContext } from '../../contexts/EventsContext';
+import Icon from '../Icon/Icon';
 import Skeleton from '../Skeleton';
 import { TabContext } from '../../contexts/TabContext';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -22,6 +24,7 @@ export default function Tabs() {
   const { title: hasTitle } = configuration?.tabs || {};
   const { tabbing } = useContext(UserActionContext) || false;
   const activeTab = t('tabs.activeTab');
+  const theme = useTheme<any>();
 
   useEffect(() => {
     if (current === 1) event && event('contactDisplay');
@@ -57,7 +60,9 @@ export default function Tabs() {
                   [classes.selected]: current === index,
                 })}
               >
-                {!!icon && <img alt={label} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />}
+                {!!icon && (
+                  <Icon icon={icon} color={theme?.palette?.primary.text || ''} className={classes.icon} alt="contact" />
+                )}
                 {!!hasTitle && (
                   <Skeleton hide={!ready} variant="text" width="4em">
                     <span children={label} />
