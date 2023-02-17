@@ -149,6 +149,7 @@
   "input": {
     "actions": {
       "send": "Send",
+      "counterRemaining": "remaining characters",
       "reupload": "Reupload",
       "record": {
         "pause": "Pause",
@@ -190,8 +191,8 @@
     "placeholder": "Enter your email..."
   },
   "screenReader": {
-    "chatbot": "chatbot says",
-    "me": "me says",
+    "chatbot": "chatbot answers",
+    "me": "I write",
     "say": "says"
   },
   "spaces": {
@@ -199,11 +200,13 @@
   },
   "tabs": {
     "contacts": "Contacts",
-    "dialog": "Dialog"
+    "dialog": "Dialog",
+    "activeTab": " - active tab"
   },
   "teaser": {
     "mouseover": "Help here",
-    "title": "Need help?"
+    "title": "Need help?",
+    "titleHidden": "Chatbot window"
   },
   "template": {
     "readmore": "... Read more",

@@ -1,21 +1,24 @@
-import { ReactNode, Ref, createElement, forwardRef, useContext } from 'react';
+import { ReactNode, Ref, createElement, forwardRef } from 'react';
 
-import { UserActionContext } from '../../contexts/UserActionContext';
+import { useUserAction } from '../../contexts/UserActionContext';
 import c from 'classnames';
+import Icon from '../Icon/Icon';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
 
 export interface ButtonProps {
   children?: ReactNode;
   color?: 'error' | 'primary' | 'success' | 'warning';
   component?: any;
   grow?: boolean;
+  disabled?: boolean;
+  id?: string;
   href?: string;
   icon?: string | (() => void);
   onClick?: () => void;
   reference?: Ref<any>;
   secondary?: boolean;
-  spin?: boolean;
   target?: string;
   title?: string;
   type?: string;
@@ -35,12 +38,13 @@ const Button = ({
   color,
   component = 'button',
   grow,
+  disabled,
+  id,
   href,
   icon: getIcon,
   onClick,
   reference,
   secondary,
-  spin,
   target = '_blank',
   title,
   type,
@@ -48,13 +52,16 @@ const Button = ({
   ...rest
 }: ButtonProps) => {
   const { configuration } = useConfiguration();
-  const { tabbing } = useContext(UserActionContext) || false;
+  const { tabbing } = useUserAction() || false;
   const classes: any = useStyles({ color, configuration });
   const icon = typeof getIcon === 'function' ? getIcon() : getIcon;
+  const theme = useTheme<Models.Theme>();
 
   const button = (
     <div className={classes.children}>
-      {icon ? <img alt={icon} src={icon} className={c({ [classes.spin]: spin })} /> : null}
+      {icon ? (
+        <Icon icon={configuration?.banner?.moreIcon || ''} color={theme?.palette?.primary.text} alt="button" />
+      ) : null}
       <span children={children} />
     </div>
   );
@@ -75,6 +82,8 @@ const Button = ({
         { [classes.grow]: grow },
       ),
       ref: reference,
+      disabled,
+      id,
     },
     button,
   );

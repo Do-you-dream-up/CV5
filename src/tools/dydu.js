@@ -3,6 +3,7 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
+  getBrowserLocale,
   hasProperty,
   isDefined,
   isEmptyString,
@@ -24,6 +25,7 @@ import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
 import qs from 'qs';
+import { initI18N } from './internationalization';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -283,10 +285,14 @@ export default new (class Dydu {
   emit = (verb, path, data, timeout) => {
     this.handleSetApiUrl();
     this.handleSetApiTimeout(timeout);
-    return verb(path, data)
-      .then(this.setLastResponse)
-      .then(({ data = {} }) => this.handleAxiosResponse(data))
-      .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    try {
+      return verb(path, data)
+        .then(this.setLastResponse)
+        .then(({ data = {} }) => this.handleAxiosResponse(data))
+        .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
+    } catch (e) {
+      console.error('while executing |emit()|', e);
+    }
   };
 
   setLastResponse = (res) => {
@@ -395,6 +401,11 @@ export default new (class Dydu {
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
+  hasUserAcceptedGdpr() {
+    const gdprSources = [Local.byBotId(this.getBotId()).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
+    return gdprSources.some(isDefined);
+  }
+
   getBot = () => BOT;
 
   /**
@@ -480,9 +491,7 @@ export default new (class Dydu {
     const { application } = this.getConfiguration();
     if (!this.locale) {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite
-        ? this.setLocale(document.documentElement.lang, application?.languages)
-        : this.setLocale(locale, application?.languages);
+      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale || application?.defaultLanguage;
   };
@@ -990,14 +999,42 @@ export default new (class Dydu {
     });
   }
 
-  onConfigurationLoaded() {
-    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
-    this.setQualificationMode(this.getConfiguration().qualification?.active);
-  }
-
   setConfiguration(configuration = {}) {
     this.configuration = configuration;
     this.onConfigurationLoaded();
+  }
+
+  onConfigurationLoaded() {
+    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setQualificationMode(this.getConfiguration().qualification?.active);
+    this.initLocaleWithConfiguration(this.getConfiguration());
+  }
+
+  initLocaleWithConfiguration(configuration) {
+    let locale = getBrowserLocale();
+    try {
+      const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
+      locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      initI18N({ defaultLang: this.locale });
+      return this.locale;
+    } catch (e) {
+      console.info('Error while initializing locale, fallback to browser locale');
+      this.setLocale(locale).catch(console.error);
+      this.locale = locale;
+      initI18N({ defaultLang: this.locale });
+      return this.locale;
+    }
+  }
+
+  getConfigurationDefaultLocal() {
+    try {
+      return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
+    } catch (e) {
+      console.info('No default language from configuration file, fallback to browser locale');
+      return getBrowserLocale();
+    }
   }
 
   setSpaceToDefault() {

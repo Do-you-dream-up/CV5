@@ -4,7 +4,6 @@ const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 const NPM_SCOPE_NAME_DYDU = '@dydu_ai';
 
 const MODULE_LIST = [
-    Voice
 ];
 
 const extractEnabledModuleListReducer = (arrResult, module) => {

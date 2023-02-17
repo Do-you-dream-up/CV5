@@ -81,9 +81,12 @@ export default createUseStyles<any, any>((theme: any): any => {
     icon: ({ color = '' }) => ({
       ...contained({ color }),
       '& $children *': {
-        display: 'block',
-        maxHeight: 24,
-        width: 24,
+        display: 'flex',
+        alignItems: 'center',
+        height: 24,
+      },
+      '& .icon-thumb-up:before, & .icon-thumb-down:before': {
+        fontSize: 24,
       },
       '&, &:after, &:before': {
         borderRadius: '50%',
