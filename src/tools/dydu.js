@@ -24,8 +24,8 @@ import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
-import qs from 'qs';
 import { initI18N } from './internationalization';
+import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -423,10 +423,9 @@ export default new (class Dydu {
   getContextIdStorageKey() {
     try {
       return Local.contextId.createKey(this.getBotId(), BOT.configId);
-    } catch {
+    } catch (e) {
+      console.error(e);
       return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
-    } finally {
-      console.error('error while creating contextId storage key');
     }
   }
 
