@@ -19,9 +19,11 @@ export default function useWelcomeKnowledge() {
   }, [isLivechatOn, result, isTagWelcomeDefined]);
 
   const fetch = useCallback(() => {
+    console.log('🚀 ~ file: useWelcomeKnowledge.js:23 ~ fetch ~ canRequest:', canRequest);
     return !canRequest
       ? Promise.resolve()
       : dydu.getWelcomeKnowledge(tagWelcome).then((wkResponse) => {
+          console.log('🚀 ~ file: useWelcomeKnowledge.js:26 ~ :dydu.getWelcomeKnowledge ~ wkResponse:', wkResponse);
           setResult(wkResponse);
           return wkResponse;
         });
