@@ -155,7 +155,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   useEffect(() => {
     fetchServerStatus();
-  }, [fetchServerStatus]);
+  }, []);
 
   return (
     <EventsContext.Provider
