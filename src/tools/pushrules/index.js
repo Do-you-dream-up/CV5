@@ -16,7 +16,6 @@ export default function fetchPushrules() {
         processRules(getExternalInfos(new Date().getTime()));
         resolve(rules);
       } catch (e) {
-        console.log('🚀 ~ file: index.js:19 ~ returndydu.pushrules ~ e:', e);
         resolve(null);
       }
     });
