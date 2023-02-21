@@ -144,8 +144,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const triggerPushRule = useCallback(() => {
     if (isDefined(pushrules)) return;
     if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
-    fetchPushrules().then((rules) => {
-      rules && setPushrules(rules);
+    fetchPushrules().then((rules = []) => {
+      setPushrules(rules);
     });
   }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
 
