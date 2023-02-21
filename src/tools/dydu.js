@@ -1045,6 +1045,7 @@ export default new (class Dydu {
     const talkOption = { doNotSave: true, hide: true };
     return this.talk(tagWelcome, talkOption).then((talkResponse) => {
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
+      console.log('🚀 ~ file: dydu.js:1053 ~ Dydu ~ returnthis.talk ~ isInteractionResponse:', isInteractionResponse);
       if (!isInteractionResponse) return null;
       delete talkResponse.contextId;
       Local.welcomeKnowledge.save(this.getBotId(), talkResponse);
