@@ -24,8 +24,8 @@ import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
-import qs from 'qs';
 import { initI18N } from './internationalization';
+import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -604,7 +604,7 @@ export default new (class Dydu {
    */
   setLocale = (locale, languages) =>
     new Promise((resolve, reject) => {
-      if (!this.locale || languages.includes(locale)) {
+      if (!this.locale || languages?.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);

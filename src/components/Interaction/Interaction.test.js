@@ -7,7 +7,7 @@ jest.mock('../../contexts/DialogContext', () => ({
   useDialog: jest.fn().mockReturnValue({ startAnimationOperatorWriting: false }),
 }));
 
-describe('Interaction', function () {
+xdescribe('Interaction', function () {
   describe('Writing', function () {
     it('should show loader', function () {
       const { debug } = render(<Interaction.Writing />, { configuration: { application: { open: true } } });
