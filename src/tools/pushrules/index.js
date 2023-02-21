@@ -8,13 +8,16 @@ export default function fetchPushrules() {
     return dydu.pushrules().then((data) => {
       const isEmptyPayload = data && Object.keys(data).length <= 0;
       if (isEmptyPayload) return resolve(null);
+      try {
+        const rules = JSON.parse(data);
+        if (isEmptyArray(rules)) return resolve();
 
-      const rules = JSON.parse(data);
-      if (isEmptyArray(rules)) return resolve();
-
-      rules.map(addRule);
-      processRules(getExternalInfos(new Date().getTime()));
-      resolve(rules);
+        rules.map(addRule);
+        processRules(getExternalInfos(new Date().getTime()));
+        resolve(rules);
+      } catch (e) {
+        console.log('🚀 ~ file: index.js:19 ~ returndydu.pushrules ~ e:', e);
+      }
     });
   });
 }
