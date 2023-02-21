@@ -95,17 +95,15 @@ export default function Dragon({ component, reset, ...rest }) {
     !!current && !reset
       ? `translate3d(${current.x + offset.x}px, ${current.y + offset.y}px, 0)`
       : 'translate3d(0, 0, 0)';
-  return (
-    !!current && (
-      <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
-        {createElement(component, {
-          ...rest,
-          root,
-          style: { transform },
-        })}
-      </DragonProvider>
-    )
-  );
+  return current ? (
+    <DragonProvider onDrag={onDrag} onDragEnd={onDragEnd} onDragStart={active ? onDragStart : null}>
+      {createElement(component, {
+        ...rest,
+        root,
+        style: { transform },
+      })}
+    </DragonProvider>
+  ) : null;
 }
 
 Dragon.defaultProps = {

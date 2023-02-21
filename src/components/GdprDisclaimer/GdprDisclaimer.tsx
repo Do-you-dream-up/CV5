@@ -1,4 +1,4 @@
-import { createElement, useContext, useEffect } from 'react';
+import { MutableRefObject, createElement, useContext, useEffect } from 'react';
 
 import Actions from '../Actions/Actions';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next';
  * GDPR disclaimer. Prompt the user at first visit for clearance.
  */
 interface GdprDisclaimerProps {
-  component: any;
-  className: string;
-  children: any;
-  gdprRef: any;
+  component?: any;
+  className?: string;
+  children?: any;
+  gdprRef?: MutableRefObject<HTMLDivElement | undefined>;
 }
 
 export default function GdprDisclaimer({

@@ -33,18 +33,16 @@ export default function Modal() {
     return () => document.removeEventListener('keydown', keyListener);
   }, [onDismiss, Component]);
 
-  return (
-    !!Component && (
-      <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>
-        <Component
-          className={c('dydu-modal', classes[variant])}
-          component={Paper}
-          onClick={onClick}
-          onReject={onReject}
-          onResolve={onResolve}
-          thinking={thinking}
-        />
-      </div>
-    )
-  );
+  return Component ? (
+    <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>
+      <Component
+        className={c('dydu-modal', classes[variant])}
+        component={Paper}
+        onClick={onClick}
+        onReject={onReject}
+        onResolve={onResolve}
+        thinking={thinking}
+      />
+    </div>
+  ) : null;
 }
