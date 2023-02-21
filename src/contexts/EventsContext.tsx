@@ -1,12 +1,13 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
-import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
 import { useConfiguration } from './ConfigurationContext';
 import useServerStatus from '../tools/hooks/useServerStatus';
+import useTabNotification from '../tools/hooks/useBlinkTitle';
+import { useTranslation } from 'react-i18next';
 import { useViewMode } from './ViewModeProvider';
 
 interface EventsContextProps {
@@ -33,24 +34,33 @@ export const EventsContext = createContext<EventsContextProps>({});
 
 export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { isOpen } = useViewMode();
+  const { setTabNotification, clearTabNotification } = useTabNotification();
   const { configuration } = useConfiguration();
 
   const [event, setEvent] = useState<any | null>();
-  const [isMouseIn, setMouseIn] = useState(false);
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
   const { checked: serverStatusChecked, fetch: fetchServerStatus } = useServerStatus();
-
-  let refBlinkInterval: any;
+  const { t } = useTranslation('translation');
+  const newMessageText = t('livechat.notif.newMessage');
   let chatboxRef: any;
 
-  const INITIAL_TITLE_TAB = document.title;
-  const NEW_TITLE_TAB = '1 nouveau message';
+  useEffect(() => {
+    document.addEventListener('mouseenter', clearTabNotification);
+    return () => {
+      document.removeEventListener('mouseenter', clearTabNotification);
+    };
+  }, [chatboxRef]);
+
+  const onNewMessage = useCallback(() => {
+    if (isOpen) {
+      chatboxRef?.dispatchEvent(eventNewMessage);
+      setTabNotification(newMessageText);
+    }
+  }, [isOpen]);
 
   const saveChatboxRef = (ref: any) => (chatboxRef = ref);
-
-  const setDocumentTitle = (text: string) => (document.title = text);
 
   const execDyduAfterLoad = () =>
     new Promise((resolve) => {
@@ -58,29 +68,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
       if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
       resolve(true);
     });
-
-  const stopBlink = () => {
-    if (!isBlinking()) return;
-    setDocumentTitle(INITIAL_TITLE_TAB);
-    clearInterval(refBlinkInterval);
-    refBlinkInterval = undefined;
-  };
-
-  const isBlinking = () => isDefined(refBlinkInterval);
-
-  const blink = () => {
-    if (isBlinking()) {
-      return;
-    }
-
-    refBlinkInterval = setInterval(() => {
-      document.title = document.title === NEW_TITLE_TAB ? INITIAL_TITLE_TAB : NEW_TITLE_TAB;
-    }, 1000);
-  };
-
-  useEffect(() => {
-    if (isMouseIn) stopBlink();
-  }, [isMouseIn]);
 
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
@@ -104,27 +91,10 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
-  const handleEventNewMessage = useCallback(() => {
-    if (!isMouseIn) return blink();
-    else stopBlink();
-  }, [isMouseIn]);
-
-  const onChatboxLoaded = useCallback(
-    (chatboxNodeElement) => {
-      saveChatboxRef(chatboxNodeElement);
-      chatboxNodeElement.addEventListener(CHATBOX_EVENT_NAME.newMessage, handleEventNewMessage);
-      chatboxNodeElement.onmousemove = () => setMouseIn(true);
-      chatboxNodeElement.onmouseleave = () => setMouseIn(false);
-      chatboxNodeElement.onmouseover = () => setMouseIn(true);
-      chatboxNodeElement.onmouseenter = chatboxNodeElement.onmouseover;
-      setChatboxLoaded(true);
-    },
-    [handleEventNewMessage],
-  );
-
-  const onNewMessage = useCallback(() => {
-    isOpen && chatboxRef?.dispatchEvent(eventNewMessage);
-  }, [isOpen]);
+  const onChatboxLoaded = useCallback((chatboxNodeElement) => {
+    saveChatboxRef(chatboxNodeElement);
+    setChatboxLoaded(true);
+  }, []);
 
   const onEvent =
     (feature) =>
@@ -150,6 +120,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   const dispatchEvent = (featureName, eventName, ...rest) => {
     const eventHandler = onEvent(featureName);
+
     eventHandler && eventHandler(eventName, ...rest);
   };
 

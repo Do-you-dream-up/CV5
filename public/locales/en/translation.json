@@ -217,5 +217,10 @@
   "survey": {
     "sentMessage": "Your answer to the survey has been sent.",
     "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent."
+  },
+  "livechat": {
+    "notif": {
+      "newMessage": "1 new message"
+    }
   }
 }

@@ -98,8 +98,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, fetchServerStatus, serverStatusChecked } =
-    useEvent();
+  const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, serverStatusChecked } = useEvent();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
@@ -192,18 +191,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
-  const add = useCallback(
-    (interaction) => {
-      onNewMessage && onNewMessage();
-      setInteractions((previous) => {
-        if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
-        return !isDefined(interaction)
-          ? previous.slice()
-          : [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])];
-      });
-    },
-    [onNewMessage],
-  );
+  const add = useCallback((interaction) => {
+    setInteractions((previous) => {
+      if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
+      return !isDefined(interaction)
+        ? previous.slice()
+        : [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])];
+    });
+  }, []);
 
   const showAnimationOperatorWriting = useCallback(() => {
     add(<Interaction.Writing />);
