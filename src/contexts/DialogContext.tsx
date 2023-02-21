@@ -98,8 +98,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, fetchServerStatus, serverStatusChecked } =
-    useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, serverStatusChecked } = useEvent();
+  console.log('🚀 ~ file: DialogContext.tsx:102 ~ DialogProvider ~ serverStatusChecked:', serverStatusChecked);
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
