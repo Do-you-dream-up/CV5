@@ -142,9 +142,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   const triggerPushRule = useCallback(() => {
+    console.log('🚀 ~ file: DialogContext.tsx:151 ~ triggerPushRule ~ serverStatusChecked:', serverStatusChecked);
+    console.log('🚀 ~ file: DialogContext.tsx:152 ~ triggerPushRule ~ pushrules:', pushrules);
     if (isDefined(pushrules)) return;
     if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
     fetchPushrules().then((rules = []) => {
+      console.log('🚀 ~ file: DialogContext.tsx:150 ~ fetchPushrules ~ rules:', rules);
       setPushrules(rules);
     });
   }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
