@@ -420,7 +420,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       typeResponse: interaction?.type,
     };
 
-    addRequest(typedInteraction.user);
+    !interaction.user.includes('_pushcondition_:') && addRequest(typedInteraction.user);
     addResponse(typedInteraction);
   };
 
