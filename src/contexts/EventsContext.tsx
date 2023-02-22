@@ -2,11 +2,9 @@ import { ReactElement, createContext, useCallback, useContext, useEffect, useMem
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
-// import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
 import { useConfiguration } from './ConfigurationContext';
-// import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
 interface EventsContextProps {
@@ -83,7 +81,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   // const processUserVisit = useCallback(async () => {
   //   if (serverStatusChecked) {
-  //     await VisitManager.refreshRegisterVisit();
+  // await VisitManager.refreshRegisterVisit();
   //   }
   // }, [serverStatusChecked]);
 
