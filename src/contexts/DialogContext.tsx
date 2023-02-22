@@ -26,8 +26,10 @@ import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import { useServerStatus } from './ServerStatusContext';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
+import useVisitManager from '../tools/hooks/useVisitManager';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
 
 interface DialogProviderProps {
@@ -98,11 +100,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, serverStatusChecked } = useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
+
+  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchVisitorRegistration } = useVisitManager();
 
   const { isMobile } = useViewport();
 
@@ -120,8 +125,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [pushrules, setPushrules] = useState(null);
 
+  useEffect(() => {
+    fetchServerStatus();
+  }, []);
+
   const { exec, forceExec } = usePromiseQueue(
-    [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
     hasAfterLoadBeenCalled && serverStatusChecked,
   );
 
