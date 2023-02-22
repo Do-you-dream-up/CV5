@@ -1,5 +1,5 @@
 {
-  "id": "56073405-491e-4ad2-92f8-c7c41b93ec73",
-  "server": "app1.sandbox.doyoudreamup.com",
-  "configId": "ac120304-8630-1b75-8186-70d969c6004a"
+    "id": "f1871fe8-cdea-4695-9ea6-529a4e9460dc",
+    "server": "dev.mercury.doyoudreamup.com",
+    "backUpServer": ""
 }
