@@ -2,11 +2,11 @@ import { ReactElement, createContext, useCallback, useContext, useEffect, useMem
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
-import VisitManager from '../tools/RG/VisitManager';
+// import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
 import { useConfiguration } from './ConfigurationContext';
-import useServerStatus from '../tools/hooks/useServerStatus';
+// import useServerStatus from '../tools/hooks/useServerStatus';
 import { useViewMode } from './ViewModeProvider';
 
 interface EventsContextProps {
@@ -19,8 +19,6 @@ interface EventsContextProps {
   event?: (str: string) => void;
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;
   getChatboxRef?: () => null;
-  fetchServerStatus?: any;
-  serverStatusChecked?: boolean;
 }
 
 interface EventsProviderProps {
@@ -40,7 +38,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
-  const { checked: serverStatusChecked, fetch: fetchServerStatus } = useServerStatus();
 
   let refBlinkInterval: any;
   let chatboxRef: any;
@@ -84,11 +81,11 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
-  const processUserVisit = useCallback(async () => {
-    if (serverStatusChecked) {
-      await VisitManager.refreshRegisterVisit();
-    }
-  }, [serverStatusChecked]);
+  // const processUserVisit = useCallback(async () => {
+  //   if (serverStatusChecked) {
+  //     await VisitManager.refreshRegisterVisit();
+  //   }
+  // }, [serverStatusChecked]);
 
   const processDyduAfterLoad = useCallback(() => {
     if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);
@@ -98,9 +95,16 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   useEffect(() => {
     if (!isChatboxLoadedAndReady) return;
-    const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad, processUserVisit];
+    const bootstrapAfterLoadAndReadyFnList = [
+      processDyduAfterLoad,
+      // processUserVisit
+    ];
     bootstrapAfterLoadAndReadyFnList.forEach((fn) => fn());
-  }, [isChatboxLoadedAndReady, processDyduAfterLoad, processUserVisit]);
+  }, [
+    isChatboxLoadedAndReady,
+    processDyduAfterLoad,
+    // processUserVisit
+  ]);
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
@@ -153,10 +157,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     eventHandler && eventHandler(eventName, ...rest);
   };
 
-  useEffect(() => {
-    fetchServerStatus();
-  }, []);
-
   return (
     <EventsContext.Provider
       children={children}
@@ -170,8 +170,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         dispatchEvent,
         event,
         getChatboxRef: () => chatboxRef,
-        fetchServerStatus,
-        serverStatusChecked,
       }}
     />
   );

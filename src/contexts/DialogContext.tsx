@@ -26,6 +26,7 @@ import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import useServerStatus from '../tools/hooks/useServerStatus';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
@@ -98,7 +99,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const secondaryTransient = configuration?.secondary?.transient;
 
-  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent, serverStatusChecked } = useEvent();
+  const { onNewMessage, getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
+
+  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
@@ -119,6 +122,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [pushrules, setPushrules] = useState(null);
+
+  useEffect(() => {
+    fetchServerStatus();
+  }, []);
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
@@ -142,12 +149,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   const triggerPushRule = useCallback(() => {
-    console.log('🚀 ~ file: DialogContext.tsx:151 ~ triggerPushRule ~ serverStatusChecked:', serverStatusChecked);
-    console.log('🚀 ~ file: DialogContext.tsx:152 ~ triggerPushRule ~ pushrules:', pushrules);
     if (isDefined(pushrules)) return;
     if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
     fetchPushrules().then((rules = []) => {
-      console.log('🚀 ~ file: DialogContext.tsx:150 ~ fetchPushrules ~ rules:', rules);
       setPushrules(rules);
     });
   }, [pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
