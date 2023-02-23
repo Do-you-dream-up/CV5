@@ -73,10 +73,10 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           </button>
         </div>
         <div className={c('dydu-onboarding-actions', classes.actions)}>
-          {steps.length > 1 && (
+          {steps?.length > 1 && (
             <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
               {steps &&
-                steps.map((_, i) => (
+                steps?.map((_, i) => (
                   <div
                     className={c('dydu-carousel-bullet', {
                       [classes.active]: i === index,
