@@ -25,8 +25,8 @@ export default function Onboarding({ children, render }) {
     useContext(OnboardingContext) || {};
   const event = useContext(EventsContext).onEvent('onboarding');
   const classes = useStyles({ configuration });
-  const { t } = useTranslation('translation');
-  const should = render && active;
+  const { t, ready } = useTranslation('translation');
+  const should = ready && render && active;
   const { enable, image1, image2, image3 } = configuration.onboarding;
   const steps = t('onboarding.steps');
   const skip = t('onboarding.skip');
@@ -58,9 +58,9 @@ export default function Onboarding({ children, render }) {
         </button>
       </div>
       <div className={c('dydu-onboarding-actions', classes.actions)}>
-        {steps.length > 1 && (
+        {steps?.length > 1 && (
           <div className={c('dydu-carousel-bullets', classes.bullets)}>
-            {steps.map((it, i) => (
+            {steps?.map((it, i) => (
               <div
                 className={c('dydu-carousel-bullet', {
                   [classes.active]: i === index,
