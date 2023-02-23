@@ -323,7 +323,7 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.children]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
@@ -363,7 +363,7 @@ export const InteractionNotification = ({ notification }) => {
   return !canRender ? null : (
     <Scroll>
       <InChatNotification>
-        <img className="icon" src={iconSrc} />
+        <img className="icon" src={iconSrc} alt="notificationIcon" />
         <p>{text}</p>
       </InChatNotification>
     </Scroll>

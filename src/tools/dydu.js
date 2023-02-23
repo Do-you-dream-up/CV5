@@ -83,8 +83,9 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server }) => ({
+    (({ backUpServer, bot: id, server, configId }) => ({
       ...(id && { id }),
+      ...(configId && { configId }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
@@ -401,6 +402,11 @@ export default new (class Dydu {
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
+  hasUserAcceptedGdpr() {
+    const gdprSources = [Local.byBotId(this.getBotId()).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
+    return gdprSources.some(isDefined);
+  }
+
   getBot = () => BOT;
 
   /**
@@ -415,7 +421,12 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    try {
+      return Local.contextId.createKey(this.getBotId(), BOT.configId);
+    } catch (e) {
+      console.error(e);
+      return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    }
   }
 
   getContextIdFromLocalStorage() {
@@ -486,9 +497,7 @@ export default new (class Dydu {
     const { application } = this.getConfiguration();
     if (!this.locale) {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite
-        ? this.setLocale(document.documentElement.lang, application?.languages)
-        : this.setLocale(locale, application?.languages);
+      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale || application?.defaultLanguage;
   };

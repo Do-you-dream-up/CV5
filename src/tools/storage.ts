@@ -10,6 +10,7 @@ export class Session {
   static names = {
     newMessage: 'dydu.newMessage',
     banner: 'dydu.banner',
+    pushruleTrigger: 'pushruleTrigger',
   };
 
   /**
@@ -27,7 +28,7 @@ export class Session {
    * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
    */
-  static get = (name, fallback, save) => {
+  static get = (name: string, fallback?: any, save?: any) => {
     let value = sessionStorage.getItem(name);
     if (!value && fallback !== undefined) {
       value = typeof fallback === 'function' ? fallback() : fallback;
@@ -399,18 +400,18 @@ export class Local {
 
   static contextId = Object.create({
     createKey: (botId = '', directoryId = '') => {
-      const separator = isEmptyString(directoryId) ? '' : '/';
+      const separator = isEmptyString(directoryId) ? '' : '.';
       return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
     },
     save: (key, value) => {
-      Local.byBotId(key).set(Local.names.context, value);
+      localStorage.setItem(key, value);
       Local.set(Local.names.context, value);
     },
     isSet: (key) => {
-      return isDefined(Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context));
+      return isDefined(localStorage.getItem(key));
     },
     load: (key) => {
-      return Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context);
+      return localStorage.getItem(key);
     },
   });
 }
