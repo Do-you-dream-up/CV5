@@ -7,6 +7,7 @@ import Axios from 'axios';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import ReactDOM from 'react-dom';
+import { ServerStatusProvider } from './contexts/ServerStatusContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { axiosConfigNoCache } from './tools/axios';
 import breakpoints from './styles/breakpoints';
@@ -33,11 +34,13 @@ const renderApp = (theme) =>
     <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
-          <ViewModeProvider>
-            <EventsProvider>
-              <App />
-            </EventsProvider>
-          </ViewModeProvider>
+          <ServerStatusProvider>
+            <ViewModeProvider>
+              <EventsProvider>
+                <App />
+              </EventsProvider>
+            </ViewModeProvider>
+          </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>,

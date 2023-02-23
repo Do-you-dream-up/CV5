@@ -1,11 +1,9 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
-import VisitManager from '../tools/RG/VisitManager';
 import dotget from '../tools/dotget';
 import { eventNewMessage } from '../events/chatboxIndex';
 import { useConfiguration } from './ConfigurationContext';
-import useServerStatus from '../tools/hooks/useServerStatus';
 import useTabNotification from '../tools/hooks/useBlinkTitle';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from './ViewModeProvider';
@@ -41,7 +39,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
-  const { checked: serverStatusChecked, fetch: fetchServerStatus } = useServerStatus();
+
   const { t } = useTranslation('translation');
   const newMessageText = t('livechat.notif.newMessage');
   let chatboxRef: any;
@@ -71,12 +69,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
 
-  const processUserVisit = useCallback(async () => {
-    if (serverStatusChecked) {
-      await VisitManager.refreshRegisterVisit();
-    }
-  }, [serverStatusChecked]);
-
   const processDyduAfterLoad = useCallback(() => {
     if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);
   }, [hasAfterLoadBeenCalled]);
@@ -85,9 +77,9 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   useEffect(() => {
     if (!isChatboxLoadedAndReady) return;
-    const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad, processUserVisit];
+    const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad];
     bootstrapAfterLoadAndReadyFnList.forEach((fn) => fn());
-  }, [isChatboxLoadedAndReady, processDyduAfterLoad, processUserVisit]);
+  }, [isChatboxLoadedAndReady, processDyduAfterLoad]);
 
   const onAppReady = useCallback(() => setIsAppReady(true), []);
 
@@ -124,10 +116,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     eventHandler && eventHandler(eventName, ...rest);
   };
 
-  useEffect(() => {
-    fetchServerStatus();
-  }, [fetchServerStatus]);
-
   return (
     <EventsContext.Provider
       children={children}
@@ -141,8 +129,6 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         dispatchEvent,
         event,
         getChatboxRef: () => chatboxRef,
-        fetchServerStatus,
-        serverStatusChecked,
       }}
     />
   );

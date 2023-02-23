@@ -1,9 +1,11 @@
 import Actions, { ActionProps } from '../Actions/Actions';
+import { escapeHTML, isDefined } from '../../tools/helpers';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import { DialogContext } from '../../contexts/DialogContext';
 import Icon from '../Icon/Icon';
+import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
@@ -14,8 +16,6 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import { escapeHTML, isDefined } from '../../tools/helpers';
-import Voice from '../Voice';
 
 interface InputProps {
   onRequest: (input: string) => void;
