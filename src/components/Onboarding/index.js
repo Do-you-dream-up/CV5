@@ -58,7 +58,7 @@ export default function Onboarding({ children, render }) {
         </button>
       </div>
       <div className={c('dydu-onboarding-actions', classes.actions)}>
-        {steps.length > 1 && (
+        {steps?.length > 1 && (
           <div className={c('dydu-carousel-bullets', classes.bullets)}>
             {steps?.map((it, i) => (
               <div
