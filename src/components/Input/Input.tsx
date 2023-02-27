@@ -16,6 +16,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import icons from '../../tools/icon-constants';
 
 interface InputProps {
   onRequest: (input: string) => void;
@@ -196,13 +197,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const actions: ActionProps[] = [
     {
-      children: (
-        <Icon
-          icon={configuration?.footer?.icons?.submit || ''}
-          color={themeColor?.palette?.primary.main}
-          alt="submit"
-        />
-      ),
+      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt="submit" />,
       type: 'submit',
       variant: 'icon',
       title: actionSend,

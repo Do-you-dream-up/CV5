@@ -6,6 +6,7 @@ import Icon from '../Icon/Icon';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
+import icons from '../../tools/icon-constants';
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -59,9 +60,7 @@ const Button = ({
 
   const button = (
     <div className={classes.children}>
-      {icon ? (
-        <Icon icon={configuration?.banner?.moreIcon || ''} color={theme?.palette?.primary.text} alt="button" />
-      ) : null}
+      {icon ? <Icon icon={icons?.moreIcon || ''} color={theme?.palette?.primary.text} alt="button" /> : null}
       <span children={children} />
     </div>
   );

@@ -15,7 +15,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-
+import icons from '../../tools/icon-constants';
 /**
  * Render interfaces for the user to submit feedback.
  *
@@ -27,7 +27,6 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Feedback() {
   const { configuration } = useConfiguration();
-  const configurationThumb = configuration?.feedback?.customFeedback?.icons;
   const { addResponse } = useContext(DialogContext);
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -122,10 +121,10 @@ export default function Feedback() {
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
             <Button color="error" onClick={onVoteNegative} variant="icon">
-              <Icon icon={configurationThumb?.thumbDown} color={theme.palette.primary.text} alt="downVote" />
+              <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt="downVote" />
             </Button>
             <Button color="success" onClick={onVotePositive} variant="icon">
-              <Icon icon={configurationThumb?.thumbUp} color={theme.palette.primary.text} alt="upVote" />
+              <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt="upVote" />
             </Button>
           </div>
         )}

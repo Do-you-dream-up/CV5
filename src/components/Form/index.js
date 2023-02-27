@@ -7,7 +7,7 @@ import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import Icon from '../Icon/Icon';
-
+import icons from '../../tools/icon-constants';
 /**
  * Base form component.
  *
@@ -22,8 +22,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
   const { t } = useTranslation('translation');
   const theme = useTheme();
 
-  const getSubmitIcon = () =>
-    thinking && <Icon icon={configuration.feedback.form} color={theme.palette.primary.text} alt="submit" />;
+  const getSubmitIcon = () => thinking && <Icon icon={icons.form} color={theme.palette.primary.text} alt="submit" />;
 
   const onCancel =
     typeof onReject === 'function'
