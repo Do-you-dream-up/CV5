@@ -27,6 +27,7 @@ import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
@@ -58,6 +59,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
+  const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
@@ -168,6 +170,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         disable: () => setDisabled && setDisabled(true),
         enable: () => setDisabled && setDisabled(false),
         lock: (value = true) => setLocked && setLocked(value),
+        upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary && toggleSecondary(open, { body, title })(),
         toggle: (mode) => toggle(mode),
@@ -178,6 +181,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.reword = window.dydu.chat.ask;
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
+      window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
     }
 
     setReady(true);
@@ -208,10 +212,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     [classes.rootHidden]: !open,
   });
   const idLabel = 'dydu-window-label-bot';
-  const tabIndex = parseInt('0', 10);
+
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <span className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
+      <span className={classes.srOnly} tabIndex={0} id={idLabel}>
         {labelChatbot}
       </span>
       <div>
@@ -229,7 +233,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div
-                  tabIndex={tabIndex}
+                  tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
                   })}
