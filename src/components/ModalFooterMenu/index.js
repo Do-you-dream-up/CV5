@@ -9,6 +9,7 @@ import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import icons from '../../tools/icon-constants';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -25,7 +26,6 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const spaces = t('footer.menu.spaces');
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
-  const footerIcon = configuration.footer.icons;
 
   const printConversation = () => {
     dydu.printHistory();
@@ -33,24 +33,24 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
 
   const items = [
     {
-      icon: footerIcon?.printer,
+      icon: icons?.printer,
       onClick: interactions.length > 1 ? () => printConversation() : null,
       text: print,
       when: !!_printConversation,
     },
     {
-      icon: footerIcon?.email,
+      icon: icons?.email,
       onClick: () => window.dydu.promptEmail.prompt('exportConv'),
       text: email,
       when: !!exportConversation,
     },
     {
-      icon: footerIcon?.database,
+      icon: icons?.database,
       onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
     },
     {
-      icon: footerIcon?.shield,
+      icon: icons?.shield,
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
       text: gdpr,
       when: !!sendGdprData,

@@ -1,9 +1,10 @@
 @font-face {
   font-family: 'Dydu-Font-Icon';
-  src:  url('./Dydu-Font-Icon.eot');
-  src: url('./Dydu-Font-Icon.woff') format('woff'),
-  url('./Dydu-Font-Icon.ttf') format('ttf'),
-  url('./Dydu-Font-Icon.svg') format('svg');
+  src:  url('fonts/Dydu-Font-Icon.eot?46tx4h');
+  src:  url('fonts/Dydu-Font-Icon.eot?46tx4h#iefix') format('embedded-opentype'),
+    url('fonts/Dydu-Font-Icon.ttf?46tx4h') format('truetype'),
+    url('fonts/Dydu-Font-Icon.woff?46tx4h') format('woff'),
+    url('fonts/Dydu-Font-Icon.svg?46tx4h#Dydu-Font-Icon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-power:before {
+  content: "\e957";
+  color: #46525f;
+}
+.icon-time:before {
+  content: "\e958";
+  color: #46525f;
+}
+.icon-timer:before {
+  content: "\e959";
+  color: #46525f;
+}
 .icon-microphon:before {
   content: "\e952";
   color: #46525f;
@@ -67,8 +80,6 @@
 .icon-open-in-new:before {
   content: "\e94f";
   color: #46525f;
-  margin-left: 10px;
-  font-size: 0.8em;
 }
 .icon-shield-lock:before {
   content: "\e950";

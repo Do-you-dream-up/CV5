@@ -608,12 +608,12 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages) =>
+  setLocale = (locale, languages = []) =>
     new Promise((resolve, reject) => {
       if (!this.locale || languages?.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
-        resolve(locale);
+        return resolve(locale);
       } else {
         reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
       }

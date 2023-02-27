@@ -19,6 +19,7 @@ import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
+import Icon from '../Icon/Icon';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -364,14 +365,16 @@ const Writing = () => {
 };
 
 export const InteractionNotification = ({ notification }) => {
-  const { text, iconSrc } = useNotificationHelper(notification);
+  const { text, iconName } = useNotificationHelper(notification);
 
-  const canRender = useMemo(() => isDefined(text) && isDefined(iconSrc), [text, iconSrc]);
+  const canRender = useMemo(() => isDefined(text) && isDefined(iconName), [text, iconName]);
 
   return !canRender ? null : (
     <Scroll>
       <InChatNotification>
-        <img className="icon" src={iconSrc} alt="notificationIcon" />
+        <div className="icon">
+          <Icon color="grey" icon={iconName} alt={''} />
+        </div>
         <p>{text}</p>
       </InChatNotification>
     </Scroll>

@@ -44,9 +44,22 @@ export default createUseStyles((theme) => ({
     cursor: 'wait',
   },
   vote: {
-    '& > :not(:last-child)': {
-      marginRight: '.5em',
-    },
     display: 'flex',
+    gap: '.5em',
+    '& > *': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      textAlign: 'center',
+      '& .icon-thumb-down, & .icon-thumb-up': {
+        position: 'relative',
+      },
+      '& .icon-thumb-up': {
+        bottom: '1px',
+      },
+      '& .icon-thumb-down': {
+        top: '2px',
+      },
+    },
   },
 }));

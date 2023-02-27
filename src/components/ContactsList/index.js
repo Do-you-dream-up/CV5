@@ -1,19 +1,19 @@
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import useStyles from './styles';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
-
+import { useTheme } from 'react-jss';
+import icons from '../../tools/icon-constants';
 /**
  * Contact list for phone numbers, emails and social networks
  */
 
 export default function ContactsList({ icon, id, list, title }) {
   const classes = useStyles();
-  const { configuration } = useConfiguration();
+  const theme = useTheme();
   return (
     <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
-        <Icon icon={icon} alt={id} />
+        <Icon icon={icon} color={theme?.palette?.text.primary} alt="" />
         <h4>{title}</h4>
       </div>
       {list.map((item, index) => (
@@ -26,7 +26,7 @@ export default function ContactsList({ icon, id, list, title }) {
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">
                 {item.socialText}
               </a>
-              <Icon icon={configuration?.contacts?.openInNew} alt="open_in_new" />
+              <Icon icon={icons.openInNew} alt="open_in_new" />
             </div>
           )}
         </div>

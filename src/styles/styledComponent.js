@@ -10,8 +10,7 @@ export const InChatNotification = styled.aside`
   justify-content: center;
   text-align: center;
   color: grey;
-  & img.icon {
-    width: 1em;
+  & .icon {
     margin: 0.5em auto 0em;
   }
 `;
