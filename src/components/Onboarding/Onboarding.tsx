@@ -61,7 +61,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           role="tabpanel"
         >
           <div className={c('dydu-onboarding-image', classes.image)}>
-            <img src={path} alt={path} />
+            <img src={path} alt={''} />
           </div>
           <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
           <div
