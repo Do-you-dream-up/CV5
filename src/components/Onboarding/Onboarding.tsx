@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
  */
 
 interface OnboardingProps {
-  children?: any[];
+  children?: any;
   render?: boolean;
 }
 
@@ -35,8 +35,8 @@ export default function Onboarding({ children, render }: OnboardingProps) {
     useContext(OnboardingContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('onboarding');
   const classes = useStyles({ configuration });
-  const { t } = useTranslation('translation');
-  const should = render && active;
+  const { t, ready } = useTranslation('translation');
+  const should = ready && render && active;
   const { enable, image1, image2, image3 } = configuration?.onboarding || {};
   const steps: Steps[] = t('onboarding.steps');
   const skip = t('onboarding.skip');
@@ -50,58 +50,58 @@ export default function Onboarding({ children, render }: OnboardingProps) {
     if (active && enable) event?.('onboardingDisplay');
   }, [active, enable, event]);
 
-  return !enable ? (
-    children
-  ) : should ? (
-    <div className={c('dydu-onboarding', classes.root)}>
-      <div
-        className={c('dydu-onboarding-carousel', classes.carousel)}
-        id={`step-${index.toString()}`}
-        aria-labelledby={`bullet-${index.toString()}`}
-        role="tabpanel"
-      >
-        <div className={c('dydu-onboarding-image', classes.image)}>
-          <img src={path} alt={path} />
-        </div>
-        <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
+  if (!enable || !active) return children;
+  if (should)
+    return (
+      <div className={c('dydu-onboarding', classes.root)}>
         <div
-          className={c('dydu-onboarding-body', classes.body)}
-          dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
-        />
-        <button type="button" onClick={onEnd} id="skip-onboarding">
-          {skip}
-        </button>
-      </div>
-      <div className={c('dydu-onboarding-actions', classes.actions)}>
-        {steps.length > 1 && (
-          <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
-            {steps.map((_, i) => (
-              <div
-                className={c('dydu-carousel-bullet', {
-                  [classes.active]: i === index,
-                })}
-                key={i}
-                onClick={() => onStep(i)}
-                id={`bullet-${i.toString()}`}
-                role="tab"
-                aria-controls={`step-${i.toString()}`}
-              />
-            ))}
-          </ol>
-        )}
-        <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-          <Button
-            children={previous}
-            disabled={!index}
-            secondary={true}
-            onClick={hasPrevious ? onPrevious : null}
-            id="onboarding-previous"
+          className={c('dydu-onboarding-carousel', classes.carousel)}
+          id={`step-${index.toString()}`}
+          aria-labelledby={`bullet-${index.toString()}`}
+          role="tabpanel"
+        >
+          <div className={c('dydu-onboarding-image', classes.image)}>
+            <img src={path} alt={path} />
+          </div>
+          <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
+          <div
+            className={c('dydu-onboarding-body', classes.body)}
+            dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
           />
-          <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
+          <button type="button" onClick={onEnd} id="skip-onboarding">
+            {skip}
+          </button>
+        </div>
+        <div className={c('dydu-onboarding-actions', classes.actions)}>
+          {steps?.length > 1 && (
+            <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
+              {steps &&
+                steps?.map((_, i) => (
+                  <div
+                    className={c('dydu-carousel-bullet', {
+                      [classes.active]: i === index,
+                    })}
+                    key={i}
+                    onClick={() => onStep(i)}
+                    id={`bullet-${i.toString()}`}
+                    role="tab"
+                    aria-controls={`step-${i.toString()}`}
+                  />
+                ))}
+            </ol>
+          )}
+          <div className={c('dydu-onboarding-buttons', classes.buttons)}>
+            <Button
+              children={previous}
+              disabled={!index}
+              secondary={true}
+              onClick={hasPrevious ? onPrevious : null}
+              id="onboarding-previous"
+            />
+            <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
+          </div>
         </div>
       </div>
-    </div>
-  ) : (
-    !active && children
-  );
+    );
+  return null;
 }

@@ -19,7 +19,7 @@ import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import UploadFileProvider from '../../contexts/UploadFileContext';
 
-const Chatbox = lazy(() => import('../Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
+const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
 
 /**

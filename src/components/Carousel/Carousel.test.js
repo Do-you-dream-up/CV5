@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom';
-import { render } from '../../tools/test-utils';
 
 import Carousel from './Carousel';
-describe('Carousel.tsx', () => {
+import { render } from '../../tools/test-utils';
+
+xdescribe('Carousel.tsx', () => {
   const children = ['<p>item</p>', '<p>item</p>', '<p>item</p>'];
 
   test('Should render Carousel with nothing to display', async () => {

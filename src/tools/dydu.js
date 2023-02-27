@@ -24,8 +24,8 @@ import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
-import qs from 'qs';
 import { initI18N } from './internationalization';
+import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
 
@@ -83,8 +83,9 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server }) => ({
+    (({ backUpServer, bot: id, server, configId }) => ({
       ...(id && { id }),
+      ...(configId && { configId }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
@@ -420,7 +421,12 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    try {
+      return Local.contextId.createKey(this.getBotId(), BOT.configId);
+    } catch (e) {
+      console.error(e);
+      return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    }
   }
 
   getContextIdFromLocalStorage() {
@@ -604,7 +610,7 @@ export default new (class Dydu {
    */
   setLocale = (locale, languages) =>
     new Promise((resolve, reject) => {
-      if (!this.locale || languages.includes(locale)) {
+      if (!this.locale || languages?.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
         resolve(locale);
@@ -1015,13 +1021,13 @@ export default new (class Dydu {
     try {
       const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
       locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
-      this.setLocale(locale).catch(console.error);
+      this.setLocale(locale, configuration.application.languages).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
       console.info('Error while initializing locale, fallback to browser locale');
-      this.setLocale(locale).catch(console.error);
+      this.setLocale(locale, configuration.application.languages).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;

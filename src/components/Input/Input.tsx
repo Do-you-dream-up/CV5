@@ -18,8 +18,8 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 
 interface InputProps {
-  onRequest: (input: string) => void;
-  onResponse: (input: string) => void;
+  onRequest?: (input: string) => void;
+  onResponse?: (input: Servlet.ChatResponseValues) => void;
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
@@ -129,7 +129,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       text = escapeHTML(text.trim());
       if (text) {
         reset();
-        onRequest(text);
+        onRequest && onRequest(text);
         dispatchEvent && dispatchEvent('chatbox', 'questionSent', text);
         sendInput(text);
       }
