@@ -10,7 +10,7 @@ import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import Icon from '../Icon/Icon';
-
+import icons from '../../tools/icon-constants';
 /**
  * Typically used with the `Interaction` component.
  *
@@ -63,13 +63,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const previousAction: ActionProps[] = [
     {
-      children: (
-        <Icon
-          icon={configuration?.carousel.iconCaretLeft || ''}
-          alt={t('carousel.previous')}
-          title={t('carousel.previous')}
-        />
-      ),
+      children: <Icon icon={icons.iconCaretLeft || ''} alt={t('carousel.previous')} title={t('carousel.previous')} />,
       disabled: !hasPrevious(),
       onClick: triggerPrevious,
       variant: 'icon',
@@ -79,13 +73,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const nextAction: ActionProps[] = [
     {
-      children: (
-        <Icon
-          icon={configuration?.carousel?.iconCaretRight || ''}
-          alt={t('carousel.next')}
-          title={t('carousel.next')}
-        />
-      ),
+      children: <Icon icon={icons.iconCaretRight || ''} alt={t('carousel.next')} title={t('carousel.next')} />,
       disabled: !hasNext(),
       onClick: triggerNext,
       variant: 'icon',
