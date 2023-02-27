@@ -28,7 +28,7 @@
     "storage": true,
     "dismissable": true,
     "more": false,
-    "moreIcon": "icon-open-in-new",
+    "moreIcon": "dydu-open-in-new-white.svg",
     "moreLink": "https://goo.gle",
     "transient": false
   },
@@ -36,9 +36,7 @@
     "bullets": true,
     "controls": true,
     "offset": 5,
-    "offsetBetweenCard": 100,
-    "iconCaretLeft": "icon-caret-left",
-    "iconCaretRight": "icon-caret-right"
+    "offsetBetweenCard": 100
   },
   "chatbox": {
     "expandable": true,
@@ -51,12 +49,8 @@
   },
   "contacts": {
     "phone": true,
-    "phoneIcon": "icon-chatbox_phone",
     "email": true,
-    "emailIcon": "icon-chatbox_mail",
-    "socialNetwork": true,
-    "socialNetworkIcon": "icon-chatbox_account",
-    "openInNew": "icon-open-in-new"
+    "socialNetwork": true
   },
   "dialog": {
     "top": true
@@ -106,25 +100,14 @@
     "customFeedback": {
       "enable": false,
       "positiveCustom": "Connaissance suite satisfaction",
-      "negativeCustom": "Connaissance suite insatisfaction",
-      "icons": {
-        "thumbDown": "icon-thumb-down",
-        "thumbUp": "icon-thumb-up"
-      }
+      "negativeCustom": "Connaissance suite insatisfaction"
     }
   },
   "font": {
     "url": ""
   },
   "footer": {
-    "translate": true,
-    "icons": {
-      "database": "icon-database",
-      "printer": "icon-printer",
-      "email": "icon-email-send",
-      "shield": "icon-shield-lock",
-      "submit": "icon-send"
-    }
+    "translate": true
   },
   "gdprDisclaimer": {
     "enable": true
@@ -143,14 +126,13 @@
       "minFontSize": 0.75
     },
     "icons": {
-      "close": "icon-close",
-      "collapse": "icon-minimize",
-      "expand": "icon-maximize",
-      "fontIncrease": "icon-font-plus",
-      "fontDecrease": "icon-font-minus",
-      "minimize": "icon-chatbox_reduire",
-      "more": "icon-chatbox_option",
-      "dots": "icon-dots"
+      "close": "dydu-close-white.svg",
+      "collapse": "dydu-arrow-collapse-white.svg",
+      "expand": "dydu-arrow-expand-white.svg",
+      "fontIncrease": "dydu-font-plus-white.svg",
+      "fontDecrease": "dydu-font-minus-white.svg",
+      "minimize": "dydu-minimize-white.svg",
+      "more": "dydu-cog-white.svg"
     },
     "logo": {
       "customAvatar": false,
@@ -210,9 +192,6 @@
   "saml": {
     "enable": false
   },
-  "saml": {
-    "enable": false
-  },
   "onboarding": {
     "enable": false,
     "image1": "dydu-onboarding-1.svg",
@@ -242,13 +221,6 @@
   "spaces": {
     "active": true,
     "detection": [
-      {
-        "active": false,
-        "mode": "urlpart",
-        "value": {
-          "doyoudreamup.com/test/": "dydu"
-        }
-      },
       {
         "active": false,
         "mode": "cookie",
@@ -300,11 +272,11 @@
     "hasContactTab": false,
     "items": [
       {
-        "icon": "icon-chatbox_conversation",
+        "icon": "icons/dydu-message-text-white.svg",
         "key": "dialog"
       },
       {
-        "icon": "icon-chatbox_contact",
+        "icon": "icons/dydu-account-box-white.svg",
         "key": "contacts"
       }
     ],

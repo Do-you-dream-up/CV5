@@ -3,7 +3,7 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import Actions from '../Actions/Actions';
 import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
-import { EventsContext } from '../../contexts/EventsContext';
+import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import dydu from '../../tools/dydu';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
@@ -30,7 +30,8 @@ const TEASER_TYPES = {
  */
 export default function Teaser({ open, toggle }: TeaserProps) {
   const { configuration } = useConfiguration();
-  const event = useContext(EventsContext).onEvent('teaser');
+
+  const event = useEvent()?.onEvent('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;

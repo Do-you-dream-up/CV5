@@ -9,6 +9,8 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
+import icons from '../../tools/icon-constants';
+
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral
  * content.
@@ -50,7 +52,7 @@ export default function Banner() {
           {
             children: t('banner.more'),
             href: moreLink,
-            icon: `${process.env.PUBLIC_URL}icons/${configuration.banner.moreIcon}`,
+            icon: `${process.env.PUBLIC_URL}icons/${icons.moreIcon}`,
           },
         ]
       : []),
