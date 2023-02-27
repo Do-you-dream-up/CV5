@@ -11,13 +11,13 @@ import { OidcProvider } from '../../contexts/OidcContext';
 import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser/Teaser';
+import UploadFileProvider from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-import UploadFileProvider from '../../contexts/UploadFileContext';
 
 const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
@@ -77,11 +77,11 @@ const App = () => {
                 <UserActionProvider>
                   <DialogProvider>
                     <SurveyProvider>
-                      <LivechatProvider>
-                        <UploadFileProvider>
+                      <UploadFileProvider>
+                        <LivechatProvider>
                           <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                        </UploadFileProvider>
-                      </LivechatProvider>
+                        </LivechatProvider>
+                      </UploadFileProvider>
                     </SurveyProvider>
                     <Teaser open={isChatboxMinimize} toggle={toggle} />
                   </DialogProvider>

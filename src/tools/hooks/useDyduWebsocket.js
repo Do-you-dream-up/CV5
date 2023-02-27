@@ -1,10 +1,11 @@
+import { b64decode, isDefined } from '../helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useWebsocket, { ReadyState } from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
 import { TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
-import { isDefined } from '../helpers';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
 
@@ -36,6 +37,7 @@ const MESSAGE_TYPE = {
   contextResponse: 'contextResponse',
   notification: 'notification',
   endPolling: 'endPolling',
+  uploadRequest: 'uploadRequest',
 };
 
 let handleSurvey = null;
@@ -55,6 +57,7 @@ const completeLivechatPayload = (configuration) =>
   });
 
 export default function useDyduWebsocket() {
+  const { showUploadFileButton } = useUploadFile();
   const [socketProps, setSocketProps] = useState([null, {}]);
   const [handshakeStepCountdown, setHandshakeStepCountdown] = useState(2);
   const { lastMessage, sendJsonMessage, readyState } = useWebsocket(...socketProps);
@@ -80,6 +83,7 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
+    if (LivechatPayload.is.operatorSendUploadRequest(messageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, messageData]);
@@ -153,6 +157,9 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.survey:
         return handleSurvey(messageData);
 
+      case MESSAGE_TYPE.uploadRequest:
+        return showUploadFileButton();
+
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
 
@@ -170,7 +177,16 @@ export default function useDyduWebsocket() {
         return close();
       }
     }
-  }, [close, displayMessage, displayNotification, handleError, messageData, messageType, processHandshakeNextStep]);
+  }, [
+    close,
+    showUploadFileButton,
+    displayMessage,
+    displayNotification,
+    handleError,
+    messageData,
+    messageType,
+    processHandshakeNextStep,
+  ]);
 
   useEffect(() => {
     if (handshakeStepCountdown === 1) return sendFirstHandshake();
