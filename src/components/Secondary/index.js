@@ -9,6 +9,7 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import Icon from '../Icon/Icon';
+import icons from '../../tools/icon-constants';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -75,7 +76,7 @@ export default function Secondary({ anchor, mode }) {
         {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
           <Button color="primary" onClick={closeSecondary} type="button" variant="icon">
-            <Icon icon={configuration?.header?.icons?.close} alt="close" />
+            <Icon icon={icons?.close} alt="close" />
           </Button>
         </div>
       </div>

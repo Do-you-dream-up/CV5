@@ -21,6 +21,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import { useTheme } from 'react-jss';
+import icons from '../../tools/icon-constants';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -55,7 +56,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions, typeResponse } = useContext(DialogContext);
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
-  const configurationHeaderIcons = configuration?.header?.icons;
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
 
@@ -126,7 +126,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: <Icon icon={configurationHeaderIcons?.dots} color={iconColorWhite} alt="dots" />,
+      children: <Icon icon={icons?.dots} color={iconColorWhite} alt="dots" />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
@@ -134,7 +134,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-dots',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.more} color={iconColorWhite} alt="more" />,
+      children: <Icon icon={icons?.more} color={iconColorWhite} alt="more" />,
       onClick: onToggleMore,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
@@ -142,7 +142,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-more',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.fontIncrease} color={iconColorWhite} alt="increaseFont" />,
+      children: <Icon icon={icons?.fontIncrease} color={iconColorWhite} alt="increaseFont" />,
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
@@ -151,7 +151,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-increase',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.fontDecrease} color={iconColorWhite} alt="decreaseFont" />,
+      children: <Icon icon={icons?.fontDecrease} color={iconColorWhite} alt="decreaseFont" />,
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
@@ -160,7 +160,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-decrease',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.expand} color={iconColorWhite} alt="expand" />,
+      children: <Icon icon={icons?.expand} color={iconColorWhite} alt="expand" />,
 
       onClick: () => onExpand(true)(),
       variant: 'icon',
@@ -169,7 +169,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-expand',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.collapse} color={iconColorWhite} alt="collapse" />,
+      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt="collapse" />,
       onClick: () => onExpand(false)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
@@ -177,7 +177,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-collapse',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.minimize} color={iconColorWhite} alt="minimize" />,
+      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt="minimize" />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
@@ -185,7 +185,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-minimize',
     },
     {
-      children: <Icon icon={configurationHeaderIcons?.close} color={iconColorWhite} alt="close" />,
+      children: <Icon icon={icons?.close} color={iconColorWhite} alt="close" />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,

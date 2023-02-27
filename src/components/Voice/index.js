@@ -10,6 +10,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import Icon from '../Icon/Icon';
 import { useTheme } from 'react-jss';
 import Actions from '../Actions/Actions';
+import icons from '../../tools/icon-constants';
 
 /**
  * TTS / STT
@@ -46,24 +47,12 @@ export default function Voice({ show, t }) {
   const [audio] = React.useState(new Audio());
 
   const iconMicrophon = (
-    <Icon
-      icon={configuration?.Voice?.icons?.microphon || ''}
-      color={themeColor?.palette?.primary.main}
-      alt="microphon"
-    />
+    <Icon icon={icons?.microphon || ''} color={themeColor?.palette?.primary.main} alt="microphon" />
   );
-  const iconPlay = (
-    <Icon icon={configuration?.Voice?.icons?.play || ''} color={themeColor?.palette?.primary.main} alt="play" />
-  );
-  const iconPause = (
-    <Icon icon={configuration?.Voice?.icons?.pause || ''} color={themeColor?.palette?.primary.main} alt="pause" />
-  );
-  const iconReplay = (
-    <Icon icon={configuration?.Voice?.icons?.replay || ''} color={themeColor?.palette?.primary.main} alt="replay" />
-  );
-  const iconStop = (
-    <Icon icon={configuration?.Voice?.icons?.stop || ''} color={themeColor?.palette?.primary.main} alt="stop" />
-  );
+  const iconPlay = <Icon icon={icons?.play || ''} color={themeColor?.palette?.primary.main} alt="play" />;
+  const iconPause = <Icon icon={icons?.pause || ''} color={themeColor?.palette?.primary.main} alt="pause" />;
+  const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt="replay" />;
+  const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt="stop" />;
 
   const startRecordButton = Tts.getButtonAction(t.start, iconMicrophon, () => {
     window.dydu.ui.toggle(2);
