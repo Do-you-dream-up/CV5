@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react';
 
+import dydu from 'src/tools/dydu';
 import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +10,7 @@ interface UploadFileContextProps {
   isInDisabledList?: (id: any) => boolean;
   addToDisabledList?: (id: any) => void;
   fileSelected?: File | null;
+  isSended?: boolean;
   validateFile?: (file: File) => void;
   onSelectFile?: (file: File, inputRef: any) => void;
   errorFormatMessage?: string | null;
@@ -17,6 +19,7 @@ interface UploadFileContextProps {
   handleCancel?: () => void;
   showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
+  IsUploadFileSended?: () => void;
 }
 
 interface UploadFileProviderProps {
@@ -34,6 +37,7 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [listDisabledInstance, setDisabledList] = useState<any[]>([]);
+  const [isSended, setIsSended] = useState<boolean>(false);
 
   const extractFileFromEvent = (event: any) => {
     setFileSelected(event.target.files[0]);
@@ -90,6 +94,12 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     setDisabledList((list) => list.concat([id]));
   }, []);
 
+  const IsUploadFileSended = useCallback(() => {
+    const status = dydu.getLastResponse().status;
+    const statusOk = status && status >= 200 && status <= 206;
+    if (statusOk) setIsSended(true);
+  }, [isSended]);
+
   const dataContext = useMemo(() => {
     return {
       removeFromDisabledList,
@@ -104,6 +114,8 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
       handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton: appendButtonUploadFileAsInteraction,
+      IsUploadFileSended,
+      isSended,
     };
   }, [
     removeFromDisabledList,
@@ -119,6 +131,8 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     handleCancel,
     appendButtonUploadFileAsInteraction,
     listDisabledInstance,
+    IsUploadFileSended,
+    isSended,
   ]);
 
   return <UploadFileContext.Provider value={dataContext}>{children}</UploadFileContext.Provider>;

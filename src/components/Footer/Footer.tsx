@@ -24,7 +24,7 @@ interface FooterProps {
 }
 
 export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) {
-  const { showConfirmSelectedFile } = useUploadFile() || {};
+  const { showConfirmSelectedFile, isSended } = useUploadFile() || {};
 
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
@@ -66,14 +66,14 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
   ];
 
   const renderInput = useCallback(() => {
-    return showConfirmSelectedFile ? (
+    return showConfirmSelectedFile && !isSended ? (
       <UploadInput />
     ) : (
       <div className={classes.content}>
         <Input onRequest={onRequest} onResponse={onResponse} />
       </div>
     );
-  }, [showConfirmSelectedFile]);
+  }, [showConfirmSelectedFile, isSended]);
 
   return (
     <>
