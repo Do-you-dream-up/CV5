@@ -69,6 +69,7 @@ export const FileUploadContainer = styled.div`
 `;
 
 export const Button = styled.button`
+  display: block;
   text-align: center;
   border-radius: 5px;
   border: 1px solid transparent;
@@ -79,6 +80,7 @@ export const Button = styled.button`
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px;
   ${(props) =>
     props.cancel &&
     css`

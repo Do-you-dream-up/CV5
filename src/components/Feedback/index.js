@@ -8,14 +8,15 @@ import { DialogContext } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Icon from '../Icon/Icon';
-import Scroll from '../Scroll';
+import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import icons from '../../tools/icon-constants';
+
 /**
  * Render interfaces for the user to submit feedback.
  *

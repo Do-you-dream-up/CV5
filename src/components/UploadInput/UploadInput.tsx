@@ -1,11 +1,16 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 
 import FileUploadButton from '../FileUploadButton/FileUploadButton';
-import PropTypes from 'prop-types';
+import dydu from 'src/tools/dydu';
 import { isDefined } from '../../tools/helpers';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+
+interface SendButtonProps {
+  title: string;
+  onClick: any;
+}
 
 const UploadInput = () => {
   const { t } = useTranslation('translation');
@@ -34,17 +39,35 @@ const UploadInput = () => {
   };
 
   const label = useMemo(() => (!errorFormatMessage ? send : reupload), [errorFormatMessage]);
+  const SendButton = ({ title, onClick }: SendButtonProps) => (
+    <Button send title={title} onClick={onClick}>
+      {title}
+    </Button>
+  );
+
+  const sendFile = (file) => {
+    return dydu.sendUpoadFile(file);
+  };
 
   const renderAction = () => {
-    return !errorFormatMessage ? <SendButton title={label} /> : <FileUploadButton label={label} keepActive />;
+    return !errorFormatMessage ? (
+      <div>
+        coucou
+        <SendButton title={label} onClick={() => sendFile(fileSelected)} />
+      </div>
+    ) : (
+      <FileUploadButton label={label} keepActive />
+    );
   };
 
   const rendererButtons = () => {
     return (
       <div className="container-btns">
-        <Button cancel title="Cancel" onClick={handleCancel}>
-          {no}
-        </Button>
+        <div>
+          <Button cancel title="Cancel" onClick={handleCancel}>
+            {no}
+          </Button>
+        </div>
         {renderAction()}
       </div>
     );
@@ -59,13 +82,3 @@ const UploadInput = () => {
 };
 
 export default UploadInput;
-
-const SendButton = ({ title }) => (
-  <Button send title={title}>
-    {title}
-  </Button>
-);
-
-SendButton.propTypes = {
-  title: PropTypes.string.isRequired,
-};

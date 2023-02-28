@@ -9,9 +9,10 @@ import Bubble from '../Bubble';
 import Carousel from '../Carousel/Carousel';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
+import Icon from '../Icon/Icon';
 import Loader from '../Loader';
 import PropTypes from 'prop-types';
-import Scroll from '../Scroll';
+import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
@@ -19,7 +20,6 @@ import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
-import Icon from '../Icon/Icon';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {

@@ -919,6 +919,16 @@ export default new (class Dydu {
     variables: this.getVariables(),
   });
 
+  sendUpoadFile = async (file) => {
+    const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file`;
+
+    return API.post(path, file, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
   sendSurveyPolling = async (survey, options = {}) => {
     const basePayload = await this.getTalkBasePayload(options);
     let payload = {

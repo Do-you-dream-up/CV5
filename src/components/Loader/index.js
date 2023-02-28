@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Scroll from '../Scroll';
+import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import { createElement } from 'react';
 import { useConfiguration } from '../../contexts/ConfigurationContext';

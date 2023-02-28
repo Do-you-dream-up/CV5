@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import { Button } from '../../styles/styledComponent';
+import Scroll from '../Scroll/Scroll';
 import { isDefined } from '../../tools/helpers';
 import useId from '../../tools/hooks/useId';
 import { useUploadFile } from '../../contexts/UploadFileContext';
@@ -40,16 +41,18 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
   );
 
   return (
-    <Button disabled={isInDisabledList && isInDisabledList(label)} data-testid="file-upload-button">
-      <input
-        id={inputId}
-        type="file"
-        hidden
-        onChange={onSelect}
-        disabled={isInDisabledList && isInDisabledList(label)}
-        ref={inputRef}
-      />
-      <label htmlFor={inputId}>{label}</label>
-    </Button>
+    <Scroll>
+      <Button disabled={isInDisabledList && isInDisabledList(label)} data-testid="file-upload-button">
+        <input
+          id={inputId}
+          type="file"
+          hidden
+          onChange={onSelect}
+          disabled={isInDisabledList && isInDisabledList(label)}
+          ref={inputRef}
+        />
+        <label htmlFor={inputId}>{label}</label>
+      </Button>
+    </Scroll>
   );
 }
