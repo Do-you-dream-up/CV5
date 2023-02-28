@@ -251,7 +251,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   <Tab component={Contacts} value="contacts" children render={false} />
                 </div>
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} focus />}
+                {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
             </GdprDisclaimer>
           </>

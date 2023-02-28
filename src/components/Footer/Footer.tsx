@@ -18,7 +18,6 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
  */
 
 interface FooterProps {
-  focus?: boolean;
   onRequest?: (value: string) => void;
   onResponse?: (value: Servlet.ChatResponseValues) => void;
   [key: string]: any;
