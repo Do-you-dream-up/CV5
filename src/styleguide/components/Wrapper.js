@@ -1,5 +1,3 @@
-import '../../tools/internationalization';
-
 import { ThemeProvider, createUseStyles } from 'react-jss';
 import { useEffect, useState } from 'react';
 
