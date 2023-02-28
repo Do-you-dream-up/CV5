@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
-import dydu from 'src/tools/dydu';
+import dydu from '../../tools/dydu';
 import { isDefined } from 'src/tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
