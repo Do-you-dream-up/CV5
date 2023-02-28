@@ -1,10 +1,10 @@
-import { b64decode, isDefined } from '../helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useWebsocket, { ReadyState } from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
 import { TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
+import { isDefined } from '../helpers';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
