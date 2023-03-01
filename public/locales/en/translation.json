@@ -218,7 +218,9 @@
   "uploadFile": {
     "errorFormatAndSizeMessage": "Document size is too large and invalid format",
     "errorFormatMessage": "The selected format is not allowed",
-    "errorSizeMessage": "The document size is too high, Max 100kB"
+    "errorSizeMessage": "The document size is too high, Max 100kB",
+    "sentMessage": "Your document <strong>{{name}}</strong> has been received",
+    "errorMessage": "Error, your document has not been sent."
   },
   "survey": {
     "sentMessage": "Your answer to the survey has been sent.",

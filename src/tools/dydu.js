@@ -919,26 +919,54 @@ export default new (class Dydu {
     variables: this.getVariables(),
   });
 
-  sendUpoadFile = async (file) => {
-    const formData = new FormData();
-    formData.append('dydu-upload-file', file);
-    const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
-
+  setApiDefaultHeadersFormData = () => {
     API.defaults.headers = {
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
       'Content-Type': 'multipart/form-data',
     };
+  };
 
+  setApiDefaultHeadersFormUrlEncoded = () => {
+    API.defaults.headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    };
+  };
+
+  setApiDefaultBaseUrlUploadFile = () => {
     API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/`;
+  };
 
-    return API.post(path, formData).then((response) => {
-      API.defaults.headers = {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-      };
-      API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
-      return response;
-    });
+  setApiDefaultBaseUrl = () => {
+    API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
+  };
+
+  sendUpoadFile = async (file) => {
+    const formData = new FormData();
+
+    formData.append('dydu-upload-file', file);
+    const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+    this.setApiDefaultHeadersFormData();
+    this.setApiDefaultBaseUrlUploadFile();
+
+    return API.post(path, formData)
+      .then((response) => {
+        this.setApiDefaultHeadersFormUrlEncoded();
+        this.setApiDefaultBaseUrl();
+        return response;
+      })
+      .then(this.displayUploadFileSent(file.name));
+  };
+
+  displayUploadFileSent = (fileName) => {
+    if (!this.getLastResponse().data?.values?.startLivechat) {
+      let status = status || this.getLastResponse().status;
+      const statusOk = status >= 200 && status <= 206;
+      if (statusOk) window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
+      else window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
+    } else {
+      return;
+    }
   };
 
   sendSurveyPolling = async (survey, options = {}) => {
