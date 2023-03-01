@@ -45,29 +45,33 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   };
   const getFileSize = (file: File) => Math.ceil(file.size / Math.pow(1024, 1));
 
-  const validateFile = (file: File) => {
-    const allowedFormat = [
-      'image/png',
-      'image/jpg',
-      'image/jpeg',
-      'image/svg+xml',
-      'application/pdf',
-      'application/msword',
-    ];
-    const allowedFormatTargeted = allowedFormat.includes(file.type);
-    if (allowedFormatTargeted && getFileSize(file) <= 100) {
-      return true;
-    } else if (!allowedFormatTargeted && getFileSize(file) > 100) {
-      setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
-      return false;
-    } else if (!allowedFormatTargeted) {
-      setErrorFormatMessage(t('uploadFile.errorFormatMessage'));
-      return false;
-    } else {
-      setErrorFormatMessage(t('uploadFile.errorSizeMessage'));
-      return false;
-    }
-  };
+  const validateFile = useCallback(
+    (file: File) => {
+      const allowedFormat = [
+        'image/png',
+        'image/jpg',
+        'image/jpeg',
+        'image/svg+xml',
+        'application/pdf',
+        'application/msword',
+      ];
+      const allowedFormatTargeted = allowedFormat.includes(file.type);
+      if (allowedFormatTargeted && getFileSize(file) <= 100) {
+        setErrorFormatMessage('');
+        return true;
+      } else if (!allowedFormatTargeted && getFileSize(file) > 100) {
+        setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
+        return false;
+      } else if (!allowedFormatTargeted) {
+        setErrorFormatMessage(t('uploadFile.errorFormatMessage'));
+        return false;
+      } else {
+        setErrorFormatMessage(t('uploadFile.errorSizeMessage'));
+        return false;
+      }
+    },
+    [fileSelected],
+  );
 
   const onSelectFile = (file: File, inputRef: any) => {
     validateFile?.(file);

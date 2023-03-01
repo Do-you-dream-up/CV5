@@ -23,15 +23,15 @@ const UploadInput = () => {
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
 
+  const renderError = () => errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
   const renderFileInfo = () =>
     isDefined(fileSelected) && (
       <>
         <span className="overflow-hidden name-file">{fileName} </span>
         <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
+        {renderError()}
       </>
     );
-
-  const renderError = () => errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
 
   const label = useMemo(() => (!errorFormatMessage ? send : reupload), [errorFormatMessage]);
   const SendButton = ({ title, onClick }: SendButtonProps) => (
@@ -71,7 +71,7 @@ const UploadInput = () => {
   return (
     <FileUploadContainer data-testid="footer-upload-input">
       {renderFileInfo()}
-      {renderError()}
+      {/* {renderError()} */}
       {rendererButtons()}
     </FileUploadContainer>
   );
