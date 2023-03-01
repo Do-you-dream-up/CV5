@@ -9,8 +9,9 @@ import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
+import { isDefined } from 'src/tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -24,18 +25,15 @@ export default function Dialog({ dialogRef, open, ...rest }) {
   const classes = useStyles();
   const { top } = configuration.dialog;
   const { t } = useTranslation('translation');
-  // eslint-disable-next-line
-  const { isAppReady } = useEvent();
   const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
   const poweredByActive = configuration.poweredBy?.active;
 
   useEffect(() => {
-    if (isAppReady && spacesActive) {
-      if (!window.dydu.space.get(spacesDetection)) {
+    if (spacesActive) {
+      if (!isDefined(dydu.getSpace(spacesDetection))) {
         setPrompt('spaces');
       }
     }
-    // eslint-disable-next-line
   }, [spacesActive, setPrompt, spacesDetection]);
 
   /**

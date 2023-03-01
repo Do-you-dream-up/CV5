@@ -1061,7 +1061,9 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setInitialSpace(
+      this.getSpace(this.getConfiguration().spaces.detection || this.getConfiguration().spaces.items[0]),
+    );
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }
