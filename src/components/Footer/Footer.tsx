@@ -1,5 +1,5 @@
 import Actions, { ActionProps } from '../Actions/Actions';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Input from '../Input/Input';
 import UploadInput from '../UploadInput/UploadInput';
@@ -24,7 +24,7 @@ interface FooterProps {
 }
 
 export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) {
-  const { showConfirmSelectedFile, isSended } = useUploadFile() || {};
+  const { showConfirmSelectedFile, isSent } = useUploadFile() || {};
 
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
@@ -65,15 +65,14 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
     },
   ];
 
-  const renderInput = useCallback(() => {
-    return showConfirmSelectedFile && !isSended ? (
+  const renderInput = () =>
+    showConfirmSelectedFile && !isSent ? (
       <UploadInput />
     ) : (
       <div className={classes.content}>
         <Input onRequest={onRequest} onResponse={onResponse} />
       </div>
     );
-  }, [showConfirmSelectedFile, isSended]);
 
   return (
     <>

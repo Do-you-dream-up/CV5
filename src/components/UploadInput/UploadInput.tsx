@@ -17,37 +17,31 @@ const UploadInput = () => {
   const no = t('close.no');
   const send = t('input.actions.send');
   const reupload = t('input.actions.reupload');
-  const { fileSelected, handleCancel, validateFile, errorFormatMessage, IsUploadFileSended, isSended } =
-    useUploadFile();
+  const { fileSelected, handleCancel, errorFormatMessage, IsUploadFileSent } = useUploadFile();
+
   const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
 
-  const rendererHeader = () => {
-    validateFile && fileSelected && validateFile(fileSelected);
-    if (!isDefined(fileSelected)) return null;
+  const renderFileInfo = () =>
+    isDefined(fileSelected) && (
+      <>
+        <span className="overflow-hidden name-file">{fileName} </span>
+        <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
+      </>
+    );
 
-    if (errorFormatMessage) {
-      return <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
-    } else {
-      return (
-        <>
-          <span className="overflow-hidden name-file">{fileName} </span>
-          <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
-        </>
-      );
-    }
-  };
+  const renderError = () => errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>;
 
   const label = useMemo(() => (!errorFormatMessage ? send : reupload), [errorFormatMessage]);
   const SendButton = ({ title, onClick }: SendButtonProps) => (
-    <Button send title={title} onClick={onClick}>
+    <Button send title={title} onClick={() => onClick()}>
       {title}
     </Button>
   );
 
   const sendFile = (file) => {
-    IsUploadFileSended && IsUploadFileSended();
+    IsUploadFileSent && IsUploadFileSent();
     return dydu.sendUpoadFile(file);
   };
 
@@ -65,7 +59,7 @@ const UploadInput = () => {
     return (
       <div className="container-btns">
         <div>
-          <Button cancel title="Cancel" onClick={handleCancel}>
+          <Button cancel title="Cancel" onClick={() => handleCancel?.()}>
             {no}
           </Button>
         </div>
@@ -76,7 +70,8 @@ const UploadInput = () => {
 
   return (
     <FileUploadContainer data-testid="footer-upload-input">
-      {rendererHeader()}
+      {renderFileInfo()}
+      {renderError()}
       {rendererButtons()}
     </FileUploadContainer>
   );

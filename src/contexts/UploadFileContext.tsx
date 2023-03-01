@@ -10,7 +10,7 @@ interface UploadFileContextProps {
   isInDisabledList?: (id: any) => boolean;
   addToDisabledList?: (id: any) => void;
   fileSelected?: File | null;
-  isSended?: boolean;
+  isSent?: boolean;
   validateFile?: (file: File) => void;
   onSelectFile?: (file: File, inputRef: any) => void;
   errorFormatMessage?: string | null;
@@ -19,7 +19,7 @@ interface UploadFileContextProps {
   handleCancel?: () => void;
   showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
-  IsUploadFileSended?: () => void;
+  IsUploadFileSent?: () => void;
 }
 
 interface UploadFileProviderProps {
@@ -37,7 +37,7 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [listDisabledInstance, setDisabledList] = useState<any[]>([]);
-  const [isSended, setIsSended] = useState<boolean>(false);
+  const [isSent, setIsSent] = useState<boolean>(false);
 
   const extractFileFromEvent = (event: any) => {
     setFileSelected(event.target.files[0]);
@@ -56,17 +56,21 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     ];
     const allowedFormatTargeted = allowedFormat.includes(file.type);
     if (allowedFormatTargeted && getFileSize(file) <= 100) {
-      setErrorFormatMessage('');
+      return true;
     } else if (!allowedFormatTargeted && getFileSize(file) > 100) {
       setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
+      return false;
     } else if (!allowedFormatTargeted) {
       setErrorFormatMessage(t('uploadFile.errorFormatMessage'));
+      return false;
     } else {
       setErrorFormatMessage(t('uploadFile.errorSizeMessage'));
+      return false;
     }
   };
 
   const onSelectFile = (file: File, inputRef: any) => {
+    validateFile?.(file);
     setSelected(file);
     setInputRef(inputRef);
   };
@@ -94,11 +98,11 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     setDisabledList((list) => list.concat([id]));
   }, []);
 
-  const IsUploadFileSended = useCallback(() => {
+  const IsUploadFileSent = useCallback(() => {
     const status = dydu.getLastResponse().status;
     const statusOk = status && status >= 200 && status <= 206;
-    if (statusOk) setIsSended(true);
-  }, [isSended]);
+    if (statusOk) setIsSent(true);
+  }, [isSent]);
 
   const dataContext = useMemo(() => {
     return {
@@ -114,8 +118,8 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
       handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton: appendButtonUploadFileAsInteraction,
-      IsUploadFileSended,
-      isSended,
+      IsUploadFileSent,
+      isSent,
     };
   }, [
     removeFromDisabledList,
@@ -131,8 +135,8 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     handleCancel,
     appendButtonUploadFileAsInteraction,
     listDisabledInstance,
-    IsUploadFileSended,
-    isSended,
+    IsUploadFileSent,
+    isSent,
   ]);
 
   return <UploadFileContext.Provider value={dataContext}>{children}</UploadFileContext.Provider>;

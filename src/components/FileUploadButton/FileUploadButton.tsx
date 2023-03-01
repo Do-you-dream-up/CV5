@@ -21,8 +21,8 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
   const processUserFileSelection = useCallback(
     (file) => {
       try {
-        onSelectFile && onSelectFile(file, inputRef);
-        !keepActive && addToDisabledList && addToDisabledList(label);
+        onSelectFile?.(file, inputRef);
+        !keepActive && addToDisabledList?.(label);
       } catch (e) {
         console.error('While handling file selection', e);
       }
@@ -42,7 +42,7 @@ export default function FileUploadButton({ label = 'upload', keepActive }: FileU
 
   return (
     <Scroll>
-      <Button disabled={isInDisabledList && isInDisabledList(label)} data-testid="file-upload-button">
+      <Button disabled={isInDisabledList?.(label)} data-testid="file-upload-button">
         <input
           id={inputId}
           type="file"

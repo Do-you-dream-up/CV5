@@ -36,7 +36,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     width: '100%',
     heigth: 60,
     minHeight: 60,
-    maxHeight: 160,
+    maxHeight: 'fit-content',
     [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
     },
