@@ -10,6 +10,7 @@ import useDyduPolling from '../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import { useEvent } from './EventsContext';
 import useQueue from '../tools/hooks/useQueue';
+import { useUploadFile } from '../contexts/UploadFileContext';
 
 interface LivechatContextProps {
   isWebsocket?: boolean;
@@ -38,6 +39,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
   const { showSurvey } = useSurvey();
+  const { showUploadFileButton } = useUploadFile();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const { onNewMessage } = useEvent();
@@ -100,6 +102,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       displayNotification,
       onFail: onFailOpenTunnel,
       showAnimationOperatorWriting,
+      showUploadFileButton,
       handleSurvey: showSurvey,
     };
   }, [
@@ -110,6 +113,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     displayResponseText,
     displayNotification,
     showAnimationOperatorWriting,
+    showUploadFileButton,
     showSurvey,
   ]);
 

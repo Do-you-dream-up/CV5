@@ -923,13 +923,22 @@ export default new (class Dydu {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
     const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+
     API.defaults.headers = {
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
       'Content-Type': 'multipart/form-data',
     };
+
     API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/`;
 
-    return API.post(path, formData);
+    return API.post(path, formData).then((response) => {
+      API.defaults.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+      };
+      API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
+      return response;
+    });
   };
 
   sendSurveyPolling = async (survey, options = {}) => {

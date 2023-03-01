@@ -12,6 +12,7 @@ let displayNotification = null;
 let onEndLivechat = null;
 let api = null;
 let handleSurvey = null;
+let showUploadFileButton = null;
 
 const saveConfiguration = (configuration) => {
   onOperatorWriting = configuration.showAnimationOperatorWriting;
@@ -20,6 +21,7 @@ const saveConfiguration = (configuration) => {
   onEndLivechat = configuration.endLivechat;
   api = configuration.api;
   handleSurvey = configuration.handleSurvey;
+  showUploadFileButton = configuration.showUploadFileButton;
 };
 
 const RESPONSE_TYPE = {
@@ -66,6 +68,7 @@ const typeToHandler = {
 
     if (LivechatPayload.is.operatorWriting(notification)) return onOperatorWriting();
     if (LivechatPayload.is.operatorSendSurvey(notification)) return handleSurvey(notification);
+    if (LivechatPayload.is.operatorSendUploadRequest(notification)) return showUploadFileButton();
 
     displayNotification(notification);
 
