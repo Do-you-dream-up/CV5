@@ -99,3 +99,12 @@ export const VIEW_MODE = {
 export const READ_MORE_CARACTERS_TEXT = {
   readmore: 85,
 };
+
+export const ALLOWED_FORMAT = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'image/svg+xml',
+  'application/pdf',
+  'application/msword',
+];
