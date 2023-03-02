@@ -943,29 +943,25 @@ export default new (class Dydu {
 
   sendUpoadFile = async (file) => {
     const formData = new FormData();
-
     formData.append('dydu-upload-file', file);
     const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
     this.setApiDefaultHeadersFormData();
     this.setApiDefaultBaseUrlUploadFile();
-
     return API.post(path, formData)
-      .then((response) => {
+      .finally(() => {
         this.setApiDefaultHeadersFormUrlEncoded();
         this.setApiDefaultBaseUrl();
-        return response;
       })
-      .then(this.displayUploadFileSent(file.name));
+      .then(() => this.displayUploadFileSent(file.name));
   };
 
   displayUploadFileSent = (fileName) => {
-    if (!this.getLastResponse().data?.values?.startLivechat) {
-      let status = status || this.getLastResponse().status;
-      const statusOk = status >= 200 && status <= 206;
-      if (statusOk) window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
-      else window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
-    } else {
-      return;
+    const status = this.getLastResponse().status;
+    const statusOk = status >= 200 && status <= 206;
+    if (!this.getLastResponse().data?.values?.startLivechat && statusOk) {
+      window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
+    } else if (!this.getLastResponse().data?.values?.startLivechat) {
+      window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
     }
   };
 
