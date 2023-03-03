@@ -39,7 +39,7 @@ const UploadInput = () => {
         <SendButton title={label} onClick={() => sendFile(fileSelected)} />
       </div>
     ) : (
-      <FileUploadButton label={label} keepActive />
+      <FileUploadButton label={label} />
     );
 
   const renderFileInfo = () =>

@@ -9,6 +9,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { isDefined, isOfTypeString } from '../tools/helpers';
@@ -118,7 +119,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
-
+  const additionalListInteraction = useRef([]);
   const { isMobile } = useViewport();
 
   const [uploadActive, setUploadActive] = useState<boolean>(false);
@@ -153,11 +154,20 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
+  const addAdditionalInteraction = (interaction) => {
+    additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
+  };
+
+  const clearAdditionalInteraction = () => {
+    additionalListInteraction.current = [];
+  };
+
+  const getAdditionalInteraction = () => {
+    return additionalListInteraction.current;
+  };
+
   const showUploadFileButton = useCallback(() => {
-    setInteractions((list) => {
-      list.push(<FileUploadButton />);
-      return list;
-    });
+    addAdditionalInteraction(<FileUploadButton />);
   }, []);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
@@ -229,9 +239,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const add = useCallback((interaction) => {
     setInteractions((previous) => {
       if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
-      return !isDefined(interaction)
+
+      const updatedList = !isDefined(interaction)
         ? previous.slice()
         : [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])];
+
+      const finalList = updatedList.concat(getAdditionalInteraction());
+      clearAdditionalInteraction();
+      return finalList;
     });
   }, []);
 

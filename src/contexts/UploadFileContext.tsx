@@ -7,9 +7,6 @@ import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
 
 interface UploadFileContextProps {
-  removeFromDisabledList?: (id: any) => void;
-  isInDisabledList?: (id: any) => boolean;
-  addToDisabledList?: (id: any) => void;
   fileSelected?: File | null;
   isSent?: boolean;
   validateFile?: (file: File) => void;
@@ -37,7 +34,6 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   const [inputRef, setInputRef] = useState<any>(null);
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
-  const [listDisabledInstance, setDisabledList] = useState<any[]>([]);
   const [isSent, setIsSent] = useState<boolean>(false);
 
   const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
@@ -56,17 +52,9 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   }, []);
 
   const onSelectFile = (file, inputRef) => (validateFile?.(file), setSelected(file), setInputRef(inputRef));
-  const handleCancel = () => (setSelected(null), (inputRef.current.value = null), removeFromDisabledList());
+  const handleCancel = () => (setSelected(null), (inputRef.current.value = null));
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
-  const isInDisabledList = useCallback(
-    (id) => {
-      return listDisabledInstance.includes(id);
-    },
-    [listDisabledInstance],
-  );
-  const removeFromDisabledList = useCallback(() => setDisabledList([]), []);
-  const addToDisabledList = useCallback((id) => setDisabledList((list) => [...list, id]), []);
 
   const IsUploadFileSent = useCallback(() => {
     const status = dydu.getLastResponse().status;
@@ -75,9 +63,6 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
 
   const dataContext = useMemo(
     () => ({
-      removeFromDisabledList,
-      isInDisabledList,
-      addToDisabledList,
       fileSelected,
       validateFile,
       onSelectFile,
@@ -91,8 +76,6 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
       isSent,
     }),
     [
-      removeFromDisabledList,
-      addToDisabledList,
       onSelectFile,
       fileSelected,
       errorFormatMessage,

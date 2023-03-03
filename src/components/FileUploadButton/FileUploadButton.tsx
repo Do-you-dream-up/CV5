@@ -12,46 +12,47 @@ interface FileUploadButtonProps {
   keepActive?: boolean;
 }
 
-export default function FileUploadButton({ label = 'upload', keepActive }: FileUploadButtonProps) {
+export default function FileUploadButton({ label = 'upload' }: FileUploadButtonProps) {
   const inputRef = useRef<any>(null);
 
-  const { onSelectFile, isInDisabledList, addToDisabledList, extractFileFromEvent } = useUploadFile();
+  const { onSelectFile, extractFileFromEvent } = useUploadFile();
   const inputId = useId();
 
   const processUserFileSelection = useCallback(
     (file) => {
       try {
         onSelectFile?.(file, inputRef);
-        !keepActive && addToDisabledList?.(label);
       } catch (e) {
         console.error('While handling file selection', e);
       }
     },
-    [onSelectFile, inputRef, addToDisabledList],
+    [onSelectFile, inputRef],
   );
 
   const onSelect = useCallback(
     (event) => {
-      const file = extractFileFromEvent && extractFileFromEvent(event);
+      const file = extractFileFromEvent?.(event);
       const hasUserCanceledFileSelection = !isDefined(file?.name);
       if (hasUserCanceledFileSelection) return;
       processUserFileSelection(file);
     },
-    [label, addToDisabledList, onSelectFile, processUserFileSelection],
+    [label, onSelectFile, processUserFileSelection],
   );
+
+  const openFileonClick = () => {
+    const input = document.createElement('input');
+    input.setAttribute('id', inputId);
+    input.setAttribute('type', 'file');
+    input.setAttribute('hidden', 'true');
+    input.onchange = onSelect;
+    inputRef.current = input;
+    input.click();
+  };
 
   return (
     <Scroll>
-      <Button disabled={isInDisabledList?.(label)} data-testid="file-upload-button">
-        <input
-          id={inputId}
-          type="file"
-          hidden
-          onChange={onSelect}
-          disabled={isInDisabledList && isInDisabledList(label)}
-          ref={inputRef}
-        />
-        <label htmlFor={inputId}>{label}</label>
+      <Button data-testid="file-upload-button" onClick={openFileonClick}>
+        {label}
       </Button>
     </Scroll>
   );
