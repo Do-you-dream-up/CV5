@@ -513,7 +513,7 @@ export default new (class Dydu {
    */
   getSpace = (strategy = []) => {
     const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
-    console.log('this.space', this.space);
+
     if (!this.space || atLeastOneStrategyActive) {
       if (Array.isArray(strategy)) {
         const get = (mode) =>
@@ -643,7 +643,6 @@ export default new (class Dydu {
   };
 
   setInitialSpace(initialSpace = 'default') {
-    console.log('initialSpace', initialSpace);
     this.space = initialSpace;
   }
 
@@ -655,7 +654,6 @@ export default new (class Dydu {
    */
   setSpace = (space) => {
     const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
-    console.log('value', value);
     Local.set(Local.names.space, value);
     this.space = value;
   };
@@ -1013,9 +1011,7 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    const test = this.getSpace(this.getConfiguration().spaces.detection);
-    console.log('this.getSpace(this.getConfiguration().spaces.detection)', test);
-    this.setInitialSpace(test);
+    this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }
