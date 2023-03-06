@@ -80,6 +80,17 @@ publish:
     - build
   when: manual
 
+unit_test:
+  stage: quality
+  image: node:alpine
+  script:
+    - npm run test
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+  needs:
+    - build
+
 test:
   stage: quality
   image: alpine:latest
