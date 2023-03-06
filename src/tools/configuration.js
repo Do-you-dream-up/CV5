@@ -27,12 +27,16 @@ export const configuration = new (class Configuration {
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
+      console.log('isLoadedFromChannels', isLoadedFromChannels());
+      console.log('hasWizard', hasWizard());
+      console.log('this.getConfigFromStorage', this.getConfigFromStorage());
       this.configuration =
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
           ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
           : data;
 
       if (!isLoadedFromChannels()) {
+        console.log('serieux je passe dans cette condition ????');
         if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
           dydu.setSpace(this.configuration?.spaces?.items[0]);
         }
