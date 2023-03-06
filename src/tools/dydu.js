@@ -123,7 +123,7 @@ export default new (class Dydu {
     this.oidcLogin = null;
     this.locale = null;
     this.showSurveyCallback = null;
-    this.space = 'default';
+    this.space = null;
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
