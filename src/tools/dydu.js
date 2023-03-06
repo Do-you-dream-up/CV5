@@ -511,8 +511,9 @@ export default new (class Dydu {
    * @param {string|Object} strategy.value - Data needed to extract the space value.
    * @returns {string}
    */
-  getSpace = (strategy) => {
-    if (!this.space || strategy) {
+  getSpace = (strategy = []) => {
+    const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
+    if (!this.space || atLeastOneStrategyActive) {
       this.space = Local.get(Local.names.space, this.getConfiguration()?.spaces?.items[0] || 'default', true);
       if (Array.isArray(strategy)) {
         const get = (mode) =>
@@ -539,6 +540,7 @@ export default new (class Dydu {
         });
       }
     }
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
     Local.set(Local.names.space, this.space);
     return this.space;
   };
@@ -1011,9 +1013,7 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.setInitialSpace(
-      this.getSpace(this.getConfiguration().spaces.detection || this.getConfiguration().spaces.items[0]),
-    );
+    this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }
