@@ -515,7 +515,6 @@ export default new (class Dydu {
     const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
     console.log('this.space', this.space);
     if (!this.space || atLeastOneStrategyActive) {
-      this.space = Local.get(Local.names.space, this.getConfiguration()?.spaces?.items[0] || 'default', true);
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
