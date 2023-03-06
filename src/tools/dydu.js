@@ -652,13 +652,11 @@ export default new (class Dydu {
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = (space) =>
-    new Promise((resolve) => {
-      const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
-      Local.set(Local.names.space, value);
-      this.space = value;
-      resolve(value);
-    });
+  setSpace = (space) => {
+    const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
+    Local.set(Local.names.space, value);
+    this.space = value;
+  };
 
   setQualificationMode = (value) => {
     let isActive = value;
