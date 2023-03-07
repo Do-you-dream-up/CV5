@@ -21,7 +21,6 @@
     "i18next": "^19.8.3",
     "i18next-browser-languagedetector": "^4.0.1",
     "i18next-xhr-backend": "^3.2.2",
-    "icomoon-react": "^3.0.0",
     "js-base64": "^3.7.2",
     "js-cookie": "^2.2.0",
     "jss-plugin-global": "^10.0.4",
