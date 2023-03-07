@@ -109,5 +109,3 @@ class LocalStorageMock {
     delete this.store[key];
   }
 }
-
-global.localStorage = new LocalStorageMock();
