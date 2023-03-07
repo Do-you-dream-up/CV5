@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import ProductTemplate from './ProductTemplate';
 import { render } from '../../tools/test-utils';
 
-xdescribe('ProductTemplate.tsx', () => {
+describe('ProductTemplate.tsx', () => {
   const json = JSON.stringify({
     product: {
       buttonA: '<a href="https://www.larousse.fr/encyclopedie/divers/chat/185548">Bouton 1🐱 </a>',

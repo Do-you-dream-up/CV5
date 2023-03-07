@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import Avatar from './Avatar';
 import { render } from '../../tools/test-utils';
 
-xdescribe('Avatar.tsx', () => {
+describe('Avatar.tsx', () => {
   const path = 'https://www.google.fr';
   const linkAvatarDependOnType = '/null';
 
