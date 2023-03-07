@@ -689,8 +689,9 @@ describe('helpers', () => {
     });
   });
 
-  xdescribe('b64encodeObject', () => {
+  describe('b64encodeObject', () => {
     it('returns an object with base64-encoded values', () => {
+      // GIVEN
       const obj = {
         name: 'John',
         age: '30',
@@ -703,7 +704,24 @@ describe('helpers', () => {
         city: 'TmV3IFlvcms=',
       };
 
-      expect(b64encodeObject(obj)).toEqual(expectedResult);
+      // WHEN
+      const encoded = b64encodeObject(obj);
+
+      // THEN
+      // same number of keys
+      const testKeyList = Object.keys(encoded);
+      const expectedKeyList = Object.keys(expectedResult);
+      expect(testKeyList.length).toEqual(expectedKeyList.length);
+
+      // same key names
+      const sameKeys =
+        testKeyList.every((key) => expectedKeyList.includes(key)) &&
+        expectedKeyList.every((key) => testKeyList.includes(key));
+      expect(sameKeys).toEqual(true);
+
+      // same values
+      const sameValues = Object.keys(encoded).every((key) => encoded[key] === expectedResult[key]);
+      expect(sameValues).toEqual(true);
     });
   });
 });

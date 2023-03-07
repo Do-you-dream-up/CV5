@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import ReadMore from './ReadMore';
 import { render } from '../../tools/test-utils';
 
-xdescribe('ReadMore.tsx', () => {
+describe('ReadMore.tsx', () => {
   const lorem =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec augue id massa finibus rhoncus eget a enim. Quisque volutpat magna justo, eu convallis nunc feugiat mollis. In in nisi vitae tellus cursus tempor non id lacus. Cras laoreet lectus condimentum leo sagittis imperdiet. Nam eu odio augue.';
   test('Should not render ReadMore with null children', async () => {
