@@ -34,7 +34,7 @@ export const configuration = new (class Configuration {
 
       if (!isLoadedFromChannels()) {
         if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
-          dydu.setSpace(configuration?.spaces?.items[0]);
+          dydu.setSpace(this.configuration?.spaces?.items[0]);
         }
       }
 
