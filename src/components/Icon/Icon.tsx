@@ -1,9 +1,7 @@
 import '../../../public/assets/Icomoon/style.css';
 
-import IcomoonReact from 'icomoon-react';
 import { IconWrapper } from './style';
-import React, { useMemo } from 'react';
-import iconSet from './selection.json';
+import { useMemo } from 'react';
 
 interface IconWrapperPropsInterface {
   color?: string;
@@ -34,15 +32,12 @@ const Icon = ({
       title: title || alt,
       alt: alt,
       onClick: onClick,
+      size,
     }),
     [color, className, title, alt, onClick],
   );
 
-  return (
-    <IconWrapper {...iconWrapperProps}>
-      <IcomoonReact iconSet={iconSet} color={color} size={size} icon={icon} />
-    </IconWrapper>
-  );
+  return <IconWrapper {...iconWrapperProps}></IconWrapper>;
 };
 
 export default Icon;
