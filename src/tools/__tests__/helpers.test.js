@@ -720,12 +720,7 @@ describe('helpers', () => {
       expect(sameKeys).toEqual(true);
 
       // same values
-      console.debug('compare ?', encoded.name, expectedResult.name);
-      const sameValues = Object.keys(encoded).every((key) => {
-        console.debug('encoded', encoded[key]);
-        console.debug('expected', expectedResult[key]);
-        return encoded[key] === expectedResult[key];
-      });
+      const sameValues = Object.keys(encoded).every((key) => encoded[key] === expectedResult[key]);
       expect(sameValues).toEqual(true);
     });
   });
