@@ -9,15 +9,17 @@ import { useTranslation } from 'react-i18next';
 interface UploadFileContextProps {
   fileSelected?: File | null;
   isSent?: boolean;
+  fileName?: string;
   validateFile?: (file: File) => void;
   onSelectFile?: (file: File, inputRef: any) => void;
   errorFormatMessage?: string | null;
+  showButtonUploadFile: boolean;
   getFileSize?: (file: File) => number;
   extractFileFromEvent?: (event: any) => File;
   handleCancel?: () => void;
   showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
-  IsUploadFileSent?: () => void;
+  isUploadFileSent?: () => void;
 }
 
 interface UploadFileProviderProps {
@@ -35,7 +37,7 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [isSent, setIsSent] = useState<boolean>(false);
-
+  const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
   const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
   const getFileSize = (file) => Math.ceil(file.size / 1024 ** 1);
 
@@ -56,10 +58,12 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
-  const IsUploadFileSent = useCallback(() => {
-    const status = dydu.getLastResponse().status;
-    if (status && status >= 200 && status <= 206) setIsSent(true);
+  const isUploadFileSent = useCallback(() => {
+    dydu.isLastResponseStatusInRange(200, 206);
+    setIsSent(true);
   }, []);
+
+  const showButtonUploadFile = showConfirmSelectedFile && !isSent;
 
   const dataContext = useMemo(
     () => ({
@@ -67,25 +71,30 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
       validateFile,
       onSelectFile,
       errorFormatMessage,
+      showButtonUploadFile,
       getFileSize,
       extractFileFromEvent,
       handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton,
-      IsUploadFileSent,
+      isUploadFileSent,
       isSent,
+      fileName,
     }),
     [
       onSelectFile,
       fileSelected,
       errorFormatMessage,
+      showButtonUploadFile,
       extractFileFromEvent,
       showConfirmSelectedFile,
+      isUploadFileSent,
       validateFile,
       getFileSize,
       handleCancel,
       showUploadFileButton,
       isSent,
+      fileName,
     ],
   );
 

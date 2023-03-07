@@ -122,11 +122,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const additionalListInteraction = useRef([]);
   const { isMobile } = useViewport();
 
-  const [uploadActive, setUploadActive] = useState<boolean>(false);
-
-  const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [isFileActive, setIsFileActive] = useState<boolean>(false);
-  const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
   const [interactions, setInteractions] = useState<ReactNode[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
@@ -517,28 +512,20 @@ export function DialogProvider({ children }: DialogProviderProps) {
         addResponse,
         disabled,
         empty,
-        errorFormatMessage,
         interactions,
-        isFileActive,
         locked,
         placeholder,
         prompt,
         secondaryActive,
         secondaryContent,
-        selectedFile,
         setDisabled,
-        setErrorFormatMessage,
-        setIsFileActive,
         setLocked,
         setPlaceholder,
         setPrompt,
         setSecondary,
-        setSelectedFile,
-        setUploadActive,
         setVoiceContent,
         toggleSecondary,
         typeResponse,
-        uploadActive,
         voiceContent,
         zoomSrc,
         setZoomSrc,

@@ -14,8 +14,8 @@ interface SendButtonProps {
 
 const UploadInput = () => {
   const { t } = useTranslation('translation');
-  const { fileSelected, handleCancel, errorFormatMessage, IsUploadFileSent } = useUploadFile();
-  const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
+  const { fileSelected, handleCancel, errorFormatMessage, isUploadFileSent, fileName } = useUploadFile();
+
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
   const label = useMemo(
     () => (!errorFormatMessage ? t('input.actions.send') : t('input.actions.reupload')),
@@ -29,7 +29,7 @@ const UploadInput = () => {
   );
 
   const sendFile = (file) => {
-    IsUploadFileSent && IsUploadFileSent();
+    isUploadFileSent && isUploadFileSent();
     return dydu.sendUpoadFile(file);
   };
 

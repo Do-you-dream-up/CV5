@@ -919,6 +919,11 @@ export default new (class Dydu {
     variables: this.getVariables(),
   });
 
+  isLastResponseStatusInRange = (startHttpCode, endHttpCode) => {
+    const status = this.getLastResponse()?.status;
+    return Boolean(status && status >= startHttpCode && status <= endHttpCode);
+  };
+
   setApiDefaultHeadersFormData = () => {
     API.defaults.headers = {
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
@@ -955,12 +960,16 @@ export default new (class Dydu {
       .then(() => this.displayUploadFileSent(file.name));
   };
 
+  isLastResponseStartsLivechat = () => {
+    return Boolean(!this.getLastResponse().data?.values?.startLivechat);
+  };
+
   displayUploadFileSent = (fileName) => {
-    const status = this.getLastResponse().status;
-    const statusOk = status >= 200 && status <= 206;
-    if (!this.getLastResponse().data?.values?.startLivechat && statusOk) {
+    const statusOk = this.isLastResponseStatusInRange(200, 206);
+
+    if (this.isLastResponseStartsLivechat() && statusOk) {
       window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
-    } else if (!this.getLastResponse().data?.values?.startLivechat) {
+    } else if (this.isLastResponseStartsLivechat()) {
       window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
     }
   };
