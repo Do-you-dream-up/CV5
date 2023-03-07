@@ -55,7 +55,6 @@ const spaceConfiguration = {
   items: ['default'],
 };
 
-global.window = Object.create(window);
 const url = `http://${test.url}/to/file.html`;
 Object.defineProperty(window, 'location', {
   value: {
