@@ -123,7 +123,7 @@ export default new (class Dydu {
     this.oidcLogin = null;
     this.locale = null;
     this.showSurveyCallback = null;
-    this.space = 'default';
+    this.space = null;
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
@@ -511,9 +511,10 @@ export default new (class Dydu {
    * @param {string|Object} strategy.value - Data needed to extract the space value.
    * @returns {string}
    */
-  getSpace = (strategy) => {
-    if (!this.space || strategy) {
-      this.space = Local.get(Local.names.space, this.getConfiguration()?.spaces?.items[0] || 'default', true);
+  getSpace = (strategy = []) => {
+    const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
+
+    if (!this.space || atLeastOneStrategyActive) {
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
@@ -539,6 +540,7 @@ export default new (class Dydu {
         });
       }
     }
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
     Local.set(Local.names.space, this.space);
     return this.space;
   };
@@ -650,13 +652,11 @@ export default new (class Dydu {
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = (space) =>
-    new Promise((resolve) => {
-      const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
-      Local.set(Local.names.space, value);
-      this.space = value;
-      resolve(value);
-    });
+  setSpace = (space) => {
+    const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
+    Local.set(Local.names.space, value);
+    this.space = value;
+  };
 
   setQualificationMode = (value) => {
     let isActive = value;
@@ -1066,9 +1066,7 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.setInitialSpace(
-      this.getSpace(this.getConfiguration().spaces.detection || this.getConfiguration().spaces.items[0]),
-    );
+    this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }

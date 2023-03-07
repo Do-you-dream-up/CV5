@@ -1,9 +1,24 @@
 ---
 
 stages:
+  - unit_test
   - integration
   - delivery
   - quality
+
+unit_test:
+  stage: unit_test
+  image: node:alpine
+  variables:
+    CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
+    CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
+  script:
+    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
+    - npm run test
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - node_modules/
 
 build:
   stage: integration
@@ -12,12 +27,12 @@ build:
     CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
     CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
   script:
-    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     - npm run build
   cache:
     key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
       - build/
+      - node_modules/
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
