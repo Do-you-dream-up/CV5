@@ -49,7 +49,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
       icon: icons?.database,
       onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
-      when: configuration.spaces.items.length > 1,
+      when: configuration?.spaces?.items?.length > 1,
     },
     {
       icon: icons?.shield,
