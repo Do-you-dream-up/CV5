@@ -4,11 +4,12 @@ import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/he
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Avatar from '../Avatar/Avatar';
-import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel/Carousel';
 import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
+import Icon from '../Icon/Icon';
 import Loader from '../Loader';
 import PropTypes from 'prop-types';
 import Scroll from '../Scroll';
@@ -19,7 +20,6 @@ import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
-import Icon from '../Icon/Icon';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {

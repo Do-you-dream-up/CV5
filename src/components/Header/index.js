@@ -1,9 +1,8 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import dydu from '../../tools/dydu';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions/Actions';
-import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
 import Banner from '../Banner';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
@@ -16,12 +15,13 @@ import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs/Tabs';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
-import { useTheme } from 'react-jss';
-import icons from '../../tools/icon-constants';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
