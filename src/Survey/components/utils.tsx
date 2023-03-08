@@ -11,6 +11,11 @@ const children = {
   _isShowingRequiredMessage: false,
 };
 
+export const childrenRadio = {
+  ...children,
+  type: 'RADIO',
+};
+
 export const mockFieldClass = {
   getLabel: jest.fn(),
   onChange: jest.fn(),

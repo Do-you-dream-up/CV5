@@ -7,7 +7,9 @@ import { render } from '../../../tools/test-utils';
 
 describe('MultipleChoice.js', () => {
   it('Should render MultipleChoice with field props', async () => {
-    const { container } = render(<MultipleChoice field={Field.instanciate({ ...mockFieldValues, type: 'SELECT' })} />);
+    const { container } = render(
+      <MultipleChoice field={Field.instanciate({ ...mockFieldValues, type: 'MULTIPLE_CHOICE' })} />,
+    );
     expect(container.children[0].querySelector('.question')).toBeInTheDocument();
   });
 });
