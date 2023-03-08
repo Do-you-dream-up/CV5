@@ -6,10 +6,10 @@ import MenuList from '../MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import icons from '../../tools/icon-constants';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -25,6 +25,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+
   const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
@@ -48,6 +49,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
       icon: icons?.database,
       onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
+      when: configuration?.spaces?.items?.length > 1,
     },
     {
       icon: icons?.shield,
