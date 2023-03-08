@@ -8,7 +8,6 @@ import { isDefined } from '../../tools/helpers';
 
 export default function Select({ field }) {
   const [currentOptionFieldInstance, setCurrentOptionFieldInstance] = useState();
-  console.log('🚀 ~ file: Select.js:11 ~ Select ~ currentOptionFieldInstance:', currentOptionFieldInstance);
 
   useEffect(() => {
     const shouldInit = !isDefined(currentOptionFieldInstance) && isDefined(field);
