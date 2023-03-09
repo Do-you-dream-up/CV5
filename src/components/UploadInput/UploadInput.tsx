@@ -1,9 +1,13 @@
 import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledComponent';
 
 import FileUploadButton from '../FileUploadButton/FileUploadButton';
+import Scroll from '../Scroll/Scroll';
+import c from 'classnames';
 import dydu from 'src/tools/dydu';
 import { isDefined } from '../../tools/helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
+import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 
@@ -13,6 +17,8 @@ interface SendButtonProps {
 }
 
 const UploadInput = () => {
+  const { configuration } = useConfiguration();
+  const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
   const { fileSelected, handleCancel, errorFormatMessage, isUploadFileSent, fileName } = useUploadFile();
 
@@ -63,10 +69,12 @@ const UploadInput = () => {
   );
 
   return (
-    <FileUploadContainer data-testid="footer-upload-input">
-      {renderFileInfo()}
-      {rendererButtons()}
-    </FileUploadContainer>
+    <Scroll className={c('upload-input', classes.root)}>
+      <FileUploadContainer data-testid="footer-upload-input">
+        {renderFileInfo()}
+        {rendererButtons()}
+      </FileUploadContainer>
+    </Scroll>
   );
 };
 

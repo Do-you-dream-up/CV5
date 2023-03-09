@@ -14,6 +14,7 @@ interface ScrollProps {
   children?: any;
   component?: any;
   delay?: number;
+  className?: string;
 }
 
 function Scroll({ component = 'div', delay = 0, ...rest }: ScrollProps) {
