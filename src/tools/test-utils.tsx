@@ -1,13 +1,14 @@
 import { JssProvider, ThemeProvider } from 'react-jss';
-import { ReactElement } from 'react';
-import { RenderOptions, render, screen, act } from '@testing-library/react';
+import { RenderOptions, render, screen } from '@testing-library/react';
 
 import { ConfigurationProvider } from '../contexts/ConfigurationContext';
 import { EventsProvider } from '../contexts/EventsContext';
+import { ReactElement } from 'react';
+import { ServerStatusProvider } from '../contexts/ServerStatusContext';
 import ViewModeProvider from '../contexts/ViewModeProvider';
 import configuration from '../../public/override/configuration.json';
-import theme from '../../public/override/theme.json';
 import { mergeDeep } from './object';
+import theme from '../../public/override/theme.json';
 
 interface CustomProps {
   configuration?: Models.Configuration;
@@ -21,9 +22,11 @@ const ProviderWrapper = ({ children, customProp }: { children: any; customProp?:
     <JssProvider>
       <ThemeProvider theme={mergedTheme}>
         <ConfigurationProvider configuration={mergedConfiguration}>
-          <ViewModeProvider>
-            <EventsProvider>{children}</EventsProvider>
-          </ViewModeProvider>
+          <ServerStatusProvider>
+            <ViewModeProvider>
+              <EventsProvider>{children}</EventsProvider>
+            </ViewModeProvider>
+          </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>
     </JssProvider>

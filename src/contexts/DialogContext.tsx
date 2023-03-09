@@ -36,7 +36,7 @@ interface DialogProviderProps {
   children: ReactNode;
 }
 
-interface DialogContextProps {
+export interface DialogContextProps {
   closeSecondary?: () => void;
   openSecondary?: (props: any) => void;
   topList?: any[];

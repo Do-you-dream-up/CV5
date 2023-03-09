@@ -36,7 +36,6 @@ declare namespace Servlet {
     type?: ChatResponseType;
     typeResponse?: ChatResponseType;
     user?: string;
-    nextStepResponse?: any;
   }
 
   export interface ChatResponse {
