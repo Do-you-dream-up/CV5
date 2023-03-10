@@ -19,6 +19,10 @@ unit_test:
     key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
       - node_modules/
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
 
 build:
   stage: integration
@@ -34,7 +38,7 @@ build:
       - build/
       - node_modules/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
   artifacts:
@@ -59,7 +63,7 @@ pack:
     paths:
       - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - build
@@ -89,7 +93,7 @@ publish:
     paths:
       - build/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - build
