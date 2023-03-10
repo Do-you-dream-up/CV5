@@ -55,7 +55,6 @@ const spaceConfiguration = {
   items: ['default'],
 };
 
-global.window = Object.create(window);
 const url = `http://${test.url}/to/file.html`;
 Object.defineProperty(window, 'location', {
   value: {
@@ -63,7 +62,7 @@ Object.defineProperty(window, 'location', {
   },
 });
 
-xdescribe('dydu.js', () => {
+describe('dydu.js', () => {
   const { location } = window;
 
   describe('getSpace', () => {
