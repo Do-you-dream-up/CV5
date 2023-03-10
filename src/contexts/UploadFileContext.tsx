@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { ALLOWED_FORMAT } from '../../src/tools/constants';
-import dydu from 'src/tools/dydu';
+import dydu from '../../src/tools/dydu';
 import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
