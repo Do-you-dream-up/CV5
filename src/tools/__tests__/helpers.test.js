@@ -10,6 +10,7 @@ import {
   decodeHtml,
   escapeHTML,
   extractDomainFromUrl,
+  getBrowserLocale,
   getChatboxWidth,
   hasProperty,
   isDefined,
@@ -24,6 +25,7 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  mergeDeep,
   numberOfDayInMs,
   objectContainFields,
   objectExtractFields,
@@ -758,6 +760,12 @@ describe('helpers', () => {
   });
 });
 
+describe('getBrowserLocale', () => {
+  it('returns a string of the local', () => {
+    expect(getBrowserLocale()).toEqual('');
+  });
+});
+
 describe('isImageUrl', () => {
   it('returns a boolean is string is a valid Image Url or not', () => {
     // GIVEN
@@ -776,5 +784,30 @@ describe('isImageUrl', () => {
 
     // with wrong url
     expect(testUrlFalse).toEqual(false);
+  });
+});
+
+describe('mergeDeep', () => {
+  it('returns a deep merge with an existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { animals: { cat: 'Woody, Cali' } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane', cat: 'Woody, Cali' } } };
+
+    // THEN
+    // with existing key
+    expect(mergeDeep(source, target)).toEqual(result);
+  });
+
+  it('returns a deep merge with a not existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { vehicules: { bike: true } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' }, vehicules: { bike: true } } };
+
+    // THEN
+    expect(mergeDeep(source, target)).toEqual(result);
   });
 });
