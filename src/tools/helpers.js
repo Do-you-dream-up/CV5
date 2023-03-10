@@ -259,11 +259,13 @@ export const getChatboxWidth = (chatboxRef) => {
   return Math.abs(right - left);
 };
 
-export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+export const getChatboxWidthTime = (chatboxRef = null, time = 1, maxWidthPx = 850) => {
   const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
   if (error) throw new Error('getChatboxWidthTime: parameter error', time);
-  return getChatboxWidth(chatboxRef) * time;
+  return getMinValue(getChatboxWidth(chatboxRef) * time, maxWidthPx);
 };
+
+const getMinValue = (a, b) => (a < b ? a : b);
 
 export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');
