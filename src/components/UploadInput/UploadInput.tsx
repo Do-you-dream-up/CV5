@@ -3,7 +3,7 @@ import { Button, ErrorMessage, FileUploadContainer } from '../../styles/styledCo
 import FileUploadButton from '../FileUploadButton/FileUploadButton';
 import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
-import dydu from 'src/tools/dydu';
+import dydu from '../../tools/dydu';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
