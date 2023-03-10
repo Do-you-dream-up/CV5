@@ -2,10 +2,10 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   header: () => ({
-    borderBottomColor: theme.palette.divider,
+    borderBottomColor: theme?.palette?.divider,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-    color: theme.palette.text.secondary,
+    color: theme?.palette?.text?.secondary,
     fontWeight: 'normal',
     margin: [[0, 0, '.8em']],
     paddingBottom: '.6em',
@@ -17,9 +17,9 @@ export default createUseStyles((theme) => ({
     top: 0,
   }),
   root: ({ elevation = 12 }) => ({
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.radius.inner,
-    boxShadow: theme.shadows[elevation],
+    backgroundColor: theme?.palette?.background?.paper,
+    borderRadius: theme?.shape?.radius?.inner,
+    boxShadow: theme?.shadows?.[elevation],
     overflow: 'hidden',
     padding: [['1em']],
     position: 'relative',

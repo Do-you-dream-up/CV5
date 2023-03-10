@@ -3,7 +3,16 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
 import Contacts from './index';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useTranslation } from 'react-i18next';
 
+jest.mock('react-i18next', () => ({
+  useTranslation: jest.fn(),
+}));
+
+jest.mock('../../contexts/ConfigurationContext', () => ({
+  useConfiguration: jest.fn(),
+}));
 describe('Contacts', () => {
   it('should render ContactsList component', () => {
     const mockConfiguration = {
@@ -11,9 +20,24 @@ describe('Contacts', () => {
         socialNetwork: true,
       },
     };
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+    screen.debug();
+    screen.findByText('dydu-contact-social').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+  });
 
-    const { container } = render(<Contacts />, { configuration: mockConfiguration });
-    expect(container.querySelector('social')).toBeDefined();
+  it('should render ContactsList component', () => {
+    const mockConfiguration = {
+      contacts: {
+        socialNetwork: false,
+      },
+    };
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+
+    screen.findByText('dydu-contact-social').then((nodeElement) => expect(nodeElement).toBeNull());
   });
 
   it('should render ContactsList component with `phone` id', () => {
@@ -22,9 +46,11 @@ describe('Contacts', () => {
         phone: true,
       },
     };
-    const { container } = render(<Contacts />, { configuration: mockConfiguration });
-    console.log(container);
-    expect(container.querySelector('phone')).toBeDefined();
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+
+    screen.findByText('phone').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
   });
 
   it('should NOT render ContactsList component with `phone` id', () => {
@@ -33,7 +59,34 @@ describe('Contacts', () => {
         phone: false,
       },
     };
-    const { container } = render(<Contacts />, { configuration: mockConfiguration });
-    expect(container.querySelector('phone')).toBeNull();
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+    screen.findByText('phone').then((nodeElement) => expect(nodeElement).toBeNull());
+  });
+
+  it('should render ContactsList component with `email` id', () => {
+    const mockConfiguration = {
+      contacts: {
+        email: true,
+      },
+    };
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+
+    screen.findByText('email').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+  });
+
+  it('should NOT render ContactsList component with `email` id', () => {
+    const mockConfiguration = {
+      contacts: {
+        email: false,
+      },
+    };
+    useConfiguration.mockReturnValue({ configuration: mockConfiguration });
+    useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
+    const screen = render(<Contacts />);
+    screen.findByText('email').then((nodeElement) => expect(nodeElement).toBeNull());
   });
 });
