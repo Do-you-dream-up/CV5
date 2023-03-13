@@ -1,9 +1,8 @@
-import { DialogContext } from '../../contexts/DialogContext';
+import { useDialog } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
-import { useContext } from 'react';
 
 export default function useCustomRenderer() {
-  const { setZoomSrc } = useContext(DialogContext);
+  const { setZoomSrc } = useDialog();
 
   return {
     replace: (props) => {
