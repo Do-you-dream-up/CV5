@@ -1,7 +1,7 @@
 import Storage from './Storage';
 import { encode as base64encode } from 'base64-arraybuffer';
 
-const getRedirectUri = () => window.location.origin + window.location.pathname;
+export const getRedirectUri = () => window.location.origin + window.location.pathname;
 
 export const isDefined = (d) => d !== null && typeof d !== 'undefined' && d !== 'undefined';
 
