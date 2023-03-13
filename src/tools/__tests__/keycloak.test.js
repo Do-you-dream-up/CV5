@@ -1,5 +1,5 @@
 import Keycloak from 'keycloak-js';
-import keycloak from './keycloak';
+import keycloak from '../keycloak';
 
 const { initKeycloak } = keycloak;
 
