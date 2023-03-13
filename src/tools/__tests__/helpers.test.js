@@ -30,6 +30,8 @@ import {
   objectContainFields,
   objectExtractFields,
   osName,
+  removeEndingSlash,
+  removeStartingSlash,
   secondsToMs,
   strContains,
   strContainsOneOfList,
@@ -757,6 +759,32 @@ describe('helpers', () => {
       // with wrong list of sring
       expect(testUrlWrongList).toEqual(false);
     });
+  });
+});
+
+describe('removeStartingSlash', () => {
+  const pathIn = '/urldetest/';
+  const pathOut = 'urldetest/';
+
+  it('with not valid param', () => {
+    expect(removeStartingSlash(3)).toEqual(3);
+  });
+
+  it('returns a string with first slash removed', () => {
+    expect(removeStartingSlash(pathIn)).toEqual(pathOut);
+  });
+});
+
+describe('removeEndingSlash', () => {
+  const urlIn = 'http://localhost/urldetest/';
+  const urlOut = 'http://localhost/urldetest';
+
+  it('with not valid param', () => {
+    expect(removeEndingSlash(3)).toEqual(3);
+  });
+
+  it('returns a string with last slash removed', () => {
+    expect(removeEndingSlash(urlIn)).toEqual(urlOut);
   });
 });
 
