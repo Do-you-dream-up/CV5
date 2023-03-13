@@ -193,7 +193,7 @@ export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
 
-const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
+export const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   if (keylist.length === 0) return res;
 
   const key = keylist.pop();
@@ -273,20 +273,6 @@ export const decodeHtml = (html) => {
 
 export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
-};
-
-export const prependObjectKeysWithTag = (tag, object) => {
-  try {
-    return Object.keys(object).reduce((resultObj, key) => {
-      return {
-        ...resultObj,
-        [`${tag}${key}`]: object[key],
-      };
-    }, {});
-  } catch (e) {
-    console.error('While executing prependObjectKeysWithTag()', e);
-    return {};
-  }
 };
 
 export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));

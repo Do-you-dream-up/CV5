@@ -1,5 +1,6 @@
 import {
   _parse,
+  _recursiveBase64DecodeString,
   _stringify,
   asset,
   b64dFields,
@@ -12,6 +13,7 @@ import {
   extractDomainFromUrl,
   getBrowserLocale,
   getChatboxWidth,
+  getChatboxWidthTime,
   hasProperty,
   isDefined,
   isEmptyArray,
@@ -30,6 +32,8 @@ import {
   objectContainFields,
   objectExtractFields,
   osName,
+  recursiveBase64DecodeString,
+  recursiveBase64EncodeString,
   removeEndingSlash,
   removeStartingSlash,
   secondsToMs,
@@ -40,6 +44,7 @@ import {
 
 import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
+import { mockFieldClass } from '../../Survey/components/utils';
 
 describe('helpers', () => {
   describe('isDefined', () => {
@@ -401,7 +406,7 @@ describe('helpers', () => {
   });
 
   describe('_parse', () => {
-    it('should construct the JavaScript value or object described by the string in param', () => {
+    it('should parse json when its json', () => {
       //GIVEN
       const str = '{"result":true, "count":42}';
 
@@ -410,6 +415,17 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual({ result: true, count: 42 });
+    });
+
+    it('should return entry string when it is not a json object', () => {
+      //GIVEN
+      const str = 'ceci est une string et non un json';
+
+      //WHEN
+      const result = _parse(str);
+
+      //THEN
+      expect(result).toEqual(str);
     });
   });
 
@@ -554,6 +570,20 @@ describe('helpers', () => {
     });
   });
 
+  describe('getChatboxWidthTime', () => {
+    const ref = {
+      width: 200,
+      getBoundingClientRect: () => ({
+        left: 1,
+        right: 1,
+      }),
+    };
+
+    it('get the chatbox width multiply by an integer', () => {
+      expect(getChatboxWidthTime(ref, 1)).toEqual(0);
+    });
+  });
+
   describe('decodeHtml', () => {
     it('decodes HTML-encoded characters in the input string', () => {
       const html = '&lt;p&gt;Hello, world!&lt;/p&gt;';
@@ -616,6 +646,45 @@ describe('helpers', () => {
       const propertyName = 'email';
 
       expect(hasProperty(obj, propertyName)).toBe(false);
+    });
+  });
+
+  describe('recursiveBase64DecodeString', () => {
+    it('return object with decoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'WFhYWFg=',
+          getLabel: 'bGFiZWw=',
+          isRoot: false,
+        },
+      };
+      expect(recursiveBase64DecodeString(fields)).toEqual(fields);
+    });
+  });
+
+  describe('_recursiveBase64DecodeString', () => {
+    it('return object with decoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'WFhYWFg=',
+          getLabel: 'bGFiZWw=',
+          isRoot: false,
+        },
+      };
+      expect(_recursiveBase64DecodeString(fields, Object.keys(fields), {})).toEqual(fields);
+    });
+  });
+
+  describe('_recursiveBase64EncodeString', () => {
+    it('return object with encoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'XXXXX',
+          getLabel: 'label',
+          isRoot: false,
+        },
+      };
+      expect(recursiveBase64EncodeString(fields, Object.keys(fields), {})).toEqual(fields);
     });
   });
 
