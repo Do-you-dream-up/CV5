@@ -321,9 +321,7 @@ export const removeEndingSlash = (s) => {
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
 
-export const getBrowserLocale = () => {
-  return document.documentElement.lang;
-};
+export const getBrowserLocale = () => document.documentElement.lang;
 
 export const isImageUrl = (url) => {
   if (!isString(url)) return false;
@@ -335,7 +333,7 @@ const isArrayOfString = (list) => {
   return list.every(isString);
 };
 
-const strContainsOneOfList = (str, testList = []) => {
+export const strContainsOneOfList = (str, testList = []) => {
   if (!isArrayOfString(testList)) testList = [];
   return testList.some((strItem) => strContains(str, strItem));
 };

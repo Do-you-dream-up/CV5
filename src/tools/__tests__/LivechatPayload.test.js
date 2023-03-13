@@ -1,5 +1,3 @@
-import { getPayloadCommonContentBase64Encoded } from './LivechatPayload';
-
 describe('PAYLOAD_COMMON_CONTENT', () => {
   test('PAYLOAD_COMMON_CONTENT has expected structure and values', () => {
     let PAYLOAD_COMMON_CONTENT = {

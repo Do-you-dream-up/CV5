@@ -10,12 +10,14 @@ import {
   decodeHtml,
   escapeHTML,
   extractDomainFromUrl,
+  getBrowserLocale,
   getChatboxWidth,
   hasProperty,
   isDefined,
   isEmptyArray,
   isEmptyObject,
   isEmptyString,
+  isImageUrl,
   isObject,
   isOfType,
   isOfTypeBoolean,
@@ -23,12 +25,14 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  mergeDeep,
   numberOfDayInMs,
   objectContainFields,
   objectExtractFields,
   osName,
   secondsToMs,
   strContains,
+  strContainsOneOfList,
   toFormUrlEncoded,
 } from '../helpers';
 
@@ -723,5 +727,87 @@ describe('helpers', () => {
       const sameValues = Object.keys(encoded).every((key) => encoded[key] === expectedResult[key]);
       expect(sameValues).toEqual(true);
     });
+  });
+
+  describe('strContainsOneOfList', () => {
+    it('returns a boolean regading str listed in array', () => {
+      // GIVEN
+      const urlWithResult = 'http://localhost/image.jpg';
+
+      const urlWithNoResult = 'http://localhost/image.gif';
+
+      const list = ['png', 'jpg', 'svg'];
+
+      const wrongList = [1, 2, 3];
+
+      // WHEN
+      const testUrlTrue = strContainsOneOfList(urlWithResult, list);
+
+      const testUrlFalse = strContainsOneOfList(urlWithNoResult, list);
+
+      const testUrlWrongList = strContainsOneOfList(urlWithResult, wrongList);
+
+      // THEN
+      // with extention listed
+      expect(testUrlTrue).toEqual(true);
+
+      // with extention listed
+      expect(testUrlFalse).toEqual(false);
+
+      // with wrong list of sring
+      expect(testUrlWrongList).toEqual(false);
+    });
+  });
+});
+
+describe('getBrowserLocale', () => {
+  it('returns a string of the local', () => {
+    expect(getBrowserLocale()).toEqual('');
+  });
+});
+
+describe('isImageUrl', () => {
+  it('returns a boolean is string is a valid Image Url or not', () => {
+    // GIVEN
+    const urlWithResult = 'http://localhost/image.jpg';
+
+    const urlWithNoResult = 'http://localhost/image.gif';
+
+    // WHEN
+    const testUrlTrue = isImageUrl(urlWithResult);
+
+    const testUrlFalse = isImageUrl(urlWithNoResult);
+
+    // THEN
+    // with good url
+    expect(testUrlTrue).toEqual(true);
+
+    // with wrong url
+    expect(testUrlFalse).toEqual(false);
+  });
+});
+
+describe('mergeDeep', () => {
+  it('returns a deep merge with an existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { animals: { cat: 'Woody, Cali' } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane', cat: 'Woody, Cali' } } };
+
+    // THEN
+    // with existing key
+    expect(mergeDeep(source, target)).toEqual(result);
+  });
+
+  it('returns a deep merge with a not existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { vehicules: { bike: true } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' }, vehicules: { bike: true } } };
+
+    // THEN
+    expect(mergeDeep(source, target)).toEqual(result);
   });
 });
