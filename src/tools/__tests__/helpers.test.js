@@ -406,7 +406,6 @@ describe('helpers', () => {
     });
 
     it('should return entry value if not strinfiable', () => {
-      console.log('🚀 ~ file: helpers.test.js:411 ~ it ~ _stringify(undefined):', _stringify(undefined));
       expect(_stringify(undefined)).toEqual(undefined);
     });
   });
