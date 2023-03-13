@@ -22,7 +22,6 @@ describe('Contacts', () => {
     useConfiguration.mockReturnValue({ configuration: mockConfiguration });
     useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
     const screen = render(<Contacts />);
-    screen.debug();
     screen.findByText('dydu-contact-social').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
   });
 
