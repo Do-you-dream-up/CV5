@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom';
 
-import { render, screen } from '@testing-library/react';
-
 import Contacts from './index';
+import { render } from '@testing-library/react';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useTranslation } from 'react-i18next';
 
