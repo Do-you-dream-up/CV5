@@ -1,4 +1,4 @@
-import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from './template';
+import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../template';
 
 describe('template', () => {
   describe('CAROUSSEL_TEMPLATE', () => {

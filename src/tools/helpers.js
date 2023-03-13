@@ -84,8 +84,8 @@ export const isOfType = (val, type) => {
       return isOfTypeArray(val);
     case VAR_TYPE.object:
       return isOfTypeObject(val);
-    default:
-      return;
+    case VAR_TYPE.number:
+      return isOfTypeNumber(val);
   }
 };
 
@@ -193,7 +193,7 @@ export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
 
-const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
+export const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   if (keylist.length === 0) return res;
 
   const key = keylist.pop();
@@ -275,20 +275,6 @@ export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
 };
 
-export const prependObjectKeysWithTag = (tag, object) => {
-  try {
-    return Object.keys(object).reduce((resultObj, key) => {
-      return {
-        ...resultObj,
-        [`${tag}${key}`]: object[key],
-      };
-    }, {});
-  } catch (e) {
-    console.error('While executing prependObjectKeysWithTag()', e);
-    return {};
-  }
-};
-
 export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));
 
 export const removeStartingSlash = (s) => {
@@ -321,9 +307,7 @@ export const removeEndingSlash = (s) => {
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
 
-export const getBrowserLocale = () => {
-  return document.documentElement.lang;
-};
+export const getBrowserLocale = () => document.documentElement.lang;
 
 export const isImageUrl = (url) => {
   if (!isString(url)) return false;
@@ -335,7 +319,7 @@ const isArrayOfString = (list) => {
   return list.every(isString);
 };
 
-const strContainsOneOfList = (str, testList = []) => {
+export const strContainsOneOfList = (str, testList = []) => {
   if (!isArrayOfString(testList)) testList = [];
   return testList.some((strItem) => strContains(str, strItem));
 };

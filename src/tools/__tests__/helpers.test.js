@@ -1,5 +1,6 @@
 import {
   _parse,
+  _recursiveBase64DecodeString,
   _stringify,
   asset,
   b64dFields,
@@ -10,12 +11,15 @@ import {
   decodeHtml,
   escapeHTML,
   extractDomainFromUrl,
+  getBrowserLocale,
   getChatboxWidth,
+  getChatboxWidthTime,
   hasProperty,
   isDefined,
   isEmptyArray,
   isEmptyObject,
   isEmptyString,
+  isImageUrl,
   isObject,
   isOfType,
   isOfTypeBoolean,
@@ -23,17 +27,24 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
+  mergeDeep,
   numberOfDayInMs,
   objectContainFields,
   objectExtractFields,
   osName,
+  recursiveBase64DecodeString,
+  recursiveBase64EncodeString,
+  removeEndingSlash,
+  removeStartingSlash,
   secondsToMs,
   strContains,
+  strContainsOneOfList,
   toFormUrlEncoded,
 } from '../helpers';
 
 import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
+import { mockFieldClass } from '../../Survey/components/utils';
 
 describe('helpers', () => {
   describe('isDefined', () => {
@@ -128,6 +139,7 @@ describe('helpers', () => {
       expect(isOfType('Hello World!', 'string')).toBe(true);
       expect(isOfType([1, 2, 3], 'array')).toBe(true);
       expect(isOfType({ name: 'John' }, 'object')).toBe(true);
+      expect(isOfType(2, 'number')).toBe(true);
     });
 
     it('returns false if the value is not of the given type', () => {
@@ -392,10 +404,14 @@ describe('helpers', () => {
       //THEN
       expect(result).toEqual('[3,"false",false]');
     });
+
+    it('should return entry value if not strinfiable', () => {
+      expect(_stringify(undefined)).toEqual(undefined);
+    });
   });
 
   describe('_parse', () => {
-    it('should construct the JavaScript value or object described by the string in param', () => {
+    it('should parse json when its json', () => {
       //GIVEN
       const str = '{"result":true, "count":42}';
 
@@ -404,6 +420,17 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual({ result: true, count: 42 });
+    });
+
+    it('should return entry string when it is not a json object', () => {
+      //GIVEN
+      const str = 'ceci est une string et non un json';
+
+      //WHEN
+      const result = _parse(str);
+
+      //THEN
+      expect(result).toEqual(str);
     });
   });
 
@@ -548,6 +575,20 @@ describe('helpers', () => {
     });
   });
 
+  describe('getChatboxWidthTime', () => {
+    const ref = {
+      width: 200,
+      getBoundingClientRect: () => ({
+        left: 1,
+        right: 1,
+      }),
+    };
+
+    it('get the chatbox width multiply by an integer', () => {
+      expect(getChatboxWidthTime(ref, 1)).toEqual(0);
+    });
+  });
+
   describe('decodeHtml', () => {
     it('decodes HTML-encoded characters in the input string', () => {
       const html = '&lt;p&gt;Hello, world!&lt;/p&gt;';
@@ -610,6 +651,45 @@ describe('helpers', () => {
       const propertyName = 'email';
 
       expect(hasProperty(obj, propertyName)).toBe(false);
+    });
+  });
+
+  describe('recursiveBase64DecodeString', () => {
+    it('return object with decoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'WFhYWFg=',
+          getLabel: 'bGFiZWw=',
+          isRoot: false,
+        },
+      };
+      expect(recursiveBase64DecodeString(fields)).toEqual(fields);
+    });
+  });
+
+  describe('_recursiveBase64DecodeString', () => {
+    it('return object with decoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'WFhYWFg=',
+          getLabel: 'bGFiZWw=',
+          isRoot: false,
+        },
+      };
+      expect(_recursiveBase64DecodeString(fields, Object.keys(fields), {})).toEqual(fields);
+    });
+  });
+
+  describe('_recursiveBase64EncodeString', () => {
+    it('return object with encoded values', () => {
+      const fields = {
+        field1: {
+          getId: 'XXXXX',
+          getLabel: 'label',
+          isRoot: false,
+        },
+      };
+      expect(recursiveBase64EncodeString(fields, Object.keys(fields), {})).toEqual(fields);
     });
   });
 
@@ -723,5 +803,113 @@ describe('helpers', () => {
       const sameValues = Object.keys(encoded).every((key) => encoded[key] === expectedResult[key]);
       expect(sameValues).toEqual(true);
     });
+  });
+
+  describe('strContainsOneOfList', () => {
+    it('returns a boolean regading str listed in array', () => {
+      // GIVEN
+      const urlWithResult = 'http://localhost/image.jpg';
+
+      const urlWithNoResult = 'http://localhost/image.gif';
+
+      const list = ['png', 'jpg', 'svg'];
+
+      const wrongList = [1, 2, 3];
+
+      // WHEN
+      const testUrlTrue = strContainsOneOfList(urlWithResult, list);
+
+      const testUrlFalse = strContainsOneOfList(urlWithNoResult, list);
+
+      const testUrlWrongList = strContainsOneOfList(urlWithResult, wrongList);
+
+      // THEN
+      // with extention listed
+      expect(testUrlTrue).toEqual(true);
+
+      // with extention listed
+      expect(testUrlFalse).toEqual(false);
+
+      // with wrong list of sring
+      expect(testUrlWrongList).toEqual(false);
+    });
+  });
+});
+
+describe('removeStartingSlash', () => {
+  const pathIn = '/urldetest/';
+  const pathOut = 'urldetest/';
+
+  it('with not valid param', () => {
+    expect(removeStartingSlash(3)).toEqual(3);
+  });
+
+  it('returns a string with first slash removed', () => {
+    expect(removeStartingSlash(pathIn)).toEqual(pathOut);
+  });
+});
+
+describe('removeEndingSlash', () => {
+  const urlIn = 'http://localhost/urldetest/';
+  const urlOut = 'http://localhost/urldetest';
+
+  it('with not valid param', () => {
+    expect(removeEndingSlash(3)).toEqual(3);
+  });
+
+  it('returns a string with last slash removed', () => {
+    expect(removeEndingSlash(urlIn)).toEqual(urlOut);
+  });
+});
+
+describe('getBrowserLocale', () => {
+  it('returns a string of the local', () => {
+    expect(getBrowserLocale()).toEqual('');
+  });
+});
+
+describe('isImageUrl', () => {
+  it('returns a boolean is string is a valid Image Url or not', () => {
+    // GIVEN
+    const urlWithResult = 'http://localhost/image.jpg';
+
+    const urlWithNoResult = 'http://localhost/image.gif';
+
+    // WHEN
+    const testUrlTrue = isImageUrl(urlWithResult);
+
+    const testUrlFalse = isImageUrl(urlWithNoResult);
+
+    // THEN
+    // with good url
+    expect(testUrlTrue).toEqual(true);
+
+    // with wrong url
+    expect(testUrlFalse).toEqual(false);
+  });
+});
+
+describe('mergeDeep', () => {
+  it('returns a deep merge with an existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { animals: { cat: 'Woody, Cali' } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane', cat: 'Woody, Cali' } } };
+
+    // THEN
+    // with existing key
+    expect(mergeDeep(source, target)).toEqual(result);
+  });
+
+  it('returns a deep merge with a not existing key', () => {
+    const source = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' } } };
+
+    const target = { user: { vehicules: { bike: true } } };
+
+    const result = { user: { name: 'Maxime', age: 37, animals: { dog: 'Havane' }, vehicules: { bike: true } } };
+
+    // THEN
+    expect(mergeDeep(source, target)).toEqual(result);
   });
 });
