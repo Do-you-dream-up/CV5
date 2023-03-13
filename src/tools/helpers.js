@@ -84,8 +84,8 @@ export const isOfType = (val, type) => {
       return isOfTypeArray(val);
     case VAR_TYPE.object:
       return isOfTypeObject(val);
-    default:
-      return;
+    case VAR_TYPE.number:
+      return isOfTypeNumber(val);
   }
 };
 

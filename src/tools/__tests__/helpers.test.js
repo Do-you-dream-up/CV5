@@ -139,6 +139,7 @@ describe('helpers', () => {
       expect(isOfType('Hello World!', 'string')).toBe(true);
       expect(isOfType([1, 2, 3], 'array')).toBe(true);
       expect(isOfType({ name: 'John' }, 'object')).toBe(true);
+      expect(isOfType(2, 'number')).toBe(true);
     });
 
     it('returns false if the value is not of the given type', () => {
@@ -402,6 +403,11 @@ describe('helpers', () => {
 
       //THEN
       expect(result).toEqual('[3,"false",false]');
+    });
+
+    it('should return entry value if not strinfiable', () => {
+      console.log('🚀 ~ file: helpers.test.js:411 ~ it ~ _stringify(undefined):', _stringify(undefined));
+      expect(_stringify(undefined)).toEqual(undefined);
     });
   });
 
