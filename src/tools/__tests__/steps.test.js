@@ -1,4 +1,4 @@
-import { flattenSteps } from './steps';
+import { flattenSteps } from '../steps';
 
 describe('flatten', () => {
   it('flattens an object with a nested structure into a single-level array', () => {

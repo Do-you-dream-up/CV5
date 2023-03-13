@@ -335,7 +335,7 @@ const isArrayOfString = (list) => {
   return list.every(isString);
 };
 
-const strContainsOneOfList = (str, testList = []) => {
+export const strContainsOneOfList = (str, testList = []) => {
   if (!isArrayOfString(testList)) testList = [];
   return testList.some((strItem) => strContains(str, strItem));
 };

@@ -1,4 +1,4 @@
-import { Local } from './storage';
+import { Local } from '../storage';
 
 beforeEach(() => {
   localStorage.clear();

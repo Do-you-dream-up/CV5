@@ -1,4 +1,5 @@
-import { hasWizard, isLoadedFromChannels } from './wizard';
+/* eslint-disable no-global-assign */
+import { hasWizard, isLoadedFromChannels } from '../wizard';
 
 import { expect } from '@jest/globals';
 
