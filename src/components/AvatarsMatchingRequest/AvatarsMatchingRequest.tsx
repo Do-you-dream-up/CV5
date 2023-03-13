@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
 
@@ -7,6 +6,17 @@ const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 
 const isSet = (value) => value !== null && typeof value !== 'undefined';
+
+interface AvatarsMatchingRequestProps {
+  AvatarComponent: any;
+  defaultAvatar: string | null;
+  headerAvatar: boolean;
+  type: any;
+  hasLoader: boolean;
+  carousel: boolean;
+  carouselTemplate: boolean;
+  typeResponse: string;
+}
 
 const AvatarsMatchingRequest = ({
   defaultAvatar = null,
@@ -17,9 +27,9 @@ const AvatarsMatchingRequest = ({
   carouselTemplate,
   AvatarComponent,
   typeResponse,
-}) => {
+}: AvatarsMatchingRequestProps) => {
   const { configuration } = useConfiguration();
-  const { customAvatar, image: hasImage, imageLink } = configuration.header.logo;
+  const { customAvatar, image: hasImage, imageLink } = configuration?.header?.logo || {};
 
   const hasAvatar = useMemo(() => {
     return !!configuration?.avatar[type]?.enable;
@@ -27,11 +37,11 @@ const AvatarsMatchingRequest = ({
 
   const typeMapImage = useMemo(() => {
     return {
-      understood: { image: imageLink.understood, pattern: RE_UNDERSTOOD },
-      misunderstood: { image: imageLink.misunderstood, pattern: RE_MISUNDERSTOOD },
-      reword: { image: imageLink.reword, pattern: RE_REWORD },
+      understood: { image: imageLink?.understood, pattern: RE_UNDERSTOOD },
+      misunderstood: { image: imageLink?.misunderstood, pattern: RE_MISUNDERSTOOD },
+      reword: { image: imageLink?.reword, pattern: RE_REWORD },
     };
-  }, [imageLink.misunderstood, imageLink.reword, imageLink.understood]);
+  }, [imageLink?.misunderstood, imageLink?.reword, imageLink?.understood]);
 
   const imageType = useMemo(() => {
     if (!isSet(customAvatar) || !customAvatar || !isSet(typeResponse)) {
@@ -67,17 +77,6 @@ const AvatarsMatchingRequest = ({
   }
 
   return null;
-};
-
-AvatarsMatchingRequest.propTypes = {
-  AvatarComponent: PropTypes.any,
-  defaultAvatar: PropTypes.string,
-  headerAvatar: PropTypes.bool,
-  type: PropTypes.oneOf(['request', 'response', '']).isRequired,
-  hasLoader: PropTypes.bool,
-  carousel: PropTypes.bool,
-  carouselTemplate: PropTypes.bool,
-  typeResponse: PropTypes.string,
 };
 
 export default AvatarsMatchingRequest;

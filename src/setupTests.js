@@ -1,4 +1,4 @@
-import { JSDOM } from 'jsdom';
+import '../src/tools/prototypes/strings';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { DialogContext } from './contexts/DialogContext';
@@ -6,6 +6,7 @@ import { ConfigurationContext } from './contexts/ConfigurationContext';
 import { isDefined } from './tools/helpers';
 import { JssProvider, ThemeProvider } from 'react-jss';
 import theme from '../public/override/theme.json';
+import '@testing-library/jest-dom';
 
 const config = {
   url: 'https://www.example.com/',

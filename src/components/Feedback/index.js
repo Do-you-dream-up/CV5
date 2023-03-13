@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
 import Button from '../Button/Button';
-import { DialogContext } from '../../contexts/DialogContext';
+import { DialogContext, useDialog } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Icon from '../Icon/Icon';
@@ -27,7 +27,7 @@ import icons from '../../tools/icon-constants';
  */
 export default function Feedback() {
   const { configuration } = useConfiguration();
-  const { addResponse } = useContext(DialogContext);
+  const { addResponse } = useDialog();
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showVote, setShowVote] = useState(true);

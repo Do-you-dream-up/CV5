@@ -45,7 +45,7 @@ export default function RadioGroup({ showRequiredMessage, fields, parent }) {
   return <div className={'group'}>{render()}</div>;
 }
 
-const RadioItem = ({ field, onChange, checked }) => {
+export const RadioItem = ({ field, onChange, checked }) => {
   const inputAttributes = useMemo(() => {
     return {
       id: field.getId(),
