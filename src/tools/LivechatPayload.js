@@ -22,7 +22,7 @@ let PAYLOAD_COMMON_CONTENT = {
   os: osName(),
 };
 
-const getPayloadCommonContentBase64Encoded = () => {
+export const getPayloadCommonContentBase64Encoded = () => {
   return Object.keys(PAYLOAD_COMMON_CONTENT).reduce((mapRes, key) => {
     const val = PAYLOAD_COMMON_CONTENT[key];
     mapRes[key] = isOfTypeString(val) ? val.toBase64() : val;

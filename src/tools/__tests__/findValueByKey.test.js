@@ -1,4 +1,4 @@
-import { findValueByKey } from './findValueByKey';
+import { findValueByKey } from '../findValueByKey';
 
 describe('findValueByKey', () => {
   it('should return the value for the specified key in the object', () => {

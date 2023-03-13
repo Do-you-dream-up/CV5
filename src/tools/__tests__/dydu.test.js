@@ -1,6 +1,5 @@
-/* eslint-disable */
-import dydu from '../tools/dydu';
-import { fakeLocalStorage } from '../test/fixtures/globalFixtures';
+import dydu from '../dydu';
+import { fakeLocalStorage } from '../../test/fixtures/globalFixtures';
 
 const test = {
   url: 'doyoudreamup.com/test/',
@@ -63,8 +62,6 @@ Object.defineProperty(window, 'location', {
 });
 
 describe('dydu.js', () => {
-  const { location } = window;
-
   describe('getSpace', () => {
     it('should use the "urlpart" strategy for space consultation detection', () => {
       // GIVEN
@@ -87,6 +84,7 @@ describe('dydu.js', () => {
 
     it('should get the botId by request', () => {
       const contextId = dydu.getContextId();
+      console.log('🚀 ~ file: dydu.test.js:87 ~ it ~ contextId:', contextId);
       // no lc
       // with request
     });
