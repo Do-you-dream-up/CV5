@@ -84,7 +84,6 @@ describe('dydu.js', () => {
 
     it('should get the botId by request', () => {
       const contextId = dydu.getContextId();
-      console.log('🚀 ~ file: dydu.test.js:87 ~ it ~ contextId:', contextId);
       // no lc
       // with request
     });
