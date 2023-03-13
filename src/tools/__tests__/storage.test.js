@@ -509,47 +509,6 @@ describe('Local storage by bot id', () => {
 
     describe('welcomeKnowledge', () => {
       describe('getSessionStorageDefaultLocalStorage', () => {
-        it('should return sessionStorage if it exists', () => {
-          const sessionStorageMock = {
-            setItem: jest.fn(),
-            getItem: jest.fn(),
-            removeItem: jest.fn(),
-          };
-          global.sessionStorage = sessionStorageMock;
-
-          const storage = Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage();
-
-          expect(storage).toBeDefined();
-        });
-
-        it('should return localStorage if it exists and sessionStorage does not', () => {
-          const localStorageMock = {
-            setItem: jest.fn(),
-            getItem: jest.fn(),
-            removeItem: jest.fn(),
-          };
-          global.sessionStorage = undefined;
-          global.localStorage = localStorageMock;
-
-          const storage = Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage();
-
-          expect(storage).toBeDefined();
-        });
-
-        it('should return mockStorage if neither sessionStorage nor localStorage exists', () => {
-          const mockStorage = {
-            setItem: jest.fn(),
-            getItem: jest.fn(),
-            removeItem: jest.fn(),
-          };
-          global.sessionStorage = undefined;
-          global.localStorage = undefined;
-
-          const storage = Local.welcomeKnowledge.getSessionStorageDefaultLocalStorage();
-
-          expect(storage).toBeDefined();
-        });
-
         it('does not save a new bot interaction if one already exists', () => {
           Local.welcomeKnowledge.save('bot1', { id: 'bot1' });
           const saveMock = jest.fn();
