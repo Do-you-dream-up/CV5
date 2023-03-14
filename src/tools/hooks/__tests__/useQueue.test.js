@@ -14,7 +14,6 @@ describe('useQueue', () => {
     const item = 'test';
     act(() => {
       result.current.put(item);
-      console.log(result.current.list);
     });
     expect(result.current.isEmpty).toBeFalsy();
     expect(result.current.list[0]).toContain(item);
