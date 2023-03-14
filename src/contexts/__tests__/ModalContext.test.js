@@ -58,20 +58,15 @@ describe('ModalProvider', () => {
     expect(getByText('Component: open')).toBeInTheDocument();
 
     getByTestId('modal-button-resolve').click();
-    // expect(getByText('Component: closed')).toBeInTheDocument();
-    // expect(getByText('Thinking: true')).toBeInTheDocument();
+    expect(getByText('Component: closed')).toBeInTheDocument();
 
-    // // Wait for the promise to resolve
-    // setTimeout(() => {
-    //   expect(getByText('Component: closed')).toBeInTheDocument();
-    //   expect(getByText('Thinking: false')).toBeInTheDocument();
-    // }, 2000);
+    // Wait for the promise to resolve
+    setTimeout(() => {
+      expect(getByText('Component: closed')).toBeInTheDocument();
+      expect(getByText('Thinking: false')).toBeInTheDocument();
+    }, 2000);
 
-    // getByTestId('modal-button-open').click();
-    // expect(getByText('Component: open')).toBeInTheDocument();
-
-    // getByTestId('modal-button-reject').click();
-    // expect(getByText('Component: closed')).toBeInTheDocument();
-    // expect(getByText('Thinking: false')).toBeInTheDocument();
+    getByTestId('modal-button-open').click();
+    expect(getByText('Component: open')).toBeInTheDocument();
   });
 });
