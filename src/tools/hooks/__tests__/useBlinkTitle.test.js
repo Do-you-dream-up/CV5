@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import useTabNotification, { tick } from '../hooks/useBlinkTitle';
+import useTabNotification, { tick } from '../useBlinkTitle';
 
 jest.useFakeTimers();
 
