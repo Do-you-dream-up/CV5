@@ -4,15 +4,15 @@ import { Base64 } from 'js-base64';
 
 describe('transform', () => {
   it('should apply manipulator on an object', () => {
-    const data = { name: 'John', age: 30 };
-    const result = decode(data, (value) => (typeof value === 'string' ? value.toUpperCase() : value));
-    expect(result).toEqual({ name: 'JOHN', age: 30 });
+    const data = { name: 'John', age: '30' };
+    const result = encode(data, Base64.encode);
+    expect(result).toEqual({ name: 'Sm9obg==', age: 'MzA=' });
   });
 
   it('should apply manipulator on an array', () => {
     const data = ['Hello', 'World'];
-    const result = encode(data[0], Base64.encode());
-    expect(result).toEqual('SGVsbG8=');
+    const result = encode(data, Base64.encode);
+    expect(result).toEqual(['SGVsbG8=', 'V29ybGQ=']);
   });
 
   it('should not apply manipulator on a number', () => {
