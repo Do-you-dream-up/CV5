@@ -1,5 +1,6 @@
 import '../src/tools/prototypes/strings';
 import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
 
 import { JssProvider, ThemeProvider } from 'react-jss';
 
