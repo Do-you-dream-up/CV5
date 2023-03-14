@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
+
+export const useSaml = () => useContext(SamlContext);
 
 export const SamlContext = createContext({});
 
