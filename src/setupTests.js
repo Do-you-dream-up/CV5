@@ -1,12 +1,15 @@
 import '../src/tools/prototypes/strings';
-import React from 'react';
-import { render } from '@testing-library/react';
-import { DialogContext } from './contexts/DialogContext';
-import { ConfigurationContext } from './contexts/ConfigurationContext';
-import { isDefined } from './tools/helpers';
-import { JssProvider, ThemeProvider } from 'react-jss';
-import theme from '../public/override/theme.json';
 import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
+
+import { JssProvider, ThemeProvider } from 'react-jss';
+
+import { ConfigurationContext } from './contexts/ConfigurationContext';
+import { DialogContext } from './contexts/DialogContext';
+import React from 'react';
+import { isDefined } from './tools/helpers';
+import { render } from '@testing-library/react';
+import theme from '../public/override/theme.json';
 
 const config = {
   url: 'https://www.example.com/',
