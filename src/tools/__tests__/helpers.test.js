@@ -8,6 +8,7 @@ import {
   b64encode,
   b64encodeObject,
   browserName,
+  compareObject,
   decodeHtml,
   escapeHTML,
   extractDomainFromUrl,
@@ -709,6 +710,26 @@ describe('helpers', () => {
       const name = 'data:image/png;base64,iVBORw0KGg';
 
       expect(asset(name)).toEqual(name);
+    });
+  });
+
+  describe('compareObject', () => {
+    test('returns true when objects have the same values for all fields', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { a: 1, b: 2 };
+      expect(compareObject(obj1, obj2)).toBe(true);
+    });
+
+    test('returns false when objects have different values for at least one field', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { a: 1, b: 3 };
+      expect(compareObject(obj1, obj2)).toBe(false);
+    });
+
+    test('returns false when the second object does not contain all fields of the first object', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { a: 1 };
+      expect(compareObject(obj1, obj2)).toBe(false);
     });
   });
 
