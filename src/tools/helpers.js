@@ -118,6 +118,12 @@ export const objectContainFields = (obj, fieldList = []) => {
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
 };
 
+export const compareObject = (obj1, obj2) => {
+  const objFieldList = Object.keys(obj1);
+  if (!objectContainFields(obj2, objFieldList)) return false;
+  return _stringify(Object.values(obj1)) === _stringify(Object.values(obj2));
+};
+
 export const secondsToMs = (s) => {
   if (!isOfTypeNumber(s)) return 5000;
 
