@@ -343,7 +343,6 @@ const strContainsOneOfList = (str, testList = []) => {
 export const mergeDeep = (target, ...sources) => {
   if (!sources.length) return target;
   const source = sources.shift();
-
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
@@ -359,6 +358,13 @@ export const mergeDeep = (target, ...sources) => {
       }
     }
   }
-
   return mergeDeep(target, ...sources);
+};
+
+export const objectToQueryParam = (o) => {
+  return Object.keys(o).reduce((resultString, field, index) => {
+    if (index !== 0) resultString += '&';
+    resultString += `${field}=${o[field]}`;
+    return resultString;
+  }, '');
 };

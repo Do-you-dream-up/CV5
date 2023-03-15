@@ -69,6 +69,7 @@
     "@types/node": "^18.11.18",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "axios-mock-adapter": "^1.21.2",
     "babel-loader": "^8.2.3",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.0.0",

@@ -45,7 +45,6 @@ let BOT = {},
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
-
   const getBackUpServerUrl = (botConf = {}) => {
     const rootUrl = {
       app1: 'app1',
@@ -703,12 +702,12 @@ export default new (class Dydu {
   };
 
   processTalkResponse = (talkResponse) => {
-    this.handleSpaceWithResponseWithTalkResponse(talkResponse);
+    this.handleSpaceWithTalkResponse(talkResponse);
     this.handleKnownledgeQuerySurveyWithTalkResponse(talkResponse);
     return talkResponse;
   };
 
-  handleSpaceWithResponseWithTalkResponse(response) {
+  handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) this.setSpace(guiCSName);
     return response;
@@ -1026,7 +1025,7 @@ export default new (class Dydu {
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
-      console.info('Error while initializing locale, fallback to browser locale');
+      console.info('Error while initializing locale, fallback to browser locale', e);
       this.setLocale(locale, configuration.application.languages).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
