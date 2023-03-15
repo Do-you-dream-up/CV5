@@ -601,13 +601,13 @@ describe('dydu.js', function () {
   describe('getContextIdFromLocalStorage', function () {
     it('should call |getContextIdStorageKey', () => {
       // GIVEN
-      dydu.getContextIdStorageKey = jest.fn();
+      spied = jestSpyOnList(dydu, ['getContextIdStorageKey']);
 
       // WHEN
       dydu.getContextIdFromLocalStorage();
 
       // THEN
-      expect(dydu.getContextIdStorageKey).toHaveBeenCalled();
+      expect(spied.getContextIdStorageKey).toHaveBeenCalled();
     });
     it('should call |Local.contextId.load| with key from storage', () => {
       // GIVEN
@@ -626,7 +626,7 @@ describe('dydu.js', function () {
     });
   });
 
-  xdescribe('getContextIdStorageKey', function () {
+  describe('getContextIdStorageKey', function () {
     it('should call |Local.contextId.createKey|', () => {
       // GIVEN
       spied = jestSpyOnList(dydu, ['getBotId']);
@@ -776,14 +776,17 @@ describe('dydu.js', function () {
     it('should call |Local.get| with gdpr localStorage key name', () => {
       // GIVEN
       const gdprLSKeyName = 'gdrp';
-      Local.names = { gdpr: gdprLSKeyName };
-      Local.byBotId.mockReturnValue({ get: jest.fn() });
+      Local.names.gdpr = gdprLSKeyName;
+      const spiedLocalGet = jest.spyOn(Local, 'get');
+      const spiedByBotId = jest.spyOn(Local, 'byBotId');
+      spiedByBotId.mockReturnValue({ get: jest.fn() });
 
       // WHEN
       dydu.hasUserAcceptedGdpr();
 
       // THEN
-      expect(Local.get).toHaveBeenCalledWith(gdprLSKeyName);
+      expect(spiedLocalGet).toHaveBeenCalledWith(gdprLSKeyName);
+      jestRestoreMocked([spiedLocalGet, spiedByBotId]);
     });
   });
 
@@ -798,37 +801,38 @@ describe('dydu.js', function () {
   });
 
   describe('feedbackInsatisfaction', function () {
-    it('should call |getContextId|', () => {
+    it('should call |getContextId|', async () => {
       // GIVEN
-      dydu.getContextId = jest.fn();
+      spied = jestSpyOnList(dydu, ['getContextId']);
 
       // WHEN
-      dydu.feedbackInsatisfaction();
+      await dydu.feedbackInsatisfaction();
 
       // THEN
-      expect(dydu.getContextId).toHaveBeenCalled();
+      expect(spied.getContextId).toHaveBeenCalled();
     });
-    xit('should include the |choiceKey| parameter in payload', () => {
+    it('should include the |choiceKey| parameter in payload', async () => {
       // GIVEN
-      const config = new ConfigurationFixture();
-      config.enableSaml();
 
       spied = jestSpyOnList(dydu, ['getConfiguration', 'getContextId', 'emit']);
+      const config = new ConfigurationFixture();
+      config.enableSaml();
       spied.getConfiguration.mockReturnValue(config.getConfiguration());
-      Local.saml.load = jest.fn();
+      const s = jest.spyOn(Local.saml, 'load');
 
       // WHEN
       const choiceKey = 'choice-key';
-      dydu.feedbackInsatisfaction(choiceKey);
+      await dydu.feedbackInsatisfaction(choiceKey);
 
       // THEN
       expect(spied.emit).toHaveBeenCalledWith(
         undefined,
-        'chat/feedback/insatifaction/undefined',
-        `choiceKey=${choiceKey}&solutionUsed=ASSISTANT`,
+        'chat/feedback/insatisfaction/undefined/',
+        `choiceKey=${choiceKey}&contextUUID=&solutionUsed=ASSISTANT`,
       );
+      s.mockRestore();
     });
-    xit('should call |emit|', () => {
+    it('should call |emit|', async () => {
       // GIVEN
       spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
       const c = new ConfigurationFixture();
@@ -837,7 +841,7 @@ describe('dydu.js', function () {
       Local.saml.load = jest.fn();
 
       // WHEN
-      dydu.feedbackInsatisfaction();
+      await dydu.feedbackInsatisfaction();
 
       // THEN
       expect(spied.emit).toHaveBeenCalled();
