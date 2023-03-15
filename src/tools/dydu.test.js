@@ -2,7 +2,7 @@
 
 import { Cookie, Local } from './storage';
 import { ConfigurationFixture } from '../test/fixtures/configuration';
-import { objectToQueryParam } from './helpers';
+import { objectToQueryParam, strContains } from './helpers';
 
 let _dydu = jest.requireActual('../tools/dydu').default;
 
@@ -113,7 +113,8 @@ describe('dydu.js', function () {
   });
 
   describe('sendSurveyPolling', () => {
-    it('should GET on /servlet/chatHttp api', () => {});
+    it('should call |emit| with GET as method argument', () => {});
+    it('should call |emit| with /servlet/chatHttp as path argument', () => {});
     it('should set the lastResponse to the just fetched value', () => {});
     it('should call |displaySurveySent| after setting |lastResponse|', () => {});
   });
@@ -846,9 +847,111 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.emit).toHaveBeenCalled();
     });
-    it('should call |emit| for POST', () => {});
-    it('should call |emit| with chat/feedback/insatisfaction/ as path argument', () => {});
-    it('should call |emit| with form url encoded string as data argument', () => {});
+    it('should call |emit| for POST', async () => {});
+    it('should call |emit| with chat/feedback/insatisfaction/ as path argument', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      const c = new ConfigurationFixture();
+      spied.getContextId.mockResolvedValue(null);
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+      Local.saml.load = jest.fn();
+
+      // WHEN
+      await dydu.feedbackInsatisfaction();
+
+      // THEN
+
+      const targetPath = 'chat/feedback/insatisfaction/';
+      const pathArg = spied.emit.mock.calls[0][1];
+      expect(strContains(pathArg, targetPath)).toEqual(true);
+    });
+    it('should call |emit| with form url encoded string as data argument', async () => {
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      const c = new ConfigurationFixture();
+      spied.getContextId.mockResolvedValue(null);
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+      Local.saml.load = jest.fn();
+
+      // WHEN
+      await dydu.feedbackInsatisfaction();
+
+      // THEN
+
+      const dataArg = spied.emit.mock.calls[0][2];
+      expect(isUrlFormEncoded(dataArg)).toEqual(true);
+    });
+  });
+
+  describe('feedbackComment', function () {
+    it('should call |getContextId|', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
+
+      // WHEN
+      await dydu.feedbackComment();
+
+      // THEN
+      expect(spied.getContextId).toHaveBeenCalled();
+      jestRestoreMocked([spiedSamlLoad]);
+    });
+    it('should call |getConfiguration|', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+      const c = new ConfigurationFixture();
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
+
+      // WHEN
+      await dydu.feedbackComment();
+
+      // THEN
+      expect(spied.getConfiguration).toHaveBeenCalled();
+      jestRestoreMocked([spiedSamlLoad]);
+    });
+    it('should call |Local.saml.load| if saml is enabled in configuration', () => {});
+    it('should call |emit| with path chat/feedback/comment/', () => {});
+    it('should call |emit| with form url payload', () => {});
+    it('should includes saml info in payload when saml is enabled in configuration', () => {});
+    it('should includes |comment| from parameter in payload', () => {});
+  });
+
+  describe('feedback', function () {
+    it('should call |getContextId|', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      expect(spied.getContextId).toHaveBeenCalled();
+      jestRestoreMocked([spiedSamlLoad]);
+    });
+    it('should call |getConfiguration|', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+      const c = new ConfigurationFixture();
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      expect(spied.getConfiguration).toHaveBeenCalled();
+      jestRestoreMocked([spiedSamlLoad]);
+    });
+    it('should call |Local.saml.load| if saml is enabled in configuration', () => {});
+    it('should call |emit| with path chat/feedback/comment/', () => {});
+    it('should call |emit| with form url payload', () => {});
+    it('should includes saml info in payload when saml is enabled in configuration', () => {});
+    it('should includes |feedback| in payload', () => {});
+    it('should set |feedback| payload value to negative', () => {});
+    it('should set |feedback| payload value to positive', () => {});
   });
 });
 
@@ -870,3 +973,5 @@ const jestRestoreMocked = (spies) => {
     Object.values(spies).forEach(spyRestore);
   }
 };
+
+const isUrlFormEncoded = (s) => strContains(s, '=');
