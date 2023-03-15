@@ -77,35 +77,4 @@ describe('SamlContext', () => {
 
     jest.advanceTimersByTime(31 * 60 * 1000);
   });
-
-  xdescribe('checkSession', () => {
-    const response = JSON.stringify({ values: { auth: 'some-auth', redirection_url: 'some-redirection-url' } });
-    const expectedRedirectUrl = `some-redirection-url&RelayState=${encodeURI(window.location.href)}`;
-
-    it('should set saml2Info and redirectUrl on success', async () => {
-      dydu.getSaml2Status.mockResolvedValue(response);
-
-      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-      await act(async () => {
-        await result.current.checkSession();
-      });
-
-      expect(Local.saml.save).toHaveBeenCalledWith('some-auth');
-      expect(result.current.saml2Info).toEqual('some-auth');
-      expect(result.current.redirectUrl).toEqual(expectedRedirectUrl);
-    });
-
-    it('should not update saml2Info and redirectUrl on failure', async () => {
-      dydu.getSaml2Status.mockRejectedValue(new Error('some-error'));
-
-      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-      await act(async () => {
-        await result.current.checkSession();
-      });
-
-      expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(null);
-      expect(result.current.redirectUrl).toEqual(null);
-    });
-  });
 });
