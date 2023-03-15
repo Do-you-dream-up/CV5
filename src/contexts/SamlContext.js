@@ -75,6 +75,7 @@ export const SamlProvider = ({ children }) => {
     saml2Info,
     setSaml2Info,
     checkSession,
+    redirectUrl,
   };
 
   const renderChildren = () => {

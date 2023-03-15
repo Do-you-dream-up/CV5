@@ -11,6 +11,7 @@ jest.mock('../../tools/storage', () => ({
       save: jest.fn(),
       load: jest.fn(),
     },
+    set: jest.fn(),
   },
 }));
 
@@ -87,15 +88,17 @@ describe('SamlContext', () => {
     jest.advanceTimersByTime(31 * 60 * 1000);
   });
 
-  xdescribe('checkSession', () => {
-    const response = JSON.stringify({ values: { auth: 'some-auth', redirection_url: 'some-redirection-url' } });
+  describe('checkSession', () => {
+    const response = JSON.stringify({
+      values: { auth: btoa('some-auth'), redirection_url: btoa('some-redirection-url') },
+    });
     const expectedRedirectUrl = `some-redirection-url&RelayState=${encodeURI(window.location.href)}`;
-    const saml2Info = 'current-auth';
 
     it('should update saml2Info and redirectUrl on successful getSaml2Status', async () => {
       dydu.getSaml2Status = jest.fn().mockResolvedValueOnce(response);
 
       const { result, waitFor } = renderHook(() => useSaml(), { wrapper: SamlProvider });
+
       await act(async () => {
         await result.current.checkSession();
         await waitFor(() => result.current.saml2Info === 'some-auth');
@@ -116,7 +119,7 @@ describe('SamlContext', () => {
 
       expect(Local.saml.save).not.toHaveBeenCalled();
       expect(result.current.saml2Info).toEqual(undefined);
-      expect(result.current.redirectUrl).toEqual(undefined);
+      expect(result.current.redirectUrl).toEqual(null);
     });
 
     it('should not update saml2Info and redirectUrl when auth is not a valid base64 string', async () => {
@@ -132,7 +135,7 @@ describe('SamlContext', () => {
 
       expect(Local.saml.save).not.toHaveBeenCalled();
       expect(result.current.saml2Info).toEqual(undefined);
-      expect(result.current.redirectUrl).toEqual(undefined);
+      expect(result.current.redirectUrl).toEqual(null);
     });
   });
 });
