@@ -8,6 +8,7 @@ import Icon from '../Icon/Icon';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-dydu-constants';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
@@ -16,7 +17,6 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import icons from '../../tools/icon-constants';
 
 interface InputProps {
   onRequest: (input: string) => void;

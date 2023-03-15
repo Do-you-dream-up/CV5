@@ -2,14 +2,14 @@ import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 
 import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
+import Icon from '../Icon/Icon';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import icons from '../../tools/icon-dydu-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import Icon from '../Icon/Icon';
-import icons from '../../tools/icon-constants';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest

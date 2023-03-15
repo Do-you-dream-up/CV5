@@ -85,7 +85,7 @@ export default createUseStyles<any, any>((theme: any): any => {
         alignItems: 'center',
         height: 24,
       },
-      '& .icon-thumb-up:before, & .icon-thumb-down:before': {
+      '& .icon-dydu-thumb-up:before, & .icon-dydu-thumb-down:before': {
         fontSize: 24,
       },
       '&, &:after, &:before': {

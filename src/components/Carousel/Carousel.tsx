@@ -2,15 +2,16 @@ import Actions, { ActionProps } from '../Actions/Actions';
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
 import { DialogContext } from '../../contexts/DialogContext';
+import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
+import icons from '../../tools/icon-dydu-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
-import Icon from '../Icon/Icon';
-import icons from '../../tools/icon-constants';
+
 /**
  * Typically used with the `Interaction` component.
  *

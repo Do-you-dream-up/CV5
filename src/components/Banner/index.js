@@ -4,12 +4,11 @@ import Actions from '../Actions/Actions';
 import { Session } from '../../tools/storage';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
+import icons from '../../tools/icon-dydu-constants';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-
-import icons from '../../tools/icon-constants';
 
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral

@@ -28,7 +28,7 @@
     "storage": true,
     "dismissable": true,
     "more": false,
-    "moreIcon": "icon-open-in-new",
+    "moreIcon": "icon-dydu-open-in-new",
     "moreLink": "https://goo.gle",
     "transient": false
   },
@@ -37,8 +37,8 @@
     "controls": true,
     "offset": 5,
     "offsetBetweenCard": 100,
-    "iconCaretLeft": "icon-caret-left",
-    "iconCaretRight": "icon-caret-right"
+    "iconCaretLeft": "icon-dydu-caret-left",
+    "iconCaretRight": "icon-dydu-caret-right"
   },
   "chatbox": {
     "expandable": true,
@@ -51,12 +51,12 @@
   },
   "contacts": {
     "phone": true,
-    "phoneIcon": "icon-chatbox_phone",
+    "phoneIcon": "icon-dydu-chatbox_phone",
     "email": true,
-    "emailIcon": "icon-chatbox_mail",
+    "emailIcon": "icon-dydu-chatbox_mail",
     "socialNetwork": true,
-    "socialNetworkIcon": "icon-chatbox_account",
-    "openInNew": "icon-open-in-new"
+    "socialNetworkIcon": "icon-dydu-chatbox_account",
+    "openInNew": "icon-dydu-open-in-new"
   },
   "dialog": {
     "top": true
@@ -108,8 +108,8 @@
       "positiveCustom": "Connaissance suite satisfaction",
       "negativeCustom": "Connaissance suite insatisfaction",
       "icons": {
-        "thumbDown": "icon-thumb-down",
-        "thumbUp": "icon-thumb-up"
+        "thumbDown": "icon-dydu-thumb-down",
+        "thumbUp": "icon-dydu-thumb-up"
       }
     }
   },
@@ -119,11 +119,11 @@
   "footer": {
     "translate": true,
     "icons": {
-      "database": "icon-database",
-      "printer": "icon-printer",
-      "email": "icon-email-send",
-      "shield": "icon-shield-lock",
-      "submit": "icon-send"
+      "database": "icon-dydu-database",
+      "printer": "icon-dydu-printer",
+      "email": "icon-dydu-email-send",
+      "shield": "icon-dydu-shield-lock",
+      "submit": "icon-dydu-send"
     }
   },
   "gdprDisclaimer": {
@@ -143,14 +143,14 @@
       "minFontSize": 0.75
     },
     "icons": {
-      "close": "icon-close",
-      "collapse": "icon-minimize",
-      "expand": "icon-maximize",
-      "fontIncrease": "icon-font-plus",
-      "fontDecrease": "icon-font-minus",
-      "minimize": "icon-chatbox_reduire",
-      "more": "icon-chatbox_option",
-      "dots": "icon-dots"
+      "close": "icon-dydu-close",
+      "collapse": "icon-dydu-minimize",
+      "expand": "icon-dydu-maximize",
+      "fontIncrease": "icon-dydu-font-plus",
+      "fontDecrease": "icon-dydu-font-minus",
+      "minimize": "icon-dydu-chatbox_reduire",
+      "more": "icon-dydu-chatbox_option",
+      "dots": "icon-dydu-dots"
     },
     "logo": {
       "customAvatar": false,
@@ -290,11 +290,11 @@
     "hasContactTab": false,
     "items": [
       {
-        "icon": "icon-chatbox_conversation",
+        "icon": "icon-dydu-chatbox_conversation",
         "key": "dialog"
       },
       {
-        "icon": "icon-chatbox_contact",
+        "icon": "icon-dydu-chatbox_contact",
         "key": "contacts"
       }
     ],

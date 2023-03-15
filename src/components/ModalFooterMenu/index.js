@@ -6,7 +6,7 @@ import MenuList from '../MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-constants';
+import icons from '../../tools/icon-dydu-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';

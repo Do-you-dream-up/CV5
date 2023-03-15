@@ -1,10 +1,10 @@
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
-import useStyles from './styles';
-import { useTranslation } from 'react-i18next';
-import icons from '../../tools/icon-constants';
+import icons from '../../tools/icon-dydu-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
+import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Contact tab

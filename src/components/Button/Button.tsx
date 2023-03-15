@@ -1,12 +1,12 @@
 import { ReactNode, Ref, createElement, forwardRef } from 'react';
 
-import { useUserAction } from '../../contexts/UserActionContext';
-import c from 'classnames';
 import Icon from '../Icon/Icon';
+import c from 'classnames';
+import icons from '../../tools/icon-dydu-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
-import icons from '../../tools/icon-constants';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 export interface ButtonProps {
   children?: ReactNode;

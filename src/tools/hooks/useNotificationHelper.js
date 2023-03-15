@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
-import { isDefined } from '../helpers';
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
-import icons from '../../tools/icon-constants';
+import icons from '../../tools/icon-dydu-constants';
+import { isDefined } from '../helpers';
+import { useMemo } from 'react';
 
 const isTimeout = (notification) =>
   LivechatPayload.is.timeout(notification) ? INTERACTION_NOTIFICATION_TYPE.timeout : null;

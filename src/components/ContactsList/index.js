@@ -1,8 +1,8 @@
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
+import icons from '../../tools/icon-dydu-constants';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
-import icons from '../../tools/icon-constants';
 /**
  * Contact list for phone numbers, emails and social networks
  */
