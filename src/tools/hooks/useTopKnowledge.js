@@ -1,9 +1,10 @@
-import { _parse, isArray } from '../helpers';
+import { _parse, isArray, isDefined } from '../helpers';
 import { useCallback, useState } from 'react';
 
 import dydu from '../dydu';
-/* eslint-disable */
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+
+/* eslint-disable */
 
 export default function useTopKnowledge() {
   const { configuration } = useConfiguration();
@@ -28,11 +29,8 @@ export default function useTopKnowledge() {
   };
 }
 
-const extractPayload = (response) => {
-  try {
-    const list = _parse(response?.knowledgeArticles);
-    return isArray(list) ? list : [list];
-  } catch (e) {
-    return [];
-  }
+export const extractPayload = (response) => {
+  const list = _parse(response?.knowledgeArticles);
+  if (isDefined(list)) return isArray(list) ? list : [list];
+  return [];
 };

@@ -118,6 +118,12 @@ export const objectContainFields = (obj, fieldList = []) => {
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
 };
 
+export const compareObject = (obj1, obj2) => {
+  const objFieldList = Object.keys(obj1);
+  if (!objectContainFields(obj2, objFieldList)) return false;
+  return _stringify(Object.values(obj1)) === _stringify(Object.values(obj2));
+};
+
 export const secondsToMs = (s) => {
   if (!isOfTypeNumber(s)) return 5000;
 
@@ -259,11 +265,13 @@ export const getChatboxWidth = (chatboxRef) => {
   return Math.abs(right - left);
 };
 
-export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+export const getChatboxWidthTime = (chatboxRef = null, time = 1, maxWidthPx = 850) => {
   const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
   if (error) throw new Error('getChatboxWidthTime: parameter error', time);
-  return getChatboxWidth(chatboxRef) * time;
+  return getMinValue(getChatboxWidth(chatboxRef) * time, maxWidthPx);
 };
+
+const getMinValue = (a, b) => (a < b ? a : b);
 
 export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');
