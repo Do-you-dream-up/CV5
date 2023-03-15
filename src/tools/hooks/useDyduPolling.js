@@ -55,7 +55,7 @@ const responseToLivechatPayload = (r) => ({
   values: { ...r },
 });
 
-const typeToHandler = {
+export const typeToHandler = {
   [RESPONSE_TYPE.message]: (response) => {
     const { text } = response;
     displayResponse(text);
