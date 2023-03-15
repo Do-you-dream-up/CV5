@@ -77,4 +77,59 @@ describe('SamlContext', () => {
 
     jest.advanceTimersByTime(31 * 60 * 1000);
   });
+
+  xdescribe('checkSession', () => {
+    const response = JSON.stringify({ values: { auth: 'some-auth', redirection_url: 'some-redirection-url' } });
+    const expectedRedirectUrl = `some-redirection-url&RelayState=${encodeURI(window.location.href)}`;
+    const saml2Info = 'current-auth';
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      Local.saml.save.mockClear();
+      dydu.getSaml2Status.mockClear();
+    });
+
+    it('should update saml2Info and redirectUrl on successful getSaml2Status', async () => {
+      dydu.getSaml2Status.mockResolvedValueOnce(response);
+
+      const { result, waitFor } = renderHook(() => useSaml(), { wrapper: SamlProvider });
+      await act(async () => {
+        await result.current.checkSession();
+        await waitFor(() => result.current.saml2Info === 'some-auth');
+      });
+
+      expect(Local.saml.save).toHaveBeenCalledWith('some-auth');
+      expect(result.current.saml2Info).toEqual('some-auth');
+      expect(result.current.redirectUrl).toEqual(expectedRedirectUrl);
+    });
+
+    it('should not update saml2Info and redirectUrl on failed getSaml2Status', async () => {
+      dydu.getSaml2Status.mockRejectedValueOnce(new Error('some-error'));
+
+      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
+      await act(async () => {
+        await result.current.checkSession();
+      });
+
+      expect(Local.saml.save).not.toHaveBeenCalled();
+      expect(result.current.saml2Info).toEqual(null);
+      expect(result.current.redirectUrl).toEqual(null);
+    });
+
+    it('should not update saml2Info and redirectUrl when auth is not a valid base64 string', async () => {
+      const invalidResponse = JSON.stringify({
+        values: { auth: 'invalid-base64', redirection_url: 'some-redirection-url' },
+      });
+      dydu.getSaml2Status.mockResolvedValueOnce(invalidResponse);
+
+      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
+      await act(async () => {
+        await result.current.checkSession();
+      });
+
+      expect(Local.saml.save).not.toHaveBeenCalled();
+      expect(result.current.saml2Info).toEqual(null);
+      expect(result.current.redirectUrl).toEqual(null);
+    });
+  });
 });
