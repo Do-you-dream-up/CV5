@@ -13,7 +13,7 @@ let onEndLivechat = null;
 let api = null;
 let handleSurvey = null;
 
-const saveConfiguration = (configuration) => {
+export const saveConfiguration = (configuration) => {
   onOperatorWriting = configuration.showAnimationOperatorWriting;
   displayResponse = configuration.displayResponseText;
   displayNotification = configuration.displayNotification;
@@ -22,12 +22,12 @@ const saveConfiguration = (configuration) => {
   handleSurvey = configuration.handleSurvey;
 };
 
-const RESPONSE_TYPE = {
+export const RESPONSE_TYPE = {
   notification: 'notification',
   message: 'message',
 };
 
-const typeToChecker = {
+export const typeToChecker = {
   [RESPONSE_TYPE.message]: (response) => {
     return isDefined(response) && isDefined(response?.text) && isDefined(response?.fromDetail);
   },

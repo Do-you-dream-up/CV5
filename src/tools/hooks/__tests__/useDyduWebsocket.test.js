@@ -1,12 +1,12 @@
-import '../../tools/prototypes/strings';
+import '../../prototypes/strings';
 
 import { act, render } from '@testing-library/react';
 
-import { TUNNEL_MODE } from '../constants';
+import { TUNNEL_MODE } from '../../constants';
 import WS from 'jest-websocket-mock';
-import dydu from '../dydu';
-import { extractDomainFromUrl } from '../helpers';
-import useDyduWebsocket from './useDyduWebsocket';
+import dydu from '../../dydu';
+import { extractDomainFromUrl } from '../../helpers';
+import useDyduWebsocket from '../useDyduWebsocket';
 
 jest.mock('../../contexts/DialogContext', () => ({
   useDialog: jest.fn().mockReturnValue({ setStatusText: jest.fn(), flushStatusText: jest.fn() }),
