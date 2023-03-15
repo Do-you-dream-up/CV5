@@ -1,6 +1,6 @@
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 /**

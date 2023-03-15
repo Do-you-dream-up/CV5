@@ -51,13 +51,13 @@ export default createUseStyles((theme) => ({
       flexDirection: 'column',
       justifyContent: 'center',
       textAlign: 'center',
-      '& .icon-dydu-thumb-down, & .icon-dydu-thumb-up': {
+      '& .icon-thumb-down, & .icon-thumb-up': {
         position: 'relative',
       },
-      '& .icon-dydu-thumb-up': {
+      '& .icon-thumb-up': {
         bottom: '1px',
       },
-      '& .icon-dydu-thumb-down': {
+      '& .icon-thumb-down': {
         top: '2px',
       },
     },

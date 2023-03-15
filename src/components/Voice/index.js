@@ -6,7 +6,7 @@ import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import Stt from './stt';
 import Tts from './tts';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import io from 'socket.io-client';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';

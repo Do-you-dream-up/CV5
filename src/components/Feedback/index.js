@@ -11,7 +11,7 @@ import Icon from '../Icon/Icon';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';

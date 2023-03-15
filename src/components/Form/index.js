@@ -2,7 +2,7 @@ import Actions from '../Actions/Actions';
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useState } from 'react';
 import useStyles from './styles';

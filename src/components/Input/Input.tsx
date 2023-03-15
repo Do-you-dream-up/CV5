@@ -8,7 +8,7 @@ import Icon from '../Icon/Icon';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';

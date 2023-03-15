@@ -4,7 +4,7 @@ import Actions from '../Actions/Actions';
 import { Session } from '../../tools/storage';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';

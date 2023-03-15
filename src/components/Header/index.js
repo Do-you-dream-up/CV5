@@ -16,7 +16,7 @@ import Skeleton from '../Skeleton';
 import Tabs from '../Tabs/Tabs';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';

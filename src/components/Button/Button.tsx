@@ -2,7 +2,7 @@ import { ReactNode, Ref, createElement, forwardRef } from 'react';
 
 import Icon from '../Icon/Icon';
 import c from 'classnames';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';

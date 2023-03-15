@@ -5,7 +5,7 @@ import { DialogContext } from '../../contexts/DialogContext';
 import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';

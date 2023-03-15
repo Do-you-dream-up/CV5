@@ -1,6 +1,6 @@
 import ContactsList from '../ContactsList';
 import Paper from '../Paper/index';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
 import useStyles from './styles';

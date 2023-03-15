@@ -6,7 +6,7 @@ import Icon from '../Icon/Icon';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';

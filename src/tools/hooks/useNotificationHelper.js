@@ -1,6 +1,6 @@
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
-import icons from '../../tools/icon-dydu-constants';
+import icons from '../../tools/icon-constants';
 import { isDefined } from '../helpers';
 import { useMemo } from 'react';
 

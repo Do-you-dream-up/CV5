@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import icons from '../tools/icon-dydu-constants';
+import icons from '../tools/icon-constants';
 import { useConfiguration } from './ConfigurationContext';
 
 const ITEM_KEY = {
