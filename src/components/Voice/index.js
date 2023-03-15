@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import io from 'socket.io-client';
+import { isChrome, isMacOs, isWindows } from 'react-device-detect';
+
+import Actions from '../Actions/Actions';
+import Icon from '../Icon/Icon';
+import PropTypes from 'prop-types';
 import Stt from './stt';
 import Tts from './tts';
-import useMousetrap from 'react-hook-mousetrap';
-import { isMacOs, isWindows, isChrome } from 'react-device-detect';
-import PropTypes from 'prop-types';
-import { useDialog } from '../../contexts/DialogContext';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
-import Icon from '../Icon/Icon';
-import { useTheme } from 'react-jss';
-import Actions from '../Actions/Actions';
 import icons from '../../tools/icon-constants';
+import io from 'socket.io-client';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useDialog } from '../../contexts/DialogContext';
+import useMousetrap from 'react-hook-mousetrap';
+import { useTheme } from 'react-jss';
 
 /**
  * TTS / STT
