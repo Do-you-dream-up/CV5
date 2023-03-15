@@ -9,8 +9,8 @@
   font-display: block;
 }
 
-[class^='icon-'],
-[class*=' icon-'] {
+[class^='dydu-icon'],
+[class*=' dydu-icon'] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'Dydu-Font-Icon' !important;
   speak: never;
