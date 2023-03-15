@@ -28,7 +28,7 @@ const Icon = ({
   const iconWrapperProps = useMemo<IconWrapperPropsInterface>(
     () => ({
       color: color,
-      className: `${className} ${icon}`,
+      className: `dydu-icon ${className} ${icon}`,
       title: title || alt,
       alt: alt,
       onClick: onClick,
