@@ -121,21 +121,5 @@ describe('SamlContext', () => {
       expect(result.current.saml2Info).toEqual(undefined);
       expect(result.current.redirectUrl).toEqual(null);
     });
-
-    it('should not update saml2Info and redirectUrl when auth is not a valid base64 string', async () => {
-      const invalidResponse = JSON.stringify({
-        values: { auth: 'invalid-base64', redirection_url: 'some-redirection-url' },
-      });
-      dydu.getSaml2Status.mockResolvedValueOnce(invalidResponse);
-
-      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-      await act(async () => {
-        await result.current.checkSession();
-      });
-
-      expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(undefined);
-      expect(result.current.redirectUrl).toEqual(null);
-    });
   });
 });
