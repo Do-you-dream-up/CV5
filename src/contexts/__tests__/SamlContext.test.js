@@ -5,6 +5,15 @@ import { Local } from '../../tools/storage';
 import dydu from '../../tools/dydu';
 import { renderHook } from '@testing-library/react-hooks';
 
+jest.mock('../../tools/storage', () => ({
+  Local: {
+    saml: {
+      save: jest.fn(),
+      load: jest.fn(),
+    },
+  },
+}));
+
 describe('SamlContext', () => {
   it('should provide the correct initial context values', () => {
     const { getByTestId } = render(
@@ -83,14 +92,8 @@ describe('SamlContext', () => {
     const expectedRedirectUrl = `some-redirection-url&RelayState=${encodeURI(window.location.href)}`;
     const saml2Info = 'current-auth';
 
-    beforeEach(() => {
-      jest.clearAllMocks();
-      Local.saml.save.mockClear();
-      dydu.getSaml2Status.mockClear();
-    });
-
     it('should update saml2Info and redirectUrl on successful getSaml2Status', async () => {
-      dydu.getSaml2Status.mockResolvedValueOnce(response);
+      dydu.getSaml2Status = jest.fn().mockResolvedValueOnce(response);
 
       const { result, waitFor } = renderHook(() => useSaml(), { wrapper: SamlProvider });
       await act(async () => {
@@ -112,8 +115,8 @@ describe('SamlContext', () => {
       });
 
       expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(null);
-      expect(result.current.redirectUrl).toEqual(null);
+      expect(result.current.saml2Info).toEqual(undefined);
+      expect(result.current.redirectUrl).toEqual(undefined);
     });
 
     it('should not update saml2Info and redirectUrl when auth is not a valid base64 string', async () => {
@@ -128,8 +131,8 @@ describe('SamlContext', () => {
       });
 
       expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(null);
-      expect(result.current.redirectUrl).toEqual(null);
+      expect(result.current.saml2Info).toEqual(undefined);
+      expect(result.current.redirectUrl).toEqual(undefined);
     });
   });
 });
