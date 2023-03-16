@@ -27,5 +27,7 @@ export default function useMessageFieldRequired(field, showRequiredMessage) {
 
   return {
     message,
+    hideMessage,
+    showMessage,
   };
 }
