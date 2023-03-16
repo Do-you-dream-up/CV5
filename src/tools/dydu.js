@@ -91,7 +91,7 @@ let BOT = {},
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
-  Local.set(Local.names.botId, BOT.id);
+  Local.set(Local.names?.botId, BOT.id);
 
   protocol = 'https';
 
