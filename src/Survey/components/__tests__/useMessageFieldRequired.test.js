@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import useMessageFieldRequired from '../hooks/useMessageFieldRequired';
+import useMessageFieldRequired from '../../hooks/useMessageFieldRequired';
 
 const fakeField = {
   isShowingRequiredMessage: jest.fn(),
