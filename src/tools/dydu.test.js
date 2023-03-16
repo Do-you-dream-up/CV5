@@ -876,7 +876,6 @@ describe('dydu.js', function () {
       await dydu.feedbackInsatisfaction();
 
       // THEN
-
       const dataArg = spied.emit.mock.calls[0][2];
       expect(isUrlFormEncoded(dataArg)).toEqual(true);
     });
@@ -935,7 +934,6 @@ describe('dydu.js', function () {
       // GIVEN
       spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
       spied.getContextId.mockResolvedValue(null);
-      const c = new ConfigurationFixture();
       const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
 
       // WHEN
@@ -945,10 +943,65 @@ describe('dydu.js', function () {
       expect(spied.getConfiguration).toHaveBeenCalled();
       jestRestoreMocked([spiedSamlLoad]);
     });
-    it('should call |Local.saml.load| if saml is enabled in configuration', () => {});
-    it('should call |emit| with path chat/feedback/comment/', () => {});
-    it('should call |emit| with form url payload', () => {});
-    it('should includes saml info in payload when saml is enabled in configuration', () => {});
+    it('should call |Local.saml.load| if saml is enabled in configuration', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+      const c = new ConfigurationFixture();
+      c.enableSaml();
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      expect(spiedSamlLoad).toHaveBeenCalled();
+      jestRestoreMocked([spiedSamlLoad]);
+    });
+    it('should call |emit| with path chat/feedback/', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied.getContextId.mockResolvedValue(null);
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      const targetPath = 'chat/feedback/';
+      const pathArg = spied.emit.mock.calls[0][1];
+      expect(strContains(pathArg, targetPath)).toEqual(true);
+    });
+    it('should call |emit| with form url payload', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      const dataArg = spied.emit.mock.calls[0][2];
+      expect(isUrlFormEncoded(dataArg)).toEqual(true);
+    });
+    it('should includes saml info in payload when saml is enabled in configuration', async () => {
+      // GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      const samlValue = 'saml-value';
+      const spiedSamlLoad = jest.spyOn(Local.saml, 'load').mockReturnValue(samlValue);
+      const c = new ConfigurationFixture();
+      c.enableSaml();
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+
+      // WHEN
+      await dydu.feedback();
+
+      // THEN
+      const paramPosition = 2;
+      const formUrlPayload = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const samlInfo = `saml2_info=${samlValue}`;
+      expect(strContains(formUrlPayload, samlInfo)).toEqual(true);
+      jestRestoreMocked([spiedSamlLoad]);
+    });
     it('should includes |feedback| in payload', () => {});
     it('should set |feedback| payload value to negative', () => {});
     it('should set |feedback| payload value to positive', () => {});
@@ -975,3 +1028,4 @@ const jestRestoreMocked = (spies) => {
 };
 
 const isUrlFormEncoded = (s) => strContains(s, '=');
+const mockFnGetParamValueAtPosition = (mockFn, paramPosition, callNum = 0) => mockFn.mock.calls[callNum][paramPosition];
