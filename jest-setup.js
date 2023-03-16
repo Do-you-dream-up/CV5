@@ -6,3 +6,5 @@ global.crypto = {
     digest: jest.fn()
   }
 };
+
+global.fetch = jest.fn()

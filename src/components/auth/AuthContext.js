@@ -1,14 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from '../helpers';
+import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from './helpers';
 
 import PropTypes from 'prop-types';
-import Storage from '../Storage';
-import dydu from '../../../tools/dydu';
-import { isLoadedFromChannels } from '../../../tools/wizard';
+import Storage from './Storage';
+import dydu from '../../tools/dydu';
+import { isLoadedFromChannels } from '../../tools/wizard';
 import jwtDecode from 'jwt-decode';
-import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
-import useTokenRequest from '../hooks/useTokenRequest';
-import useUserInfo from '../hooks/useUserInfo';
+import useAuthorizeRequest from './hooks/useAuthorizeRequest';
+import useTokenRequest from './hooks/useTokenRequest';
+import useUserInfo from './hooks/useUserInfo';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
