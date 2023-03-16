@@ -5,7 +5,7 @@ import dydu from './dydu';
 /**
  * Forge the #meta# response and add it the conversation.
  */
-const meta = () => {
+export const meta = () => {
   const { parsedResult: { browser = {}, os = {}, platform = {} } = {} } = Bowser.getParser(window.navigator.userAgent);
   const html = [
     '<dl>',
@@ -22,7 +22,7 @@ const meta = () => {
     ].map((it) => `<dt>${it.label}</dt><dd>${it.value}</dd>`),
     '</dl>',
   ];
-  window.dydu.chat.reply(html.join(''));
+  window.dydu?.chat?.reply(html.join(''));
 };
 
 /**
