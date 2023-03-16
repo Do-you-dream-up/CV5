@@ -1,4 +1,4 @@
-import { createContext, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import { VIEW_MODE } from '../tools/constants';
@@ -23,9 +23,9 @@ interface ViewModeProviderProps {
   children?: ReactElement;
 }
 
-const ViewModeContext = createContext<ViewModeContextProps>({});
-
 export const useViewMode = () => useContext(ViewModeContext);
+
+const ViewModeContext = createContext<ViewModeContextProps>({});
 
 export default function ViewModeProvider({ children }: ViewModeProviderProps) {
   const { configuration } = useConfiguration();
