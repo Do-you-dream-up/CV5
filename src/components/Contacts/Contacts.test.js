@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom';
 
-import { render, screen } from '@testing-library/react';
-
 import Contacts from './index';
+import { render } from '@testing-library/react';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +22,6 @@ describe('Contacts', () => {
     useConfiguration.mockReturnValue({ configuration: mockConfiguration });
     useTranslation.mockReturnValue({ ready: true, t: jest.fn() });
     const screen = render(<Contacts />);
-    screen.debug();
     screen.findByText('dydu-contact-social').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
   });
 

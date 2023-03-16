@@ -15,9 +15,10 @@ interface CustomProps {
   theme?: Models.Theme;
 }
 
-const ProviderWrapper = ({ children, customProp }: { children: any; customProp?: CustomProps }) => {
+export const ProviderWrapper = ({ children, customProp }: { children: any; customProp?: CustomProps }) => {
   const mergedConfiguration = mergeDeep(configuration, customProp?.configuration);
   const mergedTheme = mergeDeep(theme, customProp?.theme);
+
   return (
     <JssProvider>
       <ThemeProvider theme={mergedTheme}>

@@ -9,14 +9,12 @@ export default function useConversationHistory() {
   const fetch = useCallback(() => {
     return new Promise((resolve) => {
       dydu.history().then((res) => {
-        let result = [];
-        if (res) {
-          const { interactions = [] } = res;
-          if (interactions && isArray(interactions)) setResult(interactions);
-          return resolve(interactions);
+        const { interactions = [] } = res;
+
+        if (interactions && isArray(interactions)) {
+          setResult(interactions);
         }
-        return resolve(result);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        return resolve(interactions);
       });
     });
   }, []);

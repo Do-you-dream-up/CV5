@@ -26,7 +26,7 @@ export const mockFieldClass = {
   setUiCallbackShowRequiredMessage: jest.fn(),
   setUiCallbackHideRequiredMessage: jest.fn(),
   getFirstChild: jest.fn(),
-  renderChildren: () => [children, children],
+  renderChildren: [children, children],
   getId: jest.fn(),
   isRoot: jest.fn(),
 };

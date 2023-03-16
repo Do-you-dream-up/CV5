@@ -84,8 +84,8 @@ export const isOfType = (val, type) => {
       return isOfTypeArray(val);
     case VAR_TYPE.object:
       return isOfTypeObject(val);
-    default:
-      return;
+    case VAR_TYPE.number:
+      return isOfTypeNumber(val);
   }
 };
 
@@ -116,6 +116,12 @@ export const objectExtractFields = (obj, fieldList) =>
 export const objectContainFields = (obj, fieldList = []) => {
   const objFieldList = Object.keys(obj);
   return fieldList.filter((f) => objFieldList.includes(f)).length === fieldList.length;
+};
+
+export const compareObject = (obj1, obj2) => {
+  const objFieldList = Object.keys(obj1);
+  if (!objectContainFields(obj2, objFieldList)) return false;
+  return _stringify(Object.values(obj1)) === _stringify(Object.values(obj2));
 };
 
 export const secondsToMs = (s) => {
@@ -193,7 +199,7 @@ export const recursiveBase64DecodeString = (obj) => {
   return _recursiveBase64DecodeString(obj, Object.keys(obj), {});
 };
 
-const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
+export const _recursiveBase64DecodeString = (o, keylist, res = {}) => {
   if (keylist.length === 0) return res;
 
   const key = keylist.pop();
@@ -259,11 +265,13 @@ export const getChatboxWidth = (chatboxRef) => {
   return Math.abs(right - left);
 };
 
-export const getChatboxWidthTime = (chatboxRef = null, time = 1) => {
+export const getChatboxWidthTime = (chatboxRef = null, time = 1, maxWidthPx = 850) => {
   const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
   if (error) throw new Error('getChatboxWidthTime: parameter error', time);
-  return getChatboxWidth(chatboxRef) * time;
+  return getMinValue(getChatboxWidth(chatboxRef) * time, maxWidthPx);
 };
+
+const getMinValue = (a, b) => (a < b ? a : b);
 
 export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');
@@ -273,20 +281,6 @@ export const decodeHtml = (html) => {
 
 export const escapeHTML = (html) => {
   return isString(html) ? html.replace(/</g, '&lt;').replace(/>/g, '&gt;') : html;
-};
-
-export const prependObjectKeysWithTag = (tag, object) => {
-  try {
-    return Object.keys(object).reduce((resultObj, key) => {
-      return {
-        ...resultObj,
-        [`${tag}${key}`]: object[key],
-      };
-    }, {});
-  } catch (e) {
-    console.error('While executing prependObjectKeysWithTag()', e);
-    return {};
-  }
 };
 
 export const trimSlashes = (s) => removeEndingSlash(removeStartingSlash(s));
@@ -321,9 +315,7 @@ export const removeEndingSlash = (s) => {
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
 
-export const getBrowserLocale = () => {
-  return document.documentElement.lang;
-};
+export const getBrowserLocale = () => document.documentElement.lang;
 
 export const isImageUrl = (url) => {
   if (!isString(url)) return false;
@@ -335,7 +327,7 @@ const isArrayOfString = (list) => {
   return list.every(isString);
 };
 
-const strContainsOneOfList = (str, testList = []) => {
+export const strContainsOneOfList = (str, testList = []) => {
   if (!isArrayOfString(testList)) testList = [];
   return testList.some((strItem) => strContains(str, strItem));
 };

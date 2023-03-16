@@ -404,14 +404,14 @@ export class Local {
       return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
     },
     save: (key, value) => {
-      localStorage.setItem(key, value);
+      Local.byBotId(key).set(Local.names.context, value);
       Local.set(Local.names.context, value);
     },
     isSet: (key) => {
-      return isDefined(localStorage.getItem(key));
+      return isDefined(Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context));
     },
     load: (key) => {
-      return localStorage.getItem(key);
+      return Local.byBotId(key).get(Local.names.context) || Local.get(Local.names.context);
     },
   });
 }

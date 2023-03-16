@@ -22,7 +22,7 @@ let PAYLOAD_COMMON_CONTENT = {
   os: osName(),
 };
 
-const getPayloadCommonContentBase64Encoded = () => {
+export const getPayloadCommonContentBase64Encoded = () => {
   return Object.keys(PAYLOAD_COMMON_CONTENT).reduce((mapRes, key) => {
     const val = PAYLOAD_COMMON_CONTENT[key];
     mapRes[key] = isOfTypeString(val) ? val.toBase64() : val;
@@ -32,7 +32,7 @@ const getPayloadCommonContentBase64Encoded = () => {
 
 const nowTime = () => new Date().getTime();
 
-const REQUEST_TYPE = {
+export const REQUEST_TYPE = {
   getContext: 'getContext',
   addInternautEvent: 'addInternautEvent',
   talk: 'talk',
@@ -40,7 +40,7 @@ const REQUEST_TYPE = {
   typing: 'typing',
 };
 
-const LivechatPayloadCreator = {
+export const LivechatPayloadCreator = {
   surveyAnswerMessage: (surveyAnswer) => {
     const fields = recursiveBase64EncodeString(surveyAnswer.fields);
     return {
@@ -127,7 +127,7 @@ const LivechatPayloadCreator = {
   }),
 };
 
-const LivechatPayloadChecker = {
+export const LivechatPayloadChecker = {
   operatorSendSurvey: (payload) => {
     return (
       payload?.type?.equals('notification') &&

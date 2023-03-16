@@ -90,7 +90,7 @@ let BOT = {},
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
-  Local.set(Local.names.botId, BOT.id);
+  Local.set(Local.names?.botId, BOT.id);
 
   protocol = 'https';
 
@@ -420,12 +420,7 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    try {
-      return Local.contextId.createKey(this.getBotId(), BOT.configId);
-    } catch (e) {
-      console.error(e);
-      return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
-    }
+    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
   }
 
   getContextIdFromLocalStorage() {

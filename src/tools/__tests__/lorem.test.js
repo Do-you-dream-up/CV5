@@ -1,4 +1,4 @@
-import { LOREM } from './lorem';
+import { LOREM } from '../lorem';
 
 describe('LOREM', () => {
   it('has the expected properties and values', () => {

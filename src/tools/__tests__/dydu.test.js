@@ -1,16 +1,17 @@
 /* eslint-disable */
 
-import { Cookie, Local } from './storage';
-import { ConfigurationFixture } from '../test/fixtures/configuration';
-import { objectToQueryParam, strContains } from './helpers';
+import { Cookie, Local } from '../storage';
+import { ConfigurationFixture } from '../../test/fixtures/configuration';
+import { objectToQueryParam, strContains } from '../helpers';
 
-let _dydu = jest.requireActual('../tools/dydu').default;
+const dyduRelativeLocation = '../dydu';
+let _dydu = jest.requireActual(dyduRelativeLocation).default;
 
-jest.mock('../tools/dydu', () => ({
+jest.mock(dyduRelativeLocation, () => ({
   default: jest.fn(),
 }));
 
-jest.mock('./storage', () => ({
+jest.mock('../storage', () => ({
   Local: {
     saml: {
       load: jest.fn(),
@@ -656,7 +657,7 @@ describe('dydu.js', function () {
       dydu.getBotId = jest.fn().mockReturnValue(currentBotId);
 
       //const currentConfigId = "current-config-id"; // to fix
-      const currentConfigId = undefined;
+      const currentConfigId = 'main/';
       const botConfigContentFile = {
         bot: 'bot-id',
         configId: currentConfigId,
