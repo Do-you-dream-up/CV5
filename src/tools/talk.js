@@ -5,7 +5,7 @@ import dydu from './dydu';
 /**
  * Forge the #meta# response and add it the conversation.
  */
-const meta = () => {
+export const meta = () => {
   const { parsedResult: { browser = {}, os = {}, platform = {} } = {} } = Bowser.getParser(window.navigator.userAgent);
   const html = [
     '<dl>',
@@ -22,7 +22,7 @@ const meta = () => {
     ].map((it) => `<dt>${it.label}</dt><dd>${it.value}</dd>`),
     '</dl>',
   ];
-  window.dydu.chat.reply(html.join(''));
+  window.dydu?.chat?.reply(html.join(''));
 };
 
 /**
@@ -40,7 +40,7 @@ export const ACTIONS = {
   '#lorem#': () => window.dydu.lorem.standard(),
   '#meta#': meta,
   '#reset#': () => dydu.reset().then(window.dydu.chat.empty),
-  '#secondary#': () => window.dydu.ui.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
+  '#secondary#': () => window.dydu.ui?.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
   '#space#': () => window.dydu.chat.reply(dydu.getSpace()),
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
