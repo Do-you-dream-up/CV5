@@ -40,7 +40,7 @@ export const ACTIONS = {
   '#lorem#': () => window.dydu.lorem.standard(),
   '#meta#': meta,
   '#reset#': () => dydu.reset().then(window.dydu.chat.empty),
-  '#secondary#': () => window.dydu.ui.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
+  '#secondary#': () => window.dydu.ui?.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
   '#space#': () => window.dydu.chat.reply(dydu.getSpace()),
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
