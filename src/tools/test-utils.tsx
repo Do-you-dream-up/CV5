@@ -41,3 +41,16 @@ const customRender = (ui: ReactElement, customProp?: CustomProps, options?: Omit
   });
 
 export { customRender as render, screen };
+
+export const setupFetchStub = (data) => {
+  return function fetchStub(_url) {
+    return new Promise((resolve) => {
+      resolve({
+        json: () =>
+          Promise.resolve({
+            data,
+          }),
+      });
+    });
+  };
+};
