@@ -1,7 +1,7 @@
 import Storage from './Storage';
 import { encode as base64encode } from 'base64-arraybuffer';
 
-const getRedirectUri = () => window.location.origin + window.location.pathname;
+export const getRedirectUri = () => window.location.origin + window.location.pathname;
 
 export const isDefined = (d) => d !== null && typeof d !== 'undefined' && d !== 'undefined';
 
@@ -46,7 +46,7 @@ export const currentLocationContainsError = () => strContains(window.location.se
 
 export const currentLocationContainsCodeParameter = () => strContains(window.location.search, 'code=');
 
-const createPkce = (configuration = { redirectUri: null }) => {
+export const createPkce = (configuration = { redirectUri: null }) => {
   const { redirectUri } = configuration;
   const state = generateUID();
   const pkce = {
@@ -71,7 +71,7 @@ export const createCodeVerifier = () => {
 
 export const hash = (string) => {
   const utf8 = new TextEncoder().encode(string);
-  return crypto.subtle.digest('SHA-256', utf8).then((hashBuffer) => {
+  return crypto.subtle.digest('SHA-256', utf8)?.then((hashBuffer) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map((bytes) => bytes.toString(16).padStart(2, '0')).join('');
     return hashHex;

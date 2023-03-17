@@ -1,4 +1,4 @@
-import html from './sanitize';
+import html from '../sanitize';
 
 describe('html', () => {
   it('returns the input HTML string', () => {
