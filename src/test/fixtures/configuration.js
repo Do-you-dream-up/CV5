@@ -335,6 +335,10 @@ export class ConfigurationFixture {
     return this.getConfiguration().spaces;
   }
 
+  enableOidc() {
+    this.getConfiguration().oidc.enable = true;
+    return this;
+  }
   enableSaml() {
     this.getConfiguration().saml.enable = true;
     return this;

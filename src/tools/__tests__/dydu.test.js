@@ -1,8 +1,9 @@
 /* eslint-disable */
 
+import Storage from '../../components/auth/Storage';
 import { Cookie, Local } from '../storage';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
-import { objectToQueryParam, strContains } from '../helpers';
+import { objectToQueryParam, secondsToMs, strContains } from '../helpers';
 
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
@@ -13,8 +14,17 @@ jest.mock(dyduRelativeLocation, () => ({
 
 jest.mock('../storage', () => ({
   Local: {
+    visit: {
+      save: jest.fn(),
+    },
+    welcomeKnowledge: {
+      isSet: jest.fn(),
+      save: jest.fn(),
+      load: jest.fn(),
+    },
     saml: {
       load: jest.fn(),
+      save: jest.fn(),
     },
     get: jest.fn(),
     set: jest.fn(),
@@ -40,39 +50,137 @@ jest.mock('../storage', () => ({
 let spied = [];
 let dydu;
 
-beforeEach(() => {
-  jestRestoreMocked(spied);
-  spied = [];
-  dydu = _dydu;
-});
-
-afterEach(() => {
-  jestRestoreMocked(spied);
-  spied = [];
-  dydu = _dydu;
-});
-
 describe('dydu.js', function () {
+  beforeEach(() => {
+    jestRestoreMocked(spied);
+    spied = [];
+    dydu = _dydu;
+  });
+
+  afterEach(() => {
+    jestRestoreMocked(spied);
+    spied = [];
+    dydu = _dydu;
+  });
+
   describe('getWelcomeKnowledge', function () {
-    it('should check in localStorage', () => {});
-    it('should return localStorage value', () => {});
-    it('should call |this.talk| when localStorage has no value', () => {});
-    it('should save the wlecomeKnowledge in localStorage after requesting it', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['talk', 'getBotId']);
+      spied.talk.mockResolvedValue({ response: true });
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(Local.welcomeKnowledge));
+    });
+
+    it('should check in localStorage', async () => {
+      // GIVEN
+      // WHEN
+      await dydu.getWelcomeKnowledge();
+
+      // THEN
+      expect(Local.welcomeKnowledge.isSet).toHaveBeenCalled();
+    });
+    it('should return localStorage value', async () => {
+      const botIdValue = 'bot-id';
+      spied.getBotId.mockReturnValue(true);
+      Local.welcomeKnowledge.isSet.mockReturnValue(botIdValue);
+      Local.welcomeKnowledge.load.mockReturnValue(botIdValue);
+
+      // WHEN
+      const receivedValue = await dydu.getWelcomeKnowledge();
+
+      // THEN
+      expect(receivedValue).toEqual(botIdValue);
+
+      jestRestoreMocked([Local.welcomeKnowledge.isSet, Local.welcomeKnowledge.load]);
+    });
+    it('should call |this.talk| when localStorage has no value', () => {
+      // GIVEN
+      Local.welcomeKnowledge.isSet.mockReturnValue(false);
+
+      // WHEN
+      dydu.getWelcomeKnowledge();
+
+      // THEN
+      expect(spied.talk).toHaveBeenCalled();
+    });
+    it('should save the wlecomeKnowledge in localStorage after requesting it', async () => {
+      // GIVEN
+      const botId = 'bot-id';
+      spied.getBotId.mockReturnValue(botId);
+
+      const talkResponse = { text: 'bot response' };
+      spied.talk.mockResolvedValue(talkResponse);
+
+      // WHEN
+      await dydu.getWelcomeKnowledge();
+
+      // THEN
+      expect(Local.welcomeKnowledge.save).toHaveBeenCalledWith(botId, talkResponse);
+    });
   });
 
   describe('getConfiguration', function () {
-    it('should call |this.configuration|', () => {});
-    it('should return the short format of local value from configuration', () => {});
-    it('should get the value from local browser when error occurs accessing the configuration', () => {});
+    it('should return |configuration| class attribute', () => {
+      // GIVEN
+      const expected = 'expected';
+      dydu.configuration = expected;
+
+      // WHEN
+      const received = dydu.getConfiguration();
+
+      // THEN
+      expect(received).toEqual(expected);
+    });
   });
 
   describe('setConfiguration', function () {
-    it('should set the configuration', () => {});
-    it('should call |this.onConfigurationLoaded| after set confiration', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['onConfigurationLoaded']);
+    });
+
+    it('should set the configuration', () => {
+      // GIVEN
+      const expected = 'expected';
+
+      // WHEN
+      dydu.setConfiguration(expected);
+
+      // THEN
+      expect(dydu.configuration).toEqual(expected);
+    });
+    it('should call |this.onConfigurationLoaded| after set configuration', () => {
+      // GIVEN
+      // WHEN
+      dydu.setConfiguration();
+
+      // THEN
+      expect(spied.onConfigurationLoaded).toHaveBeenCalled();
+    });
   });
 
   describe('onConfigurationLoaded', function () {
-    it('should call initializer', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, [
+        'setInitialSpace',
+        'setQualificationMode',
+        'initLocaleWithConfiguration',
+        'getSpace',
+        'getConfiguration',
+      ]);
+      const c = new ConfigurationFixture();
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(spied));
+    });
+    it('should call initializers', () => {
+      const initializerFnList = ['setInitialSpace', 'setQualificationMode', 'initLocaleWithConfiguration'];
+      dydu.onConfigurationLoaded();
+      initializerFnList.forEach((initializerFn) => {
+        expect(spied[initializerFn]).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('initLocalWithConfiguration', () => {
@@ -82,8 +190,33 @@ describe('dydu.js', function () {
   });
 
   describe('registerVisit', () => {
-    it('should call |this.wellcomeCall|', () => {});
-    it('should register the |getInfos| values in Local', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['welcomeCall', 'getInfos']);
+      spied.welcomeCall.mockResolvedValue(true);
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(spied));
+      jestRestoreMocked(Object.values(Local.visit));
+    });
+    it('should call |this.welcomeCall|', () => {
+      // GIVEN
+      // WHEN
+      dydu.registerVisit();
+
+      // THEN
+      expect(spied.welcomeCall).toHaveBeenCalled();
+    });
+    xit('should register the |getInfos| values in Local', async () => {
+      // GIVEN
+      const infos = 'value';
+      spied.getInfos.mockResolvedValue(infos);
+
+      // WHEN
+      await dydu.registerVisit();
+
+      // THEN
+      expect(Local.visit.save).toHaveBeenCalledWith(infos);
+    });
   });
 
   describe('getInfos', function () {
@@ -1227,19 +1360,196 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.handleSetApiUrl).toHaveBeenCalled();
     });
-    xit('should call |handleSetApiTimeout|', async () => {
+    it('should call |handleSetApiTimeout|', async () => {});
+
+    describe('handleAxiosError', function () {
+      const getDefaultParams = () => [{}, {}, '', {}, 1];
+      let params = getDefaultParams();
+
+      beforeEach(() => {
+        spied = jestSpyOnList(dydu, ['handleTokenRefresh', 'emit']);
+        params = getDefaultParams();
+      });
+
+      afterEach(() => {
+        spied = jestSpyOnList(dydu, ['handleTokenRefresh', 'emit']);
+        params = getDefaultParams();
+      });
+
+      it('should call |handleTokenRefresh| as the argument response, satus is 401', async () => {
+        // GIVEN
+        const error = { response: { status: 401 } };
+
+        // WHEN
+        params[0] = error;
+        await dydu.handleAxiosError(...params);
+
+        // THEN
+        //expect(spied.handleTokenRefresh).toHaveBeenCalled();
+      });
+      it('should call |emit|', () => {});
+    });
+  });
+  describe('samlRenewnOrReject', function () {
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['redirectAndRenewAuth', 'renewAuth']);
+    });
+    it("should call |redirectAndRenewAuth| as type is 'SAML_redirection'", () => {
       // GIVEN
-      const verb = jest.fn().mockResolvedValue({ data: {} });
-      const path = 'path/to/ressource';
-      const data = 'data=true&formurl=true';
-      spied.setLastResponse.mockImplementation((v) => v);
+      const param = {
+        type: 'SAML_redirection',
+        values: {},
+      };
 
       // WHEN
-      const params = [verb, path, data];
-      await dydu.emit(...params);
+      dydu.samlRenewOrReject(param);
 
       // THEN
-      expect(spied.handleSetApiTimeout).toHaveBeenCalled();
+      expect(spied.redirectAndRenewAuth).toHaveBeenCalled();
+    });
+    it('should call |renewAuth|', () => {
+      // GIVEN
+      const param = {
+        type: '',
+        values: {},
+      };
+
+      // WHEN
+      dydu.samlRenewOrReject(param);
+
+      // THEN
+      expect(spied.renewAuth).toHaveBeenCalled();
+    });
+  });
+
+  describe('redirectAndRenewAuth', function () {
+    let savedWinLoc = global.window.location;
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['renewAuth']);
+    });
+    afterEach(() => {
+      window.location = savedWinLoc;
+    });
+
+    it('should call |renewAuth| with values.auth', () => {
+      // GIVEN
+      const param = { auth: 1 };
+
+      // WHEN
+      dydu.redirectAndRenewAuth(param);
+
+      // THEN
+      expect(spied.renewAuth).toHaveBeenCalledWith(param.auth);
+    });
+    it("should update window.location.href with 'RelayState' in url parameter", () => {
+      // GIVEN
+      delete global.window.location;
+      global.window = Object.create(window);
+      global.window.location = {};
+      // WHEN
+      dydu.redirectAndRenewAuth({ auth: 1 });
+
+      // THEN
+      expect(strContains(window.location.href, 'RelayState=')).toEqual(true);
+    });
+  });
+
+  describe('renewAuth', function () {
+    it('should call |Local.saml.save|', () => {
+      // GIVEN
+      const authParam = {};
+
+      // WHEN
+      dydu.renewAuth(authParam);
+
+      // THEN
+      expect(Local.saml.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleTokenRefresh', function () {
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['getConfiguration']);
+      const c = new ConfigurationFixture();
+      c.enableOidc();
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+    });
+    it('should call |getConfiguration|', () => {
+      // GIVEN
+      dydu.tokenRefresher = jest.fn();
+      dydu.oidcLogin = jest.fn();
+      // WHEN
+      dydu.handleTokenRefresh();
+
+      // THEN
+      expect(spied.getConfiguration).toHaveBeenCalled();
+    });
+    it('should call |tokenRefresher|', () => {
+      // GIVEN
+      const loadTokenMock = jest.spyOn(Storage, 'loadToken');
+      loadTokenMock.mockReturnValue({ refresh_token: true });
+      dydu.tokenRefresher = jest.fn();
+
+      // WHEN
+      dydu.handleTokenRefresh();
+
+      // THEN
+      expect(dydu.tokenRefresher).toHaveBeenCalled();
+    });
+    it('should call |oidcLogin|', () => {
+      // GIVEN
+      const loadTokenMock = jest.spyOn(Storage, 'loadToken');
+      loadTokenMock.mockReturnValue({ refresh_token: null });
+      dydu.tokenRefresher = jest.fn();
+      dydu.oidcLogin = jest.fn();
+
+      // WHEN
+      dydu.handleTokenRefresh();
+
+      // THEN
+      expect(dydu.oidcLogin).toHaveBeenCalled();
+      jestRestoreMocked([loadTokenMock, dydu.tokenRefresher, dydu.oidcLogin]);
+    });
+  });
+
+  describe('initInfo', function () {
+    it('should initialize the |infos| class attribue', () => {
+      // GIVEN
+      dydu.infos = null;
+
+      // WHEN
+      dydu.initInfos();
+
+      // THEN
+      expect(dydu.infos).toBeTruthy();
+      const expectedKeys = ['locale', 'space', 'botId'];
+      Object.keys(dydu.infos).forEach((key) => {
+        expect(expectedKeys.includes(key)).toEqual(true);
+      });
+    });
+  });
+
+  describe('alreadyCame', function () {
+    it('should call |Local.clientId.getKey|', () => {});
+    it('should call |Local.clientId.getKey| with currentInfo', () => {});
+    it('should call |Local.clientId.isSet|', () => {});
+  });
+
+  describe('class attributes initialisation', function () {
+    it('should correctly initialize attributes', () => {
+      const __dydu = jest.requireActual(dyduRelativeLocation).default;
+      const expected = {
+        mainServerStatus: 'Ok',
+        triesCounter: 0,
+        maxTries: 3,
+        minTimeoutForAnswer: secondsToMs(3),
+        maxTimeoutForAnswer: secondsToMs(30),
+        qualificationMode: false,
+      };
+
+      Object.keys(expected).forEach((key) => {
+        expect(__dydu[key] === expected[key]).toEqual(true);
+      });
     });
   });
 });
