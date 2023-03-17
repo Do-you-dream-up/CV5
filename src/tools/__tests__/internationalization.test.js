@@ -27,7 +27,7 @@ describe('internationalization', () => {
     const expectedOptions = {
       backend: {
         crossDomain: true,
-        loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json?t=${Date.now()}`,
+        loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json`,
         requestOptions: {
           cache: 'no-store',
         },
@@ -49,8 +49,13 @@ describe('internationalization', () => {
     };
 
     const actualOptions = getInitOptionsMerge();
-
-    expect(actualOptions).toEqual(expectedOptions);
+    expect({
+      ...actualOptions,
+      backend: {
+        ...actualOptions.backend,
+        loadPath: actualOptions.backend.loadPath.split('?')[0],
+      },
+    }).toEqual(expectedOptions);
   });
 
   test('getInitiOptionsMerge should return an object with the expected properties', () => {

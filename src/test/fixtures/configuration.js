@@ -17,7 +17,7 @@ export const getConfigurationObject = (updates = {}) => {
       displayNameBot: false,
       displayNameUser: false,
       NameUser: '',
-      NameBot: '',
+      NameBot: 'Test bot',
       loader: [400, 600],
     },
     header: {

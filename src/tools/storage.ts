@@ -404,10 +404,7 @@ export class Local {
       return `${trimSlashes(botId)}${separator}${trimSlashes(directoryId)}`;
     },
     save: (key, value) => {
-      const botIdKey = Local.byBotId(key);
-      if (botIdKey) {
-        botIdKey.set(Local.names.context, value);
-      }
+      Local.byBotId(key).set(Local.names.context, value);
       Local.set(Local.names.context, value);
     },
     isSet: (key) => {
