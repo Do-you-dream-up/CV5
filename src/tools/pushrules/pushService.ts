@@ -1,4 +1,4 @@
-import { isValidStringOperator, rulesDefinitions } from './rulesDefinition';
+import { isValidStringOperator, rulesDefinitions as rulesDefinitionsImport } from './rulesDefinition';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
@@ -13,7 +13,7 @@ const currentTimer: any = {};
 const externalInfoProcessors = [...ExternalInfoProcessor];
 const externalInfos = {};
 const rules: any = [];
-const rulesDefinition = [...rulesDefinitions];
+const rulesDefinition = [...(rulesDefinitionsImport || [])];
 let canPush = true;
 
 interface Rule {
