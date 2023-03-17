@@ -1,8 +1,17 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import useDyduPolling, { RESPONSE_TYPE, saveConfiguration, typeToChecker, typeToHandler } from '../useDyduPolling';
+import '../../../tools/prototypes/strings';
+
+import useDyduPolling, {
+  RESPONSE_TYPE,
+  getHandler,
+  getType,
+  saveConfiguration,
+  typeToChecker,
+  typeToHandler,
+} from '../useDyduPolling';
 
 import React from 'react';
 import { render } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 
 const mockDisplayResponse = jest.fn();
 const mockDisplayNotification = jest.fn();
@@ -17,6 +26,8 @@ beforeEach(() => {
   mockOnOperatorWriting.mockReset();
   mockHandleSurvey.mockReset();
   mockOnEndLivechat.mockReset();
+
+  jest.clearAllMocks();
 });
 describe('useDyduPolling', () => {
   it('should save configuration properly', () => {
@@ -118,6 +129,107 @@ describe('useDyduPolling', () => {
       setTimeout(() => {
         expect(typeToChecker.notification(response)).toBe(false);
       }, 500);
+    });
+  });
+
+  describe('typeToHandler', () => {
+    test('should display response text for message type', () => {
+      const mockDisplayResponse = jest.fn();
+
+      saveConfiguration({ displayResponseText: mockDisplayResponse });
+      const response = { type: 'message', text: 'Hello world!' };
+      const handler = typeToHandler[response.type];
+      handler(response);
+      expect(mockDisplayResponse).toHaveBeenCalledWith(response.text);
+    });
+
+    test('should call handleSurvey function for operatorSendSurvey type', () => {
+      saveConfiguration({
+        handleSurvey: mockHandleSurvey,
+        displayNotification: mockDisplayNotification,
+        endLivechat: mockOnEndLivechat,
+      });
+      const response = { type: 'notification', typeResponse: 'TkFBdXRvQ2xvc2VEaWFsb2c=' };
+      const handler = typeToHandler[response.type];
+      handler(response);
+      setTimeout(() => {
+        expect(mockHandleSurvey).toHaveBeenCalled();
+      }, 500);
+    });
+  });
+
+  describe('getType', () => {
+    test('should return "notification" for a notification response', () => {
+      const response = { typeResponse: 'TkFBdXRvQ2xvc2VEaWFsb2c=' }; // "NAAutoCloseDialog" in base64
+      const type = getType(response);
+      expect(type).toEqual('notification');
+    });
+
+    test('should return "message" for a message response', () => {
+      const response = { text: 'Hello world!', fromDetail: 'user' };
+      const type = getType(response);
+      expect(type).toEqual('message');
+    });
+
+    test('should return null for an unknown response', () => {
+      const response = {};
+      const type = getType(response);
+      expect(type).toBeNull();
+    });
+  });
+
+  describe('getHandler', () => {
+    it('should return a function for a message response', () => {
+      const response = { text: 'Hello', fromDetail: 'Bot' };
+      const handler = getHandler(response);
+      expect(typeof handler).toBe('function');
+    });
+
+    it('should return a function for a notification response', () => {
+      const response = { code: '101', typeResponse: 'TkFBdXRvQ2xvc2VEaWFsb2c=' };
+      const handler = getHandler(response);
+      expect(typeof handler).toBe('function');
+    });
+
+    it('should return null for an invalid response', () => {
+      const response = { foo: 'bar' };
+      const handler = getHandler(response);
+      expect(handler).toBeNull();
+    });
+  });
+
+  describe('sendSurvey', () => {
+    let apiMock, handleSurveyMock;
+
+    beforeEach(() => {
+      apiMock = {
+        poll: jest.fn(),
+        talk: jest.fn(),
+        typing: jest.fn(),
+        sendSurveyPolling: jest.fn(),
+      };
+      handleSurveyMock = jest.fn();
+
+      saveConfiguration({
+        api: apiMock,
+        showAnimationOperatorWriting: jest.fn(),
+        displayResponseText: jest.fn(),
+        displayNotification: jest.fn(),
+        endLivechat: jest.fn(),
+        handleSurvey: jest.fn(),
+      });
+    });
+
+    it('should call api.sendSurveyPolling when sendSurvey is called', () => {
+      // Arrange
+      const { result } = renderHook(() => useDyduPolling());
+
+      result.current.api = apiMock;
+      result.current.handleSurvey = handleSurveyMock;
+      result.current.sendSurvey('yes');
+
+      // Assert
+      expect(apiMock.sendSurveyPolling).toHaveBeenCalledWith('yes', { solutionUsed: 'LIVECHAT' });
     });
   });
 });

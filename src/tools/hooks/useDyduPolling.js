@@ -62,6 +62,7 @@ export const typeToHandler = {
   },
   [RESPONSE_TYPE.notification]: (response) => {
     const notification = responseToLivechatPayload(response);
+
     notification.type = 'notification';
 
     if (LivechatPayload.is.operatorWriting(notification)) return onOperatorWriting();
@@ -76,7 +77,7 @@ export const typeToHandler = {
   },
 };
 
-const getType = (response) => {
+export const getType = (response) => {
   let res = TYPE_NAME_LIST.reduce((typeNameResult, typeName) => {
     if (!isEmptyString(typeNameResult)) return typeNameResult; // already found type
     if (typeToChecker[typeName](response)) return typeName; // just found the type
@@ -87,7 +88,7 @@ const getType = (response) => {
   return res;
 };
 
-const getHandler = (response) => {
+export const getHandler = (response) => {
   const type = getType(response);
   if (!isDefined(type)) return null;
   return typeToHandler[type];
