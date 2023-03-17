@@ -535,8 +535,8 @@ export default new (class Dydu {
         });
       }
     }
-    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
-    Local.set(Local.names.space, this.space);
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces?.items[0];
+    Local.set(Local.names?.space, this.space);
     return this.space;
   };
 
