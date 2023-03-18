@@ -389,7 +389,6 @@ describe('pushKnowledge', () => {
 
   it('should push knowledge if conditions are met', () => {
     global.Session = mockSession;
-    global.window = mockWindow;
 
     const ruleId = '123';
     const sessionKey = 'testTrigger_123';
@@ -402,7 +401,6 @@ describe('pushKnowledge', () => {
 
   it('should not push knowledge if session already set for the rule', () => {
     global.Session = mockSession;
-    global.window = mockWindow;
 
     const ruleId = '123';
     const sessionKey = 'testTrigger_123';
@@ -418,7 +416,6 @@ describe('pushKnowledge', () => {
 
   it('should not push knowledge if canPush is false', () => {
     global.Session = mockSession;
-    global.window = mockWindow;
 
     const ruleId = '123';
     const sessionKey = 'testTrigger_123';
