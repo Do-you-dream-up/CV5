@@ -1,125 +1,80 @@
+import Tts from '../tts';
 import axios from 'axios';
-import tts from '../tts';
 
 jest.mock('axios');
 
 describe('Tts', () => {
-  test('getButtonAction returns correct object', () => {
-    const title = 'Test Title';
-    const iconComponent = '<svg>Test Icon</svg>';
-    const action = jest.fn();
-    const expectedOutput = {
-      children: iconComponent,
-      onClick: expect.any(Function),
-      type: 'button',
-      variant: 'icon',
-    };
+  let mockData = {
+    data: 'mock audio data',
+  };
 
-    const result = tts.getButtonAction(title, iconComponent, action);
-
-    expect(result).toMatchObject(expectedOutput);
-    result.onClick();
-    expect(action).toHaveBeenCalled();
+  beforeEach(() => {
+    axios.mockClear();
   });
 
-  test('getAudioFromText returns false becasue no urlprovided', async () => {
-    const text = 'Test Text';
+  describe('getButtonAction', () => {
+    it('returns a button action object with the correct properties', () => {
+      const title = 'Test Button';
+      const iconComponent = '<svg>Mock Icon</svg>';
+      const action = jest.fn();
+
+      const result = Tts.getButtonAction(title, iconComponent, action);
+
+      expect(result).toEqual({
+        children: iconComponent,
+        onClick: expect.any(Function),
+        type: 'button',
+        variant: 'icon',
+      });
+      result.onClick();
+      expect(action).toHaveBeenCalled();
+    });
+  });
+
+  describe('getAudioFromText', () => {
+    const url = 'mockUrl';
+    const text = 'mockText';
     const templateHtml = null;
-    const templateText = null;
-    const voice = 'Damien';
-    const ssml = true;
-    const url = null;
-    const expectedOutput = 'Test Audio Data';
+    const templateText = 'mockTemplateText';
+    const voice = 'mockVoice';
+    const ssml = 'mockSsml';
 
-    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
+    it('returns audio data if the request is successful', async () => {
+      axios.mockResolvedValueOnce(mockData);
 
-    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+      const result = await Tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
 
-    expect(result).toBe(undefined);
+      expect(axios).toHaveBeenCalledWith({
+        data: { text: Tts.cleantext(templateText) },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        url: `${url}?ssml=${ssml}&voix=${voice}`,
+      });
+
+      expect(result).toEqual(undefined);
+    });
+
+    it('logs an error if the request fails', async () => {
+      const error = new Error('mock error');
+      axios.mockRejectedValueOnce(error);
+      console.error = jest.fn();
+
+      await Tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+
+      expect(console.error).toHaveBeenCalledWith('[Dydu - TTS] : ' + error);
+    });
   });
 
-  test('getAudioFromText with - text', async () => {
-    const text = 'Test Text';
-    const templateHtml = null;
-    const templateText = null;
-    const voice = 'Damien';
-    const ssml = true;
-    const url = 'https://voicebot.doyoudreamup.com/tts';
-    const expectedOutput = 'Test Audio Data';
+  describe('cleantext', () => {
+    it('replaces html tags with newlines', () => {
+      const input = '<p>mock text</p>';
+      const expectedOutput = '\nmock text\n';
 
-    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
+      const result = Tts.cleantext(input);
 
-    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-
-    expect(result).toBe(undefined);
-  });
-  test('getAudioFromText with - templateText', async () => {
-    const text = 'Test Text';
-    const templateHtml = null;
-    const templateText = 'templateText';
-    const voice = 'Damien';
-    const ssml = true;
-    const url = 'https://voicebot.doyoudreamup.com/tts';
-    const expectedOutput = 'Test Audio Data';
-
-    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
-
-    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-
-    expect(result).toBe(undefined);
-  });
-  test('getAudioFromText with - templateHtml', async () => {
-    const text = 'Test Text';
-    const templateHtml = 'templateHtml';
-    const templateText = null;
-    const voice = 'Damien';
-    const ssml = true;
-    const url = 'https://voicebot.doyoudreamup.com/tts';
-    const expectedOutput = 'Test Audio Data';
-
-    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
-
-    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-
-    expect(result).toBe(undefined);
-  });
-
-  test('getAudioFromText logs error when url is undefined', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const text = 'Test Text';
-    const templateHtml = null;
-    const templateText = null;
-    const voice = 'Test Voice';
-    const ssml = 'Test SSML';
-    const url = 'https://voicebot.doyoudreamup.com/tts';
-
-    tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-
-    expect(consoleSpy).not.toHaveBeenCalledWith('[Dydu - TTS] : Url undifined');
-    consoleSpy.mockRestore();
-  });
-
-  test('getAudioFromText nothing, because text, templateHtml and templateText are null', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const text = null;
-    const templateHtml = null;
-    const templateText = null;
-    const voice = 'Test Voice';
-    const ssml = 'Test SSML';
-    const url = 'https://voicebot.doyoudreamup.com/tts';
-
-    tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-
-    expect(consoleSpy).not.toHaveBeenCalledWith('[Dydu - TTS] : Url undifined');
-    consoleSpy.mockRestore();
-  });
-
-  test('cleantext removes html tags', () => {
-    const text = '<p>Test Text</p>';
-    const expectedOutput = '\nTest Text\n';
-
-    const result = tts.cleantext(text);
-
-    expect(result).toBe(expectedOutput);
+      expect(result).toEqual(expectedOutput);
+    });
   });
 });

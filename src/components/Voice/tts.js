@@ -51,11 +51,10 @@ export default new (class Tts {
       method: 'POST',
       url: `${url}?ssml=${ssml}&voix=${voice}`,
     })
-      ?.then(function (response) {
+      .then(function (response) {
         return response.data.data;
       })
       .catch(function (error) {
-        console.log('🚀 ~ file: tts.js:60 ~ Tts ~ error:', error);
         console.error('[Dydu - TTS] : ' + error);
       });
   };
