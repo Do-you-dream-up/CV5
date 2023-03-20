@@ -3,7 +3,7 @@
 import Storage from '../../components/auth/Storage';
 import { Cookie, Local } from '../storage';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
-import { objectToQueryParam, secondsToMs, strContains } from '../helpers';
+import { objectContainFields, objectToQueryParam, secondsToMs, strContains, toFormUrlEncoded } from '../helpers';
 
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
@@ -220,30 +220,144 @@ describe('dydu.js', function () {
   });
 
   describe('getInfos', function () {
-    it('should match info object design', () => {});
-    it('should call methods to feed the info object', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['getBotId', 'getLocale', 'getSpace']);
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(spied));
+    });
+    it('should match info object design', async () => {
+      const infosEntity = {
+        botId: '',
+        locale: '',
+        space: '',
+      };
+
+      // WHEN
+      const receivedInfos = await dydu.getInfos();
+
+      // THEN
+      Object.keys(infosEntity).forEach((key) => {
+        expect(`${key}` in receivedInfos).toEqual(true);
+      });
+    });
+    it('should call methods to feed the info object', async () => {
+      // GIVEN
+      const methods = ['getBotId', 'getLocale', 'getSpace'];
+
+      // WHEN
+      await dydu.getInfos();
+
+      // THEN
+      methods.every((methodName) => {
+        expect(spied[methodName]).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('getSurvey', () => {
-    it('should return null when argument is null or undefined', () => {});
-    it('should call /chat/survey/configuration with the |surveyId| argument', () => {});
-    it('should use a formUrlEncoded data', () => {});
-    it('should make a post', () => {});
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['getBotId', 'getLocale', 'getConfiguration', 'post', 'emit']);
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(spied));
+    });
+    it('should return null when argument is null or undefined', async () => {
+      // GIVEN
+      // WHEN
+      const received = await dydu.getSurvey(null);
+
+      // THEN
+      expect(received).toBeFalsy();
+    });
+    it('should call /chat/survey/configuration with the |surveyId| argument', async () => {
+      // GIVEN
+      // WHEN
+      const received = await dydu.getSurvey('survey-id');
+
+      // THEN
+      const paramPosition = 0;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.post, paramPosition);
+      const expectedPath = 'chat/survey/configuration';
+      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
+    });
+    it('should use a formUrlEncoded data', async () => {
+      // GIVEN
+      // WHEN
+      const received = await dydu.getSurvey('survey-id');
+
+      // THEN
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.post, paramPosition);
+      expect(isUrlFormEncoded(effectiveParamValue)).toEqual(true);
+    });
+    it('should make a post', async () => {
+      const received = await dydu.getSurvey('survey-id');
+
+      expect(spied.post).toHaveBeenCalled();
+    });
   });
 
   describe('sendSurvey', function () {
-    it('should returns when not payload is given as argument', () => {});
-    it('should POST on /chat/survey', () => {});
-    it('should call |this.displaySurveySent| as a resolve of POST request', () => {});
-  });
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, [
+        'formatFieldsForSurveyAnswerRequest',
+        'createSurveyPayload',
+        'post',
+        'displaySurveySent',
+      ]);
+    });
+    afterEach(() => {
+      jestRestoreMocked(Object.values(spied));
+    });
+    it('should POST on /chat/survey', async () => {
+      // GIVEN
+      spied.createSurveyPayload.mockResolvedValue({ surveyPayload: true });
+      spied.post.mockResolvedValue(true);
 
-  describe('displaySurveySent', () => {
-    it('should call |window.dydu.chat.reply| with error message string', () => {});
-    it('should call |window.dydu.chat.reply| with success message string', () => {});
+      // WHEN
+      const surveyAnswer = {};
+      await dydu.sendSurvey(surveyAnswer);
+
+      // THEN
+      const paramPosition = 0;
+      const effectiveParam = mockFnGetParamValueAtPosition(spied.post, paramPosition);
+      expect(spied.post).toHaveBeenCalled();
+      const expectedPath = 'chat/survey';
+      expect(strContains(effectiveParam, expectedPath)).toEqual(true);
+    });
+    it('should call |this.displaySurveySent| as a resolve of POST request', async () => {
+      // GIVEN
+      const surveyAnswer = { surveyId: 'survey-id' };
+      spied.post.mockResolvedValue(true);
+      spied.createSurveyPayload.mockResolvedValue(surveyAnswer);
+
+      // WHEN
+      await dydu.sendSurvey(surveyAnswer);
+
+      // THEN
+      expect(spied.displaySurveySent).toHaveBeenCalled();
+    });
   });
 
   describe('createSurveyPayload', function () {
-    it('should create correct object', () => {});
+    it('should create correct object', async () => {
+      // GIVEN
+      const getContextIdSpy = jest.spyOn(dydu, 'getContextId').mockReturnValue('');
+
+      const surveyId = 'survey-id';
+      const surveyEntity = {
+        ctx: '',
+        uuid: surveyId,
+      };
+      // WHEN
+      const received = await dydu.createSurveyPayload(surveyId, {});
+
+      // THEN
+      const isValid = objectContainFields(received, Object.keys(surveyEntity));
+      expect(isValid).toEqual(true);
+      jestRestoreMocked([getContextIdSpy]);
+    });
   });
 
   describe('sendSurveyPolling', () => {
@@ -253,10 +367,45 @@ describe('dydu.js', function () {
     it('should call |displaySurveySent| after setting |lastResponse|', () => {});
   });
 
-  describe('getTalkBasePayload', function () {
-    it('should return a talk object payload', () => {});
+  xdescribe('getTalkBasePayload', function () {
+    let validPayload;
+    beforeEach(() => {
+      validPayload = {
+        contextId: '',
+        alreadyCame: '',
+        browser: '',
+        clientId: '',
+        doNotRegisterInteraction: '',
+        language: '',
+        os: '',
+        qualificationMode: '',
+        space: '',
+        tokenUserData: '',
+        userUrl: '',
+        solutionUsed: '',
+        variables: '',
+      };
+      spied = jestSpyOnList(dydu, [
+        'getContextId',
+        'alreadyCame',
+        'getClientId',
+        'getLocale',
+        'getSpace',
+        'getVariables',
+      ]);
+    });
+
+    it('should return a talk object payload', () => {
+      const talkPayload = dydu.getTalkBasePayload({});
+      expect(talkPayload).toEqual('');
+      Object.keys(validPayload).forEach((key) => {
+        expect(`${key}` in talkPayload).toEqual(true);
+      });
+    });
     it('should considere option argument for |doNotRegisterInteraction| field', () => {});
-    it('should call methods to get values', () => {});
+    it('should call methods to get values', () => {
+      const valueProviders = ['getContextId', 'alreadyCame', 'getClientId', 'getLocal', 'getSpace', 'getVariable'];
+    });
   });
 
   describe('formatFieldsForSurveyAnswerRequest', () => {
