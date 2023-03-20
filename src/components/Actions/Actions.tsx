@@ -64,7 +64,7 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
         if (items) {
           return <Menu {...props} component={Button} items={items} selected={selected} />;
         }
-        return <Button {...props} data-testid="button" />;
+        return <Button {...props} data-testid={type} />;
       })}
     </div>
   ) : null;
