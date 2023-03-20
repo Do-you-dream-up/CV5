@@ -51,7 +51,7 @@ export default new (class Tts {
       method: 'POST',
       url: `${url}?ssml=${ssml}&voix=${voice}`,
     })
-      .then(function (response) {
+      ?.then(function (response) {
         return response.data.data;
       })
       .catch(function (error) {
