@@ -18,7 +18,7 @@ import { useTheme } from 'react-jss';
  * Speech-to-Text allows to convert sound to text by applying powerful neural network models via an API,
  * it is the reverse of Text-to-Speech that convert streaming sound to a text via API.
  */
-export default function Voice({ show, t }) {
+const Voice = ({ show, t }) => {
   // Stream Audio
   let AudioContext;
   let context;
@@ -379,7 +379,9 @@ export default function Voice({ show, t }) {
   };
 
   return show ? <Actions data-testId="dydu-voice-actions" actions={actions} className="dydu-voice-actions" /> : null;
-}
+};
+
+export default Voice;
 
 Voice.propTypes = {
   DialogContext: PropTypes.node,

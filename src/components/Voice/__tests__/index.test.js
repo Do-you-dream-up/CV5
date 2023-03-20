@@ -3,6 +3,12 @@ import Voice from '../';
 import { render } from '../../../tools/test-utils';
 
 describe('Voice component', () => {
+  jest.mock('socket.io-client', () => ({
+    connect: jest.fn(() => ({
+      on: jest.fn(),
+      emit: jest.fn(),
+    })),
+  }));
   it('renders without crashing', () => {
     const { queryByTestId } = render(
       <DialogProvider>
