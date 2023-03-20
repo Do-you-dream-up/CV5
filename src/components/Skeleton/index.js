@@ -5,7 +5,7 @@ import useStyles from './styles';
 
 function SkeletonCircle({ height, width }) {
   const classes = useStyles({ height, width });
-  return <div className={c(classes.base, classes.circle)} />;
+  return <div data-testid="skeleton-circle" className={c(classes.base, classes.circle)} />;
 }
 
 SkeletonCircle.propTypes = {
@@ -15,7 +15,7 @@ SkeletonCircle.propTypes = {
 
 function SkeletonParagraph({ height, width }) {
   return (
-    <div style={{ width: '100%' }}>
+    <div data-testid="skeleton-paragraph" style={{ width: '100%' }}>
       <SkeletonText width="80%" />
       <SkeletonRectangle height={height} width={width} />
       <SkeletonText width="60%" />
@@ -30,7 +30,7 @@ SkeletonParagraph.propTypes = {
 
 function SkeletonRectangle({ height, width }) {
   const classes = useStyles({ height, width });
-  return <div className={c(classes.base, classes.rectangle)} />;
+  return <div data-testid="skeleton-rectangle" className={c(classes.base, classes.rectangle)} />;
 }
 
 SkeletonRectangle.propTypes = {
@@ -40,7 +40,7 @@ SkeletonRectangle.propTypes = {
 
 function SkeletonText({ height, width }) {
   const classes = useStyles({ height, width });
-  return <div className={c(classes.base, classes.text)} />;
+  return <div data-testid="skeleton-text" className={c(classes.base, classes.text)} />;
 }
 
 SkeletonText.propTypes = {
