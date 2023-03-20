@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import io from 'socket.io-client';
+import { isChrome, isMacOs, isWindows } from 'react-device-detect';
+
+import Actions from '../Actions/Actions';
+import Icon from '../Icon/Icon';
+import PropTypes from 'prop-types';
 import Stt from './stt';
 import Tts from './tts';
-import useMousetrap from 'react-hook-mousetrap';
-import { isMacOs, isWindows, isChrome } from 'react-device-detect';
-import PropTypes from 'prop-types';
-import { useDialog } from '../../contexts/DialogContext';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
-import Icon from '../Icon/Icon';
-import { useTheme } from 'react-jss';
-import Actions from '../Actions/Actions';
 import icons from '../../tools/icon-constants';
+import io from 'socket.io-client';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useDialog } from '../../contexts/DialogContext';
+import useMousetrap from 'react-hook-mousetrap';
+import { useTheme } from 'react-jss';
 
 /**
  * TTS / STT
@@ -54,20 +55,20 @@ export default function Voice({ show, t }) {
   const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt="replay" />;
   const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt="stop" />;
 
-  const startRecordButton = Tts.getButtonAction(t.start, iconMicrophon, () => {
+  const startRecordButton = Tts.getButtonAction(t?.start, iconMicrophon, () => {
     window.dydu.ui.toggle(2);
     setTimeout(() => {
       window.dydu.voice.startRecording();
     }, 100);
   });
 
-  const stopRecordButton = Tts.getButtonAction(t.stop, iconStop, () =>
+  const stopRecordButton = Tts.getButtonAction(t?.stop, iconStop, () =>
     isChrome ? stopRecordChrome() : stopRecording(),
   );
-  const pauseMediaButton = Stt.getButtonAction(t.pause, iconPause, () => pause());
-  const playMediaButton = Stt.getButtonAction(t.play, iconPlay, () => play());
-  const replayMediaButton = Stt.getButtonAction(t.replay, iconReplay, () => replay());
-  const stopMediaButton = Stt.getButtonAction(t.stop, iconStop, () => stop());
+  const pauseMediaButton = Stt.getButtonAction(t?.pause, iconPause, () => pause());
+  const playMediaButton = Stt.getButtonAction(t?.play, iconPlay, () => play());
+  const replayMediaButton = Stt.getButtonAction(t?.replay, iconReplay, () => replay());
+  const stopMediaButton = Stt.getButtonAction(t?.stop, iconStop, () => stop());
   const [actions, setActions] = React.useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = React.useState(false);
   const [url, setUrl] = useState('');
@@ -377,7 +378,7 @@ export default function Voice({ show, t }) {
     setHandelVoice(true);
   };
 
-  return show ? <Actions actions={actions} className="dydu-voice-actions" /> : null;
+  return show ? <Actions data-testId="dydu-voice-actions" actions={actions} className="dydu-voice-actions" /> : null;
 }
 
 Voice.propTypes = {
