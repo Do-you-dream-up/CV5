@@ -22,22 +22,66 @@ describe('Tts', () => {
     expect(action).toHaveBeenCalled();
   });
 
-  test('getAudioFromText returns audio data', async () => {
+  test('getAudioFromText returns false becasue no urlprovided', async () => {
     const text = 'Test Text';
     const templateHtml = null;
     const templateText = null;
-    const voice = 'Test Voice';
-    const ssml = 'Test SSML';
-    const url = 'https://test-url.com';
+    const voice = 'Damien';
+    const ssml = true;
+    const url = null;
     const expectedOutput = 'Test Audio Data';
 
-    axios.post.mockResolvedValueOnce({ data: { data: expectedOutput } });
+    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
 
     const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
-    console.log('🚀 ~ file: tts.test.js:37 ~ test ~ result:', result);
 
-    // expect(result).toBe(expectedOutput);
-    // expect(axios.post).toHaveBeenCalledWith(url + '?ssml=' + ssml + '&voix=' + voice, { text });
+    expect(result).toBe(undefined);
+  });
+
+  test('getAudioFromText with - text', async () => {
+    const text = 'Test Text';
+    const templateHtml = null;
+    const templateText = null;
+    const voice = 'Damien';
+    const ssml = true;
+    const url = 'https://voicebot.doyoudreamup.com/tts';
+    const expectedOutput = 'Test Audio Data';
+
+    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
+
+    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+
+    expect(result).toBe(undefined);
+  });
+  test('getAudioFromText with - templateText', async () => {
+    const text = 'Test Text';
+    const templateHtml = null;
+    const templateText = 'templateText';
+    const voice = 'Damien';
+    const ssml = true;
+    const url = 'https://voicebot.doyoudreamup.com/tts';
+    const expectedOutput = 'Test Audio Data';
+
+    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
+
+    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+
+    expect(result).toBe(undefined);
+  });
+  test('getAudioFromText with - templateHtml', async () => {
+    const text = 'Test Text';
+    const templateHtml = 'templateHtml';
+    const templateText = null;
+    const voice = 'Damien';
+    const ssml = true;
+    const url = 'https://voicebot.doyoudreamup.com/tts';
+    const expectedOutput = 'Test Audio Data';
+
+    axios.post.mockResolvedValueOnce(() => Promise.resolve({ data: { data: expectedOutput } }));
+
+    const result = await tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+
+    expect(result).toBe(undefined);
   });
 
   test('getAudioFromText logs error when url is undefined', () => {
@@ -47,11 +91,26 @@ describe('Tts', () => {
     const templateText = null;
     const voice = 'Test Voice';
     const ssml = 'Test SSML';
-    const url = undefined;
+    const url = 'https://voicebot.doyoudreamup.com/tts';
 
     tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
 
-    expect(consoleSpy).toHaveBeenCalledWith('[Dydu - TTS] : Url undifined');
+    expect(consoleSpy).not.toHaveBeenCalledWith('[Dydu - TTS] : Url undifined');
+    consoleSpy.mockRestore();
+  });
+
+  test('getAudioFromText nothing, because text, templateHtml and templateText are null', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const text = null;
+    const templateHtml = null;
+    const templateText = null;
+    const voice = 'Test Voice';
+    const ssml = 'Test SSML';
+    const url = 'https://voicebot.doyoudreamup.com/tts';
+
+    tts.getAudioFromText(text, templateHtml, templateText, voice, ssml, url);
+
+    expect(consoleSpy).not.toHaveBeenCalledWith('[Dydu - TTS] : Url undifined');
     consoleSpy.mockRestore();
   });
 

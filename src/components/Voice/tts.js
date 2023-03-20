@@ -55,6 +55,7 @@ export default new (class Tts {
         return response.data.data;
       })
       .catch(function (error) {
+        console.log('🚀 ~ file: tts.js:60 ~ Tts ~ error:', error);
         console.error('[Dydu - TTS] : ' + error);
       });
   };
