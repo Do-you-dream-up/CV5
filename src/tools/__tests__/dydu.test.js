@@ -1,9 +1,10 @@
 /* eslint-disable */
 
-import Storage from '../../components/auth/Storage';
 import { Cookie, Local } from '../storage';
-import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import { objectContainFields, objectToQueryParam, secondsToMs, strContains, toFormUrlEncoded } from '../helpers';
+
+import { ConfigurationFixture } from '../../test/fixtures/configuration';
+import Storage from '../../components/auth/Storage';
 
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
@@ -28,7 +29,7 @@ jest.mock('../storage', () => ({
     },
     get: jest.fn(),
     set: jest.fn(),
-    names: { space: 'LS-KEY-SPACE' },
+    names: { space: 'LS-KEY-SPACE', locale: '' },
     byBotId: jest.fn(),
     contextId: {
       save: jest.fn(),
@@ -468,46 +469,201 @@ describe('dydu.js', function () {
     it('should not modify the argument and return it', () => {});
   });
 
-  describe('processTalkResponse', () => {
-    it('should call |handleSpaceWithTalkResponse|', () => {});
-    it('should call |handleKnownledgeQuerySurveyWithTalkResponse|', () => {});
-    it('should not modify the argument and return it as is', () => {});
+  xdescribe('processTalkResponse', () => {
+    xit('should call |handleSpaceWithTalkResponse|', () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['handleSpaceWithTalkResponse']);
+      const res = { res: 'response' };
+
+      //WHEN
+      dydu.processTalkResponse(res);
+
+      //THEN
+      expect(spied.handleSpaceWithTalkResponse).toHaveBeenCalled();
+    });
+    xit('should call |handleKnownledgeQuerySurveyWithTalkResponse|', () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['handleKnownledgeQuerySurveyWithTalkResponse']);
+      const res = { res: 'response' };
+
+      //WHEN
+      dydu.processTalkResponse(res);
+
+      //THEN
+      expect(spied.handleKnownledgeQuerySurveyWithTalkResponse).toHaveBeenCalled();
+    });
+    xit('should not modify the argument and return it as is', () => {
+      //GIVEN
+      const res = { res: 'response' };
+
+      //WHEN
+      const result = dydu.processTalkResponse(res);
+
+      //THEN
+      expect(result).toEqual(res);
+    });
   });
 
-  describe('talk', () => {
-    it('should call |emit| for POST on /chat/talk using bot id and context id', () => {});
-    it('should create a correct payload', () => {});
-    it('should includes saml infos as part of the payload if it is enabled in configuration', () => {});
-    it('should use a form url encoded payload', () => {});
+  xdescribe('talk', () => {
+    xit('should call |emit| for POST on /chat/talk using bot id and context id', () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['alreadyCame', 'getClientId', 'getLocale', 'getSpace', 'emit', 'getVariables']);
+
+      //WHEN
+      dydu.talk();
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const expectedPath = `chat/talk/${getBotId}/${getContextId ? `${getContextId}/` : ''}`;
+
+      //THEN
+      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
+    });
+    xit('should create a correct payload', () => {});
+    xit('should includes saml infos as part of the payload if it is enabled in configuration', () => {});
+    xit('should use a form url encoded payload', () => {});
   });
 
   describe('suggest', () => {
-    it('should call |emit| for POST on /chat/search with bot id', () => {});
-    it('should uses form url data encoding', () => {});
+    it('should call |emit| for POST on /chat/search with bot id', () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['getLocale', 'getSpace', 'getConfiguration', 'emit']);
+      const text = 'voici le texte';
+      //WHEN
+      dydu.suggest(text);
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const expectedPath = `chat/search/${dydu.getBotId()}`;
+
+      //THEN
+      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
+    });
+    it('should uses form url data encoding', () => {
+      //WHEN
+      //GIVEN
+      //THEN
+    });
   });
 
   describe('qualificationMode', () => {
-    it('should get the value from window object', () => {});
-    it('should use the argument as value', () => {});
-    it('should set the |qualificationMode| class attribute', () => {});
+    it('should get the value from window object', () => {
+      //GIVEN
+      window.DYDU_QUALIFICATION_MODE = true;
+
+      //WHEN
+      dydu.setQualificationMode(false);
+      //THEN
+      expect(dydu.qualificationMode).toEqual(true);
+      window.DYDU_QUALIFICATION_MODE = false;
+    });
+    it('should use the argument as value', () => {
+      //GIVEN
+      const value = false;
+
+      //WHEN
+      dydu.setQualificationMode(value);
+      //THEN
+      expect(dydu.qualificationMode).toEqual(false);
+    });
+    it('should set the |qualificationMode| class attribute', () => {
+      //GIVEN
+      const value = undefined;
+
+      //WHEN
+      dydu.setQualificationMode(value);
+      //THEN
+      expect(dydu.qualificationMode).toEqual(false);
+    });
   });
 
   describe('setSpace', () => {
-    it('should set the |space| class attribute to the argument', () => {});
-    it('should save the space to localStorage', () => {});
-    it("should save lowercased if value is 'defaul'", () => {});
+    it('should set the |space| class attribute to the argument', () => {
+      //GIVEN
+      const newSpace = 'newSpace';
+
+      //WHEN
+      dydu.setSpace(newSpace);
+
+      //THEN
+      expect(dydu.space).toEqual(newSpace);
+    });
+    it('should save the space to localStorage', () => {
+      //GIVEN
+      const newSpace = 'newSpace';
+
+      //WHEN
+      dydu.setSpace(newSpace);
+
+      //THEN
+      expect(Local.set).toHaveBeenCalledWith(Local.names.space, newSpace);
+    });
+    it("should save lowercased if value is 'default'", () => {
+      //GIVEN
+      const space = 'default';
+
+      //WHEN
+      dydu.setSpace(space);
+
+      //THEN
+      expect(Local.set).toHaveBeenCalledWith(Local.names.space, space);
+    });
   });
   describe('getContextVariables', () => {
-    it('should return an html list of variables', () => {});
+    it('should return an html list of variables', () => {
+      //GIVEN
+      dydu.setRegisterContext('hello', 'bonjour');
+
+      //WHEN
+      const effective = dydu.getContextVariables();
+
+      //THEN
+      expect(effective).toEqual('<ul><li>hello&nbsp;=&nbsp;bonjour</li></ul>');
+    });
   });
   describe('setLocale', () => {
-    it('should set the |local| class attribute when the local is includes in the |languages| parameter', () => {});
-    it('should save the |locale| parameter in the localStorage', () => {});
+    it('should set the |local| class attribute when the local is includes in the |languages| parameter', () => {
+      //GIVEN
+      const languages = ['fr', 'en'];
+      const locale = 'fr';
+      //WHEN
+      dydu.setLocale(locale, languages);
+      //THEN
+      expect(dydu.locale).toEqual('fr');
+    });
+    it('should save the |locale| parameter in the localStorage', () => {
+      //GIVEN
+      const languages = ['fr', 'en'];
+      const locale = 'fr';
+      //WHEN
+      dydu.setLocale(locale, languages);
+      //THEN
+      expect(Local.set).toHaveBeenCalledWith(Local.names.locale, locale);
+    });
   });
 
   describe('reset', () => {
-    it('should call |getContextId| with parameter to force request', () => {});
-    it('should |emit| POST request to path chat/context/ and bot id', () => {});
+    it('should call |getContextId| with parameter to force request', async () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['getContextId']);
+
+      //WHEN
+      await dydu.reset();
+
+      //THEN
+      expect(spied.getContextId).toHaveBeenCalledWith(true);
+    });
+    it('should |emit| POST request to path chat/context/ and bot id', async () => {
+      //GIVEN
+      spied = jestSpyOnList(dydu, ['emit', 'alreadyCame', 'getClientId', 'getLocale', 'getConfiguration']);
+
+      //WHEN
+      await dydu.reset();
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const expectedPath = 'chat/context';
+
+      //THEN
+      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
+    });
   });
 
   describe('printHistory', () => {
@@ -1679,9 +1835,44 @@ describe('dydu.js', function () {
   });
 
   describe('alreadyCame', function () {
-    it('should call |Local.clientId.getKey|', () => {});
-    it('should call |Local.clientId.getKey| with currentInfo', () => {});
-    it('should call |Local.clientId.isSet|', () => {});
+    it('should call |Local.clientId.getKey|', () => {
+      //GIVEN
+
+      //WHEN
+      dydu.alreadyCame();
+      //THEN
+      expect(dydu.alreadyCame).toHaveBeenCalled();
+    });
+    xit('should call |Local.clientId.getKey| with currentInfo', () => {
+      //GIVEN
+      const infoObject = {
+        locale: 'locale',
+        space: 'space',
+        botId: 'botId',
+      };
+      dydu.infos = infoObject;
+
+      // WHEN
+
+      dydu.alreadyCame();
+      //THEN
+      expect(Local.clientId.getKey).toHaveBeenCalledWith(dydu.infos);
+    });
+    xit('should call |Local.clientId.isSet|', () => {
+      //GIVEN
+      const infoObject = {
+        locale: 'locale',
+        space: 'space',
+        botId: 'botId',
+      };
+      dydu.infos = infoObject;
+
+      // WHEN
+
+      dydu.alreadyCame();
+      //THEN
+      expect(Local.clientId.isSet).toHaveBeenCalled();
+    });
   });
 
   describe('class attributes initialisation', function () {
