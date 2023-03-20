@@ -1,21 +1,22 @@
 /* eslint-disable */
 
+import { DialogContext, useDialog } from '../../contexts/DialogContext';
 import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
 import Button from '../Button/Button';
-import { DialogContext, useDialog } from '../../contexts/DialogContext';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Icon from '../Icon/Icon';
 import Scroll from '../Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import icons from '../../tools/icon-constants';
+
 /**
  * Render interfaces for the user to submit feedback.
  *
@@ -29,6 +30,7 @@ export default function Feedback() {
   const { configuration } = useConfiguration();
   const { addResponse } = useDialog();
   const [showChoices, setShowChoices] = useState(false);
+  console.log('🚀 ~ file: index.js:33 ~ Feedback ~ showChoices:', showChoices);
   const [showComment, setShowComment] = useState(false);
   const [showVote, setShowVote] = useState(true);
   const [thinking, setThinking] = useState(false);
@@ -65,7 +67,6 @@ export default function Feedback() {
   const onVoteNegative = () => {
     dydu.feedback(false).then(() => {
       setShowVote(false);
-
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
         dydu.talk(customFeedback?.negativeCustom, { doNotSave: true, hide: true }).then((response) => {
           addResponse(response);
@@ -81,7 +82,7 @@ export default function Feedback() {
   };
 
   const onVotePositive = () => {
-    dydu.feedback(true).then(() => {
+    dydu.feedback(true)?.then(() => {
       setShowVote(false);
 
       if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
@@ -95,9 +96,11 @@ export default function Feedback() {
   };
 
   const onChoicesSelect = (value) => {
+    console.log('🚀 ~ file: index.js:101 ~ onChoicesSelect ~ value:', value);
     setThinking(true);
     dydu.feedbackInsatisfaction(value).then(() =>
       setTimeout(() => {
+        console.log('in');
         setShowChoices(false);
         if (askComment) {
           setShowComment(true);
@@ -120,21 +123,21 @@ export default function Feedback() {
       <div className="dydu-feedback">
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
-            <Button color="error" onClick={onVoteNegative} variant="icon">
+            <Button color="error" onClick={onVoteNegative} variant="icon" data-testid="vote-buttons-down">
               <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt="downVote" />
             </Button>
-            <Button color="success" onClick={onVotePositive} variant="icon">
+            <Button color="success" onClick={onVotePositive} variant="icon" data-testid="vote-buttons-up">
               <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt="upVote" />
             </Button>
           </div>
         )}
         {showChoices && (
-          <Bubble component={Scroll} thinking={thinking} type="response">
+          <Bubble component={Scroll} thinking={thinking} type="response" data-testid="feedback-choices">
             <FeedbackChoices onSelect={onChoicesSelect} />
           </Bubble>
         )}
         {showComment && (
-          <Bubble component={Scroll} type="response">
+          <Bubble component={Scroll} type="response" data-testid="feedback-comment">
             <Form className="dydu-feedback-comment" data={{ comment: '' }} onResolve={onComment} onDismiss={onDismiss}>
               {({ data, onChange }) => (
                 <>

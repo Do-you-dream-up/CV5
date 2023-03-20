@@ -16,7 +16,7 @@ export default function FeedbackChoices({ onSelect }) {
       <div className="dydu-feedback-choices">
         <p>{askChoices}</p>
         <ul>
-          {choices.map((choice, index) => (
+          {choices?.map((choice, index) => (
             <li key={index}>
               <span children={choice} className="dydu-link" onClick={onClick(index)} />
             </li>
