@@ -89,6 +89,9 @@ export function AuthProtected({ children, enable = false }) {
   }, [isLoggedIn, login]);
 
   const canDisplayChatbot = () => {
+    console.log('🚀 ~ file: AuthContext.js:93 ~ canDisplayChatbot ~ isLoadedFromChannels():', isLoadedFromChannels());
+    console.log('🚀 ~ file: AuthContext.js:96 ~ canDisplayChatbot ~ isLoggedIn:', isLoggedIn);
+    console.log('🚀 ~ file: AuthContext.js:97 ~ canDisplayChatbot ~ enable:', enable);
     if (isLoadedFromChannels()) {
       return true;
     } else if (isLoggedIn && enable) {

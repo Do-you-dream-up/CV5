@@ -1,5 +1,5 @@
-import { useDialog } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
+import { useDialog } from '../../contexts/DialogContext';
 
 export default function useCustomRenderer() {
   const { setZoomSrc } = useDialog();
