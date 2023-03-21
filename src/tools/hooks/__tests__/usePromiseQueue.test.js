@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import usePromiseQueue from '../usePromiseQueue';
 
 const mockFunction = jest.fn().mockResolvedValue(true);
-xdescribe('usePromiseQueue', () => {
+describe('usePromiseQueue', () => {
   it('should set unqueue to true on calling exec', () => {
     const { result } = renderHook(() => usePromiseQueue([() => Promise.resolve()]));
     act(() => {
