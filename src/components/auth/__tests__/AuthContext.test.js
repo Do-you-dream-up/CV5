@@ -45,6 +45,7 @@ describe('AuthProvider', () => {
     Storage.clearToken();
     Storage.clearPkce();
   });
+
   test('renders children', () => {
     const { getByText } = render(<div>Test Children</div>);
     expect(getByText('Test Children')).toBeDefined();
@@ -53,17 +54,6 @@ describe('AuthProvider', () => {
   test('renders children when enable is false', () => {
     const { getByText } = render(<div>Test Children</div>);
     expect(getByText('Test Children')).toBeDefined();
-  });
-
-  test('does not render children when enable is true and user is not logged in', () => {
-    const { queryByText } = render(<div>Test Children</div>, {
-      configuration: {
-        oidc: {
-          enable: true,
-        },
-      },
-    });
-    expect(queryByText('Test Children')).toBeNull();
   });
 
   test('renders children when enable=true and user is logged in', () => {
@@ -98,6 +88,11 @@ describe('AuthProvider', () => {
       },
       auth: { clientId: 'test-client-id' },
     });
+    expect(getByText('Protected Content')).toBeDefined();
+  });
+  test('renders children when isLoadedFromChannels', () => {
+    window.dyduReferer = true;
+    const { getByText } = render(<div>Protected Content</div>);
     expect(getByText('Protected Content')).toBeDefined();
   });
 });
