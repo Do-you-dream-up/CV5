@@ -53,9 +53,7 @@ describe('AuthProvider', () => {
     );
     expect(getByText('Test Children')).toBeDefined();
   });
-});
 
-describe('AuthProtected', () => {
   test('renders children when enable is false', () => {
     const { getByText } = render(<div>Test Children</div>);
     expect(getByText('Test Children')).toBeDefined();
