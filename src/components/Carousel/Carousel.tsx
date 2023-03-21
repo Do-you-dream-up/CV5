@@ -2,15 +2,16 @@ import Actions, { ActionProps } from '../Actions/Actions';
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
 import { DialogContext } from '../../contexts/DialogContext';
+import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
-import Icon from '../Icon/Icon';
-import icons from '../../tools/icon-constants';
+
 /**
  * Typically used with the `Interaction` component.
  *
@@ -68,6 +69,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       onClick: triggerPrevious,
       variant: 'icon',
       id: 'dydu-arrow-left',
+      testId: 'dydu-arrow-left',
     },
   ];
 
@@ -78,6 +80,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       onClick: triggerNext,
       variant: 'icon',
       id: 'dydu-arrow-right',
+      testId: 'dydu-arrow-right',
     },
   ];
 
@@ -113,7 +116,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const renderBullets = () =>
     carouselConfig?.bullets &&
     length > 0 && (
-      <div className={c('dydu-carousel-bullets', classes.bullets)}>
+      <div data-testid="dydu-carousel-bullets" className={c('dydu-carousel-bullets', classes.bullets)}>
         {children.map((item, idx) => (
           <div
             className={c('dydu-carousel-bullet', {
@@ -136,7 +139,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   return (
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
+      <div data-testid="dydu-carousel-steps" className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
         {renderSteps()}
       </div>
       {renderBullets()}

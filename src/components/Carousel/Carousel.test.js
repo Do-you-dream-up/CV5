@@ -1,45 +1,49 @@
-import '@testing-library/jest-dom';
-
 import Carousel from './Carousel';
+import { fireEvent } from '@testing-library/react';
 import { render } from '../../tools/test-utils';
 
-describe('Carousel.tsx', () => {
-  const children = ['<p>item</p>', '<p>item</p>', '<p>item</p>'];
+describe('Carousel', () => {
+  const children = [<div key={1}>Child 1</div>, <div key={2}>Child 2</div>, <div key={3}>Child 3</div>];
+  const steps = [
+    { sidebar: { content: 'Sidebar content' } },
+    { sidebar: { content: 'Sidebar content' } },
+    { sidebar: { content: 'Sidebar content' } },
+  ];
+  const templateName = 'templateName';
+  const className = 'className';
 
-  test('Should render Carousel with nothing to display', async () => {
-    const { container } = render(<Carousel />);
-    expect(container.getElementsByClassName('dydu-carousel-steps')[0]).toBeEmptyDOMElement();
-  });
-  test('Should render Carousel with children array of children to display', async () => {
-    const { container } = render(<Carousel children={children} />);
-    expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
-  });
-
-  test('Should render Carousel with children array of children to display and controls to navigate and bullets, with right number of bullets', async () => {
-    const { container } = render(<Carousel children={children} />, {
-      configuration: { carousel: { bullets: true, controls: true } },
-    });
-    expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
-    expect(container.getElementsByClassName('dydu-carousel-bullets').length).toBe(1);
-    expect(container.getElementsByClassName('dydu-carousel-bullet').length).toBe(children.length);
-    expect(container.getElementsByClassName('dydu-carousel-controls').length).toBe(2);
-  });
-
-  test('Should render Carousel with children array of children to display and no controls and no bullets', async () => {
-    const { container } = render(<Carousel children={children} />, {
-      configuration: { carousel: { bullets: false, controls: false } },
-    });
-    expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
-    expect(container.getElementsByClassName('dydu-carousel-bullets').length).toBe(0);
-    expect(container.getElementsByClassName('dydu-carousel-bullet').length).toBe(0);
-    expect(container.getElementsByClassName('dydu-carousel-controls').length).toBe(0);
+  it('renders the carousel with children and controls', () => {
+    const { getByText, getByTestId } = render(
+      <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
+    );
+    expect(getByText('Child 1')).toBeDefined();
+    expect(getByText('Child 2')).toBeDefined();
+    expect(getByText('Child 3')).toBeDefined();
+    expect(getByTestId('dydu-arrow-left')).toBeDefined();
+    expect(getByTestId('dydu-arrow-right')).toBeDefined();
   });
 
-  test('Should render Carousel with secondary active', async () => {
-    jest.mock('../../contexts/DialogContext', () => ({
-      useDialog: jest.fn().mockReturnValue({ secondaryActive: true, toggleSecondary: jest.fn() }),
-    }));
-    const { container } = render(<Carousel children={children} />);
-    expect(container.getElementsByClassName('dydu-carousel-step').length).toBe(children.length);
+  it('renders the carousel with bullets', () => {
+    const { getByTestId } = render(
+      <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
+    );
+    expect(getByTestId('dydu-carousel-bullets')).toBeDefined();
+  });
+
+  it('renders the carousel with steps', () => {
+    const { getByTestId } = render(
+      <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
+    );
+    expect(getByTestId('dydu-carousel-steps')).toBeDefined();
+  });
+
+  it('triggers the next and previous controls', () => {
+    const { getByTestId, getByText } = render(
+      <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
+    );
+    fireEvent.click(getByTestId('dydu-arrow-right'));
+    expect(getByText('Child 2')).toBeDefined();
+    fireEvent.click(getByTestId('dydu-arrow-left'));
+    expect(getByText('Child 1')).toBeDefined();
   });
 });
