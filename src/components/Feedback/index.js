@@ -80,7 +80,6 @@ export default function Feedback() {
   };
 
   const onVotePositive = () => {
-    console.log('innnnnnnn');
     dydu.feedback(true)?.then(() => {
       setShowVote(false);
 
