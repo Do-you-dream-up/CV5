@@ -1,3 +1,4 @@
+import { AuthProtected, AuthProvider } from '../components/auth/AuthContext';
 import { JssProvider, ThemeProvider } from 'react-jss';
 import { RenderOptions, render, screen } from '@testing-library/react';
 
@@ -13,20 +14,36 @@ import theme from '../../public/override/theme.json';
 interface CustomProps {
   configuration?: Models.Configuration;
   theme?: Models.Theme;
+  auth?: Models.AuthConfig;
 }
+
+const authConfig: Models.AuthConfig = {
+  clientId: configuration?.oidc.clientId,
+  clientSecret: configuration?.oidc?.clientSecret,
+  pkceActive: configuration?.oidc?.pkceActive,
+  pkceMode: configuration?.oidc?.pkceMode,
+  authUrl: configuration?.oidc.authUrl,
+  tokenUrl: configuration?.oidc.tokenUrl,
+  scope: configuration?.oidc?.scopes,
+};
 
 export const ProviderWrapper = ({ children, customProp }: { children: any; customProp?: CustomProps }) => {
   const mergedConfiguration = mergeDeep(configuration, customProp?.configuration);
   const mergedTheme = mergeDeep(theme, customProp?.theme);
+  const mergedAuthConfiguration = mergeDeep(authConfig, customProp?.auth);
 
   return (
     <JssProvider>
       <ThemeProvider theme={mergedTheme}>
         <ConfigurationProvider configuration={mergedConfiguration}>
           <ServerStatusProvider>
-            <ViewModeProvider>
-              <EventsProvider>{children}</EventsProvider>
-            </ViewModeProvider>
+            <AuthProvider configuration={mergedAuthConfiguration}>
+              <AuthProtected enable={mergedConfiguration?.oidc?.enable}>
+                <ViewModeProvider>
+                  <EventsProvider>{children}</EventsProvider>
+                </ViewModeProvider>
+              </AuthProtected>
+            </AuthProvider>
           </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>

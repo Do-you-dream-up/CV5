@@ -10,6 +10,7 @@ jest.mock('../../tools/dydu', () => ({
     talk: jest.fn(),
     setServerStatusCheck: jest.fn(),
     setSpaceToDefault: jest.fn(),
+    setOidcLogin: jest.fn(),
   },
 }));
 

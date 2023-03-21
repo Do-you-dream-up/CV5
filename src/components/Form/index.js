@@ -54,6 +54,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       secondary: true,
       spin: thinking,
       type: 'cancel',
+      testId: 'cancel',
     },
     {
       children: t('form.submit'),
@@ -61,6 +62,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       icon: getSubmitIcon,
       spin: thinking,
       type: 'form.submit',
+      testId: 'form.submit',
     },
   ];
 
