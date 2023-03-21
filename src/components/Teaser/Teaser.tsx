@@ -1,18 +1,15 @@
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import Actions from '../Actions/Actions';
-import { DialogContext } from '../../contexts/DialogContext';
 import Draggable from 'react-draggable';
-import { EventsContext, useEvent } from '../../contexts/EventsContext';
-import dydu from '../../tools/dydu';
-import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
+import Voice from '../Voice';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
-import Voice from '../Voice';
 
 interface TeaserProps {
   open?: boolean;
@@ -28,7 +25,7 @@ const TEASER_TYPES = {
 /**
  * Minified version of the chatbox.
  */
-export default function Teaser({ open, toggle }: TeaserProps) {
+const Teaser = ({ open, toggle }: TeaserProps) => {
   const { configuration } = useConfiguration();
 
   const event = useEvent()?.onEvent('teaser');
@@ -63,6 +60,7 @@ export default function Teaser({ open, toggle }: TeaserProps) {
 
   const openChatboxOnClickOrTouch = useCallback(() => {
     event && event('onClick');
+    console.log('🚀 ~ file: Teaser.tsx:65 ~ openChatboxOnClickOrTouch ~ toggle:', toggle);
     toggle(2)();
   }, [event, toggle]);
 
@@ -114,6 +112,7 @@ export default function Teaser({ open, toggle }: TeaserProps) {
   return (
     <Draggable bounds="html">
       <div
+        data-testid="teaser-chatbot"
         className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
         id="dydu-teaser"
         aria-labelledby="teaser-chatbot"
@@ -152,9 +151,6 @@ export default function Teaser({ open, toggle }: TeaserProps) {
       </div>
     </Draggable>
   );
-}
-
-Teaser.propTypes = {
-  open: PropTypes.bool,
-  toggle: PropTypes.func,
 };
+
+export default Teaser;
