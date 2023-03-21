@@ -62,7 +62,6 @@ export default function Feedback() {
   };
 
   const onVoteNegative = () => {
-    console.log('🚀 ~ file: index.js:79 ~ dydu.feedback ~ dydu:', dydu);
     dydu.feedback(false).then(() => {
       setShowVote(false);
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
