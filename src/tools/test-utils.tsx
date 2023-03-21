@@ -1,3 +1,4 @@
+import '../tools/prototypes/strings';
 import { JssProvider, ThemeProvider } from 'react-jss';
 import { RenderOptions, render, screen } from '@testing-library/react';
 

@@ -2,6 +2,9 @@ import '../src/tools/prototypes/strings';
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 
+import fetchMock from 'jest-fetch-mock';
+fetchMock.enableMocks();
+
 import { JssProvider, ThemeProvider } from 'react-jss';
 
 import { ConfigurationContext } from './contexts/ConfigurationContext';

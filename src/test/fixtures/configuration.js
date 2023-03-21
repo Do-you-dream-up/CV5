@@ -327,6 +327,11 @@ export class ConfigurationFixture {
     this.configuration = config;
   }
 
+  activateDefaultLanguageFromSite() {
+    this.getConfiguration().application.getDefaultLanguageFromSite = true;
+    return this;
+  }
+
   getConfiguration() {
     return this.configuration;
   }
