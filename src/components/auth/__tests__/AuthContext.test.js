@@ -13,17 +13,20 @@ jest.mock('../Storage', () => {
     __esModule: true,
     default: {
       loadToken: jest.fn(() => token),
-      loadPkce: jest.fn(() => token),
-      savePkce: jest.fn((t) => {
+      clearToken: jest.fn(),
+      saveToken: jest.fn((t) => {
         token = t;
       }),
-      saveToken: jest.fn((t) => {
+      clearPkce: jest.fn(),
+      loadPkce: jest.fn(() => token),
+      savePkce: jest.fn((t) => {
         token = t;
       }),
       containsPkce: jest.fn(),
     },
   };
 });
+
 jest.mock('../../../tools/dydu', () => {
   let authorize = null;
 
@@ -38,6 +41,10 @@ jest.mock('../../../tools/dydu', () => {
   };
 });
 describe('AuthProvider', () => {
+  afterAll(() => {
+    Storage.clearToken();
+    Storage.clearPkce();
+  });
   test('renders children', () => {
     const { getByText } = render(
       <AuthProvider configuration={{ clientId: 'test-client-id' }}>
