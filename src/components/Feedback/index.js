@@ -30,7 +30,6 @@ export default function Feedback() {
   const { configuration } = useConfiguration();
   const { addResponse } = useDialog();
   const [showChoices, setShowChoices] = useState(false);
-  console.log('🚀 ~ file: index.js:33 ~ Feedback ~ showChoices:', showChoices);
   const [showComment, setShowComment] = useState(false);
   const [showVote, setShowVote] = useState(true);
   const [thinking, setThinking] = useState(false);
@@ -39,8 +38,6 @@ export default function Feedback() {
   const { active, askChoices, askComment } = configuration.feedback;
   const commentHelp = t('feedback.comment.help');
   const commentThanks = t('feedback.comment.thanks');
-  const voteNegative = t('feedback.vote.negative');
-  const votePositive = t('feedback.vote.positive');
   const voteThanks = t('feedback.vote.thanks');
   const { customFeedback } = configuration?.feedback;
   const theme = useTheme();
@@ -65,6 +62,7 @@ export default function Feedback() {
   };
 
   const onVoteNegative = () => {
+    console.log('🚀 ~ file: index.js:79 ~ dydu.feedback ~ dydu:', dydu);
     dydu.feedback(false).then(() => {
       setShowVote(false);
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
@@ -82,6 +80,7 @@ export default function Feedback() {
   };
 
   const onVotePositive = () => {
+    console.log('innnnnnnn');
     dydu.feedback(true)?.then(() => {
       setShowVote(false);
 
@@ -96,7 +95,6 @@ export default function Feedback() {
   };
 
   const onChoicesSelect = (value) => {
-    console.log('🚀 ~ file: index.js:101 ~ onChoicesSelect ~ value:', value);
     setThinking(true);
     dydu.feedbackInsatisfaction(value).then(() =>
       setTimeout(() => {
