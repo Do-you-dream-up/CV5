@@ -119,6 +119,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       <div data-testid="dydu-carousel-bullets" className={c('dydu-carousel-bullets', classes.bullets)}>
         {children.map((item, idx) => (
           <div
+            data-testid={`dydu-carousel-bullet-${idx}`}
             className={c('dydu-carousel-bullet', {
               [classes.active]: item.key === index,
             })}

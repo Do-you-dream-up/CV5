@@ -30,6 +30,16 @@ describe('Carousel', () => {
     expect(getByTestId('dydu-carousel-bullets')).toBeDefined();
   });
 
+  it('clicks an inactive bullet and updates the active slide', () => {
+    const { getByTestId, getByText } = render(
+      <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
+    );
+    const inactiveBullet = getByTestId('dydu-carousel-bullet-1'); // get an inactive bullet element
+    expect(inactiveBullet).toBeDefined();
+    fireEvent.click(inactiveBullet); // click the inactive bullet element
+    expect(getByText('Child 2')).toBeDefined(); // expect the second slide to become active
+  });
+
   it('renders the carousel with steps', () => {
     const { getByTestId } = render(
       <Carousel children={children} steps={steps} templateName={templateName} className={className} />,
