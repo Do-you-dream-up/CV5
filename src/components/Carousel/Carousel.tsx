@@ -49,18 +49,18 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
 
+  const hasNext = () => index < length - 1;
+  const hasPrevious = () => index > 0;
+
+  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
+  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
+
   const handlers = useSwipeable({
     onSwipedLeft: () => triggerNext(),
     onSwipedRight: () => triggerPrevious(),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
-
-  const hasNext = () => index < length - 1;
-  const hasPrevious = () => index > 0;
-
-  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
-  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
 
   const previousAction: ActionProps[] = [
     {
