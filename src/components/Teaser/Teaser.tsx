@@ -60,7 +60,6 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
 
   const openChatboxOnClickOrTouch = useCallback(() => {
     event && event('onClick');
-    console.log('🚀 ~ file: Teaser.tsx:65 ~ openChatboxOnClickOrTouch ~ toggle:', toggle);
     toggle(2)();
   }, [event, toggle]);
 
