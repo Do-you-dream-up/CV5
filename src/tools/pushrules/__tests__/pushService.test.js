@@ -39,6 +39,35 @@ describe('getExternalInfos', () => {
 });
 
 describe('processRules', () => {
+  const rule1 = {
+    kId: 1,
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rule2 = {
+    kId: 2,
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rule3 = {
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rules = [rule1, rule2, rule3];
+
+  test('should return expected values when only one rule matches', () => {
+    const externInfos = {};
+    const expected = {
+      bestDelayId: 1,
+      bestIdleDelayId: 1,
+      bestCompliance: new ComplianceInfo(),
+    };
+
+    const result = processRules(externInfos, rules);
+
+    expect(result).toEqual(expected);
+  });
+
   test('calls handlePush with the best compliant knowledge', () => {
     const externInfos = {
       durationSinceLastVisit: 0,
@@ -460,5 +489,48 @@ describe('urlCompliant', () => {
     const pattern = null;
     const url = 'https://example.com';
     expect(urlCompliant(pattern, url)).toBe(false);
+  });
+});
+describe('processRules', () => {
+  const externInfos = {};
+
+  const rule1 = {
+    kId: 1,
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rule2 = {
+    kId: 2,
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rule3 = {
+    conditions: [{ param_1: 'https://example.com' }],
+  };
+
+  const rules = [rule1, rule2, rule3];
+
+  test('should return expected values when multiple rules match', () => {
+    const expected = {
+      bestDelayId: 1,
+      bestIdleDelayId: 2,
+      bestCompliance: new ComplianceInfo(),
+    };
+
+    const result = processRules(externInfos, rules);
+
+    expect(result).toEqual(expected);
+  });
+
+  test('should return expected values when no rules match', () => {
+    const expected = {
+      bestDelayId: undefined,
+      bestIdleDelayId: undefined,
+      bestCompliance: new ComplianceInfo(),
+    };
+
+    const result = processRules(externInfos, []);
+
+    expect(result).toEqual(expected);
   });
 });
