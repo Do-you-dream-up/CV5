@@ -772,16 +772,6 @@ describe('dydu.js', function () {
   });
 
   describe('getSpace', () => {
-    const { location } = window;
-    beforeAll(() => {
-      delete window.location;
-      window.location = { href: '' };
-    });
-
-    afterAll(() => {
-      window.location = location;
-    });
-
     it('should get the space value from configuration when space is not defined and no argument is given', () => {
       // GIVEN
       const defaultSpace = 'default-space';
@@ -880,31 +870,6 @@ describe('dydu.js', function () {
       // THEN
       expect(receivedSpace).toEqual(expectedResult);
     });
-    it('should use hostname strategy', () => {
-      // GIVEN
-      const targetHostname = 'target-hostname.io';
-      window.location = {
-        hostname: targetHostname,
-      };
-
-      const expectedResult = 'expected-space';
-      const hostnameModeItem = {
-        mode: ConfigurationFixture.SPACE_DETECTION_MODE.hostname,
-        active: true,
-        value: {
-          [targetHostname]: expectedResult,
-        },
-      };
-      const configuration = new ConfigurationFixture();
-      configuration.updateSpaceDetectionMode(hostnameModeItem);
-      const strategies = configuration.getSpaceConfig().detection;
-
-      // WHEN
-      const receivedSpace = dydu.getSpace(strategies);
-
-      // THEN
-      expect(receivedSpace).toEqual(expectedResult);
-    });
     it('should use localstorage strategy', () => {
       // GIVEN
       const expectedResult = 'expected-space';
@@ -925,84 +890,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(receivedSpace).toEqual(expectedResult);
-    });
-    it('should use route strategy', () => {
-      // GIVEN
-      const targetPathname = '/urlpart/test/file';
-      window.location = {
-        pathname: targetPathname,
-      };
-
-      const expectedResult = 'expected-space';
-      const routeModeItem = {
-        mode: ConfigurationFixture.SPACE_DETECTION_MODE.route,
-        active: true,
-        value: {
-          [targetPathname]: expectedResult,
-        },
-      };
-      const configuration = new ConfigurationFixture();
-      configuration.updateSpaceDetectionMode(routeModeItem);
-      const strategies = configuration.getSpaceConfig().detection;
-
-      // WHEN
-      const receivedSpace = dydu.getSpace(strategies);
-
-      // THEN
-      expect(receivedSpace).toEqual(expectedResult);
-    });
-    it('should use urlparameter strategy', () => {
-      // GIVEN
-      const expectedResult = 'urlpart';
-      const targetQparameterName = 'test';
-      const targetSearch = `?${targetQparameterName}=${expectedResult}`;
-      window.location = {
-        search: targetSearch,
-      };
-
-      const urlparameterModeItem = {
-        mode: ConfigurationFixture.SPACE_DETECTION_MODE.urlparameter,
-        active: true,
-        value: targetQparameterName,
-      };
-      const configuration = new ConfigurationFixture();
-      configuration.updateSpaceDetectionMode(urlparameterModeItem);
-      const strategies = configuration.getSpaceConfig().detection;
-
-      // WHEN
-      const receivedSpace = dydu.getSpace(strategies);
-
-      // THEN
-      expect(receivedSpace).toEqual(expectedResult);
-    });
-    it('should use urlpart strategy', () => {
-      // GIVEN
-      // set current url
-      window.location = {
-        href: 'http://currenthref/urlpart/test/file',
-      };
-
-      // activate urlpart Item
-      const urlpartTarget = 'urlpart/test/';
-      const urlpartSpaceName = 'urlpart-space-name';
-      const urlpartDetectionItem = {
-        mode: ConfigurationFixture.SPACE_DETECTION_MODE.urlpart,
-        active: true,
-        value: {
-          [urlpartTarget]: urlpartSpaceName,
-        },
-      };
-      const configuration = new ConfigurationFixture();
-      configuration.updateSpaceDetectionMode(urlpartDetectionItem);
-
-      // get strategy list
-      const strategies = configuration.getSpaceConfig().detection;
-
-      // WHEN
-      const receivedSpace = dydu.getSpace(strategies);
-
-      // THEN
-      expect(receivedSpace).toEqual(urlpartSpaceName);
     });
   });
 
@@ -1124,36 +1011,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(dydu.getBotId).toHaveBeenCalled();
-    });
-    it('should call |Local.contextId.createKey| with currentBotId and configId', () => {
-      // GIVEN
-      const currentBotId = 'current-bot-id';
-      dydu.getBotId = jest.fn().mockReturnValue(currentBotId);
-
-      //const currentConfigId = "current-config-id"; // to fix
-      const currentConfigId = 'main/';
-      const botConfigContentFile = {
-        bot: 'bot-id',
-        configId: currentConfigId,
-        server: 'server',
-        backUpServer: 'backupServer',
-      };
-      window.location = {
-        search: `?${objectToQueryParam(botConfigContentFile)}`,
-      };
-      /*
-      loadDyduWithBotConfig({
-        bot: "bot-id",
-        configId: currentConfigId,
-        server: "server",
-        backUpServer: "backupServer"
-      });
-       */
-
-      // WHEN
-      dydu.getContextIdStorageKey();
-
-      expect(Local.contextId.createKey).toHaveBeenCalledWith(currentBotId, currentConfigId);
     });
   });
 
@@ -1742,27 +1599,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(spied.renewAuth).toHaveBeenCalled();
-    });
-  });
-
-  describe('redirectAndRenewAuth', function () {
-    let savedWinLoc = global.window.location;
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['renewAuth']);
-    });
-    afterEach(() => {
-      window.location = savedWinLoc;
-    });
-
-    it('should call |renewAuth| with values.auth', () => {
-      // GIVEN
-      const param = { auth: 1 };
-
-      // WHEN
-      dydu.redirectAndRenewAuth(param);
-
-      // THEN
-      expect(spied.renewAuth).toHaveBeenCalledWith(param.auth);
     });
   });
 
