@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { AuthProvider } from '../AuthContext';
 import Storage from '../Storage';
 import { render } from '../../../tools/test-utils';
 

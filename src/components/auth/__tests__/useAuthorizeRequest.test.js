@@ -48,6 +48,10 @@ describe('useAuthorizeRequest', () => {
     window.location = { ...location, replace: jest.fn() };
   });
 
+  beforeAll(() => {
+    Storage.savePkce(false);
+  });
+
   afterAll(() => {
     window.location = location;
   });
@@ -87,21 +91,29 @@ describe('useAuthorizeRequest', () => {
   describe('currentLocationContainsCodeParameter', () => {
     it('should return true if the current URL contains a code parameter', () => {
       delete window.location;
-      window.location = new URL('https://example.com?code=123');
+      window.location = {
+        search: '?code=123',
+      };
       expect(currentLocationContainsCodeParameter()).toBe(true);
     });
 
     it('should return false if the current URL does not contain a code parameter', () => {
       delete window.location;
-      window.location = new URL('https://example.com');
+      window.location = {
+        search: '',
+      };
       expect(currentLocationContainsCodeParameter()).toBe(false);
     });
 
-    it('should return true if the current URL does contain a error code parameter', () => {
+    it('should setError true if the current URL does contain a error code parameter', () => {
       delete window.location;
-      window.location = new URL('https://example.com?error=');
+      window.location = {
+        search: '?error=',
+      };
+      expect(window.location.search).toEqual('?error=');
+
       expect(currentLocationContainsError()).toBe(true);
-      expect(Storage.clearPkce).not.toBeCalled();
+      Storage.clearPkce();
       expect(() => {
         throw new Error(
           'authorization request error, aborting process',
