@@ -24,7 +24,7 @@ interface LivechatProviderProps {
 
 export const useLivechat = () => useContext(LivechatContext);
 
-const LivechatContext = createContext<LivechatContextProps>({});
+export const LivechatContext = createContext<LivechatContextProps>({});
 
 const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;
 const findFirstAvailableTunnelInList = (tunnelList) => tunnelList.find((tunnel) => tunnel.isAvailable());
@@ -201,8 +201,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       send,
       isLivechatOn,
       typing,
+      displayResponseText,
     }),
-    [isLivechatOn, isWebsocket, send, typing],
+    [isLivechatOn, isWebsocket, send, typing, displayResponseText],
   );
   return <LivechatContext.Provider value={dataContext}>{children}</LivechatContext.Provider>;
 }

@@ -1,8 +1,11 @@
 import '@testing-library/jest-dom';
 
-import { render, screen } from '@testing-library/react';
+import { LivechatContext, LivechatProvider, useLivechat } from '../LivechatContext';
+import { act, render, screen } from '@testing-library/react';
 
-import { LivechatProvider } from '../LivechatContext';
+import { TUNNEL_MODE } from '../../tools/constants';
+import { renderHook } from '@testing-library/react-hooks';
+import useDyduWebsocket from '../../tools/hooks/useDyduWebsocket';
 
 describe('LivechatProvider', () => {
   beforeEach(() => {
@@ -23,5 +26,42 @@ describe('LivechatProvider', () => {
 
     // Assert
     expect(childComponent).toBeInTheDocument();
+  });
+
+  it('should call onNewMessage and window.dydu.chat.reply', () => {
+    const onNewMessageMock = jest.fn();
+    window.dydu = { chat: { reply: jest.fn() } };
+
+    const { result } = renderHook(() => useLivechat(onNewMessageMock), { wrapper: LivechatProvider });
+
+    act(() => {
+      console.log('🚀 ~ file: LivechatContext.test.js:37 ~ act ~ result.current:', result.current);
+      result.current.displayResponseText('Hello World');
+    });
+
+    expect(window.dydu.chat.reply).toHaveBeenCalledWith('Hello World');
+  });
+
+  it('should open a WebSocket tunnel by default', async () => {
+    const { result } = renderHook(
+      () =>
+        useDyduWebsocket({
+          mode: TUNNEL_MODE.websocket,
+          open: jest.fn().mockResolvedValue(undefined),
+          isAvailable: () => true,
+        }),
+      { wrapper: LivechatProvider },
+    );
+    console.log('🚀 ~ file: LivechatContext.test.js:47 ~ it ~ result:', result.current);
+
+    await act(async () => {
+      render(
+        <LivechatProvider>
+          <LivechatContext>{({ isWebsocket }) => <div>{isWebsocket.toString()}</div>}</LivechatContext>
+        </LivechatProvider>,
+      );
+    });
+
+    expect(screen.getByText('false')).toBeDefined();
   });
 });
