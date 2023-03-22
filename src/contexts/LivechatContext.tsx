@@ -202,8 +202,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       isLivechatOn,
       typing,
       displayResponseText,
+      sendSurvey,
     }),
-    [isLivechatOn, isWebsocket, send, typing, displayResponseText],
+    [isLivechatOn, isWebsocket, send, typing, displayResponseText, sendSurvey],
   );
   return <LivechatContext.Provider value={dataContext}>{children}</LivechatContext.Provider>;
 }
