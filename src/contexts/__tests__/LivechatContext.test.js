@@ -52,7 +52,6 @@ describe('LivechatProvider', () => {
         }),
       { wrapper: LivechatProvider },
     );
-    console.log('🚀 ~ file: LivechatContext.test.js:47 ~ it ~ result:', result.current);
 
     await act(async () => {
       render(
