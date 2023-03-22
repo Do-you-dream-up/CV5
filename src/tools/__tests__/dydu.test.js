@@ -187,12 +187,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('initLocalWithConfiguration', () => {
-    it('should get the local from Browser as configuration |getDefaultLanguageFromSite| is true', () => {});
-    it('should get the local from configuration as |getDefaultLanguageFromSite| is false', () => {});
-    it('should init I18N with the determinated locale', () => {});
-  });
-
   describe('registerVisit', () => {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['welcomeCall', 'getInfos']);
@@ -377,63 +371,6 @@ describe('dydu.js', function () {
       const effectiveParamValue = mockFnGetParamValueAtPosition(fetchMock, paramPosition);
       expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
     });
-    xit('should set the lastResponse to the just fetched value', async () => {
-      // GIVEN
-      fetchMock.mockResolvedValue({ json: jest.fn().mockResolvedValue() });
-      dydu.lastResponse = null;
-
-      // WHEN
-      await dydu.sendSurveyPolling({});
-
-      // THEN
-      expect(dydu.lastResponse).toBeTruthy();
-    });
-    it('should call |displaySurveySent| after setting |lastResponse|', () => {});
-  });
-
-  xdescribe('getTalkBasePayload', function () {
-    let validPayload;
-    beforeEach(() => {
-      validPayload = {
-        contextId: '',
-        alreadyCame: '',
-        browser: '',
-        clientId: '',
-        doNotRegisterInteraction: '',
-        language: '',
-        os: '',
-        qualificationMode: '',
-        space: '',
-        tokenUserData: '',
-        userUrl: '',
-        solutionUsed: '',
-        variables: '',
-      };
-      spied = jestSpyOnList(dydu, [
-        'getContextId',
-        'alreadyCame',
-        'getClientId',
-        'getLocale',
-        'getSpace',
-        'getVariables',
-      ]);
-    });
-
-    it('should return a talk object payload', () => {
-      const talkPayload = dydu.getTalkBasePayload({});
-      expect(talkPayload).toEqual('');
-      Object.keys(validPayload).forEach((key) => {
-        expect(`${key}` in talkPayload).toEqual(true);
-      });
-    });
-    it('should considere option argument for |doNotRegisterInteraction| field', () => {});
-    it('should call methods to get values', () => {
-      const valueProviders = ['getContextId', 'alreadyCame', 'getClientId', 'getLocal', 'getSpace', 'getVariable'];
-    });
-  });
-
-  describe('formatFieldsForSurveyAnswerRequest', () => {
-    it('should return an object with fields keys prepended by field_', () => {});
   });
 
   describe('get', function () {
@@ -448,10 +385,6 @@ describe('dydu.js', function () {
       // THEN
       expect(dydu.emit).toHaveBeenCalled();
     });
-  });
-
-  describe('post', function () {
-    it('should call |emit| with axios.post as first parameter', () => {});
   });
 
   describe('whoami', () => {
@@ -589,10 +522,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('getBotId', () => {
-    it('should return the correct bot id', () => {});
-  });
-
   describe('poll', () => {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['emit', 'getContextId', 'getLocale', 'getConfiguration', 'getSpace']);
@@ -694,70 +623,6 @@ describe('dydu.js', function () {
       const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
       expect(strContains(effectiveParamValue, tokenValue)).toEqual(true);
     });
-  });
-
-  describe('getServerStatus', () => {
-    it('should GET request on /serverstatus', () => {});
-  });
-
-  describe('handleSpaceWithTalkResponse', () => {
-    it('should check #guiCSName keys in the argument object', () => {});
-    it('should call |setSpace| if #guiCSName is defined', () => {});
-    it('should not modify the argument and return it', () => {});
-  });
-
-  xdescribe('processTalkResponse', () => {
-    xit('should call |handleSpaceWithTalkResponse|', () => {
-      //GIVEN
-      spied = jestSpyOnList(dydu, ['handleSpaceWithTalkResponse']);
-      const res = { res: 'response' };
-
-      //WHEN
-      dydu.processTalkResponse(res);
-
-      //THEN
-      expect(spied.handleSpaceWithTalkResponse).toHaveBeenCalled();
-    });
-    xit('should call |handleKnownledgeQuerySurveyWithTalkResponse|', () => {
-      //GIVEN
-      spied = jestSpyOnList(dydu, ['handleKnownledgeQuerySurveyWithTalkResponse']);
-      const res = { res: 'response' };
-
-      //WHEN
-      dydu.processTalkResponse(res);
-
-      //THEN
-      expect(spied.handleKnownledgeQuerySurveyWithTalkResponse).toHaveBeenCalled();
-    });
-    xit('should not modify the argument and return it as is', () => {
-      //GIVEN
-      const res = { res: 'response' };
-
-      //WHEN
-      const result = dydu.processTalkResponse(res);
-
-      //THEN
-      expect(result).toEqual(res);
-    });
-  });
-
-  xdescribe('talk', () => {
-    xit('should call |emit| for POST on /chat/talk using bot id and context id', () => {
-      //GIVEN
-      spied = jestSpyOnList(dydu, ['alreadyCame', 'getClientId', 'getLocale', 'getSpace', 'emit', 'getVariables']);
-
-      //WHEN
-      dydu.talk();
-      const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
-      const expectedPath = `chat/talk/${getBotId}/${getContextId ? `${getContextId}/` : ''}`;
-
-      //THEN
-      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
-    });
-    xit('should create a correct payload', () => {});
-    xit('should includes saml infos as part of the payload if it is enabled in configuration', () => {});
-    xit('should use a form url encoded payload', () => {});
   });
 
   describe('suggest', () => {
@@ -914,7 +779,6 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.getContextId).toHaveBeenCalled();
     });
-    it('should insert an iframe with correct path', () => {});
   });
 
   describe('pushrules', () => {
@@ -928,7 +792,6 @@ describe('dydu.js', function () {
       // THEN
       expect(dydu.emit).toHaveBeenCalled();
     });
-    it('should |emit| POST request on /chat/pushrules and bot id', () => {});
   });
 
   describe('history', () => {
@@ -953,7 +816,6 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.emit).toHaveBeenCalled();
     });
-    it('should |emit| POST request with chat/history path and correct data', () => {});
   });
 
   describe('getSpace', () => {
@@ -1191,14 +1053,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('getLocal', () => {
-    it('should get local from configuration when |locale| class attribute is not defined', () => {});
-    it('should get locale value from localStorage when |locale| class attribute is not defined', () => {});
-    it('should get locale from site document when configuration |getDefaultLanguageFromSite| is set to true', () => {});
-    it('should not save language dash separator in localstorage', () => {});
-    it('should not contains language dash separator', () => {});
-  });
-
   describe('getConfiguration', () => {
     it('should return |configuration| class attribute value', () => {
       // GIVEN
@@ -1265,14 +1119,6 @@ describe('dydu.js', function () {
       expect(s).toHaveBeenCalledWith(contextIdKey, contextIdValue);
       s.mockRestore();
     });
-  });
-
-  describe('getContextId', function () {
-    it('should call |getContextIdFromLocalStorage| when argument is false or is not set', () => {});
-    it('should |emit| POST on chat/context with form url encoded data', () => {});
-    it('should call |setContextId| with the request response', () => {});
-    it('should return empty string if error occurs', () => {});
-    it('should send correct payload', () => {});
   });
 
   describe('getContextIdFromLocalStorage', function () {
@@ -1467,16 +1313,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('gdpr', function () {
-    it('should call |emit|', () => {
-      // GIVEN
-    });
-    it('should call |emit| for POST', () => {});
-    it('should call |emit| with chat/gdpr as path argument', () => {});
-    it('should call |emit| with form url encoded string as data argument', () => {});
-    it('should include saml infos in payload if it is enabled in configuration', () => {});
-  });
-
   describe('feedbackInsatisfaction', function () {
     it('should call |getContextId|', async () => {
       // GIVEN
@@ -1523,7 +1359,6 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.emit).toHaveBeenCalled();
     });
-    it('should call |emit| for POST', async () => {});
     it('should call |emit| with chat/feedback/insatisfaction/ as path argument', async () => {
       // GIVEN
       spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
@@ -1585,11 +1420,6 @@ describe('dydu.js', function () {
       expect(spied.getConfiguration).toHaveBeenCalled();
       jestRestoreMocked([spiedSamlLoad]);
     });
-    it('should call |Local.saml.load| if saml is enabled in configuration', () => {});
-    it('should call |emit| with path chat/feedback/comment/', () => {});
-    it('should call |emit| with form url payload', () => {});
-    it('should includes saml info in payload when saml is enabled in configuration', () => {});
-    it('should includes |comment| from parameter in payload', () => {});
   });
 
   describe('feedback', function () {
@@ -1902,7 +1732,6 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.handleSetApiUrl).toHaveBeenCalled();
     });
-    it('should call |handleSetApiTimeout|', async () => {});
 
     describe('handleAxiosError', function () {
       const getDefaultParams = () => [{}, {}, '', {}, 1];
@@ -1929,7 +1758,6 @@ describe('dydu.js', function () {
         // THEN
         //expect(spied.handleTokenRefresh).toHaveBeenCalled();
       });
-      it('should call |emit|', () => {});
     });
   });
   describe('samlRenewnOrReject', function () {
@@ -2079,36 +1907,6 @@ describe('dydu.js', function () {
       dydu.alreadyCame();
       //THEN
       expect(dydu.alreadyCame).toHaveBeenCalled();
-    });
-    xit('should call |Local.clientId.getKey| with currentInfo', () => {
-      //GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
-
-      // WHEN
-
-      dydu.alreadyCame();
-      //THEN
-      expect(Local.clientId.getKey).toHaveBeenCalledWith(dydu.infos);
-    });
-    xit('should call |Local.clientId.isSet|', () => {
-      //GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
-
-      // WHEN
-
-      dydu.alreadyCame();
-      //THEN
-      expect(Local.clientId.isSet).toHaveBeenCalled();
     });
   });
 
