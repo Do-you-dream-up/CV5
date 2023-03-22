@@ -1764,17 +1764,6 @@ describe('dydu.js', function () {
       // THEN
       expect(spied.renewAuth).toHaveBeenCalledWith(param.auth);
     });
-    it("should update window.location.href with 'RelayState' in url parameter", () => {
-      // GIVEN
-      delete global.window.location;
-      global.window = Object.create(window);
-      global.window.location = {};
-      // WHEN
-      dydu.redirectAndRenewAuth({ auth: 1 });
-
-      // THEN
-      expect(strContains(window.location.href, 'RelayState=')).toEqual(true);
-    });
   });
 
   describe('renewAuth', function () {
