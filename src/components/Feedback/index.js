@@ -96,7 +96,6 @@ export default function Feedback() {
     setThinking(true);
     dydu.feedbackInsatisfaction(value).then(() =>
       setTimeout(() => {
-        console.log('in');
         setShowChoices(false);
         if (askComment) {
           setShowComment(true);
