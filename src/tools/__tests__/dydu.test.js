@@ -354,10 +354,10 @@ describe('dydu.js', function () {
   describe('sendSurveyPolling', () => {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['getTalkBasePayload', 'setLastResponse', 'displaySurveySent']);
+      fetchMock.mockResolvedValue({ json: jest.fn().mockResolvedValue({ response: true }) });
     });
     it('should call |fetch| with GET as method argument', async () => {
       // GIVEN
-      fetchMock.mockResolvedValue({ json: jest.fn() });
 
       // WHEN
       await dydu.sendSurveyPolling({});
@@ -365,8 +365,28 @@ describe('dydu.js', function () {
       // THEN
       expect(fetchMock).toHaveBeenCalled();
     });
-    it('should call |emit| with /servlet/chatHttp as path argument', () => {});
-    it('should set the lastResponse to the just fetched value', () => {});
+    it('should call |fetch| with /servlet/chatHttp as path argument', async () => {
+      // GIVEN
+      // WHEN
+      await dydu.sendSurveyPolling({});
+
+      // THEN
+      const expectedPath = 'servlet/chatHttp';
+      const paramPosition = 0;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(fetchMock, paramPosition);
+      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
+    });
+    xit('should set the lastResponse to the just fetched value', async () => {
+      // GIVEN
+      fetchMock.mockResolvedValue({ json: jest.fn().mockResolvedValue() });
+      dydu.lastResponse = null;
+
+      // WHEN
+      await dydu.sendSurveyPolling({});
+
+      // THEN
+      expect(dydu.lastResponse).toBeTruthy();
+    });
     it('should call |displaySurveySent| after setting |lastResponse|', () => {});
   });
 
