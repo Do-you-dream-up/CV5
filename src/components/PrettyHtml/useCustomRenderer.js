@@ -1,5 +1,5 @@
-import { useDialog } from '../../contexts/DialogContext';
 import { isDefined } from '../../tools/helpers';
+import { useDialog } from '../../contexts/DialogContext';
 
 export default function useCustomRenderer() {
   const { setZoomSrc } = useDialog();
@@ -15,7 +15,7 @@ export default function useCustomRenderer() {
   };
 }
 
-const getFilters = (utils) => [
+export const getFilters = (utils) => [
   {
     test: ({ name }) => name === 'a',
     process: (props) => {
@@ -38,7 +38,7 @@ const getFilters = (utils) => [
   },
 ];
 
-const createFunctionWithString = (bodyFuncString) => {
+export const createFunctionWithString = (bodyFuncString) => {
   try {
     try {
       return new Function(bodyFuncString);
@@ -51,10 +51,10 @@ const createFunctionWithString = (bodyFuncString) => {
   }
 };
 
-const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
+export const replaceExternalSingleQuotesByDoubleQuotes = (s) => {
   const startPos = s?.indexOf("'") + 1;
   const endPos = s?.lastIndexOf("'");
   const string = s?.substring(startPos, endPos);
   const final = `"${string}"`;
-  return s?.replace(/'.*'/, final);
+  return isDefined(s) ? s?.replace(/'.*'/, final) : '';
 };

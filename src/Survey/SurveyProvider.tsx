@@ -13,9 +13,9 @@ import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';
 import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
+import { useConfiguration } from '../contexts/ConfigurationContext';
 import { useDialog } from '../contexts/DialogContext';
 import { useEvent } from '../contexts/EventsContext';
-import { useConfiguration } from '../contexts/ConfigurationContext';
 
 interface SurveyConfigProps {
   fields?: any;

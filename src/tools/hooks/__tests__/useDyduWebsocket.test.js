@@ -1,21 +1,21 @@
-import '../../tools/prototypes/strings';
+import '../../prototypes/strings';
 
 import { act, render } from '@testing-library/react';
 
-import { TUNNEL_MODE } from '../constants';
+import { TUNNEL_MODE } from '../../constants';
 import WS from 'jest-websocket-mock';
-import dydu from '../dydu';
-import { extractDomainFromUrl } from '../helpers';
-import useDyduWebsocket from './useDyduWebsocket';
+import dydu from '../../dydu';
+import { extractDomainFromUrl } from '../../helpers';
+import useDyduWebsocket from '../useDyduWebsocket';
 
-jest.mock('../../contexts/DialogContext', () => ({
+jest.mock('../../../contexts/DialogContext', () => ({
   useDialog: jest.fn().mockReturnValue({ setStatusText: jest.fn(), flushStatusText: jest.fn() }),
 }));
 
 const serverUrl = 'http://localhost:1234';
 const wssUrl = 'wss://' + extractDomainFromUrl(serverUrl) + '/servlet/chatWs';
 
-jest.mock('../dydu', () => ({
+jest.mock('../../dydu', () => ({
   getSpace: jest.fn(),
   getClientId: jest.fn(),
   getLocale: jest.fn(),

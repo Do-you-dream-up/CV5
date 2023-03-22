@@ -346,33 +346,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('sendSurveyPolling', () => {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getTalkBasePayload', 'setLastResponse', 'displaySurveySent']);
-      fetchMock.mockResolvedValue({ json: jest.fn().mockResolvedValue({ response: true }) });
-    });
-    it('should call |fetch| with GET as method argument', async () => {
-      // GIVEN
-
-      // WHEN
-      await dydu.sendSurveyPolling({});
-
-      // THEN
-      expect(fetchMock).toHaveBeenCalled();
-    });
-    it('should call |fetch| with /servlet/chatHttp as path argument', async () => {
-      // GIVEN
-      // WHEN
-      await dydu.sendSurveyPolling({});
-
-      // THEN
-      const expectedPath = 'servlet/chatHttp';
-      const paramPosition = 0;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(fetchMock, paramPosition);
-      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
-    });
-  });
-
   describe('get', function () {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['emit']);
@@ -573,26 +546,6 @@ describe('dydu.js', function () {
       Object.keys(payload).forEach((key) => {
         expect(strContains(effectiveParamValue, key)).toEqual(true);
       });
-    });
-  });
-
-  describe('typing', () => {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['alreadyCame', 'getContextId', 'getLocale', 'getSpace', 'getClientId']);
-      spied.getLocale.mockReturnValue('');
-      spied.getSpace.mockReturnValue('');
-      fetchMock.mockResolvedValue({ json: jest.fn() });
-    });
-    it('should GET request on /servlet/chatHttp with url parameter', async () => {
-      // GIVEN
-      // WHEN
-      await dydu.typing('text');
-
-      // THEN
-      expect(fetchMock).toHaveBeenCalled();
-      const paramPosition = 0;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(fetchMock, paramPosition);
-      expect(strContains(effectiveParamValue, 'servlet/chatHttp')).toEqual(true);
     });
   });
 
