@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { AuthProvider } from '../AuthContext';
 import Storage from '../Storage';
 import { render } from '../../../tools/test-utils';
 
@@ -45,6 +44,7 @@ describe('AuthProvider', () => {
     Storage.clearToken();
     Storage.clearPkce();
   });
+
   test('renders children', () => {
     const { getByText } = render(<div>Test Children</div>);
     expect(getByText('Test Children')).toBeDefined();
@@ -55,49 +55,43 @@ describe('AuthProvider', () => {
     expect(getByText('Test Children')).toBeDefined();
   });
 
-  // test('does not render children when enable is true and user is not logged in', () => {
-  //   const { queryByText } = render(<div>Test Children</div>, {
-  //     configuration: {
-  //       oidc: {
-  //         enable: true,
-  //       },
-  //     },
-  //   });
-  //   expect(queryByText('Test Children')).toBeNull();
-  // });
+  test('renders children when enable=true and user is logged in', () => {
+    const mockToken = {
+      access_token: jwtToken,
+      refresh_token: jwtToken,
+    };
+    Storage.saveToken(mockToken);
 
-  // test('renders children when enable=true and user is logged in', () => {
-  //   const mockToken = {
-  //     access_token: jwtToken,
-  //     refresh_token: jwtToken,
-  //   };
-  //   Storage.saveToken(mockToken);
+    const { getByText } = render(<div>Protected Content</div>, {
+      configuration: {
+        oidc: {
+          enable: true,
+        },
+      },
+      auth: { clientId: 'test-client-id' },
+    });
+    expect(getByText('Protected Content')).toBeDefined();
+  });
+  test('renders children when enable=true and user is logged in but with false token', () => {
+    const mockToken = {
+      access_token: 'pasbon',
+      refresh_token: 'pasbon',
+    };
+    Storage.saveToken(mockToken);
 
-  //   const { getByText } = render(<div>Protected Content</div>, {
-  //     configuration: {
-  //       oidc: {
-  //         enable: true,
-  //       },
-  //     },
-  //     auth: { clientId: 'test-client-id' },
-  //   });
-  //   expect(getByText('Protected Content')).toBeDefined();
-  // });
-  // test('renders children when enable=true and user is logged in but with false token', () => {
-  //   const mockToken = {
-  //     access_token: 'pasbon',
-  //     refresh_token: 'pasbon',
-  //   };
-  //   Storage.saveToken(mockToken);
-
-  //   const { getByText } = render(<div>Protected Content</div>, {
-  //     configuration: {
-  //       oidc: {
-  //         enable: true,
-  //       },
-  //     },
-  //     auth: { clientId: 'test-client-id' },
-  //   });
-  //   expect(getByText('Protected Content')).toBeDefined();
-  // });
+    const { getByText } = render(<div>Protected Content</div>, {
+      configuration: {
+        oidc: {
+          enable: true,
+        },
+      },
+      auth: { clientId: 'test-client-id' },
+    });
+    expect(getByText('Protected Content')).toBeDefined();
+  });
+  test('renders children when isLoadedFromChannels', () => {
+    window.dyduReferer = true;
+    const { getByText } = render(<div>Protected Content</div>);
+    expect(getByText('Protected Content')).toBeDefined();
+  });
 });
