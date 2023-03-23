@@ -2,14 +2,14 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles<any, any>((theme: any): any => {
   const contained = ({ color = 'primary' } = {}) => ({
-    borderRadius: theme.shape.radius.inner,
+    borderRadius: theme?.shape?.radius?.inner,
     padding: [['.5em', '1em']],
     ...(color && {
       '&:disabled': {
-        backgroundColor: theme.palette.action.disabled,
+        backgroundColor: theme?.palette?.action?.disabled,
       },
-      backgroundColor: theme.palette[color].main,
-      color: theme.palette[color].text,
+      backgroundColor: theme?.palette?.[color].main,
+      color: theme?.palette?.[color].text,
     }),
   });
 
@@ -37,15 +37,15 @@ export default createUseStyles<any, any>((theme: any): any => {
         top: 0,
       },
       '&:not(:disabled):hover:before': {
-        backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme?.palette?.action?.hover,
       },
       alignItems: 'center',
       backgroundColor: 'inherit',
       border: 0,
-      color: color ? theme.palette[color].text : theme.palette.text.primary,
+      color: color ? theme?.palette?.[color].text : theme?.palette?.text?.primary,
       cursor: 'pointer',
       display: 'flex',
-      fontFamily: theme.font.sansSerif,
+      fontFamily: theme?.font?.sansSerif,
       fontSize: '1em',
       padding: 0,
       position: 'relative',
@@ -103,13 +103,13 @@ export default createUseStyles<any, any>((theme: any): any => {
 
     secondary: ({ color = 'primary' }) => ({
       '&:disabled': {
-        backgroundColor: theme.palette.action.disabled,
+        backgroundColor: theme?.palette?.action?.disabled,
         border: 'none',
-        color: theme.palette[color].text,
+        color: theme.palette?.[color].text,
       },
       backgroundColor: 'transparent',
       border: '1px solid',
-      color: theme.palette[color].main,
+      color: theme.palette?.[color].main,
     }),
 
     spin: () => ({
@@ -122,13 +122,13 @@ export default createUseStyles<any, any>((theme: any): any => {
     text: ({ color }) => ({
       ...contained(),
       '&:disabled': {
-        color: theme.palette.text.disabled,
+        color: theme?.palette?.text?.disabled,
       },
       '&:disabled:after': {
         backgroundColor: 'transparent',
       },
       backgroundColor: 'transparent',
-      color: color ? theme.palette[color].main : theme.palette.text.primary,
+      color: color ? theme?.palette?.[color].main : theme?.palette?.text?.primary,
     }),
   };
 });
