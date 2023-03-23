@@ -36,7 +36,6 @@ describe('RadioItem', () => {
       />,
     );
     const checkbox = container.querySelector('input');
-    console.log('🚀 ~ file: RadioGroup.test.js:39 ~ it ~ checkbox:', checkbox);
     fireEvent.change(checkbox, { target: { value: '1' } });
   });
 });

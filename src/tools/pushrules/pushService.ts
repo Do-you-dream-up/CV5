@@ -1,4 +1,4 @@
-import { isValidStringOperator, rulesDefinitions } from './rulesDefinition';
+import { isValidStringOperator, rulesDefinitions as rulesDefinitionsImport } from './rulesDefinition';
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
@@ -8,12 +8,12 @@ import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
 
-const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
-const currentTimer: any = {};
-const externalInfoProcessors = [...ExternalInfoProcessor];
-const externalInfos = {};
-const rules: any = [];
-const rulesDefinition = [...rulesDefinitions];
+export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
+export const currentTimer: any = {};
+export const externalInfoProcessors = [...ExternalInfoProcessor];
+export const externalInfos = {};
+export const rules: any = [];
+export const rulesDefinition = [...(rulesDefinitionsImport || [])];
 let canPush = true;
 
 interface Rule {
@@ -44,7 +44,7 @@ export function getExternalInfos(now) {
   return externalInfos;
 }
 
-function processGoalPage(rule: Rule, externInfos: ExternInfos) {
+export function processGoalPage(rule: Rule, externInfos: ExternInfos) {
   const id = rule.bgpId;
   const urlToCheck = rule.conditions[0].param_1;
   if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
@@ -89,12 +89,12 @@ export function processRules(externInfos: ExternInfos) {
 }
 
 let chatboxNodeElement: HTMLElement | null = null;
-function getChatboxNodeElement() {
+export function getChatboxNodeElement() {
   if (!isDefined(chatboxNodeElement)) chatboxNodeElement = document.getElementById(configuration?.root);
   return chatboxNodeElement;
 }
 
-function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
+export function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
   if (delay === 0) {
     pushKnowledge(delayRuleId);
   } else if (idleDelay === 0) {
@@ -126,7 +126,7 @@ function handlePush(delay, delayRuleId, idleDelay, idleDelayRuleId) {
   }
 }
 
-function interaction(ruleId) {
+export function interaction(ruleId) {
   if (currentTimer.counter) {
     clearTimeout(currentTimer.counter);
     currentTimer.counter = setTimeout(() => {
@@ -135,12 +135,12 @@ function interaction(ruleId) {
   }
 }
 
-function computeRuleCompliance(condition, ruleId, externInfos) {
+export function computeRuleCompliance(condition, ruleId, externInfos) {
   const bestChildCompliance = computeChildrenCompliance(condition, ruleId, externInfos);
   return computeConditionCompliance(condition, ruleId, externInfos, bestChildCompliance);
 }
 
-function computeChildrenCompliance(condition, ruleId, externInfos) {
+export function computeChildrenCompliance(condition, ruleId, externInfos) {
   let bestCompliance = new ComplianceInfo();
   if (condition.children) {
     for (let c = 0; c < condition.children.length; c++) {
@@ -165,7 +165,7 @@ function computeChildrenCompliance(condition, ruleId, externInfos) {
   return bestCompliance;
 }
 
-function computeConditionCompliance(condition, ruleId, externInfos, childCompliance) {
+export function computeConditionCompliance(condition, ruleId, externInfos, childCompliance) {
   const conditionCompliance = new ComplianceInfo();
   // Ignore PastPage type
   if (condition.type === 'PastPage' && !(condition.parent.type === 'Container' && !condition.children)) {
@@ -202,18 +202,18 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
   return result;
 }
 
-function pushKnowledge(ruleId) {
+export function pushKnowledge(ruleId) {
   const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
   const shouldDisplay = canPush && !isDefined(Session.get(sessionKey));
   if (shouldDisplay) {
-    window.dydu.ui.toggle(VIEW_MODE.popin);
+    window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     Session.set(sessionKey, ruleId);
     canPush = false;
   }
 }
 
-function urlCompliant(pattern, url) {
+export function urlCompliant(pattern, url) {
   try {
     if (pattern.substring(pattern.length - 1) === '%') {
       return url.substring(0, pattern.length - 1) === pattern.substring(0, pattern.length - 1);

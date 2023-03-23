@@ -8,7 +8,7 @@ import useStyles from './styles';
 export default function Progress({ className }) {
   const classes = useStyles();
   return (
-    <div className={c('dydu-progress', classes.root, className)}>
+    <div data-testid="progress" className={c('dydu-progress', classes.root, className)}>
       <div className={classes.back} />
       <div className={classes.segmentGrow} />
       <div className={classes.segmentShrink} />

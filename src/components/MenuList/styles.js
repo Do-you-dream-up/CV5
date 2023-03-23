@@ -19,7 +19,7 @@ export default createUseStyles((theme) => ({
     paddingTop: '.8em',
   }),
   itemDisabled: () => ({
-    color: theme.palette.text.disabled,
+    color: theme.palette?.text?.disabled,
     cursor: 'not-allowed',
     display: 'none',
   }),
@@ -28,12 +28,12 @@ export default createUseStyles((theme) => ({
       opacity: 1,
     },
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette?.action?.hover,
     },
     cursor: 'pointer',
   }),
   root: () => ({
-    borderColor: theme.palette.divider,
+    borderColor: theme.palette?.divider,
     borderStyle: 'solid',
     borderWidth: 0,
     listStyleType: 'none',
@@ -41,6 +41,6 @@ export default createUseStyles((theme) => ({
     padding: [['.5em', 0]],
   }),
   selected: () => ({
-    backgroundColor: theme.palette.action.selected,
+    backgroundColor: theme.palette?.action?.selected,
   }),
 }));

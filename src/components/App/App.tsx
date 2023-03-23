@@ -1,7 +1,7 @@
 import '../../../public/override/style.css';
 import '../../../public/chatboxHomepage.css';
 
-import { AuthProtected, AuthProvider } from '../auth/context/AuthContext';
+import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
