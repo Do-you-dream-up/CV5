@@ -37,7 +37,7 @@ interface ChatboxProps {
   extended: boolean;
   open: boolean;
   root: any;
-  toggle: (val: number) => void;
+  toggle: (val: number) => any;
 }
 
 export default function Chatbox({ extended, open, root, toggle, ...rest }: ChatboxProps) {
@@ -169,7 +169,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         lock: (value = true) => setLocked && setLocked(value),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary && toggleSecondary(open, { body, title })(),
-        toggle: (mode) => toggle(mode),
+        toggle: (mode) => toggle(mode)(),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
