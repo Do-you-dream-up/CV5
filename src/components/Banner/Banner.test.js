@@ -20,9 +20,6 @@ describe('Banner component', () => {
         transient: true,
       },
     };
-  });
-
-  beforeEach(() => {
     useConfiguration.mockReturnValue({ configuration });
   });
 
