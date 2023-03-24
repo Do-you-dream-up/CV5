@@ -46,10 +46,6 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 
   useEffect(() => {
-    console.log('active', active);
-    console.log('enable', enable);
-    console.log('ready', ready);
-    console.log('ready', ready);
     if (active && enable) event?.('onboardingDisplay');
   }, [active, enable, event]);
   console.log('steps', steps);
@@ -82,6 +78,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
               {steps &&
                 steps?.map((_, i) => (
                   <div
+                    data-testId={`testid-${i.toString()}`}
                     className={c('dydu-carousel-bullet', {
                       [classes.active]: i === index,
                     })}
@@ -96,6 +93,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           )}
           <div className={c('dydu-onboarding-buttons', classes.buttons)}>
             <Button
+              data-testId="previous"
               children={previous}
               disabled={!index}
               secondary={true}

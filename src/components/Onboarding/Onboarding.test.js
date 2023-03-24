@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import Onboarding from './Onboarding';
@@ -22,7 +22,30 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../tools/storage');
 describe('Onboarding component', () => {
-  xtest('renders children if onboarding is not enabled or active', () => {
+  test('renders children if onboarding is not enabled or active', () => {
+    const newConfig = new ConfigurationFixture();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    useOnboarding.mockReturnValue({
+      active: false,
+      index: 1,
+      hasNext: true,
+      hasPrevious: true,
+      onEnd: jest.fn(),
+      onNext: jest.fn(),
+      onPrevious: jest.fn(),
+      onStep: jest.fn(),
+    });
+    useTranslation.mockReturnValue({
+      ready: true,
+      t: jest.fn().mockImplementation((target) => {
+        if (target === 'onboarding.steps')
+          return [
+            { title: '', body: '' },
+            { title: '', body: '' },
+          ];
+        else return '';
+      }),
+    });
     render(
       <Onboarding>
         <div>Children</div>
@@ -31,7 +54,9 @@ describe('Onboarding component', () => {
     expect(screen.getByText('Children')).toBeInTheDocument();
   });
 
-  xtest('renders nothing if not ready or not rendering or not active', () => {
+  test('renders nothing if not ready or not rendering or not active', () => {
+    const newConfig = new ConfigurationFixture();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     const { container } = render(
       <Onboarding render={false}>
         <div>Children</div>
@@ -41,7 +66,7 @@ describe('Onboarding component', () => {
     expect(classBody).toBeNull();
   });
 
-  xtest('renders onboarding steps if ready and rendering and active', async () => {
+  test('renders onboarding steps if ready and rendering and active', () => {
     const newConfig = new ConfigurationFixture();
     newConfig.enableOnboarding();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
@@ -66,18 +91,87 @@ describe('Onboarding component', () => {
         else return '';
       }),
     });
-    const { container } = render(
+    const screen = render(
       <Onboarding render={true}>
         <div>Children</div>
       </Onboarding>,
     );
 
-    await waitFor(() => {
-      expect(container.querySelector('dydu-onboarding')).toBeInTheDocument();
-    });
+    screen.findByText('dydu-onboarding').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+    screen.findByText('Skip').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+    screen.findByText('Previous').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+    screen.findByText('Next').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
+  });
 
-    expect(screen.getByText('Skip')).toBeInTheDocument();
-    expect(screen.getByText('Previous')).toBeInTheDocument();
-    expect(screen.getByText('Next')).toBeInTheDocument();
+  it('should call onStep method on click on step ', () => {
+    const newConfig = new ConfigurationFixture();
+    newConfig.enableOnboarding();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    useOnboarding.mockReturnValue({
+      active: true,
+      index: 1,
+      hasNext: true,
+      hasPrevious: true,
+      onEnd: jest.fn(),
+      onNext: jest.fn(),
+      onPrevious: jest.fn(),
+      onStep: jest.fn(),
+    });
+    useTranslation.mockReturnValue({
+      ready: true,
+      t: jest.fn().mockImplementation((target) => {
+        if (target === 'onboarding.steps')
+          return [
+            { title: '', body: '' },
+            { title: '', body: '' },
+          ];
+        else return '';
+      }),
+    });
+    const { getByTestId } = render(
+      <Onboarding render={true}>
+        <div>Children</div>
+      </Onboarding>,
+    );
+    const stepButton = getByTestId('testid-0');
+    fireEvent.click(stepButton);
+    expect(useOnboarding().onStep).toHaveBeenCalled();
+    const previousButton = getByTestId('previous');
+    fireEvent.click(previousButton);
+    expect(useOnboarding().onPrevious).toHaveBeenCalled();
+  });
+
+  it('should return null if should is false', () => {
+    const newConfig = new ConfigurationFixture();
+    newConfig.enableOnboarding();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    useOnboarding.mockReturnValue({
+      active: true,
+      index: 1,
+      hasNext: true,
+      hasPrevious: true,
+      onEnd: jest.fn(),
+      onNext: jest.fn(),
+      onPrevious: jest.fn(),
+      onStep: jest.fn(),
+    });
+    useTranslation.mockReturnValue({
+      ready: false,
+      t: jest.fn().mockImplementation((target) => {
+        if (target === 'onboarding.steps')
+          return [
+            { title: '', body: '' },
+            { title: '', body: '' },
+          ];
+        else return '';
+      }),
+    });
+    render(
+      <Onboarding render={true}>
+        <div>Children</div>
+      </Onboarding>,
+    );
+
+    screen.findByText('dydu-onboarding').then((nodeElement) => expect(nodeElement).not.toBeInTheDocument());
   });
 });
