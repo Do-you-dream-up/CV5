@@ -21,8 +21,8 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../tools/storage');
-xdescribe('Onboarding component', () => {
-  test('renders children if onboarding is not enabled or active', () => {
+describe('Onboarding component', () => {
+  xtest('renders children if onboarding is not enabled or active', () => {
     render(
       <Onboarding>
         <div>Children</div>
@@ -31,7 +31,7 @@ xdescribe('Onboarding component', () => {
     expect(screen.getByText('Children')).toBeInTheDocument();
   });
 
-  test('renders nothing if not ready or not rendering or not active', () => {
+  xtest('renders nothing if not ready or not rendering or not active', () => {
     const { container } = render(
       <Onboarding render={false}>
         <div>Children</div>
@@ -41,7 +41,7 @@ xdescribe('Onboarding component', () => {
     expect(classBody).toBeNull();
   });
 
-  test('renders onboarding steps if ready and rendering and active', async () => {
+  xtest('renders onboarding steps if ready and rendering and active', async () => {
     const newConfig = new ConfigurationFixture();
     newConfig.enableOnboarding();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
@@ -57,10 +57,14 @@ xdescribe('Onboarding component', () => {
     });
     useTranslation.mockReturnValue({
       ready: true,
-      t: jest.fn().mockReturnValue([
-        { title: '', body: '' },
-        { title: '', body: '' },
-      ]),
+      t: jest.fn().mockImplementation((target) => {
+        if (target === 'onboarding.steps')
+          return [
+            { title: '', body: '' },
+            { title: '', body: '' },
+          ];
+        else return '';
+      }),
     });
     const { container } = render(
       <Onboarding render={true}>
