@@ -348,6 +348,10 @@ export class ConfigurationFixture {
     this.getConfiguration().saml.enable = true;
     return this;
   }
+  dismissableBanner() {
+    this.getConfiguration().banner.dismissable = false;
+    return this;
+  }
 
   updateSpaceDetectionMode(detectionModeObject) {
     this.getSpaceConfig().detection = this.getSpaceConfig().detection.map((detectionModeItem) => {
