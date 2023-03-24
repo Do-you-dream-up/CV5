@@ -1,4 +1,5 @@
 import { mergeDeep } from '../../tools/helpers';
+
 export const getConfigurationObject = (updates = {}) => {
   const base = {
     application: {
@@ -346,6 +347,10 @@ export class ConfigurationFixture {
   }
   enableSaml() {
     this.getConfiguration().saml.enable = true;
+    return this;
+  }
+  enableOnboarding() {
+    this.getConfiguration().onboarding.enable = true;
     return this;
   }
 
