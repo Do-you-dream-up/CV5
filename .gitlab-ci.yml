@@ -1,5 +1,4 @@
 ---
-
 stages:
   - unit_test
   - integration
@@ -10,17 +9,17 @@ unit_test:
   stage: unit_test
   image: node:alpine
   variables:
-    CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
-    CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
+    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
+    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
   script:
     - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     - npm run test
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - node_modules/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
 
@@ -28,12 +27,12 @@ build:
   stage: integration
   image: node:alpine
   variables:
-    CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
-    CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
+    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
+    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
   script:
     - npm run build
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
       - node_modules/
@@ -59,7 +58,7 @@ pack:
       --upload-file "${CI_COMMIT_REF_NAME}.zip"
       "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
   rules:
@@ -89,7 +88,7 @@ publish:
       build/*
       dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
   rules:
@@ -103,9 +102,9 @@ test:
   stage: quality
   image: alpine:latest
   variables:
-    TEST_REVISION: "${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}"
-    TEST_TOKEN: "zspdHMbuc1EShADrYxSu"
-    TEST_URL: "https://gitlab.ci.dydu-priv.com/api/v4/projects/402"
+    TEST_REVISION: '${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}'
+    TEST_TOKEN: 'zspdHMbuc1EShADrYxSu'
+    TEST_URL: 'https://gitlab.ci.dydu-priv.com/api/v4/projects/402'
   before_script:
     - apk add git openssh-client curl jq
     - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
@@ -163,5 +162,3 @@ test:
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - pack
-
-...
