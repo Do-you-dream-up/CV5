@@ -45,12 +45,13 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
     const allowedFormatTargeted = ALLOWED_FORMAT.includes(file.type);
     const fileSize = getFileSize(file);
 
-    if (allowedFormatTargeted && fileSize <= 100) setErrorFormatMessage('');
-    else if (!allowedFormatTargeted && fileSize > 100) setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
+    if (allowedFormatTargeted && fileSize <= 10000) setErrorFormatMessage('');
+    else if (!allowedFormatTargeted && fileSize > 10000)
+      setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
     else if (!allowedFormatTargeted) setErrorFormatMessage(t('uploadFile.errorFormatMessage'));
     else setErrorFormatMessage(t('uploadFile.errorSizeMessage'));
 
-    return allowedFormatTargeted && fileSize <= 100;
+    return allowedFormatTargeted && fileSize <= 10000;
   }, []);
 
   const onSelectFile = (file, inputRef) => (validateFile?.(file), setSelected(file), setInputRef(inputRef));
