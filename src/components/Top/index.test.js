@@ -20,13 +20,13 @@ jest.mock('../../contexts/EventsContext', () => ({
   useEvent: jest.fn(),
 }));
 describe('Top', () => {
-  xit('should not render component when items does not exist', () => {
+  it('should not render component when items does not exist', () => {
     useDialog.mockReturnValue({ items: {} });
     useEvent.mockReturnValue({
       onEvent: jest.fn(),
     });
-    const { getByTestId } = render(<Top className="coucou" />);
-    expect(getByTestId('dyduTopItems')).not.toBeInTheDocument();
+    const { container } = render(<Top />);
+    expect(container.firstChild).toBeNull();
   });
 
   it('should call onEvent method', async () => {
