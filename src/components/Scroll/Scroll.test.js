@@ -2,8 +2,7 @@ import '@testing-library/jest-dom';
 
 import { render, screen } from '@testing-library/react';
 
-import Scroll from './';
-import userEvent from '@testing-library/user-event';
+import Scroll from './Scroll';
 
 describe('Scroll', () => {
   it('should scroll to the bottom of the chatbox when rendered', () => {
