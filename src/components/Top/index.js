@@ -20,7 +20,7 @@ export default function Top({ className, component, ...rest }) {
 
   const onAskHandler = (reword) => {
     event('topClicked', reword);
-    window.dydu.chat.ask(reword, { type: 'redirection_knowledge' });
+    window.dydu?.chat?.ask(reword, { type: 'redirection_knowledge' });
   };
 
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function Top({ className, component, ...rest }) {
                     children={item?.reword}
                     onClick={onAsk}
                     tabIndex="0"
+                    data-testId="dyduTopItems"
                   />
                 </li>
               )
