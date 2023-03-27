@@ -4,8 +4,8 @@
     "languages": ["fr"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
-    "cdn": "https://cdn.doyoudreamup.com/",
-    "directory": "development/"
+    "cdn": "https://cdn.doyoudreamup.com/chatbox/",
+    "directory": "fix_RDS-3571_oidc_refesh/"
   },
   "avatar": {
     "response": {
