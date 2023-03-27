@@ -1,16 +1,18 @@
-import { JSDOM } from 'jsdom';
-import React from 'react';
-import { render } from '@testing-library/react';
-import { DialogContext } from './contexts/DialogContext';
-import { ConfigurationContext } from './contexts/ConfigurationContext';
-import { isDefined } from './tools/helpers';
-import { JssProvider, ThemeProvider } from 'react-jss';
-import theme from '../public/override/theme.json';
+import '../src/tools/prototypes/strings';
+import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
 
-const config = {
-  url: 'https://www.example.com/',
-  domain: 'example.com',
-};
+import fetchMock from 'jest-fetch-mock';
+fetchMock.enableMocks();
+
+import { JssProvider, ThemeProvider } from 'react-jss';
+
+import { ConfigurationContext } from './contexts/ConfigurationContext';
+import { DialogContext } from './contexts/DialogContext';
+import React from 'react';
+import { isDefined } from './tools/helpers';
+import { render } from '@testing-library/react';
+import theme from '../public/override/theme.json';
 
 export const contextName = {
   dialogContext: 'dialogContext',
@@ -87,25 +89,3 @@ const _render = (ui, options = { renderOptions: {}, contexts: [] }) => {
 };
 
 export { _render as render };
-
-class LocalStorageMock {
-  constructor() {
-    this.store = {};
-  }
-
-  clear() {
-    this.store = {};
-  }
-
-  getItem(key) {
-    return this.store[key] || null;
-  }
-
-  setItem(key, value) {
-    this.store[key] = String(value);
-  }
-
-  removeItem(key) {
-    delete this.store[key];
-  }
-}

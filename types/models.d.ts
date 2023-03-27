@@ -41,6 +41,16 @@ declare namespace Models {
     welcome: Welcome;
   }
 
+  export interface AuthConfig {
+    clientId: string;
+    clientSecret: string;
+    pkceActive: boolean;
+    pkceMode: string;
+    authUrl: string;
+    tokenUrl: string;
+    scope: string[];
+  }
+
   export interface Voice {
     enable: boolean;
     ssml: string;

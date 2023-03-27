@@ -10,7 +10,7 @@ import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import { isDefined } from 'src/tools/helpers';
+import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';

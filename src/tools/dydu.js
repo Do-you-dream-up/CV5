@@ -45,7 +45,6 @@ let BOT = {},
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
-
   const getBackUpServerUrl = (botConf = {}) => {
     const rootUrl = {
       app1: 'app1',
@@ -91,7 +90,7 @@ let BOT = {},
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
 
-  Local.set(Local.names.botId, BOT.id);
+  Local.set(Local.names?.botId, BOT.id);
 
   protocol = 'https';
 
@@ -421,12 +420,7 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    try {
-      return Local.contextId.createKey(this.getBotId(), BOT.configId);
-    } catch (e) {
-      console.error(e);
-      return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
-    }
+    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
   }
 
   getContextIdFromLocalStorage() {
@@ -540,8 +534,8 @@ export default new (class Dydu {
         });
       }
     }
-    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
-    Local.set(Local.names.space, this.space);
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces?.items[0];
+    Local.set(Local.names?.space, this.space);
     return this.space;
   };
 
@@ -703,12 +697,12 @@ export default new (class Dydu {
   };
 
   processTalkResponse = (talkResponse) => {
-    this.handleSpaceWithResponseWithTalkResponse(talkResponse);
+    this.handleSpaceWithTalkResponse(talkResponse);
     this.handleKnownledgeQuerySurveyWithTalkResponse(talkResponse);
     return talkResponse;
   };
 
-  handleSpaceWithResponseWithTalkResponse(response) {
+  handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) this.setSpace(guiCSName);
     return response;
@@ -1081,7 +1075,7 @@ export default new (class Dydu {
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
-      console.info('Error while initializing locale, fallback to browser locale');
+      console.info('Error while initializing locale, fallback to browser locale', e);
       this.setLocale(locale, configuration.application.languages).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });

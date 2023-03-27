@@ -14,7 +14,7 @@ let api = null;
 let handleSurvey = null;
 let showUploadFileButton = null;
 
-const saveConfiguration = (configuration) => {
+export const saveConfiguration = (configuration) => {
   onOperatorWriting = configuration.showAnimationOperatorWriting;
   displayResponse = configuration.displayResponseText;
   displayNotification = configuration.displayNotification;
@@ -24,12 +24,12 @@ const saveConfiguration = (configuration) => {
   showUploadFileButton = configuration.showUploadFileButton;
 };
 
-const RESPONSE_TYPE = {
+export const RESPONSE_TYPE = {
   notification: 'notification',
   message: 'message',
 };
 
-const typeToChecker = {
+export const typeToChecker = {
   [RESPONSE_TYPE.message]: (response) => {
     return isDefined(response) && isDefined(response?.text) && isDefined(response?.fromDetail);
   },
@@ -57,13 +57,14 @@ const responseToLivechatPayload = (r) => ({
   values: { ...r },
 });
 
-const typeToHandler = {
+export const typeToHandler = {
   [RESPONSE_TYPE.message]: (response) => {
     const { text } = response;
     displayResponse(text);
   },
   [RESPONSE_TYPE.notification]: (response) => {
     const notification = responseToLivechatPayload(response);
+
     notification.type = 'notification';
 
     if (LivechatPayload.is.operatorWriting(notification)) return onOperatorWriting();
@@ -79,7 +80,7 @@ const typeToHandler = {
   },
 };
 
-const getType = (response) => {
+export const getType = (response) => {
   let res = TYPE_NAME_LIST.reduce((typeNameResult, typeName) => {
     if (!isEmptyString(typeNameResult)) return typeNameResult; // already found type
     if (typeToChecker[typeName](response)) return typeName; // just found the type
@@ -90,7 +91,7 @@ const getType = (response) => {
   return res;
 };
 
-const getHandler = (response) => {
+export const getHandler = (response) => {
   const type = getType(response);
   if (!isDefined(type)) return null;
   return typeToHandler[type];

@@ -4,7 +4,7 @@ import { asset, isDefined, isOfTypeObject, isOfTypeString } from '../../tools/he
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Avatar from '../Avatar/Avatar';
-import AvatarsMatchingRequest from '../AvatarsMatchingRequest';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
 import Bubble from '../Bubble';
 import Carousel from '../Carousel/Carousel';
 import DotLoader from 'react-spinners/BeatLoader';
@@ -132,15 +132,15 @@ export default function Interaction({
     displayNameUser: avatarDisplayUser,
     NameUser,
     NameBot,
+    loader,
   } = configuration.interaction;
 
   const defaultAvatar = configuration.avatar?.response?.image;
 
   const delay = useMemo(() => {
-    const { loader } = configuration.interaction;
     const [left, right] = Array.isArray(loader) ? loader : [loader, loader];
     return Math.floor(Math.random() * (~~right - ~~left)) + ~~left;
-  }, [configuration.interaction]);
+  }, [loader]);
 
   children = Array.isArray(children) ? children : [children];
 

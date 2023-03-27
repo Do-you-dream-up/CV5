@@ -1,13 +1,13 @@
 import Actions from '../Actions/Actions';
+import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useState } from 'react';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
-import Icon from '../Icon/Icon';
-import icons from '../../tools/icon-constants';
 /**
  * Base form component.
  *
@@ -54,6 +54,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       secondary: true,
       spin: thinking,
       type: 'cancel',
+      testId: 'cancel',
     },
     {
       children: t('form.submit'),
@@ -61,13 +62,14 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       icon: getSubmitIcon,
       spin: thinking,
       type: 'form.submit',
+      testId: 'form.submit',
     },
   ];
 
   return (
-    <form className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
+    <form data-testid="dydu-form" className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
       <div children={children({ data, onChange })} className={classes.body} />
-      <Actions actions={actions} className={c('dydu-form-actions', classes.actions)} />
+      <Actions data-testid="form-actions" actions={actions} className={c('dydu-form-actions', classes.actions)} />
     </form>
   );
 }

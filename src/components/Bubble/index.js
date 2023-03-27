@@ -1,7 +1,7 @@
-import { createElement, useCallback, useContext, useEffect } from 'react';
+import { createElement, useCallback, useEffect } from 'react';
 
 import Actions from '../Actions/Actions';
-import { DialogContext } from '../../contexts/DialogContext';
+import { useDialog } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
 import Progress from '../Progress';
@@ -37,7 +37,7 @@ export default function Bubble({
   const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
-  const { secondaryActive, toggleSecondary } = useContext(DialogContext);
+  const { secondaryActive, toggleSecondary } = useDialog();
   const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
@@ -52,7 +52,7 @@ export default function Bubble({
 
   const onToggle = useCallback(
     (open) => {
-      toggleSecondary(open, { body: sidebar.content, ...sidebar })();
+      toggleSecondary && toggleSecondary(open, { body: sidebar.content, ...sidebar })();
     },
     [sidebar, toggleSecondary],
   );
@@ -100,7 +100,7 @@ Bubble.propTypes = {
   component: PropTypes.elementType,
   history: PropTypes.bool,
   html: PropTypes.string,
-  secondary: PropTypes.object,
+  secondary: PropTypes.bool,
   step: PropTypes.object,
   templateName: PropTypes.string,
   thinking: PropTypes.bool,

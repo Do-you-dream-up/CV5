@@ -13,6 +13,7 @@ import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';
 import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
+import { useConfiguration } from '../contexts/ConfigurationContext';
 import { useDialog } from '../contexts/DialogContext';
 import { useEvent } from '../contexts/EventsContext';
 
@@ -37,10 +38,11 @@ const SurveyContext = createContext<SurveyContextProps>({});
 
 export default function SurveyProvider({ children }: SurveyProviderProps) {
   const { getChatboxRef, isChatboxLoadedAndReady } = useEvent();
+  const { secondaryActive, openSecondary, closeSecondary } = useDialog();
+  const { configuration } = useConfiguration();
   const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
   const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
-  const { secondaryActive, openSecondary, closeSecondary } = useDialog();
 
   const flushStates = useCallback(() => {
     setInstances(null);
@@ -53,7 +55,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, []);
 
   const secondaryWidth = useMemo(() => {
-    return getChatboxRef && isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4) : -1;
+    const secondaryMaxWidth = configuration?.secondary?.width;
+    return getChatboxRef && isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4, secondaryMaxWidth) : -1;
   }, [isChatboxLoadedAndReady, getChatboxRef]);
 
   const flushStatesAndClose = useCallback(() => {

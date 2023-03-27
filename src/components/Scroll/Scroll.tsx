@@ -37,7 +37,7 @@ function Scroll({ component = 'div', delay = 0, ...rest }: ScrollProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedReady]);
 
-  return createElement(component, { ...rest, ref: elementRef });
+  return createElement(component, { ...rest, ref: elementRef, 'data-testid': 'Scroll' });
 }
 
 export default Scroll;
