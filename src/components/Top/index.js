@@ -1,12 +1,12 @@
 import { createElement, useContext, useEffect } from 'react';
 
-import { EventsContext } from '../../contexts/EventsContext';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { isEmptyArray } from '../../tools/helpers';
 import { useDialog } from '../../contexts/DialogContext';
+import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 
 /**
@@ -14,13 +14,13 @@ import useStyles from './styles';
  */
 export default function Top({ className, component, ...rest }) {
   const { topList: items = [] } = useDialog();
-  const event = useContext(EventsContext).onEvent('top');
+  const event = useEvent().onEvent('top');
   const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles();
 
   const onAskHandler = (reword) => {
     event('topClicked', reword);
-    window.dydu.chat.ask(reword, { type: 'redirection_knowledge' });
+    window.dydu?.chat?.ask(reword, { type: 'redirection_knowledge' });
   };
 
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function Top({ className, component, ...rest }) {
                     children={item?.reword}
                     onClick={onAsk}
                     tabIndex="0"
+                    data-testId="dyduTopItems"
                   />
                 </li>
               )
