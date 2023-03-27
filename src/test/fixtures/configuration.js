@@ -354,6 +354,11 @@ export class ConfigurationFixture {
     return this;
   }
 
+  setEventsToTrue() {
+    this.getConfiguration().events.active = true;
+    return this;
+  }
+
   updateSpaceDetectionMode(detectionModeObject) {
     this.getSpaceConfig().detection = this.getSpaceConfig().detection.map((detectionModeItem) => {
       if (detectionModeItem.mode === detectionModeObject.mode)
