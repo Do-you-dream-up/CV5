@@ -33,7 +33,7 @@ export default function useAuthorizeRequest(configuration) {
   }, []);
 
   useEffect(() => {
-    if (authorizeDone) {
+    if (authorizeDone && currentLocationContainsCodeParameter()) {
       const urlObj = new URL(window.location.href);
 
       urlObj.search = '';
