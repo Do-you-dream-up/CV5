@@ -168,15 +168,10 @@ export default new (class Dydu {
   }
 
   handleTokenRefresh = () => {
-    console.log(
-      '🚀 ~ file: dydu.js:173 ~ Dydu ~ Storage.loadToken()?.refresh_token:',
-      Storage.loadToken()?.refresh_token,
-    );
     if (this.getConfiguration()?.oidc?.enable) {
       if (Storage.loadToken()?.refresh_token) {
         this.tokenRefresher();
       } else {
-        console.log('🚀 ~ file: dydu.js:177 ~ Dydu ~ Storage: No refresh > Storage.clearToken');
         Storage.clearToken();
         this.oidcLogin();
       }
