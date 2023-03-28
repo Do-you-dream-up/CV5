@@ -13,7 +13,7 @@ import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 import dydu from '../../../tools/dydu';
 import { useConfiguration } from '../../../contexts/ConfigurationContext';
-import { useInterval } from 'react-use';
+import { useHarmonicIntervalFn } from 'react-use';
 
 export default function useTokenRequest(configuration) {
   const [error, setError] = useState(false);
@@ -90,7 +90,8 @@ export default function useTokenRequest(configuration) {
     }
   }, [currentToken, fetchToken]);
 
-  useInterval(() => {
+  useHarmonicIntervalFn(() => {
+    console.log('🚀 ~ file: useTokenRequest.js:95 ~ useInterval ~ oidc?.enable:', oidc?.enable);
     if (oidc?.enable) {
       console.log('/* FETCH TOKEN Interval */');
       fetchToken();
