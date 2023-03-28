@@ -12,12 +12,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 import dydu from '../../../tools/dydu';
-import { useTimeoutFn } from 'react-use';
+import { useConfiguration } from '../../../contexts/ConfigurationContext';
+import { useInterval } from 'react-use';
 
 export default function useTokenRequest(configuration) {
   const [error, setError] = useState(false);
   const [currentToken, setCurrentToken] = useState(null);
   const [tokenRetries, setTokenRetries] = useState(0);
+  const { oidc } = useConfiguration();
 
   let { tokenUrl, pkceActive } = configuration;
 
@@ -88,7 +90,12 @@ export default function useTokenRequest(configuration) {
     }
   }, [currentToken, fetchToken]);
 
-  useTimeoutFn(fetchToken, 1000);
+  useInterval(() => {
+    if (oidc?.enable) {
+      console.log('/* FETCH TOKEN Interval */');
+      fetchToken();
+    }
+  }, 10000);
 
   return {
     fetchToken,
