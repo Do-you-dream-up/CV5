@@ -23,8 +23,8 @@ export default function useAuthorizeRequest(configuration) {
     const url = new URL(window.location.href);
     url.searchParams.delete('code');
     url.searchParams.delete('error');
-    url.searchParams.delete('state');
-    url.searchParams.delete('session_state');
+    // url.searchParams.delete('state');
+    // url.searchParams.delete('session_state');
     window.history.replaceState(null, '', url);
   };
 
