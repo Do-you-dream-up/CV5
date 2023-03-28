@@ -106,7 +106,7 @@
   "modal": { "maxWidth": "80%", "minWidth": "50%" },
   "moreOptions": { "exportConversation": false, "printConversation": false, "sendGdprData": true },
   "oidc": {
-    "enable": true,
+    "enable": false,
     "scopes": ["openid"],
     "clientSecret": "",
     "pkceActive": true,
