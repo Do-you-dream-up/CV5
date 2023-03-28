@@ -22,11 +22,6 @@ export default function useAuthorizeRequest(configuration) {
   useEffect(() => {
     if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) {
       setAuthorizeDone(true);
-
-      const urlObj = new URL(window.location.href);
-
-      urlObj.search = '';
-      window.location.href = new URL(urlObj).toString();
     } else if (currentLocationContainsError()) {
       Storage.clearPkce();
       setError(true);
@@ -36,6 +31,15 @@ export default function useAuthorizeRequest(configuration) {
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (authorizeDone) {
+      const urlObj = new URL(window.location.href);
+
+      urlObj.search = '';
+      window.location.href = new URL(urlObj).toString();
+    }
+  }, [authorizeDone]);
 
   const authorize = useCallback(async () => {
     const pkce = loadPkce();
