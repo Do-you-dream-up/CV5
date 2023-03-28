@@ -81,7 +81,10 @@ export default function useTokenRequest(configuration) {
     const token = currentToken || Storage.loadToken();
     if (token) {
       Storage.saveToken(token);
-      token?.refresh_token && dydu.setTokenRefresher(fetchToken);
+      if (token?.refresh_token) {
+        dydu.setTokenRefresher(fetchToken);
+        setInterval(fetchToken, 10000); // Call the function every minute (you can adjust the interval as needed)
+      }
     }
   }, [currentToken, fetchToken]);
 
