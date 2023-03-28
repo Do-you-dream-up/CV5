@@ -36,6 +36,9 @@ export default function useAuthorizeRequest(configuration) {
     if (authorizeDone && currentLocationContainsCodeParameter()) {
       const url = new URL(window.location.href);
       url.searchParams.delete('code');
+      url.searchParams.delete('error');
+      url.searchParams.delete('state');
+      url.searchParams.delete('session_state');
       window.history.replaceState(null, '', url);
     }
   }, [authorizeDone]);
