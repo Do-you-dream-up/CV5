@@ -20,7 +20,8 @@ unit_test:
     paths:
       - node_modules/
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat)_.*/'
+   # - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
 
