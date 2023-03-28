@@ -1,8 +1,8 @@
+import { documentCreateElement, isDefined } from '../../tools/helpers';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Button } from '../../styles/styledComponent';
 import Scroll from '../Scroll/Scroll';
-import { isDefined } from '../../tools/helpers';
 import useId from '../../tools/hooks/useId';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
@@ -38,8 +38,7 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
       const file = extractFileFromEvent?.(event);
       const hasUserCanceledFileSelection = !isDefined(file?.name);
       if (hasUserCanceledFileSelection) {
-        setDisable(false);
-        return;
+        throw new Error('error while cancel selection');
       }
       setDisable(true);
       processUserFileSelection(file);
@@ -47,15 +46,12 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
     [defaultLabel, onSelectFile, processUserFileSelection],
   );
 
-  const openFileonClick = () => {
-    const input = document.createElement('input');
-    input.setAttribute('id', inputId);
-    input.setAttribute('type', 'file');
-    input.setAttribute('hidden', 'true');
+  const openFileonClick = useCallback(() => {
+    const input = documentCreateElement('input', { id: inputId, type: 'file', hidden: 'true' });
     input.onchange = onSelect;
     inputRef.current = input;
     input.click();
-  };
+  }, [onSelect]);
 
   return (
     <Scroll>
