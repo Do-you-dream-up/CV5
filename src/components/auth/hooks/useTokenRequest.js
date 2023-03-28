@@ -83,9 +83,12 @@ export default function useTokenRequest(configuration) {
       Storage.saveToken(token);
       if (token?.refresh_token) {
         dydu.setTokenRefresher(fetchToken);
-        console.log('token', token);
-        setInterval(fetchToken, 10000); // Call the function every minute (you can adjust the interval as needed)
       }
+      const interval = setTimeout(() => {
+        /** Set Interval to fetch token */
+        fetchToken();
+      }, 10000);
+      return () => setTimeout(interval);
     }
   }, [currentToken, fetchToken]);
 
