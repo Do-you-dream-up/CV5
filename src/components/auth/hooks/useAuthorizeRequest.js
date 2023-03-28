@@ -34,10 +34,9 @@ export default function useAuthorizeRequest(configuration) {
 
   useEffect(() => {
     if (authorizeDone && currentLocationContainsCodeParameter()) {
-      const urlObj = new URL(window.location.href);
-
-      urlObj.search = '';
-      window.location.href = new URL(urlObj).toString();
+      const url = new URL(window.location.href);
+      url.searchParams.delete('code');
+      window.history.replaceState(null, '', url);
     }
   }, [authorizeDone]);
 
