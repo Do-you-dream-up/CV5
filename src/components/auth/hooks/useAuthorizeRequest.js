@@ -20,8 +20,14 @@ export default function useAuthorizeRequest(configuration) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) setAuthorizeDone(true);
-    else if (currentLocationContainsError()) {
+    if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) {
+      setAuthorizeDone(true);
+
+      const urlObj = new URL(window.location.href);
+
+      urlObj.search = '';
+      window.location.href = new URL(urlObj).toString();
+    } else if (currentLocationContainsError()) {
       Storage.clearPkce();
       setError(true);
       throw new Error(
