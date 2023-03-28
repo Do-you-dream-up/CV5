@@ -147,7 +147,7 @@
     "actions": {
       "send": "Envoie",
       "counterRemaining": "caractères restants",
-      "reupload": "Reupload",
+      "reupload": "Remplacer le fichier à télécharger",
       "record": {
         "pause": "Pause",
         "play": "Lire",
@@ -210,10 +210,12 @@
     "title": "Questions les plus posées :"
   },
   "uploadFile": {
-    "errorFormatAndSizeMessage": "La taille du document est trop élevée et format invalide",
-    "errorFormatMessage": "Le format selectionné n'est pas autorisé",
-    "errorSizeMessage": "La taille du document est trop élevée, Max 100ko",
-    "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été reçu",
+    "send": "Envoyer ce fichier",
+    "label": "Télécharger un fichier",
+    "errorFormatAndSizeMessage": "La taille du fichier est trop élevée et le format n'est pas accepté",
+    "errorFormatMessage": "Le format du fichier n'est pas accepté",
+    "errorSizeMessage": "La taille du fichier est trop élevée (max accepté 100 Mo)",
+    "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été envoyé !",
     "errorMessage": "Erreur, votre fichier n'a pas été envoyé."
   },
   "survey": {

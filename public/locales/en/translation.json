@@ -150,7 +150,7 @@
     "actions": {
       "send": "Send",
       "counterRemaining": "remaining characters",
-      "reupload": "Reupload",
+      "reupload": "Replace file to download",
       "record": {
         "pause": "Pause",
         "play": "Play",
@@ -216,10 +216,12 @@
     "title": "Top-asked questions:"
   },
   "uploadFile": {
-    "errorFormatAndSizeMessage": "Document size is too large and invalid format",
-    "errorFormatMessage": "The selected format is not allowed",
-    "errorSizeMessage": "The document size is too high, Max 100kB",
-    "sentMessage": "Your document <strong>{{name}}</strong> has been received",
+    "send": "Send this file",
+    "label": "Upload a file",
+    "errorFormatAndSizeMessage": "The file size is too large and the format is not accepted",
+    "errorFormatMessage": "The file format is not accepted",
+    "errorSizeMessage": "The file size is too large (max accepted 100 Mo)",
+    "sentMessage": "Your file <strong>{{name}}</strong> has been sent successfully!",
     "errorMessage": "Error, your document has not been sent."
   },
   "survey": {

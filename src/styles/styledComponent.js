@@ -45,16 +45,21 @@ export const FileUploadContainer = styled.div`
   padding: 0 1em;
   .overflow-hidden {
     display: -webkit-box;
+    max-width: 300px;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .name-file {
+    max-width: 300px;
+    display: block;
     color: rgb(65, 71, 155);
     background: transparent;
     border-color: rgb(65, 71, 155);
     border-width: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .size-file {
     color: lightgrey;

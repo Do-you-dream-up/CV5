@@ -51,7 +51,7 @@ const UploadInput = () => {
   const renderFileInfo = () =>
     isDefined(fileSelected) && (
       <>
-        <span className="overflow-hidden name-file">{fileName} </span>
+        <span className="name-file">{fileName} </span>
         <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
         {errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>}
       </>

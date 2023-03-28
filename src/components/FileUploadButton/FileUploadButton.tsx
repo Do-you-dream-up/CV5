@@ -1,9 +1,10 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { Button } from '../../styles/styledComponent';
 import Scroll from '../Scroll/Scroll';
 import { isDefined } from '../../tools/helpers';
 import useId from '../../tools/hooks/useId';
+import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 
 interface FileUploadButtonProps {
@@ -12,7 +13,9 @@ interface FileUploadButtonProps {
   keepActive?: boolean;
 }
 
-export default function FileUploadButton({ label = 'upload' }: FileUploadButtonProps) {
+export default function FileUploadButton({ label }: FileUploadButtonProps) {
+  const [t] = useTranslation('translation');
+  const defaultLabel = useMemo(() => label || t('uploadFile.label'), [label]);
   const inputRef = useRef<any>(null);
 
   const { onSelectFile, extractFileFromEvent } = useUploadFile();
@@ -36,7 +39,7 @@ export default function FileUploadButton({ label = 'upload' }: FileUploadButtonP
       if (hasUserCanceledFileSelection) return;
       processUserFileSelection(file);
     },
-    [label, onSelectFile, processUserFileSelection],
+    [defaultLabel, onSelectFile, processUserFileSelection],
   );
 
   const openFileonClick = () => {
@@ -52,7 +55,7 @@ export default function FileUploadButton({ label = 'upload' }: FileUploadButtonP
   return (
     <Scroll>
       <Button data-testid="file-upload-button" onClick={openFileonClick}>
-        {label}
+        {defaultLabel}
       </Button>
     </Scroll>
   );
