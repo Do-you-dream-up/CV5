@@ -48,8 +48,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   useEffect(() => {
     if (active && enable) event?.('onboardingDisplay');
   }, [active, enable, event]);
-  console.log('steps', steps);
-  console.log('steps[index]', steps[index].title);
+
   if (!enable || !active) return children;
   if (should)
     return (
