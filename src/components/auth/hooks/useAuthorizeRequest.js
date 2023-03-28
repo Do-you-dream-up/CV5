@@ -19,29 +19,29 @@ export default function useAuthorizeRequest(configuration) {
   const [authorizeDone, setAuthorizeDone] = useState(false);
   const [error, setError] = useState(false);
 
+  const cleanUrl = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('code');
+    url.searchParams.delete('error');
+    url.searchParams.delete('state');
+    url.searchParams.delete('session_state');
+    window.history.replaceState(null, '', url);
+  };
+
   useEffect(() => {
     if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) {
       setAuthorizeDone(true);
+      cleanUrl();
     } else if (currentLocationContainsError()) {
       Storage.clearPkce();
       setError(true);
+      cleanUrl();
       throw new Error(
         'authorization request error, aborting process',
         extractParamFromUrl(['error', 'error_description']),
       );
     }
   }, []);
-
-  useEffect(() => {
-    if (authorizeDone && currentLocationContainsCodeParameter()) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('code');
-      url.searchParams.delete('error');
-      url.searchParams.delete('state');
-      url.searchParams.delete('session_state');
-      window.history.replaceState(null, '', url);
-    }
-  }, [authorizeDone]);
 
   const authorize = useCallback(async () => {
     const pkce = loadPkce();
