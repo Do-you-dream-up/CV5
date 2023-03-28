@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 import dydu from '../../../tools/dydu';
+import { useTimeoutFn } from 'react-use';
 
 export default function useTokenRequest(configuration) {
   const [error, setError] = useState(false);
@@ -84,13 +85,10 @@ export default function useTokenRequest(configuration) {
       if (token?.refresh_token) {
         dydu.setTokenRefresher(fetchToken);
       }
-      const interval = setTimeout(() => {
-        /** Set Interval to fetch token */
-        fetchToken();
-      }, 10000);
-      return () => setTimeout(interval);
     }
   }, [currentToken, fetchToken]);
+
+  useTimeoutFn(fetchToken, 1000);
 
   return {
     fetchToken,
