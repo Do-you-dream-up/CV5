@@ -21,6 +21,8 @@ import { useTranslation } from 'react-i18next';
 interface InputProps {
   onRequest?: (input: string) => void;
   onResponse?: (input: Servlet.ChatResponseValues) => void;
+  focus?: () => void;
+  id?: string;
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {

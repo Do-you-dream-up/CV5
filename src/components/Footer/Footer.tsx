@@ -56,6 +56,7 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
           alt={actionTranslate}
           src={`${process.env.PUBLIC_URL}flags/${selectedLanguage}.png`}
           title={actionTranslate}
+          className="language-selector-icon"
         />
       ),
       items: () => languagesMenu,
@@ -70,14 +71,19 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
       <UploadInput />
     ) : (
       <div className={classes.content}>
-        <Input onRequest={onRequest} onResponse={onResponse} />
+        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
       </div>
     );
 
   return (
     <>
       <div className={c('dydu-footer', classes.root)} {...rest}>
-        <Actions actions={actions} className={c('dydu-footer-actions', classes.actions)} />
+        <Actions
+          actions={actions}
+          className={c('dydu-footer-actions', classes.actions)}
+          testId="dydu-language-selector"
+          id="dydu-language-selector"
+        />
         {renderInput()}
       </div>
     </>

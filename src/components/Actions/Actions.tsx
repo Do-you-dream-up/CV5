@@ -37,6 +37,7 @@ export interface ActionsProps {
   className?: string;
   targetStyleKey?: string;
   testId?: string;
+  id?: string;
   role?: string;
 }
 
