@@ -7,6 +7,7 @@ module.exports = (env) =>
   Merge.smart(common(env), {
     devServer: {
       compress: true,
+      allowedHosts: 'all',
       static: {
         directory: Path.resolve(__dirname, 'public'),
       },
