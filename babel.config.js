@@ -6,7 +6,7 @@ module.exports = (api) => {
   if (process.env["NODE_ENV"] === "production") {
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
   }
-  console.log("🚀 ~ file: babel.config.js:7 ~ process.env", process.env["ENV"])
+  console.log("🚀 ~ file: babel.config.js:7 ~ process.env", process.env["NODE_ENV"])
   console.log("🚀 ~ file: babel.config.js:8 ~ plugins:", plugins)
 
   return {
