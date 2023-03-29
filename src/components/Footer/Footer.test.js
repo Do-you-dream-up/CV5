@@ -1,4 +1,4 @@
-import Footer from './';
+import Footer from './Footer';
 import { render } from '../../tools/test-utils';
 
 describe('Footer', () => {
