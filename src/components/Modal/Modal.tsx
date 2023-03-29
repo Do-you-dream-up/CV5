@@ -34,7 +34,7 @@ export default function Modal() {
   }, [onDismiss, Component]);
 
   return Component ? (
-    <div className={c('dydu-modal-overlay', classes.root)} onClick={onDismiss}>
+    <div className={c('dydu-modal-overlay', classes.root)} role="presentation" onClick={onDismiss}>
       <Component
         className={c('dydu-modal', classes[variant])}
         component={Paper}
