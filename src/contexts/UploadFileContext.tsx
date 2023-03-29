@@ -13,7 +13,7 @@ interface UploadFileContextProps {
   validateFile?: (file: File) => void;
   onSelectFile?: (file: File, inputRef: any) => void;
   errorFormatMessage?: string | null;
-  showButtonUploadFile: boolean;
+  showButtonUploadFile?: boolean;
   getFileSize?: (file: File) => number;
   extractFileFromEvent?: (event: any) => File;
   handleCancel?: () => void;
