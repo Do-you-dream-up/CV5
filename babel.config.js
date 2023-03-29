@@ -3,7 +3,8 @@ module.exports = (api) => {
 
   const plugins = ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'];
 
-  if (process.env.GITLAB_CI) {
+  console.log("🚀 ~ file: babel.config.js:7 ~ process.env:", process.env)
+  if (process.env.STAGE_STEP == 'build') {
     /** Add plugin packages for build process */
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
   }

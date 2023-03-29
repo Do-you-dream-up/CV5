@@ -30,6 +30,7 @@ build:
   variables:
     CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
     CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
+    STAGE_STEP: "build"
   script:
     - npm run build
   cache:
