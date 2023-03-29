@@ -2,10 +2,10 @@ import { useContext, useEffect } from 'react';
 
 import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
-import { OnboardingContext } from '../../contexts/OnboardingContext';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useOnboarding } from '../../contexts/OnboardingContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -31,8 +31,7 @@ interface Steps {
 
 export default function Onboarding({ children, render }: OnboardingProps) {
   const { configuration } = useConfiguration();
-  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } =
-    useContext(OnboardingContext) || {};
+  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } = useOnboarding();
   const event = useContext?.(EventsContext)?.onEvent?.('onboarding');
   const classes = useStyles({ configuration });
   const { t, ready } = useTranslation('translation');
@@ -78,6 +77,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
               {steps &&
                 steps?.map((_, i) => (
                   <div
+                    data-testId={`testid-${i.toString()}`}
                     className={c('dydu-carousel-bullet', {
                       [classes.active]: i === index,
                     })}
@@ -92,6 +92,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           )}
           <div className={c('dydu-onboarding-buttons', classes.buttons)}>
             <Button
+              data-testId="previous"
               children={previous}
               disabled={!index}
               secondary={true}

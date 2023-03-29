@@ -34,15 +34,15 @@ export default createUseStyles((theme) => ({
         '&:focus': {
           textDecoration: 'underline',
         },
-        color: theme.palette.text.link || theme.palette.primary.main,
+        color: theme?.palette?.text?.link || theme?.palette?.primary?.main,
         cursor: 'pointer',
         textDecoration: 'none',
       },
       button: {
-        fontFamily: theme.font.sansSerif,
+        fontFamily: theme?.font?.sansSerif,
       },
       dd: {
-        color: theme.palette.text.primary,
+        color: theme?.palette?.text?.primary,
         marginLeft: '2em',
         textTransform: 'capitalize',
       },
@@ -51,11 +51,11 @@ export default createUseStyles((theme) => ({
         '&:last-child': { marginBottom: 0 },
       },
       dt: {
-        color: theme.palette.text.secondary,
+        color: theme?.palette?.text?.secondary,
         textTransform: 'capitalize',
       },
       'dt:not(:first-child)': {
-        color: theme.palette.text.secondary,
+        color: theme?.palette?.text?.secondary,
         marginTop: '1em',
       },
       'h1, h2, h3, h4, h5, h6': {
