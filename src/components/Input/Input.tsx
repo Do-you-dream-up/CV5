@@ -1,9 +1,8 @@
 import Actions, { ActionProps } from '../Actions/Actions';
 import { escapeHTML, isDefined } from '../../tools/helpers';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
-import { DialogContext } from '../../contexts/DialogContext';
 import Icon from '../Icon/Icon';
 import Voice from '../Voice';
 import c from 'classnames';
@@ -12,6 +11,7 @@ import icons from '../../tools/icon-constants';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
+import { useDialog } from '../../contexts/DialogContext';
 import { useEvent } from '../../contexts/EventsContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
@@ -29,12 +29,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent } = useEvent();
-  const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
+  const { disabled, locked, placeholder, autoSuggestionActive, prompt } = useDialog();
 
   const classes = useStyles();
   const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
   const [input, setInput] = useState<string>('');
-  const { prompt } = useContext(DialogContext);
+
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
@@ -97,6 +97,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             aria-expanded="false"
             disabled={prompt || locked}
             id={textareaId}
+            data-testId="textareaId"
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
@@ -211,9 +212,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const renderVoiceInput = useCallback(() => {
     return voice && counter === maxLength ? (
       <Voice show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
-    ) : (
-      counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
-    );
+    ) : null;
+  }, [voice, counter, maxLength]);
+
+  const renderSubmit = useCallback(() => {
+    return !voice
+      ? counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+      : null;
   }, [voice, counter, maxLength]);
 
   return (
@@ -229,8 +234,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         suggestions={suggestions}
         theme={theme}
         ref={containerRef}
+        data-testid="suggestId"
       />
       {renderVoiceInput()}
+      {renderSubmit()}
     </form>
   );
 }

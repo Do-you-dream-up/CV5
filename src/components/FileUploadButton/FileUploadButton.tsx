@@ -10,7 +10,7 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
 interface FileUploadButtonProps {
   onSelect?: () => void;
   label?: string;
-  disabled: boolean;
+  disabled?: boolean;
   keepActive?: boolean;
 }
 
