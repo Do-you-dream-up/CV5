@@ -3,11 +3,10 @@ module.exports = (api) => {
 
   const plugins = ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'];
 
-  if (process.env["NODE_ENV"] === "production") {
+  if (process.env.GITLAB_CI) {
+    /** Add plugin packages for build process */
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
   }
-  console.log("🚀 ~ file: babel.config.js:7 ~ process.env", process.env)
-  console.log("🚀 ~ file: babel.config.js:8 ~ plugins:", plugins)
 
   return {
     plugins,
