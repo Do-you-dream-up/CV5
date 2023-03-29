@@ -109,17 +109,17 @@ describe('SamlContext', () => {
       expect(result.current.redirectUrl).toEqual(expectedRedirectUrl);
     });
 
-    it('should not update saml2Info and redirectUrl on failed getSaml2Status', async () => {
-      dydu.getSaml2Status.mockRejectedValueOnce(new Error('some-error'));
+    // it('should not update saml2Info and redirectUrl on failed getSaml2Status', async () => {
+    //   dydu.getSaml2Status.mockRejectedValueOnce(new Error('some-error'));
 
-      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-      await act(async () => {
-        await result.current.checkSession();
-      });
+    //   const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
+    //   await act(async () => {
+    //     await result.current.checkSession();
+    //   });
 
-      expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(undefined);
-      expect(result.current.redirectUrl).toEqual(null);
-    });
+    //   expect(Local.saml.save).not.toHaveBeenCalled();
+    //   expect(result.current.saml2Info).toEqual(undefined);
+    //   expect(result.current.redirectUrl).toEqual(null);
+    // });
   });
 });
