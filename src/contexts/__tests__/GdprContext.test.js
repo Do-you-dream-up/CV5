@@ -81,7 +81,6 @@ describe('GdprProvider', () => {
         </GdprContext.Consumer>
       </GdprProvider>,
     );
-    renderResult.debug();
 
     // On clique sur le bouton
     fireEvent.click(renderResult.getByTestId('accept-button'));

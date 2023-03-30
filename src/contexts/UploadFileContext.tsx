@@ -29,7 +29,7 @@ interface UploadFileProviderProps {
 const UploadFileContext = createContext({} as UploadFileContextProps);
 export const useUploadFile = () => useContext(UploadFileContext);
 
-export default function UploadFileProvider({ children }: UploadFileProviderProps) {
+export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const [t] = useTranslation('translation');
   const { showUploadFileButton } = useDialog();
   const [selected, setSelected] = useState<File | null>(null);
@@ -100,4 +100,4 @@ export default function UploadFileProvider({ children }: UploadFileProviderProps
   );
 
   return <UploadFileContext.Provider value={dataContext}>{children}</UploadFileContext.Provider>;
-}
+};
