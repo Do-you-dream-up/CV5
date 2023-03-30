@@ -3,7 +3,6 @@ module.exports = (api) => {
 
   const plugins = ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'];
 
-  console.log("🚀 ~ file: babel.config.js:7 ~ process.env.npm_lifecycle_event:", process.env.npm_lifecycle_event)
   if (process.env.npm_lifecycle_event === 'build' || process.env.WEBPACK_SERVE === 'true') {
     /** Add plugin packages for build process */
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
@@ -11,7 +10,7 @@ module.exports = (api) => {
 
 
   return {
-    plugins: ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'],
+    plugins,
     presets: [
       [
         '@babel/preset-env',
