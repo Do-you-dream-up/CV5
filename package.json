@@ -15,6 +15,7 @@
     "axios": "^0.24.0",
     "babel-jest": "^29.3.1",
     "babel-plugin-react-remove-properties": "^0.3.0",
+    "babel-plugin-remove-object-properties": "^1.0.2",
     "bowser": "^2.9.0",
     "classnames": "^2.2.6",
     "core-js": "^3.8.3",
