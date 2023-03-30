@@ -8,6 +8,7 @@ module.exports = (api) => {
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
   }
 
+
   return {
     plugins: ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'],
     presets: [
