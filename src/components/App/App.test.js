@@ -1,5 +1,6 @@
 import App from './App';
-import { render } from '../../tools/test-utils';
+// import { render } from '../../tools/test-utils';
+import { render } from '@testing-library/react';
 import { useTranslation } from 'react-i18next';
 
 jest.mock('react-i18next', () => ({
@@ -7,19 +8,19 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('App', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  // beforeEach(() => {
+  //   jest.clearAllMocks();
 
-    const tSpy = jest.fn((str) => str);
-    const useTranslationSpy = useTranslation;
+  //   const tSpy = jest.fn((str) => str);
+  //   const useTranslationSpy = useTranslation;
 
-    useTranslationSpy.mockReturnValue({
-      t: tSpy,
-      i18n: {
-        language: 'en',
-      },
-    });
-  });
+  //   useTranslationSpy.mockReturnValue({
+  //     t: tSpy,
+  //     i18n: {
+  //       language: 'en',
+  //     },
+  //   });
+  // });
 
   test('Should render App component', async () => {
     const { container } = render(<App />);

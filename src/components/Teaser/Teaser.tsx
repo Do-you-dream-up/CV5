@@ -28,7 +28,7 @@ const TEASER_TYPES = {
 const Teaser = ({ open, toggle }: TeaserProps) => {
   const { configuration } = useConfiguration();
 
-  const event = useEvent()?.onEvent('teaser');
+  const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;

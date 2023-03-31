@@ -10,7 +10,7 @@ export default function useWelcomeKnowledge() {
 
   const { configuration } = useConfiguration();
   const { isLivechatOn } = useLivechat();
-  const tagWelcome = configuration.welcome?.knowledgeName || null;
+  const tagWelcome = configuration?.welcome?.knowledgeName || null;
 
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 

@@ -21,7 +21,7 @@ export default function useTopKnowledge() {
           return resolve();
         });
     });
-  }, [configuration.top]);
+  }, [configuration?.top]);
 
   return {
     fetch,

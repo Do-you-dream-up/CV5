@@ -38,8 +38,8 @@ export default createUseStyles<any, any>((theme: any): any => ({
     '&:focus': {
       boxShadow: '0px 6px 9px 0px rgba(86,86,86,0.52)',
     },
-    backgroundColor: theme.palette.primary.main,
-    borderRadius: theme.shape.radius.inner,
+    backgroundColor: theme?.palette?.primary?.main,
+    borderRadius: theme?.shape?.radius?.inner,
     boxSizing: 'border-box',
     height: 'fit-content',
     padding: [['.5em', '1em']],
@@ -60,16 +60,16 @@ export default createUseStyles<any, any>((theme: any): any => ({
   }),
   root: ({ configuration }) => ({
     alignItems: 'center',
-    bottom: configuration.teaser.bottom,
-    color: theme.palette.primary.text,
+    bottom: configuration?.teaser?.bottom,
+    color: theme?.palette?.primary?.text,
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
     position: 'fixed',
     zIndex: 10,
-    right: configuration.teaser.right,
+    right: configuration?.teaser?.right,
   }),
   backgroundAvatar: ({ color = 'primary' }) => ({
-    backgroundColor: `${theme.palette[color].main}33`,
+    backgroundColor: `${theme?.palette?.[color]?.main}33`,
   }),
 }));

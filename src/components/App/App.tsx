@@ -11,7 +11,7 @@ import { OidcProvider } from '../../contexts/OidcContext';
 import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser/Teaser';
-import UploadFileProvider from '../../contexts/UploadFileContext';
+import { UploadFileProvider } from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { hasWizard } from '../../tools/wizard';
