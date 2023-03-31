@@ -1,10 +1,9 @@
 import App from './App';
-// import { render } from '../../tools/test-utils';
-import { render } from '@testing-library/react';
+import { render } from '../../tools/test-utils';
 import { useTranslation } from 'react-i18next';
 
 jest.mock('react-i18next', () => ({
-  useTranslation: jest.fn(),
+  useTranslation: jest.fn().mockReturnValue({ t: jest.fn(), ready: false }),
 }));
 
 describe('App', () => {
