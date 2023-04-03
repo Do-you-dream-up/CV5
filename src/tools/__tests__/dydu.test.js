@@ -2,9 +2,9 @@
 import '../prototypes/strings';
 
 import { Cookie, Local } from '../storage';
+import { objectContainFields, objectToQueryParam, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
-import { objectContainFields, objectToQueryParam, secondsToMs, strContains } from '../helpers';
 import Storage from '../../components/auth/Storage';
 
 const _Local = jest.requireActual('../storage').Local;
@@ -1655,7 +1655,7 @@ describe('dydu.js', function () {
       dydu.handleTokenRefresh();
 
       // THEN
-      expect(dydu.oidcLogin).toHaveBeenCalled();
+      expect(dydu.oidcLogin).not.toHaveBeenCalled();
       jestRestoreMocked([loadTokenMock, dydu.tokenRefresher, dydu.oidcLogin]);
     });
   });

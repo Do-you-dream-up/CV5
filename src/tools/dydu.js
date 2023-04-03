@@ -169,7 +169,7 @@ export default new (class Dydu {
 
   handleTokenRefresh = () => {
     if (this.getConfiguration()?.oidc?.enable) {
-      if (Storage.loadToken()?.refresh_token) {
+      if (Storage.loadToken()?.refresh_token || this.triesCounter < 1) {
         this.tokenRefresher();
       } else {
         Storage.clearToken();
