@@ -24,7 +24,7 @@ const UploadInput = () => {
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
   const label = useMemo(
-    () => (!errorFormatMessage ? t('input.actions.send') : t('input.actions.reupload')),
+    () => (!errorFormatMessage ? t('uploadFile.send') : t('input.actions.reupload')),
     [errorFormatMessage],
   );
 

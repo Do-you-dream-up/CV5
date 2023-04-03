@@ -214,7 +214,7 @@
     "label": "Télécharger un fichier",
     "errorFormatAndSizeMessage": "La taille du fichier est trop élevée et le format n'est pas accepté",
     "errorFormatMessage": "Le format du fichier n'est pas accepté",
-    "errorSizeMessage": "La taille du fichier est trop élevée (max accepté 100 Mo)",
+    "errorSizeMessage": "La taille du fichier est trop élevée (max accepté 10 Mo)",
     "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été envoyé !",
     "errorMessage": "Erreur, votre fichier n'a pas été envoyé."
   },

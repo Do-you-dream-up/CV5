@@ -150,7 +150,7 @@
     "actions": {
       "send": "Send",
       "counterRemaining": "remaining characters",
-      "reupload": "Replace file to download",
+      "reupload": "Replace file to upload",
       "record": {
         "pause": "Pause",
         "play": "Play",
@@ -220,7 +220,7 @@
     "label": "Upload a file",
     "errorFormatAndSizeMessage": "The file size is too large and the format is not accepted",
     "errorFormatMessage": "The file format is not accepted",
-    "errorSizeMessage": "The file size is too large (max accepted 100 Mo)",
+    "errorSizeMessage": "The file size is too large (max accepted 10 Mo)",
     "sentMessage": "Your file <strong>{{name}}</strong> has been sent successfully!",
     "errorMessage": "Error, your document has not been sent."
   },
