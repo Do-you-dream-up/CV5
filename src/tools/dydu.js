@@ -171,7 +171,7 @@ export default new (class Dydu {
     if (this.getConfiguration()?.oidc?.enable) {
       console.log('Refresh_token:', Storage.loadToken()?.refresh_token);
       console.log('TriesCounter:', this.triesCounter);
-      if (Storage.loadToken()?.refresh_token && this.triesCounter < 1) {
+      if (Storage.loadToken()?.refresh_token && this.triesCounter < 2) {
         console.log('Refreshing token...');
         this.tokenRefresher();
       } else {
