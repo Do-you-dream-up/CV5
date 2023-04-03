@@ -3,7 +3,6 @@ import { useContext, useEffect } from 'react';
 import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
 import Paper from '../Paper';
-import PoweredBy from '../PoweredBy/PoweredBy';
 import PromptEmail from '../PromptEmail';
 import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
@@ -26,7 +25,6 @@ export default function Dialog({ dialogRef, open, ...rest }) {
   const { top } = configuration.dialog;
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
-  const poweredByActive = configuration.poweredBy?.active;
 
   useEffect(() => {
     if (spacesActive) {
@@ -55,7 +53,6 @@ export default function Dialog({ dialogRef, open, ...rest }) {
         {prompt === 'spaces' && <Spaces />}
         {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
       </div>
-      {poweredByActive && <PoweredBy />}
     </>
   );
 }
