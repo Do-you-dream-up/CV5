@@ -7,6 +7,7 @@ const extendedStyles = {
   right: 0,
   width: '100% !important',
   minWidth: 'inherit',
+  maxWidth: '100vw',
 };
 
 export default createUseStyles<any, any>((theme: any): any => ({
@@ -62,6 +63,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     right: 0,
     transitionDuration: '.2s',
     transitionProperty: 'bottom, height, right, transform, width',
+    maxWidth: 430,
     width: 430,
     zIndex: 10,
     [theme.breakpoints?.down('xs')]: extendedStyles,
