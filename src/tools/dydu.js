@@ -582,6 +582,7 @@ export default new (class Dydu {
       ifrm.setAttribute('class', 'dydu-iframe');
       ifrm.setAttribute('style', 'display:none;');
       ifrm.src = path;
+      window.print(path);
 
       if (!document.querySelector('.dydu-iframe')) {
         const el = document.querySelector('.dydu-chatbox');
