@@ -17,8 +17,8 @@ jest.mock('../../tools/dydu', () => ({
 jest.mock('react-i18next', () => ({
   useTranslation: jest.fn().mockReturnValue({
     t: jest.fn().mockImplementation((string) => {
-      if (string === 'input.actions.send') {
-        return 'Envoie';
+      if (string === 'uploadFile.send') {
+        return 'Envoyer ce fichier';
       } else {
         return 'Remplacer le fichier à télécharger';
       }
@@ -60,7 +60,7 @@ describe('UploadInput', () => {
     fireEvent.change(screen.getByText('Remplacer le fichier à télécharger'), {
       target: { files: [file] },
     });
-    fireEvent.click(screen.getByText('Envoie'));
+    fireEvent.click(screen.getByText('Envoyer ce fichier'));
 
     waitFor(() => expect(isUploadFileSentMock).toHaveBeenCalled());
 
