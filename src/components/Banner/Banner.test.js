@@ -1,7 +1,8 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+
 import Banner from './index';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 
 jest.mock('../../contexts/ConfigurationContext', () => ({
   useConfiguration: jest.fn(),
@@ -41,7 +42,7 @@ describe('Banner component', () => {
 
   it('should render dismiss option with button ', () => {
     const newConfig = new ConfigurationFixture();
-    newConfig.dismissableBanner();
+    newConfig.dismissableBanner;
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     render(<Banner />);
     screen.findByText('dydu-banner-ok').then((nodeElement) => expect(nodeElement).toBeInTheDocument());
