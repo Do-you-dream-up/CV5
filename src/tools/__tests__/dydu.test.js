@@ -1655,7 +1655,7 @@ describe('dydu.js', function () {
       dydu.handleTokenRefresh();
 
       // THEN
-      expect(dydu.oidcLogin).not.toHaveBeenCalled();
+      expect(dydu.oidcLogin).toHaveBeenCalled();
       jestRestoreMocked([loadTokenMock, dydu.tokenRefresher, dydu.oidcLogin]);
     });
   });
