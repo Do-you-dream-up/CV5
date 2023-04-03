@@ -8,8 +8,8 @@ export default createUseStyles<any, any>((theme: any): any => {
       '&:disabled': {
         backgroundColor: theme?.palette?.action?.disabled,
       },
-      backgroundColor: theme?.palette?.[color].main,
-      color: theme?.palette?.[color].text,
+      backgroundColor: theme?.palette?.[color]?.main,
+      color: theme?.palette?.[color]?.text,
     }),
   });
 
@@ -42,7 +42,7 @@ export default createUseStyles<any, any>((theme: any): any => {
       alignItems: 'center',
       backgroundColor: 'inherit',
       border: 0,
-      color: color ? theme?.palette?.[color].text : theme?.palette?.text?.primary,
+      color: color ? theme?.palette?.[color]?.text : theme?.palette?.text?.primary,
       cursor: 'pointer',
       display: 'flex',
       fontFamily: theme?.font?.sansSerif,
@@ -105,11 +105,11 @@ export default createUseStyles<any, any>((theme: any): any => {
       '&:disabled': {
         backgroundColor: theme?.palette?.action?.disabled,
         border: 'none',
-        color: theme.palette?.[color].text,
+        color: theme?.palette?.[color]?.text,
       },
       backgroundColor: 'transparent',
       border: '1px solid',
-      color: theme.palette?.[color].main,
+      color: theme?.palette?.[color]?.main,
     }),
 
     spin: () => ({
@@ -128,7 +128,7 @@ export default createUseStyles<any, any>((theme: any): any => {
         backgroundColor: 'transparent',
       },
       backgroundColor: 'transparent',
-      color: color ? theme?.palette?.[color].main : theme?.palette?.text?.primary,
+      color: color ? theme?.palette?.[color]?.main : theme?.palette?.text?.primary,
     }),
   };
 });

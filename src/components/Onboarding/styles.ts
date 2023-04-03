@@ -42,7 +42,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
       border: 0,
       background: 'none',
       color: theme?.palette?.text?.link || theme?.palette?.primary?.main,
-      fontFamily: theme.font.sansSerif,
+      fontFamily: theme?.font?.sansSerif,
       fontSize: 16,
       textDecoration: 'underline',
       cursor: 'pointer',

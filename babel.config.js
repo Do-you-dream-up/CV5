@@ -1,6 +1,11 @@
 module.exports = (api) => {
   api.cache(true);
   return {
+    env: {
+      production: {
+        plugins: ['react-remove-properties', {"properties": ["data-testid"]}],
+      },
+    },
     plugins: ['@babel/plugin-syntax-dynamic-import', '@babel/plugin-proposal-class-properties'],
     presets: [
       [
