@@ -150,7 +150,7 @@
     "actions": {
       "send": "Send",
       "counterRemaining": "remaining characters",
-      "reupload": "Replace file to download",
+      "reupload": "Replace file to upload",
       "record": {
         "pause": "Pause",
         "play": "Play",
