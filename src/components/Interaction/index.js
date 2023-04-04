@@ -95,6 +95,7 @@ const templateNameToBubbleCreateAction = {
  * HTML tag.
  */
 export default function Interaction({
+  autoOpenSecondary = false,
   askFeedback,
   carousel,
   children,
@@ -248,7 +249,9 @@ export default function Interaction({
       carousel: carousel,
       history: history,
       type: type,
+      autoOpenSecondary,
     };
+
     return bubbles.map((it, index) => {
       const attributes = {
         ...baseProps,

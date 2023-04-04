@@ -362,6 +362,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         } else {
           return (
             <Interaction
+              autoOpenSecondary={response?.isFromHistory || false}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
               children={getContent(text, templateData, templateName)}
@@ -414,6 +415,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     const typedInteraction = {
       ...interaction,
       typeResponse: interaction?.type,
+      isFromHistory: true,
     };
 
     !interaction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);
