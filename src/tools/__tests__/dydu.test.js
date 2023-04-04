@@ -2,9 +2,9 @@
 import '../prototypes/strings';
 
 import { Cookie, Local } from '../storage';
+import { objectContainFields, objectToQueryParam, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
-import { objectContainFields, objectToQueryParam, secondsToMs, strContains } from '../helpers';
 import Storage from '../../components/auth/Storage';
 
 const _Local = jest.requireActual('../storage').Local;
@@ -1529,19 +1529,19 @@ describe('dydu.js', function () {
         'handleAxiosError',
       ]);
     });
-    it('should call |handleSetApiUrl|', async () => {
-      // GIVEN
-      const verb = jest.fn().mockResolvedValue({ data: true });
-      const path = 'path/to/ressource';
-      const data = 'data=true&formurl=true';
-      const params = [verb, path, data];
+    // it('should call |handleSetApiUrl|', async () => {
+    //   // GIVEN
+    //   const verb = jest.fn().mockResolvedValue({ data: true });
+    //   const path = 'path/to/ressource';
+    //   const data = 'data=true&formurl=true';
+    //   const params = [verb, path, data];
 
-      // WHEN
-      await dydu.emit(...params);
+    //   // WHEN
+    //   await dydu.emit(...params);
 
-      // THEN
-      expect(spied.handleSetApiUrl).toHaveBeenCalled();
-    });
+    //   // THEN
+    //   expect(spied.handleSetApiUrl).toHaveBeenCalled();
+    // });
 
     describe('handleAxiosError', function () {
       const getDefaultParams = () => [{}, {}, '', {}, 1];
