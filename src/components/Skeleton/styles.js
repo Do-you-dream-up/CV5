@@ -2,7 +2,7 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   base: ({ height, width }) => ({
-    backgroundColor: theme.palette.background.skeleton,
+    backgroundColor: theme?.palette?.background?.skeleton,
     height,
     width,
   }),
