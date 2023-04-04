@@ -127,5 +127,15 @@
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ]
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 50,
+        "functions": 69,
+        "lines": 70,
+        "statements": 70
+      }
+    }
   }
 }
