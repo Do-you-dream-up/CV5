@@ -22,6 +22,7 @@ import useViewport from '../../tools/hooks/useViewport';
  * response should appear in front, on the left.
  */
 export default function Bubble({
+  autoOpenSecondary,
   carousel,
   children,
   className,
@@ -58,10 +59,10 @@ export default function Bubble({
   );
 
   useEffect(() => {
-    if (sidebar) {
+    if (sidebar && autoOpenSecondary) {
       onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
     }
-  }, [automaticSecondary, history, onToggle, sidebar]);
+  }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar]);
 
   return createElement(
     component,
@@ -93,6 +94,7 @@ Bubble.defaultProps = {
 };
 
 Bubble.propTypes = {
+  autoOpenSecondary: PropTypes.bool,
   actions: PropTypes.node,
   carousel: PropTypes.bool,
   children: PropTypes.element,

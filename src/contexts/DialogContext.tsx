@@ -360,9 +360,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
           );
           return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
         } else {
+          const isResponseFromHistory = isDefined(response.isFromHistory) && response.isFromHistory === true;
           return (
             <Interaction
-              autoOpenSecondary={response?.isFromHistory || false}
+              autoOpenSecondary={!isResponseFromHistory}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
               children={getContent(text, templateData, templateName)}

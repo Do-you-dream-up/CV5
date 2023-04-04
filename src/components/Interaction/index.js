@@ -95,7 +95,7 @@ const templateNameToBubbleCreateAction = {
  * HTML tag.
  */
 export default function Interaction({
-  autoOpenSecondary = false,
+  autoOpenSecondary,
   askFeedback,
   carousel,
   children,
@@ -267,7 +267,7 @@ export default function Interaction({
         </Scroll>
       );
     });
-  }, [bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templateName, type]);
+  }, [autoOpenSecondary, bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templateName, type]);
 
   useDebounce(
     () => {
@@ -325,6 +325,7 @@ Interaction.defaultProps = {
 };
 
 Interaction.propTypes = {
+  autoOpenSecondary: PropTypes.bool,
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
