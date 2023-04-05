@@ -12,13 +12,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 import dydu from '../../../tools/dydu';
+import { useConfiguration } from '../../../contexts/ConfigurationContext';
+import { useHarmonicIntervalFn } from 'react-use';
 
-export default function useTokenRequest(configuration) {
+export default function useTokenRequest(authConfiguration) {
   const [error, setError] = useState(false);
   const [currentToken, setCurrentToken] = useState(null);
   const [tokenRetries, setTokenRetries] = useState(0);
+  const { configuration } = useConfiguration();
 
-  let { tokenUrl, pkceActive } = configuration;
+  let { tokenUrl, pkceActive } = authConfiguration;
 
   const fetchToken = useCallback(() => {
     console.log('/* PREPARE FETCH TOKEN REQUEST */');
@@ -28,8 +31,8 @@ export default function useTokenRequest(configuration) {
     const payload = {
       ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri'])),
       ...{
-        client_id: configuration.clientId,
-        client_secret: configuration.clientSecret,
+        client_id: authConfiguration.clientId,
+        client_secret: authConfiguration.clientSecret,
         grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
         ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
         ...(pkceActive && { code_verifier: Cookie.get('dydu-code-verifier') }),
@@ -37,7 +40,7 @@ export default function useTokenRequest(configuration) {
       },
     };
 
-    if (isDefined(configuration?.clientSecret)) payload.client_secret = configuration?.clientSecret;
+    if (isDefined(authConfiguration?.clientSecret)) payload.client_secret = authConfiguration?.clientSecret;
 
     const redirectUri = removeQueryFromUri(payload.redirect_uri);
     payload.redirect_uri = redirectUri;
@@ -75,15 +78,24 @@ export default function useTokenRequest(configuration) {
         setError(e);
         throw new Error('error: fetching token', e);
       });
-  }, [configuration, tokenRetries]);
+  }, [authConfiguration, tokenRetries]);
 
   useEffect(() => {
     const token = currentToken || Storage.loadToken();
     if (token) {
       Storage.saveToken(token);
-      token?.refresh_token && dydu.setTokenRefresher(fetchToken);
+      if (token?.refresh_token) {
+        dydu.setTokenRefresher(fetchToken);
+      }
     }
   }, [currentToken, fetchToken]);
+
+  useHarmonicIntervalFn(() => {
+    if (configuration?.oidc?.enable) {
+      console.log('/* Reresh Token - 30mn */');
+      fetchToken(); // refresh token every 30mn
+    }
+  }, 60 * 1000 * 30);
 
   return {
     fetchToken,
