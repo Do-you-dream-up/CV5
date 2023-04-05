@@ -5,6 +5,7 @@ import { Local } from '../tools/storage';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+export const useOnboarding = () => useContext(OnboardingContext);
 export const OnboardingContext = createContext();
 export function OnboardingProvider({ children }) {
   const [active, setActive] = useState(!Local.get(Local.names.onboarding));

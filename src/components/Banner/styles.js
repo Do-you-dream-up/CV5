@@ -6,13 +6,13 @@ export default createUseStyles((theme) => ({
   }),
   body: () => ({
     '& a': {
-      color: theme.palette.text.link || theme.palette.primary.main,
+      color: theme?.palette?.text?.link || theme?.palette?.primary?.main,
     },
     margin: '1em',
   }),
   root: () => ({
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
+    backgroundColor: theme?.palette?.background?.paper,
+    color: theme?.palette?.text?.primary,
     maxHeight: 170,
     overflowY: 'auto',
     width: '100%',

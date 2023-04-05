@@ -23,7 +23,7 @@ export default function Banner() {
   const classes = useStyles({ configuration });
   const [show, setShow] = useState(false);
   const { ready, t } = useTranslation('translation');
-  const { active, dismissable, more, moreLink, storage, transient } = configuration.banner;
+  const { active, dismissable, more, moreLink, storage, transient } = configuration?.banner ?? {};
   const html = sanitize(t('banner.html'));
 
   const dismiss = useCallback(() => {

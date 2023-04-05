@@ -8,7 +8,6 @@ module.exports = (api) => {
     plugins.push(['remove-object-properties', { regexp: 'data-test*' }])
   }
 
-
   return {
     plugins,
     presets: [

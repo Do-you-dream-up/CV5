@@ -1091,7 +1091,8 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {
-        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.id_token}`;
+        config.headers['OIDCAccessToken'] = `${Storage.loadToken()?.access_token}`;
       }
       return config;
     },
