@@ -1,7 +1,6 @@
-import { createElement, useCallback, useEffect } from 'react';
+import { createElement, useCallback, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
-import { useDialog } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
 import Progress from '../Progress';
@@ -10,6 +9,7 @@ import { QUICK_REPLY } from '../../tools/template';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
@@ -46,6 +46,7 @@ export default function Bubble({
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
   const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
+  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
@@ -59,10 +60,11 @@ export default function Bubble({
   );
 
   useEffect(() => {
-    if (sidebar && autoOpenSecondary) {
+    if (sidebar && canAutoOpen) {
       onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
+      setCanAutoOpen(false);
     }
-  }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar]);
+  }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar, canAutoOpen]);
 
   return createElement(
     component,
