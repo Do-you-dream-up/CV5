@@ -7,7 +7,7 @@ import { EventsProvider } from '../contexts/EventsContext';
 import { ReactElement } from 'react';
 import { ServerStatusProvider } from '../contexts/ServerStatusContext';
 import ViewModeProvider from '../contexts/ViewModeProvider';
-import configuration from '../../public/override/configuration.json';
+import configuration from '../../src/tools/configuration.json';
 import { mergeDeep } from './object';
 import theme from '../../public/override/theme.json';
 
@@ -17,19 +17,20 @@ interface CustomProps {
   auth?: Models.AuthConfig;
 }
 
-const authConfig: Models.AuthConfig = {
-  clientId: configuration?.oidc.clientId,
-  clientSecret: configuration?.oidc?.clientSecret,
-  pkceActive: configuration?.oidc?.pkceActive,
-  pkceMode: configuration?.oidc?.pkceMode,
-  authUrl: configuration?.oidc.authUrl,
-  tokenUrl: configuration?.oidc.tokenUrl,
-  scope: configuration?.oidc?.scopes,
-};
-
 export const ProviderWrapper = ({ children, customProp }: { children: any; customProp?: CustomProps }) => {
   const mergedConfiguration = mergeDeep(configuration, customProp?.configuration);
   const mergedTheme = mergeDeep(theme, customProp?.theme);
+
+  const authConfig: Models.AuthConfig = {
+    clientId: mergedConfiguration?.oidc.clientId,
+    clientSecret: mergedConfiguration?.oidc?.clientSecret,
+    pkceActive: mergedConfiguration?.oidc?.pkceActive,
+    pkceMode: mergedConfiguration?.oidc?.pkceMode,
+    authUrl: mergedConfiguration?.oidc.authUrl,
+    tokenUrl: mergedConfiguration?.oidc.tokenUrl,
+    scope: mergedConfiguration?.oidc?.scopes,
+  };
+
   const mergedAuthConfiguration = mergeDeep(authConfig, customProp?.auth);
 
   return (
