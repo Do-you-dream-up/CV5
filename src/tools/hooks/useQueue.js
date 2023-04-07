@@ -5,7 +5,7 @@ export default function useQueue(initialList = []) {
 
   const put = useCallback((item) => {
     setList((_list) => {
-      _list.splice(0, 1, item);
+      _list.splice(0, 0, item);
       return _list;
     });
   }, []);

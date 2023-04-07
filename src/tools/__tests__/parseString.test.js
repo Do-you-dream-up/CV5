@@ -1,4 +1,4 @@
-import { parseString } from './parseString';
+import { parseString } from '../parseString';
 
 describe('parseString', () => {
   it('parses a JSON string into an object', () => {

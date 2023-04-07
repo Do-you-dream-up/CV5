@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-const originalTitle = document.title;
+export const originalTitle = document.title;
 
 function revertOriginalTitle() {
   document.title = originalTitle;
 }
 
-function tick(message) {
+export function tick(message) {
   document.title = document.title === message ? originalTitle : message;
 }
 
@@ -16,15 +16,17 @@ function useTabNotification(interval = 1000) {
 
   function setTabNotification(message) {
     setMessage(message);
+    tick(message);
   }
 
   function clearTabNotification() {
-    revertOriginalTitle();
     setMessage(null);
+    revertOriginalTitle();
+    stopNotifying();
   }
 
   function startNotifying() {
-    notificationIntervalId.current = setInterval(tick, interval, message);
+    notificationIntervalId.current = setInterval(() => tick(message), interval);
   }
 
   function stopNotifying() {
@@ -33,8 +35,6 @@ function useTabNotification(interval = 1000) {
   }
 
   useEffect(() => {
-    if (notificationIntervalId.current && !message) stopNotifying();
-
     if (!notificationIntervalId.current && message) startNotifying();
   }, [message]);
 
@@ -46,7 +46,7 @@ function useTabNotification(interval = 1000) {
     };
   }, []);
 
-  return { setTabNotification, clearTabNotification };
+  return { setTabNotification, clearTabNotification, notificationIntervalId };
 }
 
 export default useTabNotification;

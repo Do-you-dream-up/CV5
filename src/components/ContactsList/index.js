@@ -16,7 +16,7 @@ export default function ContactsList({ icon, id, list, title }) {
         <Icon icon={icon} color={theme?.palette?.text.primary} alt="" />
         <h4>{title}</h4>
       </div>
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         <div className={classes.list} key={index}>
           <h5>{item.title}</h5>
           {id === 'phone' && <p>{item.phone}</p>}

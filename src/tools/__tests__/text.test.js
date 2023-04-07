@@ -1,4 +1,4 @@
-import { uppercaseFirstLetter } from './text';
+import { uppercaseFirstLetter } from '../text';
 
 describe('text', () => {
   describe('uppercaseFirstLetter', () => {

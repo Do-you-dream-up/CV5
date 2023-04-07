@@ -5,7 +5,7 @@ import BrowserLanguage from 'i18next-browser-languagedetector';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-const setupResource = () => {
+export const setupResource = () => {
   const wording = JSON.parse(localStorage.getItem('dydu.wording'));
   wording &&
     wording.length &&
@@ -14,7 +14,7 @@ const setupResource = () => {
     });
 };
 
-const getInitOptionsMerge = (options = {}) => {
+export const getInitOptionsMerge = (options = {}) => {
   return {
     backend: {
       crossDomain: true,

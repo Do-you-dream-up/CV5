@@ -18,7 +18,7 @@ export default function Checkbox({ field }) {
       type: 'checkbox',
       id: field.getId(),
       onChange,
-      ref: ref,
+      ref,
     };
   }, [field, onChange]);
 

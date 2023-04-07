@@ -60,7 +60,9 @@ const Button = ({
 
   const button = (
     <div className={classes.children}>
-      {icon ? <Icon icon={icons?.moreIcon || ''} color={theme?.palette?.primary.text} alt="button" /> : null}
+      {icon ? (
+        <Icon icon={icons?.moreIcon || ''} className="button-icon" color={theme?.palette?.primary.text} alt="button" />
+      ) : null}
       <span children={children} />
     </div>
   );

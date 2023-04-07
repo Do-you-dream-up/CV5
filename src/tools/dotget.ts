@@ -8,7 +8,7 @@
  */
 export default (data = {}, path = '', separator = '.') =>
   path
-    .split(separator)
+    ?.split(separator)
     .reduce(
       (accumulator, it) =>
         accumulator && Object.prototype.hasOwnProperty.call(accumulator, it) ? accumulator[it] : undefined,
