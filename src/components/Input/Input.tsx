@@ -17,6 +17,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import icons from '../../tools/icon-constants';
 
 interface InputProps {
   onRequest: (input: string) => void;

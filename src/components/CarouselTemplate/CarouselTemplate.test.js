@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import CarouselTemplate from './CarouselTemplate';
 import { render } from '../../tools/test-utils';
 
-xdescribe('CarouselTemplate.tsx', () => {
+describe('CarouselTemplate.tsx', () => {
   const html = JSON.stringify({
     buttonA: '<a href="https://www.larousse.fr/encyclopedie/divers/chat/185548">Bouton 1🦊 </a>',
     buttonB: '<a href="https://www.larousse.fr/encyclopedie/divers/chat/185548">Bouton 2</a>',

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import Actions from './Actions';
 import { render } from '../../tools/test-utils';
 
-xdescribe('Actions.tsx', () => {
+describe('Actions.tsx', () => {
   const onClick = (text) => () => alert(text);
 
   const items = [

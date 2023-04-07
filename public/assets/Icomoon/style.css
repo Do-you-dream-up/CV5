@@ -1,18 +1,19 @@
 @font-face {
-  font-family: 'Dydu-Font-Icon';
-  src: url('fonts/Dydu-Font-Icon.eot?46tx4h');
-  src: url('fonts/Dydu-Font-Icon.eot?46tx4h#iefix') format('embedded-opentype'),
-    url('fonts/Dydu-Font-Icon.ttf?46tx4h') format('truetype'), url('fonts/Dydu-Font-Icon.woff?46tx4h') format('woff'),
-    url('fonts/Dydu-Font-Icon.svg?46tx4h#Dydu-Font-Icon') format('svg');
+  font-family: "Dydu-Font-Icon";
+  src: url("fonts/Dydu-Font-Icon.eot?46tx4h");
+  src: url("fonts/Dydu-Font-Icon.eot?46tx4h#iefix") format("embedded-opentype"),
+    url("fonts/Dydu-Font-Icon.ttf?46tx4h") format("truetype"),
+    url("fonts/Dydu-Font-Icon.woff?46tx4h") format("woff"),
+    url("fonts/Dydu-Font-Icon.svg?46tx4h#Dydu-Font-Icon") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 
-[class^='dydu-icon'],
-[class*=' dydu-icon'] {
+[class^="dydu-icon"],
+[class*=" dydu-icon"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'Dydu-Font-Icon' !important;
+  font-family: "Dydu-Font-Icon" !important;
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -26,272 +27,272 @@
 }
 
 #dydu-root .icon-power:before {
-  content: '\e957';
+  content: "\e957";
 }
 #dydu-root .icon-time:before {
-  content: '\e958';
+  content: "\e958";
 }
 #dydu-root .icon-timer:before {
-  content: '\e959';
+  content: "\e959";
 }
 #dydu-root .icon-microphon:before {
-  content: '\e952';
+  content: "\e952";
 }
 #dydu-root .icon-pause:before {
-  content: '\e953';
+  content: "\e953";
 }
 #dydu-root .icon-play:before {
-  content: '\e954';
+  content: "\e954";
 }
 #dydu-root .icon-replay:before {
-  content: '\e955';
+  content: "\e955";
 }
 #dydu-root .icon-stop:before {
-  content: '\e956';
+  content: "\e956";
 }
 #dydu-root .icon-database:before {
-  content: '\e94a';
+  content: "\e94a";
 }
 #dydu-root .icon-font-minus:before {
-  content: '\e94b';
+  content: "\e94b";
 }
 #dydu-root .icon-printer:before {
-  content: '\e94c';
+  content: "\e94c";
 }
 #dydu-root .icon-loading:before {
-  content: '\e94d';
+  content: "\e94d";
 }
 #dydu-root .icon-font-plus:before {
-  content: '\e94e';
+  content: "\e94e";
 }
 #dydu-root .icon-open-in-new:before {
-  content: '\e94f';
+  content: "\e94f";
 }
 #dydu-root .icon-shield-lock:before {
-  content: '\e950';
+  content: "\e950";
 }
 #dydu-root .icon-email-send:before {
-  content: '\e951';
+  content: "\e951";
 }
 #dydu-root .icon-Visible:before {
-  content: '\e948';
+  content: "\e948";
 }
 #dydu-root .icon-Invisible:before {
-  content: '\e949';
+  content: "\e949";
 }
 #dydu-root .icon-chatbox_reduire:before {
-  content: '\e941';
+  content: "\e941";
 }
 #dydu-root .icon-chatbox_phone:before {
-  content: '\e942';
+  content: "\e942";
 }
 #dydu-root .icon-chatbox_mail:before {
-  content: '\e943';
+  content: "\e943";
 }
 #dydu-root .icon-chatbox_account:before {
-  content: '\e944';
+  content: "\e944";
 }
 #dydu-root .icon-chatbox_conversation:before {
-  content: '\e945';
+  content: "\e945";
 }
 #dydu-root .icon-chatbox_contact:before {
-  content: '\e946';
+  content: "\e946";
 }
 #dydu-root .icon-chatbox_option:before {
-  content: '\e947';
+  content: "\e947";
 }
 #dydu-root .icon-calendar:before {
-  content: '\e937';
+  content: "\e937";
 }
 #dydu-root .icon-dynamic:before {
-  content: '\e938';
+  content: "\e938";
 }
 #dydu-root .icon-equalizer:before {
-  content: '\e939';
+  content: "\e939";
 }
 #dydu-root .icon-feather:before {
-  content: '\e93a';
+  content: "\e93a";
 }
 #dydu-root .icon-flag:before {
-  content: '\e93b';
+  content: "\e93b";
 }
 #dydu-root .icon-handle:before {
-  content: '\e93c';
+  content: "\e93c";
 }
 #dydu-root .icon-headphones:before {
-  content: '\e93d';
+  content: "\e93d";
 }
 #dydu-root .icon-info-bulle:before {
-  content: '\e93e';
+  content: "\e93e";
 }
 #dydu-root .icon-junction:before {
-  content: '\e93f';
+  content: "\e93f";
 }
 #dydu-root .icon-whatsapp:before {
-  content: '\e940';
+  content: "\e940";
 }
 #dydu-root .icon-dots:before {
-  content: '\e936';
+  content: "\e936";
 }
 #dydu-root .icon-branche:before {
-  content: '\e935';
+  content: "\e935";
 }
 #dydu-root .icon-color-picker:before {
-  content: '\e934';
+  content: "\e934";
 }
 #dydu-root .icon-arrow-down:before {
-  content: '\e900';
+  content: "\e900";
 }
 #dydu-root .icon-arrow-left:before {
-  content: '\e901';
+  content: "\e901";
 }
 #dydu-root .icon-arrow-right:before {
-  content: '\e902';
+  content: "\e902";
 }
 #dydu-root .icon-arrow-up:before {
-  content: '\e903';
+  content: "\e903";
 }
 #dydu-root .icon-caret-down:before {
-  content: '\e904';
+  content: "\e904";
 }
 #dydu-root .icon-caret-left:before {
-  content: '\e905';
+  content: "\e905";
 }
 #dydu-root .icon-caret-right:before {
-  content: '\e906';
+  content: "\e906";
 }
 #dydu-root .icon-caret-up:before {
-  content: '\e907';
+  content: "\e907";
 }
 #dydu-root .icon-add:before {
-  content: '\e908';
+  content: "\e908";
 }
 #dydu-root .icon-check:before {
-  content: '\e909';
+  content: "\e909";
 }
 #dydu-root .icon-close:before {
-  content: '\e90a';
+  content: "\e90a";
 }
 #dydu-root .icon-add-to-list:before {
-  content: '\e90b';
+  content: "\e90b";
 }
 #dydu-root .icon-bell:before {
-  content: '\e90c';
+  content: "\e90c";
 }
 #dydu-root .icon-bookmark:before {
-  content: '\e90d';
+  content: "\e90d";
 }
 #dydu-root .icon-chart:before {
-  content: '\e90e';
+  content: "\e90e";
 }
 #dydu-root .icon-chat-bubble:before {
-  content: '\e90f';
+  content: "\e90f";
 }
 #dydu-root .icon-check-circle:before {
-  content: '\e910';
+  content: "\e910";
 }
 #dydu-root .icon-close-circle:before {
-  content: '\e911';
+  content: "\e911";
 }
 #dydu-root .icon-warning:before {
-  content: '\e912';
+  content: "\e912";
 }
 #dydu-root .icon-info:before {
-  content: '\e913';
+  content: "\e913";
 }
 #dydu-root .icon-code:before {
-  content: '\e914';
+  content: "\e914";
 }
 #dydu-root .icon-contact-book:before {
-  content: '\e915';
+  content: "\e915";
 }
 #dydu-root .icon-copy:before {
-  content: '\e916';
+  content: "\e916";
 }
 #dydu-root .icon-download:before {
-  content: '\e917';
+  content: "\e917";
 }
 #dydu-root .icon-eraser:before {
-  content: '\e918';
+  content: "\e918";
 }
 #dydu-root .icon-excel:before {
-  content: '\e919';
+  content: "\e919";
 }
 #dydu-root .icon-eye:before {
-  content: '\e91a';
+  content: "\e91a";
 }
 #dydu-root .icon-hand:before {
-  content: '\e91b';
+  content: "\e91b";
 }
 #dydu-root .icon-instagram:before {
-  content: '\e91c';
+  content: "\e91c";
 }
 #dydu-root .icon-key:before {
-  content: '\e91d';
+  content: "\e91d";
 }
 #dydu-root .icon-keyboard:before {
-  content: '\e91e';
+  content: "\e91e";
 }
 #dydu-root .icon-link:before {
-  content: '\e91f';
+  content: "\e91f";
 }
 #dydu-root .icon-magnifier:before {
-  content: '\e920';
+  content: "\e920";
 }
 #dydu-root .icon-mail:before {
-  content: '\e921';
+  content: "\e921";
 }
 #dydu-root .icon-masks:before {
-  content: '\e922';
+  content: "\e922";
 }
 #dydu-root .icon-maximize:before {
-  content: '\e923';
+  content: "\e923";
 }
 #dydu-root .icon-messenger:before {
-  content: '\e924';
+  content: "\e924";
 }
 #dydu-root .icon-minimize:before {
-  content: '\e925';
+  content: "\e925";
 }
 #dydu-root .icon-palette:before {
-  content: '\e926';
+  content: "\e926";
 }
 #dydu-root .icon-pencil:before {
-  content: '\e927';
+  content: "\e927";
 }
 #dydu-root .icon-profile:before {
-  content: '\e928';
+  content: "\e928";
 }
 #dydu-root .icon-puzzle:before {
-  content: '\e929';
+  content: "\e929";
 }
 #dydu-root .icon-send:before {
-  content: '\e92a';
+  content: "\e92a";
 }
 #dydu-root .icon-signature:before {
-  content: '\e92b';
+  content: "\e92b";
 }
 #dydu-root .icon-star:before {
-  content: '\e92c';
+  content: "\e92c";
 }
 #dydu-root .icon-switch:before {
-  content: '\e92d';
+  content: "\e92d";
 }
 #dydu-root .icon-target:before {
-  content: '\e92e';
+  content: "\e92e";
 }
 #dydu-root .icon-thumb-down:before {
-  content: '\e92f';
+  content: "\e92f";
 }
 #dydu-root .icon-thumb-up:before {
-  content: '\e930';
+  content: "\e930";
 }
 #dydu-root .icon-translate:before {
-  content: '\e931';
+  content: "\e931";
 }
 #dydu-root .icon-trash:before {
-  content: '\e932';
+  content: "\e932";
 }
 #dydu-root .icon-upload:before {
-  content: '\e933';
+  content: "\e933";
 }

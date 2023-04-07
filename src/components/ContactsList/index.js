@@ -13,7 +13,7 @@ export default function ContactsList({ icon, id, list, title }) {
   return (
     <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
-        <Icon icon={icon} color={theme?.palette?.text.primary} alt={id} />
+        <Icon icon={icon} color={theme?.palette?.text.primary} alt="" />
         <h4>{title}</h4>
       </div>
       {list.map((item, index) => (
