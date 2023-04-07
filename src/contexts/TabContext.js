@@ -3,17 +3,6 @@ import { createContext, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import icons from '../tools/icon-constants';
 import { useConfiguration } from './ConfigurationContext';
-import icons from '../tools/icon-constants';
-
-const ITEM_KEY = {
-  dialog: 'dialog',
-  contacts: 'contacts',
-};
-
-const ITEM_KEY_TO_ICON_NAME = {
-  [ITEM_KEY.dialog]: icons.iconConversation,
-  [ITEM_KEY.contacts]: icons.iconContact,
-};
 
 const ITEM_KEY = {
   dialog: 'dialog',
