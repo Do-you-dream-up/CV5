@@ -28,7 +28,6 @@
     "storage": true,
     "dismissable": true,
     "more": false,
-    "moreIcon": "dydu-open-in-new-white.svg",
     "moreLink": "https://goo.gle",
     "transient": false
   },
@@ -125,15 +124,6 @@
       "maxFontSize": 1.3,
       "minFontSize": 0.75
     },
-    "icons": {
-      "close": "dydu-close-white.svg",
-      "collapse": "dydu-arrow-collapse-white.svg",
-      "expand": "dydu-arrow-expand-white.svg",
-      "fontIncrease": "dydu-font-plus-white.svg",
-      "fontDecrease": "dydu-font-minus-white.svg",
-      "minimize": "dydu-minimize-white.svg",
-      "more": "dydu-cog-white.svg"
-    },
     "logo": {
       "customAvatar": false,
       "title": true,
@@ -216,11 +206,13 @@
     "fixedDimensions": false,
     "mode": "left",
     "width": 850,
+    "widthXL": 1200,
     "transient": true
   },
   "spaces": {
     "active": true,
     "detection": [
+
       {
         "active": false,
         "mode": "cookie",
@@ -272,11 +264,9 @@
     "hasContactTab": false,
     "items": [
       {
-        "icon": "icons/dydu-message-text-white.svg",
         "key": "dialog"
       },
       {
-        "icon": "icons/dydu-account-box-white.svg",
         "key": "contacts"
       }
     ],

@@ -4,6 +4,7 @@ import Actions from '../Actions/Actions';
 import { Session } from '../../tools/storage';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
+import icons from '../../tools/icon-constants';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
@@ -50,7 +51,7 @@ export default function Banner() {
           {
             children: t('banner.more'),
             href: moreLink,
-            icon: `${process.env.PUBLIC_URL}icons/${configuration.banner.moreIcon}`,
+            icon: `${process.env.PUBLIC_URL}icons/${icons.moreIcon}`,
           },
         ]
       : []),

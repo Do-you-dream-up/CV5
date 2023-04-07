@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
-import { isDefined, asset } from '../helpers';
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
+import icons from '../../tools/icon-constants';
+import { isDefined } from '../helpers';
+import { useMemo } from 'react';
 
 const isTimeout = (notification) =>
   LivechatPayload.is.timeout(notification) ? INTERACTION_NOTIFICATION_TYPE.timeout : null;
@@ -57,30 +58,32 @@ const getNotificationType = (notification) => {
   return foundType;
 };
 
-const notificationTypeToIconUrl = {
-  [INTERACTION_NOTIFICATION_TYPE.close]: asset('power.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.operatorDisconnected]: asset('power.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.wait]: asset('clock-countdown.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.operatorBusy]: asset('clock-countdown.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.success]: asset('check-circle.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.operatorConnected]: asset('check-circle.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.timeout]: asset('clock.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually]: asset('check-circle.svg'),
-  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: asset('check-circle.svg'),
+const notificationTypeToIconName = {
+  [INTERACTION_NOTIFICATION_TYPE.close]: icons.power,
+  [INTERACTION_NOTIFICATION_TYPE.operatorDisconnected]: icons.power,
+  [INTERACTION_NOTIFICATION_TYPE.wait]: icons.timer,
+  [INTERACTION_NOTIFICATION_TYPE.operatorBusy]: icons.timer,
+  [INTERACTION_NOTIFICATION_TYPE.success]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.operatorConnected]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.timeout]: icons.time,
+  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: icons.checkCircle,
 };
 
 export default function useNotificationHelper(notification) {
   const text = useMemo(() => notification?.values?.text, [notification]) || notification?.text;
   const type = useMemo(() => getNotificationType(notification), [notification]);
 
-  const iconSrc = useMemo(() => (!isDefined(type) ? null : notificationTypeToIconUrl[type]), [type]);
+  const iconName = useMemo(() => (!isDefined(type) ? null : notificationTypeToIconName[type]), [type]);
+
   const isWriting = useMemo(() => {
     if (!isDefined(type)) return null;
     return type?.equals(INTERACTION_NOTIFICATION_TYPE.writing);
   }, [type]);
+
   return {
     text,
-    iconSrc,
+    iconName,
     isWriting,
   };
 }

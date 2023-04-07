@@ -2,8 +2,10 @@ import Actions, { ActionProps } from '../Actions/Actions';
 import { Children, useCallback, useContext, useEffect, useState } from 'react';
 
 import { DialogContext } from '../../contexts/DialogContext';
+import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import c from 'classnames';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useSwipeable } from 'react-swipeable';
@@ -62,13 +64,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const previousAction: ActionProps[] = [
     {
-      children: (
-        <img
-          alt={t('carousel.previous')}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-left-black.svg`}
-          title={t('carousel.previous')}
-        />
-      ),
+      children: <Icon icon={icons.iconCaretLeft || ''} alt={t('carousel.previous')} title={t('carousel.previous')} />,
       disabled: !hasPrevious(),
       onClick: triggerPrevious,
       variant: 'icon',
@@ -78,13 +74,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const nextAction: ActionProps[] = [
     {
-      children: (
-        <img
-          alt={t('carousel.next')}
-          src={`${process.env.PUBLIC_URL}icons/dydu-chevron-right-black.svg`}
-          title={t('carousel.next')}
-        />
-      ),
+      children: <Icon icon={icons.iconCaretRight || ''} alt={t('carousel.next')} title={t('carousel.next')} />,
       disabled: !hasNext(),
       onClick: triggerNext,
       variant: 'icon',
@@ -125,12 +115,12 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
     carouselConfig?.bullets &&
     length > 0 && (
       <div className={c('dydu-carousel-bullets', classes.bullets)}>
-        {children.map((item) => (
+        {children.map((item, idx) => (
           <div
             className={c('dydu-carousel-bullet', {
               [classes.active]: item.key === index,
             })}
-            key={item.key}
+            key={item?.key || idx}
             onClick={() => setIndex(item.key)}
           />
         ))}

@@ -2,9 +2,11 @@ import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 
 import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
+import Icon from '../Icon/Icon';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
 import c from 'classnames';
+import icons from '../../tools/icon-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
@@ -73,8 +75,8 @@ export default function Secondary({ anchor, mode }) {
       <div className={c('dydu-secondary-header', headerClass)}>
         {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={closeSecondary} type="button" variant="icon" id="dydu-close-secondary">
-            <img alt="Close" src={`${process.env.PUBLIC_URL}icons/dydu-close-white.svg`} title="Close" />
+          <Button color="primary" onClick={closeSecondary} type="button" variant="icon">
+            <Icon icon={icons?.close} alt="close" />
           </Button>
         </div>
       </div>

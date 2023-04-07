@@ -19,6 +19,7 @@ import { useDebounce } from 'react-use';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
+import Icon from '../Icon/Icon';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -323,7 +324,7 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.children]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
@@ -356,14 +357,16 @@ const Writing = () => {
 };
 
 export const InteractionNotification = ({ notification }) => {
-  const { text, iconSrc } = useNotificationHelper(notification);
+  const { text, iconName } = useNotificationHelper(notification);
 
-  const canRender = useMemo(() => isDefined(text) && isDefined(iconSrc), [text, iconSrc]);
+  const canRender = useMemo(() => isDefined(text) && isDefined(iconName), [text, iconName]);
 
   return !canRender ? null : (
     <Scroll>
       <InChatNotification>
-        <img className="icon" src={iconSrc} />
+        <div className="icon">
+          <Icon color="grey" icon={iconName} alt={''} />
+        </div>
         <p>{text}</p>
       </InChatNotification>
     </Scroll>

@@ -49,6 +49,13 @@ declare namespace Models {
     voice: string;
     voiceSpace: string;
     color: string;
+    icons: {
+      microphon: string;
+      pause: string;
+      play: string;
+      replay: string;
+      stop: string;
+    };
   }
 
   export interface Application {
@@ -92,6 +99,8 @@ declare namespace Models {
     controls?: boolean;
     offset?: number;
     offsetBetweenCard?: number;
+    iconCaretLeft?: string;
+    iconCaretRight?: string;
   }
 
   export interface ConfigurationChatbox {
@@ -188,6 +197,15 @@ declare namespace Models {
 
   export interface Footer {
     translate: boolean;
+    icons: FooterIcons;
+  }
+
+  export interface FooterIcons {
+    database: string;
+    printer: string;
+    email: string;
+    shield: string;
+    submit: string;
   }
 
   export interface GdprDisclaimer {

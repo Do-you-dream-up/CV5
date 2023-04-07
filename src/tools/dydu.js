@@ -83,8 +83,9 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server }) => ({
+    (({ backUpServer, bot: id, server, configId }) => ({
       ...(id && { id }),
+      ...(configId && { configId }),
       ...(server && { server }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
@@ -122,7 +123,7 @@ export default new (class Dydu {
     this.oidcLogin = null;
     this.locale = null;
     this.showSurveyCallback = null;
-    this.space = 'default';
+    this.space = null;
     this.emit = debounce(this.emit, 100, { leading: true });
     this.mainServerStatus = 'Ok';
     this.triesCounter = 0;
@@ -401,6 +402,11 @@ export default new (class Dydu {
     return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
+  hasUserAcceptedGdpr() {
+    const gdprSources = [Local.byBotId(this.getBotId()).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
+    return gdprSources.some(isDefined);
+  }
+
   getBot = () => BOT;
 
   /**
@@ -486,9 +492,7 @@ export default new (class Dydu {
     const { application } = this.getConfiguration();
     if (!this.locale) {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite
-        ? this.setLocale(document.documentElement.lang, application?.languages)
-        : this.setLocale(locale, application?.languages);
+      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
     return this.locale || application?.defaultLanguage;
   };
@@ -502,9 +506,10 @@ export default new (class Dydu {
    * @param {string|Object} strategy.value - Data needed to extract the space value.
    * @returns {string}
    */
-  getSpace = (strategy) => {
-    if (!this.space || strategy) {
-      this.space = Local.get(Local.names.space, this.getConfiguration()?.spaces?.items[0] || 'default', true);
+  getSpace = (strategy = []) => {
+    const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
+
+    if (!this.space || atLeastOneStrategyActive) {
       if (Array.isArray(strategy)) {
         const get = (mode) =>
           ({
@@ -530,6 +535,7 @@ export default new (class Dydu {
         });
       }
     }
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
     Local.set(Local.names.space, this.space);
     return this.space;
   };
@@ -599,12 +605,12 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages) =>
+  setLocale = (locale, languages = []) =>
     new Promise((resolve, reject) => {
       if (!this.locale || languages?.includes(locale)) {
         Local.set(Local.names.locale, locale);
         this.locale = locale;
-        resolve(locale);
+        return resolve(locale);
       } else {
         reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
       }
@@ -641,13 +647,11 @@ export default new (class Dydu {
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = (space) =>
-    new Promise((resolve) => {
-      const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
-      Local.set(Local.names.space, value);
-      this.space = value;
-      resolve(value);
-    });
+  setSpace = (space) => {
+    const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
+    Local.set(Local.names.space, value);
+    this.space = value;
+  };
 
   setQualificationMode = (value) => {
     let isActive = value;
@@ -1002,7 +1006,7 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.setInitialSpace(this.getConfiguration().spaces.items[0]);
+    this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }

@@ -1,12 +1,23 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
+import icons from '../tools/icon-constants';
 import { useConfiguration } from './ConfigurationContext';
+
+const ITEM_KEY = {
+  dialog: 'dialog',
+  contacts: 'contacts',
+};
+
+const ITEM_KEY_TO_ICON_NAME = {
+  [ITEM_KEY.dialog]: icons.iconConversation,
+  [ITEM_KEY.contacts]: icons.iconContact,
+};
 
 export const TabContext = createContext();
 export function TabProvider({ children }) {
   const { configuration } = useConfiguration();
-  const { hasContactTab, items, selected = 0 } = configuration.tabs;
+  let { hasContactTab, items, selected = 0 } = configuration.tabs;
   const [current, setCurrent] = useState();
   const [tabs, setTabs] = useState();
 
@@ -20,10 +31,11 @@ export function TabProvider({ children }) {
   const should = (value) => find(value) === current;
 
   useEffect(() => {
+    items = items.map((it) => ({ ...it, icon: ITEM_KEY_TO_ICON_NAME[it?.key] || '' }));
     if (hasContactTab) {
       setTabs(items);
     } else {
-      setTabs(items.filter((item) => item.key === 'dialog'));
+      setTabs(items.filter((item) => item?.key === ITEM_KEY.dialog));
     }
   }, [hasContactTab, items]);
 

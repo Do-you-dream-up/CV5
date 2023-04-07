@@ -5,8 +5,8 @@ import { createUseStyles } from 'react-jss';
 export default createUseStyles((theme) => ({
   commentField: {
     height: '100%',
-    minHeight: '2.1em',
-    minWidth: '10em',
+    minHeight: '110px',
+    minWidth: '230px',
     position: 'relative',
     width: '100%',
   },
@@ -44,9 +44,22 @@ export default createUseStyles((theme) => ({
     cursor: 'wait',
   },
   vote: {
-    '& > :not(:last-child)': {
-      marginRight: '.5em',
-    },
     display: 'flex',
+    gap: '.5em',
+    '& > *': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      textAlign: 'center',
+      '& .icon-thumb-down, & .icon-thumb-up': {
+        position: 'relative',
+      },
+      '& .icon-thumb-up': {
+        bottom: '1px',
+      },
+      '& .icon-thumb-down': {
+        top: '2px',
+      },
+    },
   },
 }));

@@ -7,7 +7,7 @@ need to interact with the backend. In the same manner, you could want to write
 for the user himself as they click within a list of choices.
 
 The functions described below are all implemented in
-`src/components/Chatbox/index.js`. You can see the function signatures for more
+`src/components/Chatbox/Icon.tsx`. You can see the function signatures for more
 help. They don't interact with the backend, so these actions don't survive
 browser refreshes.
 

@@ -6,6 +6,7 @@ import MenuList from '../MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
+import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +24,8 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const gdpr = t('footer.menu.gdpr');
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
-  const { active: spaceChangeActive, items: spacesArray } = configuration.spaces;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+
   const { interactions } = useContext(DialogContext);
 
   const printConversation = () => {
@@ -33,24 +34,25 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
 
   const items = [
     {
-      icon: 'icons/dydu-printer-black.svg',
+      icon: icons?.printer,
       onClick: interactions.length > 1 ? () => printConversation() : null,
       text: print,
       when: !!_printConversation,
     },
     {
-      icon: 'icons/dydu-email-send-black.svg',
+      icon: icons?.email,
       onClick: () => window.dydu.promptEmail.prompt('exportConv'),
       text: email,
       when: !!exportConversation,
     },
     {
-      icon: 'icons/dydu-database-black.svg',
-      onClick: spaceChangeActive && spacesArray.length > 1 ? () => window.dydu.space.prompt() : null,
+      icon: icons?.database,
+      onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
+      when: configuration?.spaces?.items?.length > 1,
     },
     {
-      icon: 'icons/dydu-shield-lock-black.svg',
+      icon: icons?.shield,
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
       text: gdpr,
       when: !!sendGdprData,
