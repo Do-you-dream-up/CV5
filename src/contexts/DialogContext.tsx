@@ -360,8 +360,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
           );
           return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
         } else {
+          const isResponseFromHistory = isDefined(response.isFromHistory) && response.isFromHistory === true;
           return (
             <Interaction
+              autoOpenSecondary={!isResponseFromHistory}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
               children={getContent(text, templateData, templateName)}
@@ -414,6 +416,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     const typedInteraction = {
       ...interaction,
       typeResponse: interaction?.type,
+      isFromHistory: true,
     };
 
     !interaction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);

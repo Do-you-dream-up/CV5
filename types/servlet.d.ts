@@ -36,6 +36,7 @@ declare namespace Servlet {
     type?: ChatResponseType;
     typeResponse?: ChatResponseType;
     user?: string;
+    isFromHistory?: boolean;
   }
 
   export interface ChatResponse {
