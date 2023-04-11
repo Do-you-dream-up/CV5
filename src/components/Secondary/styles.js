@@ -6,13 +6,14 @@ export default createUseStyles((theme) => {
     bottom: 0,
     position: 'absolute',
     top: 0,
-    [theme.breakpoints?.down('md')]: {
+    [theme.breakpoints?.down('sm')]: {
       borderRadius: 0,
       left: 0,
       marginRight: 'unset',
       right: 0,
       width: 'unset !important',
-      top: '3.4em', // size of the chatbox header (minHeight + padding)
+      top: '3.4em',
+      height: 'calc(100% - 115px)', // size of the chatbox header (minHeight + padding)
     },
   };
 
@@ -33,15 +34,13 @@ export default createUseStyles((theme) => {
       overflowY: 'auto',
       maxHeight: '648px',
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
-      [theme.breakpoints?.up('lg')]: {
-        minWidth: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
-        maxWidth: configuration.secondary.width,
-      },
-      [theme.breakpoints?.down('md')]: {
-        maxHeight: '595px',
-      },
       [theme.breakpoints?.up('xl')]: {
-        maxWidth: '1200px',
+        minWidth: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
+        maxWidth: '100%',
+        maxHeight: '100%',
+      },
+      [theme.breakpoints?.down('lg')]: {
+        maxHeight: '100%',
       },
     }),
     body: () => ({
