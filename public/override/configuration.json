@@ -169,15 +169,15 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": false,
-    "clientId": "",
+    "enable": true,
+    "clientId": "de84e65b-decd-41fb-852f-23b830a657a9",
     "clientSecret": "",
-    "pkceActive": false,
-    "pkceMode": "",
-    "authUrl": "",
-    "tokenUrl": "",
-    "scopes": [""],
-    "withAuth": false
+    "pkceActive": true,
+    "pkceMode": "S256",
+    "authUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/oauth2/v2.0/authorize",
+    "tokenUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/oauth2/v2.0/token",
+    "scopes": ["openid"],
+    "withAuth": true
   },
   "saml": {
     "enable": false
@@ -212,7 +212,6 @@
   "spaces": {
     "active": true,
     "detection": [
-
       {
         "active": false,
         "mode": "cookie",

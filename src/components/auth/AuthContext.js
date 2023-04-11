@@ -49,7 +49,10 @@ export function AuthProvider({ children, configuration }) {
   useEffect(() => {
     if (isLoggedIn && token) {
       try {
-        const userInfo = jwtDecode(token?.access_token);
+        const userInfo = jwtDecode(token?.id_token);
+        const access_token = jwtDecode(token?.access_token);
+        console.log('🚀 ~ file: AuthContext.js:54 ~ useEffect ~ access_token:', access_token);
+        console.log('🚀 ~ file: AuthContext.js:53 ~ useEffect ~ userInfo:', userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.error(error);
