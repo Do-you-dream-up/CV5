@@ -54,7 +54,9 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
     return allowedFormatTargeted && fileSize <= 10000;
   }, []);
 
-  const onSelectFile = (file, inputRef) => (validateFile?.(file), setSelected(file), setInputRef(inputRef));
+  const onSelectFile = (file, inputRef) => (
+    setIsSent(false), validateFile?.(file), setSelected(file), setInputRef(inputRef)
+  );
   const handleCancel = () => (setSelected(null), (inputRef.current.value = null));
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
