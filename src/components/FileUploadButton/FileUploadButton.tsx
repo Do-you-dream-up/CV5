@@ -18,8 +18,8 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
   const [t] = useTranslation('translation');
   const defaultLabel = useMemo(() => label || t('uploadFile.label'), [label]);
   const inputRef = useRef<any>(null);
-  const [disable, setDisable] = useState(false);
-  const { onSelectFile, extractFileFromEvent } = useUploadFile();
+
+  const { onSelectFile, extractFileFromEvent, buttonIdDisabled, setButtonIdDisabled } = useUploadFile();
   const inputId = useId();
 
   const processUserFileSelection = useCallback(
@@ -40,7 +40,7 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
       if (hasUserCanceledFileSelection) {
         throw new Error('error while cancel selection');
       }
-      setDisable(true);
+      setButtonIdDisabled && setButtonIdDisabled({ ...buttonIdDisabled, [inputRef.current.id]: true });
       processUserFileSelection(file);
     },
     [defaultLabel, onSelectFile, processUserFileSelection],
@@ -55,7 +55,11 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
 
   return (
     <Scroll>
-      <Button data-testid="file-upload-button" onClick={openFileonClick} disabled={disable}>
+      <Button
+        data-testid="file-upload-button"
+        onClick={openFileonClick}
+        disabled={buttonIdDisabled?.[inputRef?.current?.id]}
+      >
         {defaultLabel}
       </Button>
     </Scroll>

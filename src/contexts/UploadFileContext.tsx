@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { ALLOWED_FORMAT } from '../../src/tools/constants';
 import dydu from '../../src/tools/dydu';
@@ -20,6 +20,10 @@ interface UploadFileContextProps {
   showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
   isUploadFileSent?: () => void;
+  buttonIdDisabled?: {
+    id?: boolean;
+  };
+  setButtonIdDisabled?: Dispatch<SetStateAction<{ id?: boolean | undefined }>>;
 }
 
 interface UploadFileProviderProps {
@@ -37,6 +41,7 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [isSent, setIsSent] = useState<boolean>(false);
+  const [buttonIdDisabled, setButtonIdDisabled] = useState<{ id?: boolean }>({});
   const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
   const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
   const getFileSize = (file) => Math.ceil(file.size / 1024 ** 1);
@@ -57,7 +62,11 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const onSelectFile = (file, inputRef) => (
     setIsSent(false), validateFile?.(file), setSelected(file), setInputRef(inputRef)
   );
-  const handleCancel = () => (setSelected(null), (inputRef.current.value = null));
+  const handleCancel = () => (
+    setSelected(null),
+    setButtonIdDisabled({ ...buttonIdDisabled, [inputRef.current.id]: false }),
+    (inputRef.current.value = null)
+  );
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
@@ -83,6 +92,8 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       isUploadFileSent,
       isSent,
       fileName,
+      buttonIdDisabled,
+      setButtonIdDisabled,
     }),
     [
       onSelectFile,
@@ -98,6 +109,8 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       showUploadFileButton,
       isSent,
       fileName,
+      buttonIdDisabled,
+      setButtonIdDisabled,
     ],
   );
 
