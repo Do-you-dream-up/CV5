@@ -45,7 +45,12 @@ export default function MenuList({ items, onClose, selected }) {
           {isImageUrl(icon) ? (
             <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
           ) : (
-            <Icon icon={icon} color={theme.palette.text.primary} className={classes.icon} alt={icon} />
+            <Icon
+              icon={icon}
+              color={theme.palette.text.primary}
+              className={classes.icon}
+              alt={icon !== 'icon-database' ? icon : ''}
+            />
           )}
           {text}
         </li>
