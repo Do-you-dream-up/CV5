@@ -23,7 +23,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration, type });
   const background = configuration?.avatar[type]?.background;
-
+  const altText = configuration?.interaction?.displayNameBot ? configuration?.interaction?.NameBot + 'a répondu' : '';
   const _path = useMemo(() => {
     if (!linkAvatarDependOnType?.includes('/null') && type !== 'request') {
       return linkAvatarDependOnType;
@@ -56,7 +56,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
 
   return (
     <div className={_className} id={`dydu-avatar-${type}`}>
-      {!!_path && <img alt="" className="dydu-avatar-image" src={_path} />}
+      {!!_path && <img alt={altText} className="dydu-avatar-image" src={_path} />}
     </div>
   );
 };
