@@ -91,7 +91,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           <textarea
             {...data}
             aria-describedby="characters-remaining"
-            role="combobox"
             aria-expanded="false"
             disabled={prompt || locked}
             id={textareaId}
@@ -161,12 +160,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   useEffect(() => {
     const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
     if (isDefined(nodeElementInputContainer)) {
-      nodeElementInputContainer.setAttribute('aria-label', 'dydu-input-container');
-      nodeElementInputContainer.setAttribute('aria-labelledby', 'dydu-input');
-      nodeElementInputContainer.setAttribute('title', 'dydu-input-container');
+      nodeElementInputContainer.setAttribute('aria-label', t('input.label'));
+      nodeElementInputContainer.setAttribute('title', t('input.label'));
       nodeElementInputContainer.removeAttribute('role');
       nodeElementInputContainer.removeAttribute('aria-haspopup');
-      nodeElementInputContainer.removeAttribute('aria-expanded');
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
