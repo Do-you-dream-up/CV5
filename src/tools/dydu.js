@@ -169,9 +169,13 @@ export default new (class Dydu {
 
   handleTokenRefresh = () => {
     if (this.getConfiguration()?.oidc?.enable) {
-      if (Storage.loadToken()?.refresh_token) {
+      console.log('Refresh_token:', Storage.loadToken()?.refresh_token);
+      console.log('TriesCounter:', this.triesCounter);
+      if (Storage.loadToken()?.refresh_token && this.triesCounter < 2) {
+        console.log('Refreshing token...');
         this.tokenRefresher();
       } else {
+        console.log('No refresh token found, redirecting to login page...');
         Storage.clearToken();
         this.oidcLogin();
       }
@@ -258,7 +262,7 @@ export default new (class Dydu {
     /**
      * IF 401
      */
-    if (error?.response?.status === 401) {
+    if (getOidcEnableWithAuthStatus()) {
       this.handleTokenRefresh();
     }
 
@@ -1142,7 +1146,8 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {
-        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.id_token}`;
+        config.headers['OIDCAccessToken'] = `${Storage.loadToken()?.access_token}`;
       }
       return config;
     },

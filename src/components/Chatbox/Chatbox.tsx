@@ -17,6 +17,7 @@ import Header from '../Header';
 import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
+import PoweredBy from '../PoweredBy/PoweredBy';
 import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
@@ -77,6 +78,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const secondaryMode = configuration?.secondary.mode;
   const dialogRef = useRef();
   const gdprRef = useRef();
+  const poweredByActive = configuration?.poweredBy?.active;
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
@@ -248,6 +250,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                     children
                   />
                   <Tab component={Contacts} value="contacts" children render={false} />
+                  {poweredByActive && <PoweredBy />}
                 </div>
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
                 {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
