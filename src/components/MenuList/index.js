@@ -29,8 +29,6 @@ export default function MenuList({ items, onClose, selected }) {
     }
   };
 
-  console.log('items', items);
-  console.log('items.length', items.length);
   return items.length > 1 ? (
     <ul className={c('dydu-menu-list', classes.root)}>
       {items.map(({ icon, id, onClick, text }, index) => (
