@@ -62,7 +62,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           <div className={c('dydu-onboarding-image', classes.image)}>
             <img src={path} alt={''} />
           </div>
-          <div className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</div>
+          <p className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</p>
           <div
             className={c('dydu-onboarding-body', classes.body)}
             dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}

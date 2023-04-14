@@ -34,6 +34,11 @@ export default createUseStyles<any, any>((theme: any): any => ({
       flexShrink: '0',
     },
   }),
+  txt: () => ({
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
+    fontSize: '12px',
+  }),
   image: () => ({
     width: 250,
     height: 258,
