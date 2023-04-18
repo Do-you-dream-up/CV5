@@ -55,7 +55,7 @@ describe('Storage', () => {
 
   describe('loadToken()', () => {
     it('should load token data from local storage', () => {
-      const token = { access_token: '1234567890', refresh_token: '0987654321' };
+      const token = { id_token: '1234567890', access_token: '1234567890', refresh_token: '0987654321' };
       Storage.saveToken(token);
       expect(Storage.loadToken()).toEqual(token);
     });

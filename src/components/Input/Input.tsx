@@ -202,6 +202,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       variant: 'icon',
       title: actionSend,
       id: 'dydu-submit-action',
+      testId: 'dydu-submit-footer',
     },
   ];
 

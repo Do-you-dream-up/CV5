@@ -176,7 +176,7 @@ export const rulesDefinitions = [
   },
 ];
 
-function isStringValueCompliant(condition, valueToCompare) {
+export function isStringValueCompliant(condition, valueToCompare) {
   if (isValidStringOperator(condition.operator)) {
     const pattern = computeRegex(condition.value, condition.operator);
     if (condition.operator !== OPERATOR.IsContained) {

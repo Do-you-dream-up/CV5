@@ -45,7 +45,6 @@ let BOT = {},
 
 (async function getBotInfo() {
   const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
-
   const getBackUpServerUrl = (botConf = {}) => {
     const rootUrl = {
       app1: 'app1',
@@ -170,9 +169,13 @@ export default new (class Dydu {
 
   handleTokenRefresh = () => {
     if (this.getConfiguration()?.oidc?.enable) {
-      if (Storage.loadToken()?.refresh_token) {
+      console.log('Refresh_token:', Storage.loadToken()?.refresh_token);
+      console.log('TriesCounter:', this.triesCounter);
+      if (Storage.loadToken()?.refresh_token && this.triesCounter < 2) {
+        console.log('Refreshing token...');
         this.tokenRefresher();
       } else {
+        console.log('No refresh token found, redirecting to login page...');
         Storage.clearToken();
         this.oidcLogin();
       }
@@ -259,7 +262,7 @@ export default new (class Dydu {
     /**
      * IF 401
      */
-    if (error?.response?.status === 401) {
+    if (getOidcEnableWithAuthStatus()) {
       this.handleTokenRefresh();
     }
 
@@ -535,8 +538,8 @@ export default new (class Dydu {
         });
       }
     }
-    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces.items[0];
-    Local.set(Local.names.space, this.space);
+    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces?.items[0];
+    Local.set(Local.names?.space, this.space);
     return this.space;
   };
 
@@ -698,12 +701,12 @@ export default new (class Dydu {
   };
 
   processTalkResponse = (talkResponse) => {
-    this.handleSpaceWithResponseWithTalkResponse(talkResponse);
+    this.handleSpaceWithTalkResponse(talkResponse);
     this.handleKnownledgeQuerySurveyWithTalkResponse(talkResponse);
     return talkResponse;
   };
 
-  handleSpaceWithResponseWithTalkResponse(response) {
+  handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) this.setSpace(guiCSName);
     return response;
@@ -1021,7 +1024,7 @@ export default new (class Dydu {
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
-      console.info('Error while initializing locale, fallback to browser locale');
+      console.info('Error while initializing locale, fallback to browser locale', e);
       this.setLocale(locale, configuration.application.languages).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
@@ -1088,7 +1091,8 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
   instance.interceptors.request.use(
     (config) => {
       if (getOidcEnableWithAuthStatus()) {
-        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.access_token}`;
+        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.id_token}`;
+        config.headers['OIDCAccessToken'] = `${Storage.loadToken()?.access_token}`;
       }
       return config;
     },

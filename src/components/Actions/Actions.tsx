@@ -28,6 +28,7 @@ export interface ActionProps {
   title?: string;
   icon?: string;
   component?: any;
+  testId?: any;
   onClick?: () => void;
 }
 
@@ -51,7 +52,7 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
 
   return actions?.length > 0 ? (
     <div className={c('dydu-actions', _classes, className)} aria-labelledby={testId} role={role}>
-      {filteredActions.map(({ items, selected, type = 'button', title, ...rest }, index) => {
+      {filteredActions.map(({ items, selected, type = 'button', title, testId, ...rest }, index) => {
         delete rest.when;
 
         const props: ButtonProps = {
@@ -64,7 +65,7 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
         if (items) {
           return <Menu {...props} component={Button} items={items} selected={selected} />;
         }
-        return <Button {...props} />;
+        return <Button {...props} data-testid={testId} />;
       })}
     </div>
   ) : null;

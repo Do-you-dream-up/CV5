@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import Icon from '../Icon/Icon';
+import PropTypes from 'prop-types';
 import c from 'classnames';
+import { isImageUrl } from '../../tools/helpers';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
-import { isImageUrl } from '../../tools/helpers';
 
 /**
  * Form a list of actions within a menu as list elements.

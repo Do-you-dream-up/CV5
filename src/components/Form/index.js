@@ -54,6 +54,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       secondary: true,
       spin: thinking,
       type: 'cancel',
+      testId: 'cancel',
     },
     {
       children: t('form.submit'),
@@ -61,13 +62,14 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       icon: getSubmitIcon,
       spin: thinking,
       type: 'form.submit',
+      testId: 'form.submit',
     },
   ];
 
   return (
-    <form className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
+    <form data-testid="dydu-form" className={c('dydu-form', classes.root, className)} onSubmit={onSubmit}>
       <div children={children({ data, onChange })} className={classes.body} />
-      <Actions actions={actions} className={c('dydu-form-actions', classes.actions)} />
+      <Actions data-testid="form-actions" actions={actions} className={c('dydu-form-actions', classes.actions)} />
     </form>
   );
 }

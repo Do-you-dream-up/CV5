@@ -44,7 +44,9 @@ export default function QuickreplyTemplate({ html }) {
           dangerouslySetInnerHTML={{ __html: text }}
         />
       )}
-      {separator && <div className={c('dydu-quickreply-template-separator', classes.separator)} />}
+      {separator && (
+        <div data-testid="separator" className={c('dydu-quickreply-template-separator', classes.separator)} />
+      )}
       {Object.keys(quick)
         .sort()
         .map((el, index) => {

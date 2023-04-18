@@ -21,7 +21,7 @@ export default function useWelcomeKnowledge() {
   const fetch = useCallback(() => {
     return !canRequest
       ? Promise.resolve()
-      : dydu.getWelcomeKnowledge(tagWelcome).then((wkResponse) => {
+      : dydu.getWelcomeKnowledge(tagWelcome)?.then((wkResponse) => {
           setResult(wkResponse);
           return wkResponse;
         });

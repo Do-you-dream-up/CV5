@@ -35,7 +35,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const items = [
     {
       icon: icons?.printer,
-      onClick: interactions.length > 1 ? () => printConversation() : null,
+      onClick: interactions?.length > 1 ? () => printConversation() : null,
       text: print,
       when: !!_printConversation,
     },

@@ -8,10 +8,14 @@ export default new (class Stt {
    * @param iconComponent
    * @param {*} action
    */
-  getButtonAction = (title, iconComponent, action) => ({
-    children: iconComponent,
-    onClick: () => action(),
-    type: 'button',
-    variant: 'icon',
-  });
+  getButtonAction = (title, iconComponent, action) => {
+    if (typeof action !== 'function') throw new Error('Action is not a function');
+
+    return {
+      children: iconComponent,
+      onClick: () => action(),
+      type: 'button',
+      variant: 'icon',
+    };
+  };
 })();

@@ -49,18 +49,18 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   const { secondaryActive, toggleSecondary } = useContext(DialogContext);
 
+  const hasNext = () => index < length - 1;
+  const hasPrevious = () => index > 0;
+
+  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
+  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
+
   const handlers = useSwipeable({
     onSwipedLeft: () => triggerNext(),
     onSwipedRight: () => triggerPrevious(),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
-
-  const hasNext = () => index < length - 1;
-  const hasPrevious = () => index > 0;
-
-  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
-  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
 
   const previousAction: ActionProps[] = [
     {
@@ -69,6 +69,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       onClick: triggerPrevious,
       variant: 'icon',
       id: 'dydu-arrow-left',
+      testId: 'dydu-arrow-left',
     },
   ];
 
@@ -79,6 +80,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
       onClick: triggerNext,
       variant: 'icon',
       id: 'dydu-arrow-right',
+      testId: 'dydu-arrow-right',
     },
   ];
 
@@ -114,9 +116,10 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
   const renderBullets = () =>
     carouselConfig?.bullets &&
     length > 0 && (
-      <div className={c('dydu-carousel-bullets', classes.bullets)}>
+      <div data-testid="dydu-carousel-bullets" className={c('dydu-carousel-bullets', classes.bullets)}>
         {children.map((item, idx) => (
           <div
+            data-testid={`dydu-carousel-bullet-${idx}`}
             className={c('dydu-carousel-bullet', {
               [classes.active]: item.key === index,
             })}
@@ -137,7 +140,7 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
 
   return (
     <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
+      <div data-testid="dydu-carousel-steps" className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
         {renderSteps()}
       </div>
       {renderBullets()}

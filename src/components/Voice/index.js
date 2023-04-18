@@ -18,7 +18,7 @@ import { useTheme } from 'react-jss';
  * Speech-to-Text allows to convert sound to text by applying powerful neural network models via an API,
  * it is the reverse of Text-to-Speech that convert streaming sound to a text via API.
  */
-export default function Voice({ show, t }) {
+const Voice = ({ show, t }) => {
   // Stream Audio
   let AudioContext;
   let context;
@@ -55,20 +55,20 @@ export default function Voice({ show, t }) {
   const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt="replay" />;
   const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt="stop" />;
 
-  const startRecordButton = Tts.getButtonAction(t.start, iconMicrophon, () => {
+  const startRecordButton = Tts.getButtonAction(t?.start, iconMicrophon, () => {
     window.dydu.ui.toggle(2);
     setTimeout(() => {
       window.dydu.voice.startRecording();
     }, 100);
   });
 
-  const stopRecordButton = Tts.getButtonAction(t.stop, iconStop, () =>
+  const stopRecordButton = Tts.getButtonAction(t?.stop, iconStop, () =>
     isChrome ? stopRecordChrome() : stopRecording(),
   );
-  const pauseMediaButton = Stt.getButtonAction(t.pause, iconPause, () => pause());
-  const playMediaButton = Stt.getButtonAction(t.play, iconPlay, () => play());
-  const replayMediaButton = Stt.getButtonAction(t.replay, iconReplay, () => replay());
-  const stopMediaButton = Stt.getButtonAction(t.stop, iconStop, () => stop());
+  const pauseMediaButton = Stt.getButtonAction(t?.pause, iconPause, () => pause());
+  const playMediaButton = Stt.getButtonAction(t?.play, iconPlay, () => play());
+  const replayMediaButton = Stt.getButtonAction(t?.replay, iconReplay, () => replay());
+  const stopMediaButton = Stt.getButtonAction(t?.stop, iconStop, () => stop());
   const [actions, setActions] = React.useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = React.useState(false);
   const [url, setUrl] = useState('');
@@ -378,8 +378,10 @@ export default function Voice({ show, t }) {
     setHandelVoice(true);
   };
 
-  return show ? <Actions actions={actions} className="dydu-voice-actions" /> : null;
-}
+  return show ? <Actions data-testId="dydu-voice-actions" actions={actions} className="dydu-voice-actions" /> : null;
+};
+
+export default Voice;
 
 Voice.propTypes = {
   DialogContext: PropTypes.node,
