@@ -969,6 +969,7 @@ export default new (class Dydu {
       .then((response) => {
         if (response.data && response.data.status === 'fail') {
           console.log('La requête a échoué :', response.data);
+          this.uploadFileNotSentResponse();
           throw new Error('La requête a échoué');
         } else {
           this.displayUploadFileSent(file.name);
@@ -995,6 +996,10 @@ export default new (class Dydu {
     } else if (this.isLastResponseStartsLivechat()) {
       window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
     }
+  };
+
+  uploadFileNotSentResponse = () => {
+    window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
   };
 
   sendSurveyPolling = async (survey, options = {}) => {
