@@ -944,18 +944,43 @@ export default new (class Dydu {
     API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
   };
 
+  // sendUpoadFile = async (file) => {
+  //   const formData = new FormData();
+  //   formData.append('dydu-upload-file', file);
+  //   const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+  //   this.setApiDefaultHeadersFormData();
+  //   this.setApiDefaultBaseUrlUploadFile();
+  //   return API.post(path, formData)
+  //     .finally(() => {
+  //       this.setApiDefaultHeadersFormUrlEncoded();
+  //       this.setApiDefaultBaseUrl();
+  //     })
+  //     .then(() => this.displayUploadFileSent(file.name));
+  // };
+
   sendUpoadFile = async (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
     const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
     this.setApiDefaultHeadersFormData();
     this.setApiDefaultBaseUrlUploadFile();
+
     return API.post(path, formData)
+      .then((response) => {
+        if (response.data && response.data.status === 'fail') {
+          console.log('La requête a échoué :', response.data);
+          throw new Error('La requête a échoué');
+        } else {
+          this.displayUploadFileSent(file.name);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
       .finally(() => {
         this.setApiDefaultHeadersFormUrlEncoded();
         this.setApiDefaultBaseUrl();
-      })
-      .then(() => this.displayUploadFileSent(file.name));
+      });
   };
 
   isLastResponseStartsLivechat = () => {
