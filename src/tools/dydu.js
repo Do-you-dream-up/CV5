@@ -944,20 +944,6 @@ export default new (class Dydu {
     API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
   };
 
-  // sendUpoadFile = async (file) => {
-  //   const formData = new FormData();
-  //   formData.append('dydu-upload-file', file);
-  //   const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
-  //   this.setApiDefaultHeadersFormData();
-  //   this.setApiDefaultBaseUrlUploadFile();
-  //   return API.post(path, formData)
-  //     .finally(() => {
-  //       this.setApiDefaultHeadersFormUrlEncoded();
-  //       this.setApiDefaultBaseUrl();
-  //     })
-  //     .then(() => this.displayUploadFileSent(file.name));
-  // };
-
   sendUpoadFile = async (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
@@ -967,15 +953,23 @@ export default new (class Dydu {
 
     return API.post(path, formData)
       .then((response) => {
-        if (response.data && response.data.status === 'fail') {
-          console.log('La requête a échoué :', response.data);
-          this.uploadFileNotSentResponse();
+        const startIndex = response.data.indexOf('{');
+        const endIndex = response.data.lastIndexOf('}');
+        const jsonText = response.data.substring(startIndex, endIndex + 1);
+        let correctedJsonText = jsonText.replace(/'/g, '"');
+        correctedJsonText = correctedJsonText.replace(/api:/g, '"api":');
+        correctedJsonText = correctedJsonText.replace(/params:/g, '"params":');
+        const responseObject = JSON.parse(correctedJsonText);
+        if (responseObject && responseObject.status === 'fail') {
+          console.log('La requête a échoué :', responseObject);
+          window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
           throw new Error('La requête a échoué');
         } else {
           this.displayUploadFileSent(file.name);
         }
       })
       .catch((error) => {
+        // Gérer l'erreur ici
         console.error(error);
       })
       .finally(() => {
@@ -994,12 +988,8 @@ export default new (class Dydu {
     if (this.isLastResponseStartsLivechat() && statusOk) {
       window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
     } else if (this.isLastResponseStartsLivechat()) {
-      window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
+      window.dydu.chat.reply(i18n.t('uploadFile.errorMessage', { name: fileName }));
     }
-  };
-
-  uploadFileNotSentResponse = () => {
-    window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
   };
 
   sendSurveyPolling = async (survey, options = {}) => {

@@ -222,7 +222,7 @@
     "errorFormatMessage": "The file format is not accepted",
     "errorSizeMessage": "The file size is too large (max accepted 10 Mo)",
     "sentMessage": "Your file <strong>{{name}}</strong> has been sent successfully!",
-    "errorMessage": "Error, your document has not been sent."
+    "errorMessage": "I am sorry, your file <strong>{{name}}</strong> could not be sent."
   },
   "survey": {
     "sentMessage": "Your answer to the survey has been sent.",
