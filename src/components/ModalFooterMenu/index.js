@@ -62,7 +62,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
     component,
     { className: c('dydu-footer-menu', className, classes.root), ...rest },
     <>
-      {title && <div children={title} className={classes.title} />}
+      {title && <h2 children={title} className={classes.title} />}
       <MenuList items={items} onClose={onResolve} />
       <div children={title} className={classes.actions}>
         <Button children={close} grow onClick={onResolve} />

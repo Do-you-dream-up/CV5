@@ -9,6 +9,7 @@ export default createUseStyles((theme) => ({
     fontWeight: 'normal',
     margin: [[0, 0, '.8em']],
     paddingBottom: '.6em',
+    fontSize: '1.17em',
   }),
   progress: () => ({
     left: 0,
