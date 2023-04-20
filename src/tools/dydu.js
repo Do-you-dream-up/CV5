@@ -1019,13 +1019,13 @@ export default new (class Dydu {
     try {
       const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
       locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
-      this.setLocale(locale, configuration.application.languages).catch(console.error);
+      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
       console.info('Error while initializing locale, fallback to browser locale', e);
-      this.setLocale(locale, configuration.application.languages).catch(console.error);
+      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;
