@@ -1,6 +1,6 @@
-import { addRule, clearRules, getExternalInfos, processRules } from '../pushrules/pushService';
+import { clearCurrentTimeout, getExternalInfos, processRules } from '../pushrules/pushService';
 import { isDefined, isEmptyArray } from '../helpers';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dydu from '../dydu';
 import { useLocation } from 'react-use';
@@ -11,35 +11,36 @@ const usePushrules = () => {
 
   useEffect(() => {
     if (pushrules) {
-      console.log('/*** UPDATE Pushrules ***/');
-      fetch(true);
+      clearCurrentTimeout();
+      processRules(pushrules, getExternalInfos(new Date().getTime()));
     }
-  }, [location]);
+  }, [pushrules, location]);
 
   const canRequest = useMemo(() => {
     return !isDefined(pushrules);
   }, [pushrules]);
 
-  const fetch = (update = false) => {
-    if (canRequest || update) {
-      clearRules();
-      new Promise(() => {
-        return dydu.pushrules().then((data) => {
-          const isEmptyPayload = data && Object.keys(data).length <= 0;
-          if (isEmptyPayload) return setPushrules([]);
-          try {
-            const rules = JSON.parse(data);
-            if (isEmptyArray(rules)) return setPushrules([]);
-            setPushrules(rules);
-            rules.map((rule) => addRule(rule));
-            processRules(getExternalInfos(new Date().getTime()));
-          } catch (e) {
-            setPushrules([]);
-          }
-        });
-      });
-    }
-  };
+  const fetch = useCallback(
+    (update = false) => {
+      return (
+        (canRequest || update) &&
+        new Promise((resolve) => {
+          return dydu.pushrules().then((data) => {
+            const isEmptyPayload = data && Object.keys(data).length <= 0;
+            if (isEmptyPayload) return resolve(null);
+            try {
+              const rules = JSON.parse(data);
+              if (isEmptyArray(rules)) return resolve([]);
+              setPushrules(rules);
+            } catch (e) {
+              setPushrules([]);
+            }
+          });
+        })
+      );
+    },
+    [canRequest, pushrules],
+  );
 
   return {
     pushrules,

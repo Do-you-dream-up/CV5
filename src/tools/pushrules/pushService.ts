@@ -12,10 +12,7 @@ export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 export const currentTimer: any = {};
 export const externalInfoProcessors = [...ExternalInfoProcessor];
 export const externalInfos = {};
-export let rules: any = [];
 export const rulesDefinition = [...(rulesDefinitionsImport || [])];
-let canPush = true;
-
 interface Rule {
   conditions?: any;
   kId?: number;
@@ -29,15 +26,11 @@ interface ExternInfos {
   visitduration?: number;
 }
 
-//Rules from knowledge base
-export const addRule = (rule: Rule) => {
-  if (rule) {
-    rules.push(rule);
+export const clearCurrentTimeout = () => {
+  if (currentTimer.counter) {
+    clearTimeout(currentTimer.counter);
+    currentTimer.counter = null;
   }
-};
-
-export const clearRules = () => {
-  rules = [];
 };
 
 export function getExternalInfos(now) {
@@ -57,11 +50,10 @@ export function processGoalPage(rule: Rule, externInfos: ExternInfos) {
   }
 }
 
-export function processRules(externInfos: ExternInfos) {
+export function processRules(rules, externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
   const bestCompliance = new ComplianceInfo();
-  console.log('🚀 ~ file: pushService.ts:70 ~ processRules ~ rules:', rules);
   for (let cpt = 0; cpt < rules.length; cpt++) {
     const rule = rules[cpt];
     const id = rule.kId;
@@ -210,12 +202,12 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 export function pushKnowledge(ruleId) {
   const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
-  const shouldDisplay = canPush && !isDefined(Session.get(sessionKey));
+  const shouldDisplay = !isDefined(Session.get(sessionKey));
+  currentTimer.counter = null;
   if (shouldDisplay) {
     window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     Session.set(sessionKey, ruleId);
-    canPush = false;
   }
 }
 
