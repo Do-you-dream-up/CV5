@@ -106,7 +106,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
-  const { fetch: fetchPushrules, result: pushrules } = usePushrules();
+  const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
 

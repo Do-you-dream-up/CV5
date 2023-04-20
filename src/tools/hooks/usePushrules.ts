@@ -1,41 +1,48 @@
-import { addRule, getExternalInfos, processRules } from '../pushrules/pushService';
+import { addRule, clearRules, getExternalInfos, processRules } from '../pushrules/pushService';
 import { isDefined, isEmptyArray } from '../helpers';
-import { useCallback, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import dydu from '../dydu';
+import { useLocation } from 'react-use';
 
 const usePushrules = () => {
-  const [result, setResult] = useState<[] | null>(null);
+  const [pushrules, setPushrules] = useState<[] | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (pushrules) {
+      console.log('/*** UPDATE Pushrules ***/');
+      fetch(true);
+    }
+  }, [location]);
 
   const canRequest = useMemo(() => {
-    return !isDefined(result);
-  }, [result]);
+    return !isDefined(pushrules);
+  }, [pushrules]);
 
-  const fetch = useCallback(() => {
-    return (
-      canRequest &&
-      new Promise((resolve) => {
+  const fetch = (update = false) => {
+    if (canRequest || update) {
+      clearRules();
+      new Promise(() => {
         return dydu.pushrules().then((data) => {
           const isEmptyPayload = data && Object.keys(data).length <= 0;
-          if (isEmptyPayload) return resolve(null);
+          if (isEmptyPayload) return setPushrules([]);
           try {
             const rules = JSON.parse(data);
-            if (isEmptyArray(rules)) return resolve([]);
-
-            rules.map(addRule);
+            if (isEmptyArray(rules)) return setPushrules([]);
+            setPushrules(rules);
+            rules.map((rule) => addRule(rule));
             processRules(getExternalInfos(new Date().getTime()));
-            setResult(rules);
           } catch (e) {
-            setResult([]);
+            setPushrules([]);
           }
         });
-      })
-    );
-    // eslint-disable-next-line
-  }, [canRequest, result]);
+      });
+    }
+  };
 
   return {
-    result,
+    pushrules,
     fetch,
   };
 };

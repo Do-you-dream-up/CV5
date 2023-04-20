@@ -12,7 +12,7 @@ export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 export const currentTimer: any = {};
 export const externalInfoProcessors = [...ExternalInfoProcessor];
 export const externalInfos = {};
-export const rules: any = [];
+export let rules: any = [];
 export const rulesDefinition = [...(rulesDefinitionsImport || [])];
 let canPush = true;
 
@@ -30,15 +30,20 @@ interface ExternInfos {
 }
 
 //Rules from knowledge base
-export function addRule(rule: Rule) {
+export const addRule = (rule: Rule) => {
   if (rule) {
     rules.push(rule);
   }
-}
+};
+
+export const clearRules = () => {
+  rules = [];
+};
 
 export function getExternalInfos(now) {
-  while (externalInfoProcessors.length > 0) {
-    const infoProcessor: any = externalInfoProcessors.pop();
+  const tmpExternalInfoProcessors = [...externalInfoProcessors];
+  while (tmpExternalInfoProcessors.length > 0) {
+    const infoProcessor: any = tmpExternalInfoProcessors.pop();
     infoProcessor(externalInfos, now);
   }
   return externalInfos;
@@ -56,6 +61,7 @@ export function processRules(externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
   const bestCompliance = new ComplianceInfo();
+  console.log('🚀 ~ file: pushService.ts:70 ~ processRules ~ rules:', rules);
   for (let cpt = 0; cpt < rules.length; cpt++) {
     const rule = rules[cpt];
     const id = rule.kId;
