@@ -12,10 +12,7 @@ export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 export const currentTimer: any = {};
 export const externalInfoProcessors = [...ExternalInfoProcessor];
 export const externalInfos = {};
-export const rules: any = [];
 export const rulesDefinition = [...(rulesDefinitionsImport || [])];
-let canPush = true;
-
 interface Rule {
   conditions?: any;
   kId?: number;
@@ -29,16 +26,17 @@ interface ExternInfos {
   visitduration?: number;
 }
 
-//Rules from knowledge base
-export function addRule(rule: Rule) {
-  if (rule) {
-    rules.push(rule);
+export const clearCurrentTimeout = () => {
+  if (currentTimer.counter) {
+    clearTimeout(currentTimer.counter);
+    currentTimer.counter = null;
   }
-}
+};
 
 export function getExternalInfos(now) {
-  while (externalInfoProcessors.length > 0) {
-    const infoProcessor: any = externalInfoProcessors.pop();
+  const tmpExternalInfoProcessors = [...externalInfoProcessors];
+  while (tmpExternalInfoProcessors.length > 0) {
+    const infoProcessor: any = tmpExternalInfoProcessors.pop();
     infoProcessor(externalInfos, now);
   }
   return externalInfos;
@@ -52,7 +50,7 @@ export function processGoalPage(rule: Rule, externInfos: ExternInfos) {
   }
 }
 
-export function processRules(externInfos: ExternInfos) {
+export function processRules(rules, externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
   const bestCompliance = new ComplianceInfo();
@@ -204,12 +202,12 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 export function pushKnowledge(ruleId) {
   const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
-  const shouldDisplay = canPush && !isDefined(Session.get(sessionKey));
+  const shouldDisplay = !isDefined(Session.get(sessionKey));
+  currentTimer.counter = null;
   if (shouldDisplay) {
     window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     Session.set(sessionKey, ruleId);
-    canPush = false;
   }
 }
 

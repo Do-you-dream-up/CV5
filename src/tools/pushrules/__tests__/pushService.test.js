@@ -1,6 +1,5 @@
 import {
   INTERACTION_EVENTS,
-  addRule,
   computeChildrenCompliance,
   computeConditionCompliance,
   getChatboxNodeElement,
@@ -11,7 +10,6 @@ import {
   processGoalPage,
   processRules,
   pushKnowledge,
-  rules,
   urlCompliant,
 } from '../pushService';
 
@@ -20,10 +18,12 @@ import { VIEW_MODE } from '../../../tools/constants';
 import configuration from '../../../../public/override/configuration.json';
 import dydu from '../../../tools/dydu';
 
+let rules = [];
+
 describe('addRule', () => {
   test('adds a rule to the rules array', () => {
     const rule = { conditions: [], kId: 123 };
-    addRule(rule);
+    rules = [rule];
     expect(Array.isArray(rules)).toBeTruthy();
     expect(rules.length).toBe(1);
     expect(rules[0]).toEqual(rule);

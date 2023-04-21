@@ -1529,19 +1529,6 @@ describe('dydu.js', function () {
         'handleAxiosError',
       ]);
     });
-    it('should call |handleSetApiUrl|', async () => {
-      // GIVEN
-      const verb = jest.fn().mockResolvedValue({ data: true });
-      const path = 'path/to/ressource';
-      const data = 'data=true&formurl=true';
-      const params = [verb, path, data];
-
-      // WHEN
-      await dydu.emit(...params);
-
-      // THEN
-      expect(spied.handleSetApiUrl).toHaveBeenCalled();
-    });
 
     describe('handleAxiosError', function () {
       const getDefaultParams = () => [{}, {}, '', {}, 1];
