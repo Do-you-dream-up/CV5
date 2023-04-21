@@ -165,7 +165,7 @@
   },
   "moreOptions": {
     "exportConversation": false,
-    "printConversation": false,
+    "printConversation": true,
     "sendGdprData": false
   },
   "oidc": {
@@ -212,7 +212,6 @@
   "spaces": {
     "active": true,
     "detection": [
-
       {
         "active": false,
         "mode": "cookie",
