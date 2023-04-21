@@ -44,6 +44,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const debouncedInput = useDebounce(input, delay);
   const inputRef = useRef(null);
   const containerRef = useRef<null | any>(null);
+  const textareaRef = useRef<null | any>(null);
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
@@ -91,9 +92,9 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           <textarea
             {...data}
             aria-describedby="characters-remaining"
-            aria-expanded="false"
             disabled={prompt || locked}
             id={textareaId}
+            ref={textareaRef}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
@@ -164,6 +165,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementInputContainer.setAttribute('title', t('input.label'));
       nodeElementInputContainer.removeAttribute('role');
       nodeElementInputContainer.removeAttribute('aria-haspopup');
+      nodeElementInputContainer.removeAttribute('aria-owns');
+      nodeElementInputContainer.removeAttribute('aria-label');
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
@@ -172,6 +175,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
       nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
     }
+
+    const nodeElementTextareaContainer = textareaRef?.current;
+    nodeElementTextareaContainer.removeAttribute('aria-autocomplete');
+    nodeElementTextareaContainer.removeAttribute('aria-controls');
   }, []);
 
   const theme = {
