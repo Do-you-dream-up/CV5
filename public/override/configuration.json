@@ -165,7 +165,7 @@
   },
   "moreOptions": {
     "exportConversation": false,
-    "printConversation": true,
+    "printConversation": false,
     "sendGdprData": false
   },
   "oidc": {
