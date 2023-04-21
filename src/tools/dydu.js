@@ -573,19 +573,20 @@ export default new (class Dydu {
    *
    *
    */
+
   printHistory = async () => {
     const contextId = await this.getContextId();
     if (contextId) {
       const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
-      const ifrm = document.querySelector('.dydu-iframe') || document.createElement('iframe');
-      ifrm.setAttribute('class', 'dydu-iframe');
-      ifrm.setAttribute('style', 'display:none;');
-      ifrm.src = path;
+      // Create a new window to display the conversation history
+      const newWindow = window.open(path, '_blank');
 
-      if (!document.querySelector('.dydu-iframe')) {
-        const el = document.querySelector('.dydu-chatbox');
-        el.parentNode.insertBefore(ifrm, el);
+      // If the new window has been opened successfully, print its contents
+      if (newWindow) {
+        newWindow.addEventListener('load', () => {
+          newWindow.print();
+        });
       }
     }
   };
