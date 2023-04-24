@@ -31,7 +31,7 @@ export const getInitOptionsMerge = (options = {}) => {
       lookupQuerystring: 'language',
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
     },
-    fallbackLng: options?.defaultLang || 'en',
+    fallbackLng: options?.defaultLang || 'fr',
     interpolation: { escapeValue: false },
     load: 'languageOnly',
     lowerCaseLng: true,

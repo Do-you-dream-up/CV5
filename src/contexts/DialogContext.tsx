@@ -20,7 +20,6 @@ import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import dotget from '../tools/dotget';
 import { eventOnSecondaryClosed } from '../events/chatboxIndex';
-import fetchPushrules from '../tools/pushrules';
 import { flattenSteps } from '../tools/steps';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
@@ -28,6 +27,7 @@ import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
+import usePushrules from '../tools/hooks/usePushrules';
 import { useServerStatus } from './ServerStatusContext';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
@@ -117,6 +117,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
+  const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
   const additionalListInteraction = useRef([]);
@@ -134,7 +135,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
-  const [pushrules, setPushrules] = useState(null);
 
   useEffect(() => {
     fetchServerStatus();
@@ -182,11 +182,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   const triggerPushRule = useCallback(() => {
-    if (isDefined(pushrules)) return;
-    if (!hasAfterLoadBeenCalled && !serverStatusChecked) return;
-    fetchPushrules().then((rules = []) => {
-      setPushrules(rules);
-    });
+    if (isDefined(pushrules) || (!hasAfterLoadBeenCalled && !serverStatusChecked)) return;
+    fetchPushrules();
   }, [fetchPushrules, pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
 
   useEffect(() => {
