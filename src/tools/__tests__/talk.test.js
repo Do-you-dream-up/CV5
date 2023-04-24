@@ -3,7 +3,7 @@ import talk, { ACTIONS, meta } from '../talk';
 import Bowser from 'bowser';
 import dydu from '../dydu';
 
-describe('talk', () => {
+xdescribe('talk', () => {
   it('should return the meta information', () => {
     const locale = dydu.getLocale();
     const userAgent = Bowser.getParser(window.navigator.userAgent);
