@@ -17,9 +17,8 @@ export const useBotInfo = () => useContext<BotInfoContextProps>(BotInfoContext);
 export const BotInfoContext = createContext({} as BotInfoContextProps);
 
 export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
-  const [botLanguages, setBotLanguages] = useState<any>(null);
-  console.log('🚀 ~ file: BotInfoContext.tsx:21 ~ BotInfoProvider ~ botLanguages:', botLanguages);
   const { configuration } = useConfiguration();
+  const [botLanguages, setBotLanguages] = useState<any>(null);
 
   const fetchBotLanguages = useCallback(() => {
     return new Promise(() => {
