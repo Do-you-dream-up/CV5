@@ -21,6 +21,7 @@ import { eventOnSecondaryClosed } from '../events/chatboxIndex';
 import { flattenSteps } from '../tools/steps';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
+import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
 import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
@@ -103,6 +104,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
+  const { fetchBotLanguages, botLanguages } = useBotInfo();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
@@ -129,9 +131,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
+  useEffect(() => {
+    serverStatusChecked && fetchBotLanguages();
+  }, [serverStatusChecked]);
+
   const { exec, forceExec } = usePromiseQueue(
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled && serverStatusChecked,
+    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
   );
 
   const isLastElementOfTypeAnimationWriting = (list) => {

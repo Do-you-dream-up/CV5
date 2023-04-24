@@ -723,6 +723,16 @@ export default new (class Dydu {
   };
 
   /**
+   * getBotLanguages
+   *
+   * @returns {Promise}
+   */
+  getBotLanguages = () => {
+    const path = `/account/dydubox/bots/language?botUUID=${this.getBotId()}`;
+    return this.emit(API.get, path);
+  };
+
+  /**
    * getSaml2Status - Get auth status.
    *
    * @param {string} text - Input to send.
