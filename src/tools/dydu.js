@@ -116,6 +116,7 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
+    this.botLanguages = null;
     this.onServerChangeFn = null;
     this.serverStatusChek = null;
     this.tokenRefresher = null;
@@ -132,6 +133,10 @@ export default new (class Dydu {
     this.lastResponse = null;
     this.qualificationMode = false;
     this.initInfos();
+  }
+
+  setBotLanguages(languages) {
+    this.botLanguages = languages;
   }
 
   setServerStatusCheck(serverStatusChek) {
@@ -497,7 +502,8 @@ export default new (class Dydu {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
       application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
-    return this.locale || application?.defaultLanguage;
+    const locale = this.botLanguages.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
+    return locale;
   };
 
   /**

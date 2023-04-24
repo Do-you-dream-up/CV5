@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
@@ -20,11 +20,15 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<any>(null);
 
+  useEffect(() => {
+    botLanguages && dydu.setBotLanguages(botLanguages);
+  }, [botLanguages]);
+
   const fetchBotLanguages = useCallback(() => {
     return new Promise(() => {
       dydu
         .getBotLanguages()
-        .then((res) => setBotLanguages(res))
+        .then((res) => setBotLanguages(res.map((lang) => lang.id)))
         .catch(() => setBotLanguages(configuration?.application?.defaultLanguage));
     });
   }, []);
