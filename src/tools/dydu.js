@@ -961,7 +961,7 @@ export default new (class Dydu {
         correctedJsonText = correctedJsonText.replace(/api:/g, '"api":');
         correctedJsonText = correctedJsonText.replace(/params:/g, '"params":');
         const responseObject = JSON.parse(correctedJsonText);
-        if (responseObject && responseObject.status === 'fail') {
+        if (responseObject && responseObject.params.status === 'fail') {
           console.log('La requête a échoué :', responseObject);
           window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
           throw new Error('La requête a échoué');
