@@ -7,6 +7,9 @@
     "more": "More information",
     "ok": "Thanks"
   },
+  "avatar": {
+    "altAnswer": "replied"
+  },
   "bubble": {
     "sidebar": {
       "more": "More",
