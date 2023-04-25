@@ -210,6 +210,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   });
   const idLabel = 'dydu-window-label-bot';
   const tabIndex = parseInt('0', 10);
+
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
       <span className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
@@ -217,42 +218,41 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       </span>
       <div>
         <div className={classes.container}>
-          <>
-            <Header
-              dialogRef={dialogRef}
-              gdprRef={gdprRef}
-              extended={extended}
-              minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
-              onClose={onClose}
-              onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
-              onMinimize={onMinimize}
-            />
-            <GdprDisclaimer gdprRef={gdprRef}>
-              <Onboarding render>
-                <div
-                  tabIndex={tabIndex}
-                  className={c('dydu-chatbox-body', classes.body, {
-                    [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
-                  })}
-                >
-                  <Tab
-                    component={Dialog}
-                    dialogRef={dialogRef}
-                    interactions={interactions}
-                    onAdd={add}
-                    open={open}
-                    render
-                    value="dialog"
-                    children
-                  />
-                  <Tab component={Contacts} value="contacts" children render={false} />
-                  {poweredByActive && <PoweredBy />}
-                </div>
-                {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} focus />}
-              </Onboarding>
-            </GdprDisclaimer>
-          </>
+          <Header
+            dialogRef={dialogRef}
+            gdprRef={gdprRef}
+            extended={extended}
+            minimal={onboardingActive && onboardingEnable}
+            onClose={onClose}
+            onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
+            onMinimize={onMinimize}
+          />
+          <GdprDisclaimer gdprRef={gdprRef}>
+            <Onboarding render>
+              <div
+                tabIndex={tabIndex}
+                className={c('dydu-chatbox-body', classes.body, {
+                  [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
+                })}
+              >
+                <Tab
+                  component={Dialog}
+                  dialogRef={dialogRef}
+                  interactions={interactions}
+                  onAdd={add}
+                  open={open}
+                  render
+                  value="dialog"
+                  children
+                />
+                <Tab component={Contacts} value="contacts" children render={false} />
+                {poweredByActive && <PoweredBy />}
+              </div>
+              {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+              {!current && <Footer onRequest={addRequest} onResponse={addResponse} focus />}
+            </Onboarding>
+          </GdprDisclaimer>
+
           <Modal />
           {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
         </div>
