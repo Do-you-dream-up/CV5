@@ -158,7 +158,8 @@
         "stop": "Record stop"
       }
     },
-    "placeholder": "Type your message here"
+    "placeholder": "Type your message here",
+    "label": "Write your answer"
   },
   "interaction": {
     "languageChange": "From now on, I will answer you in",
