@@ -212,9 +212,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const idLabel = 'dydu-window-label-bot';
   const tabIndex = parseInt('0', 10);
   useEffect(() => {
-    if (gdprPassed === null && !configuration?.gdprDisclaimer.enable) setGdprPassed && setGdprPassed(true);
+    if (gdprPassed === null && !configuration?.gdprDisclaimer.enable) {
+      setGdprPassed && setGdprPassed(true);
+      console.log('🚀 ~ file: Chatbox.tsx:216 ~ useEffect ~ gdprPassed in useEffect:', gdprPassed);
+    }
   }, [gdprPassed, setGdprPassed]);
-
+  console.log('gdprPassed', gdprPassed);
+  console.log('configuration?.gdprDisclaimer.enable', configuration?.gdprDisclaimer.enable);
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
       <span className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
