@@ -190,6 +190,23 @@ export function computeConditionCompliance(condition, ruleId, externInfos, child
 
 export function processConditionCompliance(condition, ruleId, externInfos) {
   let result = new ComplianceInfo();
+
+  if (!condition || typeof condition !== 'object' || !Object.prototype.hasOwnProperty.call(condition, 'type')) {
+    return result;
+  }
+
+  if (!ruleId || typeof ruleId !== 'string') {
+    return result;
+  }
+
+  if (!externInfos || typeof externInfos !== 'object') {
+    return result;
+  }
+
+  if (!Array.isArray(rulesDefinition)) {
+    return result;
+  }
+
   for (let i = 0; i < rulesDefinition.length; i++) {
     const ruleDefinition = rulesDefinition[i];
 

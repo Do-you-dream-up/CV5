@@ -30,12 +30,23 @@ const usePushrules = () => {
 
   function extractTypeValues(arr) {
     const typeValues: string[] = [];
+    if (!Array.isArray(arr)) {
+      return typeValues;
+    }
     for (let i = 0; i < arr.length; i++) {
-      const conditions = arr[i]['conditions'];
-      for (let j = 0; j < conditions.length; j++) {
-        const typeValue: string = conditions[j]['type'];
-        if (typeValue) {
-          typeValues.push(typeValue);
+      const obj = arr[i];
+      if (obj && Object.prototype.hasOwnProperty.call(obj, 'conditions')) {
+        const conditions = obj['conditions'];
+        if (Array.isArray(conditions)) {
+          for (let j = 0; j < conditions.length; j++) {
+            const condition = conditions[j];
+            if (condition && Object.prototype.hasOwnProperty.call(condition, 'type')) {
+              const typeValue: string = condition['type'];
+              if (typeValue) {
+                typeValues.push(typeValue);
+              }
+            }
+          }
         }
       }
     }
