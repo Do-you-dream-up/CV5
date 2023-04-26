@@ -8,17 +8,39 @@ import { useLocation } from 'react-use';
 const usePushrules = () => {
   const [pushrules, setPushrules] = useState<[] | null>(null);
   const location = useLocation();
+  const [ruleType, setRuleType] = useState<string[]>();
 
   useEffect(() => {
     if (pushrules) {
       clearCurrentTimeout();
-      processRules(pushrules, getExternalInfos(new Date().getTime()));
+      const currentPage = 'CurrentPage' as const;
+      if (ruleType && ruleType?.includes(currentPage)) {
+        setTimeout(() => {
+          processRules(pushrules, getExternalInfos(new Date().getTime()));
+        }, 1500);
+      } else {
+        processRules(pushrules, getExternalInfos(new Date().getTime()));
+      }
     }
-  }, [pushrules, location]);
+  }, [pushrules, location, ruleType]);
 
   const canRequest = useMemo(() => {
     return !isDefined(pushrules);
   }, [pushrules]);
+
+  function extractTypeValues(arr) {
+    const typeValues: string[] = [];
+    for (let i = 0; i < arr.length; i++) {
+      const conditions = arr[i]['conditions'];
+      for (let j = 0; j < conditions.length; j++) {
+        const typeValue: string = conditions[j]['type'];
+        if (typeValue) {
+          typeValues.push(typeValue);
+        }
+      }
+    }
+    return typeValues;
+  }
 
   const fetch = useCallback(
     (update = false) => {
@@ -31,6 +53,10 @@ const usePushrules = () => {
             try {
               const rules = JSON.parse(data);
               if (isEmptyArray(rules)) return resolve([]);
+
+              const ruleTypes = extractTypeValues(rules);
+              setRuleType(ruleTypes);
+
               setPushrules(rules);
             } catch (e) {
               setPushrules([]);
@@ -45,6 +71,7 @@ const usePushrules = () => {
   return {
     pushrules,
     fetch,
+    ruleType,
   };
 };
 

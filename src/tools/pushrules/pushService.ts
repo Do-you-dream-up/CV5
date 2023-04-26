@@ -192,6 +192,7 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
   let result = new ComplianceInfo();
   for (let i = 0; i < rulesDefinition.length; i++) {
     const ruleDefinition = rulesDefinition[i];
+
     if (condition.type === ruleDefinition.name) {
       result = new ComplianceInfo(ruleDefinition.processDelays(condition, ruleId, externInfos));
       break;
