@@ -35,12 +35,12 @@ const usePushrules = () => {
     }
     for (let i = 0; i < arr.length; i++) {
       const obj = arr[i];
-      if (obj && Object.prototype.hasOwnProperty.call(obj, 'conditions')) {
+      if (obj && obj?.conditions) {
         const conditions = obj['conditions'];
         if (Array.isArray(conditions)) {
           for (let j = 0; j < conditions.length; j++) {
             const condition = conditions[j];
-            if (condition && Object.prototype.hasOwnProperty.call(condition, 'type')) {
+            if (condition && condition?.type) {
               const typeValue: string = condition['type'];
               if (typeValue) {
                 typeValues.push(typeValue);
