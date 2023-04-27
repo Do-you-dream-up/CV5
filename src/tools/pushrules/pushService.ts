@@ -7,17 +7,14 @@ import { VIEW_MODE } from '../constants';
 import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
+import { PushRule } from '../hooks/usePushrules';
 
 export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 export const currentTimer: any = {};
 export const externalInfoProcessors = [...ExternalInfoProcessor];
 export const externalInfos = {};
 export const rulesDefinition = [...(rulesDefinitionsImport || [])];
-interface Rule {
-  conditions?: any;
-  kId?: number;
-  bgpId?: number;
-}
+
 interface ExternInfos {
   windowLocation?: string;
   durationSinceLastVisit?: number;
@@ -42,15 +39,15 @@ export function getExternalInfos(now) {
   return externalInfos;
 }
 
-export function processGoalPage(rule: Rule, externInfos: ExternInfos) {
+export function processGoalPage(rule: PushRule, externInfos: ExternInfos) {
   const id = rule.bgpId;
-  const urlToCheck = rule.conditions[0].param_1;
+  const urlToCheck = rule?.conditions?.[0].param_1;
   if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
     window.reword('_goalpage_:' + id, { hide: true });
   }
 }
 
-export function processRules(rules, externInfos: ExternInfos) {
+export function processRules(rules: PushRule[], externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
   const bestCompliance = new ComplianceInfo();
@@ -61,7 +58,7 @@ export function processRules(rules, externInfos: ExternInfos) {
       processGoalPage(rule, externInfos);
     } else {
       const conditionsContainer = {
-        children: rule.conditions,
+        children: rule?.conditions,
         type: 'Container',
       };
       const ruleCompliance = computeRuleCompliance(conditionsContainer, id, externInfos);
@@ -190,23 +187,6 @@ export function computeConditionCompliance(condition, ruleId, externInfos, child
 
 export function processConditionCompliance(condition, ruleId, externInfos) {
   let result = new ComplianceInfo();
-
-  if (!condition || typeof condition !== 'object' || !Object.prototype.hasOwnProperty.call(condition, 'type')) {
-    return result;
-  }
-
-  if (!ruleId || typeof ruleId !== 'string') {
-    return result;
-  }
-
-  if (!externInfos || typeof externInfos !== 'object') {
-    return result;
-  }
-
-  if (!Array.isArray(rulesDefinition)) {
-    return result;
-  }
-
   for (let i = 0; i < rulesDefinition.length; i++) {
     const ruleDefinition = rulesDefinition[i];
 
