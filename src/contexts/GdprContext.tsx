@@ -1,10 +1,11 @@
-import { ReactElement, createContext, useCallback, useState } from 'react';
+import { Dispatch, ReactElement, SetStateAction, createContext, useCallback, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import { useEvent } from './EventsContext';
 
 interface GdprContextProps {
   gdprPassed?: boolean | null;
+  setGdprPassed?: Dispatch<SetStateAction<boolean | null>>;
   onAccept?: () => void;
   onDecline?: () => void;
 }
@@ -36,6 +37,7 @@ export function GdprProvider({ children }: GdprProviderProps) {
         gdprPassed,
         onAccept,
         onDecline,
+        setGdprPassed,
       }}
     />
   );

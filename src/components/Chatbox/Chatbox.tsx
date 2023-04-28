@@ -63,7 +63,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
   const { active: onboardingActive } = useContext(OnboardingContext);
-  const { gdprPassed } = useContext(GdprContext);
+  const { gdprPassed, setGdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration?.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState<boolean>(false);
@@ -202,6 +202,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggle,
     toggleSecondary,
     gdprPassed,
+    setGdprPassed,
   ]);
 
   const classnames = c('dydu-chatbox', classes.root, {
@@ -210,6 +211,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   });
   const idLabel = 'dydu-window-label-bot';
   const tabIndex = parseInt('0', 10);
+
+  useEffect(() => {
+    if (gdprPassed === null && !configuration?.gdprDisclaimer.enable) {
+      setGdprPassed && setGdprPassed(true);
+    }
+  }, [gdprPassed, setGdprPassed]);
+
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
       <span className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
