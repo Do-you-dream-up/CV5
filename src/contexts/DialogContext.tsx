@@ -154,10 +154,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
     return configuration?.pushrules.active && !isDefined(pushrules);
   }, [configuration, pushrules]);
 
-  const shouldTriggerPushRules = canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
+  const shouldTriggerPushRules = useMemo(() => {
+    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeContent]);
 
   useEffect(() => {
-    if (shouldTriggerPushRules) fetchPushrules && fetchPushrules();
+    if (shouldTriggerPushRules) {
+      fetchPushrules && fetchPushrules();
+    }
   }, [fetchPushrules, shouldTriggerPushRules]);
 
   const toggleSecondary = useCallback(
