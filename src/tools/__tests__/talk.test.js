@@ -99,7 +99,6 @@ describe('talk', () => {
 
   it('should call window.dydu.lorem.split() when #split# is passed to talk', () => {
     talk('#split#');
-    console.log('🚀 ~ file: talk.test.js:101 ~ it ~ window:', window.dydu);
     expect(window.dydu.lorem.split).toHaveBeenCalled();
   });
 
