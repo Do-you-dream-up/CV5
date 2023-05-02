@@ -100,7 +100,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           {!!showCounter && (
             <div id="characters-remaining">
               <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
-              <span className={c('dydu-counter-hidden', classes.hidden)}>{`${counterRemaining}`}</span>
+              <span className={c('dydu-counter-hidden', classes.hidden)} role="status">{`${counterRemaining}`}</span>
             </div>
           )}
         </div>
@@ -170,10 +170,22 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
+    const nodeElementSuggestionsChildren = containerRef?.current?.suggestionsContainer?.children;
     if (isDefined(nodeElementSuggestionsContainer)) {
       nodeElementSuggestionsContainer.setAttribute('aria-label', 'dydu-input-suggestions-container');
       nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
       nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
+      if (nodeElementSuggestionsChildren.length === 0) {
+        nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
+      } else {
+        nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
+      }
+    }
+
+    if (nodeElementSuggestionsChildren.length === 0) {
+      nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
+    } else {
+      nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
     }
 
     const nodeElementTextareaContainer = textareaRef?.current;
@@ -201,7 +213,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const actions: ActionProps[] = [
     {
-      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt="submit" />,
+      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt={actionSend} />,
       type: 'submit',
       variant: 'icon',
       title: actionSend,
