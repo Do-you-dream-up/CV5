@@ -27,7 +27,7 @@ export default function ContactsList({ icon, id, list, title }) {
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">
                 {item.socialText}
               </a>
-              <Icon icon={icons.openInNew} alt="open_in_new" />
+              <Icon icon={icons.openInNew} alt="" />
             </div>
           )}
         </div>
