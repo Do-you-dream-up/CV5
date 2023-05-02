@@ -8,8 +8,8 @@ export interface BotInfoProviderProps {
 }
 
 export interface BotInfoContextProps {
-  fetchBotLanguages: any;
-  botLanguages: any;
+  fetchBotLanguages: () => void;
+  botLanguages: string[] | null;
 }
 
 export const useBotInfo = () => useContext<BotInfoContextProps>(BotInfoContext);
@@ -18,7 +18,8 @@ export const BotInfoContext = createContext({} as BotInfoContextProps);
 
 export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
-  const [botLanguages, setBotLanguages] = useState<any>(null);
+  const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
+  console.log('🚀 ~ file: BotInfoContext.tsx:22 ~ BotInfoProvider ~ botLanguages:', botLanguages);
 
   useEffect(() => {
     botLanguages && dydu.setBotLanguages(botLanguages);
@@ -28,8 +29,8 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
     return new Promise(() => {
       dydu
         .getBotLanguages()
-        .then((res) => setBotLanguages(res.map((lang) => lang.id)))
-        .catch(() => setBotLanguages(configuration?.application?.defaultLanguage));
+        .then((res) => setBotLanguages(res.filter((lang) => lang.isAvailable).map((lang) => lang.id)))
+        .catch(() => setBotLanguages(configuration?.application?.defaultLanguage || ['fr']));
     });
   }, []);
 
