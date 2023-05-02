@@ -502,7 +502,7 @@ export default new (class Dydu {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
       application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
-    const locale = this.botLanguages.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
+    const locale = this.botLanguages?.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
     return locale;
   };
 
