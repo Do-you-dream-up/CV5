@@ -19,7 +19,6 @@ export const BotInfoContext = createContext({} as BotInfoContextProps);
 export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
-  console.log('🚀 ~ file: BotInfoContext.tsx:22 ~ BotInfoProvider ~ botLanguages:', botLanguages);
 
   useEffect(() => {
     botLanguages && dydu.setBotLanguages(botLanguages);
