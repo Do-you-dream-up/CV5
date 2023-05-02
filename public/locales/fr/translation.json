@@ -7,6 +7,9 @@
     "more": "En savoir plus",
     "ok": "Merci"
   },
+  "avatar": {
+    "altAnswer": "a répondu"
+  },
   "bubble": {
     "sidebar": {
       "more": "Plus",
@@ -155,7 +158,8 @@
         "stop": "Fin de l'enregistrement"
       }
     },
-    "placeholder": "Tapez votre message ici"
+    "placeholder": "Tapez votre message ici",
+    "label": "Ecrire sa réponse"
   },
   "interaction": {
     "languageChange": "A partir de maintenant, je vous répondrai en",

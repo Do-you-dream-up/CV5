@@ -27,14 +27,10 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
 
-  const printConversation = () => {
-    dydu.printHistory();
-  };
-
   const items = [
     {
       icon: icons?.printer,
-      onClick: interactions?.length > 1 ? () => printConversation() : null,
+      onClick: interactions?.length > 1 ? () => dydu.printHistory() : null,
       text: print,
       when: !!_printConversation,
     },

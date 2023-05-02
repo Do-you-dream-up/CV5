@@ -3,6 +3,7 @@ import { isBoolean } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
 import useStyles from './styles';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Avatar to display in the conversation. Usually next to the conversation
@@ -21,9 +22,11 @@ interface AvatarProps {
 
 const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
   const { configuration } = useConfiguration();
+  const { t } = useTranslation();
   const classes: any = useStyles({ configuration, type });
   const background = configuration?.avatar[type]?.background;
-
+  const answerTextAlt = t('avatar.altAnswer');
+  const altText = configuration?.interaction?.NameBot ? configuration?.interaction?.NameBot + ' ' + answerTextAlt : '';
   const _path = useMemo(() => {
     if (!linkAvatarDependOnType?.includes('/null') && type !== 'request') {
       return linkAvatarDependOnType;
@@ -56,7 +59,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
 
   return (
     <div className={_className} id={`dydu-avatar-${type}`}>
-      {!!_path && <img alt="" className="dydu-avatar-image" src={_path} />}
+      {!!_path && <img alt={altText} className="dydu-avatar-image" src={_path} />}
     </div>
   );
 };

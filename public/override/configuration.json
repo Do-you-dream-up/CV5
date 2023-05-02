@@ -212,7 +212,6 @@
   "spaces": {
     "active": true,
     "detection": [
-
       {
         "active": false,
         "mode": "cookie",
