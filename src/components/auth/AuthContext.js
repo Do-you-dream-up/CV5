@@ -3,10 +3,12 @@ import { currentLocationContainsCodeParameter, currentLocationContainsError, isD
 
 import PropTypes from 'prop-types';
 import Storage from './Storage';
+import axios from 'axios';
 import dydu from '../../tools/dydu';
 import { isLoadedFromChannels } from '../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from './hooks/useAuthorizeRequest';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useTokenRequest from './hooks/useTokenRequest';
 import useUserInfo from './hooks/useUserInfo';
 
@@ -15,12 +17,16 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children, configuration }) {
   const [token, setToken] = useState(Storage.loadToken());
+  const { configuration: appConfiguration } = useConfiguration();
+  const [urlConfig, setUrlConfig] = useState(Storage.loadUrls() || null);
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
-  const { authorize } = useAuthorizeRequest(configuration);
-  const { fetchToken, tokenRetries } = useTokenRequest(configuration);
-  const { getUserInfoWithToken } = useUserInfo(configuration);
+  const authConfig = { ...configuration, ...urlConfig };
+
+  const { authorize } = useAuthorizeRequest(authConfig);
+  const { fetchToken, tokenRetries } = useTokenRequest(authConfig);
+  const { getUserInfoWithToken } = useUserInfo(authConfig);
 
   useEffect(() => {
     if (tokenRetries > 3) {
@@ -28,12 +34,24 @@ export function AuthProvider({ children, configuration }) {
     }
   }, [tokenRetries]);
 
+  const fetchUrlConfig = () =>
+    axios.get(configuration.discoveryUrl).then(({ data }) => {
+      const config = {
+        authUrl: data?.authorization_endpoint,
+        tokenUrl: data?.token_endpoint,
+      };
+      Storage.saveUrls(config);
+      setUrlConfig(config);
+    });
+
   useEffect(() => {
+    appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
     dydu.setOidcLogin(authorize);
   }, []);
 
   useEffect(() => {
     const canRequestToken =
+      urlConfig &&
       currentLocationContainsCodeParameter() &&
       Storage.containsPkce() &&
       !isDefined(token?.access_token) &&
@@ -73,9 +91,9 @@ export function AuthProvider({ children, configuration }) {
       isLoggedIn,
       login,
       token,
-      ...configuration,
+      ...authConfig,
     }),
-    [configuration, isLoggedIn, login, token, userInfo],
+    [authConfig, isLoggedIn, login, token, userInfo],
   );
 
   return <AuthContext.Provider value={dataContext}>{children}</AuthContext.Provider>;
@@ -113,8 +131,7 @@ AuthProvider.propTypes = {
     clientId: PropTypes.string,
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
-    authUrl: PropTypes.string,
-    tokenUrl: PropTypes.string,
+    discoveryUrl: PropTypes.string,
     scope: PropTypes.array,
   }),
 };

@@ -419,6 +419,10 @@ export default new (class Dydu {
    */
   getClientId = () => {
     const clientIdKey = Local.clientId.getKey(this.infos);
+    const samlInfo = Local.saml.load();
+    const oidcInfo = Storage.loadToken();
+    console.log('🚀 ~ file: dydu.js:424 ~ Dydu ~ samlInfo:', samlInfo);
+    console.log('🚀 ~ file: dydu.js:426 ~ Dydu ~ oidcInfo:', oidcInfo);
     if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey);
     return Local.clientId.load(clientIdKey);
   };

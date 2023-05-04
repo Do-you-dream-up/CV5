@@ -46,8 +46,7 @@ declare namespace Models {
     clientSecret: string;
     pkceActive: boolean;
     pkceMode: string;
-    authUrl: string;
-    tokenUrl: string;
+    discoveryUrl: string;
     scope: string[];
   }
 
@@ -314,6 +313,7 @@ declare namespace Models {
     pkceMode: string;
     authUrl: string;
     tokenUrl: string;
+    discoveryUrl: string;
     scopes: string[];
     withAuth: boolean;
   }

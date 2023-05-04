@@ -47,8 +47,7 @@ const App = () => {
       clientSecret: configuration?.oidc?.clientSecret,
       pkceActive: configuration?.oidc?.pkceActive,
       pkceMode: configuration?.oidc?.pkceMode,
-      authUrl: configuration?.oidc.authUrl,
-      tokenUrl: configuration?.oidc.tokenUrl,
+      discoveryUrl: configuration?.oidc.discoveryUrl,
       scope: configuration?.oidc?.scopes,
     };
   }, [configuration?.oidc?.scopes]);

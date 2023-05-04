@@ -174,8 +174,7 @@
     "clientSecret": "",
     "pkceActive": true,
     "pkceMode": "S256",
-    "authUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/oauth2/v2.0/authorize",
-    "tokenUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/oauth2/v2.0/token",
+    "discoveryUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/v2.0/.well-known/openid-configuration",
     "scopes": ["openid"],
     "withAuth": true
   },
