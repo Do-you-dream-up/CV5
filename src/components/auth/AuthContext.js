@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from './helpers';
 
 import PropTypes from 'prop-types';
@@ -22,7 +22,7 @@ export function AuthProvider({ children, configuration }) {
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
-  const authConfig = { ...configuration, ...urlConfig };
+  const authConfig = useMemo(() => ({ ...configuration, ...urlConfig }), [urlConfig]);
 
   const { authorize } = useAuthorizeRequest(authConfig);
   const { fetchToken, tokenRetries } = useTokenRequest(authConfig);
@@ -45,8 +45,11 @@ export function AuthProvider({ children, configuration }) {
     });
 
   useEffect(() => {
-    appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
     dydu.setOidcLogin(authorize);
+  }, []);
+
+  useLayoutEffect(() => {
+    appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
   }, []);
 
   useEffect(() => {
@@ -62,15 +65,12 @@ export function AuthProvider({ children, configuration }) {
         setIsLoggedIn(true);
         setToken(tkn);
       });
-  }, [fetchToken, token, token?.access_token]);
+  }, [fetchToken, token, token?.access_token, urlConfig]);
 
   useEffect(() => {
     if (isLoggedIn && token) {
       try {
         const userInfo = jwtDecode(token?.id_token);
-        const access_token = jwtDecode(token?.access_token);
-        console.log('🚀 ~ file: AuthContext.js:54 ~ useEffect ~ access_token:', access_token);
-        console.log('🚀 ~ file: AuthContext.js:53 ~ useEffect ~ userInfo:', userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.error(error);
@@ -80,10 +80,9 @@ export function AuthProvider({ children, configuration }) {
 
   const login = useCallback(() => {
     const canRequestAuthorize =
-      !isLoggedIn && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
-
+      urlConfig && !token && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
     if (tokenRetries > 3 || canRequestAuthorize) authorize();
-  }, [authorize, isLoggedIn, tokenRetries]);
+  }, [authorize, isLoggedIn, tokenRetries, urlConfig]);
 
   const dataContext = useMemo(
     () => ({
@@ -91,6 +90,7 @@ export function AuthProvider({ children, configuration }) {
       isLoggedIn,
       login,
       token,
+      urlConfig,
       ...authConfig,
     }),
     [authConfig, isLoggedIn, login, token, userInfo],
@@ -100,11 +100,11 @@ export function AuthProvider({ children, configuration }) {
 }
 
 export function AuthProtected({ children, enable = false }) {
-  const { isLoggedIn, login } = useAuth();
+  const { isLoggedIn, login, urlConfig } = useAuth();
 
   useEffect(() => {
     if (!isLoadedFromChannels()) {
-      if (!enable) return;
+      if (!enable || !urlConfig) return;
       if (!isLoggedIn) login();
     }
   }, [isLoggedIn, login]);
