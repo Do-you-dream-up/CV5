@@ -148,7 +148,7 @@
   },
   "input": {
     "actions": {
-      "send": "Envoyer votre message",
+      "send": "Envoyez votre message",
       "counterRemaining": "caractères restants",
       "record": {
         "pause": "Pause",
