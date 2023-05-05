@@ -29,7 +29,7 @@ export default function Tabs() {
   useEffect(() => {
     if (current === 1) event && event('contactDisplay');
   }, [current, event]);
-  const tabIndex = parseInt('0', 10);
+
   return (
     !!tabs.length && (
       <div className={c('dydu-tabs', classes.root)} id="dydu-tabs">
@@ -50,7 +50,7 @@ export default function Tabs() {
               key={index}
               onClick={select(key)}
               title={label}
-              tabIndex={tabIndex}
+              tabIndex={0}
               onKeyDown={onKeyDown}
               role="navigation"
               id="dydu-tab"
