@@ -3,6 +3,9 @@ import dydu from '../../tools/dydu';
 import { fireEvent } from '@testing-library/react';
 import { render } from '../../tools/test-utils';
 
+jest.mock('../../contexts/UserActionContext', () => ({
+  useUserAction: () => ({ tabbing: true }),
+}));
 describe('ModalFooterMenu', () => {
   const onResolveMock = jest.fn();
 
