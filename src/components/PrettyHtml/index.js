@@ -60,7 +60,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
       responsesBotContentArray.forEach((elementParent) => {
         if (elementParent === lastResponseBotContent) {
           const interactiveElementsArray = Array.from(elementParent.querySelectorAll('a'));
-
+          lastResponseBotContent.focus();
           interactiveElementsArray.forEach((elementChild) => {
             // focus() on carousel link make bugs on the width of the carousel or step actions
             if (
