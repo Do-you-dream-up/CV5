@@ -1,4 +1,4 @@
-import { createElement, useContext } from 'react';
+import { createElement, useContext, useEffect, useRef } from 'react';
 
 import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
@@ -10,12 +10,14 @@ import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 /**
  * Footer menu. Display a list of hidden features.
  */
 export default function ModalFooterMenu({ className, component, onResolve, ...rest }) {
   const { configuration } = useConfiguration();
+  const { getRgaaRef } = useUserAction();
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const close = t('footer.menu.close');
@@ -26,6 +28,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const spaces = t('footer.menu.spaces');
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions } = useContext(DialogContext);
+  const titleRef = useRef(null);
 
   const items = [
     {
@@ -54,14 +57,33 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
     },
   ];
 
+  useEffect(() => {
+    if (titleRef) {
+      titleRef.current?.focus();
+    }
+  }, []);
+
   return createElement(
     component,
     { className: c('dydu-footer-menu', className, classes.root), ...rest },
     <>
-      {title && <h2 children={title} className={classes.title} />}
-      <MenuList items={items} onClose={onResolve} />
+      {title && <h2 ref={titleRef} children={title} className={classes.title} tabIndex={0} />}
+      <MenuList
+        items={items}
+        onClose={() => {
+          onResolve();
+        }}
+      />
       <div children={title} className={classes.actions}>
-        <Button children={close} grow onClick={onResolve} />
+        <Button
+          tabIndex={0}
+          children={close}
+          grow
+          onClick={() => {
+            getRgaaRef && getRgaaRef('moreOptionsRef').current?.focus();
+            onResolve();
+          }}
+        />
       </div>
     </>,
   );
