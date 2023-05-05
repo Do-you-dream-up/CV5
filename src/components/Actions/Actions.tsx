@@ -52,11 +52,11 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
 
   return actions?.length > 0 ? (
     <div className={c('dydu-actions', _classes, className)} aria-labelledby={testId} role={role}>
-      {filteredActions.map(({ items, selected, type = 'button', title, testId, ...rest }, index) => {
+      {filteredActions.map(({ items, selected, type = 'button', title, testId, ...rest }) => {
         delete rest.when;
 
         const props: ButtonProps = {
-          key: index,
+          key: title,
           ...rest,
           title,
           type,
