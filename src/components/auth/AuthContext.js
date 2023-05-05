@@ -36,13 +36,25 @@ export function AuthProvider({ children, configuration }) {
 
   const fetchUrlConfig = () =>
     axios.get(configuration.discoveryUrl).then(({ data }) => {
+      Storage.clearUserInfo();
+      Storage.clearUrls();
       const config = {
         authUrl: data?.authorization_endpoint,
         tokenUrl: data?.token_endpoint,
+        userinfoUrl: data?.userinfo_endpoint,
       };
       Storage.saveUrls(config);
       setUrlConfig(config);
     });
+
+  const fetchUserinfo = () =>
+    axios
+      .get(urlConfig?.userinfoUrl, {
+        headers: {
+          Authorization: `Bearer ${token?.access_token}`,
+        },
+      })
+      .then(({ data }) => data && Storage.saveUserInfo(data));
 
   useEffect(() => {
     dydu.setOidcLogin(authorize);
@@ -51,6 +63,10 @@ export function AuthProvider({ children, configuration }) {
   useLayoutEffect(() => {
     appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
   }, []);
+
+  useEffect(() => {
+    token && urlConfig?.userinfoUrl && fetchUserinfo();
+  }, [token, urlConfig]);
 
   useEffect(() => {
     const canRequestToken =

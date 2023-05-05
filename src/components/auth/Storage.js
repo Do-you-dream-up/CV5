@@ -5,6 +5,7 @@ const store = localStorage;
 const PKCE_KEY = 'pkce';
 const TOKEN_KEY_ID = 'dydu-oauth-token-id';
 const AUTH_URL = 'dydu-oauth-url';
+const USER_INFO = 'dydu-user-info';
 const TOKEN_KEY_ACCESS = 'dydu-oauth-token-access';
 const TOKEN_KEY_REFRESH = 'dydu-oauth-token-refresh';
 
@@ -32,6 +33,18 @@ export default class Storage {
 
   static clearUrls() {
     store.removeItem(AUTH_URL);
+  }
+
+  static saveUserInfo = (info) => {
+    localStorage.setItem(USER_INFO, JSON.stringify(info));
+  };
+
+  static loadUserInfo() {
+    return JSON.parse(localStorage.getItem(USER_INFO));
+  }
+
+  static clearUserInfo() {
+    store.removeItem(USER_INFO);
   }
 
   static saveToken = (token) => {
