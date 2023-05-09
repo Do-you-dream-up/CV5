@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { READ_MORE_CARACTERS_TEXT } from '../../tools/constants';
 import ReadMore from '../ReadMore/ReadMore';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { uppercaseFirstLetter } from '../../tools/text';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { READ_MORE_CARACTERS_TEXT } from '../../tools/constants';
+
 interface ProductTemplateProps {
   classe?: string | null;
   html?: any;
@@ -51,7 +52,7 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
               maxChar={READ_MORE_CARACTERS_TEXT.readmore}
             />
           ) : (
-            <div dangerouslySetInnerHTML={{ __html: product.subtitle }} />
+            <p className={classes.txt} dangerouslySetInnerHTML={{ __html: product.subtitle }} />
           )}
         </div>
         <div className={c('dydu-product-template-button', classes.button)}>
