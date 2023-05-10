@@ -174,7 +174,7 @@
     "clientSecret": "",
     "pkceActive": false,
     "pkceMode": "",
-    "discoveryUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/v2.0/.well-known/openid-configuration",
+    "discoveryUrl": "",
     "scopes": [""],
     "withAuth": false
   },
