@@ -26,6 +26,8 @@ export default createUseStyles<any, any>((theme: any): any => ({
     },
   }),
   button: () => ({
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
     '&:hover:before': {
       backgroundColor: theme.palette.action.hover,
       bottom: 0,

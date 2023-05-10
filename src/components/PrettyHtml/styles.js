@@ -4,6 +4,8 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   root: {
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
     '@global': {
       '@font-face': [
         {

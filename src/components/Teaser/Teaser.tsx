@@ -131,9 +131,9 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
             })}
           >
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
-              <div className={c('dydu-teaser-button', classes.button)}>
+              <p className={c('dydu-teaser-button', classes.button)}>
                 <Skeleton children={title} hide={!ready} width="3em" />
-              </div>
+              </p>
             )}
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
               <div

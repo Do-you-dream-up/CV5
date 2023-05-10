@@ -116,7 +116,17 @@
   "gdpr": {
     "disclaimer": {
       "title": "Données personnelles",
-      "body": "<p>Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site.<br/><br/> Les informations que vous nous transmettez permettent de traiter votre demande.<br/><br/> Cependant, aucune donnée personnelle ou sensible pouvant permettre votre identification ne doit être communiquée dans cet outil (comme par exemple des informations sur votre état de santé, vos coordonnées bancaires, vos opinions ou convictions personnelles).</p>",
+      "body": [
+        {
+          "text": "Cette boîte de dialogue est là pour vous orienter du mieux possible sur notre site."
+        },
+        {
+          "text": "Les informations que vous nous transmettez permettent de traiter votre demande."
+        },
+        {
+          "text": "Cependant, aucune donnée personnelle ou sensible pouvant permettre votre identification ne doit être communiquée dans cet outil (comme par exemple des informations sur votre état de santé, vos coordonnées bancaires, vos opinions ou convictions personnelles)."
+        }
+      ],
       "cancel": "Je refuse",
       "ok": "J'accepte"
     },

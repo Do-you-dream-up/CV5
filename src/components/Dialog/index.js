@@ -46,13 +46,13 @@ export default function Dialog({ dialogRef, open, ...rest }) {
 
   return (
     <>
-      <div className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
+      <p className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
         {interactions.map((it, index) => ({ ...it, key: index }))}
         {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
         {prompt === 'spaces' && <Spaces />}
         {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
-      </div>
+      </p>
     </>
   );
 }
