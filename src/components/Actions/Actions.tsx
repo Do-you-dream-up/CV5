@@ -57,7 +57,7 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
         delete rest.when;
 
         const props: ButtonProps = {
-          key: index,
+          key: title || index,
           ...rest,
           title,
           type,

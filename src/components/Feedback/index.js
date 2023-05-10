@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 
 import Bubble from '../Bubble';
 import Button from '../Button/Button';
+import { COLOR_RGAA } from '../../tools/constants';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Icon from '../Icon/Icon';
@@ -118,10 +119,20 @@ export default function Feedback() {
       <div className="dydu-feedback">
         {showVote && (
           <div className={c('dydu-feedback-vote', classes.vote)}>
-            <Button color="error" onClick={onVoteNegative} variant="icon" data-testid="vote-buttons-down">
+            <Button
+              style={{ backgroundColor: `${COLOR_RGAA.error}` }}
+              onClick={onVoteNegative}
+              variant="icon"
+              data-testid="vote-buttons-down"
+            >
               <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt="downVote" />
             </Button>
-            <Button color="success" onClick={onVotePositive} variant="icon" data-testid="vote-buttons-up">
+            <Button
+              style={{ backgroundColor: `${COLOR_RGAA.success}` }}
+              onClick={onVotePositive}
+              variant="icon"
+              data-testid="vote-buttons-up"
+            >
               <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt="upVote" />
             </Button>
           </div>

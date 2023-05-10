@@ -73,5 +73,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
   title: () => ({
     fontSize: '1.2em',
     fontWeight: 'bold',
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
   }),
 }));

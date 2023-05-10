@@ -1,8 +1,8 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import { useConfiguration } from './ConfigurationContext';
 import icons from '../tools/icon-constants';
+import { useConfiguration } from './ConfigurationContext';
 
 const ITEM_KEY = {
   dialog: 'dialog',
