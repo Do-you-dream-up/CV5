@@ -36,6 +36,7 @@ export default function Tabs() {
         <div className={classes.indicator} />
         {tabs.map(({ icon, key }, index) => {
           const label = current === index ? t(`tabs.${key}`) + activeTab : t(`tabs.${key}`);
+
           const onKeyDown = (event) => {
             if (event.keyCode === 32 || event.keyCode === 13) {
               event.preventDefault();
@@ -61,7 +62,7 @@ export default function Tabs() {
                 })}
               >
                 {!!icon && (
-                  <Icon icon={icon} color={theme?.palette?.primary.text || ''} className={classes.icon} alt="contact" />
+                  <Icon icon={icon} color={theme?.palette?.primary.text || ''} className={classes.icon} alt={label} />
                 )}
                 {!!hasTitle && (
                   <Skeleton hide={!ready} variant="text" width="4em">

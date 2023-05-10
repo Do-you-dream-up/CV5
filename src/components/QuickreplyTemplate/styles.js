@@ -33,6 +33,10 @@ export default createUseStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     gap: '1em',
+    '& p': {
+      marginBlockStart: 0,
+      marginBlockEnd: 0,
+    },
   }),
   separator: () => ({
     width: '100%',
