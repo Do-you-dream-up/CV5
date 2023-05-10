@@ -169,14 +169,14 @@
     "sendGdprData": false
   },
   "oidc": {
-    "enable": true,
-    "clientId": "de84e65b-decd-41fb-852f-23b830a657a9",
+    "enable": false,
+    "clientId": "",
     "clientSecret": "",
-    "pkceActive": true,
-    "pkceMode": "S256",
+    "pkceActive": false,
+    "pkceMode": "",
     "discoveryUrl": "https://login.microsoftonline.com/55d7980d-43d0-4a83-b478-20d69fa794dc/v2.0/.well-known/openid-configuration",
-    "scopes": ["openid"],
-    "withAuth": true
+    "scopes": [""],
+    "withAuth": false
   },
   "saml": {
     "enable": false
