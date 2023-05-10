@@ -98,3 +98,8 @@ export const VIEW_MODE = {
 export const READ_MORE_CARACTERS_TEXT = {
   readmore: 85,
 };
+
+export const COLOR_RGAA = {
+  error: '#CD4242',
+  success: '#1A7451',
+};

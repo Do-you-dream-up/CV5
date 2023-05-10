@@ -2,6 +2,7 @@ import { AuthProtected, AuthProvider } from '../components/auth/AuthContext';
 import { JssProvider, ThemeProvider } from 'react-jss';
 import { RenderOptions, render, screen } from '@testing-library/react';
 
+import { BotInfoProvider } from '../contexts/BotInfoContext';
 import { ConfigurationProvider } from '../contexts/ConfigurationContext';
 import { EventsProvider } from '../contexts/EventsContext';
 import { ReactElement } from 'react';
@@ -37,13 +38,15 @@ export const ProviderWrapper = ({ children, customProp }: { children: any; custo
       <ThemeProvider theme={mergedTheme}>
         <ConfigurationProvider configuration={mergedConfiguration}>
           <ServerStatusProvider>
-            <AuthProvider configuration={mergedAuthConfiguration}>
-              <AuthProtected enable={mergedConfiguration?.oidc?.enable}>
-                <ViewModeProvider>
-                  <EventsProvider>{children}</EventsProvider>
-                </ViewModeProvider>
-              </AuthProtected>
-            </AuthProvider>
+            <BotInfoProvider>
+              <AuthProvider configuration={mergedAuthConfiguration}>
+                <AuthProtected enable={mergedConfiguration?.oidc?.enable}>
+                  <ViewModeProvider>
+                    <EventsProvider>{children}</EventsProvider>
+                  </ViewModeProvider>
+                </AuthProtected>
+              </AuthProvider>
+            </BotInfoProvider>
           </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>

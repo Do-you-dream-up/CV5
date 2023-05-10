@@ -1,11 +1,30 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import talk, { ACTIONS, meta } from '../talk';
 
 import Bowser from 'bowser';
 import dydu from '../dydu';
 
 describe('talk', () => {
+  const chatApi = {
+    reply: jest.fn(),
+    empty: jest.fn(),
+    split: jest.fn(),
+    standard: jest.fn(() => 'Lorem ipsum'),
+  };
+  const uiApi = {
+    secondary: jest.fn(),
+  };
+
+  window.dydu = {
+    lorem: chatApi,
+    chat: chatApi,
+    ui: uiApi,
+  };
   it('should return the meta information', () => {
-    const locale = dydu.getLocale();
+    const locale = dydu.getLocale() || '-';
     const userAgent = Bowser.getParser(window.navigator.userAgent);
     const { browser = {}, os = {}, platform = {} } = userAgent.parsedResult;
     const expectedHtml = [
@@ -21,22 +40,6 @@ describe('talk', () => {
       `<dt>Platform</dt><dd>${platform.type}</dd>`,
       '</dl>',
     ].join('');
-
-    const chatApi = {
-      reply: jest.fn(),
-      empty: jest.fn(),
-      split: jest.fn(),
-      standard: jest.fn(() => 'Lorem ipsum'),
-    };
-    const uiApi = {
-      secondary: jest.fn(),
-    };
-
-    window.dydu = {
-      lorem: chatApi,
-      chat: chatApi,
-      ui: uiApi,
-    };
 
     meta();
 

@@ -39,20 +39,17 @@ export default function QuickreplyTemplate({ html }) {
   return (
     <div className={c('dydu-quickreply-template', classes.quick)}>
       {!!text && (
-        <div
-          className={c('dydu-quickreply-template-content', classes.text)}
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
+        <p className={c('dydu-quickreply-template-content', classes.text)} dangerouslySetInnerHTML={{ __html: text }} />
       )}
       {separator && (
-        <div data-testid="separator" className={c('dydu-quickreply-template-separator', classes.separator)} />
+        <p data-testid="separator" className={c('dydu-quickreply-template-separator', classes.separator)} />
       )}
       {Object.keys(quick)
         .sort()
         .map((el, index) => {
           return (
             quick[el] && (
-              <div
+              <p
                 className={c('dydu-quickreply-template-buttons', classes.buttons)}
                 key={index}
                 dangerouslySetInnerHTML={{ __html: quick[el] }}

@@ -40,7 +40,7 @@ describe('internationalization', () => {
         lookupQuerystring: 'language',
         order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
       },
-      fallbackLng: 'en',
+      fallbackLng: 'fr',
       interpolation: { escapeValue: false },
       load: 'languageOnly',
       lowerCaseLng: true,
@@ -62,7 +62,7 @@ describe('internationalization', () => {
     const i18nextUseSpy = jest.spyOn(i18next, 'use');
     const i18nextInitSpy = jest.spyOn(i18next, 'init');
 
-    initI18N({ defaultLang: 'en' });
+    initI18N({ defaultLang: 'fr' });
 
     expect(i18nextUseSpy).toHaveBeenCalledTimes(3);
     expect(i18nextUseSpy).toHaveBeenCalledWith(initReactI18next);

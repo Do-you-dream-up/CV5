@@ -5,6 +5,11 @@ export default createUseStyles(() => ({
     outline: 'none',
   }),
   accessibility: () => ({
+    color: '#41479B',
+    cursor: 'pointer',
+    border: 'none',
+    fontSize: '16px',
+    background: 'inherit',
     '&:focus': {
       textDecoration: 'none !important',
     },

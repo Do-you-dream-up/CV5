@@ -20,5 +20,7 @@ export default createUseStyles((theme) => ({
     borderBottomWidth: 1,
     padding: [['.8em']],
     textAlign: 'center',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
   }),
 }));

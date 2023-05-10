@@ -116,6 +116,7 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
+    this.botLanguages = null;
     this.onServerChangeFn = null;
     this.serverStatusChek = null;
     this.tokenRefresher = null;
@@ -132,6 +133,10 @@ export default new (class Dydu {
     this.lastResponse = null;
     this.qualificationMode = false;
     this.initInfos();
+  }
+
+  setBotLanguages(languages) {
+    this.botLanguages = languages;
   }
 
   setServerStatusCheck(serverStatusChek) {
@@ -498,7 +503,8 @@ export default new (class Dydu {
       const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
       application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
     }
-    return this.locale || application?.defaultLanguage;
+    const locale = this.botLanguages?.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
+    return locale;
   };
 
   /**
@@ -578,19 +584,20 @@ export default new (class Dydu {
    *
    *
    */
+
   printHistory = async () => {
     const contextId = await this.getContextId();
     if (contextId) {
       const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
-      const ifrm = document.querySelector('.dydu-iframe') || document.createElement('iframe');
-      ifrm.setAttribute('class', 'dydu-iframe');
-      ifrm.setAttribute('style', 'display:none;');
-      ifrm.src = path;
+      // Create a new window to display the conversation history
+      const newWindow = window.open(path, '_blank');
 
-      if (!document.querySelector('.dydu-iframe')) {
-        const el = document.querySelector('.dydu-chatbox');
-        el.parentNode.insertBefore(ifrm, el);
+      // If the new window has been opened successfully, print its contents
+      if (newWindow) {
+        newWindow.addEventListener('load', () => {
+          newWindow.print();
+        });
       }
     }
   };
@@ -721,6 +728,16 @@ export default new (class Dydu {
   getServerStatus = () => {
     const path = `/serverstatus`;
     return this.emit(API.get, path, null, 5000);
+  };
+
+  /**
+   * getBotLanguages
+   *
+   * @returns {Promise}
+   */
+  getBotLanguages = () => {
+    const path = `/account/dydubox/bots/language?botUUID=${this.getBotId()}`;
+    return this.emit(API.get, path);
   };
 
   /**
@@ -1020,13 +1037,13 @@ export default new (class Dydu {
     try {
       const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
       locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
-      this.setLocale(locale, configuration.application.languages).catch(console.error);
+      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;
     } catch (e) {
       console.info('Error while initializing locale, fallback to browser locale', e);
-      this.setLocale(locale, configuration.application.languages).catch(console.error);
+      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
       this.locale = locale;
       initI18N({ defaultLang: this.locale });
       return this.locale;

@@ -5,7 +5,6 @@ import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
-import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +17,10 @@ interface GdprDisclaimerProps {
   className?: string;
   children?: any;
   gdprRef?: MutableRefObject<HTMLDivElement | undefined>;
+}
+
+interface BodyText {
+  text: string;
 }
 
 export default function GdprDisclaimer({
@@ -44,7 +47,7 @@ export default function GdprDisclaimer({
     },
     { children: t('gdpr.disclaimer.ok'), onClick: onAccept, id: 'dydu-disclaimer-ok' },
   ];
-  const body = sanitize(t('gdpr.disclaimer.body'));
+  const body: BodyText[] = t('gdpr.disclaimer.body');
 
   useEffect(() => {
     if (!gdprPassed) event?.('displayGdpr');
@@ -65,10 +68,16 @@ export default function GdprDisclaimer({
         <>
           {body && (
             <>
-              <h2 className={c('dydu-gdpr-disclaimer-title', classes.title)}>{titleDisclaimer}</h2>
+              <h2 tabIndex={0} className={c('dydu-gdpr-disclaimer-title', classes.title)}>
+                {titleDisclaimer}
+              </h2>
               <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
                 <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
-                  <p dangerouslySetInnerHTML={{ __html: body }} id={idLabel} />
+                  {body &&
+                    ready &&
+                    body.map((item) => (
+                      <p tabIndex={0} aria-label={item.text} dangerouslySetInnerHTML={{ __html: item.text }} />
+                    ))}
                 </Skeleton>
               </div>
             </>

@@ -7,20 +7,14 @@ import { VIEW_MODE } from '../constants';
 import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
+import { PushRule } from '../hooks/usePushrules';
 
 export const INTERACTION_EVENTS = ['mousemove', 'click', 'keyup'];
 export const currentTimer: any = {};
 export const externalInfoProcessors = [...ExternalInfoProcessor];
 export const externalInfos = {};
-export const rules: any = [];
 export const rulesDefinition = [...(rulesDefinitionsImport || [])];
-let canPush = true;
 
-interface Rule {
-  conditions?: any;
-  kId?: number;
-  bgpId?: number;
-}
 interface ExternInfos {
   windowLocation?: string;
   durationSinceLastVisit?: number;
@@ -29,30 +23,31 @@ interface ExternInfos {
   visitduration?: number;
 }
 
-//Rules from knowledge base
-export function addRule(rule: Rule) {
-  if (rule) {
-    rules.push(rule);
+export const clearCurrentTimeout = () => {
+  if (currentTimer.counter) {
+    clearTimeout(currentTimer.counter);
+    currentTimer.counter = null;
   }
-}
+};
 
 export function getExternalInfos(now) {
-  while (externalInfoProcessors.length > 0) {
-    const infoProcessor: any = externalInfoProcessors.pop();
+  const tmpExternalInfoProcessors = [...externalInfoProcessors];
+  while (tmpExternalInfoProcessors.length > 0) {
+    const infoProcessor: any = tmpExternalInfoProcessors.pop();
     infoProcessor(externalInfos, now);
   }
   return externalInfos;
 }
 
-export function processGoalPage(rule: Rule, externInfos: ExternInfos) {
+export function processGoalPage(rule: PushRule, externInfos: ExternInfos) {
   const id = rule.bgpId;
-  const urlToCheck = rule.conditions[0].param_1;
+  const urlToCheck = rule?.conditions?.[0].param_1;
   if (dydu.getContextId() && dydu.getContextId() !== '' && urlCompliant(urlToCheck, externInfos.windowLocation)) {
     window.reword('_goalpage_:' + id, { hide: true });
   }
 }
 
-export function processRules(externInfos: ExternInfos) {
+export function processRules(rules: PushRule[], externInfos: ExternInfos) {
   let bestDelayId;
   let bestIdleDelayId;
   const bestCompliance = new ComplianceInfo();
@@ -63,7 +58,7 @@ export function processRules(externInfos: ExternInfos) {
       processGoalPage(rule, externInfos);
     } else {
       const conditionsContainer = {
-        children: rule.conditions,
+        children: rule?.conditions,
         type: 'Container',
       };
       const ruleCompliance = computeRuleCompliance(conditionsContainer, id, externInfos);
@@ -194,6 +189,7 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
   let result = new ComplianceInfo();
   for (let i = 0; i < rulesDefinition.length; i++) {
     const ruleDefinition = rulesDefinition[i];
+
     if (condition.type === ruleDefinition.name) {
       result = new ComplianceInfo(ruleDefinition.processDelays(condition, ruleId, externInfos));
       break;
@@ -204,12 +200,12 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 export function pushKnowledge(ruleId) {
   const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
-  const shouldDisplay = canPush && !isDefined(Session.get(sessionKey));
+  const shouldDisplay = !isDefined(Session.get(sessionKey));
+  currentTimer.counter = null;
   if (shouldDisplay) {
     window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
     Session.set(sessionKey, ruleId);
-    canPush = false;
   }
 }
 

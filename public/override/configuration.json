@@ -1,7 +1,7 @@
 {
   "application": {
     "open": 1,
-    "languages": ["en", "fr"],
+    "languages": ["fr", "en"],
     "defaultLanguage": ["fr"],
     "getDefaultLanguageFromSite": false,
     "cdn": "https://cdn.doyoudreamup.com/chatbox/",
