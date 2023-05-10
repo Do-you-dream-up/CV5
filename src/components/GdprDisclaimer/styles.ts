@@ -14,8 +14,10 @@ export default createUseStyles({
   },
   body: {
     margin: '0 1em 0 1em',
-    display: 'flex',
     alignItems: 'center',
+    '& p': {
+      marginBottom: '20px',
+    },
   },
   title: {
     display: 'flex',
