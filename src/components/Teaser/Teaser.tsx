@@ -28,7 +28,7 @@ const TEASER_TYPES = {
 const Teaser = ({ open, toggle }: TeaserProps) => {
   const { configuration } = useConfiguration();
 
-  const event = useEvent()?.onEvent('teaser');
+  const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
@@ -132,9 +132,9 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
             })}
           >
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
-              <div className={c('dydu-teaser-button', classes.button)}>
+              <p className={c('dydu-teaser-button', classes.button)}>
                 <Skeleton children={title} hide={!ready} width="3em" />
-              </div>
+              </p>
             )}
             {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
               <div

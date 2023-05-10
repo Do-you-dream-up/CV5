@@ -220,9 +220,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   return (
     <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <span className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
+      <p className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
         {labelChatbot}
-      </span>
+      </p>
       <div>
         <div className={classes.container}>
           <>

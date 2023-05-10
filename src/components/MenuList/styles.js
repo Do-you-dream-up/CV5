@@ -17,6 +17,8 @@ export default createUseStyles((theme) => ({
     paddingLeft: '1.6em',
     paddingRight: '1.6em',
     paddingTop: '.8em',
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
   }),
   itemDisabled: () => ({
     color: theme.palette?.text?.disabled,
