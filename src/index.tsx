@@ -4,6 +4,7 @@ import { JssProvider, ThemeProvider } from 'react-jss';
 
 import App from './components/App/App';
 import Axios from 'axios';
+import { BotInfoProvider } from './contexts/BotInfoContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import ReactDOM from 'react-dom';
@@ -35,11 +36,13 @@ const renderApp = (theme) =>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
           <ServerStatusProvider>
-            <ViewModeProvider>
-              <EventsProvider>
-                <App />
-              </EventsProvider>
-            </ViewModeProvider>
+            <BotInfoProvider>
+              <ViewModeProvider>
+                <EventsProvider>
+                  <App />
+                </EventsProvider>
+              </ViewModeProvider>
+            </BotInfoProvider>
           </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>
