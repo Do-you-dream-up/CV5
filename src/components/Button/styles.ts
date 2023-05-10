@@ -65,6 +65,11 @@ export default createUseStyles<any, any>((theme: any): any => {
       position: 'relative',
     }),
 
+    txt: () => ({
+      marginBlockStart: 0,
+      marginBlockEnd: 0,
+    }),
+
     contained: ({ color = 'primary' }) => ({
       ...contained({ color }),
     }),

@@ -161,7 +161,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     },
     {
       children: <Icon icon={icons?.expand} color={iconColorWhite} alt="" />,
-
       onClick: () => onExpand(true)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,

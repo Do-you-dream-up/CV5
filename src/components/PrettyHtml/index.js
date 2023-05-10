@@ -85,7 +85,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
     { className: c(classes.root, className), ...rest },
     <>
       {children}
-      {<span className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></span>}
+      {<p className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></p>}
       {templateName === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
       {templateName === CAROUSSEL_TEMPLATE && <CarouselTemplate html={htmlContent} />}
       {templateName === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
@@ -95,7 +95,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
 }
 
 PrettyHtml.defaultProps = {
-  component: 'div',
+  component: 'p',
 };
 
 PrettyHtml.propTypes = {
