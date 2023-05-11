@@ -59,46 +59,4 @@ describe('AuthProvider', () => {
     const { getByText } = render(<div>Test Children</div>);
     expect(getByText('Test Children')).toBeDefined();
   });
-
-  // test('renders children when enable=true and user is logged in', () => {
-  //   const mockToken = {
-  //     access_token: jwtToken,
-  //     refresh_token: jwtToken,
-  //   };
-  //   Storage.saveToken(mockToken);
-
-  //   const { getByText } = render(<div>Protected Content</div>, {
-  //     configuration: {
-  //       oidc: {
-  //         enable: true,
-  //       },
-  //     },
-  //     auth: { clientId: 'test-client-id' },
-  //   });
-  //   expect(getByText('Protected Content')).toBeDefined();
-  // });
-
-  // test('renders children when enable=true and user is logged in but with false token', () => {
-  //   const mockToken = {
-  //     access_token: 'pasbon',
-  //     refresh_token: 'pasbon',
-  //   };
-  //   Storage.saveToken(mockToken);
-
-  //   const { getByText } = render(<div>Protected Content</div>, {
-  //     configuration: {
-  //       oidc: {
-  //         enable: true,
-  //       },
-  //     },
-  //     auth: { clientId: 'test-client-id' },
-  //   });
-  //   expect(getByText('Protected Content')).toBeDefined();
-  // });
-
-  // test('renders children when isLoadedFromChannels', () => {
-  //   window.dyduReferer = true;
-  //   const { getByText } = render(<div>Protected Content</div>);
-  //   expect(getByText('Protected Content')).toBeDefined();
-  // });
 });
