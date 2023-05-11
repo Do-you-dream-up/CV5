@@ -756,6 +756,22 @@ export default new (class Dydu {
     return this.emit(API.get, path);
   };
 
+  /**
+   * getSaml2UserInfo - Get userinfo.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  getSaml2UserInfo = (saml2Info_token) => {
+    const data = qs.stringify({
+      ...(this.getConfiguration()?.saml?.enable && { saml2_info: saml2Info_token }),
+      botUUID: BOT.id,
+    });
+    const path = `saml2/userinfo?${data}`;
+    return this.emit(API.get, path);
+  };
+
   #makeTLivechatTypingPayloadWithInput = async (input = '') => {
     if (!isDefined(input)) return;
     return {

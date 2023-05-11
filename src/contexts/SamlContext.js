@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
+import Storage from '../components/auth/Storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
@@ -14,7 +15,9 @@ export const SamlProvider = ({ children }) => {
   const { configuration } = useConfiguration();
 
   const [user, setUser] = useState(null);
+
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
+  const [userInfo, setUserInfo] = useState(Storage.loadUserInfo());
   const [redirectUrl, setRedirectUrl] = useState(null);
 
   const relayState = encodeURI(window.location.href);
@@ -26,7 +29,7 @@ export const SamlProvider = ({ children }) => {
 
   const checkSession = () => {
     try {
-      new Promise((resolve) => {
+      return new Promise(() => {
         dydu
           .getSaml2Status(saml2Info)
           .then((response) => {
@@ -36,9 +39,8 @@ export const SamlProvider = ({ children }) => {
               setSaml2Info(auth);
               Local.saml.save(auth);
               setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
-              resolve(true);
             } catch {
-              /* console.log('valid saml token'); */
+              // console.log('valid saml token');
             }
           })
           .catch((error) => {
@@ -48,6 +50,25 @@ export const SamlProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const fetchUserinfo = () => {
+    return new Promise(() => {
+      dydu
+        .getSaml2UserInfo(saml2Info)
+        .then((response) => {
+          try {
+            const data = response?.attribute || {};
+            setUserInfo(data);
+            response?.attribute && Storage.saveUserInfo(data);
+          } catch {
+            console.log('error Userinfo');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
   };
 
   useIdleTimer({
@@ -64,9 +85,13 @@ export const SamlProvider = ({ children }) => {
     }
   }, [redirectUrl]);
 
-  useEffect(async () => {
-    configuration?.saml?.enable && (await checkSession());
+  useEffect(() => {
+    configuration?.saml?.enable && checkSession();
   }, [configuration?.saml?.enable]);
+
+  useEffect(() => {
+    saml2Info && fetchUserinfo();
+  }, [saml2Info]);
 
   const value = {
     user,
@@ -80,7 +105,7 @@ export const SamlProvider = ({ children }) => {
 
   const renderChildren = () => {
     if (configuration?.saml?.enable) {
-      return !saml2Info ? <></> : children;
+      return !userInfo && !saml2Info ? <></> : children;
     }
     return children;
   };
