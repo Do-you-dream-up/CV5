@@ -38,7 +38,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   const should = ready && render && active;
   const { enable, items } = configuration?.onboarding || {};
   const steps: Steps[] = t('onboarding.steps');
-  const stepsFiltered = steps.filter((step, index) => !items?.[index]?.disabled);
+  const stepsFiltered = should && steps?.filter((step, index) => !items?.[index]?.disabled);
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
