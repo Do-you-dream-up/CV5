@@ -35,7 +35,7 @@ export function AuthProvider({ children, configuration }) {
   }, [tokenRetries]);
 
   const fetchUrlConfig = () =>
-    axios.get(configuration.discoveryUrl).then(({ data }) => {
+    axios.get(configuration.discoveryUrl)?.then(({ data }) => {
       Storage.clearUserInfo();
       Storage.clearUrls();
       const config = {
@@ -54,7 +54,7 @@ export function AuthProvider({ children, configuration }) {
           Authorization: `Bearer ${token?.access_token}`,
         },
       })
-      .then(({ data }) => data && Storage.saveUserInfo(data));
+      ?.then(({ data }) => data && Storage.saveUserInfo(data));
 
   useEffect(() => {
     dydu.setOidcLogin(authorize);
@@ -107,6 +107,8 @@ export function AuthProvider({ children, configuration }) {
       login,
       token,
       urlConfig,
+      fetchUrlConfig,
+      setUrlConfig,
       ...authConfig,
     }),
     [authConfig, isLoggedIn, login, token, userInfo],
