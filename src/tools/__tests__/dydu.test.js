@@ -578,6 +578,35 @@ describe('dydu.js', function () {
     });
   });
 
+  describe('getSaml2UserInfo', () => {
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['emit', 'getConfiguration']);
+    });
+    it('should GET request on /saml2/status with query parameter', async () => {
+      const expectedValue = 'saml2/userinfo';
+
+      await dydu.getSaml2UserInfo();
+
+      expect(spied.emit).toHaveBeenCalled();
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      expect(strContains(effectiveParamValue, expectedValue)).toEqual(true);
+    });
+    it('should send saml value in payload when saml is enabled', () => {
+      const c = new ConfigurationFixture();
+      c.enableSaml();
+
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+
+      const tokenValue = 'token-value';
+      dydu.getSaml2UserInfo(tokenValue);
+
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      expect(strContains(effectiveParamValue, tokenValue)).toEqual(true);
+    });
+  });
+
   describe('suggest', () => {
     it('should call |emit| for POST on /chat/search with bot id', () => {
       //GIVEN
