@@ -320,9 +320,17 @@ declare namespace Models {
 
   export interface ConfigurationOnboarding {
     enable: boolean;
-    image1: string;
-    image2: string;
-    image3: string;
+    items: ItemsImages[];
+  }
+
+  export interface ItemsImages {
+    disabled: boolean;
+    image: Images;
+  }
+
+  export interface Images {
+    src: string;
+    hidden: boolean;
   }
 
   export interface PoweredBy {

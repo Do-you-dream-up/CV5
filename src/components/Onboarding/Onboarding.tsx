@@ -36,13 +36,15 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   const classes = useStyles({ configuration });
   const { t, ready } = useTranslation('translation');
   const should = ready && render && active;
-  const { enable, image1, image2, image3 } = configuration?.onboarding || {};
+  const { enable, items } = configuration?.onboarding || {};
   const steps: Steps[] = t('onboarding.steps');
+  const stepsFiltered = steps.filter((step, index) => !items?.[index]?.disabled);
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
 
-  const configImage = index === 0 ? image1 : index === 1 ? image2 : image3;
+  const configImage = enable && items?.[index] && !items?.[index].image.hidden ? items?.[index].image.src : null;
+
   const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 
   useEffect(() => {
@@ -62,20 +64,20 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           <div className={c('dydu-onboarding-image', classes.image)}>
             <img src={path} alt={''} />
           </div>
-          <p className={c('dydu-onboarding-title', classes.title)}>{steps[index].title}</p>
+          <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered[index].title}</p>
           <div
             className={c('dydu-onboarding-body', classes.body)}
-            dangerouslySetInnerHTML={{ __html: sanitize(steps[index].body) }}
+            dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered[index].body) }}
           />
           <button type="button" onClick={onEnd} id="skip-onboarding">
             {skip}
           </button>
         </div>
         <div className={c('dydu-onboarding-actions', classes.actions)}>
-          {steps?.length > 1 && (
+          {stepsFiltered?.length > 1 && (
             <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
-              {steps &&
-                steps?.map((_, i) => (
+              {stepsFiltered &&
+                stepsFiltered?.map((_, i) => (
                   <div
                     data-testId={`testid-${i.toString()}`}
                     className={c('dydu-carousel-bullet', {
@@ -90,17 +92,19 @@ export default function Onboarding({ children, render }: OnboardingProps) {
                 ))}
             </ol>
           )}
-          <div className={c('dydu-onboarding-buttons', classes.buttons)}>
-            <Button
-              data-testId="previous"
-              children={previous}
-              disabled={!index}
-              secondary={true}
-              onClick={hasPrevious ? onPrevious : null}
-              id="onboarding-previous"
-            />
-            <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
-          </div>
+          {stepsFiltered.length > 1 ? (
+            <div className={c('dydu-onboarding-buttons', classes.buttons)}>
+              <Button
+                data-testId="previous"
+                children={previous}
+                disabled={!index}
+                secondary={true}
+                onClick={hasPrevious ? onPrevious : null}
+                id="onboarding-previous"
+              />
+              <Button children={next} onClick={hasNext ? onNext : onEnd} id="onboarding-next" />
+            </div>
+          ) : null}
         </div>
       </div>
     );
