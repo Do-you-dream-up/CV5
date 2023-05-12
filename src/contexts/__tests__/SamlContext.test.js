@@ -1,9 +1,6 @@
-import { SamlContext, SamlProvider, useSaml } from '../SamlContext';
-import { act, render } from '@testing-library/react';
+import { SamlContext, SamlProvider } from '../SamlContext';
 
-import { Local } from '../../tools/storage';
-import dydu from '../../tools/dydu';
-import { renderHook } from '@testing-library/react-hooks';
+import { render } from '@testing-library/react';
 
 jest.mock('../../tools/storage', () => ({
   Local: {
@@ -12,6 +9,9 @@ jest.mock('../../tools/storage', () => ({
       load: jest.fn(),
     },
     set: jest.fn(),
+  },
+  Storage: {
+    loadUserInfo: jest.fn(),
   },
 }));
 
