@@ -38,6 +38,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const counterRemaining = t('input.actions.counterRemaining');
+  const [showCounterA11y, setShowCounterA11y] = useState<boolean>(false);
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const themeColor = useTheme<Models.Theme>();
@@ -77,6 +78,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     submit(suggestionValue);
   };
 
+  const onFocus = () => {
+    setShowCounterA11y(true);
+  };
+
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
@@ -95,12 +100,18 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             disabled={prompt || locked}
             id={textareaId}
             ref={textareaRef}
+            onFocus={onFocus}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
-            <div id="characters-remaining">
+            <div>
               <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
-              <span className={c('dydu-counter-hidden', classes.hidden)} role="status">{`${counterRemaining}`}</span>
+              <span
+                id="characters-remaining"
+                className={c('dydu-counter-hidden', classes.hidden)}
+                aria-label={`${counter} ${counterRemaining}`}
+                aria-live="assertive"
+              >{`${counter} ${counterRemaining}`}</span>
             </div>
           )}
         </div>
