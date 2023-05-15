@@ -32,7 +32,7 @@ export const SamlProvider = ({ children }) => {
       return new Promise(() => {
         dydu
           .getSaml2Status(saml2Info)
-          .then((response) => {
+          ?.then((response) => {
             try {
               const { values } = JSON.parse(response);
               const auth = atob(values?.auth);
