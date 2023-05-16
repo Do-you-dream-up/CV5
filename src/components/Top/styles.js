@@ -10,6 +10,7 @@ export default createUseStyles(() => ({
     border: 'none',
     fontSize: '16px',
     background: 'inherit',
+    textAlign: 'left',
     '&:focus': {
       textDecoration: 'none !important',
     },
