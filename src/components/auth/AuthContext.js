@@ -34,18 +34,30 @@ export function AuthProvider({ children, configuration }) {
     }
   }, [tokenRetries]);
 
-  const fetchUrlConfig = () =>
-    axios.get(configuration.discoveryUrl)?.then(({ data }) => {
+  const fetchUrlConfig = () => {
+    if (configuration.discoveryUrl) {
+      axios.get(configuration.discoveryUrl)?.then(({ data }) => {
+        Storage.clearUserInfo();
+        Storage.clearUrls();
+        const config = {
+          authUrl: data?.authorization_endpoint,
+          tokenUrl: data?.token_endpoint,
+          userinfoUrl: data?.userinfo_endpoint,
+        };
+        Storage.saveUrls(config);
+        setUrlConfig(config);
+      });
+    } else {
       Storage.clearUserInfo();
       Storage.clearUrls();
       const config = {
-        authUrl: data?.authorization_endpoint,
-        tokenUrl: data?.token_endpoint,
-        userinfoUrl: data?.userinfo_endpoint,
+        authUrl: configuration?.authUrl,
+        tokenUrl: configuration?.tokenUrl,
       };
       Storage.saveUrls(config);
       setUrlConfig(config);
-    });
+    }
+  };
 
   const fetchUserinfo = () =>
     axios
@@ -150,6 +162,8 @@ AuthProvider.propTypes = {
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
     discoveryUrl: PropTypes.string,
+    tokenUrl: PropTypes.string,
+    authUrl: PropTypes.string,
     scope: PropTypes.array,
   }),
 };

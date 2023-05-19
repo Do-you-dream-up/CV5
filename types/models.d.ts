@@ -46,7 +46,9 @@ declare namespace Models {
     clientSecret: string;
     pkceActive: boolean;
     pkceMode: string;
-    discoveryUrl: string;
+    authUrl?: string;
+    tokenUrl?: string;
+    discoveryUrl?: string;
     scope: string[];
   }
 
