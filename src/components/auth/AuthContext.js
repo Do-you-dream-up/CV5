@@ -161,9 +161,9 @@ AuthProvider.propTypes = {
     clientId: PropTypes.string,
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
-    discoveryUrl: PropTypes.string,
     tokenUrl: PropTypes.string,
     authUrl: PropTypes.string,
+    discoveryUrl: PropTypes.string,
     scope: PropTypes.array,
   }),
 };
