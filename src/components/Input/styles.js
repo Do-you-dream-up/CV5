@@ -90,7 +90,7 @@ export default createUseStyles((theme) => ({
     outline: 'none',
     position: 'absolute',
     resize: 'none',
-    '&:focus': {
+    '&.focus': {
       border: `1px solid ${theme.palette.primary.main}`,
     },
   }),
