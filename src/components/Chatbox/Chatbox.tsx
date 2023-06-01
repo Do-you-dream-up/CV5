@@ -14,6 +14,7 @@ import Dragon from '../Dragon';
 import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
+import { Local } from 'src/tools/storage';
 import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
@@ -144,7 +145,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: (locale, languages) =>
-          Promise.all([dydu.setLocale(locale, languages), i.changeLanguage(locale)]).then(
+          Promise.all([
+            Local.byBotId(Local.names.botId).remove(), // Todo : Faire un méthode pour englober la gestion de l'identification du client vs les stats
+            window.dydu.chat.empty(),
+            dydu.setLocale(locale, languages),
+            i.changeLanguage(locale),
+            window.dydu.chat.ask('#welcome#'), // todo : a voir pour l'appel de la welcome
+          ]).then(
             ([locale]) =>
               window.dydu.chat.reply(`${t('interaction.languageChange')} ${t(`footer.rosetta.${locale}`)}.`),
             (response) => window.dydu.chat.reply(response),

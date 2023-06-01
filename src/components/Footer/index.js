@@ -28,11 +28,15 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
     if (i.languages) setSelectedLanguage(i.languages[0]);
   }, [i, t]);
 
+  const handleLanguageChange = (id, languages) => {
+    window.dydu?.localization?.set(id, languages);
+  };
+
   const languagesMenu = [
     languages.sort().map((id) => ({
       icon: `flags/${id}.png`,
       id,
-      onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
+      onClick: () => handleLanguageChange(id, languages),
       text: t(`footer.rosetta.${id}`),
     })),
   ];

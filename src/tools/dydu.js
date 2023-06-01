@@ -446,6 +446,7 @@ export default new (class Dydu {
   getContextId = async (forced) => {
     if (!forced) {
       const contextId = this.getContextIdFromLocalStorage();
+      console.log('🚀 ~ file: dydu.js:449 ~ Dydu ~ getContextId= ~ contextId:', contextId);
       if (isDefined(contextId)) return contextId;
     }
 
@@ -461,6 +462,7 @@ export default new (class Dydu {
     const path = `chat/context/${BOT.id}/`;
     try {
       const response = await this.emit(API.post, path, data);
+      console.log('🚀 ~ file: dydu.js:465 ~ Dydu ~ getContextId= ~ response:', response);
       this.setContextId(response?.contextId);
       return response?.contextId;
     } catch (e) {

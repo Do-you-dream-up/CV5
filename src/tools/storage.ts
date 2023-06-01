@@ -272,6 +272,18 @@ export class Local {
         botsById[botId][key] = value;
         localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
       },
+      /**
+       * remove given bot id. The value will be stringified.
+       * @param {String} key key to retrieve
+       * @param {*} value value to store (should be serializable/deserializable wih JSON.parse, JSON.stringify)
+       * @returns the deserialized value behind the key
+       */
+      remove: () => {
+        const botsById = Local._getBotsById();
+        delete botsById[botId];
+        console.log('🚀 ~ file: storage.ts:284 ~ Local ~ botsById:', botsById);
+        localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
+      },
     };
   };
 
