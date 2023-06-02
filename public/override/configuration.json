@@ -176,6 +176,7 @@
     "pkceMode": "",
     "authUrl": "",
     "tokenUrl": "",
+    "discoveryUrl": "",
     "scopes": [""],
     "withAuth": false
   },
