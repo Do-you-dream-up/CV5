@@ -146,16 +146,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         get: () => dydu.getLocale(),
         set: (locale, languages) =>
           Promise.all([
-            Local.byBotId(Local.names.botId).remove(), // Todo : Faire un méthode pour englober la gestion de l'identification du client vs les stats
-            window.dydu.chat.empty(),
+            Local.byBotId(Local.names.botId).remove(),
             dydu.setLocale(locale, languages),
             i.changeLanguage(locale),
-            window.dydu.chat.ask('#welcome#'), // todo : a voir pour l'appel de la welcome
-          ]).then(
-            ([locale]) =>
-              window.dydu.chat.reply(`${t('interaction.languageChange')} ${t(`footer.rosetta.${locale}`)}.`),
-            (response) => window.dydu.chat.reply(response),
-          ),
+            window.dydu.chat.empty(),
+            window.dydu.chat.ask('#newdialog#', {
+              hide: true,
+              doNotRegisterInteraction: true,
+              deNotProcessResponse: true,
+              doNotSave: true,
+            }),
+            window.dydu.chat.ask('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }),
+          ]),
       };
 
       window.dydu.lorem = {
