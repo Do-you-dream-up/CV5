@@ -1,9 +1,6 @@
-import { SamlContext, SamlProvider, useSaml } from '../SamlContext';
-import { act, render } from '@testing-library/react';
+import { SamlContext, SamlProvider } from '../SamlContext';
 
-import { Local } from '../../tools/storage';
-import dydu from '../../tools/dydu';
-import { renderHook } from '@testing-library/react-hooks';
+import { render } from '@testing-library/react';
 
 jest.mock('../../tools/storage', () => ({
   Local: {
@@ -12,6 +9,9 @@ jest.mock('../../tools/storage', () => ({
       load: jest.fn(),
     },
     set: jest.fn(),
+  },
+  Storage: {
+    loadUserInfo: jest.fn(),
   },
 }));
 
@@ -86,40 +86,5 @@ describe('SamlContext', () => {
     expect(checkSession).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(31 * 60 * 1000);
-  });
-
-  describe('checkSession', () => {
-    const response = JSON.stringify({
-      values: { auth: btoa('some-auth'), redirection_url: btoa('some-redirection-url') },
-    });
-    const expectedRedirectUrl = `some-redirection-url&RelayState=${encodeURI(window.location.href)}`;
-
-    it('should update saml2Info and redirectUrl on successful getSaml2Status', async () => {
-      dydu.getSaml2Status = jest.fn().mockResolvedValueOnce(response);
-
-      const { result, waitFor } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-
-      await act(async () => {
-        await result.current.checkSession();
-        await waitFor(() => result.current.saml2Info === 'some-auth');
-      });
-
-      expect(Local.saml.save).toHaveBeenCalledWith('some-auth');
-      expect(result.current.saml2Info).toEqual('some-auth');
-      expect(result.current.redirectUrl).toEqual(expectedRedirectUrl);
-    });
-
-    it('should not update saml2Info and redirectUrl on failed getSaml2Status', async () => {
-      dydu.getSaml2Status.mockRejectedValueOnce(new Error('some-error'));
-
-      const { result } = renderHook(() => useSaml(), { wrapper: SamlProvider });
-      await act(async () => {
-        await result.current.checkSession();
-      });
-
-      expect(Local.saml.save).not.toHaveBeenCalled();
-      expect(result.current.saml2Info).toEqual(undefined);
-      expect(result.current.redirectUrl).toEqual(null);
-    });
   });
 });

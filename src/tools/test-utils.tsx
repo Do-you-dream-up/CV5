@@ -27,8 +27,9 @@ export const ProviderWrapper = ({ children, customProp }: { children: any; custo
     clientSecret: mergedConfiguration?.oidc?.clientSecret,
     pkceActive: mergedConfiguration?.oidc?.pkceActive,
     pkceMode: mergedConfiguration?.oidc?.pkceMode,
-    authUrl: mergedConfiguration?.oidc.authUrl,
-    tokenUrl: mergedConfiguration?.oidc.tokenUrl,
+    authUrl: configuration?.oidc.authUrl,
+    tokenUrl: configuration?.oidc.tokenUrl,
+    discoveryUrl: mergedConfiguration?.oidc.discoveryUrl,
     scope: mergedConfiguration?.oidc?.scopes,
   };
 

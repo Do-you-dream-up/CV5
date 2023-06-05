@@ -46,8 +46,9 @@ declare namespace Models {
     clientSecret: string;
     pkceActive: boolean;
     pkceMode: string;
-    authUrl: string;
-    tokenUrl: string;
+    authUrl?: string;
+    tokenUrl?: string;
+    discoveryUrl?: string;
     scope: string[];
   }
 
@@ -314,15 +315,24 @@ declare namespace Models {
     pkceMode: string;
     authUrl: string;
     tokenUrl: string;
+    discoveryUrl: string;
     scopes: string[];
     withAuth: boolean;
   }
 
   export interface ConfigurationOnboarding {
     enable: boolean;
-    image1: string;
-    image2: string;
-    image3: string;
+    items: ItemsImages[];
+  }
+
+  export interface ItemsImages {
+    disabled: boolean;
+    image: Images;
+  }
+
+  export interface Images {
+    src: string;
+    hidden: boolean;
   }
 
   export interface PoweredBy {
