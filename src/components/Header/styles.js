@@ -57,6 +57,17 @@ export default createUseStyles((theme) => ({
       borderRadius: 0,
     },
     zIndex: 1,
+    '& .dydu-header-actions button': {
+      width: '40px',
+      height: '40px',
+      padding: '0px',
+      justifyContent: 'center',
+      background: 'none',
+      border: 'none',
+    },
+    '& .dydu-header-actions button:not(:disabled):hover::before': {
+      backgroundColor: 'rgba(0, 0, 0, 0.14)',
+    },
   }),
   title: () => ({
     fontSize: '16px',

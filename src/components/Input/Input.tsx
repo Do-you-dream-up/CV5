@@ -42,7 +42,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const themeColor = useTheme<Models.Theme>();
   const debouncedInput = useDebounce(input, delay);
-  const inputRef = useRef(null);
+  const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
   const textareaRef = useRef<null | any>(null);
 
@@ -77,10 +77,22 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     submit(suggestionValue);
   };
 
+  const handleFocusChange = (e) => {
+    if (!inputFocused && e.keyCode === 9) {
+      setInputFocused(true);
+    }
+    if (e.type === 'click') {
+      setInputFocused(false);
+    }
+  };
+
+  const handleBlur = () => setInputFocused(false);
+
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
         ...properties,
+        className: `${properties.className} ${inputFocused ? 'focus' : ''}`,
       };
 
       const textareaId = 'dydu-textarea';
@@ -95,6 +107,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             disabled={prompt || locked}
             id={textareaId}
             ref={textareaRef}
+            onKeyUp={handleFocusChange}
+            onBlur={handleBlur}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
@@ -106,7 +120,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         </div>
       );
     },
-    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter],
+    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter, inputFocused],
   );
 
   const reset = useCallback(() => {
@@ -190,7 +204,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
   const inputProps = {
-    ref: inputRef,
     disabled,
     maxLength,
     onChange,
