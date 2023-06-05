@@ -324,9 +324,9 @@ export class Local {
       const content = Local.clientId.load(keyString);
       return [isDefined, (c) => !isEmptyObject(c), (c) => !isEmptyString(c)].every((fn) => fn(content));
     },
-    createAndSave: (keyString) => {
+    createAndSave: (keyString, clientId = null) => {
       const ID_CHAR_SIZE = 15;
-      const generatedClientId = generateClientUuid(ID_CHAR_SIZE).toString();
+      const generatedClientId = clientId || generateClientUuid(ID_CHAR_SIZE).toString();
       localStorage.setItem(keyString, generatedClientId);
     },
   });

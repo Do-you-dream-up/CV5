@@ -1,9 +1,6 @@
 {
 	"recommendations": [
 		"editorconfig.editorconfig",
-		"ms-vsliveshare.vsliveshare",
-		"ms-vsliveshare.vsliveshare-audio",
-		"ms-vsliveshare.vsliveshare-pack",
 		"esbenp.prettier-vscode",
 		"styled-components.vscode-styled-components",
 		"eamodio.gitlens",

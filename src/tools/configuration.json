@@ -186,6 +186,7 @@
     "pkceMode": "S256",
     "authUrl": "",
     "tokenUrl": "",
+    "discoveryUrl": "",
     "scopes": [""],
     "withAuth": false
   },

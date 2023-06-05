@@ -1,12 +1,14 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from './helpers';
 
 import PropTypes from 'prop-types';
 import Storage from './Storage';
+import axios from 'axios';
 import dydu from '../../tools/dydu';
 import { isLoadedFromChannels } from '../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from './hooks/useAuthorizeRequest';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useTokenRequest from './hooks/useTokenRequest';
 import useUserInfo from './hooks/useUserInfo';
 
@@ -15,12 +17,16 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children, configuration }) {
   const [token, setToken] = useState(Storage.loadToken());
+  const { configuration: appConfiguration } = useConfiguration();
+  const [urlConfig, setUrlConfig] = useState(Storage.loadUrls() || null);
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
-  const { authorize } = useAuthorizeRequest(configuration);
-  const { fetchToken, tokenRetries } = useTokenRequest(configuration);
-  const { getUserInfoWithToken } = useUserInfo(configuration);
+  const authConfig = useMemo(() => ({ ...configuration, ...urlConfig }), [urlConfig]);
+
+  const { authorize } = useAuthorizeRequest(authConfig);
+  const { fetchToken, tokenRetries } = useTokenRequest(authConfig);
+  const { getUserInfoWithToken } = useUserInfo(authConfig);
 
   useEffect(() => {
     if (tokenRetries > 3) {
@@ -28,12 +34,55 @@ export function AuthProvider({ children, configuration }) {
     }
   }, [tokenRetries]);
 
+  const fetchUrlConfig = () => {
+    if (configuration.discoveryUrl) {
+      axios.get(configuration.discoveryUrl)?.then(({ data }) => {
+        Storage.clearUserInfo();
+        Storage.clearUrls();
+        const config = {
+          authUrl: data?.authorization_endpoint,
+          tokenUrl: data?.token_endpoint,
+          userinfoUrl: data?.userinfo_endpoint,
+        };
+        Storage.saveUrls(config);
+        setUrlConfig(config);
+      });
+    } else {
+      Storage.clearUserInfo();
+      Storage.clearUrls();
+      const config = {
+        authUrl: configuration?.authUrl,
+        tokenUrl: configuration?.tokenUrl,
+      };
+      Storage.saveUrls(config);
+      setUrlConfig(config);
+    }
+  };
+
+  const fetchUserinfo = () =>
+    axios
+      .get(urlConfig?.userinfoUrl, {
+        headers: {
+          Authorization: `Bearer ${token?.access_token}`,
+        },
+      })
+      ?.then(({ data }) => data && Storage.saveUserInfo(data));
+
   useEffect(() => {
     dydu.setOidcLogin(authorize);
   }, []);
 
+  useLayoutEffect(() => {
+    appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
+  }, []);
+
+  useEffect(() => {
+    token && urlConfig?.userinfoUrl && fetchUserinfo();
+  }, [token, urlConfig]);
+
   useEffect(() => {
     const canRequestToken =
+      urlConfig &&
       currentLocationContainsCodeParameter() &&
       Storage.containsPkce() &&
       !isDefined(token?.access_token) &&
@@ -44,12 +93,12 @@ export function AuthProvider({ children, configuration }) {
         setIsLoggedIn(true);
         setToken(tkn);
       });
-  }, [fetchToken, token, token?.access_token]);
+  }, [fetchToken, token, token?.access_token, urlConfig]);
 
   useEffect(() => {
     if (isLoggedIn && token) {
       try {
-        const userInfo = jwtDecode(token?.access_token);
+        const userInfo = jwtDecode(token?.id_token);
         setUserInfo(userInfo);
       } catch (error) {
         console.error(error);
@@ -59,10 +108,9 @@ export function AuthProvider({ children, configuration }) {
 
   const login = useCallback(() => {
     const canRequestAuthorize =
-      !isLoggedIn && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
-
+      urlConfig && !token && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
     if (tokenRetries > 3 || canRequestAuthorize) authorize();
-  }, [authorize, isLoggedIn, tokenRetries]);
+  }, [authorize, isLoggedIn, tokenRetries, urlConfig]);
 
   const dataContext = useMemo(
     () => ({
@@ -70,20 +118,23 @@ export function AuthProvider({ children, configuration }) {
       isLoggedIn,
       login,
       token,
-      ...configuration,
+      urlConfig,
+      fetchUrlConfig,
+      setUrlConfig,
+      ...authConfig,
     }),
-    [configuration, isLoggedIn, login, token, userInfo],
+    [authConfig, isLoggedIn, login, token, userInfo],
   );
 
   return <AuthContext.Provider value={dataContext}>{children}</AuthContext.Provider>;
 }
 
 export function AuthProtected({ children, enable = false }) {
-  const { isLoggedIn, login } = useAuth();
+  const { isLoggedIn, login, urlConfig } = useAuth();
 
   useEffect(() => {
     if (!isLoadedFromChannels()) {
-      if (!enable) return;
+      if (!enable || !urlConfig) return;
       if (!isLoggedIn) login();
     }
   }, [isLoggedIn, login]);
@@ -110,8 +161,9 @@ AuthProvider.propTypes = {
     clientId: PropTypes.string,
     tokenPath: PropTypes.string,
     redirectUri: PropTypes.string,
-    authUrl: PropTypes.string,
     tokenUrl: PropTypes.string,
+    authUrl: PropTypes.string,
+    discoveryUrl: PropTypes.string,
     scope: PropTypes.array,
   }),
 };
