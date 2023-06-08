@@ -11,6 +11,8 @@ export const UserActionContext = createContext();
 export function UserActionProvider({ children }) {
   const [tabbing, setTabbing] = useState(false);
 
+  const [rgaaRef, setRgaaRef] = useState({});
+
   useEffect(() => {
     const keyListener = (e) => {
       if (e.keyCode === 9) {
@@ -33,11 +35,33 @@ export function UserActionProvider({ children }) {
     };
   }, []);
 
+  const addRgaaRef = (name, ref) => setRgaaRef({ ...rgaaRef, [name]: ref });
+
+  const getRgaaRef = (name) => {
+    const ref = rgaaRef[name];
+    if (ref) {
+      setTabbing(true);
+      return ref;
+    }
+  };
+
+  const removeRgaaRef = (name) => {
+    setRgaaRef((prevState) => {
+      const newState = { ...prevState };
+      delete newState[name];
+      return newState;
+    });
+  };
+
   return (
     <UserActionContext.Provider
       children={children}
       value={{
         tabbing,
+        addRgaaRef,
+        getRgaaRef,
+        rgaaRef,
+        removeRgaaRef,
       }}
     />
   );
