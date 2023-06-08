@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useRef, useState } from 'react';
 
 import { EventsContext } from './EventsContext';
 import { Local } from '../tools/storage';
@@ -12,6 +12,7 @@ export function OnboardingProvider({ children }) {
   const event = useContext(EventsContext).onEvent('onboarding');
   const [index, setIndex] = useState(0);
   const { t } = useTranslation('translation');
+  const carouselRef = useRef(null);
 
   const hasPrevious = useCallback(() => !!index, [index]);
 
@@ -31,6 +32,7 @@ export function OnboardingProvider({ children }) {
   const onNext = useCallback(() => {
     if (hasNext()) {
       setIndex((previous) => previous + 1);
+      carouselRef.current?.focus();
     } else {
       onEnd();
     }
@@ -42,12 +44,14 @@ export function OnboardingProvider({ children }) {
 
   const onPrevious = useCallback(() => {
     setIndex(Math.max(index - 1, 0));
+    carouselRef.current?.focus();
   }, [index]);
 
   return (
     <OnboardingContext.Provider
       children={children}
       value={{
+        carouselRef,
         active,
         hasNext,
         hasPrevious,
