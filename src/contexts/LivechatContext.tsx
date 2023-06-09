@@ -13,7 +13,7 @@ import useQueue from '../tools/hooks/useQueue';
 
 interface LivechatContextProps {
   isWebsocket?: boolean;
-  send?: (str: string) => void;
+  send?: (str: string, options?) => void;
   isLivechatOn?: boolean;
   typing?: (input: any) => void;
 }
@@ -26,7 +26,7 @@ export const useLivechat = () => useContext(LivechatContext);
 
 export const LivechatContext = createContext<LivechatContextProps>({});
 
-const isWebsocketTunnel = (tunnel) => tunnel.mode === TUNNEL_MODE.websocket;
+const isWebsocketTunnel = (tunnel) => tunnel?.mode === TUNNEL_MODE?.websocket;
 const findFirstAvailableTunnelInList = (tunnelList) => tunnelList.find((tunnel) => tunnel.isAvailable());
 const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 1];
 const containsEndLivechatSpecialAction = (response) => response?.specialAction?.equals('EndPolling');
@@ -41,6 +41,10 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const { onNewMessage } = useEvent();
+
+  useEffect(() => {
+    tunnel?.sendHistory();
+  }, [tunnel]);
 
   const displayResponseText = useCallback(
     (text) => {
@@ -62,39 +66,41 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [lastResponse]);
 
   const shouldStartLivechat = useMemo(() => {
-    return isDefined(lastResponse) && containsStartLivechatSpecialAction(lastResponse);
-  }, [lastResponse]);
+    return (
+      isDefined(lastResponse) &&
+      (localStorage.getItem('dydu.livechat') !== null || containsStartLivechatSpecialAction(lastResponse))
+    );
+  }, [lastResponse, localStorage.getItem('dydu.livechat')]);
 
-  const onSuccessOpenTunnel = useCallback((tunnel) => {
+  const onSuccessOpenTunnel = (tunnel) => {
     const iswebsocket = isWebsocketTunnel(tunnel);
     if (iswebsocket) setIsWebsocket(true);
     setIsLivechatOn(true);
     setTunnel(tunnel);
-  }, []);
+    Local.livechat.save(tunnel);
+  };
 
-  const onFailOpenTunnel = useCallback(
-    (failedTunnel, err, configuration) => {
-      try {
-        console.warn(err);
-        console.warn('Livechat: while starting: Error with mode ' + (failedTunnel ? failedTunnel.mode : 'unknown'));
-        failedTunnel = failedTunnel || tunnel;
-        configuration = configuration || tunnelInitialConfig;
-        const fallbackTunnel = findFallbackTunnelInList(tunnelList);
-        console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-        fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
-      } catch (error) {
-        console.error('An error occurred while handling a failed tunnel opening', error);
-      }
-    },
-    [onSuccessOpenTunnel, tunnelList, tunnel],
-  );
+  const onFailOpenTunnel = (failedTunnel, err, configuration) => {
+    console.warn(err);
+    console.warn('Livechat: while starting: Error with mode ' + failedTunnel?.mode);
+    failedTunnel = failedTunnel || tunnel;
 
-  const endLivechat = useCallback(() => {
+    configuration = configuration || tunnelInitialConfig;
+
+    const fallbackTunnel = findFallbackTunnelInList(tunnelList);
+    console.warn('Livechat: falling back to mode ' + fallbackTunnel?.mode);
+
+    fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+  };
+
+  const endLivechat = () => {
     console.warn('ending livechat...');
     setIsWebsocket(false);
     setIsLivechatOn(false);
     setTunnel(null);
-  }, []);
+    Local.livechat.reset();
+  };
+
   const tunnelInitialConfig = useMemo(() => {
     return {
       ...lastResponse,
@@ -117,30 +123,21 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     showSurvey,
   ]);
 
-  const startLivechat = useCallback(
-    (tunnel = null) => {
-      const _tunnel = tunnel || findFirstAvailableTunnelInList(tunnelList);
-      _tunnel
-        .open(tunnelInitialConfig)
-        .then(() => onSuccessOpenTunnel(_tunnel))
-        .catch((err) => onFailOpenTunnel(_tunnel, err, tunnelInitialConfig));
-    },
-    [
-      tunnelList,
-      lastResponse,
-      endLivechat,
-      displayResponseText,
-      displayNotification,
-      onFailOpenTunnel,
-      showAnimationOperatorWriting,
-      showSurvey,
-      onSuccessOpenTunnel,
-    ],
-  );
+  const startLivechat = (tunnel = null) => {
+    const _tunnel = tunnel || findFirstAvailableTunnelInList(tunnelList);
+
+    _tunnel
+      .open(tunnelInitialConfig)
+      .then(() => {
+        onSuccessOpenTunnel(_tunnel);
+      })
+      .catch((err) => {
+        onFailOpenTunnel(_tunnel, err, tunnelInitialConfig);
+      });
+  };
 
   const sendSurvey = useCallback(
     (surveyResponse) => {
-      console.log('livechat sending survey', surveyResponse);
       if (!isDefined(tunnel)) put(surveyResponse);
       else tunnel?.sendSurvey(surveyResponse);
     },
@@ -157,12 +154,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [isLivechatOn, sendSurvey]);
 
   useEffect(() => {
-    return onUnmount;
-  }, []);
-
-  useEffect(() => {
     const data = Local.livechat.load();
     setIsLivechatOn(data?.isLivechatOn || false);
+    return onUnmount;
   }, []);
 
   useEffect(() => {
@@ -170,28 +164,29 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [shouldEndLivechat, endLivechat]);
 
   useEffect(() => {
-    if (shouldStartLivechat) startLivechat();
-  }, [shouldStartLivechat, startLivechat]);
+    if (shouldStartLivechat && !tunnel) {
+      startLivechat();
+    }
+  }, [shouldStartLivechat]);
 
   useEffect(() => {
     if (!isQueueEmpty && isDefined(tunnel?.send)) tunnel.send(pop());
   }, [isQueueEmpty, queue, pop, tunnel?.send, tunnel]);
 
   const send = useCallback(
-    (userInput) => {
+    (userInput, options) => {
       if (!isDefined(tunnel)) return put(userInput);
 
       const _tunnel = findFirstAvailableTunnelInList(tunnelList);
-      const isTunnelStillAvailable = tunnel.mode === _tunnel.mode;
+      const isTunnelStillAvailable = tunnel?.mode && tunnel?.mode === _tunnel?.mode && _tunnel?.mode;
       if (isTunnelStillAvailable) {
-        tunnel?.send(userInput);
+        tunnel?.send(userInput, options);
       } else {
         startLivechat(_tunnel);
       }
     },
-    [put, tunnel],
+    [put, tunnel, isLivechatOn],
   );
-
   const typing = useCallback(
     (input) => {
       tunnel?.onUserTyping(input);

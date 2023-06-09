@@ -281,7 +281,7 @@ export class Local {
       const d = localStorage.getItem(Local.names.livechat) || '{}';
       return JSON.parse(d);
     },
-    reset: () => localStorage.setItem(Local.names.livechat, JSON.stringify('{}')),
+    reset: () => localStorage.removeItem(Local.names.livechat),
   });
 
   static saml = Object.create({

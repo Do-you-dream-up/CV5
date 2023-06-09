@@ -214,7 +214,7 @@ describe('Local storage by bot id', () => {
           localStorage.setItem(Local.names.livechat, JSON.stringify(testData));
           Local.livechat.reset();
           const savedData = JSON.parse(localStorage.getItem(Local.names.livechat));
-          expect(savedData).toEqual('{}');
+          expect(savedData).toEqual(null);
         });
       });
     });

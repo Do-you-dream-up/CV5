@@ -1,7 +1,8 @@
 import { LivechatProvider, useLivechat } from '../LivechatContext';
 import { render, screen } from '@testing-library/react';
 
-import React from 'react';
+import { act } from 'react-dom/test-utils';
+import { renderHook } from '@testing-library/react-hooks';
 import { useDialog } from '../DialogContext';
 import useDyduPolling from '../../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../../tools/hooks/useDyduWebsocket';
@@ -17,6 +18,11 @@ jest.mock('../../tools/hooks/useDyduPolling');
 jest.mock('../../tools/hooks/useDyduWebsocket');
 
 describe('LivechatProvider', () => {
+  window.dydu = {
+    chat: {
+      reply: jest.fn(),
+    },
+  };
   beforeEach(() => {
     useSurvey.mockReturnValue({
       showSurvey: jest.fn(),
@@ -88,5 +94,21 @@ describe('LivechatProvider', () => {
     screen.getByRole('button', { name: 'Typing' }).click();
     screen.getByRole('button', { name: 'Send Survey' }).click();
     expect(useQueue().put).toHaveBeenCalledWith('test');
+  });
+
+  it('should call window.dydu.chat.reply with the expected text', () => {
+    const { result } = renderHook(() => useLivechat(), {
+      wrapper: LivechatProvider,
+    });
+
+    const text = 'Example response text';
+    const windowSpy = jest.spyOn(window.dydu.chat, 'reply');
+
+    act(() => {
+      result.current.displayResponseText(text);
+    });
+
+    expect(windowSpy).toHaveBeenCalledWith(text);
+    windowSpy.mockRestore();
   });
 });

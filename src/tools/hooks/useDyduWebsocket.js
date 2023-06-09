@@ -36,6 +36,7 @@ const MESSAGE_TYPE = {
   contextResponse: 'contextResponse',
   notification: 'notification',
   endPolling: 'endPolling',
+  startPolling: 'StartPolling',
 };
 
 let handleSurvey = null;
@@ -57,7 +58,7 @@ const completeLivechatPayload = (configuration) =>
 export default function useDyduWebsocket() {
   const [socketProps, setSocketProps] = useState([null, {}]);
   const [handshakeStepCountdown, setHandshakeStepCountdown] = useState(2);
-  const { lastMessage, sendJsonMessage, readyState } = useWebsocket(...socketProps);
+  const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
 
   const messageData = useMemo(() => {
     if (!isDefined(lastMessage)) return null;
@@ -118,6 +119,7 @@ export default function useDyduWebsocket() {
   }, [decrementHandshakeCountDown, handshakeStepCountdown, messageData]);
 
   const _onFail = useCallback(() => {
+    console.log('_onFail', 'Failing connection !');
     countdownRetryHandshake.reset();
     if (isDefined(onFail)) onFail();
     flushSocketProps();
@@ -139,6 +141,7 @@ export default function useDyduWebsocket() {
   }, [handshakeStepCountdown, sendFirstHandshake]);
 
   const flushSocketProps = useCallback(() => {
+    console.log('Flushing Socket Props');
     setSocketProps([null, {}]);
   }, []);
 
@@ -179,16 +182,16 @@ export default function useDyduWebsocket() {
 
   const getSocketConfig = useCallback(() => {
     return {
-      reconnectAttempts: 3,
       onReconnectStop: _onFail,
-      onOpen: () => {
+      onOpen: (onOpen) => {
+        console.log('🚀 ~ file: useDyduWebsocket.js:198 ~ getSocketConfig ~ onOpen:', onOpen);
         decrementHandshakeCountDown();
       },
-      onClose: (closeEvent) => {
-        _onFail();
-        if (closeEvent.wasClean) close();
-        console.log('websocket: on close !', closeEvent);
-      },
+      // onClose: (closeEvent) => {
+      //   _onFail();
+      //   if (closeEvent.wasClean) close();
+      //   console.log('websocket: on close !', closeEvent);
+      // },
       onError: (errorEvent) => {
         _onFail(), console.log('websocket: on error !', errorEvent);
       },
@@ -237,25 +240,33 @@ export default function useDyduWebsocket() {
     }
   }, []);
 
-  const trySendMessage = useCallback((message) => {
+  const trySendMessage = (message) => {
     try {
       sendJsonMessage(message);
+      console.log('🚀 ~ file: useDyduWebsocket.js:250 ~ trySendMessage ~ message:', message);
     } catch (e) {
+      console.log('🚀 ~ file: useDyduWebsocket.js:247 ~ trySendMessage ~ e:', e);
       _onFail();
     }
-  }, []);
+  };
 
   const send = useCallback(
-    (userInput) => {
-      const message = LivechatPayload.create.talkMessage(userInput);
+    (userInput, options) => {
+      const message = LivechatPayload.create.talkMessage(userInput, options);
       trySendMessage(message);
     },
     [sendJsonMessage],
   );
 
+  const sendHistory = useCallback(() => {
+    const message = LivechatPayload.create.historyMessage();
+    trySendMessage(message);
+    console.log('Sending History Message');
+  }, [sendJsonMessage]);
+
   const isRunning = useMemo(() => isDefined(socketProps[0]), [socketProps]);
 
-  const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
+  const isConnected = readyState === ReadyState.OPEN;
 
   const onUserTyping = useCallback(
     (userInput) => {
@@ -272,8 +283,12 @@ export default function useDyduWebsocket() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    sendHistory,
     sendSurvey,
     close,
     onUserTyping,
+    displayMessage,
+    displayNotification,
+    sendJsonMessage,
   };
 }

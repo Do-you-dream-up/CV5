@@ -1,15 +1,11 @@
 /* eslint-disable */
 
 import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
-import {
-  browserName,
-  isDefined,
-  isEmptyString,
-  isOfTypeString,
-  osName,
-  recursiveBase64DecodeString,
-  recursiveBase64EncodeString,
-} from './helpers';
+import { browserName, isDefined, isEmptyString, isOfTypeString, osName, recursiveBase64EncodeString } from './helpers';
+
+import { Local } from './storage';
+import configuration from '../../public/override/configuration.json';
+import dydu from './dydu';
 
 let PAYLOAD_COMMON_CONTENT = {
   contextId: null,
@@ -38,6 +34,7 @@ export const REQUEST_TYPE = {
   talk: 'talk',
   survey: 'survey',
   typing: 'typing',
+  history: 'history',
 };
 
 export const LivechatPayloadCreator = {
@@ -73,24 +70,54 @@ export const LivechatPayloadCreator = {
     },
   }),
 
-  talkMessage: (userInput = '') => ({
-    type: REQUEST_TYPE.talk,
-    parameters: {
-      ...getPayloadCommonContentBase64Encoded(),
-      alreadyCame: true,
-      contextType: 'V2Vi',
-      disableLanguageDetection: true,
-      mode: 'U3luY2hyb24=',
-      pureLivechat: false,
-      qualificationMode: true,
-      saml2_info: '',
-      solutionUsed: 'QVNTSVNUQU5U',
-      templateFormats: '',
-      timestamp: nowTime(),
-      useServerCookieForContext: false,
-      userInput: userInput?.toBase64(),
-    },
-  }),
+  talkMessage: (userInput = '', options) => {
+    const extraParameters =
+      options &&
+      Object.keys(options).reduce((acc, key) => {
+        acc[`${key}`] = btoa(options[key]);
+        return acc;
+      }, {});
+    return {
+      type: REQUEST_TYPE.talk,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        alreadyCame: true,
+        contextType: 'V2Vi',
+        disableLanguageDetection: true,
+        mode: 'U3luY2hyb24=',
+        pureLivechat: false,
+        doNotRegisterInteraction: options?.doNotRegisterInteraction || false,
+        qualificationMode: true,
+        saml2_info: '',
+        solutionUsed: 'QVNTSVNUQU5U',
+        templateFormats: '',
+        timestamp: nowTime(),
+        useServerCookieForContext: false,
+        userInput: userInput?.toBase64(),
+        ...(extraParameters && {
+          extraParameters: extraParameters,
+        }),
+      },
+    };
+  },
+
+  historyMessage: () => {
+    return {
+      type: REQUEST_TYPE.history,
+      parameters: {
+        dialog: localStorage.getItem('dydu.context'),
+        contextId: localStorage.getItem('dydu.context'),
+        botId: dydu.getBotId(),
+        language: dydu.getLocale(),
+        space: dydu.getSpace(),
+        solutionUsed: 'ASSISTANT',
+        clientId: dydu.getClientId(),
+        useServerCookieForContext: false,
+        saml2_info: Local.saml.load(),
+        timestamp: nowTime(),
+      },
+    };
+  },
 
   getContextMessage: () => ({
     type: REQUEST_TYPE.getContext,
