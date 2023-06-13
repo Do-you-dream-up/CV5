@@ -38,6 +38,7 @@ export default function RadioGroup({ showRequiredMessage, fields, parent }) {
         {fields.map((field) => (
           <RadioItem key={field.getId()} field={field} onChange={onChange} checked={isCurrentActive(field)} />
         ))}
+        {isDefined(current) && current.hasSlaves() && <div className="slaves">{current.renderSlaves()}</div>}
       </>
     );
   }, [isCurrentActive, onChange, fields]);
