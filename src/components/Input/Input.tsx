@@ -101,6 +101,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       };
 
       const textareaId = 'dydu-textarea';
+
       return (
         <div className={c('dydu-input-field', classes.field)}>
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
@@ -119,12 +120,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
             <div>
-              <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
+              <span children={counter} className={classes.counter} />
               <span
                 id="characters-remaining"
                 className={c('dydu-counter-hidden', classes.hidden)}
                 aria-label={`${counter} ${counterRemaining}`}
-                aria-live="assertive"
+                aria-live={counter === maxLength ? 'off' : 'assertive'}
               >{`${counter} ${counterRemaining}`}</span>
             </div>
           )}
