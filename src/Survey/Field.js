@@ -352,9 +352,15 @@ export default class Field {
         return answerManagerInstance.addMissingField(this);
       } else this.hideRequiredMessageUi();
     }
-    return this.getChildren().forEach((child) => child.gatherUserAnswers(answerManagerInstance));
+    return this.getChildren().forEach((child) => {
+      child.gatherUserAnswers(answerManagerInstance);
+      if (child.hasSlaves()) {
+        child.getSlaves().forEach((slave) => {
+          slave.gatherUserAnswers(answerManagerInstance);
+        });
+      }
+    });
   }
-
   getCheckboxGroupUserValue(answerManagerInstance = {}) {
     if (this.isMandatory()) {
       const hasAtLeastOneChildAnswer = this.getChildren().some((child) => child.hasAnswer());
