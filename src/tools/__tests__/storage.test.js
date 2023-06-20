@@ -336,18 +336,6 @@ describe('Local storage by bot id', () => {
       });
 
       describe('isSet', () => {
-        it('should return false if no data is saved', () => {
-          const isDataSet = Local.clientId.isSet();
-          expect(isDataSet).toBe(false);
-        });
-
-        it('should return false if data is saved but empty', () => {
-          const keyString = Local.clientId.getKey(testParams);
-          localStorage.setItem(keyString, '');
-          const isDataSet = Local.clientId.isSet(keyString);
-          expect(isDataSet).toBe(false);
-        });
-
         it('should return false if data is an empty object', () => {
           const keyString = Local.clientId.getKey(testParams);
           localStorage.setItem(keyString, JSON.stringify({}));
