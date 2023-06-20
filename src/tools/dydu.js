@@ -160,16 +160,16 @@ export default new (class Dydu {
   }
 
   alreadyCame() {
-    const clientIdKey = Local.clientId.getKey(this.infos);
+    const clientIdKey = Local.clientId.getKey(this.initInfos());
     return Local.clientId.isSet(clientIdKey);
   }
 
   initInfos() {
-    this.infos = {
+    return (this.infos = {
       locale: this.locale,
       space: this.space,
       botId: channelsBot || bot?.id,
-    };
+    });
   }
 
   handleTokenRefresh = () => {
@@ -423,7 +423,7 @@ export default new (class Dydu {
    * @returns {string | boolean} The client ID.
    */
   getClientId = () => {
-    const clientIdKey = Local.clientId.getKey(this.infos);
+    const clientIdKey = Local.clientId.getKey(this.initInfos());
     const userInfo = Storage.loadUserInfo();
     if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey, userInfo?.email);
     return Local.clientId.load(clientIdKey);
