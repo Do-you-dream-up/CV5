@@ -268,7 +268,8 @@
   content: '\e929' !important;
 }
 #dydu-root .icon-send:before {
-  content: '\e92a' !important;
+  content: '\e92a';
+  color: #46525f;
 }
 #dydu-root .icon-signature:before {
   content: '\e92b' !important;
