@@ -31,7 +31,7 @@ interface Steps {
 
 export default function Onboarding({ children, render }: OnboardingProps) {
   const { configuration } = useConfiguration();
-  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep } = useOnboarding();
+  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep, carouselRef } = useOnboarding();
   const event = useContext?.(EventsContext)?.onEvent?.('onboarding');
   const classes = useStyles({ configuration });
   const { t, ready } = useTranslation('translation');
@@ -60,6 +60,8 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           id={`step-${index.toString()}`}
           aria-labelledby={`bullet-${index.toString()}`}
           role="tabpanel"
+          tabIndex={0}
+          ref={carouselRef}
         >
           <div className={c('dydu-onboarding-image', classes.image)}>
             <img src={path} alt={''} />
@@ -86,7 +88,6 @@ export default function Onboarding({ children, render }: OnboardingProps) {
                     key={i}
                     onClick={() => onStep(i)}
                     id={`bullet-${i.toString()}`}
-                    role="tab"
                     aria-controls={`step-${i.toString()}`}
                   />
                 ))}
