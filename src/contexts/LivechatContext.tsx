@@ -74,13 +74,17 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   const onFailOpenTunnel = useCallback(
     (failedTunnel, err, configuration) => {
-      console.warn(err);
-      console.warn('Livechat: while starting: Error with mode ' + failedTunnel.mode);
-      failedTunnel = failedTunnel || tunnel;
-      configuration = configuration || tunnelInitialConfig;
-      const fallbackTunnel = findFallbackTunnelInList(tunnelList);
-      console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
-      fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+      try {
+        console.warn(err);
+        console.warn('Livechat: while starting: Error with mode ' + (failedTunnel ? failedTunnel.mode : 'unknown'));
+        failedTunnel = failedTunnel || tunnel;
+        configuration = configuration || tunnelInitialConfig;
+        const fallbackTunnel = findFallbackTunnelInList(tunnelList);
+        console.warn('Livechat: falling back to mode ' + fallbackTunnel.mode);
+        fallbackTunnel.open(configuration).then(() => onSuccessOpenTunnel(fallbackTunnel));
+      } catch (error) {
+        console.error('An error occurred while handling a failed tunnel opening', error);
+      }
     },
     [onSuccessOpenTunnel, tunnelList, tunnel],
   );
