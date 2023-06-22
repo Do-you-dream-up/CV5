@@ -21,6 +21,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { useUserAction } from '../../contexts/UserActionContext';
 import useViewport from '../../tools/hooks/useViewport';
 
 /**
@@ -29,6 +30,7 @@ import useViewport from '../../tools/hooks/useViewport';
  */
 export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
   const { configuration } = useConfiguration();
+  const { addRgaaRef } = useUserAction();
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
@@ -58,6 +60,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
+  const moreOptionsRef = useRef(null);
+
+  useEffect(() => {
+    addRgaaRef('moreOptionsRef', moreOptionsRef);
+  }, [moreOptionsRef]);
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
@@ -140,6 +147,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       when: checkDisplayParametersInMoreOptionsCog(),
       title: actionMore,
       id: 'dydu-more',
+      ref: moreOptionsRef,
     },
     {
       children: <Icon icon={icons?.fontIncrease} color={iconColorWhite} alt="increaseFont" />,

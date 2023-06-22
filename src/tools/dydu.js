@@ -424,7 +424,8 @@ export default new (class Dydu {
    */
   getClientId = () => {
     const clientIdKey = Local.clientId.getKey(this.infos);
-    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey);
+    const userInfo = Storage.loadUserInfo();
+    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey, userInfo?.email);
     return Local.clientId.load(clientIdKey);
   };
 
@@ -752,6 +753,22 @@ export default new (class Dydu {
       botUUID: BOT.id,
     });
     const path = `saml2/status?${data}`;
+    return this.emit(API.get, path);
+  };
+
+  /**
+   * getSaml2UserInfo - Get userinfo.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  getSaml2UserInfo = (saml2Info_token) => {
+    const data = qs.stringify({
+      ...(this.getConfiguration()?.saml?.enable && { saml2_info: saml2Info_token }),
+      botUUID: BOT.id,
+    });
+    const path = `saml2/userinfo?${data}`;
     return this.emit(API.get, path);
   };
 

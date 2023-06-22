@@ -156,15 +156,19 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }, 5000);
   };
 
-  const triggerPushRule = useCallback(() => {
-    if (isDefined(pushrules) || (!hasAfterLoadBeenCalled && !serverStatusChecked)) return;
-    fetchPushrules();
-  }, [fetchPushrules, pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
+  const canTriggerPushRules = useMemo(() => {
+    return configuration?.pushrules.active && !isDefined(pushrules);
+  }, [configuration, pushrules]);
+
+  const shouldTriggerPushRules = useMemo(() => {
+    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeContent]);
 
   useEffect(() => {
-    const canTriggerPushRules = configuration?.pushrules.active && !isDefined(pushrules);
-    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked) triggerPushRule();
-  }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatusChecked]);
+    if (shouldTriggerPushRules) {
+      fetchPushrules && fetchPushrules();
+    }
+  }, [fetchPushrules, shouldTriggerPushRules]);
 
   const toggleSecondary = useCallback(
     (

@@ -34,41 +34,17 @@ export interface PushRulesResponse {
 const usePushrules = (): PushRulesResponse => {
   const [pushrules, setPushrules] = useState<PushRule[] | null>(null);
   const location = useLocation();
-  const [ruleTypes, setRuleTypes] = useState<string[]>();
 
   useEffect(() => {
     if (pushrules) {
       clearCurrentTimeout();
-      const currentPage = 'CurrentPage';
-      if (ruleTypes?.includes(currentPage)) {
-        setTimeout(() => {
-          processRules(pushrules, getExternalInfos(new Date().getTime()));
-        }, 1500);
-      } else {
-        processRules(pushrules, getExternalInfos(new Date().getTime()));
-      }
+      processRules(pushrules, getExternalInfos(new Date().getTime()));
     }
   }, [pushrules, location]);
 
   const canRequest = useMemo(() => {
     return !isDefined(pushrules);
   }, [pushrules]);
-
-  const extractTypeValues = (pushrules: PushRule[] = []): string[] => {
-    const typeValues: string[] = [];
-
-    for (const { conditions } of pushrules) {
-      if (conditions) {
-        for (const { type } of conditions) {
-          if (type) {
-            typeValues.push(type);
-          }
-        }
-      }
-    }
-
-    return typeValues;
-  };
 
   const fetch = useCallback(
     (update = false) => {
@@ -81,9 +57,6 @@ const usePushrules = (): PushRulesResponse => {
             try {
               const rules = JSON.parse(data);
               if (isEmptyArray(rules)) return resolve([]);
-
-              const ruleTypes = extractTypeValues(rules);
-              setRuleTypes(ruleTypes);
 
               setPushrules(rules);
             } catch (e) {
@@ -99,7 +72,6 @@ const usePushrules = (): PushRulesResponse => {
   return {
     pushrules,
     fetch,
-    ruleTypes,
   };
 };
 
