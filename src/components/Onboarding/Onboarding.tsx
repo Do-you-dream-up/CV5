@@ -77,11 +77,16 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           <div className={c('dydu-onboarding-image', classes.image)}>
             <img src={path} alt={''} />
           </div>
-          <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[index]?.title}</p>
-          <div
-            className={c('dydu-onboarding-body', classes.body)}
-            dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered?.[index]?.body) }}
-          />
+          {stepsFiltered?.[index]?.title && (
+            <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[index]?.title}</p>
+          )}
+
+          {stepsFiltered?.[index]?.body && (
+            <div
+              className={c('dydu-onboarding-body', classes.body)}
+              dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered?.[index]?.body) }}
+            />
+          )}
           <button type="button" onClick={onEnd} id="skip-onboarding">
             {skip}
           </button>
