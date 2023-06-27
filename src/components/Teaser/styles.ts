@@ -56,6 +56,9 @@ export default createUseStyles<any, any>((theme: any): any => ({
   }),
   hidden: () => ({
     display: 'none !important',
+    '& .dydu-teaser-title': {
+      display: 'none',
+    },
   }),
   hideOutline: () => ({
     outline: 'none',

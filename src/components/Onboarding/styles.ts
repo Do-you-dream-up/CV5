@@ -28,6 +28,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     display: 'flex',
     justifyContent: 'center',
     marginTop: '.5em',
+    paddingInlineStart: 0,
   }),
   buttons: () => ({
     display: 'flex',
@@ -52,6 +53,9 @@ export default createUseStyles<any, any>((theme: any): any => ({
     position: 'relative',
     textAlign: 'center',
     width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
   }),
   image: () => ({
     '& img': {

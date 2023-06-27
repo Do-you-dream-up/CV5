@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 
 import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -38,7 +38,7 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   const should = ready && render && active;
   const { enable, items } = configuration?.onboarding || {};
   const steps: Steps[] = t('onboarding.steps');
-  const stepsFiltered = should && steps?.filter((step, index) => !items?.[index]?.disabled);
+  const stepsFiltered = should && steps?.filter((_, index) => !items?.[index]?.disabled);
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
@@ -47,12 +47,23 @@ export default function Onboarding({ children, render }: OnboardingProps) {
 
   const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 
+  const checkDisabledStatus = useMemo(() => {
+    let result = true;
+    stepsFiltered &&
+      stepsFiltered?.forEach(function (item) {
+        if (!item.disabled) {
+          result = false;
+        }
+      });
+    return result;
+  }, [stepsFiltered]);
+
   useEffect(() => {
-    if (active && enable) event?.('onboardingDisplay');
+    if (active && enable && !checkDisabledStatus) event?.('onboardingDisplay');
   }, [active, enable, event]);
 
-  if (!enable || !active) return children;
-  if (should)
+  if (!enable || !active || checkDisabledStatus) return children;
+  if (should && !checkDisabledStatus)
     return (
       <div className={c('dydu-onboarding', classes.root)}>
         <div
@@ -66,11 +77,16 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           <div className={c('dydu-onboarding-image', classes.image)}>
             <img src={path} alt={''} />
           </div>
-          <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered[index].title}</p>
-          <div
-            className={c('dydu-onboarding-body', classes.body)}
-            dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered[index].body) }}
-          />
+          {stepsFiltered?.[index]?.title && (
+            <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[index]?.title}</p>
+          )}
+
+          {stepsFiltered?.[index]?.body && (
+            <div
+              className={c('dydu-onboarding-body', classes.body)}
+              dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered?.[index]?.body) }}
+            />
+          )}
           <button type="button" onClick={onEnd} id="skip-onboarding">
             {skip}
           </button>
