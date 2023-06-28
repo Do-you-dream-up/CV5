@@ -39,10 +39,10 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
+  const [chatboxRef, setChatboxRef] = useState<any>();
 
   const { t } = useTranslation('translation');
   const newMessageText = t('livechat.notif.newMessage');
-  let chatboxRef: any;
 
   useEffect(() => {
     document.addEventListener('mouseenter', clearTabNotification);
@@ -58,7 +58,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     }
   }, [isOpen]);
 
-  const saveChatboxRef = (ref: any) => (chatboxRef = ref);
+  const saveChatboxRef = (ref: any) => setChatboxRef(ref);
 
   const execDyduAfterLoad = () =>
     new Promise((resolve) => {

@@ -10,6 +10,7 @@ import icons from '../../tools/icon-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useSurvey } from 'src/Survey/SurveyProvider';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -18,8 +19,8 @@ import useStyles from './styles';
  */
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useConfiguration();
-  const { secondaryActive, secondaryContent, closeSecondary } = useContext(DialogContext);
-
+  const { secondaryActive, secondaryContent } = useContext(DialogContext);
+  const { flushStatesAndClose } = useSurvey();
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
@@ -76,13 +77,13 @@ export default function Secondary({ anchor, mode }) {
       <div className={c('dydu-secondary-header', headerClass)}>
         {titleContent}
         <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={closeSecondary} type="button" variant="icon">
+          <Button color="primary" onClick={flushStatesAndClose} type="button" variant="icon">
             <Icon icon={icons?.close} alt="close" />
           </Button>
         </div>
       </div>
     );
-  }, [headerRenderer, titleContent, closeSecondary]);
+  }, [headerRenderer, titleContent, flushStatesAndClose]);
 
   return secondaryActive ? (
     <div

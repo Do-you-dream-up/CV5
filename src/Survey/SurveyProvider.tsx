@@ -44,7 +44,9 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
 
   const showSurvey = useCallback((data) => {
     const id = extractId(data);
-    getSurveyConfigurationById(id).then(setSurveyConfig);
+    getSurveyConfigurationById(id).then((res) => {
+      setSurveyConfig(res);
+    });
   }, []);
 
   const getSecondaryWidth = useCallback(() => {
@@ -99,7 +101,11 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     if (!canInstanciateFields) return;
     const listFieldInstance = instanciateFields(fields);
     setInstances(listFieldInstance);
-  }, [instances, surveyConfig]);
+  }, [instances, surveyConfig?.surveyId]);
+
+  useEffect(() => {
+    surveyConfig?.surveyId && triggerSurvey();
+  }, [surveyConfig?.surveyId]);
 
   const getSurveyAnswer = useCallback(() => {
     if (isDefined(instances)) {
@@ -118,7 +124,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
         fields: userAnswerObj,
       };
     },
-    [surveyConfig],
+    [surveyConfig?.surveyId],
   );
 
   const sendAnswer = useCallback(
@@ -159,8 +165,9 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       instances,
       onSubmit,
       triggerSurvey,
+      flushStatesAndClose,
     }),
-    [showSurvey, instances, onSubmit, triggerSurvey],
+    [showSurvey, instances, onSubmit, triggerSurvey, flushStatesAndClose],
   );
 
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
