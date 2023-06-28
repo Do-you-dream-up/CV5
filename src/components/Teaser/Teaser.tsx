@@ -126,7 +126,6 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
             title={mouseover}
             role="button"
             tabIndex={tabIndex}
-            aria-pressed={!open}
             className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
               [classes.hideOutline]: !tabbing,
             })}
