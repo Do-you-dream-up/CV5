@@ -1,9 +1,10 @@
 import { createElement, useCallback, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
+import Interaction from '../Interaction';
+import Loader from '../Loader';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
-import Progress from '../Progress';
 import PropTypes from 'prop-types';
 import { QUICK_REPLY } from '../../tools/template';
 import c from 'classnames';
@@ -80,13 +81,18 @@ export default function Bubble({
       id: `dydu-bubble-${type}`,
     },
     <>
-      {thinking && <Progress className={c('dydu-bubble-progress', classes.progress)} />}
-      <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
-        {(children || html) && (
-          <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
-        )}
-        {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
-      </div>
+      {thinking ? (
+        <Interaction type="response">
+          <Loader />
+        </Interaction>
+      ) : (
+        <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
+          {(children || html) && (
+            <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
+          )}
+          {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
+        </div>
+      )}
     </>,
   );
 }

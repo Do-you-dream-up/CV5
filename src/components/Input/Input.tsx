@@ -1,9 +1,8 @@
 import Actions, { ActionProps } from '../Actions/Actions';
 import { escapeHTML, isDefined } from '../../tools/helpers';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
-import { DialogContext } from '../../contexts/DialogContext';
 import Icon from '../Icon/Icon';
 import Voice from '../Voice';
 import c from 'classnames';
@@ -12,6 +11,7 @@ import icons from '../../tools/icon-constants';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
+import { useDialog } from '../../contexts/DialogContext';
 import { useEvent } from '../../contexts/EventsContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
@@ -27,12 +27,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent } = useEvent();
-  const { disabled, locked, placeholder, autoSuggestionActive } = useContext(DialogContext);
 
   const classes = useStyles();
   const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
   const [input, setInput] = useState<string>('');
-  const { prompt } = useContext(DialogContext);
+  const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse, isWaitingForResponse } =
+    useDialog();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
@@ -142,9 +142,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const sendInput = useCallback(
     (input) => {
+      setIsWaitingForResponse && !isWaitingForResponse && setIsWaitingForResponse(true);
       if (isLivechatOn) send?.(input);
       else {
-        talk(input).then(onResponse);
+        talk(input).then((response) => {
+          onResponse(response);
+          setIsWaitingForResponse && setIsWaitingForResponse(false);
+        });
       }
     },
 
