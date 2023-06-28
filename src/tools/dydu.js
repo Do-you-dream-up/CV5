@@ -165,11 +165,11 @@ export default new (class Dydu {
   }
 
   initInfos() {
-    return (this.infos = {
+    this.infos = {
       locale: this.locale,
       space: this.space,
       botId: channelsBot || bot?.id,
-    });
+    };
   }
 
   handleTokenRefresh = () => {
