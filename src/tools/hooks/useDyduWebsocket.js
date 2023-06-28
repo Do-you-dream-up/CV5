@@ -185,7 +185,7 @@ export default function useDyduWebsocket() {
         decrementHandshakeCountDown();
       },
       onClose: (closeEvent) => {
-        _onFail();
+        // _onFail();
         if (closeEvent.wasClean) close();
         console.log('websocket: on close !', closeEvent);
       },

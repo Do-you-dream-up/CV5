@@ -37,7 +37,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const [tunnel, setTunnel] = useState<any>(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
   const [isLivechatOn, setIsLivechatOn] = useState(false);
-  const { showSurvey } = useSurvey();
+  const { showSurvey, triggerSurvey } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { pop, put, list: queue, isEmpty: isQueueEmpty } = useQueue();
   const { onNewMessage } = useEvent();
@@ -94,7 +94,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWebsocket(false);
     setIsLivechatOn(false);
     setTunnel(null);
+    triggerSurvey && triggerSurvey();
   }, []);
+
   const tunnelInitialConfig = useMemo(() => {
     return {
       ...lastResponse,

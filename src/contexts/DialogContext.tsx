@@ -198,9 +198,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         if (someFieldsDefined) {
           setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
         }
-        setSecondaryActive((previous) => {
-          return open === undefined ? !previous : open;
-        });
+        setSecondaryActive(open);
       },
     [],
   );
