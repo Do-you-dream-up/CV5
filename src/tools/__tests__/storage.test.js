@@ -1,14 +1,10 @@
 import { Cookie, Local, Session } from '../storage';
 
 import cookie from 'js-cookie';
-import { v4 as uuidv4 } from 'uuid';
 
 jest.mock('js-cookie');
 describe('Local storage by bot id', () => {
-  const botId = uuidv4();
   const contextName = Local.names.context;
-  const storageKey = Local._BOTS_BY_ID_KEY;
-  const initialValue = { foo: 'bar' };
   beforeEach(() => {
     localStorage.clear();
   });
@@ -257,8 +253,8 @@ describe('Local storage by bot id', () => {
 
       describe('getKey', () => {
         it('should return the correct key string', () => {
-          const keyString = Local.visit.getKey(testParams);
-          expect(keyString).toEqual(`DYDU_lastvisitfor_${testParams.botId}_${testParams.space}_${testParams.locale}`);
+          const keyString = Local.visit.getKey();
+          expect(keyString).toEqual('dydu.visit');
         });
       });
 
@@ -317,7 +313,7 @@ describe('Local storage by bot id', () => {
       describe('getKey', () => {
         it('should return the correct key string', () => {
           const keyString = Local.clientId.getKey(testParams);
-          expect(keyString).toEqual(`DYDU_clientId_${testParams.botId}_${testParams.space}_${testParams.locale}`);
+          expect(keyString).toEqual('dydu.client');
         });
       });
 
