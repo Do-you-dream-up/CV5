@@ -49,11 +49,6 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     });
   }, []);
 
-  const getSecondaryWidth = useCallback(() => {
-    const secondaryMaxWidth = configuration?.secondary?.width;
-    return getChatboxRef && getChatboxRef() ? getChatboxWidthTime(getChatboxRef(), 1.4, secondaryMaxWidth) : -1;
-  }, [getChatboxRef]);
-
   const flushStatesAndClose = useCallback(() => {
     flushStates();
     closeSecondary && closeSecondary();
@@ -88,7 +83,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const triggerSurvey = () => {
     openSecondary &&
       openSecondary({
-        width: getSecondaryWidth(),
+        width: configuration?.secondary?.width || null,
         bodyRenderer: () => <SurveyForm />,
         title: () => <SecondaryFormTitle />,
         headerTransparency: false,
