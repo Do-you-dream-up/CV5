@@ -50,7 +50,7 @@ export default function Dialog({ dialogRef, open, ...rest }) {
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
         {interactions.map((it, index) => ({ ...it, key: index }))}
         {isWaitingForResponse && (
-          <Interaction type="response">
+          <Interaction type="response" className="container-loader-interaction">
             <Loader />
           </Interaction>
         )}
