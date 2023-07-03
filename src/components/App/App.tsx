@@ -5,6 +5,7 @@ import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { ConversationHistoryProvider } from '../../contexts/ConversationHistoryContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
 import { OidcProvider } from '../../contexts/OidcContext';
@@ -17,6 +18,7 @@ import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
 
 const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
@@ -75,14 +77,18 @@ const App = () => {
             <OidcProvider>
               <SamlProvider>
                 <UserActionProvider>
-                  <DialogProvider>
-                    <SurveyProvider>
-                      <LivechatProvider>
-                        <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                      </LivechatProvider>
-                    </SurveyProvider>
-                    <Teaser open={isChatboxMinimize} toggle={toggle} />
-                  </DialogProvider>
+                  <ConversationHistoryProvider>
+                    <TopKnowledgeProvider>
+                      <DialogProvider>
+                        <SurveyProvider>
+                          <LivechatProvider>
+                            <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                          </LivechatProvider>
+                        </SurveyProvider>
+                        <Teaser open={isChatboxMinimize} toggle={toggle} />
+                      </DialogProvider>
+                    </TopKnowledgeProvider>
+                  </ConversationHistoryProvider>
                 </UserActionProvider>
               </SamlProvider>
             </OidcProvider>

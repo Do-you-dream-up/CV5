@@ -45,7 +45,7 @@ interface ChatboxProps {
 
 export default function Chatbox({ extended, open, root, toggle, ...rest }: ChatboxProps) {
   const { configuration } = useConfiguration();
-  const { isLivechatOn, send } = useLivechat();
+  const { send } = useLivechat();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
@@ -144,10 +144,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   };
 
   useEffect(() => {
-    if (!ready || Local.livechat.load()) {
+    if (!ready || Local.isLivechatOn.load()) {
       window.dydu = { ...window.dydu };
 
-      window.dydu.chat = getDyduChatObject({ livechatActive: isLivechatOn });
+      window.dydu.chat = getDyduChatObject({ livechatActive: Local.isLivechatOn.load() });
 
       window.dydu.promptEmail = {
         prompt: (type) => setPrompt && setPrompt(type),
@@ -215,7 +215,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     gdprPassed,
     setGdprPassed,
-    isLivechatOn,
     getDyduChatObject,
   ]);
 

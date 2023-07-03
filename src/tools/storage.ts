@@ -111,7 +111,7 @@ export class Cookie {
  */
 export class Local {
   static names = {
-    livechat: 'dydu.livechat',
+    isLivechatOn: 'dydu.isLivechatOn',
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',
@@ -275,13 +275,13 @@ export class Local {
     };
   };
 
-  static livechat = Object.create({
-    save: (data) => localStorage.setItem(Local.names.livechat, JSON.stringify(data)),
+  static isLivechatOn = Object.create({
+    save: (data) => localStorage.setItem(Local.names.isLivechatOn, data),
     load: () => {
-      const d = localStorage.getItem(Local.names.livechat) || '{}';
-      return JSON.parse(d);
+      const isLivechatOn = localStorage.getItem(Local.names.isLivechatOn);
+      return (isLivechatOn && JSON.parse(isLivechatOn)) || false;
     },
-    reset: () => localStorage.removeItem(Local.names.livechat),
+    reset: () => localStorage.setItem(Local.names.isLivechatOn, 'false'),
   });
 
   static saml = Object.create({

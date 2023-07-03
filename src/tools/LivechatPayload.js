@@ -1,10 +1,17 @@
 /* eslint-disable */
 
-import { LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION } from './constants';
-import { browserName, isDefined, isEmptyString, isOfTypeString, osName, recursiveBase64EncodeString } from './helpers';
+import { ATRIA_TYPE_RESPONSE, LIVECHAT_NOTIFICATION, RESPONSE_SPECIAL_ACTION, SOLUTION_TYPE } from './constants';
+import {
+  b64encode,
+  browserName,
+  isDefined,
+  isEmptyString,
+  isOfTypeString,
+  osName,
+  recursiveBase64EncodeString,
+} from './helpers';
 
 import { Local } from './storage';
-import configuration from '../../public/override/configuration.json';
 import dydu from './dydu';
 
 let PAYLOAD_COMMON_CONTENT = {
@@ -13,15 +20,17 @@ let PAYLOAD_COMMON_CONTENT = {
   space: null,
   clientId: null,
   language: null,
-  userUrl: window.location.href,
-  browser: browserName(),
-  os: osName(),
+  solutionUsed: b64encode(SOLUTION_TYPE.assistant),
+  userUrl: b64encode(window.location.href),
+  browser: b64encode(browserName()),
+  os: b64encode(osName()),
+  saml2_info: b64encode(Local.saml.load()),
 };
 
 export const getPayloadCommonContentBase64Encoded = () => {
   return Object.keys(PAYLOAD_COMMON_CONTENT).reduce((mapRes, key) => {
     const val = PAYLOAD_COMMON_CONTENT[key];
-    mapRes[key] = isOfTypeString(val) ? val.toBase64() : val;
+    mapRes[key] = isOfTypeString(val) ? b64encode(val) : val;
     return mapRes;
   }, {});
 };
@@ -35,6 +44,7 @@ export const REQUEST_TYPE = {
   survey: 'survey',
   typing: 'typing',
   history: 'history',
+  topKnowledge: 'topknowledge',
 };
 
 export const LivechatPayloadCreator = {
@@ -53,20 +63,9 @@ export const LivechatPayloadCreator = {
   userTypingMessage: (userInput = '') => ({
     type: REQUEST_TYPE.typing,
     parameters: {
-      typing: !isEmptyString(userInput),
       ...getPayloadCommonContentBase64Encoded(),
-      content: userInput?.toBase64(),
-      alreadyCame: true,
-      contextType: 'V2Vi',
-      disableLanguageDetection: true,
-      mode: 'U3luY2hyb24=',
-      pureLivechat: false,
-      qualificationMode: true,
-      saml2_info: '',
-      solutionUsed: 'QVNTSVNUQU5U',
-      templateFormats: '',
-      timestamp: nowTime(),
-      useServerCookieForContext: false,
+      typing: !isEmptyString(userInput),
+      content: b64encode(userInput),
     },
   }),
 
@@ -81,19 +80,14 @@ export const LivechatPayloadCreator = {
       type: REQUEST_TYPE.talk,
       parameters: {
         ...getPayloadCommonContentBase64Encoded(),
-        alreadyCame: true,
-        contextType: 'V2Vi',
-        disableLanguageDetection: true,
-        mode: 'U3luY2hyb24=',
-        pureLivechat: false,
+        userInput: b64encode(userInput),
+        alreadyCame: dydu.alreadyCame(),
+        contextType: b64encode('Web'),
+        qualificationMode: dydu.qualificationMode,
         doNotRegisterInteraction: options?.doNotRegisterInteraction || false,
-        qualificationMode: true,
-        saml2_info: '',
-        solutionUsed: 'QVNTSVNUQU5U',
-        templateFormats: '',
-        timestamp: nowTime(),
         useServerCookieForContext: false,
-        userInput: userInput?.toBase64(),
+        disableLanguageDetection: true,
+        timestamp: nowTime(),
         ...(extraParameters && {
           extraParameters: extraParameters,
         }),
@@ -102,56 +96,29 @@ export const LivechatPayloadCreator = {
   },
 
   historyMessage: () => {
+    const contextId = localStorage.getItem('dydu.context');
+
     return {
       type: REQUEST_TYPE.history,
       parameters: {
-        dialog: localStorage.getItem('dydu.context'),
-        contextId: localStorage.getItem('dydu.context'),
-        botId: dydu.getBotId(),
-        language: dydu.getLocale(),
-        space: dydu.getSpace(),
-        solutionUsed: 'ASSISTANT',
-        clientId: dydu.getClientId(),
+        ...getPayloadCommonContentBase64Encoded(),
+        dialog: b64encode(contextId),
         useServerCookieForContext: false,
-        saml2_info: Local.saml.load(),
         timestamp: nowTime(),
       },
     };
   },
 
-  getContextMessage: () => ({
-    type: REQUEST_TYPE.getContext,
-    parameters: {
-      ...getPayloadCommonContentBase64Encoded(),
-      alreadyCame: false,
-      browser: 'Chrome 100'.toBase64(),
-      contextType: 'Web'.toBase64(),
-      disableLanguageDetection: true,
-      mode: 'Synchron'.toBase64(),
-      os: 'Linux x86_64'.toBase64(),
-      pureLivechat: false,
-      qualificationMode: true,
-      saml2_info: '',
-      solutionUsed: 'ASSISTANT'.toBase64(),
-      timestamp: nowTime(),
-      useServerCookieForContext: false,
-      userUrl: window.location.href,
-    },
-  }),
-
-  internautEventMessage: () => ({
-    type: REQUEST_TYPE.addInternautEvent,
-    parameters: {
-      ...getPayloadCommonContentBase64Encoded(),
-      eventName: 'ZGlhbG9nX3N0YXJ0',
-      eventValue: getPayloadCommonContentBase64Encoded()?.contextId,
-      qualificationMode: true,
-      saml2_info: '',
-      solutionUsed: 'QVNTSVNUQU5U',
-      timestamp: nowTime(),
-      useServerCookieForContext: false,
-    },
-  }),
+  topKnowledgeMessage: (period, size) => {
+    return {
+      type: REQUEST_TYPE.topKnowledge,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        maxKnowledge: b64encode(size),
+        period: b64encode(period),
+      },
+    };
+  },
 };
 
 export const LivechatPayloadChecker = {
@@ -193,9 +160,6 @@ export const LivechatPayloadChecker = {
       payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operatorBusy)
     );
   },
-  startLivechat: (payload) => {
-    return payload?.specialAction?.fromBase64()?.equals('StartPolling');
-  },
   timeout: (payload) => {
     return (
       payload?.type?.equals('payload') &&
@@ -211,11 +175,27 @@ export const LivechatPayloadChecker = {
   getContextResponse: (payload) => {
     return payload?.type?.equals('getContextResponse');
   },
-  endPolling: (payload) => {
+  historyResponse: (payload) => {
+    return payload?.type?.equals('historyResponse');
+  },
+  topKnowledgeResponse: (payload) => {
+    return payload?.type?.equals('topKnowledgeResponse');
+  },
+  startLivechat: (payload) => {
+    const payloadValues = payload?.values || payload;
     return (
-      payload?.values?.typeResponse?.fromBase64()?.equals('NAAutoCloseDialog') ||
-      payload?.values?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
-      (payload?.type?.equals('notification') && payload?.values?.code?.fromBase64()?.equals('OnOperatorCloseDialog'))
+      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.startPolling) ||
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dmLivechatConnectionSucceed)
+    );
+  },
+  endPolling: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return (
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.naAutoCloseDialog) ||
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.naAutoCloseDialogBecauseUserLeft) ||
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.opLivechatEndByOperator) ||
+      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
+      payload?.type?.equals('surveyResponse')
     );
   },
 };

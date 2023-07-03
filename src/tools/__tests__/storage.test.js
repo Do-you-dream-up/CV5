@@ -5,10 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 jest.mock('js-cookie');
 describe('Local storage by bot id', () => {
-  const botId = uuidv4();
   const contextName = Local.names.context;
-  const storageKey = Local._BOTS_BY_ID_KEY;
-  const initialValue = { foo: 'bar' };
   beforeEach(() => {
     localStorage.clear();
   });
@@ -181,40 +178,38 @@ describe('Local storage by bot id', () => {
       });
     });
 
-    describe('livechat', () => {
-      const testData = { name: 'John Doe', message: 'Hello, world!' };
-
+    describe('isLivechatOn', () => {
       beforeEach(() => {
         localStorage.clear();
       });
 
       describe('save', () => {
         it('should save data to local storage', () => {
-          Local.livechat.save(testData);
-          const savedData = JSON.parse(localStorage.getItem(Local.names.livechat));
-          expect(savedData).toEqual(testData);
+          Local.isLivechatOn.save(true);
+          const savedData = JSON.parse(localStorage.getItem(Local.names.isLivechatOn));
+          expect(savedData).toEqual(true);
         });
       });
 
       describe('load', () => {
         it('should return an empty object if no data is saved', () => {
-          const loadedData = Local.livechat.load();
-          expect(loadedData).toEqual({});
+          const loadedData = Local.isLivechatOn.load();
+          expect(loadedData).toEqual(false);
         });
 
         it('should return the saved data', () => {
-          localStorage.setItem(Local.names.livechat, JSON.stringify(testData));
-          const loadedData = Local.livechat.load();
-          expect(loadedData).toEqual(testData);
+          localStorage.setItem(Local.names.isLivechatOn, JSON.stringify(true));
+          const loadedData = Local.isLivechatOn.load();
+          expect(loadedData).toEqual(true);
         });
       });
 
       describe('reset', () => {
         it('should reset the saved data to an empty object', () => {
-          localStorage.setItem(Local.names.livechat, JSON.stringify(testData));
-          Local.livechat.reset();
-          const savedData = JSON.parse(localStorage.getItem(Local.names.livechat));
-          expect(savedData).toEqual(null);
+          localStorage.setItem(Local.names.isLivechatOn, JSON.stringify(true));
+          Local.isLivechatOn.reset();
+          const savedData = JSON.parse(localStorage.getItem(Local.names.isLivechatOn));
+          expect(savedData).toEqual(false);
         });
       });
     });

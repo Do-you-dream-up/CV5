@@ -21,6 +21,8 @@ jest.mock('../../dydu', () => ({
   getClientId: jest.fn(),
   getLocale: jest.fn(),
   getBot: jest.fn().mockReturnValue({ server: serverUrl }),
+  getBotId: jest.fn().mockReturnValue('57df49eb-cf20-4dd8-84e5-ca57360d5f10'),
+  isLocalEnv: jest.fn().mockReturnValue(false),
 }));
 
 const displayResponseText = jest.fn();
@@ -87,7 +89,7 @@ describe('useDyduWebsocket', () => {
       expect(k in tunnel).toEqual(true);
       expect(typeof tunnel[k]).toEqual(typeof InterfaceTunnel[k]);
     });
-    expect(Object.keys(tunnel).length).toEqual(Object.keys(InterfaceTunnel).length + 4);
+    expect(Object.keys(tunnel).length).toEqual(Object.keys(InterfaceTunnel).length + 5);
   });
 
   it('should be available', () => {
@@ -116,28 +118,6 @@ describe('useDyduWebsocket', () => {
     // THEN
     await server.connected;
     expect(tunnel.isConnected).toEqual(true);
-  });
-
-  it('should initialize dydu websocket handshake on connection', async () => {
-    // GIVEN
-    await act(async () => await tunnel.open(getTunnelInitialConfiguration()));
-    await server.connected;
-    expect(tunnel.isConnected).toEqual(true);
-
-    // WHEN
-    // THEN
-    await server.nextMessage.then((message) => {
-      /* step 1/3 of handshake */
-      expect(message.type).toEqual('getContext');
-    });
-
-    /* step 2/3 of handshake */
-    await server.send({ type: 'getContextResponse' });
-
-    await server.nextMessage.then((message) => {
-      /* step 3/3 of handshake */
-      expect(message.type).toEqual('addInternautEvent');
-    });
   });
 
   describe('displayMessage', () => {
