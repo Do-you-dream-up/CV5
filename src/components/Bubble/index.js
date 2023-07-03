@@ -1,7 +1,8 @@
 import { createElement, useCallback, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
-import Interaction from '../Interaction';
+import Avatar from '../Avatar/Avatar';
+import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
 import Loader from '../Loader';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
@@ -39,7 +40,7 @@ export default function Bubble({
   const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
-  const { secondaryActive, toggleSecondary } = useDialog();
+  const { secondaryActive, toggleSecondary, typeResponse } = useDialog();
   const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
@@ -48,6 +49,7 @@ export default function Bubble({
   const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
   const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
   const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
+  const defaultAvatar = configuration.avatar?.response?.image;
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
@@ -67,33 +69,42 @@ export default function Bubble({
     }
   }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar, canAutoOpen]);
 
-  return createElement(
-    component,
-    {
-      className: c(
-        'dydu-bubble',
-        `dydu-bubble-${type}`,
-        classes.base,
-        classes[type],
-        isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
-        className,
-      ),
-      id: `dydu-bubble-${type}`,
-    },
+  return (
     <>
       {thinking ? (
-        <Interaction type="response">
+        <div className={classes.loaderResponse}>
+          <AvatarsMatchingRequest
+            AvatarComponent={Avatar}
+            typeResponse={typeResponse}
+            headerAvatar={false}
+            defaultAvatar={defaultAvatar}
+            type={type}
+          />
           <Loader />
-        </Interaction>
-      ) : (
-        <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
-          {(children || html) && (
-            <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
-          )}
-          {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
         </div>
+      ) : (
+        createElement(
+          component,
+          {
+            className: c(
+              'dydu-bubble',
+              `dydu-bubble-${type}`,
+              classes.base,
+              classes[type],
+              isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
+              className,
+            ),
+            id: `dydu-bubble-${type}`,
+          },
+          <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
+            {(children || html) && (
+              <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
+            )}
+            {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
+          </div>,
+        )
       )}
-    </>,
+    </>
   );
 }
 

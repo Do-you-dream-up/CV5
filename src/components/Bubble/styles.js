@@ -42,12 +42,10 @@ export default createUseStyles((theme) => {
       padding: [['.8em', '1em']],
       width: '100%',
     }),
-    progress: () => ({
-      left: 0,
-      position: 'absolute',
-      right: 0,
-      top: 0,
-    }),
+    loaderResponse: {
+      display: 'flex',
+      alignItems: 'center',
+    },
     request: ({ color = 'primary' }) => ({
       ...request({ color }),
       color: theme.palette.request.text,
