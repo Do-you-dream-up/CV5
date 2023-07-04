@@ -11,7 +11,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { isDefined, isOfTypeString, isWindowOpenOnClick } from '../tools/helpers';
+import { isDefined, isOfTypeString, strContains } from '../tools/helpers';
 
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
@@ -234,7 +234,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         if (secondaryTransient || isMobile) {
           toggleSecondary(false)();
         }
-        if (!isWindowOpenOnClick(text)) {
+        if (!strContains(text, 'window.open')) {
           add(<Interaction children={text} type="request" />);
           setPlaceholder(null);
           setLocked(false);

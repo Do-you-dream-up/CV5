@@ -28,7 +28,6 @@ import {
   isOfTypeNumber,
   isOfTypeString,
   isPositiveNumber,
-  isWindowOpenOnClick,
   mergeDeep,
   numberOfDayInMs,
   objectContainFields,
@@ -65,20 +64,6 @@ describe('helpers', () => {
       const _null = null;
       expect(isDefined(_undefined)).toEqual(false);
       expect(isDefined(_null)).toEqual(false);
-    });
-  });
-
-  describe('isWindowOpenOnClick', () => {
-    it('should return true if request contain widow.open', () => {
-      const text = 'window.open(blablabla)';
-      const result = isWindowOpenOnClick(text);
-      expect(result).toEqual(true);
-    });
-
-    it('should return false if request NOT contain widow.open', () => {
-      const text = 'bli bla blou';
-      const result = isWindowOpenOnClick(text);
-      expect(result).toEqual(false);
     });
   });
 
