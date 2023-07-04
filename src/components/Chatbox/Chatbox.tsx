@@ -90,10 +90,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
           qualification,
           extra: options,
         };
-        options =
-          options.type === 'javascript'
-            ? Object.assign({ hide: true }, options)
-            : Object.assign({ hide: false }, options);
+        options = {
+          ...options,
+          hide: options.type === 'javascript' ? true : false,
+        };
         if (!options.hide) {
           if (!REGEX_URL.test(text)) {
             addRequest && addRequest(text);
