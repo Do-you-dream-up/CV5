@@ -115,7 +115,6 @@ export default function Interaction({
   const [ready, setReady] = useState(false);
   const [readyCarousel, setReadyCarousel] = useState(false);
   const { isLivechatOn } = useLivechat();
-  const { isWaitingForResponse } = useDialog();
 
   const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
@@ -241,7 +240,7 @@ export default function Interaction({
 
   const _Loader = useMemo(() => {
     if (isLivechatOn) return null;
-    return hasLoader && !isWaitingForResponse ? <Loader className={classes.loader} scroll={scroll} /> : null;
+    return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
   }, [classes.loader, hasLoader, isLivechatOn, scroll]);
 
   const bubbleList = useMemo(() => {
