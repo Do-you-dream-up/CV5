@@ -85,7 +85,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const ask = useCallback(
     (text, options) => {
       text = text.trim();
-      console.log('🚀 ~ file: Chatbox.tsx:273 ~ Chatbox ~ options:', options.type);
       if (text) {
         const toSend = {
           qualification,
