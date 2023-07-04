@@ -1,5 +1,7 @@
 import { VAR_TYPE } from './constants';
 
+export const isWindowOpenOnClick = (text) => Boolean(text && text.includes('window.open'));
+
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
 export const toFormUrlEncoded = (data) => {
