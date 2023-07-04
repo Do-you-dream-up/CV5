@@ -85,12 +85,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const ask = useCallback(
     (text, options) => {
       text = text.trim();
+      console.log('🚀 ~ file: Chatbox.tsx:273 ~ Chatbox ~ options:', options.type);
       if (text) {
         const toSend = {
           qualification,
           extra: options,
         };
-        options = Object.assign({ hide: false }, options);
+        options =
+          options.type === 'javascript'
+            ? Object.assign({ hide: true }, options)
+            : Object.assign({ hide: false }, options);
         if (!options.hide) {
           if (!REGEX_URL.test(text)) {
             addRequest && addRequest(text);
