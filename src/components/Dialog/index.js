@@ -1,7 +1,5 @@
-import { useContext, useEffect } from 'react';
-
-import { DialogContext } from '../../contexts/DialogContext';
 import Interaction from '../Interaction';
+import Loader from '../Loader';
 import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
 import PropTypes from 'prop-types';
@@ -11,6 +9,8 @@ import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useDialog } from '../../contexts/DialogContext';
+import { useEffect } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Dialog({ dialogRef, open, ...rest }) {
   const { configuration } = useConfiguration();
-  const { interactions, prompt, setPrompt } = useContext(DialogContext);
+  const { interactions, prompt, setPrompt, isWaitingForResponse } = useDialog();
   const classes = useStyles();
   const { top } = configuration.dialog;
   const { t } = useTranslation('translation');
@@ -49,6 +49,11 @@ export default function Dialog({ dialogRef, open, ...rest }) {
       <p className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
         {interactions.map((it, index) => ({ ...it, key: index }))}
+        {isWaitingForResponse && (
+          <Interaction type="response" className="container-loader-interaction">
+            <Loader />
+          </Interaction>
+        )}
         {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
         {prompt === 'spaces' && <Spaces />}
         {prompt === 'exportConv' && <PromptEmail type="exportConv" />}

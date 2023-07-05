@@ -69,6 +69,8 @@ export interface DialogContextProps {
   autoSuggestionActive?: boolean;
   setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
   callWelcomeKnowledge?: () => null;
+  isWaitingForResponse?: boolean;
+  setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SecondaryContentProps {
@@ -126,6 +128,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
 
   useEffect(() => {
     fetchServerStatus();
@@ -475,6 +478,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
     <DialogContext.Provider
       children={children}
       value={{
+        isWaitingForResponse,
+        setIsWaitingForResponse,
         closeSecondary,
         openSecondary,
         topList,
