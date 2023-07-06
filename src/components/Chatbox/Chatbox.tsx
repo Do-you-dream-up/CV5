@@ -149,9 +149,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             Local.byBotId(Local.names.botId).remove(),
             dydu.setLocale(locale, languages),
             i.changeLanguage(locale),
-            dydu.talk('#reset#'),
-            empty && empty(),
-          ]),
+          ])
+            .then(() => {
+              console.log('ON PASSE DANS LE PREMIER');
+              window.dydu.chat.ask('#reset#', { hide: true });
+              empty && empty();
+              localStorage.removeItem('dydu.context');
+            })
+            .then(() => window.dydu.chat.ask('#welcome#', { hide: true })),
       };
 
       window.dydu.lorem = {

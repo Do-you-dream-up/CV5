@@ -281,7 +281,6 @@ export class Local {
       remove: () => {
         const botsById = Local._getBotsById();
         delete botsById[botId];
-        console.log('🚀 ~ file: storage.ts:284 ~ Local ~ botsById:', botsById);
         localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
       },
     };

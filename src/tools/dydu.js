@@ -446,10 +446,9 @@ export default new (class Dydu {
   getContextId = async (forced) => {
     if (!forced) {
       const contextId = this.getContextIdFromLocalStorage();
-      console.log('🚀 ~ file: dydu.js:449 ~ Dydu ~ getContextId= ~ contextId:', contextId);
       if (isDefined(contextId)) return contextId;
     }
-
+    console.log('VOICI LE GETCONTEXT');
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
@@ -459,11 +458,12 @@ export default new (class Dydu {
       qualificationMode: this.qualificationMode,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
+    console.log('🚀 ~ file: dydu.js:456 ~ Dydu ~ getContextId= ~ this.getLocale():', this.getLocale());
     const path = `chat/context/${BOT.id}/`;
     try {
       const response = await this.emit(API.post, path, data);
-      console.log('🚀 ~ file: dydu.js:465 ~ Dydu ~ getContextId= ~ response:', response);
       this.setContextId(response?.contextId);
+      console.log('🚀 ~ file: dydu.js:465 ~ Dydu ~ getContextId= ~ response?.contextId:', response?.contextId);
       return response?.contextId;
     } catch (e) {
       console.error('While executing getContextId() ', e);
@@ -704,7 +704,9 @@ export default new (class Dydu {
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    const contextId = await this.getContextId(false, { qualification: this.qualificationMode });
+    const contextId = await this.getContextId(options?.extra?.newContext || false, {
+      qualification: this.qualificationMode,
+    });
     const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
     return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
