@@ -50,11 +50,11 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
           .getSaml2Status(saml2Info)
           ?.then((response) => {
             try {
-              console.log('--- SAML2 NOT CONNECTED : Redirect user to provider login ---');
               const { values } = JSON.parse(response);
               const auth = atob(values?.auth);
               setSaml2Info(auth);
               Local.saml.save(auth);
+              console.log('--- SAML2 NOT CONNECTED : Redirect user to provider login ---');
               setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
             } catch {
               console.log('--- SAML2 CONNECTED ---');

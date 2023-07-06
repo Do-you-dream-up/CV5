@@ -439,19 +439,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
     if (!configuration?.saml?.enable) return true;
     return configuration?.saml?.enable && saml2Connected;
   }, [configuration?.saml, saml2Connected]);
-  console.log('🚀 ~ file: DialogContext.tsx:442 ~ DialogProvider ~ saml2Connected:', saml2Connected);
-  console.log(
-    '🚀 ~ file: DialogContext.tsx:442 ~ checkIfBehindSamlAndConnected ~ checkIfBehindSamlAndConnected:',
-    checkIfBehindSamlAndConnected,
-  );
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled && checkIfBehindSamlAndConnected) exec();
-  }, [hasAfterLoadBeenCalled]);
+  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
     if (isInteractionListEmpty && !welcomeContent && checkIfBehindSamlAndConnected) forceExec();
-  }, []);
+  }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
     welcomeContent && addResponse(welcomeContent);
