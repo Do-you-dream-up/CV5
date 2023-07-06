@@ -149,10 +149,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             Local.byBotId(Local.names.botId).remove(),
             dydu.setLocale(locale, languages),
             i.changeLanguage(locale),
-            empty && empty(),
             dydu.talk('#reset#'),
-            dydu.getContextId(true),
-            dydu.talk('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }),
+            empty && empty(),
           ]),
       };
 

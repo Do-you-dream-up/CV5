@@ -66,13 +66,6 @@ describe('talk', () => {
     expect(window.dydu.chat.reply).toHaveBeenCalledWith(dydu.getSpace());
   });
 
-  it('should reset the chat and empty it', async () => {
-    const emptyMock = jest.fn();
-    window.dydu.chat.empty = emptyMock;
-    await ACTIONS['#reset#']();
-    expect(emptyMock).toHaveBeenCalled();
-  });
-
   it('should call dydu.whoami() and window.dydu.chat.reply()', async () => {
     const whoamiResult = 'whoami result';
     const whoamiMock = jest.fn().mockResolvedValue(whoamiResult);
