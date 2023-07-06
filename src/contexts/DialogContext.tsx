@@ -436,8 +436,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   const checkIfBehindSamlAndConnected = useMemo(() => {
-    if (!configuration?.saml?.enable) return true;
-    return configuration?.saml?.enable && saml2Connected;
+    return !configuration?.saml?.enable || saml2Connected;
   }, [configuration?.saml, saml2Connected]);
 
   useEffect(() => {
