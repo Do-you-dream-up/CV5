@@ -13,6 +13,8 @@ export interface SamlProviderProps {
 export interface SamlContextProps {
   user: any;
   setUser: Dispatch<SetStateAction<null>>;
+  connected: boolean;
+  setConnected: Dispatch<SetStateAction<boolean>>;
   logout: () => void;
   saml2Info: any;
   setSaml2Info: any;
@@ -31,7 +33,8 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
 
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
   const [userInfo, setUserInfo] = useState(Storage.loadUserInfo());
-  const [redirectUrl, setRedirectUrl] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<null | string>(null);
 
   const relayState = encodeURI(window.location.href);
   // const relayState = JSON.stringify({
@@ -47,13 +50,15 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
           .getSaml2Status(saml2Info)
           ?.then((response) => {
             try {
+              console.log('--- SAML2 NOT CONNECTED : Redirect user to provider login ---');
               const { values } = JSON.parse(response);
               const auth = atob(values?.auth);
               setSaml2Info(auth);
               Local.saml.save(auth);
-              // setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
+              setRedirectUrl(`${atob(values?.redirection_url)}&RelayState=${relayState}`);
             } catch {
-              // console.log('valid saml token');
+              console.log('--- SAML2 CONNECTED ---');
+              setConnected(true);
             }
           })
           .catch((error) => {
@@ -114,6 +119,8 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
     setSaml2Info,
     checkSession,
     redirectUrl,
+    connected,
+    setConnected,
   };
 
   const renderChildren = () => {

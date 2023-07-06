@@ -114,7 +114,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
-  const { saml2Info } = useSaml();
+  const { connected: saml2Connected } = useSaml();
 
   const { isMobile } = useViewport();
 
@@ -437,8 +437,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const checkIfBehindSamlAndConnected = useMemo(() => {
     if (!configuration?.saml?.enable) return true;
-    return configuration?.saml?.enable && saml2Info;
-  }, [configuration?.saml]);
+    return configuration?.saml?.enable && saml2Connected;
+  }, [configuration?.saml, saml2Connected]);
+  console.log('🚀 ~ file: DialogContext.tsx:442 ~ DialogProvider ~ saml2Connected:', saml2Connected);
+  console.log(
+    '🚀 ~ file: DialogContext.tsx:442 ~ checkIfBehindSamlAndConnected ~ checkIfBehindSamlAndConnected:',
+    checkIfBehindSamlAndConnected,
+  );
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled && checkIfBehindSamlAndConnected) exec();
