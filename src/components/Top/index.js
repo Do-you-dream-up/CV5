@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { isEmptyArray } from '../../tools/helpers';
-import { useDialog } from '../../contexts/DialogContext';
+import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 
@@ -13,7 +13,7 @@ import useStyles from './styles';
  * Fetch the top-asked resources and display them in a numbered list.
  */
 export default function Top({ className, component, ...rest }) {
-  const { topList: items = [] } = useDialog();
+  const { topKnowledge: items = [] } = useTopKnowledge();
   const event = useEvent().onEvent('top');
   const { tabbing } = useContext(UserActionContext) || false;
   const classes = useStyles();
