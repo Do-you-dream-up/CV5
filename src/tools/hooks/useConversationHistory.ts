@@ -1,17 +1,15 @@
 import { useCallback, useState } from 'react';
 
 import dydu from '../dydu';
-import { isArray } from '../helpers';
 
-export default function useConversationHistory() {
+const useConversationHistory = () => {
   const [result, setResult] = useState([]);
 
   const fetch = useCallback(() => {
     return new Promise((resolve) => {
       dydu.history().then((res) => {
-        const { interactions = [] } = res;
-
-        if (interactions && isArray(interactions)) {
+        const interactions = res?.interactions;
+        if (interactions) {
           setResult(interactions);
         }
         return resolve(interactions);
@@ -23,4 +21,6 @@ export default function useConversationHistory() {
     fetch,
     result,
   };
-}
+};
+
+export default useConversationHistory;

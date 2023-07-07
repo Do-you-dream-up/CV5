@@ -5,6 +5,7 @@ import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { ContextIdProvider } from '../../contexts/ContextIdProvider';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
 import { OidcProvider } from '../../contexts/OidcContext';
@@ -74,16 +75,18 @@ const App = () => {
           <AuthProtected enable={configuration?.oidc?.enable}>
             <OidcProvider>
               <SamlProvider>
-                <UserActionProvider>
-                  <DialogProvider>
-                    <SurveyProvider>
-                      <LivechatProvider>
-                        <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                      </LivechatProvider>
-                    </SurveyProvider>
-                    <Teaser open={isChatboxMinimize} toggle={toggle} />
-                  </DialogProvider>
-                </UserActionProvider>
+                <ContextIdProvider>
+                  <UserActionProvider>
+                    <DialogProvider>
+                      <SurveyProvider>
+                        <LivechatProvider>
+                          <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
+                        </LivechatProvider>
+                      </SurveyProvider>
+                      <Teaser open={isChatboxMinimize} toggle={toggle} />
+                    </DialogProvider>
+                  </UserActionProvider>
+                </ContextIdProvider>
               </SamlProvider>
             </OidcProvider>
           </AuthProtected>
