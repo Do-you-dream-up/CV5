@@ -448,7 +448,6 @@ export default new (class Dydu {
       const contextId = this.getContextIdFromLocalStorage();
       if (isDefined(contextId)) return contextId;
     }
-    console.log('VOICI LE GETCONTEXT');
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
@@ -458,12 +457,10 @@ export default new (class Dydu {
       qualificationMode: this.qualificationMode,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    console.log('🚀 ~ file: dydu.js:456 ~ Dydu ~ getContextId= ~ this.getLocale():', this.getLocale());
     const path = `chat/context/${BOT.id}/`;
     try {
       const response = await this.emit(API.post, path, data);
       this.setContextId(response?.contextId);
-      console.log('🚀 ~ file: dydu.js:465 ~ Dydu ~ getContextId= ~ response?.contextId:', response?.contextId);
       return response?.contextId;
     } catch (e) {
       console.error('While executing getContextId() ', e);
@@ -486,6 +483,7 @@ export default new (class Dydu {
    * @param {string} value - Context ID to save.
    */
   setContextId = (value) => {
+    console.log('🚀 ~ file: dydu.js:487 ~ Dydu ~ ContextId dans setcontextID :', value);
     if (isDefined(value)) this.saveContextIdToLocalStorage(value);
   };
 

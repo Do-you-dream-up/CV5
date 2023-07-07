@@ -144,19 +144,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: (locale, languages) =>
-          Promise.all([
-            Local.byBotId(Local.names.botId).remove(),
-            dydu.setLocale(locale, languages),
-            i.changeLanguage(locale),
-          ])
+        set: (locale) =>
+          Promise.all([Local.byBotId(Local.names.botId).remove(), i.changeLanguage(locale)])
             .then(() => {
-              console.log('ON PASSE DANS LE PREMIER');
-              window.dydu.chat.ask('#reset#', { hide: true });
+              window.dydu.chat.ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
               empty && empty();
               localStorage.removeItem('dydu.context');
             })
-            .then(() => window.dydu.chat.ask('#welcome#', { hide: true })),
+            .then(() => {
+              window.dydu.chat.ask('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
+            }),
       };
 
       window.dydu.lorem = {
