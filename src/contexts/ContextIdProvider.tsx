@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
+import { useSaml } from './SamlContext';
 
 export interface ContextIdProviderProps {
   children?: any;
@@ -34,6 +35,7 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
   };
 
   const { configuration } = useConfiguration();
+  const { connected: saml2Connected, saml2enabled } = useSaml();
   const [contextId, setContextId] = useState<string | null>(getContextIdFromLocalStorage() || null);
 
   const updateContextId = (id: string) => {
@@ -64,8 +66,10 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
 
   useEffect(() => {
     dydu.setUpdateContextId(setContextId);
-    fetchContextId();
-  }, []);
+    if (!saml2enabled || (saml2enabled && saml2Connected)) {
+      fetchContextId();
+    }
+  }, [saml2enabled, saml2Connected]);
 
   const props: ContextIdContextProps = {
     contextId,
