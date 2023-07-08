@@ -82,10 +82,11 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server, configId }) => ({
+    (({ backUpServer, bot: id, server, isLocalEnv, configId }) => ({
       ...(id && { id }),
       ...(configId && { configId }),
       ...(server && { server }),
+      ...(isLocalEnv && { isLocalEnv }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
@@ -95,8 +96,8 @@ let BOT = {},
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
-    server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
+    server: `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
+    backupServer: `${protocol}://${getBackUpServerUrl(data)}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
     timeout: 3000,
     axiosConf: {
       headers: {
@@ -244,8 +245,12 @@ export default new (class Dydu {
       if (BOT.backUpServer && BOT.backUpServer !== '') {
         apiUrl = BOT.backUpServer;
       }
-      API.defaults.baseURL = `https://${apiUrl}/servlet/api/`;
+      API.defaults.baseURL = `https://${apiUrl}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
     }
+  };
+
+  isLocalEnv = () => {
+    return BOT.isLocalEnv;
   };
 
   handleSetApiTimeout = (ms) => {
@@ -269,7 +274,7 @@ export default new (class Dydu {
      * NO 401 ERROR
      */
     if (error?.response?.status !== 401) {
-      if (API.defaults.baseURL === `https://${BOT.server}/servlet/api/`) {
+      if (API.defaults.baseURL === `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`) {
         this.mainServerStatus = 'Error';
       }
     }
@@ -554,7 +559,9 @@ export default new (class Dydu {
 
   printHistory = async () => {
     if (this.contextId) {
-      const path = `https://${BOT.server}/servlet/history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+      const path = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/history?context=${
+        this.contextId
+      }&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -759,7 +766,7 @@ export default new (class Dydu {
   typing = async (text) => {
     const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
     const qs = this.#toQueryString(typingPayload);
-    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${qs}`;
+    const path = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
   };
 
@@ -920,7 +927,9 @@ export default new (class Dydu {
       }),
     };
     try {
-      const response = await fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+      const response = await fetch(
+        `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${_stringify(payload)}`,
+      );
       const jsonResponse = await response.json();
       this.setLastResponse(jsonResponse);
       return this.displaySurveySent();
@@ -1093,7 +1102,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
+    API.defaults.baseURL = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
     return response;
   };
 
