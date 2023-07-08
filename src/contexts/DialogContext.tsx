@@ -27,6 +27,7 @@ import { useConversationHistory } from './ConversationHistoryContext';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import usePushrules from '../tools/hooks/usePushrules';
+import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
@@ -112,6 +113,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
+  const { connected: saml2Connected } = useSaml();
 
   const { isMobile } = useViewport();
 
@@ -433,13 +435,17 @@ export function DialogProvider({ children }: DialogProviderProps) {
     addResponse(typedInteraction);
   };
 
-  useEffect(() => {
-    if (hasAfterLoadBeenCalled) exec();
-  }, [hasAfterLoadBeenCalled]);
+  const checkIfBehindSamlAndConnected = useMemo(() => {
+    return !configuration?.saml?.enable || saml2Connected;
+  }, [configuration?.saml, saml2Connected]);
 
   useEffect(() => {
-    if (isInteractionListEmpty && !welcomeContent) forceExec();
-  }, []);
+    if (hasAfterLoadBeenCalled && checkIfBehindSamlAndConnected) exec();
+  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
+
+  useEffect(() => {
+    if (isInteractionListEmpty && !welcomeContent && checkIfBehindSamlAndConnected) forceExec();
+  }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
     if (welcomeContent || listInteractionHistory) {

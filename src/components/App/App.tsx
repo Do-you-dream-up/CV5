@@ -5,6 +5,7 @@ import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
+import { ContextIdProvider } from '../../contexts/ContextIdProvider';
 import { ConversationHistoryProvider } from '../../contexts/ConversationHistoryContext';
 import { DialogProvider } from '../../contexts/DialogContext';
 import { LivechatProvider } from '../../contexts/LivechatContext';
@@ -12,13 +13,13 @@ import { OidcProvider } from '../../contexts/OidcContext';
 import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser/Teaser';
+import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
 
 const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
@@ -76,20 +77,27 @@ const App = () => {
           <AuthProtected enable={configuration?.oidc?.enable}>
             <OidcProvider>
               <SamlProvider>
-                <UserActionProvider>
+                <ContextIdProvider>
                   <ConversationHistoryProvider>
                     <TopKnowledgeProvider>
-                      <DialogProvider>
-                        <SurveyProvider>
-                          <LivechatProvider>
-                            <Chatbox extended={isChatboxFullScreen} open={isChatboxOpen} toggle={toggle} mode={mode} />
-                          </LivechatProvider>
-                        </SurveyProvider>
-                        <Teaser open={isChatboxMinimize} toggle={toggle} />
-                      </DialogProvider>
+                      <UserActionProvider>
+                        <DialogProvider>
+                          <SurveyProvider>
+                            <LivechatProvider>
+                              <Chatbox
+                                extended={isChatboxFullScreen}
+                                open={isChatboxOpen}
+                                toggle={toggle}
+                                mode={mode}
+                              />
+                            </LivechatProvider>
+                          </SurveyProvider>
+                          <Teaser open={isChatboxMinimize} toggle={toggle} />
+                        </DialogProvider>
+                      </UserActionProvider>
                     </TopKnowledgeProvider>
                   </ConversationHistoryProvider>
-                </UserActionProvider>
+                </ContextIdProvider>
               </SamlProvider>
             </OidcProvider>
           </AuthProtected>

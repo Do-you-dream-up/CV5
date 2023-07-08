@@ -2,7 +2,6 @@ import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useS
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
-import { isArray } from '../tools/helpers';
 
 type ChatResponseArray = Servlet.ChatResponseValues[];
 
@@ -29,9 +28,8 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
     return new Promise((resolve) => {
       if (!isLivechatOn) {
         dydu.history().then((res) => {
-          const { interactions = [] } = res;
-
-          if (interactions && isArray(interactions)) {
+          const interactions = res?.interactions;
+          if (interactions) {
             setHistory(interactions);
           }
           return resolve(interactions);
