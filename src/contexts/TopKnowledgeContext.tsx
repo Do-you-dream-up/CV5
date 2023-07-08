@@ -1,8 +1,8 @@
 import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useState } from 'react';
+import { _parse, isArray, isDefined } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
-import { _parse, isArray, isDefined } from '../tools/helpers';
 import { useConfiguration } from './ConfigurationContext';
 
 type ChatResponseArray = Servlet.ChatResponseValues[];
@@ -27,18 +27,16 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
   const { configuration } = useConfiguration();
 
   const fetch = () => {
-    console.log('Configuration=', configuration);
-    const { period, size } = configuration.top;
     const isLivechatOn = Local.isLivechatOn.load();
 
     return new Promise((resolve) => {
-      if (!isLivechatOn) {
+      if (!isLivechatOn && configuration) {
         dydu
-          .top(period, size)
+          .top(configuration.top?.period, configuration.top?.size)
           .then(extractPayload)
           .then((knowledgeList) => {
             setTopKnowledge(knowledgeList);
-            return resolve();
+            return resolve(true);
           });
       }
     });
