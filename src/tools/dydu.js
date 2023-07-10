@@ -668,7 +668,6 @@ export default new (class Dydu {
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    console.log('🚀 ~ file: dydu.js:661 ~ Dydu ~ talk= ~ this.contextId:', this.contextId);
     const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
     return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
