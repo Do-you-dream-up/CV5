@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 import '../prototypes/strings';
 
 import { Cookie, Local } from '../storage';
@@ -906,19 +907,13 @@ describe('dydu.js', function () {
 
   describe('getClientId', function () {
     it('should call |Local.clientId.getKey| with infoObject', () => {
-      // GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
+      dydu.initInfos();
 
       // WHEN
       dydu.getClientId();
 
       // THEN
-      expect(Local.clientId.getKey).toHaveBeenCalledWith(infoObject);
+      expect(Local.clientId.getKey).toHaveBeenCalled();
     });
 
     it('should call |Local.clientId.createAndSave| if |alreadyCame| is false', () => {
@@ -930,21 +925,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(Local.clientId.createAndSave).toHaveBeenCalled();
-    });
-    it('should call |Local.clientId.load|', () => {
-      // GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
-
-      // WHEN
-      dydu.getClientId();
-
-      // THEN
-      expect(Local.clientId.getKey).toHaveBeenCalledWith(infoObject);
     });
   });
 

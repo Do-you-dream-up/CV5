@@ -125,6 +125,7 @@ export class Local {
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
     saml: 'dydu.saml.auth',
+    visit: 'dydu.visit',
   };
 
   /**
@@ -299,7 +300,7 @@ export class Local {
   });
 
   static visit = Object.create({
-    getKey: ({ locale, space, botId }) => `DYDU_lastvisitfor_${botId}_${space}_${locale}`,
+    getKey: () => Local.names.visit,
     load: (keyString = '') => {
       const content = localStorage.getItem(keyString);
       return isDefined(content) ? content : null;
@@ -315,7 +316,7 @@ export class Local {
   });
 
   static clientId = Object.create({
-    getKey: ({ locale, space, botId }) => `DYDU_clientId_${[botId, space, locale].join('_')}`,
+    getKey: () => Local.names.client,
     load: (keyString = '') => {
       const content = localStorage.getItem(keyString);
       return isDefined(content) ? content : '';
