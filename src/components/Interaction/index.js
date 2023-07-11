@@ -17,9 +17,9 @@ import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
-import { useLivechat } from '../../contexts/LivechatContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
+import { Local } from '../../tools/storage';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -113,7 +113,6 @@ export default function Interaction({
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
   const [readyCarousel, setReadyCarousel] = useState(false);
-  const { isLivechatOn } = useLivechat();
 
   const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
@@ -238,9 +237,9 @@ export default function Interaction({
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
-    if (isLivechatOn) return null;
+    if (Local.isLivechatOn.load()) return null;
     return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
-  }, [classes.loader, hasLoader, isLivechatOn, scroll]);
+  }, [classes.loader, hasLoader, Local.isLivechatOn.load(), scroll]);
 
   const bubbleList = useMemo(() => {
     if (bubbles.length <= 0) return null;

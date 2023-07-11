@@ -80,10 +80,11 @@ let BOT = {},
   BOT = Object.assign(
     {},
     overridedBot,
-    (({ backUpServer, bot: id, server, configId }) => ({
+    (({ backUpServer, bot: id, server, isLocalEnv, configId }) => ({
       ...(id && { id }),
       ...(configId && { configId }),
       ...(server && { server }),
+      ...(isLocalEnv && { isLocalEnv }),
       ...(backUpServer && { backUpServer }),
     }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
   );
@@ -93,8 +94,8 @@ let BOT = {},
   protocol = 'https';
 
   API = getAxiosInstanceWithDyduConfig({
-    server: `${protocol}://${BOT.server}/servlet/api/`,
-    backupServer: `${protocol}://${getBackUpServerUrl(data)}/servlet/api/`,
+    server: `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
+    backupServer: `${protocol}://${getBackUpServerUrl(data)}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
     timeout: 3000,
     axiosConf: {
       headers: {
@@ -168,7 +169,7 @@ export default new (class Dydu {
   }
 
   alreadyCame() {
-    const clientIdKey = Local.clientId.getKey(this.infos);
+    const clientIdKey = Local.clientId.getKey();
     return Local.clientId.isSet(clientIdKey);
   }
 
@@ -242,8 +243,12 @@ export default new (class Dydu {
       if (BOT.backUpServer && BOT.backUpServer !== '') {
         apiUrl = BOT.backUpServer;
       }
-      API.defaults.baseURL = `https://${apiUrl}/servlet/api/`;
+      API.defaults.baseURL = `https://${apiUrl}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
     }
+  };
+
+  isLocalEnv = () => {
+    return BOT.isLocalEnv;
   };
 
   handleSetApiTimeout = (ms) => {
@@ -267,7 +272,7 @@ export default new (class Dydu {
      * NO 401 ERROR
      */
     if (error?.response?.status !== 401) {
-      if (API.defaults.baseURL === `https://${BOT.server}/servlet/api/`) {
+      if (API.defaults.baseURL === `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`) {
         this.mainServerStatus = 'Error';
       }
     }
@@ -427,7 +432,7 @@ export default new (class Dydu {
    * @returns {string | boolean} The client ID.
    */
   getClientId = () => {
-    const clientIdKey = Local.clientId.getKey(this.infos);
+    const clientIdKey = Local.clientId.getKey();
     const userInfo = Storage.loadUserInfo();
     if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey, userInfo?.email);
     return Local.clientId.load(clientIdKey);
@@ -439,19 +444,18 @@ export default new (class Dydu {
    *
    * @returns {object} The context ID.
    */
-  getContextId = () => {
+  getContextId = (options) => {
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
-      language: this.getLocale(),
-      space: this.getLocale(),
+      language: options?.locale || this.getLocale(),
+      space: options?.locale || this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
       qualificationMode: this.qualificationMode,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
 
     const path = `chat/context/${BOT.id}/`;
-    console.log("🚀 ~ file: dydu.js:455 ~ Dydu ~ data:", data)
     return this.emit(API.post, path, data);
   };
 
@@ -483,21 +487,21 @@ export default new (class Dydu {
     if (!this.space || atLeastOneStrategyActive) {
       if (Array.isArray(strategy)) {
         const get = (mode) =>
-        ({
-          cookie: (value) => Cookie.get(value),
-          global: (value) => window[value],
-          hostname: (value) => value[window.location.hostname],
-          localstorage: (value) => Local.get(value),
-          route: (value) => value[window.location.pathname],
-          urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
-          urlpart: (value) => {
-            const currentHref = window.location.href;
-            if (isOfTypeString(value)) return strContains(currentHref, value);
-            const isPartOfCurrentHref = (v) => strContains(currentHref, v);
-            const result = Object.keys(value).find(isPartOfCurrentHref);
-            return value[result];
-          },
-        }[mode]);
+          ({
+            cookie: (value) => Cookie.get(value),
+            global: (value) => window[value],
+            hostname: (value) => value[window.location.hostname],
+            localstorage: (value) => Local.get(value),
+            route: (value) => value[window.location.pathname],
+            urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
+            urlpart: (value) => {
+              const currentHref = window.location.href;
+              if (isOfTypeString(value)) return strContains(currentHref, value);
+              const isPartOfCurrentHref = (v) => strContains(currentHref, v);
+              const result = Object.keys(value).find(isPartOfCurrentHref);
+              return value[result];
+            },
+          }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
@@ -547,7 +551,9 @@ export default new (class Dydu {
 
   printHistory = async () => {
     if (this.contextId) {
-      const path = `https://${BOT.server}/servlet/history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+      const path = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/history?context=${
+        this.contextId
+      }&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -744,7 +750,7 @@ export default new (class Dydu {
   typing = async (text) => {
     const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
     const qs = this.#toQueryString(typingPayload);
-    const path = `${protocol}://${BOT.server}/servlet/chatHttp?data=${qs}`;
+    const path = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
   };
 
@@ -905,7 +911,9 @@ export default new (class Dydu {
       }),
     };
     try {
-      const response = await fetch(`https://${BOT.server}/servlet/chatHttp?data=${_stringify(payload)}`);
+      const response = await fetch(
+        `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${_stringify(payload)}`,
+      );
       const jsonResponse = await response.json();
       this.setLastResponse(jsonResponse);
       return this.displaySurveySent();
@@ -1059,7 +1067,7 @@ const getAxiosInstanceWithDyduConfig = (config = {}) => {
 
   // when response code in range of 2xx
   const onSuccess = (response) => {
-    API.defaults.baseURL = `https://${BOT.server}/servlet/api/`;
+    API.defaults.baseURL = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
     return response;
   };
 

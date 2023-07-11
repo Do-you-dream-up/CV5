@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
+import { Local } from '../../tools/storage';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -24,15 +25,14 @@ interface InputProps {
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
-  const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
+  const { send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent } = useEvent();
+  const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
 
   const classes = useStyles();
   const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
   const [input, setInput] = useState<string>('');
-  const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse, isWaitingForResponse } =
-    useDialog();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
@@ -68,8 +68,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   };
 
   useEffect(() => {
-    if (isLivechatOn && typing) livechatTyping?.(input);
-  }, [input, isLivechatOn, livechatTyping, typing]);
+    if (Local.isLivechatOn.load() && typing) livechatTyping?.(input);
+  }, [input, Local.isLivechatOn.load(), livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();
@@ -141,10 +141,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   }, [configuration?.input.maxLength]);
 
   const sendInput = useCallback(
-    (input) => {
-      setIsWaitingForResponse && !isWaitingForResponse && setIsWaitingForResponse(true);
-      if (isLivechatOn) send?.(input);
-      else {
+    (input, options = {}) => {
+      const isLivechatOn = Local.isLivechatOn.load();
+      setIsWaitingForResponse && !isLivechatOn && setIsWaitingForResponse(true);
+      if (isLivechatOn) {
+        send?.(input, options);
+      } else {
         talk(input).then((response) => {
           onResponse(response);
           setIsWaitingForResponse && setIsWaitingForResponse(false);
@@ -152,7 +154,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       }
     },
 
-    [isLivechatOn, send],
+    [Local.isLivechatOn.load(), send],
   );
 
   const submit = useCallback(

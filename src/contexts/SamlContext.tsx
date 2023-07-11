@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import Storage from '../components/auth/Storage';
@@ -18,6 +18,7 @@ export interface SamlContextProps {
   logout: () => void;
   saml2Info: any;
   setSaml2Info: any;
+  saml2enabled?: boolean;
   checkSession: () => void;
   redirectUrl: string | null;
 }
@@ -42,6 +43,8 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
   //   bot: Local.get(Local.names.botId),
   // }).replaceAll(`"`, `'`);
   // Added replace for double to single quotes besoin server parse it wrong and double it.
+
+  const saml2enabled = useMemo(() => configuration?.saml?.enable, [configuration]);
 
   const checkSession = () => {
     try {
@@ -121,6 +124,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
     redirectUrl,
     connected,
     setConnected,
+    saml2enabled,
   };
 
   const renderChildren = () => {

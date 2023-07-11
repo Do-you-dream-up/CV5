@@ -27,6 +27,7 @@ interface OnboardingProps {
 interface Steps {
   title: string;
   body: string;
+  src?: string;
 }
 
 export default function Onboarding({ children, render }: OnboardingProps) {
@@ -37,13 +38,25 @@ export default function Onboarding({ children, render }: OnboardingProps) {
   const { t, ready } = useTranslation('translation');
   const should = ready && render && active;
   const { enable, items } = configuration?.onboarding || {};
-  const steps: Steps[] = t('onboarding.steps');
+
+  const stepTrad: Steps[] = t('onboarding.steps') || [];
+  const steps: Steps[] =
+    should &&
+    stepTrad?.map((step, index) => ({
+      ...step,
+      image: items?.[index].image,
+    }));
+
   const stepsFiltered = should && steps?.filter((_, index) => !items?.[index]?.disabled);
+
   const skip = t('onboarding.skip');
   const previous = t('onboarding.previous');
   const next = t('onboarding.next');
 
-  const configImage = enable && items?.[index] && !items?.[index].image.hidden ? items?.[index].image.src : null;
+  const configImage =
+    enable && stepsFiltered?.[index] && !stepsFiltered?.[index].image.hidden
+      ? stepsFiltered?.[index]?.image?.src
+      : null;
 
   const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
 

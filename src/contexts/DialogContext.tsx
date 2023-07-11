@@ -11,7 +11,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { isDefined, isOfTypeString } from '../tools/helpers';
+import { isDefined, isOfTypeString, recursiveBase64DecodeString } from '../tools/helpers';
 
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
@@ -23,13 +23,13 @@ import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
 import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
-import useConversationHistory from '../tools/hooks/useConversationHistory';
+import { useConversationHistory } from './ConversationHistoryContext';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import usePushrules from '../tools/hooks/usePushrules';
 import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
-import useTopKnowledge from '../tools/hooks/useTopKnowledge';
+import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
 import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
@@ -41,7 +41,6 @@ interface DialogProviderProps {
 export interface DialogContextProps {
   closeSecondary?: () => void;
   openSecondary?: (props: any) => void;
-  topList?: any[];
   showAnimationOperatorWriting?: () => void;
   displayNotification?: (notification: any) => void;
   lastResponse?: Servlet.ChatResponseValues | null;
@@ -107,12 +106,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
-  const { fetchBotLanguages, botLanguages, currentLanguage} = useBotInfo();
+  const { fetchBotLanguages, botLanguages, currentLanguage } = useBotInfo();
 
-  const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
+  const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
-  const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
   const { connected: saml2Connected } = useSaml();
 
@@ -141,7 +140,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [serverStatusChecked]);
 
   const { exec, forceExec } = usePromiseQueue(
-    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
+    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
     hasAfterLoadBeenCalled && serverStatusChecked && botLanguages && currentLanguage,
   );
 
@@ -425,13 +424,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [secondaryActive]);
 
   const addHistoryInteraction = (interaction) => {
+    const decodedInteraction = recursiveBase64DecodeString(interaction);
     const typedInteraction = {
-      ...interaction,
-      typeResponse: interaction?.type,
+      ...decodedInteraction,
+      typeResponse: decodedInteraction?.type,
       isFromHistory: true,
     };
 
-    !interaction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);
+    !decodedInteraction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);
     addResponse(typedInteraction);
   };
 
@@ -448,11 +448,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
-    welcomeContent && addResponse(welcomeContent);
-  }, [welcomeContent]);
+    if (welcomeContent || listInteractionHistory) {
+      empty();
+    }
 
-  useEffect(() => {
-    welcomeContent && listInteractionHistory.forEach(addHistoryInteraction);
+    welcomeContent && addResponse(welcomeContent);
+    listInteractionHistory && listInteractionHistory?.forEach(addHistoryInteraction);
   }, [welcomeContent, listInteractionHistory]);
 
   const chatboxNode: any = useMemo(() => {
@@ -488,7 +489,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setIsWaitingForResponse,
         closeSecondary,
         openSecondary,
-        topList,
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,

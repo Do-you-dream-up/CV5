@@ -1,16 +1,19 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
-import { useBotInfo } from './BotInfoContext';
+import { useSaml } from './SamlContext';
 
 export interface ContextIdProviderProps {
   children?: any;
-  fetchContextId?: ()=> void;
 }
 
-export interface ContextIdContextProps {}
+export interface ContextIdContextProps {
+  fetchContextId?: (options?: any) => void;
+  contextId: string | null;
+  setContextId: Dispatch<SetStateAction<string | null>>;
+}
 
 export const useContextId = () => useContext<ContextIdContextProps>(ContextIdContext);
 
@@ -34,35 +37,26 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
       return console.error('While executing setContextId : ', e);
     }
   };
-  const { currentLanguage } = useBotInfo();
   const { configuration } = useConfiguration();
+
+  const { connected: saml2Connected, saml2enabled } = useSaml();
   const [contextId, setContextId] = useState<string | null>(getContextIdFromLocalStorage() || null);
+  console.log('🚀 ~ file: ContextIdProvider.tsx:44 ~ ContextIdProvider ~ contextId:', contextId);
 
   const updateContextId = (id: string) => {
     dydu.setContextId(id);
     saveContextIdToLocalStorage(id);
   };
 
-  useEffect(() => {
-    fetchContextId();
-  }, [currentLanguage]);
-
-  const fetchContextId = () => {
-    try {
-      return new Promise(() => {
-        dydu
-          .getContextId()
-          ?.then((response) => {
-            response?.contextId && setContextId(response?.contextId);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+  const fetchContextId = (options?: any) =>
+    dydu
+      .getContextId(options)
+      ?.then((response) => {
+        response?.contextId && setContextId(response?.contextId);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     contextId && updateContextId(contextId);
@@ -70,8 +64,10 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
 
   useEffect(() => {
     dydu.setUpdateContextId(setContextId);
-    fetchContextId();
-  }, []);
+    if (!saml2enabled || (saml2enabled && saml2Connected)) {
+      fetchContextId();
+    }
+  }, [saml2enabled, saml2Connected]);
 
   const props: ContextIdContextProps = {
     contextId,

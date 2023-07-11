@@ -1,11 +1,10 @@
-import dydu from '../dydu';
 import { Local } from '../storage';
+import dydu from '../dydu';
 import { numberOfDayInMs } from '../helpers';
 
 export default class VisitManager {
   static async refreshRegisterVisit() {
-    const infos = await dydu.getInfos();
-    const visitKey = Local.visit.getKey(infos);
+    const visitKey = Local.visit.getKey();
     const visitFound = Local.visit.isSet(visitKey);
     if (!visitFound) return dydu.registerVisit();
 
