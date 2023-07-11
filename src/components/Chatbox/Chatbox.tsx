@@ -10,6 +10,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
+import { useBotInfo } from '../../contexts/BotInfoContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
@@ -30,6 +31,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useContextId } from '../../contexts/ContextIdProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -60,6 +62,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
+  const { setCurrentLanguage } = useBotInfo();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
@@ -78,6 +81,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const dialogRef = useRef();
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
+  const  { fetchContextId } = useContextId()
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
@@ -144,16 +148,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: (locale) =>
-          Promise.all([Local.byBotId(Local.names.botId).remove(), i.changeLanguage(locale)])
-            .then(() => {
-              window.dydu.chat.ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
-              empty && empty();
-              localStorage.removeItem('dydu.context');
-            })
-            .then(() => {
-              window.dydu.chat.ask('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
-            }),
+        set: (locale) => 
+        Promise.all([Local.byBotId(Local.names.botId).remove(), setCurrentLanguage(locale), i.changeLanguage(locale)])
+          .then (()=> localStorage.removeItem('dydu.context'))
+          .then (()=> fetchContextId())
+          .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
+          .then(() => {
+            empty && empty();
+            ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
+          })
+          .then(() => {
+            ask('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
+          }),
       };
 
       window.dydu.lorem = {

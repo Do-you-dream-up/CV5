@@ -76,7 +76,7 @@ export default function Menu({ component, items, selected, ...rest }) {
         ref: anchorRef,
         ...rest,
       })}
-      {open && (
+      {open ? (
         <Portal node={node}>
           <div className={c('dydu-menu', classes.root)} ref={menuRef} style={geometry}>
             {items.map((it, index) => (
@@ -84,7 +84,7 @@ export default function Menu({ component, items, selected, ...rest }) {
             ))}
           </div>
         </Portal>
-      )}
+      ) : null}
     </>
   );
 }

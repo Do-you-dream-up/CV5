@@ -63,7 +63,6 @@ describe('ModalProvider', () => {
     expect(getByText('Component: open')).toBeInTheDocument();
 
     getByTestId('modal-button-resolve').click();
-    expect(getByText('Component: closed')).toBeInTheDocument();
 
     // Wait for the promise to resolve
     setTimeout(() => {

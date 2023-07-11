@@ -3,7 +3,6 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
-  getBrowserLocale,
   hasProperty,
   isDefined,
   isEmptyString,
@@ -24,7 +23,6 @@ import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from 'i18next';
-import { initI18N } from './internationalization';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -117,6 +115,8 @@ export default new (class Dydu {
   constructor() {
     this.configuration = {};
     this.botLanguages = null;
+    this.contextId = null;
+    this.updateContextId = null;
     this.onServerChangeFn = null;
     this.serverStatusChek = null;
     this.tokenRefresher = null;
@@ -137,6 +137,14 @@ export default new (class Dydu {
 
   setBotLanguages(languages) {
     this.botLanguages = languages;
+  }
+
+  setContextId(contextId) {
+    this.contextId = contextId;
+  }
+
+  setUpdateContextId(updateContextId) {
+    this.updateContextId = updateContextId;
   }
 
   setServerStatusCheck(serverStatusChek) {
@@ -224,7 +232,7 @@ export default new (class Dydu {
 
     if (!hasProperty(data, 'values')) return data;
     data.values = decode(data.values);
-    this.setContextId(data.values.contextId);
+    data.values.contextId && this.updateContextId(data.values.contextId);
     return data.values;
   };
 
@@ -317,19 +325,18 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   exportConversation = async (text, options = {}) => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
       clientId: this.getClientId(),
       doNotRegisterInteraction: options.doNotSave,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
-      userInput: `#dydumailto:${contextId}:${text}#`,
+      userInput: `#dydumailto:${this.contextId}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       ...(options.extra && { extraParameters: options.extra }),
     });
-    const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
     return this.emit(API.post, path, data);
   };
 
@@ -340,9 +347,8 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedback = async (value) => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUUID: contextId,
+      contextUUID: this.contextId,
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -358,10 +364,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedbackComment = async (comment) => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
       comment,
-      contextUUID: contextId,
+      contextUUID: this.contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -376,10 +381,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedbackInsatisfaction = async (choiceKey) => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
       choiceKey,
-      contextUUID: contextId,
+      contextUUID: this.contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -424,30 +428,18 @@ export default new (class Dydu {
    */
   getClientId = () => {
     const clientIdKey = Local.clientId.getKey(this.infos);
-    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey);
+    const userInfo = Storage.loadUserInfo();
+    if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey, userInfo?.email);
     return Local.clientId.load(clientIdKey);
   };
-
-  getContextIdStorageKey() {
-    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
-  }
-
-  getContextIdFromLocalStorage() {
-    const lcContextIdKey = this.getContextIdStorageKey();
-    return Local.contextId.load(lcContextIdKey);
-  }
 
   /**
    * Read the context ID from the local storage and return it,
    * if the context ID not exist in local storage we fecth it from the API
    *
-   * @returns {string} The context ID.
+   * @returns {object} The context ID.
    */
-  getContextId = async (forced) => {
-    if (!forced) {
-      const contextId = this.getContextIdFromLocalStorage();
-      if (isDefined(contextId)) return contextId;
-    }
+  getContextId = () => {
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
@@ -457,34 +449,10 @@ export default new (class Dydu {
       qualificationMode: this.qualificationMode,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
+
     const path = `chat/context/${BOT.id}/`;
-    try {
-      const response = await this.emit(API.post, path, data);
-      this.setContextId(response?.contextId);
-      return response?.contextId;
-    } catch (e) {
-      console.error('While executing getContextId() ', e);
-      return '';
-    }
-  };
-
-  saveContextIdToLocalStorage(value) {
-    try {
-      const lcContextIdKey = this.getContextIdStorageKey();
-      Local.contextId.save(lcContextIdKey, value);
-    } catch (e) {
-      return console.error('While executing setContextId : ', e);
-    }
-  }
-
-  /**
-   * Save the provided context ID in the local storage.
-   *
-   * @param {string} value - Context ID to save.
-   */
-  setContextId = (value) => {
-    console.log('🚀 ~ file: dydu.js:487 ~ Dydu ~ ContextId dans setcontextID :', value);
-    if (isDefined(value)) this.saveContextIdToLocalStorage(value);
+    console.log("🚀 ~ file: dydu.js:455 ~ Dydu ~ data:", data)
+    return this.emit(API.post, path, data);
   };
 
   getConfiguration() {
@@ -497,13 +465,7 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    const { application } = this.getConfiguration();
-    if (!this.locale) {
-      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
-    }
-    const locale = this.botLanguages?.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
-    return locale;
+    return this.locale;
   };
 
   /**
@@ -521,21 +483,21 @@ export default new (class Dydu {
     if (!this.space || atLeastOneStrategyActive) {
       if (Array.isArray(strategy)) {
         const get = (mode) =>
-          ({
-            cookie: (value) => Cookie.get(value),
-            global: (value) => window[value],
-            hostname: (value) => value[window.location.hostname],
-            localstorage: (value) => Local.get(value),
-            route: (value) => value[window.location.pathname],
-            urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
-            urlpart: (value) => {
-              const currentHref = window.location.href;
-              if (isOfTypeString(value)) return strContains(currentHref, value);
-              const isPartOfCurrentHref = (v) => strContains(currentHref, v);
-              const result = Object.keys(value).find(isPartOfCurrentHref);
-              return value[result];
-            },
-          }[mode]);
+        ({
+          cookie: (value) => Cookie.get(value),
+          global: (value) => window[value],
+          hostname: (value) => value[window.location.hostname],
+          localstorage: (value) => Local.get(value),
+          route: (value) => value[window.location.pathname],
+          urlparameter: (value) => qs.parse(window.location.search, { ignoreQueryPrefix: true })[value],
+          urlpart: (value) => {
+            const currentHref = window.location.href;
+            if (isOfTypeString(value)) return strContains(currentHref, value);
+            const isPartOfCurrentHref = (v) => strContains(currentHref, v);
+            const result = Object.keys(value).find(isPartOfCurrentHref);
+            return value[result];
+          },
+        }[mode]);
         strategy.reverse().map(({ active, mode, value }) => {
           if (active) {
             const _get = get(mode);
@@ -555,10 +517,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   history = async () => {
-    const contextId = await this.getContextId();
-    if (contextId) {
+    if (this.contextId) {
       const data = qs.stringify({
-        contextUuid: contextId,
+        contextUuid: this.contextId,
         solutionUsed: SOLUTION_TYPE.assistant,
         ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       });
@@ -585,9 +546,8 @@ export default new (class Dydu {
    */
 
   printHistory = async () => {
-    const contextId = await this.getContextId();
-    if (contextId) {
-      const path = `https://${BOT.server}/servlet/history?context=${contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+    if (this.contextId) {
+      const path = `https://${BOT.server}/servlet/history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -602,29 +562,14 @@ export default new (class Dydu {
   };
 
   /**
-   * End the current conversation and reset the context ID.
-   *
-   * @returns {Promise}
-   */
-  reset = async () => {
-    return await this.getContextId(true);
-  };
-  /**
    * Save the currently selected locale in the local storage.
    *
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages = []) =>
-    new Promise((resolve, reject) => {
-      if (!this.locale || languages?.includes(locale)) {
-        Local.set(Local.names.locale, locale);
-        this.locale = locale;
-        return resolve(locale);
-      } else {
-        reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
-      }
-    });
+  setLocale = (language) => {
+    this.locale = language;
+  };
 
   /**
    * this method allows you to define variables that are modified on the client side
@@ -702,10 +647,7 @@ export default new (class Dydu {
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    const contextId = await this.getContextId(options?.extra?.newContext || false, {
-      qualification: this.qualificationMode,
-    });
-    const path = `chat/talk/${BOT.id}/${contextId ? `${contextId}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
     return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
@@ -757,6 +699,22 @@ export default new (class Dydu {
     return this.emit(API.get, path);
   };
 
+  /**
+   * getSaml2UserInfo - Get userinfo.
+   *
+   * @param {string} text - Input to send.
+   * @param {Object} [options] - Extra parameters.
+   * @returns {Promise}
+   */
+  getSaml2UserInfo = (saml2Info_token) => {
+    const data = qs.stringify({
+      ...(this.getConfiguration()?.saml?.enable && { saml2_info: saml2Info_token }),
+      botUUID: BOT.id,
+    });
+    const path = `saml2/userinfo?${data}`;
+    return this.emit(API.get, path);
+  };
+
   #makeTLivechatTypingPayloadWithInput = async (input = '') => {
     if (!isDefined(input)) return;
     return {
@@ -765,7 +723,7 @@ export default new (class Dydu {
         alreadyCame: this.alreadyCame(),
         typing: isDefined(input) && !isEmptyString(input),
         content: input?.toBase64(),
-        contextId: await this.getContextId(),
+        contextId: this.contextId,
         botId: this.getBot()?.id?.toBase64(),
         qualificationMode: this.qualificationMode,
         language: this.getLocale().toBase64(),
@@ -795,7 +753,7 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.livechat,
       format: RESPONSE_QUERY_FORMAT.json,
       space: this.getSpace(),
-      contextUuid: contextId || context?.fromBase64() || (await this.getContextId()),
+      contextUuid: contextId || context?.fromBase64() || this.contextId,
       language: this.getLocale(),
       lastPoll: serverTime || pollTime,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -836,9 +794,8 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   setDialogVariable = async (name, value) => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUuid: contextId,
+      contextUuid: this.contextId,
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
@@ -854,9 +811,8 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   welcomeCall = async () => {
-    const contextId = await this.getContextId();
     const data = qs.stringify({
-      contextUuid: contextId,
+      contextUuid: this.contextId,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -918,7 +874,7 @@ export default new (class Dydu {
   };
 
   getTalkBasePayload = async (options) => ({
-    contextId: await this.getContextId(),
+    contextId: this.contextId,
     alreadyCame: this.alreadyCame(),
     browser: `${browser.name} ${browser.version}`,
     clientId: this.getClientId(),
@@ -961,7 +917,7 @@ export default new (class Dydu {
 
   async createSurveyPayload(surveyId, fieldObject) {
     return {
-      ctx: await this.getContextId(),
+      ctx: this.contextId,
       uuid: surveyId,
       ...fieldObject,
     };
@@ -997,7 +953,7 @@ export default new (class Dydu {
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
     const path = `/chat/survey/configuration/${this.getBotId()}`;
     const data = toFormUrlEncoded({
-      contextUuid: await this.getContextId(),
+      contextUuid: this.contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,
@@ -1030,33 +986,14 @@ export default new (class Dydu {
   onConfigurationLoaded() {
     this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
-    this.initLocaleWithConfiguration(this.getConfiguration());
-  }
-
-  initLocaleWithConfiguration(configuration) {
-    let locale = getBrowserLocale();
-    try {
-      const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
-      locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
-      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
-      this.locale = locale;
-      initI18N({ defaultLang: this.locale });
-      return this.locale;
-    } catch (e) {
-      console.info('Error while initializing locale, fallback to browser locale', e);
-      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
-      this.locale = locale;
-      initI18N({ defaultLang: this.locale });
-      return this.locale;
-    }
   }
 
   getConfigurationDefaultLocal() {
     try {
-      return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
+      if (!this.locale) return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
     } catch (e) {
       console.info('No default language from configuration file, fallback to browser locale');
-      return getBrowserLocale();
+      return this.locale;
     }
   }
 
@@ -1068,7 +1005,7 @@ export default new (class Dydu {
   getWelcomeKnowledge = (tagWelcome) => {
     const wkFoundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
     if (wkFoundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
-    const talkOption = { doNotSave: true, hide: true };
+    const talkOption = { doNotSave: true, hide: true, doNotRegisterInteraction: true };
     return this.talk(tagWelcome, talkOption).then((talkResponse) => {
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
       if (!isInteractionResponse) return null;

@@ -152,7 +152,7 @@
       "expand": "Expand chat window",
       "minimize": "Minimize chat window",
       "more": "More options",
-      "shrink": "Shrink",
+      "shrink": "Exit full screen mode",
       "tests": "Tests",
       "fontDecrease": "Decrease font",
       "fontIncrease": "Increase font"
@@ -161,7 +161,7 @@
   },
   "input": {
     "actions": {
-      "send": "Send",
+      "send": "Send your message",
       "counterRemaining": "remaining characters",
       "record": {
         "pause": "Pause",
@@ -217,7 +217,7 @@
     "activeTab": " - active tab"
   },
   "teaser": {
-    "mouseover": "Help here",
+    "mouseover": "A technical problem? Get help by clicking here",
     "title": "Need help?",
     "titleHidden": "Chatbot window"
   },

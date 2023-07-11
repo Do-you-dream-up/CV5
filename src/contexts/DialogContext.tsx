@@ -27,6 +27,7 @@ import useConversationHistory from '../tools/hooks/useConversationHistory';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import usePushrules from '../tools/hooks/usePushrules';
+import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
 import useTopKnowledge from '../tools/hooks/useTopKnowledge';
 import useViewport from '../tools/hooks/useViewport';
@@ -69,6 +70,8 @@ export interface DialogContextProps {
   autoSuggestionActive?: boolean;
   setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
   callWelcomeKnowledge?: () => null;
+  isWaitingForResponse?: boolean;
+  setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SecondaryContentProps {
@@ -104,13 +107,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
-  const { fetchBotLanguages, botLanguages } = useBotInfo();
+  const { fetchBotLanguages, botLanguages, currentLanguage} = useBotInfo();
 
   const { result: topList, fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, result: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
+  const { connected: saml2Connected } = useSaml();
 
   const { isMobile } = useViewport();
 
@@ -126,6 +130,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
 
   useEffect(() => {
     fetchServerStatus();
@@ -137,7 +142,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchTopKnowledge, fetchHistory],
-    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
+    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages && currentLanguage,
   );
 
   const isLastElementOfTypeAnimationWriting = (list) => {
@@ -156,15 +161,19 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }, 5000);
   };
 
-  const triggerPushRule = useCallback(() => {
-    if (isDefined(pushrules) || (!hasAfterLoadBeenCalled && !serverStatusChecked)) return;
-    fetchPushrules();
-  }, [fetchPushrules, pushrules, hasAfterLoadBeenCalled, serverStatusChecked]);
+  const canTriggerPushRules = useMemo(() => {
+    return configuration?.pushrules.active && !isDefined(pushrules);
+  }, [configuration, pushrules]);
+
+  const shouldTriggerPushRules = useMemo(() => {
+    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeContent]);
 
   useEffect(() => {
-    const canTriggerPushRules = configuration?.pushrules.active && !isDefined(pushrules);
-    if (canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked) triggerPushRule();
-  }, [triggerPushRule, configuration?.pushrules.active, hasAfterLoadBeenCalled, serverStatusChecked]);
+    if (shouldTriggerPushRules) {
+      fetchPushrules && fetchPushrules();
+    }
+  }, [fetchPushrules, shouldTriggerPushRules]);
 
   const toggleSecondary = useCallback(
     (
@@ -426,13 +435,17 @@ export function DialogProvider({ children }: DialogProviderProps) {
     addResponse(typedInteraction);
   };
 
-  useEffect(() => {
-    if (hasAfterLoadBeenCalled) exec();
-  }, [hasAfterLoadBeenCalled]);
+  const checkIfBehindSamlAndConnected = useMemo(() => {
+    return !configuration?.saml?.enable || saml2Connected;
+  }, [configuration?.saml, saml2Connected]);
 
   useEffect(() => {
-    if (isInteractionListEmpty && !welcomeContent) forceExec();
-  }, []);
+    if (hasAfterLoadBeenCalled && checkIfBehindSamlAndConnected) exec();
+  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
+
+  useEffect(() => {
+    if (isInteractionListEmpty && !welcomeContent && checkIfBehindSamlAndConnected) forceExec();
+  }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
     welcomeContent && addResponse(welcomeContent);
@@ -471,6 +484,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
     <DialogContext.Provider
       children={children}
       value={{
+        isWaitingForResponse,
+        setIsWaitingForResponse,
         closeSecondary,
         openSecondary,
         topList,

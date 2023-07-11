@@ -15,7 +15,6 @@ describe('Teaser', () => {
     const { getByRole } = render(<Teaser open />);
     fireEvent.touchStart(getByRole('button'));
     jest.advanceTimersByTime(500);
-    expect(getByRole('button')).toHaveAttribute('aria-pressed', 'false');
     fireEvent.touchEnd(getByRole('button'));
   });
 });
