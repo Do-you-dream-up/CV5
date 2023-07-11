@@ -92,11 +92,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         qualification,
         extra: options,
       };
-      options = {
-        ...options,
-        hide: options.type === 'javascript',
-      };
-      if (!options.hide) {
+      options = Object.assign({ hide: false }, options);
+
+      if (!options.hide && options?.type !== 'javascript') {
         if (!REGEX_URL.test(text)) {
           addRequest && addRequest(text);
         }
