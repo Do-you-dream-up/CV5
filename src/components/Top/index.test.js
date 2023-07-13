@@ -5,15 +5,15 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import Top from './index';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useDialog } from '../../contexts/DialogContext';
+import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useEvent } from '../../contexts/EventsContext';
 
 jest.mock('../../contexts/ConfigurationContext', () => ({
   useConfiguration: jest.fn(),
 }));
 
-jest.mock('../../contexts/DialogContext', () => ({
-  useDialog: jest.fn(),
+jest.mock('../../contexts/TopKnowledgeContext', () => ({
+  useTopKnowledge: jest.fn(),
 }));
 
 jest.mock('../../contexts/EventsContext', () => ({
@@ -21,7 +21,7 @@ jest.mock('../../contexts/EventsContext', () => ({
 }));
 describe('Top', () => {
   it('should not render component when items does not exist', () => {
-    useDialog.mockReturnValue({ items: {} });
+    useTopKnowledge.mockReturnValue({ items: {} });
     useEvent.mockReturnValue({
       onEvent: jest.fn(),
     });
@@ -30,7 +30,7 @@ describe('Top', () => {
   });
 
   it('should call onEvent method', async () => {
-    useDialog.mockReturnValue({ topList: [{ reword: 'test' }] });
+    useTopKnowledge.mockReturnValue({ topKnowledge: [{ reword: 'test' }] });
     const newConfig = new ConfigurationFixture();
     newConfig.setEventsToTrue();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });

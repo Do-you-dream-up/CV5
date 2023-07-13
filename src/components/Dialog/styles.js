@@ -11,5 +11,10 @@ export default createUseStyles({
     // -------------------------------------------------------- //
     overflow: 'hidden',
     marginBottom: 'auto',
+    '& .container-loader-interaction': {
+      '& .dydu-bubble-response': {
+        background: 'none',
+      },
+    },
   },
 });

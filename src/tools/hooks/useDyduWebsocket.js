@@ -2,31 +2,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import useWebsocket, { ReadyState } from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
+import { Local } from '../storage';
 import { TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
 import { isDefined } from '../helpers';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useConversationHistory } from '../../contexts/ConversationHistoryContext';
+import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
 
-const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/servlet/chatWs';
-
-const countdownRetryHandshake = {
-  reset: function () {
-    this.maxRetry = this.MAX_RETRY_HANDSHAKE_STEP;
-  },
-  count: function () {
-    this.maxRetry--;
-  },
-  inc: function () {
-    this.maxRetry++;
-  },
-  retryEnd() {
-    return this.maxRetry === 0;
-  },
-};
-const MAX_RETRY_HANDSHAKE_STEP = 3;
-countdownRetryHandshake.MAX_RETRY_HANDSHAKE_STEP = MAX_RETRY_HANDSHAKE_STEP;
-countdownRetryHandshake.maxRetry = MAX_RETRY_HANDSHAKE_STEP;
+const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + (dydu.isLocalEnv() ? '' : '/servlet') + '/chatWs';
 
 const MESSAGE_TYPE = {
   survey: 'survey',
@@ -34,8 +20,11 @@ const MESSAGE_TYPE = {
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
   contextResponse: 'contextResponse',
+  historyResponse: 'historyResponse',
+  topKnowledge: 'topKnowledgeResponse',
   notification: 'notification',
   endPolling: 'endPolling',
+  startPolling: 'StartPolling',
 };
 
 let handleSurvey = null;
@@ -47,8 +36,8 @@ let onOperatorWriting = null;
 
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
-    contextId: configuration.contextId,
-    botId: configuration.botId,
+    contextId: configuration.contextId || Local.contextId.load(),
+    botId: configuration.botId || dydu.getBotId(),
     space: configuration.api.getSpace(),
     clientId: configuration.api.getClientId(),
     language: configuration.api.getLocale(),
@@ -56,8 +45,10 @@ const completeLivechatPayload = (configuration) =>
 
 export default function useDyduWebsocket() {
   const [socketProps, setSocketProps] = useState([null, {}]);
-  const [handshakeStepCountdown, setHandshakeStepCountdown] = useState(2);
-  const { lastMessage, sendJsonMessage, readyState } = useWebsocket(...socketProps);
+  const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
+  const { history, setHistory } = useConversationHistory();
+  const { setTopKnowledge, extractPayload } = useTopKnowledge();
+  const { configuration } = useConfiguration();
 
   const messageData = useMemo(() => {
     if (!isDefined(lastMessage)) return null;
@@ -78,6 +69,8 @@ export default function useDyduWebsocket() {
   const messageType = useMemo(() => {
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
+    if (LivechatPayload.is.historyResponse(messageData)) return MESSAGE_TYPE.historyResponse;
+    if (LivechatPayload.is.topKnowledgeResponse(messageData)) return MESSAGE_TYPE.topKnowledge;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
@@ -92,53 +85,26 @@ export default function useDyduWebsocket() {
   const displayMessage = useCallback(() => {
     if (isDefined(messageText)) {
       displayResponseText(messageText);
-      //window.dydu.chat.reply(messageText);
     }
   }, [messageText]);
 
   const displayNotification = useCallback(() => {
-    if (!isDefined(messageText)) return;
+    if (!isDefined(messageText)) {
+      return;
+    }
 
     if (LivechatPayload.is.operatorWriting(messageData)) return onOperatorWriting();
     displayNotificationMessage(messageData);
   }, [messageData, messageText]);
 
-  const decrementHandshakeCountDown = useCallback(
-    () => setHandshakeStepCountdown(handshakeStepCountdown - 1),
-    [handshakeStepCountdown],
-  );
-
-  const processHandshakeNextStep = useCallback(() => {
-    if (!isDefined(messageData) || handshakeStepCountdown === 0) return;
-    LivechatPayload.addPayloadCommonContent({
-      contextId: messageData?.values?.contextId?.fromBase64(),
-      botId: messageData?.values?.botId?.fromBase64(),
-    });
-    decrementHandshakeCountDown();
-  }, [decrementHandshakeCountDown, handshakeStepCountdown, messageData]);
-
   const _onFail = useCallback(() => {
-    countdownRetryHandshake.reset();
+    console.log('_onFail', 'Failing connection !');
     if (isDefined(onFail)) onFail();
     flushSocketProps();
   }, [flushSocketProps]);
 
-  const sendFirstHandshake = useCallback(() => {
-    if (countdownRetryHandshake.retryEnd()) return _onFail();
-    countdownRetryHandshake.count();
-    sendJsonMessage(LivechatPayload.create.getContextMessage());
-  }, [_onFail, sendJsonMessage]);
-
-  const sendSecondHandshake = useCallback(() => {
-    countdownRetryHandshake.reset();
-    sendJsonMessage(LivechatPayload.create.internautEventMessage());
-  }, [sendJsonMessage]);
-
-  const handleError = useCallback(() => {
-    if (handshakeStepCountdown === 1) sendFirstHandshake();
-  }, [handshakeStepCountdown, sendFirstHandshake]);
-
   const flushSocketProps = useCallback(() => {
+    console.log('Flushing Socket Props');
     setSocketProps([null, {}]);
   }, []);
 
@@ -159,41 +125,43 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.notification:
         return displayNotification();
 
-      case MESSAGE_TYPE.contextResponse:
-        return processHandshakeNextStep();
+      case MESSAGE_TYPE.historyResponse:
+        if (!messageData?.values?.interactions || messageData?.values?.interactions?.length === 0) {
+          Local.isLivechatOn.save(false);
+        } else if (!history || history?.length === 0) {
+          setHistory(messageData.values.interactions);
+        }
+        return;
 
-      case MESSAGE_TYPE.error:
-        return handleError();
+      case MESSAGE_TYPE.topKnowledge:
+        if (messageData) {
+          setTopKnowledge(extractPayload(messageData));
+        }
+        return;
 
-      case MESSAGE_TYPE.endPolling: {
+      case MESSAGE_TYPE.endPolling:
         displayNotification();
         return close();
-      }
     }
-  }, [close, displayMessage, displayNotification, handleError, messageData, messageType, processHandshakeNextStep]);
-
-  useEffect(() => {
-    if (handshakeStepCountdown === 1) return sendFirstHandshake();
-    if (handshakeStepCountdown === 0) return sendSecondHandshake();
-  }, [handshakeStepCountdown, sendFirstHandshake, sendSecondHandshake]);
+  }, [close, displayMessage, displayNotification, messageData, messageType]);
 
   const getSocketConfig = useCallback(() => {
     return {
-      reconnectAttempts: 3,
+      share: true,
       onReconnectStop: _onFail,
-      onOpen: () => {
-        decrementHandshakeCountDown();
+      onOpen: (onOpen) => {
+        console.log('websocket: on open !', onOpen);
+        sendTopKnowledge(configuration);
+        sendHistory();
       },
       onClose: (closeEvent) => {
-        // _onFail();
-        if (closeEvent.wasClean) close();
         console.log('websocket: on close !', closeEvent);
       },
       onError: (errorEvent) => {
-        _onFail(), console.log('websocket: on error !', errorEvent);
+        console.log('websocket: on error !', errorEvent);
       },
     };
-  }, [_onFail, close, decrementHandshakeCountDown]);
+  }, [_onFail, close]);
 
   const getSocketUrl = useCallback((configuration) => {
     return makeWsUrl(configuration.api.getBot().server);
@@ -216,11 +184,11 @@ export default function useDyduWebsocket() {
   }, []);
 
   const open = useCallback(
-    (configuration) => {
+    (config) => {
       return new Promise((resolve) => {
-        completeLivechatPayload(configuration);
-        setupOutputs(configuration);
-        initSocketProps(configuration);
+        completeLivechatPayload(config);
+        setupOutputs(config);
+        initSocketProps(config);
         resolve(true);
       });
     },
@@ -237,17 +205,30 @@ export default function useDyduWebsocket() {
     }
   }, []);
 
-  const trySendMessage = useCallback((message) => {
+  const trySendMessage = (message) => {
     try {
       sendJsonMessage(message);
     } catch (e) {
       _onFail();
     }
-  }, []);
+  };
 
   const send = useCallback(
-    (userInput) => {
-      const message = LivechatPayload.create.talkMessage(userInput);
+    (userInput, options) => {
+      const message = LivechatPayload.create.talkMessage(userInput, options);
+      trySendMessage(message);
+    },
+    [sendJsonMessage],
+  );
+
+  const sendHistory = useCallback(() => {
+    const message = LivechatPayload.create.historyMessage();
+    trySendMessage(message);
+  }, [sendJsonMessage]);
+
+  const sendTopKnowledge = useCallback(
+    (configuration) => {
+      const message = LivechatPayload.create.topKnowledgeMessage(configuration?.top?.period, configuration?.top?.size);
       trySendMessage(message);
     },
     [sendJsonMessage],
@@ -255,7 +236,7 @@ export default function useDyduWebsocket() {
 
   const isRunning = useMemo(() => isDefined(socketProps[0]), [socketProps]);
 
-  const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
+  const isConnected = readyState === ReadyState.OPEN;
 
   const onUserTyping = useCallback(
     (userInput) => {
@@ -272,8 +253,13 @@ export default function useDyduWebsocket() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    sendHistory,
     sendSurvey,
     close,
     onUserTyping,
+    displayMessage,
+    displayNotification,
+    displayResponseText,
+    sendJsonMessage,
   };
 }

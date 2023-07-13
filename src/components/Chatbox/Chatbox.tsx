@@ -5,7 +5,7 @@ import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
 import { escapeHTML, isDefined } from '../../tools/helpers';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
@@ -14,6 +14,7 @@ import Dragon from '../Dragon';
 import Footer from '../Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
+import { Local } from '../../tools/storage';
 import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
@@ -26,6 +27,7 @@ import c from 'classnames';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
@@ -43,6 +45,7 @@ interface ChatboxProps {
 
 export default function Chatbox({ extended, open, root, toggle, ...rest }: ChatboxProps) {
   const { configuration } = useConfiguration();
+  const { send } = useLivechat();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
     add,
@@ -82,26 +85,28 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
-  const ask = useCallback(
-    (text, options) => {
-      text = text.trim();
-      if (text) {
-        const toSend = {
-          qualification,
-          extra: options,
-        };
-        options = Object.assign({ hide: false }, options);
-        if (!options.hide) {
-          if (!REGEX_URL.test(text)) {
-            addRequest && addRequest(text);
-          }
+  const ask = (text, options, livechatActive) => {
+    text = text.trim();
+    if (text) {
+      const toSend = {
+        qualification,
+        extra: options,
+      };
+      options = Object.assign({ hide: false }, options);
+
+      if (!options.hide && options?.type !== 'javascript') {
+        if (!REGEX_URL.test(text)) {
+          addRequest && addRequest(text);
         }
+      }
+
+      if (livechatActive) {
+        send && send(text, options);
+      } else {
         talk(text, toSend).then(addResponse);
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [addRequest, addResponse, qualification],
-  );
+    }
+  };
 
   const onClose = () => modal(ModalClose).then(toggle(0), () => {});
 
@@ -120,22 +125,27 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (ready) onAppReady && onAppReady();
   }, [onAppReady, ready]);
 
+  const getDyduChatObject = ({ livechatActive }: { livechatActive?: boolean }) => {
+    return {
+      ask: (text, options) => {
+        ask(text, options, livechatActive);
+      },
+      empty: () => empty && empty(),
+      reply: (text) => addResponse && addResponse({ text }),
+      setDialogVariable: (name, value) => {
+        dydu.setDialogVariable(name, escapeHTML(value));
+      },
+      setRegisterContext: (name, value) => {
+        dydu.setRegisterContext(name, escapeHTML(value));
+      },
+    };
+  };
+
   useEffect(() => {
-    if (!ready) {
+    if (!ready || Local.isLivechatOn.load()) {
       window.dydu = { ...window.dydu };
-      window.dydu.chat = {
-        ask: (text, options) => {
-          ask(text, options);
-        },
-        empty: () => empty && empty(),
-        reply: (text) => addResponse && addResponse({ text }),
-        setDialogVariable: (name, value) => {
-          dydu.setDialogVariable(name, escapeHTML(value));
-        },
-        setRegisterContext: (name, value) => {
-          dydu.setRegisterContext(name, escapeHTML(value));
-        },
-      };
+
+      window.dydu.chat = getDyduChatObject({ livechatActive: Local.isLivechatOn.load() });
 
       window.dydu.promptEmail = {
         prompt: (type) => setPrompt && setPrompt(type),
@@ -179,9 +189,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.reword = window.dydu.chat.ask;
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
-    }
 
-    setReady(true);
+      setReady(true);
+    }
   }, [
     addResponse,
     ask,
@@ -203,6 +213,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     gdprPassed,
     setGdprPassed,
+    getDyduChatObject,
   ]);
 
   const classnames = c('dydu-chatbox', classes.root, {

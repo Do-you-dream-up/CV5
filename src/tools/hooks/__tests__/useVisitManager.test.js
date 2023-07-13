@@ -45,7 +45,7 @@ describe('useVisitManager', () => {
     });
 
     expect(getInfosMock).toHaveBeenCalled();
-    expect(Local.visit.getKey).toHaveBeenCalledWith(getInfosMock());
+    expect(Local.visit.getKey).toHaveBeenCalled();
     expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
     expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
     expect(result.current.result).toBe(true);
@@ -75,7 +75,7 @@ describe('useVisitManager', () => {
     });
 
     expect(getInfosMock).toHaveBeenCalled();
-    expect(Local.visit.getKey).toHaveBeenCalledWith(getInfosMock());
+    expect(Local.visit.getKey).toHaveBeenCalled();
     expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
     expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
     expect(dydu.registerVisit).toHaveBeenCalled();

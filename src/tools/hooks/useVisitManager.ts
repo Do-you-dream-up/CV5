@@ -8,8 +8,7 @@ export default function useVisitManager() {
   const [result, setResult] = useState(false);
 
   const fetch = useCallback(async () => {
-    const infos = await dydu.getInfos();
-    const visitKey = Local.visit.getKey(infos);
+    const visitKey = Local.visit.getKey();
     const visitFound = Local.visit.isSet(visitKey);
 
     if (!visitFound) {
