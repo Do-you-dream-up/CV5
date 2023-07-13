@@ -272,7 +272,6 @@ describe('dydu.js', function () {
       // WHEN
       const received = await dydu.getSurvey('survey-id');
 
-      // THEN
       const paramPosition = 1;
       const effectiveParamValue = mockFnGetParamValueAtPosition(spied.post, paramPosition);
       expect(isUrlFormEncoded(effectiveParamValue)).toEqual(true);
