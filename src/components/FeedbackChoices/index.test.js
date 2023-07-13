@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
 
-import FeedbackChoices from './';
-import { render } from '../../tools/test-utils';
-import { screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+
+import FeedbackChoices from '../FeedbackChoices';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -19,11 +19,36 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('FeedbackChoices', () => {
-  test('renders choices', () => {
-    const onSelect = jest.fn();
-    render(<FeedbackChoices onSelect={onSelect} />);
-    expect(screen.getByText('What is your feedback about?')).toBeInTheDocument();
-    expect(screen.getByText('choice 1')).toBeInTheDocument();
-    expect(screen.getByText('choice 2')).toBeInTheDocument();
+  test('renders choices and calls onSelect when clicked', () => {
+    const mockOnSelect = jest.fn();
+    const choices = ['choice 1', 'choice 2'];
+    const question = 'What is your feedback about?';
+
+    render(<FeedbackChoices onSelect={mockOnSelect} />);
+
+    expect(screen.getByText(question)).toBeInTheDocument();
+
+    choices.forEach((choice) => {
+      expect(screen.getByText(choice)).toBeInTheDocument();
+    });
+
+    const choiceElement = screen.getByText(choices[0]);
+    fireEvent.click(choiceElement);
+
+    expect(mockOnSelect).toHaveBeenCalledWith(0);
+  });
+
+  test('renders nothing when choices are empty', () => {
+    const mockOnSelect = jest.fn();
+    const choices = [];
+    const question = '<p>What is your feedback about?</p>';
+
+    render(<FeedbackChoices onSelect={mockOnSelect} />);
+
+    expect(screen.queryByText(question)).toBeNull();
+
+    choices.forEach((choice) => {
+      expect(screen.queryByText(choice)).toBeNull();
+    });
   });
 });

@@ -33,6 +33,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -85,6 +86,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const dialogRef = useRef();
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
+  const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
@@ -164,19 +166,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             setCurrentLanguage(locale),
             i.changeLanguage(locale),
           ])
+            .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
             .then(() => {
               ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
             })
-            .then(() => localStorage.removeItem('dydu.context'))
             .then(() => fetchContextId && fetchContextId({ locale }))
             .then(() => {
-              empty && empty();
-              sessionStorage.removeItem('dydu.welcomeKnowledge');
+              fetchWelcomeKnowledge();
             })
             .then(() => {
-              setTimeout(() => {
-                ask('#welcome#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
-              }, 3000);
+              empty && empty();
             });
         },
       };

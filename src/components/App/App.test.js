@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+
 import App from './App';
 import { render } from '../../tools/test-utils';
 import { useTranslation } from 'react-i18next';

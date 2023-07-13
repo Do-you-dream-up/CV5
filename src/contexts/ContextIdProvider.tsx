@@ -41,7 +41,6 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
 
   const { connected: saml2Connected, saml2enabled } = useSaml();
   const [contextId, setContextId] = useState<string | null>(getContextIdFromLocalStorage() || null);
-  console.log('🚀 ~ file: ContextIdProvider.tsx:44 ~ ContextIdProvider ~ contextId:', contextId);
 
   const updateContextId = (id: string) => {
     dydu.setContextId(id);
