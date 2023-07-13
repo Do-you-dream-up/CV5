@@ -1,7 +1,6 @@
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '../Button/Button';
-import { DialogContext } from '../../contexts/DialogContext';
 import Icon from '../Icon/Icon';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
@@ -9,6 +8,7 @@ import c from 'classnames';
 import icons from '../../tools/icon-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import { useSurvey } from 'src/Survey/SurveyProvider';
 
@@ -19,7 +19,8 @@ import { useSurvey } from 'src/Survey/SurveyProvider';
  */
 export default function Secondary({ anchor, mode }) {
   const { configuration } = useConfiguration();
-  const { secondaryActive, secondaryContent } = useContext(DialogContext);
+  const { secondaryActive, secondaryContent } = useDialog();
+
   const { flushStatesAndClose } = useSurvey();
   const root = useRef(null);
   const [initialMode, setMode] = useState(configuration.secondary.mode);
@@ -37,6 +38,21 @@ export default function Secondary({ anchor, mode }) {
 
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
+
+  const handleClickOutside = (event) => {
+    if (root.current && !root.current.contains(event.target)) {
+      flushStatesAndClose();
+    }
+  };
+
+  useEffect(() => {
+    if (secondaryActive) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [secondaryActive, flushStatesAndClose]);
 
   if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {
     let { left: anchorLeft, right: anchorRight } = anchor.current.getBoundingClientRect();

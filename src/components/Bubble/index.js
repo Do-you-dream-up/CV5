@@ -11,6 +11,7 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
+import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 
@@ -47,8 +48,9 @@ export default function Bubble({
   const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
   const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
   const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
+  const { surveyConfig } = useSurvey();
 
-  const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
+  const sidebar = secondary && !surveyConfig ? secondary : step ? step.sidebar : undefined;
 
   const actions = [...(sidebar ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }] : [])];
 
