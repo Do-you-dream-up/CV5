@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
@@ -38,21 +38,6 @@ export default function Secondary({ anchor, mode }) {
 
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
-
-  const handleClickOutside = (event) => {
-    if (root.current && !root.current.contains(event.target)) {
-      flushStatesAndClose();
-    }
-  };
-
-  useEffect(() => {
-    if (secondaryActive) {
-      document.addEventListener('click', handleClickOutside);
-      return () => {
-        document.removeEventListener('click', handleClickOutside);
-      };
-    }
-  }, [secondaryActive, flushStatesAndClose]);
 
   if (boundaries && (mode === 'left' || mode === 'right') && anchor && anchor.current && root.current) {
     let { left: anchorLeft, right: anchorRight } = anchor.current.getBoundingClientRect();
