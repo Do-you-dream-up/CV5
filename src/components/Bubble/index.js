@@ -53,7 +53,7 @@ export default function Bubble({
   const defaultAvatar = configuration.avatar?.response?.image;
   const { surveyConfig } = useSurvey();
 
-  const sidebar = secondary && !surveyConfig ? secondary : step ? step.sidebar : undefined;
+  const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
   const actions = [...(sidebar ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }] : [])];
 
@@ -102,7 +102,9 @@ export default function Bubble({
             {(children || html) && (
               <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
             )}
-            {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
+            {!!actions.length && !surveyConfig && (
+              <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />
+            )}
           </div>,
         )
       )}

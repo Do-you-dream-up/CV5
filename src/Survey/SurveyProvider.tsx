@@ -31,7 +31,7 @@ const SurveyContext = createContext<SurveyContextProps>({});
 
 export default function SurveyProvider({ children }: SurveyProviderProps) {
   const { getChatboxRef } = useEvent();
-  const { openSecondary, closeSecondary } = useDialog();
+  const { openSecondary, closeSecondary, lastResponse } = useDialog();
   const { configuration } = useConfiguration();
   const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
   const [instances, setInstances] = useState<any[] | null>(null);
@@ -62,6 +62,10 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       return null;
     }
   }, [getChatboxRef]);
+
+  useEffect(() => {
+    if (lastResponse && !isDefined(lastResponse.survey)) flushStatesAndClose();
+  }, [lastResponse]);
 
   useEffect(() => {
     dydu.setShowSurveyCallback(showSurvey);

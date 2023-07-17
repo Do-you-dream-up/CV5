@@ -27,6 +27,7 @@ declare namespace Servlet {
     enableAutoSuggestion?: boolean;
     feedback?: ChatResponseFeedbackType;
     sidebar?: boolean;
+    survey?: Base64 | string;
     templateData?: Base64 | string;
     templateName?: Base64 | string;
     urlRedirect?: Base64 | string;
