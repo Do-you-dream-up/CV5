@@ -167,16 +167,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             i.changeLanguage(locale),
           ])
             .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
-            .then(() => {
-              ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true });
-            })
+            .then(() => ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }))
             .then(() => fetchContextId && fetchContextId({ locale }))
-            .then(() => {
-              fetchWelcomeKnowledge();
-            })
-            .then(() => {
-              empty && empty();
-            });
+            .then(() => fetchWelcomeKnowledge())
+            .then(() => empty && empty());
         },
       };
 
