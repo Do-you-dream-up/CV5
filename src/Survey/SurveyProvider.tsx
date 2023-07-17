@@ -37,17 +37,17 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
 
-  const flushStates = useCallback(() => {
+  const flushStates = () => {
     setInstances(null);
     setSurveyConfig(null);
-  }, []);
+  };
 
-  const showSurvey = useCallback((data) => {
+  const showSurvey = (data) => {
     const id = extractId(data);
     getSurveyConfigurationById(id).then((res) => {
       setSurveyConfig(res);
     });
-  }, []);
+  };
 
   const flushStatesAndClose = useCallback(() => {
     flushStates();
@@ -141,9 +141,9 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     return answer?.hasMissing() ? Promise.reject(answer) : Promise.resolve(answer);
   }, [getSurveyAnswer]);
 
-  const prepareResponsePayloadWithAnswerObject = useCallback((answer) => {
+  const prepareResponsePayloadWithAnswerObject = (answer) => {
     return Promise.resolve(answer.getAnswer());
-  }, []);
+  };
 
   const onSubmit = useCallback(() => {
     validateAnswer()
