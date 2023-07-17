@@ -53,7 +53,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     flushStates();
     closeSecondary && closeSecondary();
     answerResultManager.clear();
-  }, [closeSecondary, flushStates]);
+  }, [closeSecondary, flushStates, lastResponse]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -64,7 +64,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, [getChatboxRef]);
 
   useEffect(() => {
-    if (lastResponse && !isDefined(lastResponse.survey)) flushStatesAndClose();
+    if (lastResponse) flushStatesAndClose();
   }, [lastResponse]);
 
   useEffect(() => {
