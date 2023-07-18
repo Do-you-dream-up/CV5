@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+
 import {
   _parse,
   _recursiveBase64DecodeString,
@@ -10,6 +12,7 @@ import {
   browserName,
   compareObject,
   decodeHtml,
+  documentCreateElement,
   escapeHTML,
   extractDomainFromUrl,
   getBrowserLocale,

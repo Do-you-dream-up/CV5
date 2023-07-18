@@ -81,6 +81,14 @@ export default createUseStyles((theme) => {
           },
         },
       },
+      '& .dydu-bubble-body': {
+        '& .galleryFile a': {
+          pointerEvents: 'none',
+          cursor: 'default',
+          textDecoration: 'none',
+          color: 'black',
+        },
+      },
     }),
   };
 });

@@ -360,3 +360,11 @@ export const objectToQueryParam = (o) => {
     return resultString;
   }, '');
 };
+
+export const documentCreateElement = (htmlTag, attibutesOptions) => {
+  const element = document.createElement(htmlTag);
+  return Object.keys(attibutesOptions).reduce((node, key) => {
+    node.setAttribute(key, attibutesOptions[key]);
+    return node;
+  }, element);
+};

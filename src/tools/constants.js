@@ -39,6 +39,7 @@ export const INTERACTION_TEMPLATE = {
   carousel: 'dydu_carousel_001',
   product: 'dydu_product_001',
   quickReply: 'dydu_quick_reply_001',
+  uploadFile: 'dydu_upload_001',
 };
 
 export const knownTemplates = Object.values(INTERACTION_TEMPLATE);
@@ -110,3 +111,28 @@ export const COLOR_RGAA = {
   error: '#CD4242',
   success: '#1A7451',
 };
+
+export const ALLOWED_FORMAT = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'image/svg+xml',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.oasis.opendocument.text',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.oasis.opendocument.spreadsheet',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.oasis.opendocument.presentation',
+  'application/x-log',
+  'application/log',
+  'text/x-log',
+  'text/csv',
+  'text/plain',
+  'text/log',
+];

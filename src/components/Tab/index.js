@@ -21,7 +21,7 @@ Tab.defaultProps = {
 };
 
 Tab.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.any,
   component: PropTypes.elementType,
   render: PropTypes.bool,
   value: PropTypes.string.isRequired,

@@ -9,7 +9,7 @@ import { COLOR_RGAA } from '../../tools/constants';
 import FeedbackChoices from '../FeedbackChoices';
 import Form from '../Form';
 import Icon from '../Icon/Icon';
-import Scroll from '../Scroll';
+import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import icons from '../../tools/icon-constants';

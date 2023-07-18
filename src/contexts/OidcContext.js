@@ -14,7 +14,7 @@ export const OidcProvider = ({ children }) => {
 
   const { close } = useViewMode();
 
-  const hasAuthStorageCheck = configuration.checkAuthorization?.active;
+  const hasAuthStorageCheck = configuration?.checkAuthorization?.active;
 
   useEffect(() => {
     if (hasAuthStorageCheck && !token?.access_token) close();

@@ -1,9 +1,9 @@
 import { isDefined, isEmptyString } from '../helpers';
 import { useCallback, useMemo, useState } from 'react';
 
+import { Local } from '../storage';
 import dydu from '../dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { Local } from '../storage';
 
 export default function useWelcomeKnowledge() {
   const [result, setResult] = useState(null);

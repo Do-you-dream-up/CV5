@@ -12,7 +12,7 @@ import Feedback from '../Feedback';
 import Icon from '../Icon/Icon';
 import Loader from '../Loader';
 import PropTypes from 'prop-types';
-import Scroll from '../Scroll';
+import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
@@ -45,6 +45,7 @@ const templateNameToBubbleCreateAction = {
         if (text.indexOf('><') < 0) {
           result.push(jsonStringify(makeBubbleObjWithText(text)));
         }
+
         return result;
       }, []);
     }
@@ -85,6 +86,13 @@ const templateNameToBubbleCreateAction = {
       }
     });
     return bubbles;
+  },
+  [INTERACTION_TEMPLATE.uploadFile]: (list) => {
+    const bubble = {};
+    const item = list.pop();
+    if (isOfTypeString(item)) bubble.text = item;
+    if (isOfTypeObject(item)) bubble.product = item;
+    return [JSON.stringify(bubble)];
   },
 };
 

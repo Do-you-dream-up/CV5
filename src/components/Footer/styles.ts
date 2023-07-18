@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles((theme) => ({
+export default createUseStyles<any, any>((theme: any): any => ({
   actions: () => ({
     alignItems: 'center',
     paddingLeft: 17,
@@ -26,17 +26,17 @@ export default createUseStyles((theme) => ({
   }),
   root: () => ({
     backgroundColor: '#EDF1F5',
-    borderBottomLeftRadius: theme.shape.radius.outer,
-    borderBottomRightRadius: theme.shape.radius.outer,
-    boxShadow: theme.shadows[1],
-    color: theme.palette.primary.text,
+    borderBottomLeftRadius: theme.shape?.radius?.outer,
+    borderBottomRightRadius: theme.shape?.radius?.outer,
+    boxShadow: theme?.shadows?.[1],
+    color: theme.palette?.primary?.text,
     display: 'flex',
     flexShrink: 0,
     position: 'relative',
     width: '100%',
     heigth: 60,
     minHeight: 60,
-    maxHeight: 130,
+    maxHeight: 'fit-content',
     [theme.breakpoints?.down('xs')]: {
       borderRadius: 0,
     },

@@ -34,6 +34,6 @@ export default createUseStyles<any, any>((theme: any): any => ({
       display: 'inline-block',
       maxWidth: '100%',
     },
-    fontFamily: theme.font.sansSerif,
+    fontFamily: theme.font?.sansSerif,
   }),
 }));

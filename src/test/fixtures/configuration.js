@@ -348,6 +348,16 @@ export class ConfigurationFixture {
     this.configuration = config;
   }
 
+  setMaxLength() {
+    this.getConfiguration().input.maxLength = 200;
+    return this;
+  }
+
+  setSuggestionsLimit() {
+    this.getConfiguration().suggestions.limit = 3;
+    return this;
+  }
+
   activateDefaultLanguageFromSite() {
     this.getConfiguration().application.getDefaultLanguageFromSite = true;
     return this;

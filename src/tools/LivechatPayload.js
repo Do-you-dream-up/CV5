@@ -121,7 +121,10 @@ export const LivechatPayloadCreator = {
   },
 };
 
-export const LivechatPayloadChecker = {
+const LivechatPayloadChecker = {
+  operatorSendUploadRequest: (payload) => {
+    return isDefined(payload.values.code) && payload.values.code.fromBase64()?.equals('UploadRequest');
+  },
   operatorSendSurvey: (payload) => {
     return (
       payload?.type?.equals('notification') &&

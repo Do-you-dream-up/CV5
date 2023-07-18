@@ -1,12 +1,13 @@
+import Actions, { ActionProps } from '../Actions/Actions';
 import { useEffect, useState } from 'react';
 
-import Actions from '../Actions/Actions';
 import Input from '../Input/Input';
-import PropTypes from 'prop-types';
+import UploadInput from '../UploadInput/UploadInput';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -15,13 +16,23 @@ import { useTranslation } from 'react-i18next';
  * It transports the function to call whenever input is submitted and a second
  * function to handle the response.
  */
-export default function Footer({ focus, onRequest, onResponse, ...rest }) {
+
+interface FooterProps {
+  onRequest?: (value: string) => void;
+  onResponse?: (value: Servlet.ChatResponseValues) => void;
+  [key: string]: any;
+}
+
+export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) {
+  const { showButtonUploadFile } = useUploadFile() || {};
+
   const { configuration } = useConfiguration();
-  const classes = useStyles({ configuration });
+  const classes: any = useStyles({ configuration });
   const [t, i] = useTranslation('translation');
-  const [selectedLanguage, setSelectedLanguage] = useState(configuration.application.defaultLanguage[0]);
-  const { languages } = configuration.application;
-  const { translate: hasTranslate } = configuration.footer;
+  const [selectedLanguage, setSelectedLanguage] = useState(configuration?.application.defaultLanguage[0]);
+  const { languages } = configuration?.application || {};
+  const { translate: hasTranslate } = configuration?.footer || {};
+
   const actionTranslate = t('footer.translate');
 
   useEffect(() => {
@@ -29,15 +40,16 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
   }, [i, t]);
 
   const languagesMenu = [
-    languages.sort().map((id) => ({
-      icon: `flags/${id}.png`,
-      id,
-      onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
-      text: t(`footer.rosetta.${id}`),
-    })),
+    languages &&
+      languages.sort().map((id) => ({
+        icon: `flags/${id}.png`,
+        id,
+        onClick: () => window.dydu && window.dydu.localization && window.dydu.localization.set(id, languages),
+        text: t(`footer.rosetta.${id}`),
+      })),
   ];
 
-  const actions = [
+  const actions: ActionProps[] = [
     {
       children: (
         <img
@@ -54,29 +66,26 @@ export default function Footer({ focus, onRequest, onResponse, ...rest }) {
     },
   ];
 
+  const renderInput = () =>
+    showButtonUploadFile ? (
+      <UploadInput />
+    ) : (
+      <div className={classes.content}>
+        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
+      </div>
+    );
+
   return (
     <>
-      <footer className={c('dydu-footer', classes.root)} {...rest} id="dydu-footer">
+      <div className={c('dydu-footer', classes.root)} {...rest}>
         <Actions
           actions={actions}
           className={c('dydu-footer-actions', classes.actions)}
           testId="dydu-language-selector"
           id="dydu-language-selector"
         />
-        <div className={classes.content}>
-          <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
-        </div>
-      </footer>
+        {renderInput()}
+      </div>
     </>
   );
 }
-
-Footer.defaultProps = {
-  focus: true,
-};
-
-Footer.propTypes = {
-  focus: PropTypes.bool,
-  onRequest: PropTypes.func.isRequired,
-  onResponse: PropTypes.func.isRequired,
-};

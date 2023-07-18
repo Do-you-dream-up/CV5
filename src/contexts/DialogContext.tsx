@@ -9,10 +9,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { isDefined, isOfTypeString, recursiveBase64DecodeString } from '../tools/helpers';
 
+import FileUploadButton from '../components/FileUploadButton/FileUploadButton';
 import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
@@ -49,26 +51,35 @@ export interface DialogContextProps {
   addResponse?: (response: Servlet.ChatResponseValues) => void;
   disabled?: boolean;
   empty?: () => void;
+  errorFormatMessage?: string | null;
   interactions?: any;
+  isFileActive?: boolean;
   locked?: boolean;
   placeholder?: string | null;
   prompt?: string;
   secondaryActive?: boolean;
   secondaryContent?: any;
+  selectedFile?: any;
   setDisabled?: Dispatch<SetStateAction<boolean>>;
+  setErrorFormatMessage?: Dispatch<SetStateAction<string | null>>;
+  setIsFileActive?: Dispatch<SetStateAction<boolean>>;
   setLocked?: Dispatch<SetStateAction<boolean>>;
   setPlaceholder?: Dispatch<SetStateAction<any>>;
   setPrompt?: Dispatch<SetStateAction<string>>;
   setSecondary?: () => void;
+  setSelectedFile?: Dispatch<SetStateAction<File>>;
+  setUploadActive?: Dispatch<SetStateAction<boolean>>;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
   toggleSecondary?: (open: boolean, props?: any) => any;
   typeResponse?: Servlet.ChatResponseType | null;
+  uploadActive?: boolean;
   voiceContent?: any;
   zoomSrc?: string | null;
   setZoomSrc?: Dispatch<SetStateAction<string | null>>;
   autoSuggestionActive?: boolean;
   setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
   callWelcomeKnowledge?: () => null;
+  showUploadFileButton?: () => void;
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
 }
@@ -114,7 +125,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
   const { connected: saml2Connected } = useSaml();
-
+  const additionalListInteraction = useRef([]);
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
@@ -143,6 +154,26 @@ export function DialogProvider({ children }: DialogProviderProps) {
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
     hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
   );
+
+  useEffect(() => {
+    fetchServerStatus();
+  }, []);
+
+  const addAdditionalInteraction = (interaction) => {
+    additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
+  };
+
+  const clearAdditionalInteraction = () => {
+    additionalListInteraction.current = [];
+  };
+
+  const getAdditionalInteraction = () => {
+    return additionalListInteraction.current;
+  };
+
+  const showUploadFileButton = useCallback(() => {
+    addAdditionalInteraction(<FileUploadButton />);
+  }, []);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
     const last = list[list.length - 1];
@@ -214,9 +245,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const add = useCallback((interaction) => {
     setInteractions((previous) => {
       if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
-      return !isDefined(interaction)
+
+      const updatedList = !isDefined(interaction)
         ? previous.slice()
         : [...previous, ...(Array.isArray(interaction) ? interaction : [interaction])];
+
+      const finalList = updatedList.concat(getAdditionalInteraction());
+      clearAdditionalInteraction();
+      return finalList;
     });
   }, []);
 
@@ -517,6 +553,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         autoSuggestionActive,
         setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
+        showUploadFileButton,
       }}
     />
   );

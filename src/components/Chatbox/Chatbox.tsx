@@ -11,7 +11,7 @@ import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
-import Footer from '../Footer';
+import Footer from '../Footer/Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
 import { Local } from '../../tools/storage';
@@ -30,6 +30,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
@@ -62,6 +63,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
+  const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
@@ -179,6 +181,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         disable: () => setDisabled && setDisabled(true),
         enable: () => setDisabled && setDisabled(false),
         lock: (value = true) => setLocked && setLocked(value),
+        upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary && toggleSecondary(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),
@@ -189,6 +192,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.reword = window.dydu.chat.ask;
       window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
+      window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
 
       setReady(true);
     }
@@ -249,7 +253,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div
-                  tabIndex={tabIndex}
+                  tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
                   })}
@@ -268,7 +272,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   {poweredByActive && <PoweredBy />}
                 </div>
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} focus />}
+                {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
             </GdprDisclaimer>
           </>
