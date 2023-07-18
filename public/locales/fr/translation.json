@@ -149,7 +149,7 @@
       "expand": "Agrandir la fenêtre de discussion",
       "minimize": "Réduire la fenêtre de discussion",
       "more": "Plus d'options",
-      "shrink": "Diminuer",
+      "shrink": "Quitter le mode plein écran",
       "tests": "Tests",
       "fontDecrease": "Réduire police",
       "fontIncrease": "Agrandir police"
@@ -158,7 +158,7 @@
   },
   "input": {
     "actions": {
-      "send": "Envoie",
+      "send": "Envoyez votre message",
       "counterRemaining": "caractères restants",
       "reupload": "Remplacer le fichier à télécharger",
       "record": {
@@ -213,7 +213,7 @@
   },
   "teaser": {
     "title": "Besoin d'aide ?",
-    "mouseover": "Aide ici",
+    "mouseover": "Un problème technique ? Obtenez de l'aide en cliquant ici",
     "titleHidden": "Fenêtre du Chatbot"
   },
   "template": {

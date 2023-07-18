@@ -187,9 +187,29 @@ export const getConfigurationObject = (updates = {}) => {
     },
     onboarding: {
       enable: false,
-      image1: 'dydu-onboarding-1.svg',
-      image2: 'dydu-onboarding-2.svg',
-      image3: 'dydu-onboarding-3.svg',
+      items: [
+        {
+          disabled: false,
+          image: {
+            src: 'dydu-onboarding-1.svg',
+            hidden: false,
+          },
+        },
+        {
+          disabled: false,
+          image: {
+            src: 'dydu-onboarding-2.svg',
+            hidden: false,
+          },
+        },
+        {
+          disabled: false,
+          image: {
+            src: 'dydu-onboarding-3.svg',
+            hidden: false,
+          },
+        },
+      ],
     },
     poweredBy: {
       active: false,

@@ -21,6 +21,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { useUserAction } from '../../contexts/UserActionContext';
 import useViewport from '../../tools/hooks/useViewport';
 
 /**
@@ -29,6 +30,7 @@ import useViewport from '../../tools/hooks/useViewport';
  */
 export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
   const { configuration } = useConfiguration();
+  const { addRgaaRef } = useUserAction();
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
   const { active: onboardingActive } = useContext(OnboardingContext) || {};
@@ -58,6 +60,11 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
+  const moreOptionsRef = useRef(null);
+
+  useEffect(() => {
+    addRgaaRef('moreOptionsRef', moreOptionsRef);
+  }, [moreOptionsRef]);
 
   const onToggleMore = () => {
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
@@ -134,15 +141,16 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-dots',
     },
     {
-      children: <Icon icon={icons?.more} color={iconColorWhite} alt="" />,
+      children: <Icon icon={icons?.more} color={iconColorWhite} alt={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
       title: actionMore,
       id: 'dydu-more',
+      ref: moreOptionsRef,
     },
     {
-      children: <Icon icon={icons?.fontIncrease} color={iconColorWhite} alt="increaseFont" />,
+      children: <Icon icon={icons?.fontIncrease} color={iconColorWhite} alt={actionFontIncrease} />,
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
@@ -151,7 +159,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-increase',
     },
     {
-      children: <Icon icon={icons?.fontDecrease} color={iconColorWhite} alt="decreaseFont" />,
+      children: <Icon icon={icons?.fontDecrease} color={iconColorWhite} alt={actionFontDecrease} />,
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
@@ -160,7 +168,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-decrease',
     },
     {
-      children: <Icon icon={icons?.expand} color={iconColorWhite} alt="" />,
+      children: <Icon icon={icons?.expand} color={iconColorWhite} alt={actionExpand} />,
+
       onClick: () => onExpand(true)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
@@ -168,7 +177,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-expand',
     },
     {
-      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt="collapse" />,
+      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt={actionShrink} />,
       onClick: () => onExpand(false)(),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
@@ -176,7 +185,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-collapse',
     },
     {
-      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt="" />,
+      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt={actionMinimize} />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
@@ -184,7 +193,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-minimize',
     },
     {
-      children: <Icon icon={icons?.close} color={iconColorWhite} alt="close" />,
+      children: <Icon icon={icons?.close} color={iconColorWhite} alt={actionClose} />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,

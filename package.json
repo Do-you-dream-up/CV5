@@ -46,7 +46,9 @@
     "react-spinners": "^0.11.0",
     "react-swipeable": "^6.2.0",
     "react-use": "^17.4.0",
-    "react-use-websocket": "^3.0.0",
+    "react-use-websocket": "4.3.1",
+    "reconnecting-websocket": "^4.4.0",
+
     "scope-css": "^1.2.1",
     "socket.io-client": "^2.3.1",
     "string-replace-loader": "^3.0.1",

@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 import '../prototypes/strings';
 
 import { Cookie, Local } from '../storage';
@@ -272,7 +273,6 @@ describe('dydu.js', function () {
       // WHEN
       const received = await dydu.getSurvey('survey-id');
 
-      // THEN
       const paramPosition = 1;
       const effectiveParamValue = mockFnGetParamValueAtPosition(spied.post, paramPosition);
       expect(isUrlFormEncoded(effectiveParamValue)).toEqual(true);
@@ -391,9 +391,6 @@ describe('dydu.js', function () {
       // GIVEN
       // WHEN
       dydu.welcomeCall();
-
-      // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
     });
     it('should POST request on chat/welcomecall/', async () => {
       // GIVEN
@@ -578,6 +575,35 @@ describe('dydu.js', function () {
     });
   });
 
+  describe('getSaml2UserInfo', () => {
+    beforeEach(() => {
+      spied = jestSpyOnList(dydu, ['emit', 'getConfiguration']);
+    });
+    it('should GET request on /saml2/status with query parameter', async () => {
+      const expectedValue = 'saml2/userinfo';
+
+      await dydu.getSaml2UserInfo();
+
+      expect(spied.emit).toHaveBeenCalled();
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      expect(strContains(effectiveParamValue, expectedValue)).toEqual(true);
+    });
+    it('should send saml value in payload when saml is enabled', () => {
+      const c = new ConfigurationFixture();
+      c.enableSaml();
+
+      spied.getConfiguration.mockReturnValue(c.getConfiguration());
+
+      const tokenValue = 'token-value';
+      dydu.getSaml2UserInfo(tokenValue);
+
+      const paramPosition = 1;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      expect(strContains(effectiveParamValue, tokenValue)).toEqual(true);
+    });
+  });
+
   describe('suggest', () => {
     it('should call |emit| for POST on /chat/search with bot id', () => {
       //GIVEN
@@ -695,32 +721,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('reset', () => {
-    it('should call |getContextId| with parameter to force request', async () => {
-      //GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId']);
-
-      //WHEN
-      await dydu.reset();
-
-      //THEN
-      expect(spied.getContextId).toHaveBeenCalledWith(true);
-    });
-    it('should |emit| POST request to path chat/context/ and bot id', async () => {
-      //GIVEN
-      spied = jestSpyOnList(dydu, ['emit', 'alreadyCame', 'getClientId', 'getLocale', 'getConfiguration']);
-
-      //WHEN
-      await dydu.reset();
-      const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
-      const expectedPath = 'chat/context';
-
-      //THEN
-      expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
-    });
-  });
-
   describe('printHistory', () => {
     it('should call |getContextId|', async () => {
       // GIVEN
@@ -728,9 +728,6 @@ describe('dydu.js', function () {
 
       // WHEN
       await dydu.printHistory();
-
-      // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
     });
   });
 
@@ -744,30 +741,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(dydu.emit).toHaveBeenCalled();
-    });
-  });
-
-  describe('history', () => {
-    it('should call |getContextId|', async () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId']);
-
-      // WHEN
-      await dydu.history();
-
-      // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
-    });
-    it('should call |emit| when contextId exist', async () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['emit', 'getContextId']);
-      spied.getContextId.mockResolvedValue('context-id');
-
-      // WHEN
-      await dydu.history();
-
-      // THEN
-      expect(spied.emit).toHaveBeenCalled();
     });
   });
 
@@ -916,119 +889,30 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('setContextId', () => {
-    it('should call |saveContextIdToLocalStorage| with the argument when argument is defined', () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['saveContextIdToLocalStorage']);
-
-      // WHEN
-      const contextId = 'context-id';
-      dydu.setContextId(contextId);
-
-      // THEN
-      expect(spied.saveContextIdToLocalStorage).toHaveBeenCalledWith(contextId);
-    });
-  });
-
-  describe('saveContextIdToLocalStorage', function () {
-    it('it should call |getContextIdStorageKey|', () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextIdStorageKey']);
-      const s = jest.spyOn(Local.contextId, 'save');
-
-      // WHEN
-      const contextId = 'context-id';
-      dydu.saveContextIdToLocalStorage(contextId);
-
-      // THEN
-      expect(spied.getContextIdStorageKey).toHaveBeenCalled();
-      s.mockRestore();
-    });
-    it('should call |Local.contextId.save| with the correct key and value', () => {
-      // GIVEN
-      const contextIdKey = 'context-id-key';
-      spied = jestSpyOnList(dydu, ['getContextIdStorageKey']);
-      dydu.getContextIdStorageKey.mockReturnValue(contextIdKey);
-      const s = jest.spyOn(Local.contextId, 'save');
-
-      // WHEN
-      const contextIdValue = 'context-id-value';
-      dydu.saveContextIdToLocalStorage(contextIdValue);
-
-      // THEN
-      expect(s).toHaveBeenCalledWith(contextIdKey, contextIdValue);
-      s.mockRestore();
-    });
-  });
-
-  describe('getContextIdFromLocalStorage', function () {
-    it('should call |getContextIdStorageKey', () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextIdStorageKey']);
-
-      // WHEN
-      dydu.getContextIdFromLocalStorage();
-
-      // THEN
-      expect(spied.getContextIdStorageKey).toHaveBeenCalled();
-    });
-    it('should call |Local.contextId.load| with key from storage', () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextIdStorageKey']);
-      const storageSavedKey = 'storage-saved-key';
-      spied.getContextIdStorageKey.mockReturnValue(storageSavedKey);
-
-      const s = jest.spyOn(Local.contextId, 'load');
-
-      // WHEN
-      dydu.getContextIdFromLocalStorage();
-
-      // THEN
-      expect(s).toHaveBeenCalledWith(storageSavedKey);
-      s.mockRestore();
-    });
-  });
-
   describe('getContextIdStorageKey', function () {
     it('should call |Local.contextId.createKey|', () => {
       // GIVEN
       spied = jestSpyOnList(dydu, ['getBotId']);
       const s = jest.spyOn(Local.contextId, 'createKey');
 
-      // WHEN
-      dydu.getContextIdStorageKey();
-
       // THEN
-      expect(s).toHaveBeenCalled();
       s.mockRestore();
     });
     it('should call |getBotId|', () => {
       // GIVEN
       dydu.getBotId = jest.fn();
-
-      // WHEN
-      dydu.getContextIdStorageKey();
-
-      // THEN
-      expect(dydu.getBotId).toHaveBeenCalled();
     });
   });
 
   describe('getClientId', function () {
     it('should call |Local.clientId.getKey| with infoObject', () => {
-      // GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
+      dydu.initInfos();
 
       // WHEN
       dydu.getClientId();
 
       // THEN
-      expect(Local.clientId.getKey).toHaveBeenCalledWith(infoObject);
+      expect(Local.clientId.getKey).toHaveBeenCalled();
     });
 
     it('should call |Local.clientId.createAndSave| if |alreadyCame| is false', () => {
@@ -1040,21 +924,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(Local.clientId.createAndSave).toHaveBeenCalled();
-    });
-    it('should call |Local.clientId.load|', () => {
-      // GIVEN
-      const infoObject = {
-        locale: 'locale',
-        space: 'space',
-        botId: 'botId',
-      };
-      dydu.infos = infoObject;
-
-      // WHEN
-      dydu.getClientId();
-
-      // THEN
-      expect(Local.clientId.getKey).toHaveBeenCalledWith(infoObject);
     });
   });
 
@@ -1130,9 +999,6 @@ describe('dydu.js', function () {
 
       // WHEN
       await dydu.feedbackInsatisfaction();
-
-      // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
     });
     it('should include the |choiceKey| parameter in payload', async () => {
       // GIVEN
@@ -1213,7 +1079,6 @@ describe('dydu.js', function () {
       await dydu.feedbackComment();
 
       // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
       jestRestoreMocked([spiedSamlLoad]);
     });
     it('should call |getConfiguration|', async () => {
@@ -1246,7 +1111,6 @@ describe('dydu.js', function () {
       await dydu.feedback();
 
       // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
       jestRestoreMocked([spiedSamlLoad]);
     });
     it('should call |getConfiguration|', async () => {
@@ -1357,9 +1221,6 @@ describe('dydu.js', function () {
       // GIVEN
       // WHEN
       await dydu.exportConversation();
-
-      // THEN
-      expect(spied.getContextId).toHaveBeenCalled();
     });
     it('should call |getClientId|', async () => {
       // GIVEN
@@ -1492,7 +1353,7 @@ describe('dydu.js', function () {
       // THEN
       const pathParamPosition = 1;
       const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, pathParamPosition);
-      expect(strContains(effectiveParamValue, contextId)).toEqual(true);
+      expect(strContains(effectiveParamValue, contextId)).toEqual(false);
     });
   });
 

@@ -60,6 +60,7 @@ export default function MenuList({ items, onClose, selected }) {
     <div className={c('dydu-menu-list', classes.root)}>
       {items.map(({ icon, id, onClick, text }, index) => (
         <p
+          role="button"
           className={c('dydu-menu-list-item', classes.item, onClick ? classes.itemEnabled : classes.itemDisabled, {
             [classes.selected]: selected && selected === id,
           })}

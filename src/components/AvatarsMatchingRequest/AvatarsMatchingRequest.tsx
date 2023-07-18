@@ -63,7 +63,6 @@ const AvatarsMatchingRequest = ({
   const showHeaderAvatar = useMemo(() => {
     return !!hasImage && headerAvatar;
   }, [hasImage, headerAvatar]);
-
   const showInteractionAvatar = useMemo(() => {
     return !!hasAvatar && (hasLoader || !(carousel || carouselTemplate));
   }, [carousel, carouselTemplate, hasAvatar, hasLoader]);

@@ -10,7 +10,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
   }),
   icon: () => ({
     height: '1.3em',
-    opacity: 0.5,
+    opacity: 0.7,
     transitionDuration: '.2s',
     transitionProperty: 'opacity',
     width: '1.3em',

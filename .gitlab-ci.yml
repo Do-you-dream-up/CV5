@@ -1,27 +1,9 @@
 ---
 stages:
-  - unit_test
   - integration
+  - test
   - delivery
   - quality
-
-unit_test:
-  stage: unit_test
-  image: node:alpine
-  variables:
-    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
-    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
-  script:
-    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
-    - npm run test
-  cache:
-    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
-    paths:
-      - node_modules/
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix|hotfix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
 
 build:
   stage: integration
@@ -30,7 +12,9 @@ build:
     CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
     CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
   script:
+    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     - npm run build
+    - npm run test:CI
   cache:
     key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
@@ -39,11 +23,40 @@ build:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^main.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
   artifacts:
     paths:
       - .npm/_logs/
     expire_in: 24h
+
+sonar-sast:
+  stage: test
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: ['']
+  variables:
+    GIT_DEPTH: '0'
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
+    SONAR_HOST_URL: 'https://sonar.ci.dydu-priv.com'
+    SONAR_LOGIN: '71e34b485f3799e6852d1fd5d3d321be6f72ef98'
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.sources=.
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.login=$SONAR_LOGIN
+      -Dsonar.projectKey=$CI_PROJECT_NAME
+      -Dsonar.projectName="$CI_PROJECT_TITLE"
+      -Dsonar.projectVersion=$CI_COMMIT_REF_SLUG
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.qualitygate.timeout=300
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
 pack:
   stage: delivery
@@ -98,7 +111,7 @@ publish:
     - build
   when: manual
 
-test:
+functional-test:
   stage: quality
   image: alpine:latest
   variables:

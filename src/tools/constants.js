@@ -50,6 +50,13 @@ export const INTERACTION_TYPE = {
   notification: 'notification',
 };
 
+export const ATRIA_TYPE_RESPONSE = {
+  dmLivechatConnectionSucceed: 'DMLiveChatConnectionSucceed',
+  naAutoCloseDialog: 'NAAutoCloseDialog',
+  naAutoCloseDialogBecauseUserLeft: 'NAAutoCloseDialogBecauseUserLeft',
+  opLivechatEndByOperator: 'OPLiveChatEndByOperator',
+};
+
 export const INTERACTION_NOTIFICATION_TYPE = {
   dialogTransferredManually: 'dialogTransferredManually',
   operatorDisconnected: 'operatorDisconnected',

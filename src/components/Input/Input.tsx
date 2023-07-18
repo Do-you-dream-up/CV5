@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
+import { Local } from '../../tools/storage';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -26,25 +27,25 @@ interface InputProps {
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
-  const { isLivechatOn, send, typing: livechatTyping } = useLivechat();
+  const { send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent } = useEvent();
-  const { disabled, locked, placeholder, autoSuggestionActive, prompt } = useDialog();
+  const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
 
   const classes = useStyles();
   const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
   const [input, setInput] = useState<string>('');
-
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const counterRemaining = t('input.actions.counterRemaining');
+  const [showCounterA11y, setShowCounterA11y] = useState<boolean>(false);
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const themeColor = useTheme<Models.Theme>();
   const debouncedInput = useDebounce(input, delay);
-  const inputRef = useRef(null);
+  const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
   const textareaRef = useRef<null | any>(null);
 
@@ -69,8 +70,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   };
 
   useEffect(() => {
-    if (isLivechatOn && typing) livechatTyping?.(input);
-  }, [input, isLivechatOn, livechatTyping, typing]);
+    if (Local.isLivechatOn.load() && typing) livechatTyping?.(input);
+  }, [input, Local.isLivechatOn.load(), livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();
@@ -79,13 +80,30 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     submit(suggestionValue);
   };
 
+  const handleFocusChange = (e) => {
+    if (!inputFocused && e.keyCode === 9) {
+      setInputFocused(true);
+    }
+    if (e.type === 'click') {
+      setInputFocused(false);
+    }
+  };
+
+  const handleBlur = () => setInputFocused(false);
+
+  const onFocus = () => {
+    setShowCounterA11y(true);
+  };
+
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
         ...properties,
+        className: `${properties.className} ${inputFocused ? 'focus' : ''}`,
       };
 
       const textareaId = 'dydu-textarea';
+
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
@@ -98,18 +116,26 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             id={textareaId}
             data-testId="textareaId"
             ref={textareaRef}
+            onKeyUp={handleFocusChange}
+            onBlur={handleBlur}
+            onFocus={onFocus}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
-            <div id="characters-remaining">
-              <span children={counter} className={classes.counter} placeholder={`${counter} ${counterRemaining}`} />
-              <span className={c('dydu-counter-hidden', classes.hidden)}>{`${counterRemaining}`}</span>
+            <div>
+              <span children={counter} className={classes.counter} />
+              <span
+                id="characters-remaining"
+                className={c('dydu-counter-hidden', classes.hidden)}
+                aria-label={`${counter} ${counterRemaining}`}
+                aria-live={counter === maxLength ? 'off' : 'assertive'}
+              >{`${counter} ${counterRemaining}`}</span>
             </div>
           )}
         </div>
       );
     },
-    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter],
+    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter, inputFocused],
   );
 
   const reset = useCallback(() => {
@@ -118,14 +144,20 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   }, [configuration?.input.maxLength]);
 
   const sendInput = useCallback(
-    (input) => {
-      if (isLivechatOn) send?.(input);
-      else {
-        talk(input).then(onResponse);
+    (input, options = {}) => {
+      const isLivechatOn = Local.isLivechatOn.load();
+      setIsWaitingForResponse && !isLivechatOn && setIsWaitingForResponse(true);
+      if (isLivechatOn) {
+        send?.(input, options);
+      } else {
+        talk(input).then((response) => {
+          onResponse && onResponse?.(response);
+          setIsWaitingForResponse && setIsWaitingForResponse(false);
+        });
       }
     },
 
-    [isLivechatOn, send],
+    [Local.isLivechatOn.load(), send],
   );
 
   const submit = useCallback(
@@ -173,10 +205,22 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
+    const nodeElementSuggestionsChildren = containerRef?.current?.suggestionsContainer?.children;
     if (isDefined(nodeElementSuggestionsContainer)) {
       nodeElementSuggestionsContainer.setAttribute('aria-label', 'dydu-input-suggestions-container');
       nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
       nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
+      if (nodeElementSuggestionsChildren.length === 0) {
+        nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
+      } else {
+        nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
+      }
+    }
+
+    if (nodeElementSuggestionsChildren.length === 0) {
+      nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
+    } else {
+      nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
     }
 
     const nodeElementTextareaContainer = textareaRef?.current;
@@ -193,7 +237,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
   const inputProps = {
-    ref: inputRef,
     disabled,
     maxLength,
     onChange,
@@ -204,7 +247,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const actions: ActionProps[] = [
     {
-      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt="submit" />,
+      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt={actionSend} />,
       type: 'submit',
       variant: 'icon',
       title: actionSend,
