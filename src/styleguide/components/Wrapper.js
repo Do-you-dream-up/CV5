@@ -11,6 +11,7 @@ import { TabProvider } from '../../contexts/TabContext';
 import breakpoints from '../../styles/breakpoints';
 import { configuration } from '../../tools/configuration';
 import data from '../../tools/configuration.json';
+
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
 const useStyles = createUseStyles({

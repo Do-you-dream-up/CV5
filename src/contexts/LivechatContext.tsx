@@ -37,7 +37,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState<any>(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
-  const { showSurvey } = useSurvey();
+  const { showSurvey, triggerSurvey } = useSurvey();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { onNewMessage } = useEvent();
 
@@ -99,6 +99,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWebsocket(false);
     Local.isLivechatOn.save(false);
     setTunnel(null);
+    triggerSurvey && triggerSurvey();
   };
 
   const tunnelInitialConfig = useMemo(() => {
