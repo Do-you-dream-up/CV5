@@ -87,6 +87,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
+  const isShowOptions = (options) => {
+    const { hide, type } = options || {};
+    return !(hide || type === 'javascript' || type === 'redirection_newpage' || type === 'redirection');
+  };
+
   const ask = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
@@ -96,7 +101,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       };
       options = Object.assign({ hide: false }, options);
 
-      if (!options.hide && options?.type !== 'javascript') {
+      if (isShowOptions(options)) {
         if (!REGEX_URL.test(text)) {
           addRequest && addRequest(text);
         }
