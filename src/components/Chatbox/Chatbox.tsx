@@ -4,7 +4,7 @@ import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
-import { escapeHTML, isDefined } from '../../tools/helpers';
+import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
@@ -19,7 +19,6 @@ import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
-import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import Zoom from '../Zoom';
@@ -87,11 +86,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
-  const isShowOptions = (options) => {
-    const { hide, type } = options || {};
-    return !(hide || type === 'javascript' || type === 'redirection_newpage' || type === 'redirection');
-  };
-
   const ask = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
@@ -101,8 +95,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       };
       options = Object.assign({ hide: false }, options);
 
-      if (isShowOptions(options)) {
-        if (!REGEX_URL.test(text)) {
+      if (!options.hide && options?.type !== 'javascript') {
+        if (!isValidUrl(text)) {
           addRequest && addRequest(text);
         }
       }
