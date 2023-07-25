@@ -86,7 +86,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
-  const ask = (text, options, livechatActive) => {
+  const followBadUrl = (text, options) => {
+    return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
+  };
+
+  const handleRewordClicked = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
       const toSend = {
@@ -95,10 +99,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       };
       options = Object.assign({ hide: false }, options);
 
-      if (!options.hide && options?.type !== 'javascript') {
-        if (!isValidUrl(text)) {
-          addRequest && addRequest(text);
-        }
+      if (followBadUrl(text, options)) {
+        addRequest && addRequest(text);
       }
 
       if (livechatActive) {
@@ -128,8 +130,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   const getDyduChatObject = ({ livechatActive }: { livechatActive?: boolean }) => {
     return {
-      ask: (text, options) => {
-        ask(text, options, livechatActive);
+      handleRewordClicked: (text, options) => {
+        handleRewordClicked(text, options, livechatActive);
       },
       empty: () => empty && empty(),
       reply: (text) => addResponse && addResponse({ text }),
@@ -188,8 +190,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
-      window.reword = window.dydu.chat.ask;
-      window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
+      window.reword = window.dydu.chat.handleRewordClicked;
+      window.rewordtest = window.dydu.chat.handleRewordClicked; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
       window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
 
@@ -197,7 +199,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   }, [
     addResponse,
-    ask,
+    handleRewordClicked,
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
     configuration?.spaces.items,
