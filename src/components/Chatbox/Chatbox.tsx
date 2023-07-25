@@ -4,7 +4,7 @@ import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
-import { escapeHTML, isDefined } from '../../tools/helpers';
+import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
@@ -19,7 +19,6 @@ import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
-import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import Zoom from '../Zoom';
@@ -87,7 +86,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
-  const ask = (text, options, livechatActive) => {
+  const followBadUrl = (text, options) => {
+    return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
+  };
+
+  const handleRewordClicked = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
       const toSend = {
@@ -96,10 +99,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       };
       options = Object.assign({ hide: false }, options);
 
-      if (!options.hide && options?.type !== 'javascript') {
-        if (!REGEX_URL.test(text)) {
-          addRequest && addRequest(text);
-        }
+      if (followBadUrl(text, options)) {
+        addRequest && addRequest(text);
       }
 
       if (livechatActive) {
@@ -129,8 +130,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   const getDyduChatObject = ({ livechatActive }: { livechatActive?: boolean }) => {
     return {
-      ask: (text, options) => {
-        ask(text, options, livechatActive);
+      handleRewordClicked: (text, options) => {
+        handleRewordClicked(text, options, livechatActive);
       },
       empty: () => empty && empty(),
       reply: (text) => addResponse && addResponse({ text }),
@@ -189,8 +190,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
-      window.reword = window.dydu.chat.ask;
-      window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
+      window.reword = window.dydu.chat.handleRewordClicked;
+      window.rewordtest = window.dydu.chat.handleRewordClicked; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
       window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
 
@@ -198,7 +199,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   }, [
     addResponse,
-    ask,
+    handleRewordClicked,
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
     configuration?.spaces.items,
