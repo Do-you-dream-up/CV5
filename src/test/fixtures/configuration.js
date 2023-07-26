@@ -11,11 +11,6 @@ export const getConfigurationObject = (updates = {}) => {
       directory: 'main/',
     },
     avatar: {
-      request: {
-        enable: false,
-        background: false,
-        image: 'dydu-logo.svg',
-      },
       response: {
         enable: true,
         background: false,
