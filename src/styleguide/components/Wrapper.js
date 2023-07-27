@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { TabProvider } from '../../contexts/TabContext';
 import breakpoints from '../../styles/breakpoints';
 import { configuration } from '../../tools/configuration';
-import data from '../../tools/configuration.json';
+import data from '../../../public/override/configuration.json';
 
 const css = JSON.parse(localStorage.getItem('dydu.css'));
 
