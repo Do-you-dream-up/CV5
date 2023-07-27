@@ -10,7 +10,7 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
 jest.mock('../../tools/dydu', () => ({
   __esModule: true,
   default: {
-    sendUpoadFile: jest.fn(),
+    sendUploadFile: jest.fn(),
   },
 }));
 
@@ -44,8 +44,8 @@ describe('UploadInput', () => {
     expect(screen.getByTestId('footer-upload-input')).toBeInTheDocument();
   });
 
-  test('should call sendUpoadFile function when Send button is clicked', () => {
-    const mockSendUploadFile = jest.spyOn(dydu, 'sendUpoadFile');
+  test('should call sendUploadFile function when Send button is clicked', () => {
+    const mockSendUploadFile = jest.spyOn(dydu, 'sendUploadFile');
     const fileContent = 'file content';
     const file = new File([new Blob([fileContent], { type: 'application/pdf' })], 'filename.pdf', {
       type: 'application/pdf',

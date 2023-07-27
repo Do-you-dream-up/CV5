@@ -5,6 +5,7 @@ import {
   b64encodeObject,
   getBrowserLocale,
   hasProperty,
+  htmlToJsonForSendUploadFile,
   isDefined,
   isEmptyString,
   isOfTypeString,
@@ -933,29 +934,24 @@ export default new (class Dydu {
   };
 
   setApiDefaultBaseUrlUploadFile = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/`;
+    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/`;
   };
 
   setApiDefaultBaseUrl = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}/servlet/api`;
+    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api`;
   };
 
-  sendUpoadFile = async (file) => {
+  sendUploadFile = (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
-    const path = `fileupload?ctx=${await this.getContextId()}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+    const path = `fileupload?ctx=${this.contextId}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
     this.setApiDefaultHeadersFormData();
     this.setApiDefaultBaseUrlUploadFile();
 
     return API.post(path, formData)
       .then((response) => {
-        const startIndex = response.data.indexOf('{');
-        const endIndex = response.data.lastIndexOf('}');
-        const jsonText = response.data.substring(startIndex, endIndex + 1);
-        let correctedJsonText = jsonText.replace(/'/g, '"');
-        correctedJsonText = correctedJsonText.replace(/api:/g, '"api":');
-        correctedJsonText = correctedJsonText.replace(/params:/g, '"params":');
-        const responseObject = JSON.parse(correctedJsonText);
+        const responseObject = htmlToJsonForSendUploadFile(response.data);
+
         if (responseObject && responseObject.params.status === 'fail') {
           console.log('La requête a échoué :', responseObject);
           window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
