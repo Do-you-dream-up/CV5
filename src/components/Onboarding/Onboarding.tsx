@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect } from 'react';
 
 import Button from '../Button/Button';
 import { EventsContext } from '../../contexts/EventsContext';
@@ -21,83 +21,60 @@ import { useTranslation } from 'react-i18next';
 
 interface OnboardingProps {
   children?: any;
-  render?: boolean;
 }
 
-interface Steps {
-  title: string;
-  body: string;
-  src?: string;
-}
-
-export default function Onboarding({ children, render }: OnboardingProps) {
+export default function Onboarding({ children }: OnboardingProps) {
   const { configuration } = useConfiguration();
-  const { active, hasNext, hasPrevious, index, onEnd, onNext, onPrevious, onStep, carouselRef } = useOnboarding();
+  const {
+    isOnboardingAlreadyDone,
+    hasNext,
+    hasPrevious,
+    stepIndex,
+    onEnd,
+    onNext,
+    onPrevious,
+    onStep,
+    carouselRef,
+    stepsFiltered,
+    srcImage,
+    isOnboardingNeeded,
+  } = useOnboarding();
   const event = useContext?.(EventsContext)?.onEvent?.('onboarding');
   const classes = useStyles({ configuration });
-  const { t, ready } = useTranslation('translation');
-  const should = ready && render && active;
-  const { enable, items } = configuration?.onboarding || {};
+  const { t } = useTranslation('translation');
+  const { enable: isOnboardingEnabled } = configuration?.onboarding || {};
 
-  const stepTrad: Steps[] = t('onboarding.steps') || [];
-  const steps: Steps[] =
-    should &&
-    stepTrad?.map((step, index) => ({
-      ...step,
-      image: items?.[index].image,
-    }));
-
-  const stepsFiltered = should && steps?.filter((_, index) => !items?.[index]?.disabled);
-
-  const skip = t('onboarding.skip');
-  const previous = t('onboarding.previous');
-  const next = t('onboarding.next');
-
-  const configImage =
-    enable && stepsFiltered?.[index] && !stepsFiltered?.[index].image.hidden
-      ? stepsFiltered?.[index]?.image?.src
-      : null;
-
-  const path = configImage?.includes('base64') ? configImage : `${process.env.PUBLIC_URL}assets/${configImage}`;
-
-  const checkDisabledStatus = useMemo(() => {
-    let result = true;
-    stepsFiltered &&
-      stepsFiltered?.forEach(function (item) {
-        if (!item.disabled) {
-          result = false;
-        }
-      });
-    return result;
-  }, [stepsFiltered]);
+  const skip: string = t('onboarding.skip');
+  const previous: string = t('onboarding.previous');
+  const next: string = t('onboarding.next');
 
   useEffect(() => {
-    if (active && enable && !checkDisabledStatus) event?.('onboardingDisplay');
-  }, [active, enable, event]);
+    if (!isOnboardingAlreadyDone && isOnboardingEnabled) event?.('onboardingDisplay');
+  }, [!isOnboardingAlreadyDone, isOnboardingEnabled, event]);
 
-  if (!enable || !active || checkDisabledStatus) return children;
-  if (should && !checkDisabledStatus)
+  if (!isOnboardingEnabled || isOnboardingAlreadyDone) return children;
+  if (isOnboardingNeeded)
     return (
       <div className={c('dydu-onboarding', classes.root)}>
         <div
           className={c('dydu-onboarding-carousel', classes.carousel)}
-          id={`step-${index.toString()}`}
-          aria-labelledby={`bullet-${index.toString()}`}
+          id={`step-${stepIndex?.toString()}`}
+          aria-labelledby={`bullet-${stepIndex?.toString()}`}
           role="tabpanel"
           tabIndex={0}
           ref={carouselRef}
         >
           <div className={c('dydu-onboarding-image', classes.image)}>
-            <img src={path} alt={''} />
+            <img src={srcImage} alt={''} />
           </div>
-          {stepsFiltered?.[index]?.title && (
-            <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[index]?.title}</p>
+          {stepIndex !== undefined && stepsFiltered && stepsFiltered?.[stepIndex]?.title && (
+            <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[stepIndex]?.title}</p>
           )}
 
-          {stepsFiltered?.[index]?.body && (
+          {stepIndex !== undefined && stepsFiltered && stepsFiltered?.[stepIndex]?.body && (
             <div
               className={c('dydu-onboarding-body', classes.body)}
-              dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered?.[index]?.body) }}
+              dangerouslySetInnerHTML={{ __html: sanitize(stepsFiltered?.[stepIndex]?.body) }}
             />
           )}
           <button type="button" onClick={onEnd} id="skip-onboarding">
@@ -105,29 +82,29 @@ export default function Onboarding({ children, render }: OnboardingProps) {
           </button>
         </div>
         <div className={c('dydu-onboarding-actions', classes.actions)}>
-          {stepsFiltered?.length > 1 && (
+          {stepsFiltered && stepsFiltered?.length > 1 && (
             <ol role="tablist" className={c('dydu-carousel-bullets', classes.bullets)}>
               {stepsFiltered &&
                 stepsFiltered?.map((_, i) => (
                   <div
                     data-testId={`testid-${i.toString()}`}
                     className={c('dydu-carousel-bullet', {
-                      [classes.active]: i === index,
+                      [classes.active]: i === stepIndex,
                     })}
                     key={i}
-                    onClick={() => onStep(i)}
+                    onClick={() => onStep?.(i + 1)}
                     id={`bullet-${i.toString()}`}
                     aria-controls={`step-${i.toString()}`}
                   />
                 ))}
             </ol>
           )}
-          {stepsFiltered.length > 1 ? (
+          {stepsFiltered && stepsFiltered.length > 1 ? (
             <div className={c('dydu-onboarding-buttons', classes.buttons)}>
               <Button
                 data-testId="previous"
                 children={previous}
-                disabled={!index}
+                disabled={!stepIndex}
                 secondary={true}
                 onClick={hasPrevious ? onPrevious : null}
                 id="onboarding-previous"
