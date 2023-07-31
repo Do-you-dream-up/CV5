@@ -10,6 +10,7 @@ import { useDialog } from './DialogContext';
 import useDyduPolling from '../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import { useEvent } from './EventsContext';
+import { useUploadFile } from '../contexts/UploadFileContext';
 
 interface LivechatContextProps {
   isWebsocket?: boolean;
@@ -37,7 +38,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const [tunnelList] = useState([useDyduWebsocket(), useDyduPolling()]);
   const [tunnel, setTunnel] = useState<any>(null);
   const [isWebsocket, setIsWebsocket] = useState(false);
-  const { showSurvey } = useSurvey();
+  const { showSurvey, triggerSurvey } = useSurvey();
+  const { showUploadFileButton } = useUploadFile();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { onNewMessage } = useEvent();
 
@@ -99,6 +101,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWebsocket(false);
     Local.isLivechatOn.save(false);
     setTunnel(null);
+    triggerSurvey && triggerSurvey();
   };
 
   const tunnelInitialConfig = useMemo(() => {
@@ -110,6 +113,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       displayNotification,
       onFail: onFailOpenTunnel,
       showAnimationOperatorWriting,
+      showUploadFileButton,
       handleSurvey: showSurvey,
     };
   }, [
@@ -120,6 +124,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     displayResponseText,
     displayNotification,
     showAnimationOperatorWriting,
+    showUploadFileButton,
     showSurvey,
   ]);
 

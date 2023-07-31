@@ -126,7 +126,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const testsMenu = [
     Object.keys(ACTIONS).map((it) => ({
-      onClick: ACTIONS[it] && (() => window.dydu.chat.ask(it, { hide: true })),
+      onClick: ACTIONS[it] && (() => window.dydu.chat.handleRewordClicked(it, { hide: true })),
       text: it,
     })),
   ];

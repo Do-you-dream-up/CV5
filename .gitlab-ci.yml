@@ -1,5 +1,4 @@
 ---
-
 stages:
   - integration
   - test
@@ -10,14 +9,14 @@ build:
   stage: integration
   image: node:alpine
   variables:
-    CHATBOX_VERSION: "${CI_COMMIT_REF_NAME}"
-    CHATBOX_REVISION: "${CI_COMMIT_SHORT_SHA}"
+    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
+    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
   script:
     - npm ci --legacy-peer-deps --cache .npm --prefer-offline
     - npm run build
     - npm run test:CI
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
       - node_modules/
@@ -34,12 +33,12 @@ sonar-sast:
   stage: test
   image:
     name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
+    entrypoint: ['']
   variables:
-    GIT_DEPTH: "0"
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: '0'
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
     SONAR_HOST_URL: 'https://sonar.ci.dydu-priv.com'
-    SONAR_LOGIN: "71e34b485f3799e6852d1fd5d3d321be6f72ef98"
+    SONAR_LOGIN: '71e34b485f3799e6852d1fd5d3d321be6f72ef98'
   script:
     - >
       sonar-scanner
@@ -72,7 +71,7 @@ pack:
       --upload-file "${CI_COMMIT_REF_NAME}.zip"
       "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
   rules:
@@ -102,7 +101,7 @@ publish:
       build/*
       dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
   cache:
-    key: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
     paths:
       - build/
   rules:
@@ -116,9 +115,9 @@ functional-test:
   stage: quality
   image: alpine:latest
   variables:
-    TEST_REVISION: "${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}"
-    TEST_TOKEN: "zspdHMbuc1EShADrYxSu"
-    TEST_URL: "https://gitlab.ci.dydu-priv.com/api/v4/projects/402"
+    TEST_REVISION: '${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}'
+    TEST_TOKEN: 'zspdHMbuc1EShADrYxSu'
+    TEST_URL: 'https://gitlab.ci.dydu-priv.com/api/v4/projects/402'
   before_script:
     - apk add git openssh-client curl jq
     - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
@@ -176,5 +175,3 @@ functional-test:
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - pack
-
-...

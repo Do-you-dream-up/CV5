@@ -19,7 +19,7 @@ export default function Top({ className, component, ...rest }) {
 
   const onAskHandler = (reword) => {
     event('topClicked', reword);
-    window.dydu?.chat?.ask(reword, { type: 'redirection_knowledge' });
+    window.dydu?.chat?.handleRewordClicked(reword, { type: 'redirection_knowledge' });
   };
 
   useEffect(() => {

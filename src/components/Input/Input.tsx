@@ -20,8 +20,10 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 
 interface InputProps {
-  onRequest: (input: string) => void;
-  onResponse: (input: string) => void;
+  onRequest?: (input: string) => void;
+  onResponse?: (input: Servlet.ChatResponseValues) => void;
+  focus?: () => void;
+  id?: string;
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
@@ -103,7 +105,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       const textareaId = 'dydu-textarea';
 
       return (
-        <div className={c('dydu-input-field', classes.field)}>
+        <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
             textarea
           </label>
@@ -112,6 +114,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             aria-describedby="characters-remaining"
             disabled={prompt || locked}
             id={textareaId}
+            data-testId="textareaId"
             ref={textareaRef}
             onKeyUp={handleFocusChange}
             onBlur={handleBlur}
@@ -148,7 +151,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         send?.(input, options);
       } else {
         talk(input).then((response) => {
-          onResponse(response);
+          onResponse && onResponse?.(response);
           setIsWaitingForResponse && setIsWaitingForResponse(false);
         });
       }
@@ -162,7 +165,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       text = escapeHTML(text.trim());
       if (text) {
         reset();
-        onRequest(text);
+        onRequest && onRequest(text);
         dispatchEvent && dispatchEvent('chatbox', 'questionSent', text);
         sendInput(text);
       }
@@ -256,13 +259,17 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const renderVoiceInput = useCallback(() => {
     return voice && counter === maxLength ? (
       <Voice show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
-    ) : (
-      counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
-    );
+    ) : null;
+  }, [voice, counter, maxLength]);
+
+  const renderSubmit = useCallback(() => {
+    return !voice
+      ? counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+      : null;
   }, [voice, counter, maxLength]);
 
   return (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input">
+    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input" data-testid="footer-form">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
         inputProps={inputProps}
@@ -274,8 +281,10 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         suggestions={suggestions}
         theme={theme}
         ref={containerRef}
+        data-testid="suggestId"
       />
       {renderVoiceInput()}
+      {renderSubmit()}
     </form>
   );
 }

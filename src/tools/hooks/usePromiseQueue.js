@@ -10,7 +10,7 @@ export default function usePromiseQueue(orderedList = [], hasAfterLoadBeenCalled
     if (!hasAfterLoadBeenCalled || isEmptyArray(queue) || !unqueue) return;
     const q = queue.slice();
     const fn = q.shift();
-    fn().then(() => setQueue(q));
+    fn?.().then(() => setQueue(q));
     if (q.length === 0) setUnqueue(false);
   }, [unqueue, queue, hasAfterLoadBeenCalled]);
 

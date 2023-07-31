@@ -13,6 +13,7 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
+import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 
@@ -50,6 +51,7 @@ export default function Bubble({
   const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
   const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
   const defaultAvatar = configuration.avatar?.response?.image;
+  const { surveyConfig } = useSurvey();
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
@@ -100,7 +102,9 @@ export default function Bubble({
             {(children || html) && (
               <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
             )}
-            {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
+            {!!actions.length && !surveyConfig && (
+              <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />
+            )}
           </div>,
         )
       )}

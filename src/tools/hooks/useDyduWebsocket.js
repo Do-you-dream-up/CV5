@@ -9,6 +9,7 @@ import { isDefined } from '../helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useConversationHistory } from '../../contexts/ConversationHistoryContext';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
 
@@ -24,6 +25,7 @@ const MESSAGE_TYPE = {
   topKnowledge: 'topKnowledgeResponse',
   notification: 'notification',
   endPolling: 'endPolling',
+  uploadRequest: 'uploadRequest',
   startPolling: 'StartPolling',
 };
 
@@ -44,6 +46,7 @@ const completeLivechatPayload = (configuration) =>
   });
 
 export default function useDyduWebsocket() {
+  const { showUploadFileButton } = useUploadFile();
   const [socketProps, setSocketProps] = useState([null, {}]);
   const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
@@ -73,6 +76,7 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.topKnowledgeResponse(messageData)) return MESSAGE_TYPE.topKnowledge;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
+    if (LivechatPayload.is.operatorSendUploadRequest(messageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, messageData]);
@@ -119,6 +123,9 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.survey:
         return handleSurvey(messageData);
 
+      case MESSAGE_TYPE.uploadRequest:
+        return showUploadFileButton();
+
       case MESSAGE_TYPE.operatorResponse:
         return displayMessage();
 
@@ -143,7 +150,7 @@ export default function useDyduWebsocket() {
         displayNotification();
         return close();
     }
-  }, [close, displayMessage, displayNotification, messageData, messageType]);
+  }, [close, displayMessage, displayNotification, messageData, messageType, showUploadFileButton]);
 
   const getSocketConfig = useCallback(() => {
     return {

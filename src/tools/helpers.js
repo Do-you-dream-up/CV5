@@ -52,6 +52,20 @@ export function b64decode(str) {
   );
 }
 
+export const isValidUrl = (string) => {
+  const pattern = new RegExp(
+    '^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', // fragment locator
+    'i',
+  );
+
+  return pattern.test(string);
+};
+
 export const isOfTypeBoolean = (v) => Object.prototype.toString.call(v) === '[object Boolean]';
 export const isOfTypeString = (v) => Object.prototype.toString.call(v) === '[object String]';
 export const isOfTypeArray = (v) => Object.prototype.toString.call(v) === '[object Array]';
@@ -359,4 +373,12 @@ export const objectToQueryParam = (o) => {
     resultString += `${field}=${o[field]}`;
     return resultString;
   }, '');
+};
+
+export const documentCreateElement = (htmlTag, attibutesOptions) => {
+  const element = document.createElement(htmlTag);
+  return Object.keys(attibutesOptions).reduce((node, key) => {
+    node.setAttribute(key, attibutesOptions[key]);
+    return node;
+  }, element);
 };

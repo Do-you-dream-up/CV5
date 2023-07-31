@@ -14,6 +14,7 @@ import { SamlProvider } from '../../contexts/SamlContext';
 import SurveyProvider from '../../Survey/SurveyProvider';
 import Teaser from '../Teaser/Teaser';
 import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
+import { UploadFileProvider } from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import { WelcomeKnowledgeProvider } from '../../contexts/WelcomeKnowledgeContext';
 import c from 'classnames';
@@ -85,14 +86,16 @@ const App = () => {
                         <UserActionProvider>
                           <DialogProvider>
                             <SurveyProvider>
-                              <LivechatProvider>
-                                <Chatbox
-                                  extended={isChatboxFullScreen}
-                                  open={isChatboxOpen}
-                                  toggle={toggle}
-                                  mode={mode}
-                                />
-                              </LivechatProvider>
+                              <UploadFileProvider>
+                                <LivechatProvider>
+                                  <Chatbox
+                                    extended={isChatboxFullScreen}
+                                    open={isChatboxOpen}
+                                    toggle={toggle}
+                                    mode={mode}
+                                  />
+                                </LivechatProvider>
+                              </UploadFileProvider>
                             </SurveyProvider>
                             <Teaser open={isChatboxMinimize} toggle={toggle} />
                           </DialogProvider>

@@ -8,7 +8,7 @@ export default createUseStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     '& $path': {
-      fill: theme.palette.primary.main,
+      fill: theme?.palette?.primary?.main,
     },
   }),
 
@@ -20,10 +20,10 @@ export default createUseStyles((theme) => ({
   counter: () => ({
     // DEBT: The below font size, font weight and spacings are not dynamic. This
     //       is difficult to maintain and will cause bugs and/or misalignment.
-    background: theme.palette.background.menu,
+    background: theme?.palette?.background?.menu,
     borderRadius: '0.25em',
     boxSizing: 'border-box',
-    color: theme.palette.response.text,
+    color: theme?.palette?.response?.text,
     fontSize: '12px',
     fontWeight: 300,
     height: '1.5em',
@@ -85,13 +85,13 @@ export default createUseStyles((theme) => ({
     },
     background: '#EDF1F5',
     border: 0,
-    color: theme.palette.text.primary,
+    color: theme?.palette?.text?.primary,
     extend: 'fieldBase',
     outline: 'none',
     position: 'absolute',
     resize: 'none',
     '&.focus': {
-      border: `1px solid ${theme.palette.primary.main}`,
+      border: `1px solid ${theme?.palette?.primary?.main}`,
     },
   }),
 
@@ -99,7 +99,7 @@ export default createUseStyles((theme) => ({
     display: 'flex',
     flex: 'auto',
     height: '100%',
-    borderRadius: theme.shape.radius.inner,
+    borderRadius: theme?.shape?.radius?.inner,
     overflow: 'hidden',
     '&:focus': {
       boxShadow: 'inset 0px 0px 15px 5px rgba(205,205,205,0.18)',
@@ -107,10 +107,10 @@ export default createUseStyles((theme) => ({
   }),
 
   suggestions: () => ({
-    backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.radius.inner,
+    backgroundColor: theme?.palette?.background?.default,
+    borderRadius: theme?.shape?.radius?.inner,
     bottom: '100%',
-    boxShadow: theme.shadows[6],
+    boxShadow: theme?.shadows?.[6],
     left: 0,
     margin: 8,
     maxHeight: '70vh',
@@ -123,9 +123,9 @@ export default createUseStyles((theme) => ({
 
   suggestionsCandidate: () => ({
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme?.palette?.action?.hover,
     },
-    color: theme.palette.text.primary,
+    color: theme?.palette?.text?.primary,
     cursor: 'pointer',
     padding: ['1em', '1.4em'],
   }),
@@ -138,6 +138,6 @@ export default createUseStyles((theme) => ({
   }),
 
   suggestionsSelected: () => ({
-    backgroundColor: theme.palette.action.selected,
+    backgroundColor: theme?.palette?.action?.selected,
   }),
 }));

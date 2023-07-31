@@ -4,14 +4,14 @@ import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
-import { escapeHTML, isDefined } from '../../tools/helpers';
+import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
 import Dialog from '../Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
-import Footer from '../Footer';
+import Footer from '../Footer/Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
 import Header from '../Header';
 import { Local } from '../../tools/storage';
@@ -19,7 +19,6 @@ import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
-import { REGEX_URL } from '../../tools/constants';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
 import Zoom from '../Zoom';
@@ -32,6 +31,7 @@ import { useContextId } from '../../contexts/ContextIdProvider';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 
@@ -66,6 +66,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     callWelcomeKnowledge,
   } = useContext(DialogContext);
   const { setCurrentLanguage } = useBotInfo();
+  const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
@@ -92,7 +93,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
   }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
 
-  const ask = (text, options, livechatActive?: boolean) => {
+  const followBadUrl = (text, options) => {
+    return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
+  };
+
+  const handleRewordClicked = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
       const toSend = {
@@ -101,10 +106,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       };
       options = Object.assign({ hide: false }, options);
 
-      if (!options.hide && options?.type !== 'javascript') {
-        if (!REGEX_URL.test(text)) {
-          addRequest && addRequest(text);
-        }
+      if (followBadUrl(text, options)) {
+        addRequest && addRequest(text);
       }
 
       if (livechatActive) {
@@ -134,8 +137,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   const getDyduChatObject = ({ livechatActive }: { livechatActive?: boolean }) => {
     return {
-      ask: (text, options) => {
-        ask(text, options, livechatActive);
+      handleRewordClicked: (text, options) => {
+        handleRewordClicked(text, options, livechatActive);
       },
       empty: () => empty && empty(),
       reply: (text) => addResponse && addResponse({ text }),
@@ -166,11 +169,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             setCurrentLanguage(locale),
             i.changeLanguage(locale),
           ])
+            .then(() => empty && empty())
             .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
-            .then(() => ask('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }))
+            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }))
             .then(() => fetchContextId && fetchContextId({ locale }))
-            .then(() => fetchWelcomeKnowledge())
-            .then(() => empty && empty());
+            .then(() => fetchWelcomeKnowledge?.());
         },
       };
 
@@ -192,6 +195,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         disable: () => setDisabled && setDisabled(true),
         enable: () => setDisabled && setDisabled(false),
         lock: (value = true) => setLocked && setLocked(value),
+        upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         secondary: (open, { body, title }) => toggleSecondary && toggleSecondary(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),
@@ -199,15 +203,16 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
       window.dyduCustomPlaceHolder = window.dydu.ui.placeholder;
-      window.reword = window.dydu.chat.ask;
-      window.rewordtest = window.dydu.chat.ask; //reword reference for rewords in template
+      window.reword = window.dydu.chat.handleRewordClicked;
+      window.rewordtest = window.dydu.chat.handleRewordClicked; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
+      window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
 
       setReady(true);
     }
   }, [
     addResponse,
-    ask,
+    handleRewordClicked,
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
     configuration?.spaces.items,
@@ -263,7 +268,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding render>
                 <div
-                  tabIndex={tabIndex}
+                  tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
                   })}
@@ -282,7 +287,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   {poweredByActive && <PoweredBy />}
                 </div>
                 {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} focus />}
+                {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
             </GdprDisclaimer>
           </>

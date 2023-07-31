@@ -1,13 +1,5 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  getChatboxWidthTime,
-  isArray,
-  isDefined,
-  isEmptyArray,
-  isEmptyString,
-  isPositiveNumber,
-  isString,
-} from '../tools/helpers';
+import { getChatboxWidthTime, isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';
@@ -26,6 +18,7 @@ interface SurveyConfigProps {
 interface SurveyContextProps {
   showSurvey?: (data: any) => void;
   surveyConfig?: any;
+  triggerSurvey?: () => void;
 }
 
 interface SurveyProviderProps {
@@ -37,33 +30,30 @@ export const useSurvey = () => useContext(SurveyContext);
 const SurveyContext = createContext<SurveyContextProps>({});
 
 export default function SurveyProvider({ children }: SurveyProviderProps) {
-  const { getChatboxRef, isChatboxLoadedAndReady } = useEvent();
-  const { secondaryActive, openSecondary, closeSecondary } = useDialog();
+  const { getChatboxRef } = useEvent();
+  const { openSecondary, closeSecondary, lastResponse } = useDialog();
   const { configuration } = useConfiguration();
   const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
   const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
 
-  const flushStates = useCallback(() => {
+  const flushStates = () => {
     setInstances(null);
     setSurveyConfig(null);
-  }, []);
+  };
 
-  const showSurvey = useCallback((data) => {
+  const showSurvey = (data) => {
     const id = extractId(data);
-    getSurveyConfigurationById(id).then(setSurveyConfig);
-  }, []);
-
-  const secondaryWidth = useMemo(() => {
-    const secondaryMaxWidth = configuration?.secondary?.width;
-    return getChatboxRef && isChatboxLoadedAndReady ? getChatboxWidthTime(getChatboxRef(), 1.4, secondaryMaxWidth) : -1;
-  }, [isChatboxLoadedAndReady, getChatboxRef]);
+    getSurveyConfigurationById(id).then((res) => {
+      setSurveyConfig(res);
+    });
+  };
 
   const flushStatesAndClose = useCallback(() => {
     flushStates();
     closeSecondary && closeSecondary();
     answerResultManager.clear();
-  }, [closeSecondary, flushStates]);
+  }, [closeSecondary, flushStates, lastResponse]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -72,6 +62,10 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       return null;
     }
   }, [getChatboxRef]);
+
+  useEffect(() => {
+    if (lastResponse) flushStatesAndClose();
+  }, [lastResponse]);
 
   useEffect(() => {
     dydu.setShowSurveyCallback(showSurvey);
@@ -90,18 +84,15 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     };
   }, []);
 
-  useEffect(() => {
-    const canShowForm =
-      !secondaryActive && [surveyConfig, instances, openSecondary].every(isDefined) && isPositiveNumber(secondaryWidth);
-    if (canShowForm)
-      openSecondary &&
-        openSecondary({
-          width: secondaryWidth,
-          bodyRenderer: () => <SurveyForm />,
-          title: () => <SecondaryFormTitle />,
-          headerTransparency: false,
-        });
-  }, [surveyConfig, instances, openSecondary, secondaryWidth, flushStatesAndClose]);
+  const triggerSurvey = () => {
+    openSecondary &&
+      openSecondary({
+        width: configuration?.secondary?.width || null,
+        bodyRenderer: () => <SurveyForm />,
+        title: () => <SecondaryFormTitle />,
+        headerTransparency: false,
+      });
+  };
 
   useEffect(() => {
     const fields = surveyConfig?.fields;
@@ -109,7 +100,11 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     if (!canInstanciateFields) return;
     const listFieldInstance = instanciateFields(fields);
     setInstances(listFieldInstance);
-  }, [instances, surveyConfig]);
+  }, [instances, surveyConfig?.surveyId]);
+
+  useEffect(() => {
+    surveyConfig?.surveyId && triggerSurvey();
+  }, [surveyConfig?.surveyId]);
 
   const getSurveyAnswer = useCallback(() => {
     if (isDefined(instances)) {
@@ -128,7 +123,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
         fields: userAnswerObj,
       };
     },
-    [surveyConfig],
+    [surveyConfig?.surveyId],
   );
 
   const sendAnswer = useCallback(
@@ -146,9 +141,9 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     return answer?.hasMissing() ? Promise.reject(answer) : Promise.resolve(answer);
   }, [getSurveyAnswer]);
 
-  const prepareResponsePayloadWithAnswerObject = useCallback((answer) => {
+  const prepareResponsePayloadWithAnswerObject = (answer) => {
     return Promise.resolve(answer.getAnswer());
-  }, []);
+  };
 
   const onSubmit = useCallback(() => {
     validateAnswer()
@@ -168,8 +163,10 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       showSurvey,
       instances,
       onSubmit,
+      triggerSurvey,
+      flushStatesAndClose,
     }),
-    [showSurvey, instances, onSubmit],
+    [showSurvey, instances, onSubmit, triggerSurvey, flushStatesAndClose],
   );
 
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;

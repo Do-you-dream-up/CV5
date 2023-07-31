@@ -1,6 +1,5 @@
 import { createElement, useEffect, useRef } from 'react';
 
-import PropTypes from 'prop-types';
 import useDebounce from '../../tools/hooks/debounce';
 
 /**
@@ -10,8 +9,16 @@ import useDebounce from '../../tools/hooks/debounce';
  * Typically you would want to wrap all conversation bubbles with this
  * component.
  */
-function Scroll({ component, delay, ...rest }) {
-  const elementRef = useRef(null);
+
+interface ScrollProps {
+  children?: any;
+  component?: any;
+  delay?: number;
+  className?: string;
+}
+
+function Scroll({ component = 'div', delay = 0, ...rest }: ScrollProps) {
+  const elementRef = useRef<any>(null);
   const debouncedReady = useDebounce(elementRef, delay);
 
   const scroll = () => {
@@ -32,15 +39,5 @@ function Scroll({ component, delay, ...rest }) {
 
   return createElement(component, { ...rest, ref: elementRef, 'data-testid': 'Scroll' });
 }
-
-Scroll.defaultProps = {
-  component: 'div',
-  delay: 0,
-};
-
-Scroll.propTypes = {
-  component: PropTypes.elementType,
-  delay: PropTypes.number,
-};
 
 export default Scroll;
