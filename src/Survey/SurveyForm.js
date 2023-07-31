@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import { useSurvey } from './SurveyProvider';
 
 export default function SurveyForm() {
-  const { instances, showSurvey, onSubmit } = useSurvey();
+  const { instances, onSubmit, flushStatesAndClose } = useSurvey();
 
   const renderFields = useCallback(() => {
     if (!isDefined(instances) || isEmptyArray(instances)) return null;
@@ -15,7 +15,7 @@ export default function SurveyForm() {
   }, [instances]);
 
   return !isDefined(instances) ? (
-    <button onClick={showSurvey}>click</button>
+    <>{flushStatesAndClose()}</>
   ) : (
     <form className="survey-form-container">
       {renderFields()}
