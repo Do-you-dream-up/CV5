@@ -28,30 +28,35 @@ const TEASER_TYPES = {
 const Teaser = ({ open, toggle }: TeaserProps) => {
   const { configuration } = useConfiguration();
 
+  const isDragActive: boolean | undefined = configuration?.dragon?.active;
+
+  const isDraggable: boolean | undefined = useMemo(() => isDragActive, [isDragActive]);
+
   const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
   const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
 
-  const title = t('teaser.title');
-  const titleHidden = t('teaser.titleHidden');
-  const mouseover = t('teaser.mouseover');
+  const title: string = t('teaser.title');
+  const titleHidden: string = t('teaser.titleHidden');
+  const mouseover: string = t('teaser.mouseover');
 
-  const teaserAvatar = configuration?.avatar?.teaser?.image || configuration?.avatar?.response?.image;
-  const teaserAvatarBackground = configuration?.avatar?.teaser?.background;
+  const teaserAvatar: string | undefined =
+    configuration?.avatar?.teaser?.image || configuration?.avatar?.response?.image;
+  const teaserAvatarBackground: boolean | undefined = configuration?.avatar?.teaser?.background;
 
-  const logoTeaser = teaserAvatar?.includes('base64')
+  const logoTeaser: string | undefined = teaserAvatar?.includes('base64')
     ? teaserAvatar
     : `${process.env.PUBLIC_URL}assets/${teaserAvatar}`;
 
-  const voice = configuration?.Voice ? configuration?.Voice.enable : false;
+  const voice: boolean | undefined = configuration?.Voice ? configuration?.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState<boolean>(false);
   const [buttonPressTimer, setButtonPressTimer] = useState<number>();
 
   // DISPLAY TEASER TYPE
   const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
-  const initialTeaserType =
+  const initialTeaserType: number | undefined =
     !configuration?.teaser?.displayType ||
     configuration?.teaser?.displayType > TEXT_ONLY ||
     configuration?.teaser?.displayType < AVATAR_AND_TEXT
@@ -96,9 +101,9 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     }
   };
 
-  const tabIndex = parseInt('0', 10);
+  const tabIndex: number = parseInt('0', 10);
 
-  const showVoiceInput = useMemo(() => {
+  const showVoiceInput: boolean | undefined = useMemo(() => {
     return dydu.hasUserAcceptedGdpr() && open && voice && disclaimerEnable;
   }, [open, disclaimerEnable, voice]);
 
@@ -109,7 +114,7 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
   }, [configuration]);
 
   return (
-    <Draggable bounds="html">
+    <Draggable disabled={!isDraggable} bounds="html">
       <div
         data-testid="teaser-chatbot"
         className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
