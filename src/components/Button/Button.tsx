@@ -17,7 +17,7 @@ export interface ButtonProps {
   id?: string;
   href?: string;
   icon?: string | (() => void);
-  onClick?: () => void;
+  onClick?: (() => void) | null | undefined;
   reference?: Ref<any>;
   secondary?: boolean;
   target?: string;
