@@ -26,8 +26,8 @@ describe('Onboarding component', () => {
     const newConfig = new ConfigurationFixture();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     useOnboarding.mockReturnValue({
-      active: false,
-      index: 1,
+      isOnboardingAlreadyDone: false,
+      stepIndex: 1,
       hasNext: true,
       hasPrevious: true,
       onEnd: jest.fn(),
@@ -58,7 +58,7 @@ describe('Onboarding component', () => {
     const newConfig = new ConfigurationFixture();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     const { container } = render(
-      <Onboarding render={false}>
+      <Onboarding>
         <div>Children</div>
       </Onboarding>,
     );
@@ -71,8 +71,8 @@ describe('Onboarding component', () => {
     newConfig.enableOnboarding();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     useOnboarding.mockReturnValue({
-      active: true,
-      index: 1,
+      isOnboardingAlreadyDone: true,
+      stepIndex: 1,
       hasNext: true,
       hasPrevious: true,
       onEnd: jest.fn(),
@@ -92,7 +92,7 @@ describe('Onboarding component', () => {
       }),
     });
     const screen = render(
-      <Onboarding render={true}>
+      <Onboarding>
         <div>Children</div>
       </Onboarding>,
     );
@@ -108,35 +108,40 @@ describe('Onboarding component', () => {
     newConfig.enableOnboarding();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     useOnboarding.mockReturnValue({
-      active: true,
-      index: 1,
+      isOnboardingAlreadyDone: false,
+      stepIndex: 1,
       hasNext: true,
       hasPrevious: true,
       onEnd: jest.fn(),
       onNext: jest.fn(),
       onPrevious: jest.fn(),
       onStep: jest.fn(),
+      carouselRef: { current: null },
+      stepsFiltered: [
+        {
+          body: '<p><strong>Préférez des phrases complètes</strong></p><p>Cela facilite ma réflexion et me permet de vous apporter des réponses plus précises.</p>',
+          title: 'Quelques astuces',
+          image: {
+            src: 'dydu-onboarding-1.svg',
+            hidden: false,
+          },
+        },
+        {
+          body: '<p>Vestibulum maximus libero non lectus porttitor blandit. Suspendisse auctor lobortis orci id volutpat. Vestibulum ante.</p>',
+          title: 'Astuces 3',
+          image: {
+            src: 'dydu-onboarding-3.svg',
+            hidden: false,
+          },
+        },
+      ],
+      srcImage: '',
+      isOnboardingNeeded: true,
     });
-    useTranslation.mockReturnValue({
-      ready: true,
-      t: jest.fn().mockImplementation((target) => {
-        if (target === 'onboarding.steps')
-          return [
-            { title: '', body: '' },
-            { title: '', body: '' },
-          ];
-        else return '';
-      }),
-    });
-    const { getByTestId } = render(
-      <Onboarding render={true}>
-        <div>Children</div>
-      </Onboarding>,
-    );
-    const stepButton = getByTestId('testid-0');
-    fireEvent.click(stepButton);
-    expect(useOnboarding().onStep).toHaveBeenCalled();
+
+    const { getByTestId } = render(<Onboarding />);
     const previousButton = getByTestId('previous');
+    expect(previousButton).toBeInTheDocument();
     fireEvent.click(previousButton);
     expect(useOnboarding().onPrevious).toHaveBeenCalled();
   });
@@ -146,8 +151,8 @@ describe('Onboarding component', () => {
     newConfig.enableOnboarding();
     useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
     useOnboarding.mockReturnValue({
-      active: true,
-      index: 1,
+      isOnboardingAlreadyDone: true,
+      stepIndex: 1,
       hasNext: true,
       hasPrevious: true,
       onEnd: jest.fn(),
@@ -167,7 +172,7 @@ describe('Onboarding component', () => {
       }),
     });
     render(
-      <Onboarding render={true}>
+      <Onboarding>
         <div>Children</div>
       </Onboarding>,
     );
