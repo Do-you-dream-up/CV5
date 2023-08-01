@@ -19,6 +19,7 @@ import {
   getChatboxWidth,
   getChatboxWidthTime,
   hasProperty,
+  htmlToJsonForSendUploadFile,
   isDefined,
   isEmptyArray,
   isEmptyObject,
@@ -935,5 +936,59 @@ describe('mergeDeep', () => {
 
     // THEN
     expect(mergeDeep(source, target)).toEqual(result);
+  });
+
+  describe('htmlToJsonForSendUploadFile', () => {
+    it('should return correct json content in html response', () => {
+      //GIVEN
+      const html = `<html>
+      <head></head>
+      <body>
+      <script>
+          var params={
+              api:'dyduUploadCallBack_0PW',
+              params:{"filesUploaded":["awesome-user-plus.svg"],"status":"success"}
+          };
+          parent.postMessage(params,"http://0.0.0.0:9999");
+      </script>
+      </body>
+      </html>`;
+
+      //WHEN
+      const expectedResult = {
+        api: 'dyduUploadCallBack_0PW',
+        params: { filesUploaded: ['awesome-user-plus.svg'], status: 'success' },
+      };
+      const result = htmlToJsonForSendUploadFile(html);
+
+      //THEN
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should return correct json content in html response with simple quote in file name', () => {
+      //GIVEN
+      const html = `<html>
+      <head></head>
+      <body>
+      <script>
+          var params={
+              api:'dyduUploadCallBack_0PW',
+              params:{"filesUploaded":["awes'ome-user-plus.svg"],"status":"success"}
+          };
+          parent.postMessage(params,"http://0.0.0.0:9999");
+      </script>
+      </body>
+      </html>`;
+
+      //WHEN
+      const expectedResult = {
+        api: 'dyduUploadCallBack_0PW',
+        params: { filesUploaded: ["awes'ome-user-plus.svg"], status: 'success' },
+      };
+      const result = htmlToJsonForSendUploadFile(html);
+
+      //THEN
+      expect(result).toEqual(expectedResult);
+    });
   });
 });

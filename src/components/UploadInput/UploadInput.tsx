@@ -36,7 +36,7 @@ const UploadInput = () => {
 
   const sendFile = (file) => {
     isUploadFileSent && isUploadFileSent();
-    return dydu.sendUpoadFile(file);
+    return dydu.sendUploadFile(file);
   };
 
   const renderAction = () =>
