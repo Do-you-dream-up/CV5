@@ -8,17 +8,18 @@ jest.mock('../../SurveyProvider', () => ({
 }));
 
 describe('SurveyForm', () => {
-  test('renders a "click" button if no instances are defined', () => {
+  test('close form if no instances are defined', () => {
+    const flushStatesAndClose = jest.fn();
     useSurvey.mockReturnValue({
       instances: null,
       showSurvey: jest.fn(),
       onSubmit: jest.fn(),
+      flushStatesAndClose: flushStatesAndClose,
     });
 
     render(<SurveyForm />);
 
-    const clickButton = screen.getByText('click');
-    expect(clickButton).toBeDefined();
+    expect(flushStatesAndClose).toBeCalled();
   });
 
   test('renders a form with fields and a submit button if instances are defined', () => {
