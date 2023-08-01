@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, createContext, useCallback, useContext, useEf
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
-import { initI18N } from '../tools/internationalization';
 import { useConfiguration } from './ConfigurationContext';
 
 export interface BotInfoProviderProps {
@@ -23,11 +22,7 @@ export const BotInfoContext = createContext({} as BotInfoContextProps);
 export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState<string>(
-    Local.get(Local.names.locale, configuration?.application?.defaultLanguage[0]),
-  );
-
-  initI18N();
+  const [currentLanguage, setCurrentLanguage] = useState<string>(Local.get(Local.names.locale, 'fr'));
 
   useEffect(() => {
     botLanguages && dydu.setBotLanguages(botLanguages);

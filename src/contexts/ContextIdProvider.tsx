@@ -47,9 +47,9 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
     saveContextIdToLocalStorage(id);
   };
 
-  const fetchContextId = (options?: any) =>
+  const fetchContextId = () =>
     dydu
-      .getContextId(options)
+      .getContextId()
       ?.then((response) => {
         response?.contextId && setContextId(response?.contextId);
       })

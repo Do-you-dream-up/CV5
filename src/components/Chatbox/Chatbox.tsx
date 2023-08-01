@@ -79,7 +79,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const [ready, setReady] = useState<boolean>(false);
   const [afterLoadTriggered] = useState<boolean>(false);
   const classes = useStyles({ configuration });
-  const [t, i] = useTranslation();
+  const [t, i18n] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
   const qualification = configuration?.qualification?.active;
   const { expandable } = configuration?.chatbox || {};
@@ -167,11 +167,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
           return Promise.all([
             Local.byBotId(Local.names.botId).remove(),
             setCurrentLanguage(locale),
-            i.changeLanguage(locale),
+            i18n.changeLanguage(locale),
           ])
             .then(() => empty && empty())
             .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
-            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true, doNotSave: true }))
+            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => fetchContextId && fetchContextId({ locale }))
             .then(() => fetchWelcomeKnowledge?.());
         },
@@ -217,7 +217,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     configuration?.application.languages,
     configuration?.spaces.items,
     empty,
-    i,
+    i18n,
     modal,
     ready,
     afterLoadTriggered,

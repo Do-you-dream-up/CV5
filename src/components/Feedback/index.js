@@ -66,7 +66,7 @@ export default function Feedback() {
     dydu.feedback(false).then(() => {
       setShowVote(false);
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
-        dydu.talk(customFeedback?.negativeCustom, { doNotSave: false, hide: false }).then((response) => {
+        dydu.talk(customFeedback?.negativeCustom, { doNotRegisterInteraction: false, hide: false }).then((response) => {
           addResponse(response);
         });
       } else if (askChoices) {
@@ -84,7 +84,7 @@ export default function Feedback() {
       setShowVote(false);
 
       if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
-        dydu.talk(customFeedback?.positiveCustom, { doNotSave: false, hide: false }).then((response) => {
+        dydu.talk(customFeedback?.positiveCustom, { doNotRegisterInteraction: false, hide: false }).then((response) => {
           addResponse(response);
         });
       } else if (voteThanks) {

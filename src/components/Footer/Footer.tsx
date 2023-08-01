@@ -28,7 +28,7 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
 
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
-  const [t, i] = useTranslation('translation');
+  const [t, i18n] = useTranslation('translation');
   const [selectedLanguage, setSelectedLanguage] = useState(configuration?.application.defaultLanguage[0]);
   const { languages } = configuration?.application || {};
   const { translate: hasTranslate } = configuration?.footer || {};
@@ -36,8 +36,8 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
   const actionTranslate = t('footer.translate');
 
   useEffect(() => {
-    if (i.languages) setSelectedLanguage(i.languages[0]);
-  }, [i, t]);
+    if (i18n.languages) setSelectedLanguage(i18n.languages[0]);
+  }, [i18n, t]);
 
   const handleLanguageChange = (id, languages) => {
     window.dydu?.localization?.set(id, languages);

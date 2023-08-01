@@ -445,9 +445,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     ],
   );
 
-  const empty = useCallback(() => {
+  const empty = () => {
     setInteractions([]);
-  }, []);
+  };
 
   const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
     if (body || title || url) {

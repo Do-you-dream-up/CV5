@@ -332,7 +332,7 @@ export default new (class Dydu {
   exportConversation = async (text, options = {}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
-      doNotRegisterInteraction: options.doNotSave,
+      doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
@@ -444,12 +444,12 @@ export default new (class Dydu {
    *
    * @returns {object} The context ID.
    */
-  getContextId = (options) => {
+  getContextId = () => {
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
-      language: options?.locale || this.getLocale(),
-      space: options?.locale || this.getLocale(),
+      language: this.getLocale(),
+      space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
       qualificationMode: this.qualificationMode,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -846,7 +846,7 @@ export default new (class Dydu {
       alreadyCame: this.alreadyCame(),
       browser: `${browser.name} ${browser.version}`,
       clientId: this.getClientId(),
-      doNotRegisterInteraction: options.doNotSave,
+      doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       os: `${os.name} ${os.version}`,
       qualificationMode: this.qualificationMode,
@@ -884,7 +884,7 @@ export default new (class Dydu {
     alreadyCame: this.alreadyCame(),
     browser: `${browser.name} ${browser.version}`,
     clientId: this.getClientId(),
-    doNotRegisterInteraction: options.doNotSave,
+    doNotRegisterInteraction: options.doNotRegisterInteraction,
     language: this.getLocale(),
     os: `${os.name} ${os.version}`,
     qualificationMode: this.qualificationMode,
@@ -1088,7 +1088,7 @@ export default new (class Dydu {
   getWelcomeKnowledge = (tagWelcome) => {
     const wkFoundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
     if (wkFoundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
-    const talkOption = { doNotSave: true, hide: true, doNotRegisterInteraction: true };
+    const talkOption = { hide: true, doNotRegisterInteraction: true };
     return this.talk(tagWelcome, talkOption).then((talkResponse) => {
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
       if (!isInteractionResponse) return null;
