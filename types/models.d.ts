@@ -79,12 +79,11 @@ declare namespace Models {
   }
 
   export interface Avatar {
-    request: Request;
-    response: Request;
+    response: Response;
     teaser: AvatarTeaser;
   }
 
-  export interface Request {
+  export interface Response {
     enable: boolean;
     background: boolean;
     image: string;
