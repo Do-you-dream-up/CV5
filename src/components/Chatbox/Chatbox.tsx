@@ -66,7 +66,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
-  const { active: onboardingActive } = useContext(OnboardingContext);
+  const { isOnboardingAlreadyDone } = useContext(OnboardingContext);
   const { gdprPassed, setGdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration?.onboarding.enable;
   const { modal } = useContext(ModalContext);
@@ -246,13 +246,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
               dialogRef={dialogRef}
               gdprRef={gdprRef}
               extended={extended}
-              minimal={!gdprPassed || (onboardingActive && onboardingEnable)}
+              minimal={!gdprPassed || (isOnboardingAlreadyDone && onboardingEnable)}
               onClose={onClose}
               onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
               onMinimize={onMinimize}
             />
             <GdprDisclaimer gdprRef={gdprRef}>
-              <Onboarding render>
+              <Onboarding>
                 <div
                   tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
