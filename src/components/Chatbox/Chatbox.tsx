@@ -246,7 +246,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
               dialogRef={dialogRef}
               gdprRef={gdprRef}
               extended={extended}
-              minimal={!gdprPassed || (isOnboardingAlreadyDone && onboardingEnable)}
+              minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
               onClose={onClose}
               onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
               onMinimize={onMinimize}
