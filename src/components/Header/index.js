@@ -203,7 +203,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   ];
 
   return (
-    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
+    <div className={c('dydu-header', classes.root, { [classes.flat]: !minimal })} {...rest} id="dydu-header">
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,
@@ -235,7 +235,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           id="dydu-header-actions-wrapper"
         />
       </div>
-      {!minimal && (
+      {minimal && (
         <>
           {!singleTab && <Tabs />}
           <Banner />
