@@ -20,8 +20,8 @@ i18n
     cleanCode: true,
     debug: false,
     detection: {
-      lookupCookie: Cookie.names.locale,
-      lookupLocalStorage: Local.names.locale,
+      lookupCookie: Cookie?.names?.locale,
+      lookupLocalStorage: Local?.names?.locale,
       lookupQuerystring: 'language',
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
     },

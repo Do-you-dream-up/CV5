@@ -22,7 +22,7 @@ import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
-import i18n from 'i18next';
+import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));

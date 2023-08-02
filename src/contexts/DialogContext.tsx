@@ -50,7 +50,7 @@ export interface DialogContextProps {
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
   disabled?: boolean;
-  empty?: () => void;
+  clearInteractions?: () => void;
   errorFormatMessage?: string | null;
   interactions?: any;
   isFileActive?: boolean;
@@ -445,7 +445,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     ],
   );
 
-  const empty = () => {
+  const clearInteractions = () => {
     setInteractions([]);
   };
 
@@ -485,7 +485,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   useEffect(() => {
     if (welcomeKnowledge || listInteractionHistory) {
-      empty();
+      clearInteractions();
     }
     welcomeKnowledge && addResponse(welcomeKnowledge);
     listInteractionHistory && listInteractionHistory?.forEach(addHistoryInteraction);
@@ -531,7 +531,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         addRequest,
         addResponse,
         disabled,
-        empty,
+        clearInteractions,
         interactions,
         locked,
         placeholder,

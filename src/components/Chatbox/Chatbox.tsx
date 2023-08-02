@@ -54,7 +54,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     add,
     addRequest,
     addResponse,
-    empty,
+    clearInteractions,
     interactions,
     secondaryActive,
     setDisabled,
@@ -65,7 +65,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
-  const { setCurrentLanguage } = useBotInfo();
+  const { setCurrentLanguage, currentLanguage } = useBotInfo();
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
@@ -73,7 +73,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const { active: onboardingActive } = useContext(OnboardingContext);
   const { gdprPassed, setGdprPassed } = useContext(GdprContext);
   const { fetchContextId } = useContextId();
-  const { currentLanguage } = useBotInfo();
   const onboardingEnable = configuration?.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState<boolean>(false);
@@ -140,7 +139,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       handleRewordClicked: (text, options) => {
         handleRewordClicked(text, options, livechatActive);
       },
-      empty: () => empty && empty(),
+      clearInteractions: () => clearInteractions && clearInteractions(),
       reply: (text) => addResponse && addResponse({ text }),
       setDialogVariable: (name, value) => {
         dydu.setDialogVariable(name, escapeHTML(value));
@@ -164,15 +163,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: (locale) => {
-          return Promise.all([
-            Local.byBotId(Local.names.botId).remove(),
-            setCurrentLanguage(locale),
-            i18n.changeLanguage(locale),
-          ])
-            .then(() => empty && empty())
+          return Promise.all([setCurrentLanguage(locale), i18n.changeLanguage(locale)])
             .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
             .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => fetchContextId && fetchContextId({ locale }))
+            .then(() => clearInteractions && clearInteractions())
             .then(() => fetchWelcomeKnowledge?.());
         },
       };
@@ -216,7 +211,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
     configuration?.spaces.items,
-    empty,
+    clearInteractions,
     i18n,
     modal,
     ready,
