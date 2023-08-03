@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 import Actions from '../Actions/Actions';
 import { Session } from '../../tools/storage';
@@ -10,6 +10,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
 import icons from '../../tools/icon-constants';
+import { useOnboarding } from '../../contexts/OnboardingContext';
 
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral
@@ -18,17 +19,20 @@ import icons from '../../tools/icon-constants';
  * The banner can persist through refresh of the page, can be dismissed manually
  * and its opening can be disabled in the presence of a storage.
  */
+
 export default function Banner() {
   const { configuration } = useConfiguration();
+  const { isOnboardingAlreadyDone } = useOnboarding();
   const classes = useStyles({ configuration });
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const { active, dismissable, more, moreLink, storage, transient } = configuration?.banner ?? {};
   const html = sanitize(t('banner.html'));
+  const bannerRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const dismiss = useCallback(() => {
     if (storage) {
-      Session.set(Session.names.banner);
+      Session.set(Session?.names?.banner, Date.now());
     }
   }, [storage]);
 
@@ -36,6 +40,12 @@ export default function Banner() {
     setShow(false);
     dismiss();
   };
+
+  useEffect(() => {
+    if (show && isOnboardingAlreadyDone) {
+      bannerRef?.current?.focus();
+    }
+  }, [bannerRef, show, isOnboardingAlreadyDone]);
 
   useEffect(() => {
     const show = !!active && (!storage || !Session.get(Session.names.banner));
@@ -46,7 +56,16 @@ export default function Banner() {
   }, [active, storage, dismiss, transient]);
 
   const actions = [
-    ...(dismissable ? [{ children: t('banner.ok'), onClick: onDismiss, secondary: true, id: 'dydu-banner-ok' }] : []),
+    ...(dismissable
+      ? [
+          {
+            children: t('banner.ok'),
+            onClick: onDismiss,
+            secondary: true,
+            id: 'dydu-banner-ok',
+          },
+        ]
+      : []),
     ...(more
       ? [
           {
@@ -61,7 +80,7 @@ export default function Banner() {
   return (
     show &&
     html && (
-      <div className={c('dydu-banner', classes.root)}>
+      <div className={c('dydu-banner', classes.root)} ref={bannerRef} tabIndex={0}>
         <div className={c('dydu-banner-body', classes.body)}>
           <Skeleton hide={!ready} height="2em" variant="paragraph">
             <div dangerouslySetInnerHTML={{ __html: html }} />

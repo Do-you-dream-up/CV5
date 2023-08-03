@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import Banner from './index';
+import Banner from './Banner';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 

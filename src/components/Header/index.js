@@ -3,14 +3,14 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
-import Banner from '../Banner';
+import Banner from '../Banner/Banner';
 import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import { ModalContext } from '../../contexts/ModalContext';
 import ModalFooterMenu from '../ModalFooterMenu';
-import { OnboardingContext } from '../../contexts/OnboardingContext';
+import { useOnboarding } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
 import Tabs from '../Tabs/Tabs';
@@ -33,7 +33,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { addRgaaRef } = useUserAction();
   const { onDragStart } = useContext(DragonContext) || {};
   const { modal } = useContext(ModalContext);
-  const { active: onboardingActive } = useContext(OnboardingContext) || {};
+  const { isOnboardingAlreadyDone } = useOnboarding();
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
   const classes = useStyles({ configuration });
@@ -107,7 +107,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           consultationSpaces.length > 1 ||
           (interactions.length > 1 && !!_printConversation) ||
           !!sendGdprData) &&
-        (!onboardingActive || !onboardingEnable)
+        (isOnboardingAlreadyDone || !onboardingEnable)
       );
     } else {
       return false;
@@ -119,7 +119,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     gdprPassed,
     consultationSpaces,
     interactions.length,
-    onboardingActive,
+    isOnboardingAlreadyDone,
     onboardingEnable,
     sendGdprData,
   ]);
@@ -136,7 +136,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       children: <Icon icon={icons?.dots} color={iconColorWhite} alt="dots" />,
       items: () => testsMenu,
       variant: 'icon',
-      when: !!hasActions.tests && !onboardingActive && testsMenu.flat().length > 0,
+      when: !!hasActions.tests && isOnboardingAlreadyDone && testsMenu.flat().length > 0,
       title: actionTests,
       id: 'dydu-dots',
     },
