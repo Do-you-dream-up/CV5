@@ -8,6 +8,7 @@ import dydu from '../tools/dydu';
 import { useConfiguration } from '../contexts/ConfigurationContext';
 import { useDialog } from '../contexts/DialogContext';
 import { useEvent } from '../contexts/EventsContext';
+import { Local } from '../tools/storage';
 
 interface SurveyConfigProps {
   fields?: any;
@@ -19,6 +20,7 @@ interface SurveyContextProps {
   showSurvey?: (data: any) => void;
   surveyConfig?: any;
   triggerSurvey?: () => void;
+  setSurveyConfig?: (data: any) => void;
 }
 
 interface SurveyProviderProps {
@@ -37,16 +39,23 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
 
+  const secondaryTransient = configuration?.secondary?.transient;
+
   const flushStates = () => {
     setInstances(null);
     setSurveyConfig(null);
   };
 
   const showSurvey = (data) => {
+    const isLivechatOn = Local.isLivechatOn.load();
+
     const id = extractId(data);
-    getSurveyConfigurationById(id).then((res) => {
-      setSurveyConfig(res);
-    });
+
+    if (!isLivechatOn) {
+      getSurveyConfigurationById(id).then((res) => {
+        setSurveyConfig(res);
+      });
+    }
   };
 
   const flushStatesAndClose = useCallback(() => {
@@ -64,8 +73,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, [getChatboxRef]);
 
   useEffect(() => {
-    if (lastResponse) flushStatesAndClose();
-  }, [lastResponse]);
+    if (lastResponse && secondaryTransient) flushStatesAndClose();
+  }, [lastResponse, secondaryTransient]);
 
   useEffect(() => {
     dydu.setShowSurveyCallback(showSurvey);
@@ -161,12 +170,13 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     () => ({
       surveyConfig,
       showSurvey,
+      setSurveyConfig,
       instances,
       onSubmit,
       triggerSurvey,
       flushStatesAndClose,
     }),
-    [showSurvey, instances, onSubmit, triggerSurvey, flushStatesAndClose],
+    [showSurvey, setSurveyConfig, instances, onSubmit, triggerSurvey, flushStatesAndClose],
   );
 
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
@@ -222,6 +232,10 @@ const getSurveyConfigurationById = dydu.getSurvey;
 //==================================================/
 // STATICS
 //==================================================/
+
+// This listener system will be removed once we have found a solution for
+// calling the livechat sendSurvey method (inaccessible because the provider
+// is below the survey provider)
 const listeners = {};
 SurveyProvider.hasListeners = () => Object.keys(listeners).length > 0;
 SurveyProvider.notifyListeners = (data) => {

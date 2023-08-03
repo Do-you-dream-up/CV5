@@ -47,6 +47,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   useEffect(() => {
     if (!Local.isLivechatOn.load()) {
       Local.isLivechatOn.save(false);
+      Local.operator.remove();
     }
   }, [Local.isLivechatOn.load()]);
 
@@ -100,6 +101,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     console.warn('ending livechat...');
     setIsWebsocket(false);
     Local.isLivechatOn.save(false);
+    Local.operator.remove();
     setTunnel(null);
     triggerSurvey && triggerSurvey();
   };
@@ -114,7 +116,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       onFail: onFailOpenTunnel,
       showAnimationOperatorWriting,
       showUploadFileButton,
-      handleSurvey: showSurvey,
     };
   }, [
     lastResponse,
@@ -148,6 +149,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     [tunnel],
   );
 
+  /* This part is only to call LivechatContext from SurveyProvider */
+  /* LivechatContext can see SurveyProvider, but not vice versa */
   const onUnmount = useCallback(() => {
     SurveyProvider.removeListener(LIVECHAT_ID_LISTENER);
   }, []);
@@ -156,6 +159,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     if (!Local.isLivechatOn.load()) return onUnmount();
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
   }, [Local.isLivechatOn.load(), sendSurvey]);
+  /* ============================================================== */
 
   useEffect(() => {
     if (shouldEndLivechat) endLivechat();

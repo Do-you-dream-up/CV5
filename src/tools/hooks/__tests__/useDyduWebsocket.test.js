@@ -52,6 +52,7 @@ const InterfaceTunnel = {
   open: jest.fn(),
   send: jest.fn(),
   sendSurvey: jest.fn(),
+  sendSurveyConfiguration: jest.fn(),
   close: jest.fn(),
   isConnected: false,
 };

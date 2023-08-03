@@ -24,7 +24,7 @@ let PAYLOAD_COMMON_CONTENT = {
   userUrl: b64encode(window.location.href),
   browser: b64encode(browserName()),
   os: b64encode(osName()),
-  saml2_info: b64encode(Local.saml.load()),
+  saml2_info: Local.saml.load() && b64encode(Local.saml.load()),
 };
 
 export const getPayloadCommonContentBase64Encoded = () => {
@@ -42,19 +42,30 @@ export const REQUEST_TYPE = {
   addInternautEvent: 'addInternautEvent',
   talk: 'talk',
   survey: 'survey',
+  surveyConfiguration: 'surveyConfiguration',
   typing: 'typing',
   history: 'history',
   topKnowledge: 'topknowledge',
 };
 
 export const LivechatPayloadCreator = {
+  surveyConfigurationMessage: (surveyId) => {
+    return {
+      type: REQUEST_TYPE.surveyConfiguration,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        surveyId: b64encode(surveyId),
+      },
+    };
+  },
   surveyAnswerMessage: (surveyAnswer) => {
     const fields = recursiveBase64EncodeString(surveyAnswer.fields);
     return {
       type: REQUEST_TYPE.survey,
       parameters: {
         ...getPayloadCommonContentBase64Encoded(),
-        surveyId: surveyAnswer.surveyId,
+        surveyId: b64encode(surveyAnswer.surveyId),
+        operator: Local.operator.load() && b64encode(Local.operator.load()),
         interactionSurveyAnswer: surveyAnswer.interactionSurvey,
         fields,
       },
@@ -184,6 +195,9 @@ const LivechatPayloadChecker = {
   topKnowledgeResponse: (payload) => {
     return payload?.type?.equals('topKnowledgeResponse');
   },
+  surveyConfigurationResponse: (payload) => {
+    return payload?.type?.equals('surveyConfigurationResponse');
+  },
   startLivechat: (payload) => {
     const payloadValues = payload?.values || payload;
     return (
@@ -197,8 +211,7 @@ const LivechatPayloadChecker = {
       payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.naAutoCloseDialog) ||
       payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.naAutoCloseDialogBecauseUserLeft) ||
       payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.opLivechatEndByOperator) ||
-      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
-      payload?.type?.equals('surveyResponse')
+      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling)
     );
   },
 };

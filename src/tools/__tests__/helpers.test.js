@@ -45,6 +45,7 @@ import {
   strContains,
   strContainsOneOfList,
   toFormUrlEncoded,
+  b64dAllFields,
 } from '../helpers';
 
 import { VAR_TYPE } from '../constants';
@@ -133,6 +134,260 @@ describe('helpers', () => {
       const expectedObj = initialObj;
       const targetFieldName = 'field4'; // this is not in |initialObj|
       expect(b64dFields(initialObj, [targetFieldName])).toEqual(expectedObj);
+    });
+  });
+
+  describe('b64dAllFields', () => {
+    it('json with only one level', () => {
+      const encodedJsonFields = {
+        field1: btoa('string'),
+        field2: 1,
+        field3: true,
+        field4: [btoa('one'), btoa('two'), btoa('three')],
+        field5: {},
+        field6: [1, 2, 3],
+      };
+
+      const expectedJsonFields = {
+        field1: 'string',
+        field2: 1,
+        field3: true,
+        field4: ['one', 'two', 'three'],
+        field5: {},
+        field6: [1, 2, 3],
+      };
+
+      expect(b64dAllFields(encodedJsonFields)).toEqual(expectedJsonFields);
+    });
+
+    it('json with two levels of data', () => {
+      const encodedJsonFields = {
+        field1: btoa('string'),
+        field2: 1,
+        field3: true,
+        field4: [btoa('one'), btoa('two'), btoa('three')],
+        field5: {
+          field1: btoa('string'),
+          field2: 1,
+          field3: true,
+          field4: [btoa('one'), btoa('two'), btoa('three')],
+          field5: {},
+          field6: [1, 2, 3],
+        },
+        field6: [1, 2, 3],
+      };
+
+      const expectedJsonFields = {
+        field1: 'string',
+        field2: 1,
+        field3: true,
+        field4: ['one', 'two', 'three'],
+        field5: {
+          field1: 'string',
+          field2: 1,
+          field3: true,
+          field4: ['one', 'two', 'three'],
+          field5: {},
+          field6: [1, 2, 3],
+        },
+        field6: [1, 2, 3],
+      };
+
+      expect(b64dAllFields(encodedJsonFields)).toEqual(expectedJsonFields);
+    });
+
+    it('complex json data', () => {
+      const encodedJsonFields = {
+        values: {
+          submitValue: 'RW52b3llcg==',
+          surveyId: 'NzNhNTI5YjctNDViNS00ZWQ4LThkNTItNjFhYjY2NDM0NjI1',
+          name: 'R3JvcyBxdWVzdGlvbm5haXJl',
+          contextId: 'YzI3NmU1NzAtMGFlZS00Zjk1LTk3N2QtOWIyN2ZlZWExMTVi',
+          title: 'R3JvcyBxdWVzdGlvbm5haXJlICEhIQ==',
+          fields: [
+            {
+              id: 568,
+              label: 'Q2VjaSBlc3QgdW4gdGl0cmU=',
+              type: 'VElUTEU=',
+              mandatory: false,
+              order: 1,
+            },
+            {
+              children: [
+                {
+                  id: 570,
+                  label: 'T3VpICE=',
+                  type: 'UkFESU8=',
+                  mandatory: false,
+                  order: 1,
+                },
+                {
+                  id: 571,
+                  label: 'Tm9uIDoo',
+                  type: 'UkFESU8=',
+                  mandatory: false,
+                  order: 2,
+                },
+              ],
+              id: 569,
+              label: 'Q2UgdGl0cmUgZXN0LWlsIGdyb3MgPw==',
+              type: 'TVVMVElQTEVfQ0hPSUNF',
+              mandatory: true,
+              order: 2,
+            },
+            {
+              id: 572,
+              label: 'QXMtdHUgZGVzIGNvbnNlaWxzIHBvdXIgdW4gdGl0cmUgPw==',
+              type: 'TE9OR19URVhU',
+              mandatory: false,
+              order: 3,
+            },
+            {
+              id: 573,
+              label: 'QXV0cmUgY2hvc2Ugw6AgZMOpY2xhcmVyID8=',
+              type: 'VEVYVA==',
+              mandatory: false,
+              order: 4,
+            },
+            {
+              children: [
+                {
+                  id: 575,
+                  label: 'WSBhIHBsZWluIGRlIHRydWNzIGRlZGFucw==',
+                  type: 'U0VMRUNUX09QVElPTg==',
+                  mandatory: false,
+                  order: 1,
+                },
+                {
+                  id: 576,
+                  label: 'WSBhIHBhcyBncmFuZCBjaG9zZSBkZWRhbnM=',
+                  type: 'U0VMRUNUX09QVElPTg==',
+                  mandatory: false,
+                  order: 2,
+                },
+                {
+                  masterOf: [578],
+                  id: 577,
+                  label: 'TW91YWlzIG9r',
+                  type: 'U0VMRUNUX09QVElPTg==',
+                  mandatory: false,
+                  order: 3,
+                },
+              ],
+              id: 574,
+              label: 'Vk9pY2kgw6lnYWxlbWVudCB1bmUgbGlzdGU=',
+              type: 'U0VMRUNU',
+              mandatory: false,
+              order: 5,
+            },
+            {
+              id: 578,
+              label: 'Q29uZGl0aW9u',
+              type: 'VEVYVA==',
+              mandatory: false,
+              order: 6,
+            },
+          ],
+          requiredMessage: 'UmVxdWlz',
+        },
+      };
+
+      const expectedJsonFields = {
+        values: {
+          submitValue: 'Envoyer',
+          surveyId: '73a529b7-45b5-4ed8-8d52-61ab66434625',
+          name: 'Gros questionnaire',
+          contextId: 'c276e570-0aee-4f95-977d-9b27feea115b',
+          title: 'Gros questionnaire !!!',
+          fields: [
+            {
+              id: 568,
+              label: 'Ceci est un titre',
+              type: 'TITLE',
+              mandatory: false,
+              order: 1,
+            },
+            {
+              children: [
+                {
+                  id: 570,
+                  label: 'Oui !',
+                  type: 'RADIO',
+                  mandatory: false,
+                  order: 1,
+                },
+                {
+                  id: 571,
+                  label: 'Non :(',
+                  type: 'RADIO',
+                  mandatory: false,
+                  order: 2,
+                },
+              ],
+              id: 569,
+              label: 'Ce titre est-il gros ?',
+              type: 'MULTIPLE_CHOICE',
+              mandatory: true,
+              order: 2,
+            },
+            {
+              id: 572,
+              label: 'As-tu des conseils pour un titre ?',
+              type: 'LONG_TEXT',
+              mandatory: false,
+              order: 3,
+            },
+            {
+              id: 573,
+              label: 'Autre chose à déclarer ?',
+              type: 'TEXT',
+              mandatory: false,
+              order: 4,
+            },
+            {
+              children: [
+                {
+                  id: 575,
+                  label: 'Y a plein de trucs dedans',
+                  type: 'SELECT_OPTION',
+                  mandatory: false,
+                  order: 1,
+                },
+                {
+                  id: 576,
+                  label: 'Y a pas grand chose dedans',
+                  type: 'SELECT_OPTION',
+                  mandatory: false,
+                  order: 2,
+                },
+                {
+                  masterOf: [578],
+                  id: 577,
+                  label: 'Mouais ok',
+                  type: 'SELECT_OPTION',
+                  mandatory: false,
+                  order: 3,
+                },
+              ],
+              id: 574,
+              label: 'VOici également une liste',
+              type: 'SELECT',
+              mandatory: false,
+              order: 5,
+            },
+            {
+              id: 578,
+              label: 'Condition',
+              type: 'TEXT',
+              mandatory: false,
+              order: 6,
+            },
+          ],
+          requiredMessage: 'Requis',
+        },
+      };
+
+      expect(b64dAllFields(encodedJsonFields)).toEqual(expectedJsonFields);
     });
   });
 
