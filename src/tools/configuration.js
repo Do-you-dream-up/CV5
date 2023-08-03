@@ -6,7 +6,6 @@ import { PureComponent } from 'react';
 import axios from 'axios';
 import { axiosConfigNoCache } from './axios';
 import dydu from './dydu';
-import json from './configuration.json';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -25,7 +24,6 @@ export const configuration = new (class Configuration {
    * @returns {Promise}
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
-    this.configuration = JSON.parse(JSON.stringify(json));
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
       this.configuration =
         (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()

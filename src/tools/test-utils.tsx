@@ -8,7 +8,7 @@ import { EventsProvider } from '../contexts/EventsContext';
 import { ReactElement } from 'react';
 import { ServerStatusProvider } from '../contexts/ServerStatusContext';
 import ViewModeProvider from '../contexts/ViewModeProvider';
-import configuration from '../../src/tools/configuration.json';
+import configuration from '../../public/override/configuration.json';
 import { mergeDeep } from './object';
 import theme from '../../public/override/theme.json';
 

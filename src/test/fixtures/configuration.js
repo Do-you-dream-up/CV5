@@ -174,6 +174,7 @@ export const getConfigurationObject = (updates = {}) => {
       pkceMode: '',
       authUrl: '',
       tokenUrl: '',
+      discoveryUrl: '',
       scopes: [''],
       withAuth: false,
     },

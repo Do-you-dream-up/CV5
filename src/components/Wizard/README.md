@@ -1,5 +1,5 @@
 ```jsx noeditor
-import configuration from '../../tools/configuration.json';
+import configuration from '../../../public/override/configuration.json';
 
 const documentation = {
   application: {
