@@ -1,6 +1,6 @@
 import Actions, { ActionProps } from '../Actions/Actions';
 import { escapeHTML, isDefined } from '../../tools/helpers';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
@@ -29,7 +29,7 @@ interface InputProps {
 export default function Input({ onRequest, onResponse }: InputProps) {
   const { send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
-  const { dispatchEvent } = useEvent();
+  const { dispatchEvent, isMenuListOpen } = useEvent();
   const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
 
   const classes = useStyles();
@@ -46,6 +46,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const debouncedInput = useDebounce(input, delay);
   const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
+  const textareaRef = useRef<null | any>(null);
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
@@ -89,6 +90,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const handleBlur = () => setInputFocused(false);
 
+  useEffect(() => {
+    if (!isMenuListOpen) {
+      textareaRef.current.focus();
+    }
+  }, [isMenuListOpen]);
+
+  const tabIndex = useMemo(() => (isMenuListOpen ? -1 : 0), [isMenuListOpen]);
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
@@ -110,6 +118,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             data-testId="textareaId"
             onKeyUp={handleFocusChange}
             onBlur={handleBlur}
+            tabIndex={tabIndex}
+            ref={textareaRef}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
@@ -124,7 +134,18 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         </div>
       );
     },
-    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter, inputFocused],
+    [
+      classes.counter,
+      classes.field,
+      classes.fieldShadow,
+      counter,
+      input,
+      locked,
+      prompt,
+      showCounter,
+      inputFocused,
+      tabIndex,
+    ],
   );
 
   const reset = useCallback(() => {

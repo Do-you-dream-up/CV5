@@ -1,4 +1,4 @@
-import MenuList from './index';
+import MenuList from './MenuList';
 import { fireEvent } from '@testing-library/react';
 import { render } from '../../tools/test-utils';
 

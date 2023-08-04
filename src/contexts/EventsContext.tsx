@@ -1,4 +1,14 @@
-import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import dotget from '../tools/dotget';

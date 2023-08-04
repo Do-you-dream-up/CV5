@@ -9,7 +9,7 @@ import { useTheme } from 'react-jss';
  * Form a list of actions within a menu as list elements.
  */
 export default function MenuList({ items, onClose, selected }) {
-  const theme = useTheme();
+  const theme = useTheme<Models.Theme>();
 
   const classes = useStyles();
   items = items.filter((it) => it.when === undefined || it.when);
@@ -29,59 +29,31 @@ export default function MenuList({ items, onClose, selected }) {
     }
   };
 
-  return items.length > 1 ? (
-    <ul className={c('dydu-menu-list', classes.root)}>
-      {items.map(({ icon, id, onClick, text }, index) => (
-        <li
-          className={c('dydu-menu-list-item', classes.item, onClick ? classes.itemEnabled : classes.itemDisabled, {
-            [classes.selected]: selected && selected === id,
-          })}
-          key={index}
-          onClick={onItemClick(onClick)}
-          onKeyDown={onKeyDown(onClick)}
-          tabIndex="0"
-          title={text}
-        >
-          {isImageUrl(icon) ? (
-            <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
-          ) : (
-            <Icon
-              icon={icon}
-              color={theme.palette.text.primary}
-              className={classes.icon}
-              alt={icon !== 'icon-database' ? icon : ''}
-            />
-          )}
-          {text}
-        </li>
-      ))}
-    </ul>
-  ) : (
+  return (
     <div className={c('dydu-menu-list', classes.root)}>
       {items.map(({ icon, id, onClick, text }, index) => (
-        <p
-          role="button"
+        <button
           className={c('dydu-menu-list-item', classes.item, onClick ? classes.itemEnabled : classes.itemDisabled, {
             [classes.selected]: selected && selected === id,
           })}
           key={index}
           onClick={onItemClick(onClick)}
           onKeyDown={onKeyDown(onClick)}
-          tabIndex="0"
           title={text}
+          tabIndex={0}
         >
           {isImageUrl(icon) ? (
             <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
           ) : (
             <Icon
               icon={icon}
-              color={theme.palette.text.primary}
+              color={theme?.palette?.text?.primary || ''}
               className={classes.icon}
               alt={icon !== 'icon-database' ? icon : ''}
             />
           )}
           {text}
-        </p>
+        </button>
       ))}
     </div>
   );
