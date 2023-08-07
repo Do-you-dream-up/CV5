@@ -40,7 +40,7 @@ const usePushrules = (): PushRulesResponse => {
       clearCurrentTimeout();
       processRules(pushrules, getExternalInfos(new Date().getTime()));
     }
-  }, [pushrules, location]);
+  }, [pushrules, location, localStorage.getItem('dydu.context')]);
 
   const canRequest = useMemo(() => {
     return !isDefined(pushrules);
