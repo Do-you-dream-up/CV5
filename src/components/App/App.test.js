@@ -1,26 +1,12 @@
-import App from './App';
-import { render } from '../../tools/test-utils';
-import { useTranslation } from 'react-i18next';
+import '@testing-library/jest-dom';
 
-jest.mock('react-i18next', () => ({
-  useTranslation: jest.fn().mockReturnValue({ t: jest.fn(), ready: false }),
-}));
+import App from './App';
+import { render } from '@testing-library/react';
 
 describe('App', () => {
-  // beforeEach(() => {
-  //   jest.clearAllMocks();
-
-  //   const tSpy = jest.fn((str) => str);
-  //   const useTranslationSpy = useTranslation;
-
-  //   useTranslationSpy.mockReturnValue({
-  //     t: tSpy,
-  //     i18n: {
-  //       language: 'en',
-  //     },
-  //   });
-  // });
-
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   test('Should render App component', async () => {
     const { container } = render(<App />);
     expect(container.getElementsByClassName('dydu-application')).toBeDefined();

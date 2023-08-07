@@ -34,7 +34,7 @@ import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
-import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
+import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -50,7 +50,7 @@ export interface DialogContextProps {
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
   disabled?: boolean;
-  empty?: () => void;
+  clearInteractions?: () => void;
   errorFormatMessage?: string | null;
   interactions?: any;
   isFileActive?: boolean;
@@ -117,10 +117,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
-  const { fetchBotLanguages, botLanguages } = useBotInfo();
+  const { fetchBotLanguages, botLanguages, currentLanguage } = useBotInfo();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
-  const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
+  const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
@@ -152,7 +152,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
-    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
+    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages && currentLanguage,
   );
 
   useEffect(() => {
@@ -196,8 +196,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [configuration, pushrules]);
 
   const shouldTriggerPushRules = useMemo(() => {
-    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
-  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeContent]);
+    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeKnowledge;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeKnowledge]);
 
   useEffect(() => {
     if (shouldTriggerPushRules) {
@@ -445,9 +445,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     ],
   );
 
-  const empty = useCallback(() => {
+  const clearInteractions = () => {
     setInteractions([]);
-  }, []);
+  };
 
   const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
     if (body || title || url) {
@@ -480,17 +480,16 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
-    if (isInteractionListEmpty && !welcomeContent && checkIfBehindSamlAndConnected) forceExec();
-  }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
+    if (isInteractionListEmpty && !welcomeKnowledge && checkIfBehindSamlAndConnected) forceExec();
+  }, [isInteractionListEmpty, welcomeKnowledge, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
-    if (welcomeContent || listInteractionHistory) {
-      empty();
+    if (welcomeKnowledge || listInteractionHistory) {
+      clearInteractions();
     }
-
-    welcomeContent && addResponse(welcomeContent);
+    welcomeKnowledge && addResponse(welcomeKnowledge);
     listInteractionHistory && listInteractionHistory?.forEach(addHistoryInteraction);
-  }, [welcomeContent, listInteractionHistory]);
+  }, [welcomeKnowledge, listInteractionHistory]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -532,7 +531,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         addRequest,
         addResponse,
         disabled,
-        empty,
+        clearInteractions,
         interactions,
         locked,
         placeholder,

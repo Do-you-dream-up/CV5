@@ -169,7 +169,6 @@ describe('dydu.js', function () {
       spied = jestSpyOnList(dydu, [
         'setInitialSpace',
         'setQualificationMode',
-        'initLocaleWithConfiguration',
         'getSpace',
         'getConfiguration',
       ]);
@@ -180,7 +179,7 @@ describe('dydu.js', function () {
       jestRestoreMocked(Object.values(spied));
     });
     it('should call initializers', () => {
-      const initializerFnList = ['setInitialSpace', 'setQualificationMode', 'initLocaleWithConfiguration'];
+      const initializerFnList = ['setInitialSpace', 'setQualificationMode'];
       dydu.onConfigurationLoaded();
       initializerFnList.forEach((initializerFn) => {
         expect(spied[initializerFn]).toHaveBeenCalled();
@@ -710,15 +709,6 @@ describe('dydu.js', function () {
       //THEN
       expect(dydu.locale).toEqual('fr');
     });
-    it('should save the |locale| parameter in the localStorage', () => {
-      //GIVEN
-      const languages = ['fr', 'en'];
-      const locale = 'fr';
-      //WHEN
-      dydu.setLocale(locale, languages);
-      //THEN
-      expect(Local.set).toHaveBeenCalledWith(Local.names.locale, locale);
-    });
   });
 
   describe('printHistory', () => {
@@ -874,7 +864,6 @@ describe('dydu.js', function () {
         'getSpace',
         'setInitialSpace',
         'setQualificationMode',
-        'initLocaleWithConfiguration',
       ]);
 
       const config = new ConfigurationFixture();
@@ -1549,7 +1538,7 @@ describe('dydu.js', function () {
       };
 
       Object.keys(expected).forEach((key) => {
-        expect(__dydu[key] === expected[key]).toEqual(true);
+        expect(__dydu[key]).toEqual(expected[key]);
       });
     });
   });

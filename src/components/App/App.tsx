@@ -16,6 +16,7 @@ import Teaser from '../Teaser/Teaser';
 import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
 import { UploadFileProvider } from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
+import { WelcomeKnowledgeProvider } from '../../contexts/WelcomeKnowledgeContext';
 import c from 'classnames';
 import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
@@ -80,25 +81,27 @@ const App = () => {
               <SamlProvider>
                 <ContextIdProvider>
                   <ConversationHistoryProvider>
-                    <TopKnowledgeProvider>
-                      <UserActionProvider>
-                        <DialogProvider>
-                          <SurveyProvider>
-                            <UploadFileProvider>
-                              <LivechatProvider>
-                                <Chatbox
-                                  extended={isChatboxFullScreen}
-                                  open={isChatboxOpen}
-                                  toggle={toggle}
-                                  mode={mode}
-                                />
-                              </LivechatProvider>
-                            </UploadFileProvider>
-                          </SurveyProvider>
-                          <Teaser open={isChatboxMinimize} toggle={toggle} />
-                        </DialogProvider>
-                      </UserActionProvider>
-                    </TopKnowledgeProvider>
+                    <WelcomeKnowledgeProvider>
+                      <TopKnowledgeProvider>
+                        <UserActionProvider>
+                          <DialogProvider>
+                            <SurveyProvider>
+                              <UploadFileProvider>
+                                <LivechatProvider>
+                                  <Chatbox
+                                    extended={isChatboxFullScreen}
+                                    open={isChatboxOpen}
+                                    toggle={toggle}
+                                    mode={mode}
+                                  />
+                                </LivechatProvider>
+                              </UploadFileProvider>
+                            </SurveyProvider>
+                            <Teaser open={isChatboxMinimize} toggle={toggle} />
+                          </DialogProvider>
+                        </UserActionProvider>
+                      </TopKnowledgeProvider>
+                    </WelcomeKnowledgeProvider>
                   </ConversationHistoryProvider>
                 </ContextIdProvider>
               </SamlProvider>

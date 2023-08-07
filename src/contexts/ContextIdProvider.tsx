@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
@@ -9,7 +9,11 @@ export interface ContextIdProviderProps {
   children?: any;
 }
 
-export interface ContextIdContextProps {}
+export interface ContextIdContextProps {
+  fetchContextId?: (options?: any) => void;
+  contextId: string | null;
+  setContextId: Dispatch<SetStateAction<string | null>>;
+}
 
 export const useContextId = () => useContext<ContextIdContextProps>(ContextIdContext);
 
@@ -33,8 +37,8 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
       return console.error('While executing setContextId : ', e);
     }
   };
-
   const { configuration } = useConfiguration();
+
   const { connected: saml2Connected, saml2enabled } = useSaml();
   const [contextId, setContextId] = useState<string | null>(getContextIdFromLocalStorage() || null);
 
@@ -43,22 +47,15 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
     saveContextIdToLocalStorage(id);
   };
 
-  const fetchContextId = () => {
-    try {
-      return new Promise(() => {
-        dydu
-          .getContextId()
-          ?.then((response) => {
-            response?.contextId && setContextId(response?.contextId);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+  const fetchContextId = () =>
+    dydu
+      .getContextId()
+      ?.then((response) => {
+        response?.contextId && setContextId(response?.contextId);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     contextId && updateContextId(contextId);

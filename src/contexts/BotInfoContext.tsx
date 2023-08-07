@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useCallback, useContext, useEffect, useState } from 'react';
 
+import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 
@@ -10,6 +11,8 @@ export interface BotInfoProviderProps {
 export interface BotInfoContextProps {
   fetchBotLanguages: () => void;
   botLanguages: string[] | null;
+  currentLanguage: string;
+  setCurrentLanguage: Dispatch<SetStateAction<string>>;
 }
 
 export const useBotInfo = () => useContext<BotInfoContextProps>(BotInfoContext);
@@ -19,10 +22,16 @@ export const BotInfoContext = createContext({} as BotInfoContextProps);
 export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<string>(Local.get(Local.names.locale, 'fr'));
 
   useEffect(() => {
     botLanguages && dydu.setBotLanguages(botLanguages);
   }, [botLanguages]);
+
+  useEffect(() => {
+    dydu.setLocale(currentLanguage);
+    Local.set(Local.names.locale, currentLanguage);
+  }, [currentLanguage]);
 
   const fetchBotLanguages = useCallback(() => {
     return new Promise(() => {
@@ -36,6 +45,8 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const value: BotInfoContextProps = {
     fetchBotLanguages,
     botLanguages,
+    currentLanguage,
+    setCurrentLanguage,
   };
 
   return <BotInfoContext.Provider value={value}>{children}</BotInfoContext.Provider>;

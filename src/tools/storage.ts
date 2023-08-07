@@ -149,7 +149,6 @@ export class Local {
    *                         not found.
    * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
-   * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.get instead
    */
   static get = (name: string, fallback?: any, save?: any) => {
     let value = localStorage.getItem(name);
@@ -171,7 +170,6 @@ export class Local {
    *
    * @param {string} name - Name of the local storage variable.
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
-   * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.set instead
    */
   static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
@@ -271,6 +269,17 @@ export class Local {
       set: (key, value) => {
         const botsById = Local._getBotsById();
         botsById[botId][key] = value;
+        localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
+      },
+      /**
+       * remove given bot id. The value will be stringified.
+       * @param {String} key key to retrieve
+       * @param {*} value value to store (should be serializable/deserializable wih JSON.parse, JSON.stringify)
+       * @returns the deserialized value behind the key
+       */
+      remove: () => {
+        const botsById = Local._getBotsById();
+        delete botsById[botId];
         localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
       },
     };

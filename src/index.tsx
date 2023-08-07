@@ -16,7 +16,8 @@ import { configuration } from './tools/configuration';
 import { getCss } from './tools/css';
 import keycloak from './tools/keycloak';
 import scope from 'scope-css';
-
+import { I18nextProvider } from 'react-i18next';
+import i18n from './contexts/i18nProvider';
 let _configuration;
 let anchor;
 
@@ -36,13 +37,15 @@ const renderApp = (theme) =>
       <ThemeProvider theme={theme}>
         <ConfigurationProvider configuration={_configuration}>
           <ServerStatusProvider>
-            <BotInfoProvider>
-              <ViewModeProvider>
-                <EventsProvider>
-                  <App />
-                </EventsProvider>
-              </ViewModeProvider>
-            </BotInfoProvider>
+            <I18nextProvider i18n={i18n}>
+              <BotInfoProvider>
+                <ViewModeProvider>
+                  <EventsProvider>
+                    <App />
+                  </EventsProvider>
+                </ViewModeProvider>
+              </BotInfoProvider>
+            </I18nextProvider>
           </ServerStatusProvider>
         </ConfigurationProvider>
       </ThemeProvider>

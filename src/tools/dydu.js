@@ -3,7 +3,6 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
-  getBrowserLocale,
   hasProperty,
   htmlToJsonForSendUploadFile,
   isDefined,
@@ -24,8 +23,7 @@ import debounce from 'debounce-promise';
 import { decode } from './cipher';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
-import i18n from 'i18next';
-import { initI18N } from './internationalization';
+import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
 
 const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
@@ -335,7 +333,7 @@ export default new (class Dydu {
   exportConversation = async (text, options = {}) => {
     const data = qs.stringify({
       clientId: this.getClientId(),
-      doNotRegisterInteraction: options.doNotSave,
+      doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
@@ -472,13 +470,7 @@ export default new (class Dydu {
    * @returns {string}
    */
   getLocale = () => {
-    const { application } = this.getConfiguration();
-    if (!this.locale) {
-      const locale = Local.get(Local.names.locale, `${application?.defaultLanguage[0]}`).split('-')[0];
-      application?.getDefaultLanguageFromSite ? this.setLocale(document.documentElement.lang) : this.setLocale(locale);
-    }
-    const locale = this.botLanguages?.includes(this.locale) ? this.locale : application?.defaultLanguage[0];
-    return locale;
+    return this.locale;
   };
 
   /**
@@ -582,16 +574,9 @@ export default new (class Dydu {
    * @param {string} locale - Selected locale.
    * @returns {Promise}
    */
-  setLocale = (locale, languages = []) =>
-    new Promise((resolve, reject) => {
-      if (!this.locale || languages?.includes(locale)) {
-        Local.set(Local.names.locale, locale);
-        this.locale = locale;
-        return resolve(locale);
-      } else {
-        reject(`Setting an unknown locale '${locale}'. Possible values: [${languages}].`);
-      }
-    });
+  setLocale = (language) => {
+    this.locale = language;
+  };
 
   /**
    * this method allows you to define variables that are modified on the client side
@@ -862,7 +847,7 @@ export default new (class Dydu {
       alreadyCame: this.alreadyCame(),
       browser: `${browser.name} ${browser.version}`,
       clientId: this.getClientId(),
-      doNotRegisterInteraction: options.doNotSave,
+      doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       os: `${os.name} ${os.version}`,
       qualificationMode: this.qualificationMode,
@@ -900,7 +885,7 @@ export default new (class Dydu {
     alreadyCame: this.alreadyCame(),
     browser: `${browser.name} ${browser.version}`,
     clientId: this.getClientId(),
-    doNotRegisterInteraction: options.doNotSave,
+    doNotRegisterInteraction: options.doNotRegisterInteraction,
     language: this.getLocale(),
     os: `${os.name} ${os.version}`,
     qualificationMode: this.qualificationMode,
@@ -1080,33 +1065,14 @@ export default new (class Dydu {
   onConfigurationLoaded() {
     this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
-    this.initLocaleWithConfiguration(this.getConfiguration());
-  }
-
-  initLocaleWithConfiguration(configuration) {
-    let locale = getBrowserLocale();
-    try {
-      const shouldGetFromBrowser = configuration.application.getDefaultLanguageFromSite;
-      locale = shouldGetFromBrowser ? getBrowserLocale() : this.getConfigurationDefaultLocal();
-      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
-      this.locale = locale;
-      initI18N({ defaultLang: this.locale });
-      return this.locale;
-    } catch (e) {
-      console.info('Error while initializing locale, fallback to browser locale', e);
-      this.setLocale(locale, configuration.application.languages[0]).catch(console.error);
-      this.locale = locale;
-      initI18N({ defaultLang: this.locale });
-      return this.locale;
-    }
   }
 
   getConfigurationDefaultLocal() {
     try {
-      return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
+      if (!this.locale) return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
     } catch (e) {
       console.info('No default language from configuration file, fallback to browser locale');
-      return getBrowserLocale();
+      return this.locale;
     }
   }
 
@@ -1118,7 +1084,7 @@ export default new (class Dydu {
   getWelcomeKnowledge = (tagWelcome) => {
     const wkFoundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
     if (wkFoundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
-    const talkOption = { doNotSave: true, hide: true };
+    const talkOption = { hide: true, doNotRegisterInteraction: true };
     return this.talk(tagWelcome, talkOption).then((talkResponse) => {
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
       if (!isInteractionResponse) return null;

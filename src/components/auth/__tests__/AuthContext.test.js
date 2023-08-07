@@ -56,6 +56,7 @@ jest.mock('../../../tools/dydu', () => {
       setTokenRefresher: jest.fn(),
       setSpaceToDefault: jest.fn(),
       fetchUrlConfig: jest.fn(),
+      setLocale: jest.fn(),
     },
   };
 });
