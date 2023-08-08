@@ -13,6 +13,34 @@ export const toFormUrlEncoded = (data) => {
   }, '');
 };
 
+export const b64dAllFields = (obj = {}) => {
+  if (isOfType(obj, VAR_TYPE.object)) {
+    return Object.keys(obj).reduce((resultObj, fieldName) => {
+      const val = obj[fieldName];
+      if (isDefined(val)) {
+        if (isOfType(val, VAR_TYPE.string)) {
+          resultObj[fieldName] = b64decode(val);
+        } else if (isOfType(val, VAR_TYPE.object)) {
+          resultObj[fieldName] = b64dAllFields(val);
+        } else if (isOfType(val, VAR_TYPE.array)) {
+          resultObj[fieldName] = [];
+          for (let i = 0; i < val.length; i++) {
+            resultObj[fieldName][i] = b64dAllFields(val[i]);
+          }
+        } else {
+          resultObj[fieldName] = val;
+        }
+      }
+
+      return resultObj;
+    }, {});
+  } else if (isOfType(obj, VAR_TYPE.string)) {
+    return b64decode(obj);
+  }
+
+  return obj;
+};
+
 export const b64dFields = (obj = {}, encodedNameFieldList) => {
   return Object.keys(obj).reduce((resultObj, fieldName) => {
     if (!encodedNameFieldList.includes(fieldName)) {

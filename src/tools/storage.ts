@@ -126,6 +126,7 @@ export class Local {
     wizard: 'dydu.wizard.data',
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
+    operator: 'dydu.operator',
   };
 
   /**
@@ -298,6 +299,12 @@ export class Local {
     save: (data) => localStorage.setItem(Local.names.saml, data),
     load: () => localStorage.getItem(Local.names.saml) || null,
     remove: () => localStorage.removeItem(Local.names.saml),
+  });
+
+  static operator = Object.create({
+    save: (data) => localStorage.setItem(Local.names.operator, data),
+    load: () => localStorage.getItem(Local.names.operator) || null,
+    remove: () => localStorage.removeItem(Local.names.operator),
   });
 
   static viewMode = Object.create({
