@@ -166,7 +166,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
           return Promise.all([setCurrentLanguage(locale), i18n.changeLanguage(locale)])
             .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
             .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
-            .then(() => fetchContextId && fetchContextId({ locale }))
             .then(() => clearInteractions && clearInteractions())
             .then(() => fetchWelcomeKnowledge?.());
         },
