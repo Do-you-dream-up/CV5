@@ -37,8 +37,8 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
       return console.error('While executing setContextId : ', e);
     }
   };
-  const { configuration } = useConfiguration();
 
+  const { configuration } = useConfiguration();
   const { connected: saml2Connected, saml2enabled } = useSaml();
   const [contextId, setContextId] = useState<string | null>(getContextIdFromLocalStorage() || null);
 
@@ -47,15 +47,22 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
     saveContextIdToLocalStorage(id);
   };
 
-  const fetchContextId = () =>
-    dydu
-      .getContextId()
-      ?.then((response) => {
-        response?.contextId && setContextId(response?.contextId);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const fetchContextId = () => {
+    const isLivechatOn = Local.isLivechatOn.load();
+
+    return new Promise(() => {
+      if (!isLivechatOn) {
+        dydu
+          .getContextId()
+          ?.then((response) => {
+            response?.contextId && setContextId(response?.contextId);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+  };
 
   useEffect(() => {
     contextId && updateContextId(contextId);
