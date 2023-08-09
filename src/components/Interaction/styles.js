@@ -7,6 +7,7 @@ export default createUseStyles((theme) => ({
     marginLeft: [[0], '!important'],
     marginRight: [[0], '!important'],
   },
+  interactionCarousel: { flexDirection: 'column' },
   base: {
     display: 'flex',
     margin: [['20px 10px'], '!important'],

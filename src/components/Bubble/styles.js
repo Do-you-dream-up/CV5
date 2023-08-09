@@ -60,7 +60,7 @@ export default createUseStyles((theme) => {
       width: 'fit-content',
 
       '&.template-style': {
-        width: 270,
+        width: 'calc(100% - 40px)',
         backgroundColor: '#FFFFFF',
         alignItems: 'normal',
         borderRadius: 10,
