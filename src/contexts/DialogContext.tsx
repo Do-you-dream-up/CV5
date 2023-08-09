@@ -2,6 +2,7 @@ import * as Constants from '../tools/constants';
 
 import {
   Dispatch,
+  ReactElement,
   ReactNode,
   SetStateAction,
   createContext,
@@ -129,7 +130,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState<ReactNode[]>([]);
+  const [interactions, setInteractions] = useState<ReactElement[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
@@ -145,6 +146,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
   useEffect(() => {
     fetchServerStatus();
   }, []);
+
+  const lastInteraction = interactions[interactions.length - 1];
+
+  useEffect(() => {
+    if (lastInteraction !== undefined && lastInteraction.props.type === 'request') setIsWaitingForResponse(true);
+    else setIsWaitingForResponse(false);
+  }, [lastInteraction]);
 
   useEffect(() => {
     serverStatusChecked && fetchBotLanguages();

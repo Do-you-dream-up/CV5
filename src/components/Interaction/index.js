@@ -11,15 +11,16 @@ import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Icon from '../Icon/Icon';
 import Loader from '../Loader';
+import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
+import { useDialog } from '../../contexts/DialogContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
-import { Local } from '../../tools/storage';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {
@@ -123,6 +124,7 @@ export default function Interaction({
   const [readyCarousel, setReadyCarousel] = useState(false);
 
   const { configuration } = useConfiguration();
+  const { lastInteractionType } = useDialog();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
 
   const classes = useStyles({ configuration });
@@ -246,7 +248,9 @@ export default function Interaction({
 
   const _Loader = useMemo(() => {
     if (Local.isLivechatOn.load()) return null;
-    return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
+    return hasLoader || lastInteractionType === 'request' ? (
+      <Loader className={classes.loader} scroll={scroll} />
+    ) : null;
   }, [classes.loader, hasLoader, Local.isLivechatOn.load(), scroll]);
 
   const bubbleList = useMemo(() => {
