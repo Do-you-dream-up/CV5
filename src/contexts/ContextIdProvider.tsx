@@ -64,8 +64,18 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
     });
   };
 
+  const [prevContext, setPrevContext] = useState<string | null>(localStorage.getItem('dydu.context'));
+
   useEffect(() => {
     contextId && updateContextId(contextId);
+    for (const key in localStorage) {
+      if (key.startsWith('pushruleTrigger') && prevContext !== contextId) {
+        localStorage.removeItem(key);
+      }
+    }
+    if (contextId !== null) {
+      setPrevContext(contextId);
+    }
   }, [contextId]);
 
   useEffect(() => {
