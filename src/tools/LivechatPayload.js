@@ -20,11 +20,11 @@ let PAYLOAD_COMMON_CONTENT = {
   space: null,
   clientId: null,
   language: null,
-  solutionUsed: b64encode(SOLUTION_TYPE.assistant),
-  userUrl: b64encode(window.location.href),
-  browser: b64encode(browserName()),
-  os: b64encode(osName()),
-  saml2_info: Local.saml.load() && b64encode(Local.saml.load()),
+  solutionUsed: SOLUTION_TYPE.assistant,
+  userUrl: window.location.href,
+  browser: browserName(),
+  os: osName(),
+  saml2_info: Local.saml.load(),
 };
 
 export const getPayloadCommonContentBase64Encoded = () => {
