@@ -11,6 +11,7 @@ import DotLoader from 'react-spinners/BeatLoader';
 import Feedback from '../Feedback';
 import Icon from '../Icon/Icon';
 import Loader from '../Loader';
+import { Local } from '../../tools/storage';
 import PropTypes from 'prop-types';
 import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
@@ -19,7 +20,6 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
-import { Local } from '../../tools/storage';
 
 const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.quickReply]: (list) => {

@@ -2,6 +2,7 @@ import * as Constants from '../tools/constants';
 
 import {
   Dispatch,
+  ReactElement,
   ReactNode,
   SetStateAction,
   createContext,
@@ -129,7 +130,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState<ReactNode[]>([]);
+  const [interactions, setInteractions] = useState<ReactElement[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
@@ -243,6 +244,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
   const add = useCallback((interaction) => {
+    const isLastInteractionARequest = interaction.props.type === 'request';
+    setIsWaitingForResponse(isLastInteractionARequest);
+
     setInteractions((previous) => {
       if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
 
