@@ -147,13 +147,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchServerStatus();
   }, []);
 
-  const lastInteraction = interactions[interactions.length - 1];
-
-  useEffect(() => {
-    if (lastInteraction !== undefined && lastInteraction.props.type === 'request') setIsWaitingForResponse(true);
-    else setIsWaitingForResponse(false);
-  }, [lastInteraction]);
-
   useEffect(() => {
     serverStatusChecked && fetchBotLanguages();
   }, [serverStatusChecked]);
@@ -251,6 +244,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
   const add = useCallback((interaction) => {
+    const isLastInteractionARequest = interaction.props.type === 'request';
+    setIsWaitingForResponse(isLastInteractionARequest);
+
     setInteractions((previous) => {
       if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
 

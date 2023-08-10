@@ -18,7 +18,6 @@ import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDebounce } from 'react-use';
-import { useDialog } from '../../contexts/DialogContext';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
 
