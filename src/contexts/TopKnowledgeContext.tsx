@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useState } from 'react';
-import { _parse, isArray, isDefined } from '../tools/helpers';
+import { _parse, b64decode, isArray, isDefined } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
@@ -45,7 +45,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
   const extractPayload = (response) => {
     let list;
     if (response?.values) {
-      list = _parse(atob(response?.values?.knowledgeArticles));
+      list = _parse(b64decode(response?.values?.knowledgeArticles));
     } else {
       list = _parse(response?.knowledgeArticles);
     }

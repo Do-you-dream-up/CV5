@@ -40,10 +40,10 @@ let onOperatorWriting = null;
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
     contextId: configuration.contextId || Local.contextId.load(),
-    botId: configuration.botId || dydu.getBotId(),
-    space: configuration.api.getSpace(),
-    clientId: configuration.api.getClientId(),
-    language: configuration.api.getLocale(),
+    botId: configuration.botId || dydu.getBotId() || Local.get(Local.names.botId),
+    space: configuration.api.getSpace() || Local.get(Local.names.space),
+    clientId: configuration.api.getClientId() || Local.get(Local.names.client),
+    language: configuration.api.getLocale() || Local.get(Local.names.locale),
   });
 
 export default function useDyduWebsocket() {
