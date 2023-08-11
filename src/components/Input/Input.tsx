@@ -40,14 +40,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const counterRemaining = t('input.actions.counterRemaining');
-  const [showCounterA11y, setShowCounterA11y] = useState<boolean>(false);
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const themeColor = useTheme<Models.Theme>();
   const debouncedInput = useDebounce(input, delay);
   const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
-  const textareaRef = useRef<null | any>(null);
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
@@ -91,10 +89,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const handleBlur = () => setInputFocused(false);
 
-  const onFocus = () => {
-    setShowCounterA11y(true);
-  };
-
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
@@ -115,10 +109,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             disabled={prompt || locked}
             id={textareaId}
             data-testId="textareaId"
-            ref={textareaRef}
             onKeyUp={handleFocusChange}
             onBlur={handleBlur}
-            onFocus={onFocus}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
@@ -223,9 +215,11 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
     }
 
-    const nodeElementTextareaContainer = textareaRef?.current;
-    nodeElementTextareaContainer.removeAttribute('aria-autocomplete');
-    nodeElementTextareaContainer.removeAttribute('aria-controls');
+    const textareaId = document.getElementById('dydu-textarea');
+    if (isDefined(textareaId)) {
+      textareaId && textareaId.removeAttribute('aria-autocomplete');
+      textareaId && textareaId.removeAttribute('aria-controls');
+    }
   }, []);
 
   const theme = {
