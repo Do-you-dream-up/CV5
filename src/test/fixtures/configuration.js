@@ -29,12 +29,6 @@ export const getConfigurationObject = (updates = {}) => {
       moreLink: 'https://goo.gle',
       transient: false,
     },
-    carousel: {
-      bullets: true,
-      controls: true,
-      offset: 5,
-      offsetBetweenCard: 100,
-    },
     chatbox: {
       expandable: true,
       margin: 16,
@@ -295,12 +289,6 @@ export const getConfigurationObject = (updates = {}) => {
       bottom: 16,
       right: 16,
       displayType: 0,
-    },
-    templateCarousel: {
-      bullets: true,
-      controls: true,
-      offset: 5,
-      offsetBetweenCard: 82,
     },
     templateProduct: {
       readmore: 100,
