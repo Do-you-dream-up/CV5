@@ -81,7 +81,6 @@ export interface DialogContextProps {
   setZoomSrc?: Dispatch<SetStateAction<string | null>>;
   autoSuggestionActive?: boolean;
   setAutoSuggestionActive?: Dispatch<SetStateAction<boolean>>;
-  callWelcomeKnowledge?: () => null;
   showUploadFileButton?: () => void;
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
@@ -169,10 +168,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
     hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
   );
-
-  useEffect(() => {
-    fetchServerStatus();
-  }, []);
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
@@ -573,7 +568,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setZoomSrc,
         autoSuggestionActive,
         setAutoSuggestionActive,
-        callWelcomeKnowledge: () => null,
         showUploadFileButton,
         setRewordAfterGuiAction,
         rewordAfterGuiAction,

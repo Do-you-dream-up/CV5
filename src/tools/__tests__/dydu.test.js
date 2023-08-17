@@ -67,63 +67,6 @@ describe('dydu.js', function () {
     dydu = _dydu;
   });
 
-  describe('getWelcomeKnowledge', function () {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['talk', 'getBotId']);
-      spied.talk.mockResolvedValue({ response: true });
-    });
-    afterEach(() => {
-      jestRestoreMocked(Object.values(Local.welcomeKnowledge));
-    });
-
-    it('should check in localStorage', async () => {
-      // GIVEN
-      // WHEN
-      await dydu.getWelcomeKnowledge();
-
-      // THEN
-      expect(Local.welcomeKnowledge.isSet).toHaveBeenCalled();
-    });
-    it('should return localStorage value', async () => {
-      const botIdValue = 'bot-id';
-      spied.getBotId.mockReturnValue(true);
-      Local.welcomeKnowledge.isSet.mockReturnValue(botIdValue);
-      Local.welcomeKnowledge.load.mockReturnValue(botIdValue);
-
-      // WHEN
-      const receivedValue = await dydu.getWelcomeKnowledge();
-
-      // THEN
-      expect(receivedValue).toEqual(botIdValue);
-
-      jestRestoreMocked([Local.welcomeKnowledge.isSet, Local.welcomeKnowledge.load]);
-    });
-    it('should call |this.talk| when localStorage has no value', () => {
-      // GIVEN
-      Local.welcomeKnowledge.isSet.mockReturnValue(false);
-
-      // WHEN
-      dydu.getWelcomeKnowledge();
-
-      // THEN
-      expect(spied.talk).toHaveBeenCalled();
-    });
-    it('should save the wlecomeKnowledge in localStorage after requesting it', async () => {
-      // GIVEN
-      const botId = 'bot-id';
-      spied.getBotId.mockReturnValue(botId);
-
-      const talkResponse = { text: 'bot response' };
-      spied.talk.mockResolvedValue(talkResponse);
-
-      // WHEN
-      await dydu.getWelcomeKnowledge();
-
-      // THEN
-      expect(Local.welcomeKnowledge.save).toHaveBeenCalledWith(botId, talkResponse);
-    });
-  });
-
   describe('getConfiguration', function () {
     it('should return |configuration| class attribute', () => {
       // GIVEN
