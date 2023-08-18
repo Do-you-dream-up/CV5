@@ -179,7 +179,7 @@ stages:
 
 mirror:
   stage: update_public_repo
-  image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
+  image: alpine:latest
   before_script:
     - apk add openssh-client
     - echo "$RUNNER_PRIVATE_KEY" > ~/.ssh/id_rsa
