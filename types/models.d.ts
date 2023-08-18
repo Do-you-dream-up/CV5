@@ -3,7 +3,6 @@ declare namespace Models {
     application: Application;
     avatar: Avatar;
     banner: Banner;
-    carousel: Carousel;
     chatbox: ConfigurationChatbox;
     checkAuthorization: CheckAuthorization;
     contacts: Contacts;
@@ -34,7 +33,6 @@ declare namespace Models {
     suggestions: Suggestions;
     tabs: Tabs;
     teaser: ConfigurationTeaser;
-    templateCarousel: Carousel;
     templateProduct: TemplateProduct;
     top: ConfigurationTop;
     Voice: Voice;
@@ -102,15 +100,6 @@ declare namespace Models {
     moreIcon: string;
     moreLink: string;
     transient: boolean;
-  }
-
-  export interface Carousel {
-    bullets?: boolean;
-    controls?: boolean;
-    offset?: number;
-    offsetBetweenCard?: number;
-    iconCaretLeft?: string;
-    iconCaretRight?: string;
   }
 
   export interface ConfigurationChatbox {
