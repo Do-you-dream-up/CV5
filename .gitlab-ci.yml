@@ -181,7 +181,7 @@ mirror:
   stage: update_public_repo
   image: alpine:latest
   before_script:
-    - apk add openssh-client
+    - apk add openssh-client git
     - mkdir -p ~/.ssh
     - echo "$RUNNER_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
