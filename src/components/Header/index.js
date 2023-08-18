@@ -224,7 +224,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </div>
           )}
           {!!hasTitle && (
-            <h1 className={c('dydu-header-title', classes.title)}>
+            <h1 tabIndex={0} className={c('dydu-header-title', classes.title)}>
               <Skeleton children={t('header.title')} hide={!ready} variant="text" width="6em" />
             </h1>
           )}

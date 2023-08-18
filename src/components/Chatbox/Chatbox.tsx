@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
+import { VIEW_MODE } from '../../tools/constants';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -87,6 +88,17 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
+  const { mode } = useViewMode();
+  const [prevMode, setPrevMode] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
+      root?.current.focus();
+    }
+    if (mode !== undefined) {
+      setPrevMode(mode);
+    }
+  }, [mode]);
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
@@ -242,11 +254,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   }, [gdprPassed, setGdprPassed]);
 
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <p className={classes.srOnly} tabIndex={0} id={idLabel}>
-        {labelChatbot}
-      </p>
-      <div>
+    <div className={classnames} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
+      <div tabIndex={0} ref={root} aria-label={labelChatbot}>
         <div className={classes.container}>
           <>
             <Header
