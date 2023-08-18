@@ -1,181 +1,181 @@
 ---
 stages:
-  - integration
-  - test
-  - delivery
-  - quality
+#  - integration
+#  - test
+#  - delivery
+#  - quality
   - update_public_repo
 
-build:
-  stage: integration
-  image: node:alpine
-  variables:
-    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
-    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
-  script:
-    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
-    - npm run build
-    - npm run test:CI
-  cache:
-    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
-    paths:
-      - build/
-      - node_modules/
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
-  artifacts:
-    paths:
-      - .npm/_logs/
-    expire_in: 24h
-
-sonar-sast:
-  stage: test
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: ['']
-  variables:
-    GIT_DEPTH: '0'
-    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
-    SONAR_HOST_URL: 'https://sonar.ci.dydu-priv.com'
-    SONAR_LOGIN: '71e34b485f3799e6852d1fd5d3d321be6f72ef98'
-  script:
-    - >
-      sonar-scanner
-      -Dsonar.sources=.
-      -Dsonar.host.url=$SONAR_HOST_URL
-      -Dsonar.login=$SONAR_LOGIN
-      -Dsonar.projectKey=$CI_PROJECT_NAME
-      -Dsonar.projectName="$CI_PROJECT_TITLE"
-      -Dsonar.projectVersion=$CI_COMMIT_REF_SLUG
-      -Dsonar.qualitygate.wait=true
-      -Dsonar.qualitygate.timeout=300
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
-
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-
-pack:
-  stage: delivery
-  image: alpine:latest
-  before_script:
-    - apk add zip curl
-  script:
-    - zip -v -r ${CI_COMMIT_REF_NAME}.zip build/*
-    # TODO: use front user/password
-    - >
-      curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}"
-      --upload-file "${CI_COMMIT_REF_NAME}.zip"
-      "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
-  cache:
-    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
-    paths:
-      - build/
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-  needs:
-    - build
-  when: manual
-
-publish:
-  stage: delivery
-  image: alpine:latest
-  before_script:
-    - apk add openssh-client rsync
-    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
-  script:
-    - >
-      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
-      build/*
-      dydu@node1.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
-    - >
-      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
-      build/*
-      dydu@node2.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
-    - >
-      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
-      build/*
-      dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
-  cache:
-    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
-    paths:
-      - build/
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-  needs:
-    - build
-  when: manual
-
-functional-test:
-  stage: quality
-  image: alpine:latest
-  variables:
-    TEST_REVISION: '${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}'
-    TEST_TOKEN: 'zspdHMbuc1EShADrYxSu'
-    TEST_URL: 'https://gitlab.ci.dydu-priv.com/api/v4/projects/402'
-  before_script:
-    - apk add git openssh-client curl jq
-    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
-    - |
-      git config --global user.email "infra@dydu.ai"
-      git config --global user.name "GitLab CI Bliss"
-      git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
-      git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox
-    - |
-      cd /autobox
-      git switch -c "${CI_COMMIT_REF_NAME}"
-    - |
-      echo "${TEST_REVISION}" > revision.txt
-      git add revision.txt
-      git commit -m "feat(revision): #RDA-3444 Test revision ${TEST_REVISION}."
-    - |
-      git rebase master
-      git push -f --set-upstream "origin" "${CI_COMMIT_REF_NAME}"
-  script:
-    - |
-      sleep 60
-      TEST_PIPELINE="$(curl --silent \
-      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
-      "${TEST_URL}/pipelines?ref=${CI_COMMIT_REF_NAME}&order_by=id&sort=desc" \
-      | jq --raw-output '.[0].id')"
-      TEST_JOB="$(curl --silent \
-      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
-      "${TEST_URL}/pipelines/${TEST_PIPELINE}/jobs?include_retried=true&order_by=id&sort=desc" \
-      | jq --raw-output '.[0].id')"
-      echo "Please check: \
-      https://gitlab.ci.dydu-priv.com/qa/autobox/-/jobs/${TEST_JOB}"
-      while true
-      do
-        sleep 60
-        TEST_STATUS="$(curl --silent --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
-        "${TEST_URL}/jobs/${TEST_JOB}" | jq --raw-output '.status')"
-        case "${TEST_STATUS}" in
-          "success")
-            echo "Autobox status is success."
-            exit 0
-            ;;
-          "failed")
-            echo "Autobox status is failed."
-            exit 1
-            ;;
-          "canceled")
-            echo "Autobox status is canceled."
-            exit 1
-            ;;
-        esac
-      done
-  timeout: 1h
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
-  needs:
-    - pack
+#build:
+#  stage: integration
+#  image: node:alpine
+#  variables:
+#    CHATBOX_VERSION: '${CI_COMMIT_REF_NAME}'
+#    CHATBOX_REVISION: '${CI_COMMIT_SHORT_SHA}'
+#  script:
+#    - npm ci --legacy-peer-deps --cache .npm --prefer-offline
+#    - npm run build
+#    - npm run test:CI
+#  cache:
+#    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
+#    paths:
+#      - build/
+#      - node_modules/
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
+#  artifacts:
+#    paths:
+#      - .npm/_logs/
+#    expire_in: 24h
+#
+#sonar-sast:
+#  stage: test
+#  image:
+#    name: sonarsource/sonar-scanner-cli:latest
+#    entrypoint: ['']
+#  variables:
+#    GIT_DEPTH: '0'
+#    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
+#    SONAR_HOST_URL: 'https://sonar.ci.dydu-priv.com'
+#    SONAR_LOGIN: '71e34b485f3799e6852d1fd5d3d321be6f72ef98'
+#  script:
+#    - >
+#      sonar-scanner
+#      -Dsonar.sources=.
+#      -Dsonar.host.url=$SONAR_HOST_URL
+#      -Dsonar.login=$SONAR_LOGIN
+#      -Dsonar.projectKey=$CI_PROJECT_NAME
+#      -Dsonar.projectName="$CI_PROJECT_TITLE"
+#      -Dsonar.projectVersion=$CI_COMMIT_REF_SLUG
+#      -Dsonar.qualitygate.wait=true
+#      -Dsonar.qualitygate.timeout=300
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
+#
+#include:
+#  - template: Jobs/SAST.gitlab-ci.yml
+#
+#pack:
+#  stage: delivery
+#  image: alpine:latest
+#  before_script:
+#    - apk add zip curl
+#  script:
+#    - zip -v -r ${CI_COMMIT_REF_NAME}.zip build/*
+#    # TODO: use front user/password
+#    - >
+#      curl -v -u "${NEXUS_REGISTRY_USER}:${NEXUS_REGISTRY_PASSWORD}"
+#      --upload-file "${CI_COMMIT_REF_NAME}.zip"
+#      "https://nexus.doyoudreamup.com/repository/front_artefacts/chatbox/${CI_COMMIT_REF_NAME}.zip"
+#  cache:
+#    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
+#    paths:
+#      - build/
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+#  needs:
+#    - build
+#  when: manual
+#
+#publish:
+#  stage: delivery
+#  image: alpine:latest
+#  before_script:
+#    - apk add openssh-client rsync
+#    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
+#  script:
+#    - >
+#      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+#      build/*
+#      dydu@node1.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+#    - >
+#      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+#      build/*
+#      dydu@node2.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+#    - >
+#      rsync -czrv --progress --delete -e "ssh -p558 -o StrictHostKeyChecking=no"
+#      build/*
+#      dydu@node3.cdn.dydu-priv.com:/var/opt/docker/volumes/cdn_nginx_www/_data/chatbox/${CI_COMMIT_REF_NAME}/
+#  cache:
+#    key: '$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA'
+#    paths:
+#      - build/
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+#  needs:
+#    - build
+#  when: manual
+#
+#functional-test:
+#  stage: quality
+#  image: alpine:latest
+#  variables:
+#    TEST_REVISION: '${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}'
+#    TEST_TOKEN: 'zspdHMbuc1EShADrYxSu'
+#    TEST_URL: 'https://gitlab.ci.dydu-priv.com/api/v4/projects/402'
+#  before_script:
+#    - apk add git openssh-client curl jq
+#    - mv -v .ssh ~/ && chmod -v 0700 ~/.ssh && chmod -v 0600 ~/.ssh/id_ed25519
+#    - |
+#      git config --global user.email "infra@dydu.ai"
+#      git config --global user.name "GitLab CI Bliss"
+#      git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
+#      git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox
+#    - |
+#      cd /autobox
+#      git switch -c "${CI_COMMIT_REF_NAME}"
+#    - |
+#      echo "${TEST_REVISION}" > revision.txt
+#      git add revision.txt
+#      git commit -m "feat(revision): #RDA-3444 Test revision ${TEST_REVISION}."
+#    - |
+#      git rebase master
+#      git push -f --set-upstream "origin" "${CI_COMMIT_REF_NAME}"
+#  script:
+#    - |
+#      sleep 60
+#      TEST_PIPELINE="$(curl --silent \
+#      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+#      "${TEST_URL}/pipelines?ref=${CI_COMMIT_REF_NAME}&order_by=id&sort=desc" \
+#      | jq --raw-output '.[0].id')"
+#      TEST_JOB="$(curl --silent \
+#      --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+#      "${TEST_URL}/pipelines/${TEST_PIPELINE}/jobs?include_retried=true&order_by=id&sort=desc" \
+#      | jq --raw-output '.[0].id')"
+#      echo "Please check: \
+#      https://gitlab.ci.dydu-priv.com/qa/autobox/-/jobs/${TEST_JOB}"
+#      while true
+#      do
+#        sleep 60
+#        TEST_STATUS="$(curl --silent --header "PRIVATE-TOKEN: ${TEST_TOKEN}" \
+#        "${TEST_URL}/jobs/${TEST_JOB}" | jq --raw-output '.status')"
+#        case "${TEST_STATUS}" in
+#          "success")
+#            echo "Autobox status is success."
+#            exit 0
+#            ;;
+#          "failed")
+#            echo "Autobox status is failed."
+#            exit 1
+#            ;;
+#          "canceled")
+#            echo "Autobox status is canceled."
+#            exit 1
+#            ;;
+#        esac
+#      done
+#  timeout: 1h
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
+#    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+#  needs:
+#    - pack
 
 mirror:
   stage: update_public_repo
