@@ -310,6 +310,7 @@ export default function Interaction({
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },
+          { [classes.interactionCarousel]: isCarousel && bubbles.length },
           className,
         )}
         id="dydu-interaction"
