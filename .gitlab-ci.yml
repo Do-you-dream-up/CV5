@@ -4,6 +4,7 @@ stages:
   - test
   - delivery
   - quality
+  - update_public_repo
 
 build:
   stage: integration
@@ -175,3 +176,25 @@ functional-test:
     - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
   needs:
     - pack
+
+mirror:
+  stage: update_public_repo
+  image: docker-registry.dydu-priv.com/devops/build/gitlab-ansible:latest
+  before_script:
+    - apk add openssh-client
+    - echo "$RUNNER_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan github.com >> ~/.ssh/known_hosts
+  script:
+    - 'git fetch -v || true'
+    - 'git clone git@github.com:Do-you-dream-up/CV5.git repopub'
+    - 'cd repopub'
+    - 'git remote add this ${CI_PROJECT_DIR}'
+    - 'git fetch this --tags || true'
+    - 'git merge --no-edit --allow-unrelated-histories this/main'
+    - 'git remote remove this'
+    - 'git push'
+  rules:
+    - if: "$CI_COMMIT_REF_NAME =~ /^(chatbox_edge).*/"
+  when: manual
+
