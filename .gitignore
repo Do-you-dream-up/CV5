@@ -6,4 +6,9 @@
 /public/.DS_Store
 src/.DS_Store
 .idea/
+.vscode/
+/.ssh/
 coverage/
+.npmrc
+/.ansible/
+.gitlab-ci.yml
