@@ -1,4 +1,4 @@
-import { DialogContext, DialogProvider, useDialog } from '../DialogContext';
+import { DialogContext, DialogProvider, extractParameterFromGuiAction, useDialog } from '../DialogContext';
 
 import { render } from '../../tools/test-utils';
 
@@ -63,27 +63,50 @@ const DialogContextValuesMock = {
 };
 
 describe('DialogContext', () => {
-  test('should provide dialog context', () => {
-    const MockComponent = () => {
-      const dialog = useDialog();
-      dialog.add('test message');
-      expect(dialog.add).toHaveBeenCalled();
-      expect(dialog.locked).toBeFalsy();
-      dialog.setLocked(true);
-      expect(dialog.setLocked).toHaveBeenCalledWith(true);
-      expect(dialog.prompt).toBe('');
-      dialog.setPrompt('test prompt');
-      expect(dialog.setPrompt).toHaveBeenCalledWith('test prompt');
-      dialog.displayNotification('test notification');
-      expect(dialog.displayNotification).toHaveBeenCalledWith('test notification');
-      return null;
-    };
-    render(
-      <DialogProvider>
-        <DialogContext.Provider value={DialogContextValuesMock}>
-          <MockComponent />
-        </DialogContext.Provider>
-      </DialogProvider>,
-    );
+  test('should extract text between single quotes', () => {
+    const inputString = "javascript:dyduKnowledge('Text before match and text after.')";
+
+    const extractedText = extractParameterFromGuiAction(inputString);
+
+    expect(extractedText).toBe('Text before match and text after.');
   });
+
+  test('should return null for input with no matches', () => {
+    const inputString = 'No matches here.';
+
+    const extractedText = extractParameterFromGuiAction(inputString);
+
+    expect(extractedText).toBe(null);
+  });
+
+  test('should return null for input with no matches', () => {
+    const inputString = 'javascript:dydu("No matches here.")';
+
+    const extractedText = extractParameterFromGuiAction(inputString);
+
+    expect(extractedText).toBe(null);
+  });
+});
+test('should provide dialog context', () => {
+  const MockComponent = () => {
+    const dialog = useDialog();
+    dialog.add('test message');
+    expect(dialog.add).toHaveBeenCalled();
+    expect(dialog.locked).toBeFalsy();
+    dialog.setLocked(true);
+    expect(dialog.setLocked).toHaveBeenCalledWith(true);
+    expect(dialog.prompt).toBe('');
+    dialog.setPrompt('test prompt');
+    expect(dialog.setPrompt).toHaveBeenCalledWith('test prompt');
+    dialog.displayNotification('test notification');
+    expect(dialog.displayNotification).toHaveBeenCalledWith('test notification');
+    return null;
+  };
+  render(
+    <DialogProvider>
+      <DialogContext.Provider value={DialogContextValuesMock}>
+        <MockComponent />
+      </DialogContext.Provider>
+    </DialogProvider>,
+  );
 });

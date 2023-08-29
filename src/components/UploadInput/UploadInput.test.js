@@ -30,7 +30,7 @@ jest.mock('../../contexts/UploadFileContext', () => ({
     fileSelected: '',
     handleCancel: () => {},
     errorFormatMessage: '',
-    isUploadFileSent: false,
+    isUploadFileReturnSuccess: false,
     fileName: 'file name',
   }),
 }));
@@ -51,7 +51,7 @@ describe('UploadInput', () => {
       type: 'application/pdf',
     });
 
-    const isUploadFileSentMock = jest.fn();
+    const isUploadFileReturnSuccessMock = jest.fn();
     let screen;
     act(() => {
       screen = render(<UploadInput />);
@@ -62,7 +62,7 @@ describe('UploadInput', () => {
     });
     fireEvent.click(screen.getByText('Envoyer ce fichier'));
 
-    waitFor(() => expect(isUploadFileSentMock).toHaveBeenCalled());
+    waitFor(() => expect(isUploadFileReturnSuccessMock).toHaveBeenCalled());
 
     waitFor(() => expect(mockSendUploadFile).toHaveBeenCalledWith(file));
   });

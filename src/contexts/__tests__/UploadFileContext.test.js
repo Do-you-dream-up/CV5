@@ -67,8 +67,8 @@ describe('UploadFileContext', () => {
   test('isUploadFileSent method should return true', () => {
     jest.spyOn(dydu, 'isLastResponseStatusInRange');
     const TestComponent = () => {
-      const { isUploadFileSent } = useUploadFile();
-      isUploadFileSent();
+      const { isUploadFileReturnSuccess } = useUploadFile();
+      isUploadFileReturnSuccess();
       return <div>{'envoyé'}</div>;
     };
     render(

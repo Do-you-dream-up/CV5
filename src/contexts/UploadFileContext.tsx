@@ -1,4 +1,14 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { ALLOWED_FORMAT } from '../../src/tools/constants';
 import dydu from '../../src/tools/dydu';
@@ -8,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 interface UploadFileContextProps {
   fileSelected?: File | null;
-  isSent?: boolean;
+  isFileUploadSuccess?: boolean;
   fileName?: string;
   validateFile?: (file: File) => void;
   onSelectFile?: (file: File, inputRef: any) => void;
@@ -19,7 +29,7 @@ interface UploadFileContextProps {
   handleCancel?: () => void;
   showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
-  isUploadFileSent?: () => void;
+  isUploadFileReturnSuccess?: () => void;
   buttonIdDisabled?: {
     id?: boolean;
   };
@@ -35,12 +45,12 @@ export const useUploadFile = () => useContext(UploadFileContext);
 
 export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const { t } = useTranslation('translation');
-  const { showUploadFileButton } = useDialog();
+  const { showUploadFileButton, rewordAfterGuiAction } = useDialog();
   const [selected, setSelected] = useState<File | null>(null);
   const [inputRef, setInputRef] = useState<any>(null);
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
-  const [isSent, setIsSent] = useState<boolean>(false);
+  const [isFileUploadSuccess, setIsFileUploadSuccess] = useState<boolean>(false);
   const [buttonIdDisabled, setButtonIdDisabled] = useState<{ id?: boolean }>({});
   const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
   const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
@@ -60,7 +70,7 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   }, []);
 
   const onSelectFile = (file, inputRef) => (
-    setIsSent(false), validateFile?.(file), setSelected(file), setInputRef(inputRef)
+    setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file), setInputRef(inputRef)
   );
   const handleCancel = () => (
     setSelected(null),
@@ -70,12 +80,18 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
-  const isUploadFileSent = useCallback(() => {
+  const isUploadFileReturnSuccess = useCallback(() => {
     dydu.isLastResponseStatusInRange(200, 206);
-    setIsSent(true);
+    setIsFileUploadSuccess(true);
   }, []);
 
-  const showButtonUploadFile = showConfirmSelectedFile && !isSent;
+  useEffect(() => {
+    if (isFileUploadSuccess) {
+      window.dydu?.chat?.handleRewordClicked(rewordAfterGuiAction, { hide: true, doNotRegisterInteraction: true });
+    }
+  }, [isFileUploadSuccess]);
+
+  const showButtonUploadFile = showConfirmSelectedFile && !isFileUploadSuccess;
 
   const dataContext = useMemo(
     () => ({
@@ -89,8 +105,8 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton,
-      isUploadFileSent,
-      isSent,
+      isUploadFileReturnSuccess,
+      isFileUploadSuccess,
       fileName,
       buttonIdDisabled,
       setButtonIdDisabled,
@@ -102,12 +118,12 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       showButtonUploadFile,
       extractFileFromEvent,
       showConfirmSelectedFile,
-      isUploadFileSent,
+      isUploadFileReturnSuccess,
       validateFile,
       getFileSize,
       handleCancel,
       showUploadFileButton,
-      isSent,
+      isFileUploadSuccess,
       fileName,
       buttonIdDisabled,
       setButtonIdDisabled,

@@ -20,7 +20,7 @@ const UploadInput = () => {
   const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
-  const { fileSelected, handleCancel, errorFormatMessage, isUploadFileSent, fileName } = useUploadFile();
+  const { fileSelected, handleCancel, errorFormatMessage, isUploadFileReturnSuccess, fileName } = useUploadFile();
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
   const label = useMemo(
@@ -35,7 +35,7 @@ const UploadInput = () => {
   );
 
   const sendFile = (file) => {
-    isUploadFileSent && isUploadFileSent();
+    isUploadFileReturnSuccess && isUploadFileReturnSuccess();
     return dydu.sendUploadFile(file);
   };
 

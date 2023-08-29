@@ -46,6 +46,7 @@ export interface DialogContextProps {
   openSecondary?: (props: any) => void;
   showAnimationOperatorWriting?: () => void;
   displayNotification?: (notification: any) => void;
+  extractTextWithRegex?: (inputString: string) => string | null;
   lastResponse?: Servlet.ChatResponseValues | null;
   add?: (interaction: Servlet.ChatResponse) => void;
   addRequest?: (str: string) => void;
@@ -61,6 +62,7 @@ export interface DialogContextProps {
   secondaryActive?: boolean;
   secondaryContent?: any;
   selectedFile?: any;
+  rewordAfterGuiAction?: string;
   setDisabled?: Dispatch<SetStateAction<boolean>>;
   setErrorFormatMessage?: Dispatch<SetStateAction<string | null>>;
   setIsFileActive?: Dispatch<SetStateAction<boolean>>;
@@ -83,6 +85,7 @@ export interface DialogContextProps {
   showUploadFileButton?: () => void;
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
+  setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
 }
 
 interface SecondaryContentProps {
@@ -109,6 +112,16 @@ interface InteractionProps {
 export const DialogContext = createContext<DialogContextProps>({});
 
 export const useDialog = () => useContext(DialogContext);
+
+export function extractParameterFromGuiAction(inputString: string) {
+  const regex = /javascript:dydu\w*\('([^']*)'\)/;
+  const match = inputString.match(regex);
+  if (match) {
+    return match[1];
+  } else {
+    return null;
+  }
+}
 
 export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
@@ -142,6 +155,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
+  const [rewordAfterGuiAction, setRewordAfterGuiAction] = useState<string>('');
 
   useEffect(() => {
     fetchServerStatus();
@@ -355,6 +369,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
       if (guiAction) {
         // check for the dydu functions in the window object
         if (guiAction.match('^javascript:dydu')) {
+          const extractedTextFromGuiAction = extractParameterFromGuiAction(guiAction);
+          if (extractedTextFromGuiAction) {
+            setRewordAfterGuiAction(extractedTextFromGuiAction);
+          }
           parseActions(guiAction).forEach(({ action, parameters }) => {
             const f = dotget(window, action);
             if (typeof f === 'function') {
@@ -557,6 +575,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
         showUploadFileButton,
+        setRewordAfterGuiAction,
+        rewordAfterGuiAction,
       }}
     />
   );
