@@ -1,7 +1,6 @@
 import {
   extractObjectFields,
   extractParamFromUrl,
-  isDefined,
   loadPkce,
   removeQueryFromUri,
   responseToJsonOrThrowError,
@@ -32,7 +31,7 @@ export default function useTokenRequest(authConfiguration) {
       ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri'])),
       ...{
         client_id: authConfiguration.clientId,
-        client_secret: authConfiguration.clientSecret,
+        ...(authConfiguration.clientSecret && { client_secret: authConfiguration.clientSecret }),
         grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
         ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
         ...(pkceActive && { code_verifier: Cookie.get('dydu-code-verifier') }),
@@ -40,10 +39,7 @@ export default function useTokenRequest(authConfiguration) {
       },
     };
 
-    if (isDefined(authConfiguration?.clientSecret)) payload.client_secret = authConfiguration?.clientSecret;
-
-    const redirectUri = removeQueryFromUri(payload.redirect_uri);
-    payload.redirect_uri = redirectUri;
+    payload.redirect_uri = removeQueryFromUri(payload.redirect_uri);
 
     /*
       construct fetchOption
