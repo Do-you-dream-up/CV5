@@ -6,6 +6,7 @@ import talk, { ACTIONS, meta } from '../talk';
 
 import Bowser from 'bowser';
 import dydu from '../dydu';
+import { Local } from '../storage';
 
 describe('talk', () => {
   const chatApi = {
@@ -24,7 +25,7 @@ describe('talk', () => {
     ui: uiApi,
   };
   it('should return the meta information', () => {
-    const locale = dydu.getLocale() || '-';
+    const locale = Local.get(Local.names.locale) || '-';
     const userAgent = Bowser.getParser(window.navigator.userAgent);
     const { browser = {}, os = {}, platform = {} } = userAgent.parsedResult;
     const expectedHtml = [

@@ -1,3 +1,5 @@
+import { Base64 } from 'js-base64';
+
 declare namespace Servlet {
   export type ChatResponseType =
     | Base64

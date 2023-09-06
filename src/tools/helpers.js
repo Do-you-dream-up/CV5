@@ -357,8 +357,6 @@ export const removeEndingSlash = (s) => {
   return !doesEndsWithSlash ? s : removeEndingSlash(rmSlashAtEndString(s));
 };
 
-export const getBrowserLocale = () => document.documentElement.lang;
-
 export const isImageUrl = (url) => {
   if (!isString(url)) return false;
   return strContainsOneOfList(url, ['png', 'jpg', 'svg']);

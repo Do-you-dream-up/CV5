@@ -116,7 +116,6 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
-    this.botLanguages = null;
     this.contextId = null;
     this.updateContextId = null;
     this.onServerChangeFn = null;
@@ -135,10 +134,6 @@ export default new (class Dydu {
     this.lastResponse = null;
     this.qualificationMode = false;
     this.initInfos();
-  }
-
-  setBotLanguages(languages) {
-    this.botLanguages = languages;
   }
 
   setContextId(contextId) {
@@ -465,15 +460,6 @@ export default new (class Dydu {
   }
 
   /**
-   * Self-regeneratively return the currently selected locale.
-   *
-   * @returns {string}
-   */
-  getLocale = () => {
-    return this.locale;
-  };
-
-  /**
    * Return the currently selected space.
    *
    * @param {Object[]} strategy - Order in which space should be detected.
@@ -568,15 +554,52 @@ export default new (class Dydu {
     }
   };
 
-  /**
-   * Save the currently selected locale in the local storage.
-   *
-   * @param {string} locale - Selected locale.
-   * @returns {Promise}
-   */
-  setLocale = (language) => {
-    this.locale = language;
+  initLocaleWithConfiguration(configuration) {
+    const shouldGetLanguageFromBrowser = configuration?.application?.getDefaultLanguageFromSite;
+    let locale = shouldGetLanguageFromBrowser
+      ? Local.get(Local.names.locale) // at this point in time, this value comes from browser language, set by i18nProvider or by locale already set by a previous usage
+      : this.getConfigurationDefaultLanguage(configuration);
+    this.setLocaleFromConfiguration(locale, configuration);
+  }
+
+  getConfigurationDefaultLanguage(configuration) {
+    return configuration?.application?.defaultLanguage[0] || this.getFallBackLanguage();
+  }
+
+  getFallBackLanguage() {
+    return 'fr';
+  }
+
+  correctLocaleFromBotLanguages = (activatedAndActiveBotLanguages = []) => {
+    if (activatedAndActiveBotLanguages && activatedAndActiveBotLanguages.includes(this.locale)) {
+      // keep locale that is already ok
+    } else {
+      this.setLocale(this.getFallBackLanguage());
+    }
   };
+
+  setLocaleFromConfiguration(localeInput, configuration) {
+    let localeToSet;
+    if (configuration?.application?.languages?.includes(localeInput)) {
+      localeToSet = localeInput;
+    } else {
+      console.log(
+        `Setting an unknown locale '${localeInput}'. Possible values: [${configuration?.application?.languages}].`,
+      );
+      localeToSet = this.getFallBackLanguage();
+    }
+    this.setLocale(localeToSet);
+  }
+
+  setLocale(localeToSet) {
+    this.locale = localeToSet;
+    Local.set(Local.names.locale, localeToSet);
+    i18n.changeLanguage(localeToSet);
+  }
+
+  getLocale() {
+    return this.locale;
+  }
 
   /**
    * this method allows you to define variables that are modified on the client side
@@ -1065,15 +1088,7 @@ export default new (class Dydu {
   onConfigurationLoaded() {
     this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
     this.setQualificationMode(this.getConfiguration().qualification?.active);
-  }
-
-  getConfigurationDefaultLocal() {
-    try {
-      if (!this.locale) return `${this.getConfiguration().application.defaultLanguage[0]}`.split('-')[0];
-    } catch (e) {
-      console.info('No default language from configuration file, fallback to browser locale');
-      return this.locale;
-    }
+    this.initLocaleWithConfiguration(this.getConfiguration());
   }
 
   setSpaceToDefault() {

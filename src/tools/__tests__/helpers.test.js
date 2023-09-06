@@ -15,7 +15,6 @@ import {
   documentCreateElement,
   escapeHTML,
   extractDomainFromUrl,
-  getBrowserLocale,
   getChatboxWidth,
   getChatboxWidthTime,
   hasProperty,
@@ -1139,12 +1138,6 @@ describe('removeEndingSlash', () => {
 
   it('returns a string with last slash removed', () => {
     expect(removeEndingSlash(urlIn)).toEqual(urlOut);
-  });
-});
-
-describe('getBrowserLocale', () => {
-  it('returns a string of the local', () => {
-    expect(getBrowserLocale()).toEqual('');
   });
 });
 

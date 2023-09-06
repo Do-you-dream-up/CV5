@@ -131,7 +131,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
-  const { fetchBotLanguages, botLanguages, currentLanguage } = useBotInfo();
+  const { fetchBotLanguages, botLanguages } = useBotInfo();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
@@ -167,7 +167,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { exec, forceExec } = usePromiseQueue(
     [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
-    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages && currentLanguage,
+    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
   );
 
   useEffect(() => {
