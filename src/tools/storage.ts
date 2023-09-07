@@ -118,6 +118,9 @@ export class Local {
     fontSize: 'dydu.fontSize',
     gdpr: 'dydu.gdpr',
     botId: 'dydu.botId',
+    // used for chat talk and i18n, filled first if empty with browser Language by i18n
+    // then maybe updated by configuration and/or bot languages from Atria
+    // and if user switch language in chatbox
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',

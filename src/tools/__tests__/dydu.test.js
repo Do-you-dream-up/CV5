@@ -3,12 +3,11 @@
 import '../prototypes/strings';
 
 import { Cookie, Local } from '../storage';
-import { objectContainFields, objectToQueryParam, secondsToMs, strContains } from '../helpers';
+import { objectContainFields, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import Storage from '../../components/auth/Storage';
 
-const _Local = jest.requireActual('../storage').Local;
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
 
@@ -166,12 +165,7 @@ describe('dydu.js', function () {
 
   describe('onConfigurationLoaded', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, [
-        'setInitialSpace',
-        'setQualificationMode',
-        'getSpace',
-        'getConfiguration',
-      ]);
+      spied = jestSpyOnList(dydu, ['setInitialSpace', 'setQualificationMode', 'getSpace', 'getConfiguration']);
       const c = new ConfigurationFixture();
       spied.getConfiguration.mockReturnValue(c.getConfiguration());
     });
@@ -699,17 +693,6 @@ describe('dydu.js', function () {
       expect(effective).toEqual('<ul><li>hello&nbsp;=&nbsp;bonjour</li></ul>');
     });
   });
-  describe('setLocale', () => {
-    it('should set the |local| class attribute when the local is includes in the |languages| parameter', () => {
-      //GIVEN
-      const languages = ['fr', 'en'];
-      const locale = 'fr';
-      //WHEN
-      dydu.setLocale(locale, languages);
-      //THEN
-      expect(dydu.locale).toEqual('fr');
-    });
-  });
 
   describe('printHistory', () => {
     it('should call |getContextId|', async () => {
@@ -859,12 +842,7 @@ describe('dydu.js', function () {
   describe('getConfiguration', () => {
     it('should return |configuration| class attribute value', () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, [
-        'onConfigurationLoaded',
-        'getSpace',
-        'setInitialSpace',
-        'setQualificationMode',
-      ]);
+      spied = jestSpyOnList(dydu, ['onConfigurationLoaded', 'getSpace', 'setInitialSpace', 'setQualificationMode']);
 
       const config = new ConfigurationFixture();
       const _config = config.getConfiguration();

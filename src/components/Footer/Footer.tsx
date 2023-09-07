@@ -1,5 +1,4 @@
 import Actions, { ActionProps } from '../Actions/Actions';
-import { useEffect, useState } from 'react';
 
 import Input from '../Input/Input';
 import UploadInput from '../UploadInput/UploadInput';
@@ -8,6 +7,8 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+import { useBotInfo } from '../../contexts/BotInfoContext';
+import dydu from '../../tools/dydu';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -28,28 +29,25 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
 
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
-  const [t, i18n] = useTranslation('translation');
-  const [selectedLanguage, setSelectedLanguage] = useState(configuration?.application.defaultLanguage[0]);
-  const { languages } = configuration?.application || {};
+  const [t] = useTranslation('translation');
+  const selectedLanguage = dydu.getLocale();
   const { translate: hasTranslate } = configuration?.footer || {};
+  const { botLanguages } = useBotInfo();
 
   const actionTranslate = t('footer.translate');
 
-  useEffect(() => {
-    if (i18n.languages) setSelectedLanguage(i18n.languages[0]);
-  }, [i18n, t]);
-
-  const handleLanguageChange = (id, languages) => {
-    window.dydu?.localization?.set(id, languages);
+  const handleLanguageChange = (id) => {
+    window.dydu?.localization?.set(id);
   };
 
   const languagesMenu = [
-    languages?.sort().map((id) => ({
-      icon: `flags/${id}.png`,
-      id,
-      onClick: () => handleLanguageChange(id, languages),
-      text: t(`footer.rosetta.${id}`),
-    })),
+    botLanguages &&
+      botLanguages.map((id) => ({
+        icon: `flags/${id}.png`,
+        id,
+        onClick: () => handleLanguageChange(id),
+        text: t(`footer.rosetta.${id}`),
+      })),
   ];
 
   const actions: ActionProps[] = [

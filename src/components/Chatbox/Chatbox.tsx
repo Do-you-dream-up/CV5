@@ -25,9 +25,7 @@ import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
 import talk from '../../tools/talk';
-import { useBotInfo } from '../../contexts/BotInfoContext';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useContextId } from '../../contexts/ContextIdProvider';
 import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -66,14 +64,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     toggleSecondary,
     callWelcomeKnowledge,
   } = useContext(DialogContext);
-  const { setCurrentLanguage, currentLanguage } = useBotInfo();
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
   const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
   const { isOnboardingAlreadyDone } = useContext(OnboardingContext);
   const { gdprPassed, setGdprPassed } = useContext(GdprContext);
-  const { fetchContextId } = useContextId();
   const onboardingEnable = configuration?.onboarding.enable;
   const { modal } = useContext(ModalContext);
   const [ready, setReady] = useState<boolean>(false);
@@ -175,8 +171,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: (locale) => {
-          return Promise.all([setCurrentLanguage(locale), i18n.changeLanguage(locale)])
-            .then(() => sessionStorage.removeItem('dydu.welcomeKnowledge'))
+          return Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)])
+            .then(() => {
+              sessionStorage.removeItem('dydu.welcomeKnowledge');
+            })
             .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => clearInteractions && clearInteractions())
             .then(() => fetchWelcomeKnowledge?.());
@@ -238,7 +236,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     gdprPassed,
     setGdprPassed,
     getDyduChatObject,
-    currentLanguage,
   ]);
 
   const classnames = c('dydu-chatbox', classes.root, {
