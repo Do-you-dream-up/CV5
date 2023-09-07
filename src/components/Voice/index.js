@@ -110,8 +110,10 @@ const Voice = ({ show, t }) => {
       }
       Tts.getAudioFromText(voiceContent.text, template.html, template.text, voice, ssml, ttsServerUrl).then(
         (response) => {
-          audio.src = response;
-          play();
+          if (response) {
+            audio.src = response;
+            play();
+          }
         },
       );
     } else if (voiceContent) {
