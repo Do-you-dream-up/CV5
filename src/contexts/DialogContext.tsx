@@ -258,7 +258,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
   const add = useCallback((interaction) => {
-    const isLastInteractionARequest = interaction.props?.type === 'request';
+    const isLastInteractionARequest = interaction && interaction.props.type === 'request';
     setIsWaitingForResponse(isLastInteractionARequest);
 
     setInteractions((previous) => {
