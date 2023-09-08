@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import Interaction from '../Interaction';
 import Loader from '../Loader';
+import { Local } from '../../tools/storage';
 import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
@@ -26,6 +27,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open }) => {
   const { top } = configuration?.dialog || {};
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
+  const isLiveChatOn = Local.isLivechatOn.load();
 
   useEffect(() => {
     if (spacesActive) {
@@ -50,7 +52,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open }) => {
       <p className={c('dydu-dialog', classes.root)} ref={dialogRef} aria-live="polite" id="dydu-dialog">
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />}
         {interactions.map((it: any, index: number | null) => ({ ...it, key: index }))}
-        {isWaitingForResponse && (
+        {isWaitingForResponse && !isLiveChatOn && (
           <Interaction type="response" className="container-loader-interaction">
             <Loader />
           </Interaction>

@@ -1,5 +1,4 @@
 import Dialog from './Dialog';
-import React from 'react';
 import { render } from '@testing-library/react';
 
 jest.mock('../../contexts/DialogContext', () => ({
@@ -12,14 +11,14 @@ jest.mock('../../contexts/DialogContext', () => ({
 }));
 
 describe('Dialog Component', () => {
-  it('should render without errors', () => {
+  it('should render Dialog component', () => {
     render(<Dialog dialogRef={null} open={false} />);
   });
 
   it('should scroll to the bottom when open is true', () => {
     const querySelectorSpy = jest.spyOn(document, 'querySelector');
 
-    const chatboxDiv = {
+    const chatboxDiv: any = {
       scrollTop: 0,
       scrollHeight: 100,
     };
@@ -33,7 +32,7 @@ describe('Dialog Component', () => {
   it('should not scroll to the bottom when open is false', () => {
     const querySelectorSpy = jest.spyOn(document, 'querySelector');
 
-    const chatboxDiv = {
+    const chatboxDiv: any = {
       scrollTop: 0,
       scrollHeight: 100,
     };
