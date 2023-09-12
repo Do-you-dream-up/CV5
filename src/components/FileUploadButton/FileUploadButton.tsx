@@ -6,6 +6,8 @@ import Scroll from '../Scroll/Scroll';
 import useId from '../../tools/hooks/useId';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
+import useStyles from '../UploadInput/styles';
 
 interface FileUploadButtonProps {
   onSelect?: () => void;
@@ -18,6 +20,8 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
   const [t] = useTranslation('translation');
   const defaultLabel = useMemo(() => label || t('uploadFile.label'), [label]);
   const inputRef = useRef<any>(null);
+  const { configuration } = useConfiguration();
+  const classes: any = useStyles({ configuration });
 
   const { onSelectFile, extractFileFromEvent, buttonIdDisabled, setButtonIdDisabled } = useUploadFile();
   const inputId = useId();
@@ -56,6 +60,7 @@ export default function FileUploadButton({ label }: FileUploadButtonProps) {
   return (
     <Scroll>
       <Button
+        className={classes.upload}
         data-testid="file-upload-button"
         onClick={openFileonClick}
         disabled={buttonIdDisabled?.[inputRef?.current?.id]}

@@ -29,7 +29,7 @@ const UploadInput = () => {
   );
 
   const SendButton = ({ title, onClick }: SendButtonProps) => (
-    <Button send title={title} onClick={() => onClick()}>
+    <Button send title={title} onClick={() => onClick()} className={classes.upload}>
       {title}
     </Button>
   );
@@ -51,7 +51,7 @@ const UploadInput = () => {
   const renderFileInfo = () =>
     isDefined(fileSelected) && (
       <>
-        <span className="name-file">{fileName} </span>
+        <span className={c(classes.color, 'name-file')}>{fileName} </span>
         <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
         {errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>}
       </>
@@ -60,7 +60,7 @@ const UploadInput = () => {
   const rendererButtons = () => (
     <div className="container-btns">
       <div>
-        <Button cancel title={t('close.no')} onClick={() => handleCancel?.()}>
+        <Button cancel className={classes.cancel} title={t('close.no')} onClick={() => handleCancel?.()}>
           {t('close.no')}
         </Button>
       </div>
