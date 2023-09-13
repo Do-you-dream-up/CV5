@@ -18,7 +18,7 @@ export default function FeedbackChoices({ onSelect }) {
         <ul>
           {choices?.map((choice, index) => (
             <li key={index}>
-              <span children={choice} className="dydu-link" onClick={onClick(index)} />
+              <a href="javascript:void(0)" children={choice} className="dydu-link" onClick={onClick(index)} />
             </li>
           ))}
         </ul>
