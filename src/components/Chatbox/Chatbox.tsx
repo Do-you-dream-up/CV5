@@ -8,7 +8,7 @@ import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
-import Dialog from '../Dialog';
+import Dialog from '../Dialog/Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer/Footer';
@@ -21,6 +21,7 @@ import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
+import { VIEW_MODE } from '../../tools/constants';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -32,7 +33,6 @@ import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
-import { VIEW_MODE } from '../../tools/constants';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.

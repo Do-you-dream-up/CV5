@@ -1,8 +1,10 @@
+import React, { useEffect } from 'react';
+
 import Interaction from '../Interaction';
 import Loader from '../Loader';
+import { Local } from '../../tools/storage';
 import Paper from '../Paper';
 import PromptEmail from '../PromptEmail';
-import PropTypes from 'prop-types';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
@@ -10,32 +12,33 @@ import dydu from '../../tools/dydu';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
-import { useEffect } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
-/**
- * Container for the conversation and its interactions. Fetch the history on
- * mount.
- */
-export default function Dialog({ dialogRef, open, ...rest }) {
+interface DialogProps {
+  dialogRef: React.RefObject<any> | ((instance: any) => void) | null;
+  open: boolean;
+}
+
+const Dialog: React.FC<DialogProps> = ({ dialogRef, open }) => {
   const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt, isWaitingForResponse } = useDialog();
   const classes = useStyles();
-  const { top } = configuration.dialog;
+  const { top } = configuration?.dialog || {};
   const { t } = useTranslation('translation');
-  const { active: spacesActive, detection: spacesDetection } = configuration.spaces;
+  const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
+  const isLiveChatOn = Local.isLivechatOn.load();
 
   useEffect(() => {
     if (spacesActive) {
       if (!isDefined(dydu.getSpace(spacesDetection))) {
-        setPrompt('spaces');
+        setPrompt && setPrompt('spaces');
       }
     }
   }, [spacesActive, setPrompt, spacesDetection]);
 
   /**
-   * scroll to bottom of dialog on open chatbox
+   * Scroll to the bottom of the dialog on open chatbox
    */
   useEffect(() => {
     const chatboxDiv = document.querySelector('.dydu-chatbox-body');
@@ -46,10 +49,10 @@ export default function Dialog({ dialogRef, open, ...rest }) {
 
   return (
     <>
-      <p className={c('dydu-dialog', classes.root)} ref={dialogRef} {...rest} aria-live="polite" id="dydu-dialog">
-        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} />}
-        {interactions.map((it, index) => ({ ...it, key: index }))}
-        {isWaitingForResponse && (
+      <p className={c('dydu-dialog', classes.root)} ref={dialogRef} aria-live="polite" id="dydu-dialog">
+        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />}
+        {interactions.map((it: any, index: number | null) => ({ ...it, key: index }))}
+        {isWaitingForResponse && !isLiveChatOn && (
           <Interaction type="response" className="container-loader-interaction">
             <Loader />
           </Interaction>
@@ -60,17 +63,6 @@ export default function Dialog({ dialogRef, open, ...rest }) {
       </p>
     </>
   );
-}
-
-Dialog.propTypes = {
-  dialogRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })]),
-  interactions: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.shape({ type: PropTypes.oneOf([Interaction]) }),
-      PropTypes.shape({ type: PropTypes.oneOf([Interaction.Notification]) }),
-      PropTypes.shape({ type: PropTypes.oneOf([Interaction.Writing]) }),
-    ]),
-  ).isRequired,
-  onAdd: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
 };
+
+export default Dialog;
