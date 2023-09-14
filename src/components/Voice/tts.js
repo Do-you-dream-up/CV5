@@ -28,7 +28,7 @@ export default new (class Tts {
   getAudioFromText = (text, templateHtml, templateText, voice, ssml, url) => {
     if (!url) {
       console.error('[Dydu - TTS] : Url undifined');
-      return;
+      return Promise.resolve();
     }
 
     let textToRead = '';
@@ -40,7 +40,7 @@ export default new (class Tts {
     } else if (text && text !== 'null') {
       textToRead = this.cleantext(text);
     } else {
-      return;
+      return Promise.resolve();
     }
 
     return axios({
