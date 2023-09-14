@@ -105,7 +105,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           </label>
           <textarea
             {...data}
-            aria-describedby="characters-remaining"
             disabled={prompt || locked}
             id={textareaId}
             data-testId="textareaId"
@@ -117,9 +116,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             <div>
               <span children={counter} className={classes.counter} />
               <span
-                id="characters-remaining"
                 className={c('dydu-counter-hidden', classes.hidden)}
-                aria-label={`${counter} ${counterRemaining}`}
                 aria-live={counter === maxLength ? 'off' : 'assertive'}
               >{`${counter} ${counterRemaining}`}</span>
             </div>
