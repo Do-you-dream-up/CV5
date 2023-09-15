@@ -2,7 +2,7 @@
 
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles<any, any>((): any => ({
+export default createUseStyles<any, any>((theme: any): any => ({
   carousel: {
     '& .slick-slide': {
       '& .dydu-bubble-response': {
@@ -10,7 +10,7 @@ export default createUseStyles<any, any>((): any => ({
       },
     },
     '& .slick-next::before, .slick-prev::before': {
-      color: 'rgb(65, 71, 155)',
+      color: theme?.palette?.primary?.main ?? '#41479B',
     },
     '& .slick-next': {
       right: 0,

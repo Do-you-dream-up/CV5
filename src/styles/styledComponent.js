@@ -54,7 +54,6 @@ export const FileUploadContainer = styled.div`
   .name-file {
     max-width: 300px;
     display: block;
-    color: rgb(65, 71, 155);
     background: transparent;
     border-color: rgb(65, 71, 155);
     border-width: 1px;
@@ -78,7 +77,6 @@ export const Button = styled.button`
   text-align: center;
   border-radius: 5px;
   border: 1px solid transparent;
-  background: #41479b;
   color: white;
   padding: 10px;
   cursor: pointer;
@@ -86,13 +84,6 @@ export const Button = styled.button`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
-  ${(props) =>
-    props.cancel &&
-    css`
-      background: transparent;
-      color: #41479b;
-      border-color: #41479b;
-    `};
   ${(props) =>
     props.disabled &&
     css`
