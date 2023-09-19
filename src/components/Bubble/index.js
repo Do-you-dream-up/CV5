@@ -16,6 +16,7 @@ import useStyles from './styles';
 import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 /**
  * A conversation bubble.
@@ -52,6 +53,7 @@ export default function Bubble({
   const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
   const defaultAvatar = configuration.avatar?.response?.image;
   const { surveyConfig } = useSurvey();
+  const { tabbing } = useUserAction();
 
   const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
 
@@ -70,6 +72,33 @@ export default function Bubble({
       setCanAutoOpen(false);
     }
   }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar, canAutoOpen]);
+
+  const shouldSetFocusInScreenReaderMode = () => {
+    return tabbing && document.activeElement.id !== 'dydu-textarea';
+  };
+
+  const setElementFocusable = (element) => {
+    element.setAttribute('tabindex', '0');
+  };
+
+  useEffect(() => {
+    if (type === 'response' && shouldSetFocusInScreenReaderMode()) {
+      let allResponses = document.getElementsByClassName('dydu-interaction-response');
+      if (allResponses && allResponses.length >= 1) {
+        let lastResponse = allResponses[allResponses.length - 1];
+        if (lastResponse) {
+          lastResponse.setAttribute('tabindex', '-1');
+          lastResponse.focus();
+          for (let response of allResponses) {
+            if (response.removeEventListener) {
+              response.removeEventListener('blur', setElementFocusable(response));
+            }
+          }
+          lastResponse.addEventListener('blur', setElementFocusable(lastResponse));
+        }
+      }
+    }
+  }, [type]);
 
   return (
     <>

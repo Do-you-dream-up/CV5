@@ -11,6 +11,7 @@ import '@testing-library/jest-dom'; // => expose .toBeInTheDocument(), etc..
 import { getConfigurationObject } from '../../test/fixtures/configuration';
 import { INTERACTION_TEMPLATE } from '../../tools/constants';
 import { uppercaseFirstLetter } from '../../tools/text';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 /*
   // this to remember how to remove mocked modules
@@ -36,6 +37,10 @@ jest.mock('../../contexts/ConfigurationContext', () => ({
   useConfiguration: jest.fn(),
 }));
 
+jest.mock('../../contexts/UserActionContext', () => ({
+  useUserAction: jest.fn(),
+}));
+
 const withTheme = (mountedChildrenComponent) => (
   <JssProvider>
     <ThemeProvider theme={themeJSON}>{mountedChildrenComponent}</ThemeProvider>
@@ -49,6 +54,7 @@ describe('Interaction', function () {
     useConfiguration.mockReturnValue({ configuration: getConfigurationObject() });
     useLivechat.mockReturnValue({ isLivechatOn: false });
     useDialog.mockReturnValue({});
+    useUserAction.mockReturnValue({ tabbing: false });
   });
 
   afterEach(() => {
