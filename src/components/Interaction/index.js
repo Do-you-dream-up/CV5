@@ -303,7 +303,6 @@ export default function Interaction({
   return (
     ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
       <div
-        tabIndex={0}
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,

@@ -97,6 +97,7 @@ export default function Bubble({
               className,
             ),
             id: `dydu-bubble-${type}`,
+            tabIndex: '0',
           },
           <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
             {(children || html) && (
