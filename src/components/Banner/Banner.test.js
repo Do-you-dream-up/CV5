@@ -3,9 +3,14 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Banner from './Banner';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 jest.mock('../../contexts/ConfigurationContext', () => ({
   useConfiguration: jest.fn(),
+}));
+
+jest.mock('../../contexts/UserActionContext', () => ({
+  useUserAction: jest.fn(),
 }));
 
 describe('Banner component', () => {
@@ -22,6 +27,7 @@ describe('Banner component', () => {
       },
     };
     useConfiguration.mockReturnValue({ configuration });
+    useUserAction.mockReturnValue({ tabbing: true });
   });
 
   afterEach(() => {
