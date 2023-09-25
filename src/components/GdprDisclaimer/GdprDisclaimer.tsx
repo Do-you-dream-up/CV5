@@ -75,9 +75,7 @@ export default function GdprDisclaimer({
                 <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
                   {body &&
                     ready &&
-                    body.map((item) => (
-                      <p tabIndex={0} aria-label={item.text} dangerouslySetInnerHTML={{ __html: item.text }} />
-                    ))}
+                    body.map((item) => <p tabIndex={0} dangerouslySetInnerHTML={{ __html: item.text }} />)}
                 </Skeleton>
               </div>
             </>
