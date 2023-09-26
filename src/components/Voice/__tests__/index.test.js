@@ -24,6 +24,6 @@ describe('Voice component', () => {
         <Voice show={true} />
       </DialogProvider>,
     );
-    expect(getAllByTitle('microphon')).toBeDefined();
+    expect(getAllByTitle('input.actions.record.start')).toBeDefined();
   });
 });

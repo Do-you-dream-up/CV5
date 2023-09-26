@@ -52,6 +52,8 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const actionTests = t('header.actions.tests');
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
+  const actionTest = t('header.actions.tests');
+  const headerLogo = t('header.logo');
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = dydu.hasUserAcceptedGdpr();
   const singleTab = !configuration.tabs.hasContactTab;
@@ -133,7 +135,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: <Icon icon={icons?.dots} color={iconColorWhite} alt="dots" />,
+      children: <Icon icon={icons?.dots} color={iconColorWhite} alt={actionTest} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && isOnboardingAlreadyDone && testsMenu.flat().length > 0,
@@ -214,7 +216,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       >
         <div className={c('dydu-header-logo', classes.logo)} id="dydu-header-logo">
           {!!hasImage && (
-            <div className={c('dydu-header-image', classes.image)} id="dydu-header-image">
+            <div className={c('dydu-header-image', classes.image)} id="dydu-header-image" title={headerLogo}>
               <AvatarsMatchingRequest
                 typeResponse={typeResponse}
                 headerAvatar={true}

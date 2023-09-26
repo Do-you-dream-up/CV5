@@ -74,6 +74,7 @@ export default function Banner() {
             children: t('banner.more'),
             href: moreLink,
             icon: `${process.env.PUBLIC_URL}icons/${icons.moreIcon}`,
+            rollOver: t('banner.rollOver'),
           },
         ]
       : []),

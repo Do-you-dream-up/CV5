@@ -36,6 +36,7 @@ export default function Tabs() {
         <div className={classes.indicator} />
         {tabs.map(({ icon, key }, index) => {
           const label = current === index ? t(`tabs.${key}`) + activeTab : t(`tabs.${key}`);
+          const rollOver = t(`tabs.rollOver.${key}`);
 
           const onKeyDown = (event) => {
             if (event.keyCode === 32 || event.keyCode === 13) {
@@ -50,7 +51,7 @@ export default function Tabs() {
               })}
               key={index}
               onClick={select(key)}
-              title={label}
+              title={rollOver}
               tabIndex={0}
               onKeyDown={onKeyDown}
               role="navigation"
@@ -62,7 +63,12 @@ export default function Tabs() {
                 })}
               >
                 {!!icon && (
-                  <Icon icon={icon} color={theme?.palette?.primary.text || ''} className={classes.icon} alt={label} />
+                  <Icon
+                    icon={icon}
+                    color={theme?.palette?.primary.text || ''}
+                    className={classes.icon}
+                    alt={rollOver}
+                  />
                 )}
                 {!!hasTitle && (
                   <Skeleton hide={!ready} variant="text" width="4em">
