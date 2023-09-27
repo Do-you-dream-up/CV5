@@ -30,7 +30,6 @@ const Icon = ({
       color: color,
       className: `dydu-icon ${className} ${icon}`,
       title: title || alt,
-      alt: alt,
       onClick: onClick,
       size,
     }),
