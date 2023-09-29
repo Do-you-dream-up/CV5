@@ -18,9 +18,10 @@ import { useTranslation } from 'react-i18next';
 interface DialogProps {
   dialogRef: React.RefObject<any> | ((instance: any) => void) | null;
   open: boolean;
+  style: any;
 }
 
-const Dialog: React.FC<DialogProps> = ({ dialogRef, open }) => {
+const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFromChatbox }) => {
   const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt, isWaitingForResponse } = useDialog();
   const classes = useStyles();
@@ -49,7 +50,14 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open }) => {
 
   return (
     <>
-      <p className={c('dydu-dialog', classes.root)} ref={dialogRef} aria-live="polite" id="dydu-dialog">
+      <p
+        className={c('dydu-dialog', classes.root)}
+        ref={dialogRef}
+        style={style}
+        {...otherPropsFromChatbox}
+        aria-live="polite"
+        id="dydu-dialog"
+      >
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />}
         {interactions.map((it: any, index: number | null) => ({ ...it, key: index }))}
         {isWaitingForResponse && !isLiveChatOn && (
