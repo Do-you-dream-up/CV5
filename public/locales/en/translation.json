@@ -5,7 +5,8 @@
   "banner": {
     "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",
     "more": "More information",
-    "ok": "Thanks"
+    "ok": "Thanks",
+    "rollOver" : "Link to discover more"
   },
   "avatar": {
     "altAnswer": "replied"
@@ -157,7 +158,8 @@
       "fontDecrease": "Decrease font",
       "fontIncrease": "Increase font"
     },
-    "title": "Need help?"
+    "title": "Need help ?",
+    "logo" : "Dydu's logo"
   },
   "input": {
     "actions": {
@@ -213,6 +215,10 @@
     "welcome": "Welcome to the chatbot, please select a space before chatting :"
   },
   "tabs": {
+    "rollOver" :{
+      "contacts": "Contacts",
+      "dialog": "The dialog"
+    },
     "contacts": "Contacts",
     "dialog": "Dialog",
     "activeTab": " - active tab"

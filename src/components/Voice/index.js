@@ -12,13 +12,14 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useMousetrap from 'react-hook-mousetrap';
 import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
 
 /**
  * TTS / STT
  * Speech-to-Text allows to convert sound to text by applying powerful neural network models via an API,
  * it is the reverse of Text-to-Speech that convert streaming sound to a text via API.
  */
-const Voice = ({ show, t }) => {
+const Voice = ({ show, v }) => {
   // Stream Audio
   let AudioContext;
   let context;
@@ -43,32 +44,46 @@ const Voice = ({ show, t }) => {
   const silenceDelay = 3000;
   const bufferSize = 2048;
   const minDecibels = -100;
+  const { t } = useTranslation('translation');
+  const startRecord = t('input.actions.record.start');
+  const stopRecord = t('input.actions.record.stop');
+  const replayRecord = t('input.actions.record.replay');
+  const playRecord = t('input.actions.record.play');
+  const pauseRecord = t('input.actions.record.pause');
 
   // eslint-disable-next-line no-undef
   const [audio] = React.useState(new Audio());
 
   const iconMicrophon = (
-    <Icon icon={icons?.microphon || ''} color={themeColor?.palette?.primary.main} alt="microphon" />
+    <Icon icon={icons?.microphon || ''} color={themeColor?.palette?.primary.main} alt={startRecord} />
   );
-  const iconPlay = <Icon icon={icons?.play || ''} color={themeColor?.palette?.primary.main} alt="play" />;
-  const iconPause = <Icon icon={icons?.pause || ''} color={themeColor?.palette?.primary.main} alt="pause" />;
-  const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt="replay" />;
-  const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt="stop" />;
+  const iconPlay = <Icon icon={icons?.play || ''} color={themeColor?.palette?.primary.main} alt={playRecord} />;
+  const iconPause = <Icon icon={icons?.pause || ''} color={themeColor?.palette?.primary.main} alt={pauseRecord} />;
+  const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt={replayRecord} />;
+  const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt={stopRecord} />;
 
-  const startRecordButton = Tts.getButtonAction(t?.start, iconMicrophon, () => {
-    window.dydu.ui.toggle(2);
-    setTimeout(() => {
-      window.dydu.voice.startRecording();
-    }, 100);
-  });
-
-  const stopRecordButton = Tts.getButtonAction(t?.stop, iconStop, () =>
-    isChrome ? stopRecordChrome() : stopRecording(),
+  const startRecordButton = Tts.getButtonAction(
+    v?.start,
+    iconMicrophon,
+    () => {
+      window.dydu.ui.toggle(2);
+      setTimeout(() => {
+        window.dydu.voice.startRecording();
+      }, 100);
+    },
+    startRecord,
   );
-  const pauseMediaButton = Stt.getButtonAction(t?.pause, iconPause, () => pause());
-  const playMediaButton = Stt.getButtonAction(t?.play, iconPlay, () => play());
-  const replayMediaButton = Stt.getButtonAction(t?.replay, iconReplay, () => replay());
-  const stopMediaButton = Stt.getButtonAction(t?.stop, iconStop, () => stop());
+
+  const stopRecordButton = Tts.getButtonAction(
+    v?.stop,
+    iconStop,
+    () => (isChrome ? stopRecordChrome() : stopRecording()),
+    stopRecord,
+  );
+  const pauseMediaButton = Stt.getButtonAction(v?.pause, iconPause, () => pause(), pauseRecord);
+  const playMediaButton = Stt.getButtonAction(v?.play, iconPlay, () => play(), playRecord);
+  const replayMediaButton = Stt.getButtonAction(v?.replay, iconReplay, () => replay(), replayRecord);
+  const stopMediaButton = Stt.getButtonAction(v?.stop, iconStop, () => stop(), stopRecord);
   const [actions, setActions] = React.useState([startRecordButton]);
   const [handelVoice, setHandelVoice] = React.useState(false);
   const [url, setUrl] = useState('');
@@ -239,7 +254,7 @@ const Voice = ({ show, t }) => {
    */
   const pause = () => {
     audio.pause();
-    setActions([playMediaButton, stopMediaButton]);
+    setActions([playMediaButton, stopMediaButton, { roolOver: { playRecord } }]);
   };
   /**
    * Stop audio media and show the record action
@@ -390,7 +405,7 @@ Voice.propTypes = {
   configuration: PropTypes.object,
   Actions: PropTypes.node,
   show: PropTypes.bool,
-  t: PropTypes.any,
+  v: PropTypes.any,
   iconMicrophon: PropTypes.node,
   iconPlay: PropTypes.node,
   iconPause: PropTypes.node,

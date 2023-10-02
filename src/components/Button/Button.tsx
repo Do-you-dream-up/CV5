@@ -24,6 +24,7 @@ export interface ButtonProps {
   title?: string;
   type?: string;
   variant?: 'contained' | 'icon' | 'text';
+  rollOver?: string;
 }
 
 export default forwardRef((props: ButtonProps, ref) => <Button {...props} reference={ref} />);
@@ -36,6 +37,7 @@ export default forwardRef((props: ButtonProps, ref) => <Button {...props} refere
  */
 const Button = ({
   children,
+  rollOver,
   color,
   component = 'button',
   grow,
@@ -61,7 +63,12 @@ const Button = ({
   const button = (
     <div className={classes.children}>
       {icon ? (
-        <Icon icon={icons?.moreIcon || ''} className="button-icon" color={theme?.palette?.primary.text} alt="button" />
+        <Icon
+          icon={icons?.moreIcon || ''}
+          className="button-icon"
+          color={theme?.palette?.primary.text}
+          alt={rollOver}
+        />
       ) : null}
       <p className={classes.txt} children={children} />
     </div>

@@ -7,11 +7,12 @@ export default new (class Tts {
    * @param {*} iconComponent
    * @param {*} action
    */
-  getButtonAction = (title, iconComponent, action) => ({
+  getButtonAction = (title, iconComponent, action, rollOver) => ({
     children: iconComponent,
     onClick: () => action(),
     type: 'button',
     variant: 'icon',
+    rollOver: rollOver,
   });
 
   /**
