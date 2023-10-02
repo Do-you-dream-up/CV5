@@ -10,6 +10,7 @@ export const UserActionContext = createContext();
 
 export function UserActionProvider({ children }) {
   const [tabbing, setTabbing] = useState(false);
+  const [tabPressed, setTabPressed] = useState(false);
 
   const [rgaaRef, setRgaaRef] = useState({});
 
@@ -17,23 +18,32 @@ export function UserActionProvider({ children }) {
     const keyListener = (e) => {
       if (e.keyCode === 9) {
         setTabbing(true);
+        setTabPressed(true);
+      } else if (e.keyCode === 13 && tabPressed) {
+        setTabbing(true);
+      } else {
+        setTabbing(false);
+        setTabPressed(false);
       }
     };
     document.addEventListener('keydown', keyListener);
     return () => {
       document.removeEventListener('keydown', keyListener);
     };
-  }, []);
+  }, [tabPressed]);
 
   useEffect(() => {
     const clickListener = () => {
-      setTabbing(false);
+      if (!tabPressed) {
+        setTabbing(false);
+      }
+      setTabPressed(false);
     };
     document.addEventListener('click', clickListener);
     return () => {
       document.removeEventListener('click', clickListener);
     };
-  }, []);
+  }, [tabPressed]);
 
   const addRgaaRef = (name, ref) => setRgaaRef({ ...rgaaRef, [name]: ref });
 
