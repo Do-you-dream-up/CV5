@@ -36,11 +36,11 @@ export default createUseStyles((theme) => {
       width: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
       [theme.breakpoints?.up('xl')]: {
         minWidth: configuration.secondary.fixedDimensions ? configuration.secondary.width : width,
-        maxWidth: '100%',
         maxHeight: '100%',
       },
-      [theme.breakpoints?.down('lg')]: {
+      [theme.breakpoints?.down('md')]: {
         maxHeight: '100%',
+        maxWidth: '100%',
       },
     }),
     body: () => ({
