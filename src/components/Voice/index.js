@@ -66,7 +66,6 @@ const Voice = ({ show, v }) => {
     v?.start,
     iconMicrophon,
     () => {
-      window.dydu.ui.toggle(2);
       setTimeout(() => {
         window.dydu.voice.startRecording();
       }, 100);
@@ -91,7 +90,6 @@ const Voice = ({ show, v }) => {
 
   useMousetrap(['ctrl+m'], () => {
     if (isMacOs && !locked) {
-      window.dydu.ui.toggle(2);
       setTimeout(() => {
         window.dydu.voice.startRecording();
       }, 100);
@@ -100,7 +98,6 @@ const Voice = ({ show, v }) => {
 
   useMousetrap(['ctrl+space'], () => {
     if (isWindows && !locked) {
-      window.dydu.ui.toggle(2);
       setTimeout(() => {
         window.dydu.voice.startRecording();
       }, 100);
