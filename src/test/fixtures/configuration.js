@@ -11,11 +11,6 @@ export const getConfigurationObject = (updates = {}) => {
       directory: 'main/',
     },
     avatar: {
-      request: {
-        enable: false,
-        background: false,
-        image: 'dydu-logo.svg',
-      },
       response: {
         enable: true,
         background: false,
@@ -33,12 +28,6 @@ export const getConfigurationObject = (updates = {}) => {
       more: false,
       moreLink: 'https://goo.gle',
       transient: false,
-    },
-    carousel: {
-      bullets: true,
-      controls: true,
-      offset: 5,
-      offsetBetweenCard: 100,
     },
     chatbox: {
       expandable: true,
@@ -179,6 +168,7 @@ export const getConfigurationObject = (updates = {}) => {
       pkceMode: '',
       authUrl: '',
       tokenUrl: '',
+      discoveryUrl: '',
       scopes: [''],
       withAuth: false,
     },
@@ -300,12 +290,6 @@ export const getConfigurationObject = (updates = {}) => {
       right: 16,
       displayType: 0,
     },
-    templateCarousel: {
-      bullets: true,
-      controls: true,
-      offset: 5,
-      offsetBetweenCard: 82,
-    },
     templateProduct: {
       readmore: 100,
     },
@@ -355,11 +339,6 @@ export class ConfigurationFixture {
 
   setSuggestionsLimit() {
     this.getConfiguration().suggestions.limit = 3;
-    return this;
-  }
-
-  activateDefaultLanguageFromSite() {
-    this.getConfiguration().application.getDefaultLanguageFromSite = true;
     return this;
   }
 

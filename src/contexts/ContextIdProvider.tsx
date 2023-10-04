@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
@@ -9,7 +9,11 @@ export interface ContextIdProviderProps {
   children?: any;
 }
 
-export interface ContextIdContextProps {}
+export interface ContextIdContextProps {
+  fetchContextId?: (options?: any) => void;
+  contextId: string | null;
+  setContextId: Dispatch<SetStateAction<string | null>>;
+}
 
 export const useContextId = () => useContext<ContextIdContextProps>(ContextIdContext);
 
@@ -44,8 +48,10 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
   };
 
   const fetchContextId = () => {
-    try {
-      return new Promise(() => {
+    const isLivechatOn = Local.isLivechatOn.load();
+
+    return new Promise(() => {
+      if (!isLivechatOn) {
         dydu
           .getContextId()
           ?.then((response) => {
@@ -54,14 +60,22 @@ export const ContextIdProvider = ({ children }: ContextIdProviderProps) => {
           .catch((error) => {
             console.log(error);
           });
-      });
-    } catch (error) {
-      console.error(error);
-    }
+      }
+    });
   };
+
+  const [prevContext, setPrevContext] = useState<string | null>(localStorage.getItem('dydu.context'));
 
   useEffect(() => {
     contextId && updateContextId(contextId);
+    for (const key in localStorage) {
+      if (key.startsWith('pushruleTrigger') && prevContext !== contextId) {
+        localStorage.removeItem(key);
+      }
+    }
+    if (contextId !== null) {
+      setPrevContext(contextId);
+    }
   }, [contextId]);
 
   useEffect(() => {

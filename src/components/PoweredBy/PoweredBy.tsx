@@ -1,23 +1,13 @@
-import { useEffect, useState } from 'react';
-
 import c from 'classnames';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import dydu from '../../tools/dydu';
 
 /**
  * Display the "powered by dydu" phrase at the end of the conversation, if this parameter is active into the Dialog component
  */
 const PoweredBy = () => {
-  const { configuration } = useConfiguration();
   const classes = useStyles();
-  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(
-    configuration?.application.defaultLanguage[0],
-  );
-  const lang = localStorage.getItem('dydu.locale');
-
-  useEffect(() => {
-    lang && setSelectedLanguage(lang);
-  }, [lang]);
+  const lang = dydu.getLocale();
 
   return (
     <div className={c(classes.poweredText)}>
@@ -41,11 +31,7 @@ const PoweredBy = () => {
             </g>
           </g>
         </svg>
-        <a
-          href={selectedLanguage === 'fr' ? 'https://www.dydu.ai' : 'https://www.dydu.ai/en'}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={lang === 'fr' ? 'https://www.dydu.ai' : 'https://www.dydu.ai/en'} target="_blank" rel="noreferrer">
           dydu
         </a>
       </p>

@@ -5,11 +5,12 @@ import LivechatPayload from '../LivechatPayload';
 import { Local } from '../storage';
 import { TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
-import { isDefined } from '../helpers';
+import { b64dAllFields, b64decode, isDefined } from '../helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useConversationHistory } from '../../contexts/ConversationHistoryContext';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+import { useSurvey } from '../../Survey/SurveyProvider';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
 
@@ -17,6 +18,7 @@ const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + (dydu.isLocalEnv()
 
 const MESSAGE_TYPE = {
   survey: 'survey',
+  surveyConfigurationResponse: 'surveyConfigurationResponse',
   error: 'error',
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
@@ -29,7 +31,6 @@ const MESSAGE_TYPE = {
   startPolling: 'StartPolling',
 };
 
-let handleSurvey = null;
 let onFail = null;
 let onEndCommunication = null;
 let displayResponseText = null;
@@ -39,10 +40,10 @@ let onOperatorWriting = null;
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
     contextId: configuration.contextId || Local.contextId.load(),
-    botId: configuration.botId || dydu.getBotId(),
-    space: configuration.api.getSpace(),
-    clientId: configuration.api.getClientId(),
-    language: configuration.api.getLocale(),
+    botId: configuration.botId || dydu.getBotId() || Local.get(Local.names.botId),
+    space: configuration.api.getSpace() || Local.get(Local.names.space),
+    clientId: configuration.api.getClientId() || Local.get(Local.names.client),
+    language: configuration.api.getLocale() || Local.get(Local.names.locale),
   });
 
 export default function useDyduWebsocket() {
@@ -51,6 +52,7 @@ export default function useDyduWebsocket() {
   const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
   const { setTopKnowledge, extractPayload } = useTopKnowledge();
+  const { setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
 
   const messageData = useMemo(() => {
@@ -73,6 +75,7 @@ export default function useDyduWebsocket() {
     if (!isDefined(messageData)) return null;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.historyResponse(messageData)) return MESSAGE_TYPE.historyResponse;
+    if (LivechatPayload.is.surveyConfigurationResponse(messageData)) return MESSAGE_TYPE.surveyConfigurationResponse;
     if (LivechatPayload.is.topKnowledgeResponse(messageData)) return MESSAGE_TYPE.topKnowledge;
     if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
@@ -89,6 +92,11 @@ export default function useDyduWebsocket() {
   const displayMessage = useCallback(() => {
     if (isDefined(messageText)) {
       displayResponseText(messageText);
+
+      let operator = messageData?.values?.operatorExternalId?.fromBase64();
+      if (operator) {
+        Local.operator.save(operator);
+      }
     }
   }, [messageText]);
 
@@ -121,7 +129,11 @@ export default function useDyduWebsocket() {
     if (!isDefined(messageType)) return;
     switch (messageType) {
       case MESSAGE_TYPE.survey:
-        return handleSurvey(messageData);
+        return sendSurveyConfiguration(b64decode(messageData?.values?.survey));
+
+      case MESSAGE_TYPE.surveyConfigurationResponse:
+        setSurveyConfig(b64dAllFields(messageData?.values));
+        return;
 
       case MESSAGE_TYPE.uploadRequest:
         return showUploadFileButton();
@@ -135,6 +147,7 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.historyResponse:
         if (!messageData?.values?.interactions || messageData?.values?.interactions?.length === 0) {
           Local.isLivechatOn.save(false);
+          Local.operator.remove();
         } else if (!history || history?.length === 0) {
           setHistory(messageData.values.interactions);
         }
@@ -187,7 +200,6 @@ export default function useDyduWebsocket() {
     displayNotificationMessage = configuration.displayNotification;
     onOperatorWriting = configuration.showAnimationOperatorWriting;
     onFail = configuration.onFail;
-    handleSurvey = configuration.handleSurvey;
   }, []);
 
   const open = useCallback(
@@ -211,6 +223,15 @@ export default function useDyduWebsocket() {
       console.error(e);
     }
   }, []);
+
+  const sendSurveyConfiguration = (surveyId) => {
+    const message = LivechatPayload.create.surveyConfigurationMessage(surveyId);
+    try {
+      trySendMessage(message);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const trySendMessage = (message) => {
     try {
@@ -261,6 +282,7 @@ export default function useDyduWebsocket() {
     open,
     send,
     sendHistory,
+    sendSurveyConfiguration,
     sendSurvey,
     close,
     onUserTyping,

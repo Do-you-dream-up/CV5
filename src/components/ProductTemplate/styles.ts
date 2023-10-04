@@ -40,7 +40,6 @@ export default createUseStyles<any, any>((theme: any): any => ({
     fontSize: '12px',
   }),
   image: () => ({
-    width: 250,
     height: 258,
     minHeight: 108,
     marginTop: 10,

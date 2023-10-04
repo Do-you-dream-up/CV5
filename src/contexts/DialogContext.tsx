@@ -2,6 +2,7 @@ import * as Constants from '../tools/constants';
 
 import {
   Dispatch,
+  ReactElement,
   ReactNode,
   SetStateAction,
   createContext,
@@ -34,7 +35,7 @@ import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
-import useWelcomeKnowledge from '../tools/hooks/useWelcomeKnowledge';
+import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -45,12 +46,13 @@ export interface DialogContextProps {
   openSecondary?: (props: any) => void;
   showAnimationOperatorWriting?: () => void;
   displayNotification?: (notification: any) => void;
+  extractTextWithRegex?: (inputString: string) => string | null;
   lastResponse?: Servlet.ChatResponseValues | null;
   add?: (interaction: Servlet.ChatResponse) => void;
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
   disabled?: boolean;
-  empty?: () => void;
+  clearInteractions?: () => void;
   errorFormatMessage?: string | null;
   interactions?: any;
   isFileActive?: boolean;
@@ -60,6 +62,7 @@ export interface DialogContextProps {
   secondaryActive?: boolean;
   secondaryContent?: any;
   selectedFile?: any;
+  rewordAfterGuiAction?: string;
   setDisabled?: Dispatch<SetStateAction<boolean>>;
   setErrorFormatMessage?: Dispatch<SetStateAction<string | null>>;
   setIsFileActive?: Dispatch<SetStateAction<boolean>>;
@@ -82,6 +85,7 @@ export interface DialogContextProps {
   showUploadFileButton?: () => void;
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
+  setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
 }
 
 interface SecondaryContentProps {
@@ -109,6 +113,16 @@ export const DialogContext = createContext<DialogContextProps>({});
 
 export const useDialog = () => useContext(DialogContext);
 
+export function extractParameterFromGuiAction(inputString: string) {
+  const regex = /javascript:dydu\w*\('([^']*)'\)/;
+  const match = inputString.match(regex);
+  if (match) {
+    return match[1];
+  } else {
+    return null;
+  }
+}
+
 export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
@@ -120,7 +134,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetchBotLanguages, botLanguages } = useBotInfo();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
-  const { fetch: fetchWelcomeKnowledge, result: welcomeContent } = useWelcomeKnowledge();
+  const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
@@ -129,7 +143,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState<ReactNode[]>([]);
+  const [interactions, setInteractions] = useState<ReactElement[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
@@ -141,6 +155,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
+  const [rewordAfterGuiAction, setRewordAfterGuiAction] = useState<string>('');
 
   useEffect(() => {
     fetchServerStatus();
@@ -196,8 +211,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [configuration, pushrules]);
 
   const shouldTriggerPushRules = useMemo(() => {
-    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeContent;
-  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeContent]);
+    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeKnowledge;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeKnowledge]);
 
   useEffect(() => {
     if (shouldTriggerPushRules) {
@@ -243,6 +258,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
 
   const add = useCallback((interaction) => {
+    const isLastInteractionARequest = interaction?.props?.type === 'request';
+    setIsWaitingForResponse(isLastInteractionARequest);
+
     setInteractions((previous) => {
       if (isLastElementOfTypeAnimationWriting(previous)) previous.pop();
 
@@ -351,6 +369,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
       if (guiAction) {
         // check for the dydu functions in the window object
         if (guiAction.match('^javascript:dydu')) {
+          const extractedTextFromGuiAction = extractParameterFromGuiAction(guiAction);
+          if (extractedTextFromGuiAction) {
+            setRewordAfterGuiAction(extractedTextFromGuiAction);
+          }
           parseActions(guiAction).forEach(({ action, parameters }) => {
             const f = dotget(window, action);
             if (typeof f === 'function') {
@@ -445,9 +467,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     ],
   );
 
-  const empty = useCallback(() => {
+  const clearInteractions = () => {
     setInteractions([]);
-  }, []);
+  };
 
   const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
     if (body || title || url) {
@@ -480,17 +502,16 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
-    if (isInteractionListEmpty && !welcomeContent && checkIfBehindSamlAndConnected) forceExec();
-  }, [isInteractionListEmpty, welcomeContent, checkIfBehindSamlAndConnected]);
+    if (isInteractionListEmpty && !welcomeKnowledge && checkIfBehindSamlAndConnected) forceExec();
+  }, [isInteractionListEmpty, welcomeKnowledge, checkIfBehindSamlAndConnected]);
 
   useEffect(() => {
-    if (welcomeContent || listInteractionHistory) {
-      empty();
+    if (welcomeKnowledge || listInteractionHistory) {
+      clearInteractions();
     }
-
-    welcomeContent && addResponse(welcomeContent);
+    welcomeKnowledge && addResponse(welcomeKnowledge);
     listInteractionHistory && listInteractionHistory?.forEach(addHistoryInteraction);
-  }, [welcomeContent, listInteractionHistory]);
+  }, [welcomeKnowledge, listInteractionHistory]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -532,7 +553,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         addRequest,
         addResponse,
         disabled,
-        empty,
+        clearInteractions,
         interactions,
         locked,
         placeholder,
@@ -554,6 +575,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setAutoSuggestionActive,
         callWelcomeKnowledge: () => null,
         showUploadFileButton,
+        setRewordAfterGuiAction,
+        rewordAfterGuiAction,
       }}
     />
   );

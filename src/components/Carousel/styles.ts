@@ -3,76 +3,21 @@
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles<any, any>((theme: any): any => ({
-  active: {},
-  bullets: () => ({
-    '& > *': {
-      '&$active:after': {
-        backgroundColor: theme.palette.action.active,
-        borderRadius: '50%',
-        content: '""',
-        display: 'block',
-        height: '100%',
-        width: '100%',
+  carousel: {
+    '& .slick-slide': {
+      '& .dydu-bubble-response': {
+        marginBottom: 10,
       },
-      backgroundColor: theme.palette.background.bullet,
-      borderRadius: '50%',
-      cursor: 'pointer',
-      height: '0.375em',
-      margin: [[0, '.15em']],
-      width: '0.375em',
     },
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '.5em',
-    height: '40px',
-    alignItems: 'center',
-  }),
-  controls: ({ offset }) => ({
-    '& .dydu-button': {
-      backgroundColor: 'rgb(196 196 196 /50%)',
+    '& .slick-next::before, .slick-prev::before': {
+      color: theme?.palette?.primary?.main ?? '#41479B',
     },
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
-    left: '-18px',
-    margin: ['0', `${offset}%`, 0],
-    padding: [0, '.25em'],
-    position: 'absolute',
-    right: '-18px',
-    top: 'calc(50% - 27px)',
-  }),
-  root: () => ({
-    overflow: 'hidden',
-    position: 'relative',
-  }),
-  step: ({ length, offsetBetweenCard }) => ({
-    '& .dydu-bubble': {
-      height: '100%',
+    '& .slick-next': {
+      right: 0,
     },
-    '& > *': {
-      flexGrow: 1,
-      margin: '0 14.5px !important',
+    '& .slick-prev': {
+      left: 0,
+      zIndex: 1,
     },
-    float: 'left',
-    height: '100%',
-    margin: [[0], '!important'],
-    width: `${offsetBetweenCard / length}%`,
-  }),
-  steps: ({ index, length, offsetBetweenCard }) => ({
-    '& .dydu-bubble-response': {
-      alignItems: 'normal',
-    },
-    display: 'block',
-    flexDirection: 'row',
-    height: '100%',
-    overflow: 'hidden',
-    position: 'relative',
-    transform: `translate3d(${(index * -offsetBetweenCard) / length}%, 0, 0)`,
-    transitionDuration: '.25s',
-    transitionProperty: 'transform',
-    width: `${length * 100}%`,
-    paddingTop: 3,
-    paddingBottom: 5,
-    paddingLeft: 2,
-  }),
+  },
 }));

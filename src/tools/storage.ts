@@ -118,6 +118,9 @@ export class Local {
     fontSize: 'dydu.fontSize',
     gdpr: 'dydu.gdpr',
     botId: 'dydu.botId',
+    // used for chat talk and i18n, filled first if empty with browser Language by i18n
+    // then maybe updated by configuration and/or bot languages from Atria
+    // and if user switch language in chatbox
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
@@ -126,6 +129,7 @@ export class Local {
     wizard: 'dydu.wizard.data',
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
+    operator: 'dydu.operator',
   };
 
   /**
@@ -149,7 +153,6 @@ export class Local {
    *                         not found.
    * @param {boolean} save - Whether the fallback value should be saved.
    * @returns {*} Value of the variable that was found.
-   * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.get instead
    */
   static get = (name: string, fallback?: any, save?: any) => {
     let value = localStorage.getItem(name);
@@ -171,7 +174,6 @@ export class Local {
    *
    * @param {string} name - Name of the local storage variable.
    * @param {*} [value] - Value to set, default to the current Unix timestamp.
-   * @deprecated You will end with a 'configuration (because it's saved in the localStorage)' conflict. Use byBotId.set instead
    */
   static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
@@ -273,6 +275,17 @@ export class Local {
         botsById[botId][key] = value;
         localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
       },
+      /**
+       * remove given bot id. The value will be stringified.
+       * @param {String} key key to retrieve
+       * @param {*} value value to store (should be serializable/deserializable wih JSON.parse, JSON.stringify)
+       * @returns the deserialized value behind the key
+       */
+      remove: () => {
+        const botsById = Local._getBotsById();
+        delete botsById[botId];
+        localStorage.setItem(Local._BOTS_BY_ID_KEY, JSON.stringify(botsById));
+      },
     };
   };
 
@@ -289,6 +302,12 @@ export class Local {
     save: (data) => localStorage.setItem(Local.names.saml, data),
     load: () => localStorage.getItem(Local.names.saml) || null,
     remove: () => localStorage.removeItem(Local.names.saml),
+  });
+
+  static operator = Object.create({
+    save: (data) => localStorage.setItem(Local.names.operator, data),
+    load: () => localStorage.getItem(Local.names.operator) || null,
+    remove: () => localStorage.removeItem(Local.names.operator),
   });
 
   static viewMode = Object.create({

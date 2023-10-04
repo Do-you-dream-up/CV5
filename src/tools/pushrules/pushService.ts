@@ -200,12 +200,12 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 
 export function pushKnowledge(ruleId) {
   const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
-  const shouldDisplay = !isDefined(Session.get(sessionKey));
+  const shouldDisplay = !isDefined(localStorage.getItem(sessionKey));
   currentTimer.counter = null;
   if (shouldDisplay) {
     window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
-    Session.set(sessionKey, ruleId);
+    localStorage.setItem(sessionKey, ruleId);
   }
 }
 

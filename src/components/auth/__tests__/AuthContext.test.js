@@ -47,6 +47,7 @@ jest.mock('../Storage', () => {
 
 jest.mock('../../../tools/dydu', () => {
   let authorize = null;
+  let botLanguages = ['en', 'fr'];
 
   return {
     __esModule: true,
@@ -56,6 +57,13 @@ jest.mock('../../../tools/dydu', () => {
       setTokenRefresher: jest.fn(),
       setSpaceToDefault: jest.fn(),
       fetchUrlConfig: jest.fn(),
+      setLocale: jest.fn(),
+      getBotLanguages: jest.fn(
+        () =>
+          new Promise((resolve) => {
+            resolve(botLanguages);
+          }),
+      ),
     },
   };
 });

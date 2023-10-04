@@ -1,6 +1,8 @@
 import Feedback from './';
 import { render } from '../../tools/test-utils';
 
+let botLanguages = ['en', 'fr'];
+
 jest.mock('../../tools/dydu', () => ({
   __esModule: true,
   default: {
@@ -11,6 +13,13 @@ jest.mock('../../tools/dydu', () => ({
     setServerStatusCheck: jest.fn(),
     setSpaceToDefault: jest.fn(),
     setOidcLogin: jest.fn(),
+    setLocale: jest.fn(),
+    getBotLanguages: jest.fn(
+      () =>
+        new Promise((resolve) => {
+          resolve(botLanguages);
+        }),
+    ),
   },
 }));
 

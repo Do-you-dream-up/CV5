@@ -1,15 +1,14 @@
-import Actions, { ActionProps } from '../Actions/Actions';
-import { Children, useCallback, useContext, useEffect, useState } from 'react';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
-import { DialogContext } from '../../contexts/DialogContext';
-import Icon from '../Icon/Icon';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { useDialog } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
+import Slider from 'react-slick';
 import c from 'classnames';
-import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
-import { useSwipeable } from 'react-swipeable';
-import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 
 /**
@@ -20,69 +19,26 @@ import useViewport from '../../tools/hooks/useViewport';
 
 interface CarouselProps {
   children: any[];
-  className: string;
   steps: Servlet.ChatResponseValues[];
-  templateName: string;
 }
 
-const Carousel = ({ children, className, steps, templateName, ...rest }: CarouselProps) => {
-  const { t } = useTranslation();
+const Carousel = ({ children, steps }: CarouselProps) => {
+  const classes = useStyles();
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState<number>(0);
   const [step, setStep] = useState<any>(steps ? steps[0] : 0);
 
-  const carouselConfig = configuration && (templateName ? configuration.templateCarousel : configuration.carousel);
-
-  const length = Children.count(children);
+  const carouselRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const [numberSlidesToShow, setNumberSlidesTosShow] = useState<number>(0);
+  const [resizeCount, setResizeCount] = useState(0);
+  const interactionWidth = useMemo(() => carouselRef?.current?.offsetWidth, [resizeCount]);
 
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const automaticSecondary = isFullScreen
     ? !!configuration?.secondary.automatic?.fullScreen
     : !!configuration?.secondary.automatic?.desktop;
-  const classes: any = useStyles({
-    index,
-    length,
-    offset: carouselConfig?.offset,
-    offsetBetweenCard: carouselConfig?.offsetBetweenCard,
-  });
-
-  const { secondaryActive, toggleSecondary } = useContext(DialogContext);
-
-  const hasNext = () => index < length - 1;
-  const hasPrevious = () => index > 0;
-
-  const triggerNext = () => setIndex((previous) => Math.min(length - 1, previous + 1));
-  const triggerPrevious = () => setIndex((previous) => Math.max(0, previous - 1));
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => triggerNext(),
-    onSwipedRight: () => triggerPrevious(),
-    preventDefaultTouchmoveEvent: true,
-    trackMouse: true,
-  });
-
-  const previousAction: ActionProps[] = [
-    {
-      children: <Icon icon={icons.iconCaretLeft || ''} alt={t('carousel.previous')} title={t('carousel.previous')} />,
-      disabled: !hasPrevious(),
-      onClick: triggerPrevious,
-      variant: 'icon',
-      id: 'dydu-arrow-left',
-      testId: 'dydu-arrow-left',
-    },
-  ];
-
-  const nextAction: ActionProps[] = [
-    {
-      children: <Icon icon={icons.iconCaretRight || ''} alt={t('carousel.next')} title={t('carousel.next')} />,
-      disabled: !hasNext(),
-      onClick: triggerNext,
-      variant: 'icon',
-      id: 'dydu-arrow-right',
-      testId: 'dydu-arrow-right',
-    },
-  ];
+  const { secondaryActive, toggleSecondary } = useDialog();
 
   const onToggle = useCallback(
     (open) => {
@@ -104,47 +60,61 @@ const Carousel = ({ children, className, steps, templateName, ...rest }: Carouse
     }
   }, [index, steps, step, automaticSecondary, onToggle]);
 
-  const renderControls = () =>
-    carouselConfig?.controls &&
-    length > 1 && (
-      <>
-        <Actions className="dydu-carousel-controls" actions={previousAction} targetStyleKey="arrowButtonLeft" />
-        <Actions className="dydu-carousel-controls" actions={nextAction} targetStyleKey="arrowButtonRight" />
-      </>
-    );
+  const renderSteps = () => children?.map((item, i) => <div children={item} key={i} />);
 
-  const renderBullets = () =>
-    carouselConfig?.bullets &&
-    length > 0 && (
-      <div data-testid="dydu-carousel-bullets" className={c('dydu-carousel-bullets', classes.bullets)}>
-        {children.map((item, idx) => (
-          <div
-            data-testid={`dydu-carousel-bullet-${idx}`}
-            className={c('dydu-carousel-bullet', {
-              [classes.active]: item.key === index,
-            })}
-            key={item?.key || idx}
-            onClick={() => setIndex(item.key)}
-          />
-        ))}
-      </div>
-    );
-  const renderSteps = () =>
-    children?.map((item, i) => (
-      <div
-        children={item}
-        className={c('dydu-carousel-step', classes.step, templateName && classes.stepTemplate)}
-        key={i}
-      />
-    ));
+  useEffect(() => {
+    const observer = new ResizeObserver(() => setResizeCount((prevCount) => prevCount + 1));
+    if (carouselRef.current) observer.observe(carouselRef.current);
+    return () => {
+      if (carouselRef.current) observer.unobserve(carouselRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('error', (e) => {
+      if (e.message === 'ResizeObserver loop limit exceeded') {
+        const resizeObserverErrDiv = document.getElementById('webpack-dev-server-client-overlay-div');
+        const resizeObserverErr = document.getElementById('webpack-dev-server-client-overlay');
+        if (resizeObserverErr) {
+          resizeObserverErr.setAttribute('style', 'display: none');
+        }
+        if (resizeObserverErrDiv) {
+          resizeObserverErrDiv.setAttribute('style', 'display: none');
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (interactionWidth < 660) {
+      setNumberSlidesTosShow(1);
+    } else if (interactionWidth > 660 && interactionWidth < 900) {
+      setNumberSlidesTosShow(2);
+    } else if (interactionWidth > 900 && interactionWidth < 1200) {
+      setNumberSlidesTosShow(3);
+    } else if (interactionWidth > 1200 && interactionWidth < 1500) {
+      setNumberSlidesTosShow(4);
+    } else {
+      setNumberSlidesTosShow(5);
+    }
+  }, [interactionWidth]);
+
+  const settings = {
+    className: 'center',
+    centerMode: true,
+    infinite: false,
+    slidesToShow: numberSlidesToShow,
+    speed: 500,
+    rows: 1,
+    slidesPerRow: 1,
+    arrows: true,
+  };
 
   return (
-    <div className={(c('dydu-carousel', classes.root), className)} {...rest}>
-      <div data-testid="dydu-carousel-steps" className={c('dydu-carousel-steps', classes.steps)} {...handlers}>
+    <div ref={carouselRef} className={c('dydu-carousel', classes.carousel)}>
+      <Slider {...settings} afterChange={setIndex}>
         {renderSteps()}
-      </div>
-      {renderBullets()}
-      {renderControls()}
+      </Slider>
     </div>
   );
 };

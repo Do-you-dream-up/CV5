@@ -20,16 +20,19 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
 
-  useEffect(() => {
-    botLanguages && dydu.setBotLanguages(botLanguages);
-  }, [botLanguages]);
-
   const fetchBotLanguages = useCallback(() => {
     return new Promise(() => {
       dydu
         .getBotLanguages()
-        .then((res) => setBotLanguages(res.filter((lang) => lang.isAvailable).map((lang) => lang.id)))
-        .catch(() => setBotLanguages(configuration?.application?.defaultLanguage || ['fr']));
+        .then((botLanguagesFromAtria) => {
+          const activatedAndActiveBotLanguages = getActivatedAndActiveBotLanguages(
+            configuration,
+            botLanguagesFromAtria,
+          );
+          setBotLanguages(activatedAndActiveBotLanguages);
+          dydu.correctLocaleFromBotLanguages(activatedAndActiveBotLanguages);
+        })
+        .catch(() => setBotLanguages(computeDefaultBotLanguages(configuration)));
     });
   }, []);
 
@@ -40,3 +43,28 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
 
   return <BotInfoContext.Provider value={value}>{children}</BotInfoContext.Provider>;
 };
+
+/**
+ * Will return all languages present in configuration and currently available in Atria
+ * @param configuration the configuration.json content, containing languages that have been allowed for this chatbox
+ * @param botLanguagesFromAtria array of all languages currently handled by bot
+ */
+export function getActivatedAndActiveBotLanguages(configuration: any, botLanguagesFromAtria: any): string[] {
+  let result = [];
+  const configurationLanguages = configuration?.application?.languages;
+  const defaultLanguage = computeDefaultBotLanguages(configuration);
+  if (configurationLanguages && botLanguagesFromAtria) {
+    const availableLanguagesCurrentlySet = botLanguagesFromAtria.filter((x) => x.isAvailable === true).map((x) => x.id);
+    result = configurationLanguages.filter((x) => availableLanguagesCurrentlySet.indexOf(x) > -1);
+  }
+
+  if (result.length === 0) {
+    result = defaultLanguage;
+  }
+
+  return result.sort();
+}
+
+export function computeDefaultBotLanguages(configuration: any): string[] {
+  return configuration?.application?.defaultLanguage || 'fr';
+}

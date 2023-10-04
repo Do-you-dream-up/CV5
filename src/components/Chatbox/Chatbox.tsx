@@ -8,7 +8,7 @@ import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
-import Dialog from '../Dialog';
+import Dialog from '../Dialog/Dialog';
 import { DialogContext } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer/Footer';
@@ -21,6 +21,7 @@ import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
 import Secondary from '../Secondary';
 import Tab from '../Tab';
+import { VIEW_MODE } from '../../tools/constants';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -31,6 +32,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -51,7 +53,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     add,
     addRequest,
     addResponse,
-    empty,
+    clearInteractions,
     interactions,
     secondaryActive,
     setDisabled,
@@ -73,7 +75,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const [ready, setReady] = useState<boolean>(false);
   const [afterLoadTriggered] = useState<boolean>(false);
   const classes = useStyles({ configuration });
-  const [t, i] = useTranslation();
+  const [t, i18n] = useTranslation();
   const labelChatbot = t('general.labelChatbot');
   const qualification = configuration?.qualification?.active;
   const { expandable } = configuration?.chatbox || {};
@@ -81,6 +83,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const dialogRef = useRef();
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
+  const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
+  const { mode } = useViewMode();
+  const [prevMode, setPrevMode] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
+      root?.current.focus();
+    }
+    if (mode !== undefined) {
+      setPrevMode(mode);
+    }
+  }, [mode]);
 
   useEffect(() => {
     if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
@@ -133,7 +147,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       handleRewordClicked: (text, options) => {
         handleRewordClicked(text, options, livechatActive);
       },
-      empty: () => empty && empty(),
+      clearInteractions: () => clearInteractions && clearInteractions(),
       reply: (text) => addResponse && addResponse({ text }),
       setDialogVariable: (name, value) => {
         dydu.setDialogVariable(name, escapeHTML(value));
@@ -156,12 +170,15 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
       window.dydu.localization = {
         get: () => dydu.getLocale(),
-        set: (locale, languages) =>
-          Promise.all([dydu.setLocale(locale, languages), i.changeLanguage(locale)]).then(
-            ([locale]) =>
-              window.dydu.chat.reply(`${t('interaction.languageChange')} ${t(`footer.rosetta.${locale}`)}.`),
-            (response) => window.dydu.chat.reply(response),
-          ),
+        set: (locale) => {
+          return Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)])
+            .then(() => {
+              sessionStorage.removeItem('dydu.welcomeKnowledge');
+            })
+            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
+            .then(() => clearInteractions && clearInteractions())
+            .then(() => fetchWelcomeKnowledge?.());
+        },
       };
 
       window.dydu.lorem = {
@@ -203,8 +220,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
     configuration?.spaces.items,
-    empty,
-    i,
+    clearInteractions,
+    i18n,
     modal,
     ready,
     afterLoadTriggered,
@@ -226,7 +243,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     [classes.rootHidden]: !open,
   });
   const idLabel = 'dydu-window-label-bot';
-  const tabIndex = parseInt('0', 10);
 
   useEffect(() => {
     if (gdprPassed === null && !configuration?.gdprDisclaimer.enable) {
@@ -235,11 +251,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   }, [gdprPassed, setGdprPassed]);
 
   return (
-    <div className={classnames} ref={root} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <p className={classes.srOnly} tabIndex={tabIndex} id={idLabel}>
-        {labelChatbot}
-      </p>
-      <div>
+    <div className={classnames} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
+      <div tabIndex={0} ref={root} aria-label={labelChatbot}>
         <div className={classes.container}>
           <>
             <Header

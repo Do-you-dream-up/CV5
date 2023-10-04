@@ -30,26 +30,24 @@ describe('Avatar.tsx', () => {
   });
 
   test('Should get avatars from configuration file when param |linkAvatarDependOnType| is /null and path is URL', async () => {
-    mockConfiguration.avatar.request.image = 'path.png';
     mockConfiguration.avatar.response.image = 'path.png';
-    const { container } = render(<Avatar type="request" linkAvatarDependOnType={linkAvatarDependOnType} />, {
+    const { container } = render(<Avatar type="response" linkAvatarDependOnType={linkAvatarDependOnType} />, {
       configuration: mockConfiguration,
     });
     expect(container.getElementsByClassName('dydu-avatar-image').length).toBe(1);
     expect(container.getElementsByClassName('dydu-avatar-image')[0].src).toContain(
-      mockConfiguration.avatar.request.image,
+      mockConfiguration.avatar.response.image,
     );
   });
 
   test('Should get avatars from configuration file when param |linkAvatarDependOnType| is /null and path is Base64', async () => {
-    mockConfiguration.avatar.request.image = 'data:image/png;base64,iVBORw0KGgo';
     mockConfiguration.avatar.response.image = 'data:image/png;base64,iVBORw0KGgo';
-    const { container } = render(<Avatar type="request" linkAvatarDependOnType={linkAvatarDependOnType} />, {
+    const { container } = render(<Avatar type="response" linkAvatarDependOnType={linkAvatarDependOnType} />, {
       configuration: mockConfiguration,
     });
     expect(container.getElementsByClassName('dydu-avatar-image').length).toBe(1);
     expect(container.getElementsByClassName('dydu-avatar-image')[0].src).toContain(
-      mockConfiguration.avatar.request.image,
+      mockConfiguration.avatar.response.image,
     );
   });
 });
