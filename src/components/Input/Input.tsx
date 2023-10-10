@@ -90,12 +90,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const handleBlur = () => setInputFocused(false);
 
-  useEffect(() => {
-    if (!isMenuListOpen) {
-      textareaRef.current.focus();
-    }
-  }, [isMenuListOpen]);
-
   const tabIndex = useMemo(() => (isMenuListOpen ? -1 : 0), [isMenuListOpen]);
   const renderInputComponent = useCallback(
     (properties) => {

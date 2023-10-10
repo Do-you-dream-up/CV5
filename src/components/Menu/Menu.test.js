@@ -4,6 +4,10 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import Menu from './Menu';
 
+jest.mock('../../contexts/UserActionContext', () => ({
+  useUserAction: () => ({ shiftPressed: false }),
+}));
+
 describe('Menu component', () => {
   const items = [
     [

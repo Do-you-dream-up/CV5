@@ -7,6 +7,7 @@ import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 type Visibility = 'visible' | 'hidden' | 'collapse';
 
@@ -30,16 +31,57 @@ export default function Menu({ component, items, selected, ...rest }) {
   const [menuListPositionParameters, setmenuListPositionParameters] =
     useState<MenuListPositionParametersState | null>();
   const [open, setOpen] = useState<boolean>(false);
+  const { shiftPressed } = useUserAction();
+  const { setIsMenuListOpen } = useEvent();
   const anchorRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLInputElement | null>(null);
+  let lastFocusedElem = useRef<HTMLInputElement | null>(null);
   const classes = useStyles({ configuration });
   const node = document && configuration && document.getElementById(configuration?.root);
   const spacing: number | undefined = configuration && ~~configuration?.menu?.spacing;
   items = typeof items === 'function' ? items() : items;
 
   const onClose = () => {
+    setIsMenuListOpen?.(false);
     setOpen(false);
   };
+  const onKeyDown = (event) => {
+    if (
+      event.keyCode === 13 ||
+      (event.keyCode === 9 && !shiftPressed && lastFocusedElem === menuRef.current?.lastElementChild?.lastElementChild)
+    ) {
+      closeMenuListAndFocusTextArea(event);
+    }
+  };
+
+  const closeMenuListAndFocusTextArea = (event) => {
+    event.preventDefault();
+    setIsMenuListOpen?.(false);
+    setOpen(false);
+    document.getElementById('dydu-textarea').focus();
+  };
+
+  const onBlur = (event) => {
+    if (
+      !event.currentTarget.contains(event.relatedTarget) &&
+      event.target === menuRef.current?.lastElementChild?.firstElementChild
+    ) {
+      setIsMenuListOpen?.(false);
+      setOpen(false);
+    }
+    lastFocusedElem = event.relatedTarget;
+  };
+
+  const onClickOutside = (event) => {
+    if (!menuRef.current?.contains(event.target) && !anchorRef.current?.contains(event.target)) {
+      setIsMenuListOpen?.(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
 
   const onDocumentClick = (event) => {
     if (!anchorRef.current?.contains(event.target) && !menuRef.current?.contains(event.target)) {
@@ -70,7 +112,7 @@ export default function Menu({ component, items, selected, ...rest }) {
                 top: anchor.bottom + spacing,
               }),
         });
-        setOpen(true);
+        setIsMenuListOpen?.(true);
       }
     } else {
       setmenuListPositionParameters(null);
@@ -101,7 +143,13 @@ export default function Menu({ component, items, selected, ...rest }) {
       })}
       {open ? (
         <Portal node={node}>
-          <div className={c('dydu-menu', classes.root)} ref={menuRef} style={menuListPositionParametersCSS}>
+          <div
+            className={c('dydu-menu', classes.root)}
+            ref={menuRef}
+            style={menuListPositionParametersCSS}
+            onBlur={onBlur}
+            onKeyDown={onKeyDown}
+          >
             {items.map((it, index) => (
               <MenuList items={it} key={index} onClose={onClose} selected={selected} />
             ))}

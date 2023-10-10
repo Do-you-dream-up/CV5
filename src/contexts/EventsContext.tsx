@@ -21,6 +21,8 @@ import { useViewMode } from './ViewModeProvider';
 interface EventsContextProps {
   isChatboxLoadedAndReady?: boolean;
   hasAfterLoadBeenCalled?: boolean;
+  isMenuListOpen?: boolean;
+  setIsMenuListOpen?: Dispatch<SetStateAction<boolean>>;
   onAppReady?: () => void;
   onChatboxLoaded?: (chatboxNodeElement: any) => void;
   onNewMessage?: () => void;
@@ -50,6 +52,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [isAppReady, setIsAppReady] = useState(false);
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
   const [chatboxRef, setChatboxRef] = useState<any>();
+  const [isMenuListOpen, setIsMenuListOpen] = useState<boolean>(false);
 
   const { t } = useTranslation('translation');
   const newMessageText = t('livechat.notif.newMessage');
@@ -131,6 +134,8 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
       children={children}
       value={{
         isChatboxLoadedAndReady,
+        isMenuListOpen,
+        setIsMenuListOpen,
         hasAfterLoadBeenCalled,
         onAppReady,
         onChatboxLoaded,

@@ -3,6 +3,10 @@ import '@testing-library/jest-dom';
 import Actions from './Actions';
 import { render } from '../../tools/test-utils';
 
+jest.mock('../../contexts/UserActionContext', () => ({
+  useUserAction: () => ({ shiftPressed: false }),
+}));
+
 describe('Actions.tsx', () => {
   const onClick = (text) => () => alert(text);
 

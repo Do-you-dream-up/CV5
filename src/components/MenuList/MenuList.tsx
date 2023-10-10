@@ -41,6 +41,7 @@ export default function MenuList({ items, onClose, selected }) {
           onKeyDown={onKeyDown(onClick)}
           title={text}
           tabIndex={0}
+          autoFocus={index === 0}
         >
           {isImageUrl(icon) ? (
             <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
