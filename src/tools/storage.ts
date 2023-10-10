@@ -127,6 +127,7 @@ export class Local {
     secondary: 'dydu.secondary',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
+    images: 'dydu.images',
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
     operator: 'dydu.operator',

@@ -16,6 +16,7 @@ export const configuration = new (class Configuration {
   }
 
   getConfigFromStorage = () => Local.get(Local.names.wizard);
+  getImagesFromStorage = () => Local.get(Local.names.images);
 
   /**
    * Fetch the configuration JSON and save its content.
@@ -25,10 +26,26 @@ export const configuration = new (class Configuration {
    */
   initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
     return axios.get(path, axiosConfigNoCache).then(({ data }) => {
-      this.configuration =
-        (isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()
-          ? JSON.parse(JSON.stringify(this.getConfigFromStorage()))
-          : data;
+      this.configuration = null;
+
+      if ((isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()) {
+        this.configuration = JSON.parse(JSON.stringify(this.getConfigFromStorage()));
+
+        if (isLoadedFromChannels()) {
+          // Replace images with base64 ones
+          const images = JSON.parse(JSON.stringify(this.getImagesFromStorage()));
+          this.configuration.avatar.response.image = images?.logo;
+          this.configuration.avatar.teaser.image = images?.teaser;
+          this.configuration.header.logo.imageLink.understood = images?.understood;
+          this.configuration.header.logo.imageLink.misunderstood = images?.misunderstood;
+          this.configuration.header.logo.imageLink.reword = images?.reword;
+          this.configuration.onboarding.items[0].image.src = images?.onboarding1;
+          this.configuration.onboarding.items[1].image.src = images?.onboarding2;
+          this.configuration.onboarding.items[2].image.src = images?.onboarding3;
+        }
+      } else {
+        this.configuration = data;
+      }
 
       if (!isLoadedFromChannels()) {
         if (Local.get(Local.names.space) === 'default' || Local.get(Local.names.space) === null) {
