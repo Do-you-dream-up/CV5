@@ -2,7 +2,7 @@ import { createElement, useContext, useEffect, useRef } from 'react';
 
 import Button from '../Button/Button';
 import { DialogContext } from '../../contexts/DialogContext';
-import MenuList from '../MenuList';
+import MenuList from '../MenuList/MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';

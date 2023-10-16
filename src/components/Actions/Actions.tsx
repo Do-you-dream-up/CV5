@@ -1,7 +1,7 @@
 import Button, { ButtonProps } from '../Button/Button';
 import { ReactNode, useMemo } from 'react';
 
-import Menu from '../Menu';
+import Menu from '../Menu/Menu';
 import c from 'classnames';
 import useStyles from './styles';
 

@@ -2,7 +2,7 @@
 
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles((theme) => ({
+export default createUseStyles((theme: Models.Theme) => ({
   icon: () => ({
     marginRight: '1em',
     maxHeight: '2em',
@@ -19,6 +19,12 @@ export default createUseStyles((theme) => ({
     paddingTop: '.8em',
     marginBlockStart: 0,
     marginBlockEnd: 0,
+    fontFamily: theme.font?.sansSerif,
+    backgroundColor: 'white',
+    border: 'none',
+    width: '100%',
+    fontSize: '18px',
+    position: 'relative',
   }),
   itemDisabled: () => ({
     color: theme.palette?.text?.disabled,

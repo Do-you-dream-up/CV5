@@ -11,6 +11,7 @@ export const UserActionContext = createContext();
 export function UserActionProvider({ children }) {
   const [tabbing, setTabbing] = useState(false);
   const [tabPressed, setTabPressed] = useState(false);
+  const [shiftPressed, setShiftPressed] = useState(false);
 
   const [rgaaRef, setRgaaRef] = useState({});
 
@@ -21,9 +22,12 @@ export function UserActionProvider({ children }) {
         setTabPressed(true);
       } else if (e.keyCode === 13 && tabPressed) {
         setTabbing(true);
+      } else if (e.keyCode === 16) {
+        setShiftPressed(true);
       } else {
         setTabbing(false);
         setTabPressed(false);
+        setShiftPressed(false);
       }
     };
     document.addEventListener('keydown', keyListener);
@@ -38,6 +42,7 @@ export function UserActionProvider({ children }) {
         setTabbing(false);
       }
       setTabPressed(false);
+      setShiftPressed(false);
     };
     document.addEventListener('click', clickListener);
     return () => {
@@ -68,6 +73,7 @@ export function UserActionProvider({ children }) {
       children={children}
       value={{
         tabbing,
+        shiftPressed,
         addRgaaRef,
         getRgaaRef,
         rgaaRef,

@@ -11,6 +11,7 @@ interface ConfigurationContextProps {
   configuration?: Models.Configuration;
   reset?: any;
   update?: any;
+  theme?: Models.Theme;
 }
 
 export const useConfiguration = () => {
