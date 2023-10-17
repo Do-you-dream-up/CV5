@@ -39,6 +39,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const inputPlaceholder = t('input.placeholder');
   const counterRemaining = t('input.actions.counterRemaining');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
@@ -103,7 +104,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
-            textarea
+            {inputPlaceholder}
           </label>
           <textarea
             {...data}
