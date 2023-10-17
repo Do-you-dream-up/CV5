@@ -22,7 +22,7 @@ build:
       - node_modules/
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
   artifacts:
     paths:
@@ -52,8 +52,9 @@ sonar-sast:
       -Dsonar.qualitygate.timeout=300
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
     - if: '$CI_COMMIT_REF_NAME =~ /^(master|main)/'
+  allow_failure: true
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
@@ -76,10 +77,10 @@ pack:
       - build/
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
     - build
-  when: manual
 
 publish:
   stage: delivery
@@ -106,7 +107,8 @@ publish:
       - build/
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
     - build
   when: manual
@@ -172,6 +174,6 @@ functional-test:
   timeout: 1h
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(feat|fix)_.*/'
-    - if: '$CI_COMMIT_REF_NAME =~ /^chatbox_.*/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
     - pack
