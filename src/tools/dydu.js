@@ -116,8 +116,7 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
-    this.contextId = null;
-    this.updateContextId = null;
+    this.contextId = localStorage.getItem('dydu.context');
     this.onServerChangeFn = null;
     this.serverStatusChek = null;
     this.tokenRefresher = null;
@@ -134,14 +133,6 @@ export default new (class Dydu {
     this.lastResponse = null;
     this.qualificationMode = false;
     this.initInfos();
-  }
-
-  setContextId(contextId) {
-    this.contextId = contextId;
-  }
-
-  setUpdateContextId(updateContextId) {
-    this.updateContextId = updateContextId;
   }
 
   setServerStatusCheck(serverStatusChek) {
@@ -176,6 +167,13 @@ export default new (class Dydu {
       botId: channelsBot || bot?.id,
     };
   }
+
+  setContextId = (value) => {
+    if (isDefined(value)) {
+      Local.contextId.save(this.getBotId(), value);
+      this.contextId = value;
+    }
+  };
 
   handleTokenRefresh = () => {
     if (this.getConfiguration()?.oidc?.enable) {
@@ -229,7 +227,9 @@ export default new (class Dydu {
 
     if (!hasProperty(data, 'values')) return data;
     data.values = decode(data.values);
-    data.values.contextId && this.updateContextId(data.values.contextId);
+    if (data.values.contextId) {
+      this.setContextId(data.values.contextId);
+    }
     return data.values;
   };
 
@@ -306,7 +306,9 @@ export default new (class Dydu {
     try {
       return verb(path, data)
         .then(this.setLastResponse)
-        .then(({ data = {} }) => this.handleAxiosResponse(data))
+        .then(({ data = {} }) => {
+          return this.handleAxiosResponse(data);
+        })
         .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
     } catch (e) {
       console.error('while executing |emit()|', e);
@@ -440,7 +442,7 @@ export default new (class Dydu {
    *
    * @returns {object} The context ID.
    */
-  getContextId = () => {
+  getContextId = async () => {
     const data = qs.stringify({
       alreadyCame: this.alreadyCame(),
       clientId: this.getClientId(),
@@ -452,8 +454,18 @@ export default new (class Dydu {
     });
 
     const path = `chat/context/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    try {
+      const response = await this.emit(API.post, path, data);
+      return response?.contextId;
+    } catch (e) {
+      console.error('While executing getContextId() ', e);
+      return '';
+    }
   };
+
+  getContextIdStorageKey() {
+    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+  }
 
   getConfiguration() {
     return this.configuration;
@@ -1095,19 +1107,6 @@ export default new (class Dydu {
     const defaultSpaceName = 'default';
     this.setInitialSpace(defaultSpaceName);
   }
-
-  getWelcomeKnowledge = (tagWelcome) => {
-    const wkFoundInStorage = Local.welcomeKnowledge.isSet(this.getBotId());
-    if (wkFoundInStorage) return Promise.resolve(Local.welcomeKnowledge.load(this.getBotId()));
-    const talkOption = { hide: true, doNotRegisterInteraction: true };
-    return this.talk(tagWelcome, talkOption).then((talkResponse) => {
-      const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
-      if (!isInteractionResponse) return null;
-      delete talkResponse.contextId;
-      Local.welcomeKnowledge.save(this.getBotId(), talkResponse);
-      return talkResponse;
-    });
-  };
 
   setShowSurveyCallback(showSurvey) {
     this.showSurveyCallback = showSurvey;
