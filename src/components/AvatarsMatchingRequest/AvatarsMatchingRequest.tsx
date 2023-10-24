@@ -1,11 +1,10 @@
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useMemo } from 'react';
+import { useDialog } from '../../contexts/DialogContext';
 
 const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked)$/g;
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
-
-const isSet = (value) => value !== null && typeof value !== 'undefined';
 
 interface AvatarsMatchingRequestProps {
   AvatarComponent: any;
@@ -30,6 +29,7 @@ const AvatarsMatchingRequest = ({
 }: AvatarsMatchingRequestProps) => {
   const { configuration } = useConfiguration();
   const { customAvatar, image: hasImage, imageLink } = configuration?.header?.logo || {};
+  const { interactions } = useDialog();
 
   const hasAvatar = useMemo(() => {
     return !!configuration?.avatar[type]?.enable;
@@ -43,8 +43,16 @@ const AvatarsMatchingRequest = ({
     };
   }, [imageLink?.misunderstood, imageLink?.reword, imageLink?.understood]);
 
+  function isWelcomeResponse() {
+    return interactions?.length === 1 && interactions[0]?.props?.type === 'response';
+  }
+
+  function shouldNotChangeCustomAvatar() {
+    return isWelcomeResponse();
+  }
+
   const imageType = useMemo(() => {
-    if (!isSet(customAvatar) || !customAvatar || !isSet(typeResponse)) {
+    if (!customAvatar || !typeResponse || shouldNotChangeCustomAvatar()) {
       return defaultAvatar;
     } else {
       const resultMatchingImageType = Object.keys(typeMapImage)?.filter((keyType) => {
