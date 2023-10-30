@@ -1013,6 +1013,7 @@ export default new (class Dydu {
         surveyId: survey.surveyId,
         interactionSurveyAnswer: survey.interactionSurvey,
         fields: survey.fields,
+        reword: isDefined(survey.reword) ? survey.reword : '',
         ...basePayload,
       }),
     };
@@ -1022,7 +1023,7 @@ export default new (class Dydu {
       );
       const jsonResponse = await response.json();
       this.setLastResponse(jsonResponse);
-      return this.displaySurveySent();
+      return this.displaySurveySent(payload.parameters.reword);
     } catch (error) {
       console.error(error);
       throw error;
@@ -1037,12 +1038,19 @@ export default new (class Dydu {
     };
   }
 
-  displaySurveySent = (res, status = null) => {
+  displaySurveySent = (reword, res, status = null) => {
     return new Promise((resolve) => {
       status = status || this.getLastResponse().status;
       const statusOk = status >= 200 && status <= 206;
-      if (statusOk) window.dydu.chat.reply(i18n.t('survey.sentMessage'));
-      else window.dydu.chat.reply(i18n.t('survey.errorMessage'));
+      if (statusOk) {
+        if (reword) {
+          window.dydu.chat.handleRewordClicked(reword, { hide: true, type: 'redirection_knowledge', fromSurvey: true });
+        } else {
+          window.dydu.chat.reply(i18n.t('survey.sentMessage'));
+        }
+      } else {
+        window.dydu.chat.reply(i18n.t('survey.errorMessage'));
+      }
       resolve(res);
     });
   };
@@ -1057,10 +1065,9 @@ export default new (class Dydu {
     const fields = this.formatFieldsForSurveyAnswerRequest(surveyAnswer);
     const payload = await this.createSurveyPayload(surveyAnswer.surveyId, fields);
     const formData = toFormUrlEncoded(payload);
-
     if (!isDefined(formData)) return;
     const path = `/chat/survey/${BOT.id}`;
-    return this.post(path, formData).then(this.displaySurveySent);
+    return this.post(path, formData).then(this.displaySurveySent(surveyAnswer.reword));
   };
 
   getSurvey = async (surveyId = '') => {

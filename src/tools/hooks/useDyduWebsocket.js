@@ -218,7 +218,7 @@ export default function useDyduWebsocket() {
     const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
     try {
       trySendMessage(message);
-      dydu.displaySurveySent({}, 200);
+      dydu.displaySurveySent(surveyAnswer.reword, {}, 200);
     } catch (e) {
       console.error(e);
     }

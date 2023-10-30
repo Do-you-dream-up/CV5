@@ -12,6 +12,7 @@ import { Local } from '../tools/storage';
 
 interface SurveyConfigProps {
   fields?: any;
+  reword?: string;
   surveyId?: string;
   interactionSurvey?: any;
 }
@@ -129,6 +130,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       return {
         surveyId: surveyConfig?.surveyId,
         interactionSurvey: surveyConfig?.interactionSurvey || false,
+        reword: isDefined(surveyConfig?.reword) ? surveyConfig?.reword : '',
         fields: userAnswerObj,
       };
     },
