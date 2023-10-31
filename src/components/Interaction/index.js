@@ -371,6 +371,10 @@ const Writing = () => {
 export const InteractionNotification = ({ notification }) => {
   const { text, iconName } = useNotificationHelper(notification);
 
+  const renderHTML = (html) => {
+    return { __html: html };
+  };
+
   const canRender = useMemo(() => isDefined(text) && isDefined(iconName), [text, iconName]);
 
   return !canRender ? null : (
@@ -379,7 +383,7 @@ export const InteractionNotification = ({ notification }) => {
         <div className="icon">
           <Icon color="grey" icon={iconName} alt={''} />
         </div>
-        <p>{text}</p>
+        <p dangerouslySetInnerHTML={renderHTML(text)} />
       </InChatNotification>
     </Scroll>
   );
