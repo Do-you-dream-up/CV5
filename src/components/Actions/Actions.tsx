@@ -41,9 +41,10 @@ export interface ActionsProps {
   id?: string;
   role?: string;
   rollOver?: string;
+  groupId?: string;
 }
 
-const Actions = ({ actions = [], className, targetStyleKey, testId, role, rollOver }: ActionsProps) => {
+const Actions = ({ actions = [], className, targetStyleKey, groupId, role, rollOver }: ActionsProps) => {
   const classes = useStyles();
 
   const filteredActions = useMemo(() => actions.filter((it) => it.when === undefined || it.when), [actions]);
@@ -54,7 +55,7 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role, rollOv
   );
 
   return actions?.length > 0 ? (
-    <div className={c('dydu-actions', _classes, className)} aria-labelledby={testId} role={role}>
+    <div className={c('dydu-actions', _classes, className)} aria-labelledby={groupId} role={role}>
       {filteredActions.map(({ items, rollOver, selected, type = 'button', title, testId, ...rest }, index) => {
         delete rest.when;
         const props: ButtonProps = {
