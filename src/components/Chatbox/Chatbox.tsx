@@ -106,7 +106,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         qualification,
         extra: options,
       };
-      options = Object.assign({ hide: false }, options);
+
+      if (!options.fromSurvey) {
+        options = JSON.parse(JSON.stringify(options));
+        options.hide = false;
+      }
 
       if (followBadUrl(text, options)) {
         addRequest && addRequest(text);
