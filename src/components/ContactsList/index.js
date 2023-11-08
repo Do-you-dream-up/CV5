@@ -15,11 +15,11 @@ export default function ContactsList({ icon, id, list, title }) {
     <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
         <Icon icon={icon} color={theme?.palette?.text.primary} alt="" />
-        <h4>{title}</h4>
+        <h2>{title}</h2>
       </div>
       {list?.map((item, index) => (
         <div className={classes.list} key={index}>
-          <h5>{item.title}</h5>
+          <h3>{item.title}</h3>
           {id === 'phone' && <p>{item.phone}</p>}
           {id === 'email' && <a href={`mailto:${item.email}`}>{item.email}</a>}
           {id === 'social' && (
