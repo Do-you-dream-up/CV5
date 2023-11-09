@@ -6,9 +6,10 @@ export default createUseStyles((theme) => ({
       alignItems: 'center',
       display: 'flex',
     },
-    '& > h5': {
+    '& > h3': {
       color: theme?.palette?.primary?.main,
       fontWeight: 600,
+      fontSize: '0.85em',
       marginBottom: '0.6em',
       marginTop: '0.8em',
     },
@@ -37,8 +38,9 @@ export default createUseStyles((theme) => ({
     marginBottom: '1.2em',
   }),
   title: () => ({
-    '& > h4': {
+    '& > h2': {
       fontWeight: 'normal',
+      fontSize: '1em',
       margin: '0',
     },
     '& > div:before': {
