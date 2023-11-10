@@ -42,9 +42,7 @@ const templateNameToBubbleCreateAction = {
           return result.concat([jsonStringify({ text, separator: true, quick })]);
         }
 
-        if (text.indexOf('><') < 0) {
-          result.push(jsonStringify(makeBubbleObjWithText(text)));
-        }
+        result.push(jsonStringify(makeBubbleObjWithText(text)));
 
         return result;
       }, []);
