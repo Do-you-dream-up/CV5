@@ -363,43 +363,43 @@ describe('Local storage by bot id', () => {
       });
     });
 
-    describe('secondary', () => {
+    describe('sidebar', () => {
       afterEach(() => {
         localStorage.clear(); // Nettoyer le localStorage après chaque test
       });
 
       describe('getKey', () => {
         it('should return the correct key string', () => {
-          const keyString = Local.secondary.getKey();
-          expect(keyString).toBe('dydu.secondary');
+          const keyString = Local.sidebar.getKey();
+          expect(keyString).toBe('dydu.sidebar');
         });
       });
 
       describe('load', () => {
         it('should return false if nothing has been saved in the localStorage', () => {
-          const result = Local.secondary.load();
+          const result = Local.sidebar.load();
           expect(result).toBe(false);
         });
 
         it('should return the saved value if there is one in the localStorage', () => {
-          localStorage.setItem('dydu.secondary', 'true');
-          const result = Local.secondary.load();
+          localStorage.setItem('dydu.sidebar', 'true');
+          const result = Local.sidebar.load();
           expect(result).toBe('true');
         });
       });
 
       describe('save', () => {
         it('should save the given value to localStorage if it is different from the current value', () => {
-          localStorage.setItem('dydu.secondary', 'false');
-          Local.secondary.save('true');
-          const result = localStorage.getItem('dydu.secondary');
+          localStorage.setItem('dydu.sidebar', 'false');
+          Local.sidebar.save('true');
+          const result = localStorage.getItem('dydu.sidebar');
           expect(result).toBe('true');
         });
 
         it('should not save the given value to localStorage if it is the same as the current value', () => {
-          localStorage.setItem('DYDU_secondary', 'true');
-          Local.secondary.save('true');
-          const result = localStorage.getItem('DYDU_secondary');
+          localStorage.setItem('DYDU_sidebar', 'true');
+          Local.sidebar.save('true');
+          const result = localStorage.getItem('DYDU_sidebar');
           expect(result).toBe('true');
         });
       });

@@ -5,7 +5,7 @@ export default createUseStyles((theme) => ({
     borderBottomColor: theme?.palette?.divider,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-    color: theme?.palette?.text?.secondary,
+    color: theme?.palette?.text?.sidebar,
     fontWeight: 'normal',
     margin: [[0, 0, '.8em']],
     paddingBottom: '.6em',

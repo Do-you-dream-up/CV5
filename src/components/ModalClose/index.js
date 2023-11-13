@@ -23,7 +23,7 @@ export default function ModalClose({ className, component, onReject, onResolve, 
       {title && <h3 children={title} className={classes.title} />}
       {body && <p children={body} className={classes.body} />}
       <div children={title} className={classes.actions} data-testid="modal-close">
-        {typeof onReject === 'function' && <Button children={no} onClick={onReject} secondary={true} />}
+        {typeof onReject === 'function' && <Button children={no} onClick={onReject} sidebar={true} />}
         <Button children={yes} onClick={onResolve} />
       </div>
     </>,

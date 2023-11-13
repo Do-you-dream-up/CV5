@@ -124,7 +124,7 @@ export class Local {
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
-    secondary: 'dydu.secondary',
+    sidebar: 'dydu.sidebar',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
     images: 'dydu.images',
@@ -358,12 +358,12 @@ export class Local {
     },
   });
 
-  static secondary = Object.create({
-    getKey: () => Local.names.secondary,
-    load: () => localStorage.getItem(Local.secondary.getKey()) || false,
+  static sidebar = Object.create({
+    getKey: () => Local.names.sidebar,
+    load: () => localStorage.getItem(Local.sidebar.getKey()) || false,
     save: (newValue) => {
-      const currentSaved = Local.secondary.load();
-      if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
+      const currentSaved = Local.sidebar.load();
+      if (currentSaved !== newValue) localStorage.setItem(Local.sidebar.getKey(), newValue);
     },
   });
 

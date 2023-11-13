@@ -26,14 +26,14 @@ import { useUserAction } from '../../contexts/UserActionContext';
  * response should appear in front, on the left.
  */
 export default function Bubble({
-  autoOpenSecondary,
+  autoOpenSidebar,
   carousel,
   children,
   className,
   component,
   history,
   html,
-  secondary,
+  sidebar,
   step,
   templateName,
   thinking,
@@ -42,36 +42,37 @@ export default function Bubble({
   const { configuration } = useConfiguration();
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
-  const { secondaryActive, toggleSecondary, typeResponse } = useDialog();
+  const { sidebarActive, toggleSidebar, typeResponse } = useDialog();
   const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
-  const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
-  const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
-  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
+  const { desktop: sidebarDesktop, fullScreen: sidebarFullScreen } = configuration.sidebar.automatic;
+  const automaticSidebar = isFullScreen ? !!sidebarFullScreen : !!sidebarDesktop;
+  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSidebar);
   const defaultAvatar = configuration.avatar?.response?.image;
   const { surveyConfig } = useSurvey();
   const { tabbing } = useUserAction();
 
-  const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
+  const stepSidebar = step ? step.sidebar : undefined;
+  sidebar = sidebar ? sidebar : stepSidebar;
 
-  const actions = [...(sidebar ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }] : [])];
+  const actions = [...(sidebar ? [{ children: sidebarActive ? less : more, onClick: () => onToggle() }] : [])];
 
   const onToggle = useCallback(
     (open) => {
-      toggleSecondary && toggleSecondary(open, { body: sidebar.content, ...sidebar })();
+      toggleSidebar && toggleSidebar(open, { body: sidebar.content, ...sidebar })();
     },
-    [sidebar, toggleSecondary],
+    [sidebar, toggleSidebar],
   );
 
   useEffect(() => {
     if (sidebar && canAutoOpen) {
-      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
+      onToggle(Local.get(Local.names.sidebar) || (!history && automaticSidebar));
       setCanAutoOpen(false);
     }
-  }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar, canAutoOpen]);
+  }, [autoOpenSidebar, automaticSidebar, history, onToggle, sidebar, canAutoOpen]);
 
   const shouldSetFocusInScreenReaderMode = () => {
     return tabbing && document.activeElement.id !== 'dydu-textarea';
@@ -147,7 +148,7 @@ Bubble.defaultProps = {
 };
 
 Bubble.propTypes = {
-  autoOpenSecondary: PropTypes.bool,
+  autoOpenSidebar: PropTypes.bool,
   actions: PropTypes.node,
   carousel: PropTypes.bool,
   children: PropTypes.element,
@@ -155,7 +156,7 @@ Bubble.propTypes = {
   component: PropTypes.elementType,
   history: PropTypes.bool,
   html: PropTypes.string,
-  secondary: PropTypes.any,
+  sidebar: PropTypes.any,
   step: PropTypes.object,
   templateName: PropTypes.string,
   thinking: PropTypes.bool,

@@ -19,7 +19,7 @@ export interface ButtonProps {
   icon?: string | (() => void);
   onClick?: (() => void) | null | undefined;
   reference?: Ref<any>;
-  secondary?: boolean;
+  sidebar?: boolean;
   target?: string;
   title?: string;
   type?: string;
@@ -47,7 +47,7 @@ const Button = ({
   icon: getIcon,
   onClick,
   reference,
-  secondary,
+  sidebar,
   target = '_blank',
   title,
   type,
@@ -84,7 +84,7 @@ const Button = ({
         'dydu-button',
         `dydu-button-${variant}`,
         classes.base,
-        { [classes.secondary]: secondary },
+        { [classes.sidebar]: sidebar },
         classes[variant],
         { [classes.hideOutline]: !tabbing },
         { [classes.grow]: grow },

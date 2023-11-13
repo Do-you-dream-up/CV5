@@ -211,7 +211,7 @@ export const getConfigurationObject = (updates = {}) => {
       active: false,
     },
     root: 'dydu-root',
-    secondary: {
+    sidebar: {
       automatic: {
         desktop: true,
         fullScreen: false,

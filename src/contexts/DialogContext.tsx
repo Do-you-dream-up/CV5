@@ -20,7 +20,7 @@ import Interaction from '../components/Interaction';
 import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import dotget from '../tools/dotget';
-import { eventOnSecondaryClosed } from '../events/chatboxIndex';
+import { eventOnSidebarClosed } from '../events/chatboxIndex';
 import { flattenSteps } from '../tools/steps';
 import { knownTemplates } from '../tools/template';
 import parseActions from '../tools/actions';
@@ -42,8 +42,8 @@ interface DialogProviderProps {
 }
 
 export interface DialogContextProps {
-  closeSecondary?: () => void;
-  openSecondary?: (props: any) => void;
+  closeSidebar?: () => void;
+  openSidebar?: (props: any) => void;
   showAnimationOperatorWriting?: () => void;
   displayNotification?: (notification: any) => void;
   extractTextWithRegex?: (inputString: string) => string | null;
@@ -59,8 +59,8 @@ export interface DialogContextProps {
   locked?: boolean;
   placeholder?: string | null;
   prompt?: string;
-  secondaryActive?: boolean;
-  secondaryContent?: any;
+  sidebarActive?: boolean;
+  sidebarContent?: any;
   selectedFile?: any;
   rewordAfterGuiAction?: string;
   setDisabled?: Dispatch<SetStateAction<boolean>>;
@@ -69,11 +69,11 @@ export interface DialogContextProps {
   setLocked?: Dispatch<SetStateAction<boolean>>;
   setPlaceholder?: Dispatch<SetStateAction<any>>;
   setPrompt?: Dispatch<SetStateAction<string>>;
-  setSecondary?: () => void;
+  setSidebar?: () => void;
   setSelectedFile?: Dispatch<SetStateAction<File>>;
   setUploadActive?: Dispatch<SetStateAction<boolean>>;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
-  toggleSecondary?: (open: boolean, props?: any) => any;
+  toggleSidebar?: (open: boolean, props?: any) => any;
   typeResponse?: Servlet.ChatResponseType | null;
   uploadActive?: boolean;
   voiceContent?: any;
@@ -87,7 +87,7 @@ export interface DialogContextProps {
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
 }
 
-interface SecondaryContentProps {
+interface SidebarContentProps {
   headerTransparency?: boolean;
   headerRenderer?: any;
   bodyRenderer?: any;
@@ -102,7 +102,7 @@ interface InteractionProps {
   askFeedback: boolean;
   carousel: boolean;
   children: any;
-  secondary: any;
+  sidebar: any;
   steps: [];
   templateName?: string;
   type?: string;
@@ -125,7 +125,7 @@ export function extractParameterFromGuiAction(inputString: string) {
 export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
-  const secondaryTransient = configuration?.secondary?.transient;
+  const sidebarTransient = configuration?.sidebar?.transient;
 
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
@@ -146,8 +146,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
-  const [secondaryActive, setSecondaryActive] = useState(false);
-  const [secondaryContent, setSecondaryContent] = useState<SecondaryContentProps | null>(null);
+  const [sidebarActive, setSidebarActive] = useState(false);
+  const [sidebarContent, setSidebarContent] = useState<SidebarContentProps | null>(null);
   const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState<Servlet.ChatResponseType | null | undefined>(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
@@ -215,7 +215,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
   }, [fetchPushrules, shouldTriggerPushRules]);
 
-  const toggleSecondary = useCallback(
+  const toggleSidebar = useCallback(
     (
         open,
         {
@@ -227,7 +227,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
           title,
           url,
           width,
-        }: SecondaryContentProps = {},
+        }: SidebarContentProps = {},
       ) =>
       () => {
         const someFieldsDefined = [
@@ -241,9 +241,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
           width,
         ].some((v) => isDefined(v));
         if (someFieldsDefined) {
-          setSecondaryContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
+          setSidebarContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
         }
-        setSecondaryActive((previous) => {
+        setSidebarActive((previous) => {
           return open === undefined ? !previous : open;
         });
       },
@@ -284,15 +284,15 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const addRequest = useCallback(
     (text) => {
       if (text) {
-        if (secondaryTransient || isMobile) {
-          toggleSecondary(false)();
+        if (sidebarTransient || isMobile) {
+          toggleSidebar(false)();
         }
         add(<Interaction children={text} type="request" />);
         setPlaceholder(null);
         setLocked(false);
       }
     },
-    [add, isMobile, secondaryTransient, toggleSecondary],
+    [add, isMobile, sidebarTransient, toggleSidebar],
   );
 
   const makeInteractionPropsListWithInteractionChildrenListAndData = useCallback((childrenList, data) => {
@@ -354,8 +354,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
 
       setTypeResponse(typeResponse);
-      if (secondaryTransient || isMobile) {
-        toggleSecondary(false)();
+      if (sidebarTransient || isMobile) {
+        toggleSidebar(false)();
       }
       if (urlRedirect) {
         window.open(urlRedirect, '_self');
@@ -423,7 +423,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
             askFeedback,
             carousel: steps.length > 1,
             type: 'response',
-            secondary: sidebar,
+            sidebar: sidebar,
             steps,
             templateName,
           };
@@ -436,12 +436,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
           const isResponseFromHistory = isDefined(response.isFromHistory) && response.isFromHistory === true;
           return (
             <Interaction
-              autoOpenSecondary={!isResponseFromHistory}
+              autoOpenSidebar={!isResponseFromHistory}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
               children={getContent(text, templateData, templateName)}
               type="response"
-              secondary={sidebar}
+              sidebar={sidebar}
               steps={steps}
               templateName={templateName}
               thinking
@@ -461,10 +461,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
       displayNotification,
       configuration?.Voice.enable,
       configuration?.Voice.voiceSpace,
-      secondaryTransient,
+      sidebarTransient,
       isMobile,
       add,
-      toggleSecondary,
+      toggleSidebar,
       dispatchEvent,
       makeInteractionPropsListWithInteractionChildrenListAndData,
       makeInteractionComponentForEachInteractionPropInList,
@@ -475,15 +475,15 @@ export function DialogProvider({ children }: DialogProviderProps) {
     setInteractions([]);
   };
 
-  const setSecondary = useCallback(({ body, title, url }: SecondaryContentProps = {}) => {
+  const setSidebar = useCallback(({ body, title, url }: SidebarContentProps = {}) => {
     if (body || title || url) {
-      setSecondaryContent({ body, title, url });
+      setSidebarContent({ body, title, url });
     }
   }, []);
 
   useEffect(() => {
-    Local.secondary.save(secondaryActive);
-  }, [secondaryActive]);
+    Local.sidebar.save(sidebarActive);
+  }, [sidebarActive]);
 
   const addHistoryInteraction = (interaction) => {
     const decodedInteraction = recursiveBase64DecodeString(interaction);
@@ -525,21 +525,21 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
   }, [getChatboxRef]);
 
-  const closeSecondary = useCallback(() => {
-    toggleSecondary(false)();
+  const closeSidebar = useCallback(() => {
+    toggleSidebar(false)();
     if (isDefined(chatboxNode))
       try {
-        chatboxNode.dispatchEvent(eventOnSecondaryClosed);
+        chatboxNode.dispatchEvent(eventOnSidebarClosed);
       } catch (e) {
         // mute multiple call of dispatchEvent error
       }
-  }, [toggleSecondary, chatboxNode]);
+  }, [toggleSidebar, chatboxNode]);
 
-  const openSecondary = useCallback(
+  const openSidebar = useCallback(
     (props) => {
-      if (!secondaryActive) toggleSecondary(true, props)();
+      if (!sidebarActive) toggleSidebar(true, props)();
     },
-    [secondaryActive, toggleSecondary],
+    [sidebarActive, toggleSidebar],
   );
 
   return (
@@ -548,8 +548,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
       value={{
         isWaitingForResponse,
         setIsWaitingForResponse,
-        closeSecondary,
-        openSecondary,
+        closeSidebar,
+        openSidebar,
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
@@ -562,15 +562,15 @@ export function DialogProvider({ children }: DialogProviderProps) {
         locked,
         placeholder,
         prompt,
-        secondaryActive,
-        secondaryContent,
+        sidebarActive,
+        sidebarContent,
         setDisabled,
         setLocked,
         setPlaceholder,
         setPrompt,
-        setSecondary,
+        setSidebar,
         setVoiceContent,
-        toggleSecondary,
+        toggleSidebar,
         typeResponse,
         voiceContent,
         zoomSrc,

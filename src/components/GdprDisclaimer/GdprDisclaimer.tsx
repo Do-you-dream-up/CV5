@@ -44,7 +44,7 @@ export default function GdprDisclaimer({
       children: t('gdpr.disclaimer.cancel'),
       id: 'dydu-disclaimer-refuse',
       onClick: onDecline,
-      secondary: true,
+      sidebar: true,
     },
     {
       children: t('gdpr.disclaimer.ok'),

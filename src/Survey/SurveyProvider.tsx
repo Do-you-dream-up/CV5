@@ -34,13 +34,13 @@ const SurveyContext = createContext<SurveyContextProps>({});
 
 export default function SurveyProvider({ children }: SurveyProviderProps) {
   const { getChatboxRef } = useEvent();
-  const { openSecondary, closeSecondary, lastResponse } = useDialog();
+  const { openSidebar, closeSidebar, lastResponse } = useDialog();
   const { configuration } = useConfiguration();
   const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
   const [instances, setInstances] = useState<any[] | null>(null);
-  const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
+  const [listeningCloseSidebar, setListeningCloseSidebar] = useState(false);
 
-  const secondaryTransient = configuration?.secondary?.transient;
+  const sidebarTransient = configuration?.sidebar?.transient;
 
   const flushStates = () => {
     setInstances(null);
@@ -61,9 +61,9 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
 
   const flushStatesAndClose = useCallback(() => {
     flushStates();
-    closeSecondary && closeSecondary();
+    closeSidebar && closeSidebar();
     answerResultManager.clear();
-  }, [closeSecondary, flushStates, lastResponse]);
+  }, [closeSidebar, flushStates, lastResponse]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -74,32 +74,32 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, [getChatboxRef]);
 
   useEffect(() => {
-    if (lastResponse && secondaryTransient) flushStatesAndClose();
-  }, [lastResponse, secondaryTransient]);
+    if (lastResponse && sidebarTransient) flushStatesAndClose();
+  }, [lastResponse, sidebarTransient]);
 
   useEffect(() => {
     dydu.setShowSurveyCallback(showSurvey);
   }, [showSurvey]);
 
   useEffect(() => {
-    if (listeningCloseSecondary || !isDefined(chatboxNode)) return;
-    chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSecondary, flushStatesAndClose);
-    setListeningCloseSecondary(true);
-  }, [chatboxNode, flushStatesAndClose, listeningCloseSecondary]);
+    if (listeningCloseSidebar || !isDefined(chatboxNode)) return;
+    chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSidebar, flushStatesAndClose);
+    setListeningCloseSidebar(true);
+  }, [chatboxNode, flushStatesAndClose, listeningCloseSidebar]);
 
   useEffect(() => {
     return () => {
-      chatboxNode?.removeEventListener(CHATBOX_EVENT_NAME.closeSecondary);
-      setListeningCloseSecondary(false);
+      chatboxNode?.removeEventListener(CHATBOX_EVENT_NAME.closeSidebar);
+      setListeningCloseSidebar(false);
     };
   }, []);
 
   const triggerSurvey = () => {
-    openSecondary &&
-      openSecondary({
-        width: configuration?.secondary?.width || null,
+    openSidebar &&
+      openSidebar({
+        width: configuration?.sidebar?.width || null,
         bodyRenderer: () => <SurveyForm />,
-        title: () => <SecondaryFormTitle />,
+        title: () => <SidebarFormTitle />,
         headerTransparency: false,
       });
   };
@@ -249,9 +249,9 @@ SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = 
 //==================================================/
 // LOCAL COMPONENTS
 //==================================================/
-// const SecondaryHeader = () => <SecondaryFormTitle />;
+// const SidebarHeader = () => <SidebarFormTitle />;
 
-const SecondaryFormTitle = () => {
+const SidebarFormTitle = () => {
   const style = useRef({
     hgroup: {
       lineHeight: '1.5rem',

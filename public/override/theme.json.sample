@@ -4,7 +4,7 @@
       "sansSerif": "'Assistant', sans-serif",
       "serif": "sans-serif"
     },
-  
+
     "palette": {
       "action": {
         "active": "rgba(0, 0, 0, .4)",
@@ -21,7 +21,7 @@
         "menu": "#FFFFFF",
         "overlay": "rgba(0, 0, 0, .6)",
         "paper": "#FFFFFF",
-        "secondary": "#FFFFFF",
+        "sidebar": "#FFFFFF",
         "skeleton": "rgba(0, 0, 0, .08)"
       },
       "divider": "rgba(0, 0, 0, 0.12)",
@@ -43,7 +43,7 @@
         "background": "#FFFFFF",
         "text": "rgba(0, 0, 0, .87)"
       },
-      "secondary": {
+      "sidebar": {
         "main": "#FF4081",
         "text": "#FFFFFF"
       },
@@ -55,7 +55,7 @@
         "disabled": "rgba(0, 0, 0, .38)",
         "link": "",
         "primary": "rgba(0, 0, 0, .87)",
-        "secondary": "rgba(0, 0, 0, .54)"
+        "sidebar": "rgba(0, 0, 0, .54)"
       },
       "tooltip": {
         "background": "#616161E6",
@@ -66,7 +66,7 @@
         "text": "#FFFFFF"
       }
     },
-  
+
     "shadows": [
       "none",
       "0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)",
@@ -94,12 +94,11 @@
       "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
       "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)"
     ],
-  
+
     "shape": {
       "radius": {
         "inner": 4,
         "outer": 8
       }
     }
-  }
-  
+}

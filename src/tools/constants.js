@@ -92,7 +92,7 @@ export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 
 export const CHATBOX_EVENT_NAME = {
   newMessage: 'dydu/event__newMessage',
-  closeSecondary: 'dydu/event__closeSecondary',
+  closeSidebar: 'dydu/event__closeSidebar',
 };
 
 export const VIEW_MODE = {

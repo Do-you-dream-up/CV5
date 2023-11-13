@@ -12,7 +12,7 @@ export default createUseStyles((theme) => ({
     to: { left: '120%', width: '20%' },
   },
   back: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.sidebar.main,
     height: '100%',
     opacity: 0.4,
     position: 'absolute',
@@ -23,7 +23,7 @@ export default createUseStyles((theme) => ({
     overflowX: 'hidden',
   },
   segmentBase: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.sidebar.main,
     height: '100%',
     position: 'absolute',
   },
