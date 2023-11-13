@@ -155,7 +155,7 @@ Bubble.propTypes = {
   component: PropTypes.elementType,
   history: PropTypes.bool,
   html: PropTypes.string,
-  secondary: PropTypes.bool,
+  secondary: PropTypes.any,
   step: PropTypes.object,
   templateName: PropTypes.string,
   thinking: PropTypes.bool,
