@@ -10,7 +10,15 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
+import {
+  StyledSidebarMode,
+  StyledSidebarFrame,
+  StyledSidebarActions,
+  StyledSidebarHeader,
+  StyledSidebarTitle,
+} from './styledComponents';
 import { useSurvey } from 'src/Survey/SurveyProvider';
+import { useTheme } from 'react-jss';
 
 /**
  * Render secondary content. The content can be modal and blocking for the rest
@@ -23,6 +31,7 @@ export default function Secondary({ anchor, mode }) {
 
   const { flushStatesAndClose } = useSurvey();
   const root = useRef(null);
+  const theme = useTheme();
   const [initialMode, setMode] = useState(configuration.secondary.mode);
   mode = mode || initialMode;
   const {
@@ -63,49 +72,50 @@ export default function Secondary({ anchor, mode }) {
     try {
       return title();
     } catch (e) {
-      return <h1 className={c('dydu-secondary-title', classes.title)}>{title}</h1>;
+      return <StyledSidebarTitle className={c('dydu-secondary-title')}>{title}</StyledSidebarTitle>;
     }
   }, [title]);
-
-  const headerClass = useMemo(() => {
-    return headerTransparency ? classes.header : classes.headerWhite;
-  }, [headerTransparency]);
 
   const renderHeader = useCallback(() => {
     return isDefined(headerRenderer) ? (
       headerRenderer()
     ) : (
-      <div className={c('dydu-secondary-header', headerClass)}>
+      <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-secondary-header')}>
         {titleContent}
-        <div className={c('dydu-secondary-actions', classes.actions)}>
+        <StyledSidebarActions className={c('dydu-secondary-actions')}>
           <Button color="primary" onClick={flushStatesAndClose} type="button" variant="icon">
             <Icon icon={icons?.close} alt="close" />
           </Button>
-        </div>
-      </div>
+        </StyledSidebarActions>
+      </StyledSidebarHeader>
     );
-  }, [headerRenderer, titleContent, flushStatesAndClose]);
+  }, [headerRenderer, title, flushStatesAndClose]);
+
+  console.log(secondaryContent);
 
   return secondaryActive ? (
-    <div
-      className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}
+    <StyledSidebarMode
+      $mode={mode}
+      $configuration={configuration}
+      $height={height}
+      $width={width}
+      theme={theme}
+      className={c('dydu-secondary', `dydu-secondary-${mode}`)}
       ref={root}
       id="dydu-secondary"
     >
       {renderHeader()}
       {renderBody()}
-      {/*body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />*/}
       {url && (
-        <iframe
+        <StyledSidebarFrame
           allow="fullscreen"
-          className={classes.frame}
           importance="low"
           sandbox="allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-forms"
           src={url}
           title={url}
         />
       )}
-    </div>
+    </StyledSidebarMode>
   ) : null;
 }
 
