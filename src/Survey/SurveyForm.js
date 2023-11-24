@@ -8,7 +8,9 @@ import { useSurvey } from './SurveyProvider';
 import { useTheme } from 'react-jss';
 
 export default function SurveyForm() {
-  const { instances, onSubmit, flushStatesAndClose } = useSurvey();
+  const { instances, onSubmit, flushStatesAndClose, surveyConfig } = useSurvey();
+
+  const buttonWording = surveyConfig?.submitValue !== undefined ? surveyConfig?.submitValue : 'Envoyer mes réponses';
 
   const renderFields = useCallback(() => {
     if (!isDefined(instances) || isEmptyArray(instances)) return null;
@@ -21,14 +23,15 @@ export default function SurveyForm() {
     <form className="survey-form-container">
       {renderFields()}
       <div className="btn-submit-container">
-        <ButtonSubmit onSubmit={onSubmit} />
+        <ButtonSubmit onSubmit={onSubmit} wording={buttonWording} />
       </div>
     </form>
   );
 }
 
-const ButtonSubmit = ({ onSubmit }) => {
+const ButtonSubmit = ({ onSubmit, wording }) => {
   const theme = useTheme();
+
   return (
     <button
       type="button"
@@ -36,11 +39,12 @@ const ButtonSubmit = ({ onSubmit }) => {
       onClick={onSubmit}
       style={{ backgroundColor: theme?.palette?.primary?.main ?? '#41479B' }}
     >
-      <i>Envoyer mes réponses</i> <img src={asset('check-circle.svg')} alt="submit" />
+      <i>{wording}</i> <img src={asset('check-circle.svg')} alt="submit" />
     </button>
   );
 };
 
 ButtonSubmit.propTypes = {
   onSubmit: PropTypes.func,
+  wording: PropTypes.string,
 };
