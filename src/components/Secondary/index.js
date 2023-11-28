@@ -91,8 +91,6 @@ export default function Secondary({ anchor, mode }) {
     );
   }, [headerRenderer, title, flushStatesAndClose]);
 
-  console.log(secondaryContent);
-
   return secondaryActive ? (
     <StyledSidebarMode
       $mode={mode}
