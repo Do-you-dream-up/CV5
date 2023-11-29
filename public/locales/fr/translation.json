@@ -5,7 +5,8 @@
   "banner": {
     "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",
     "more": "En savoir plus",
-    "ok": "Merci"
+    "ok": "Merci",
+    "rollOver" : "Lien pour en savoir plus"
   },
   "avatar": {
     "altAnswer": "a répondu"
@@ -154,7 +155,8 @@
       "fontDecrease": "Réduire police",
       "fontIncrease": "Agrandir police"
     },
-    "title": "Besoin d'aide ?"
+    "title": "Besoin d'aide ?",
+    "logo" : "Logo de dydu"
   },
   "input": {
     "actions": {
@@ -207,6 +209,10 @@
     "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
   },
   "tabs": {
+    "rollOver" :{
+      "contacts": "Les contacts",
+      "dialog": "La conversation"
+    },
     "contacts": "Contacts",
     "dialog": "Conversation",
     "activeTab": " - onglet actif"

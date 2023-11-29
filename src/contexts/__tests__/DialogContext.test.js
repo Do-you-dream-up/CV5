@@ -59,7 +59,6 @@ const DialogContextValuesMock = {
   setZoomSrc: jest.fn(),
   autoSuggestionActive: true,
   setAutoSuggestionActive: jest.fn(),
-  callWelcomeKnowledge: () => null,
 };
 
 describe('DialogContext', () => {

@@ -127,6 +127,7 @@ export class Local {
     secondary: 'dydu.secondary',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
+    images: 'dydu.images',
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
     operator: 'dydu.operator',
@@ -310,6 +311,12 @@ export class Local {
     remove: () => localStorage.removeItem(Local.names.operator),
   });
 
+  static locale = Object.create({
+    save: (data) => localStorage.setItem(Local.names.locale, data),
+    load: () => localStorage.getItem(Local.names.locale) || null,
+    remove: () => localStorage.removeItem(Local.names.locale),
+  });
+
   static viewMode = Object.create({
     load: () => {
       const d = localStorage.getItem(Local.names.open);
@@ -379,16 +386,18 @@ export class Local {
             { key, value },
           ),
       };
-      const storage = window?.sessionStorage || window?.localStorage || mockStorage;
-      return storage;
+      return window?.localStorage || mockStorage;
     },
     isSet: (botId) => isDefined(Local.welcomeKnowledge.load(botId)),
+    isSetWithActualContextIdFromLocal: (botId, actualContextId) => {
+      const mapStore = Local.welcomeKnowledge.loadMapStore();
+      return mapStore[botId]?.contextId === actualContextId;
+    },
     load: (botId) => {
       const mapStore = Local.welcomeKnowledge.loadMapStore();
       return _parse(mapStore[botId]) || null;
     },
     save: (botId, wkInteraction) => {
-      if (Local.welcomeKnowledge.isSet(botId)) return;
       const mapStore = Local.welcomeKnowledge.loadMapStore();
       mapStore[botId] = wkInteraction;
       Local.welcomeKnowledge.saveMapStore(mapStore);

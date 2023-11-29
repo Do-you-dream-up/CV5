@@ -7,6 +7,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     '& .slick-slide': {
       '& .dydu-bubble-response': {
         marginBottom: 10,
+        margin: 10,
       },
     },
     '& .slick-next::before, .slick-prev::before': {

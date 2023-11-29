@@ -38,6 +38,7 @@ export default function GdprDisclaimer({
   const event = useContext?.(EventsContext)?.onEvent?.('gdpr');
   const titleDisclaimer = t('gdpr.disclaimer.title');
 
+  const idLabel = 'dydu-gdpr-text';
   const actions = [
     {
       children: t('gdpr.disclaimer.cancel'),
@@ -45,7 +46,11 @@ export default function GdprDisclaimer({
       onClick: onDecline,
       secondary: true,
     },
-    { children: t('gdpr.disclaimer.ok'), onClick: onAccept, id: 'dydu-disclaimer-ok' },
+    {
+      children: t('gdpr.disclaimer.ok'),
+      onClick: onAccept,
+      id: 'dydu-disclaimer-ok',
+    },
   ];
   const body: BodyText[] = t('gdpr.disclaimer.body');
 
@@ -53,8 +58,6 @@ export default function GdprDisclaimer({
     if (!gdprPassed) event?.('displayGdpr');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const idLabel = 'dydu-gdpr-text';
 
   return !enable || gdprPassed
     ? children
@@ -68,16 +71,14 @@ export default function GdprDisclaimer({
         <>
           {body && (
             <>
-              <h2 tabIndex={0} className={c('dydu-gdpr-disclaimer-title', classes.title)}>
+              <h2 tabIndex={0} className={c('dydu-gdpr-disclaimer-title', classes.title)} id={idLabel}>
                 {titleDisclaimer}
               </h2>
               <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
                 <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
                   {body &&
                     ready &&
-                    body.map((item) => (
-                      <p tabIndex={0} aria-label={item.text} dangerouslySetInnerHTML={{ __html: item.text }} />
-                    ))}
+                    body.map((item) => <p tabIndex={0} dangerouslySetInnerHTML={{ __html: item.text }} />)}
                 </Skeleton>
               </div>
             </>
@@ -85,7 +86,7 @@ export default function GdprDisclaimer({
           <Actions
             actions={actions}
             className={c('dydu-gdpr-disclaimer-actions', classes.actions)}
-            testId={idLabel}
+            groupId={idLabel}
             role="group"
           />
         </>,

@@ -4,7 +4,7 @@ export function useTextInputConfig() {
   const commonAttributes = useRef({
     root: {
       maxLength: 200,
-      placeholder: 'Tapez votre réponse ici.',
+      placeholder: 'Saisissez votre réponse ici.',
     },
     style: {
       width: '100%',

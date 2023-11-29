@@ -8,7 +8,7 @@ export default new (class Stt {
    * @param iconComponent
    * @param {*} action
    */
-  getButtonAction = (title, iconComponent, action) => {
+  getButtonAction = (title, iconComponent, action, rollOver) => {
     if (typeof action !== 'function') throw new Error('Action is not a function');
 
     return {
@@ -16,6 +16,7 @@ export default new (class Stt {
       onClick: () => action(),
       type: 'button',
       variant: 'icon',
+      rollOver: rollOver,
     };
   };
 })();

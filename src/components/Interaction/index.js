@@ -42,9 +42,7 @@ const templateNameToBubbleCreateAction = {
           return result.concat([jsonStringify({ text, separator: true, quick })]);
         }
 
-        if (text.indexOf('><') < 0) {
-          result.push(jsonStringify(makeBubbleObjWithText(text)));
-        }
+        result.push(jsonStringify(makeBubbleObjWithText(text)));
 
         return result;
       }, []);
@@ -303,7 +301,6 @@ export default function Interaction({
   return (
     ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
       <div
-        tabIndex={0}
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
@@ -372,6 +369,10 @@ const Writing = () => {
 export const InteractionNotification = ({ notification }) => {
   const { text, iconName } = useNotificationHelper(notification);
 
+  const renderHTML = (html) => {
+    return { __html: html };
+  };
+
   const canRender = useMemo(() => isDefined(text) && isDefined(iconName), [text, iconName]);
 
   return !canRender ? null : (
@@ -380,7 +381,7 @@ export const InteractionNotification = ({ notification }) => {
         <div className="icon">
           <Icon color="grey" icon={iconName} alt={''} />
         </div>
-        <p>{text}</p>
+        <p dangerouslySetInnerHTML={renderHTML(text)} />
       </InChatNotification>
     </Scroll>
   );

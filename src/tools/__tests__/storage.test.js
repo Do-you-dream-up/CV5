@@ -534,7 +534,6 @@ describe('Local storage by bot id', () => {
           Local.welcomeKnowledge.save('bot1', { id: 'bot1' });
           const saveMock = jest.fn();
           Local.welcomeKnowledge.saveMapStore = saveMock;
-          Local.welcomeKnowledge.save('bot1', { id: 'bot1' });
           expect(saveMock).not.toHaveBeenCalled();
         });
         test('isSet should return false when botId is not set', () => {

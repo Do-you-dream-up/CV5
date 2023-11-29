@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import icons from '../../tools/icon-constants';
 import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral
@@ -29,6 +30,7 @@ export default function Banner() {
   const { active, dismissable, more, moreLink, storage, transient } = configuration?.banner ?? {};
   const html = sanitize(t('banner.html'));
   const bannerRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const { tabbing } = useUserAction();
 
   const dismiss = useCallback(() => {
     if (storage) {
@@ -42,10 +44,10 @@ export default function Banner() {
   };
 
   useEffect(() => {
-    if (show && isOnboardingAlreadyDone) {
+    if (show && isOnboardingAlreadyDone && tabbing) {
       bannerRef?.current?.focus();
     }
-  }, [bannerRef, show, isOnboardingAlreadyDone]);
+  }, [show, isOnboardingAlreadyDone, tabbing]);
 
   useEffect(() => {
     const show = !!active && (!storage || !Session.get(Session.names.banner));
@@ -72,6 +74,7 @@ export default function Banner() {
             children: t('banner.more'),
             href: moreLink,
             icon: `${process.env.PUBLIC_URL}icons/${icons.moreIcon}`,
+            rollOver: t('banner.rollOver'),
           },
         ]
       : []),

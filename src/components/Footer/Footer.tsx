@@ -3,12 +3,12 @@ import Actions, { ActionProps } from '../Actions/Actions';
 import Input from '../Input/Input';
 import UploadInput from '../UploadInput/UploadInput';
 import c from 'classnames';
+import dydu from '../../tools/dydu';
+import { useBotInfo } from '../../contexts/BotInfoContext';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
-import { useBotInfo } from '../../contexts/BotInfoContext';
-import dydu from '../../tools/dydu';
 
 /**
  * The footer typically renders the input field for the user to type text into

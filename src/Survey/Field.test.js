@@ -480,7 +480,7 @@ describe('Field component', () => {
       const field = new Field(fieldData);
 
       const { getByPlaceholderText } = render(field.render());
-      const input = getByPlaceholderText('Tapez votre réponse ici.');
+      const input = getByPlaceholderText('Saisissez votre réponse ici.');
 
       fireEvent.change(input, { target: { value: 'John' } });
       field.saveAsUserAnswer(input.value);
@@ -515,7 +515,7 @@ describe('Field component', () => {
       const field = new Field(fieldData);
 
       const { getByPlaceholderText } = render(field.render());
-      const input = getByPlaceholderText('Tapez votre réponse ici.');
+      const input = getByPlaceholderText('Saisissez votre réponse ici.');
 
       fireEvent.change(input, { target: { value: null } });
       field.saveAsUserAnswer(input.value);

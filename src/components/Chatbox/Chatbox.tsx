@@ -62,12 +62,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     setPrompt,
     setSecondary,
     toggleSecondary,
-    callWelcomeKnowledge,
   } = useContext(DialogContext);
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
-  const { hasAfterLoadBeenCalled, onChatboxLoaded, onAppReady } = useEvent();
+  const { onChatboxLoaded, onAppReady } = useEvent();
   const { isOnboardingAlreadyDone } = useContext(OnboardingContext);
   const { gdprPassed, setGdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration?.onboarding.enable;
@@ -96,10 +95,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   }, [mode]);
 
-  useEffect(() => {
-    if (hasAfterLoadBeenCalled) callWelcomeKnowledge && callWelcomeKnowledge();
-  }, [callWelcomeKnowledge, hasAfterLoadBeenCalled]);
-
   const followBadUrl = (text, options) => {
     return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
   };
@@ -111,7 +106,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         qualification,
         extra: options,
       };
-      options = Object.assign({ hide: false }, options);
+
+      if (!options.fromSurvey) {
+        options = JSON.parse(JSON.stringify(options));
+        options.hide = false;
+      }
 
       if (followBadUrl(text, options)) {
         addRequest && addRequest(text);
@@ -172,11 +171,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         get: () => dydu.getLocale(),
         set: (locale) => {
           return Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)])
-            .then(() => {
-              sessionStorage.removeItem('dydu.welcomeKnowledge');
-            })
-            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => clearInteractions && clearInteractions())
+            .then(() => localStorage.removeItem('dydu.context'))
+            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => fetchWelcomeKnowledge?.());
         },
       };

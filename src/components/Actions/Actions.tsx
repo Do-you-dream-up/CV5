@@ -1,7 +1,7 @@
 import Button, { ButtonProps } from '../Button/Button';
 import { ReactNode, useMemo } from 'react';
 
-import Menu from '../Menu';
+import Menu from '../Menu/Menu';
 import c from 'classnames';
 import useStyles from './styles';
 
@@ -30,6 +30,7 @@ export interface ActionProps {
   component?: any;
   testId?: any;
   onClick?: () => void;
+  rollOver?: string;
 }
 
 export interface ActionsProps {
@@ -39,9 +40,11 @@ export interface ActionsProps {
   testId?: string;
   id?: string;
   role?: string;
+  rollOver?: string;
+  groupId?: string;
 }
 
-const Actions = ({ actions = [], className, targetStyleKey, testId, role }: ActionsProps) => {
+const Actions = ({ actions = [], className, targetStyleKey, groupId, role, rollOver }: ActionsProps) => {
   const classes = useStyles();
 
   const filteredActions = useMemo(() => actions.filter((it) => it.when === undefined || it.when), [actions]);
@@ -52,21 +55,21 @@ const Actions = ({ actions = [], className, targetStyleKey, testId, role }: Acti
   );
 
   return actions?.length > 0 ? (
-    <div className={c('dydu-actions', _classes, className)} aria-labelledby={testId} role={role}>
-      {filteredActions.map(({ items, selected, type = 'button', title, testId, ...rest }, index) => {
+    <div className={c('dydu-actions', _classes, className)} aria-labelledby={groupId} role={role}>
+      {filteredActions.map(({ items, rollOver, selected, type = 'button', title, testId, ...rest }, index) => {
         delete rest.when;
-
         const props: ButtonProps = {
           key: title || index,
           ...rest,
           title,
           type,
+          rollOver,
         };
 
         if (items) {
           return <Menu {...props} component={Button} items={items} selected={selected} />;
         }
-        return <Button {...props} data-testid={testId} />;
+        return <Button {...props} data-testid={testId} title={rollOver} />;
       })}
     </div>
   ) : null;

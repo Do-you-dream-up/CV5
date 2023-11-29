@@ -1,6 +1,6 @@
 import Actions, { ActionProps } from '../Actions/Actions';
 import { escapeHTML, isDefined } from '../../tools/helpers';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
@@ -29,7 +29,7 @@ interface InputProps {
 export default function Input({ onRequest, onResponse }: InputProps) {
   const { send, typing: livechatTyping } = useLivechat();
   const { configuration } = useConfiguration();
-  const { dispatchEvent } = useEvent();
+  const { dispatchEvent, isMenuListOpen } = useEvent();
   const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
 
   const classes = useStyles();
@@ -39,6 +39,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [typing, setTyping] = useState<boolean>(false);
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
+  const inputPlaceholder = t('input.placeholder');
   const counterRemaining = t('input.actions.counterRemaining');
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
@@ -46,6 +47,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const debouncedInput = useDebounce(input, delay);
   const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
+  const textareaRef = useRef<null | any>(null);
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
@@ -89,6 +91,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const handleBlur = () => setInputFocused(false);
 
+  const tabIndex = useMemo(() => (isMenuListOpen ? -1 : 0), [isMenuListOpen]);
   const renderInputComponent = useCallback(
     (properties) => {
       const data = {
@@ -101,25 +104,24 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
-            textarea
+            {inputPlaceholder}
           </label>
           <textarea
             {...data}
-            aria-describedby="characters-remaining"
             disabled={prompt || locked}
             id={textareaId}
             data-testId="textareaId"
             onKeyUp={handleFocusChange}
             onBlur={handleBlur}
+            tabIndex={tabIndex}
+            ref={textareaRef}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && (
             <div>
               <span children={counter} className={classes.counter} />
               <span
-                id="characters-remaining"
                 className={c('dydu-counter-hidden', classes.hidden)}
-                aria-label={`${counter} ${counterRemaining}`}
                 aria-live={counter === maxLength ? 'off' : 'assertive'}
               >{`${counter} ${counterRemaining}`}</span>
             </div>
@@ -127,7 +129,18 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         </div>
       );
     },
-    [classes.counter, classes.field, classes.fieldShadow, counter, input, locked, prompt, showCounter, inputFocused],
+    [
+      classes.counter,
+      classes.field,
+      classes.fieldShadow,
+      counter,
+      input,
+      locked,
+      prompt,
+      showCounter,
+      inputFocused,
+      tabIndex,
+    ],
   );
 
   const reset = useCallback(() => {

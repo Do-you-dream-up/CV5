@@ -7,7 +7,7 @@ export interface ServerStatusProviderProps {
 }
 
 export interface ServerStatusContextProps {
-  fetch: any;
+  fetch: () => Promise<any>;
   result: any;
   checked: boolean;
 }

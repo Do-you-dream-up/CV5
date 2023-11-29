@@ -30,6 +30,15 @@ export default function QuickreplyTemplate({ html }) {
     return content.quick || {};
   }, [content]);
 
+  if (quick !== null) {
+    for (const key in quick) {
+      const isAnExternalLink = quick[key]?.includes('https');
+      if (!isAnExternalLink) {
+        quick[key] = quick[key]?.replace('<a', '<button role="button"');
+      }
+    }
+  }
+
   const separator = useMemo(() => {
     if (!isDefined(content)) return null;
     return content.separator;
