@@ -1,32 +1,49 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-export const originalTitle = document.title;
-
-function revertOriginalTitle() {
-  document.title = originalTitle;
-}
-
-export function tick(message) {
-  document.title = document.title === message ? originalTitle : message;
-}
-
-function useTabNotification(interval = 1000) {
-  const [message, setMessage] = useState(null);
+export function useTabNotification(interval = 1000) {
+  let pageTitle = document.title;
+  const { t } = useTranslation('translation');
+  const livechatNotification = t('livechat.notif.newMessage');
+  const [flashingNotificationActivated, setFlashingNotificationActivated] = useState(false);
   const notificationIntervalId = useRef<any>();
 
-  function setTabNotification(message) {
-    setMessage(message);
-    tick(message);
+  function setTabNotification() {
+    setFlashingNotificationActivated(true);
   }
 
   function clearTabNotification() {
-    setMessage(null);
-    revertOriginalTitle();
+    setFlashingNotificationActivated(false);
+    changeOrKeepTitlePage();
     stopNotifying();
   }
 
+  function changeOrKeepTitlePage() {
+    if (document.title !== pageTitle) {
+      if (document.title !== '' && document.title != livechatNotification) {
+        pageTitle = document.title;
+      } else {
+        document.title = pageTitle;
+      }
+    }
+    return pageTitle;
+  }
+
+  useEffect(() => {
+    if (!notificationIntervalId.current && flashingNotificationActivated) startNotifying();
+  }, [flashingNotificationActivated]);
+
   function startNotifying() {
-    notificationIntervalId.current = setInterval(() => tick(message), interval);
+    notificationIntervalId.current = setInterval(() => displayAlternativelyPageTitleAndNotification(), interval);
+  }
+
+  function displayAlternativelyPageTitleAndNotification() {
+    if (document.title === livechatNotification) {
+      document.title = pageTitle;
+    } else {
+      document.title = livechatNotification;
+    }
+    return document.title;
   }
 
   function stopNotifying() {
@@ -34,19 +51,14 @@ function useTabNotification(interval = 1000) {
     notificationIntervalId.current = null;
   }
 
-  useEffect(() => {
-    if (!notificationIntervalId.current && message) startNotifying();
-  }, [message]);
-
-  useEffect(() => {
-    return () => {
-      if (document.title !== originalTitle) revertOriginalTitle();
-
-      if (notificationIntervalId.current) clearInterval(notificationIntervalId.current);
-    };
-  }, []);
-
-  return { setTabNotification, clearTabNotification, notificationIntervalId };
+  return {
+    pageTitle,
+    changeOrKeepTitlePage,
+    setTabNotification,
+    clearTabNotification,
+    notificationIntervalId,
+    displayAlternativelyPageTitleAndNotification,
+  };
 }
 
 export default useTabNotification;
