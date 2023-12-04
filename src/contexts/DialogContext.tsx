@@ -377,16 +377,25 @@ export function DialogProvider({ children }: DialogProviderProps) {
             }
           });
         } else if (guiAction.match('^javascript:')) {
-          // temporary solution which uses the dangerous eval() to eval guiaction code
-          const guiActionCode = guiAction.substr(11);
-          eval(
-            'try{' +
-              guiActionCode +
-              '}catch(e) {' +
-              "console.error('Error in Normal GUI action " +
-              guiActionCode.replace(/'/g, "\\'") +
-              "');}",
-          );
+          cspEval(guiAction.slice(11));
+        }
+      }
+
+      /**
+       * if CSP is activated on client side, following line is needed to allow this code to execute:
+       * script-src 'nonce-dydu' 'strict-dynamic';
+       * and bundle.min.js has to be called with <script nonce="dydu" src="http.../bundle.min.js"></script>
+       *
+       * we create there a script tag that will be 'nonce-dydu' (thanks to 'strict-dynamic') and then allowed by CSP
+       */
+      function cspEval(guiActionCode) {
+        try {
+          var newScript = document.createElement('script');
+          newScript.innerHTML = guiActionCode;
+          document.body.appendChild(newScript);
+          document.body.removeChild(newScript);
+        } catch (e) {
+          console.log('Error: ' + e);
         }
       }
 
