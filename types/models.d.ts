@@ -28,7 +28,7 @@ declare namespace Models {
     pushrules: PoweredBy;
     qualification: PoweredBy;
     root: string;
-    secondary: Secondary;
+    sidebar: Sidebar;
     spaces: Spaces;
     suggestions: Suggestions;
     tabs: Tabs;
@@ -327,7 +327,7 @@ declare namespace Models {
     active: boolean;
   }
 
-  export interface Secondary {
+  export interface Sidebar {
     automatic: Automatic;
     fixedDimensions: boolean;
     mode: string;
@@ -417,7 +417,7 @@ declare namespace Models {
         menu: string;
         overlay: string;
         paper: string;
-        secondary: string;
+        sidebar: string;
         skeleton: string;
       };
       divider: string;
@@ -439,7 +439,7 @@ declare namespace Models {
         background: string;
         text: string;
       };
-      secondary: {
+      sidebar: {
         main: string;
         text: string;
       };
@@ -451,7 +451,7 @@ declare namespace Models {
         disabled: string;
         link: string;
         primary: string;
-        secondary: string;
+        sidebar: string;
       };
       tooltip: {
         background: string;

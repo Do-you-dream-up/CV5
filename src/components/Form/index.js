@@ -51,7 +51,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
       disabled: thinking || !currentSpace,
       icon: getSubmitIcon,
       onClick: onDismiss,
-      secondary: true,
+      sidebar: true,
       spin: thinking,
       type: 'cancel',
       testId: 'cancel',

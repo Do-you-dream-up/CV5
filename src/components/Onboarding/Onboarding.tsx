@@ -105,7 +105,7 @@ export default function Onboarding({ children }: OnboardingProps) {
                 data-testId="previous"
                 children={previous}
                 disabled={!stepIndex}
-                secondary={true}
+                sidebar={true}
                 onClick={hasPrevious ? onPrevious : null}
                 id="onboarding-previous"
               />

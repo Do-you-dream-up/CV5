@@ -3,7 +3,7 @@ import { getAllByText } from '@testing-library/react';
 import { render } from '../../tools/test-utils';
 
 jest.mock('../../contexts/DialogContext', () => ({
-  useDialog: jest.fn().mockReturnValue({ secondaryActive: true }),
+  useDialog: jest.fn().mockReturnValue({ sidebarActive: true }),
 }));
 
 describe('Carousel', () => {

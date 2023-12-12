@@ -20,7 +20,7 @@ export interface ActionProps {
   when?: boolean;
   disabled?: boolean;
   variant?: 'contained' | 'icon' | 'text';
-  secondary?: boolean;
+  sidebar?: boolean;
   spin?: boolean;
   href?: string;
   key?: string | number;

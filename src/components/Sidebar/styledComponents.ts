@@ -9,16 +9,16 @@ export const StyledSidebarMode = styled.div<{
   ${(props) => {
     console.log(props.theme);
     const base = {
-      backgroundColor: props.theme.palette.background.secondary,
+      backgroundColor: props.theme.palette.background.sidebar,
       boxShadow: props.theme.shadows[1],
       display: 'flex',
       flexDirection: 'column',
-      height: props.$configuration.secondary.fixedDimensions ? undefined : props.$height,
+      height: props.$configuration.sidebar.fixedDimensions ? undefined : props.$height,
       overflowY: 'auto',
       maxHeight: '648px',
-      width: props.$configuration.secondary.fixedDimensions ? props.$configuration.secondary.width : props.$width,
+      width: props.$configuration.sidebar.fixedDimensions ? props.$configuration.sidebar.width : props.$width,
       [props.theme.breakpoints?.up('xl')]: {
-        minWidth: props.$configuration.secondary.fixedDimensions ? props.$configuration.secondary.width : props.$width,
+        minWidth: props.$configuration.sidebar.fixedDimensions ? props.$configuration.sidebar.width : props.$width,
         maxHeight: '100%',
       },
       [props.theme.breakpoints?.down('md')]: {
@@ -81,7 +81,7 @@ export const StyledSidebarHeader = styled.div<{ $isTransparent: boolean }>`
   ${(props) => {
     const header = {
       zIndex: props.$isTransparent ? null : 10,
-      backgroundColor: `${props.theme.palette.background.secondary}${props.$isTransparent ? 'CC' : ''}`,
+      backgroundColor: `${props.theme.palette.background.sidebar}${props.$isTransparent ? 'CC' : ''}`,
       display: 'flex',
       padding: '1.6em 1.6em 10px',
       position: 'sticky',

@@ -29,7 +29,7 @@ export default createUseStyles((theme) => ({
   },
   commentFieldText: {
     '&::placeholder': {
-      color: theme.palette.text.secondary,
+      color: theme.palette.text.sidebar,
     },
     backgroundColor: theme.palette.background.highlight,
     border: 0,

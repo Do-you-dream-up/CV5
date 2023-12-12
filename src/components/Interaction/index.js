@@ -101,14 +101,14 @@ const templateNameToBubbleCreateAction = {
  * HTML tag.
  */
 export default function Interaction({
-  autoOpenSecondary,
+  autoOpenSidebar,
   askFeedback,
   carousel,
   children,
   className,
   history,
   scroll,
-  secondary,
+  sidebar,
   steps,
   templateName,
   thinking,
@@ -175,12 +175,12 @@ export default function Interaction({
       );
 
       // if the bot have no response but just a sidebar to display, the empty string is not interprated to add a new bubble
-      if (_children[0] === '' && secondary) {
+      if (_children[0] === '' && sidebar) {
         _children = ['&nbsp;'];
       }
       return _children.filter((it) => it);
     },
-    [secondary],
+    [sidebar],
   );
 
   useEffect(() => {
@@ -202,7 +202,7 @@ export default function Interaction({
     ready,
     templateName,
     quickTemplate,
-    secondary,
+    sidebar,
     createBubbleListNoTemplate,
   ]);
 
@@ -254,7 +254,7 @@ export default function Interaction({
       carousel: carousel,
       history: history,
       type: type,
-      autoOpenSecondary,
+      autoOpenSidebar,
     };
 
     return bubbles.map((it, index) => {
@@ -262,7 +262,7 @@ export default function Interaction({
         ...baseProps,
         step: steps ? (steps.length === 1 ? undefined : steps[index]) : undefined,
         component: scroll && !index ? Scroll : undefined,
-        secondary: index === bubbles.length - 1 ? secondary : undefined,
+        sidebar: index === bubbles.length - 1 ? sidebar : undefined,
         [typeof it === 'string' ? 'html' : 'children']: it,
       };
 
@@ -272,7 +272,7 @@ export default function Interaction({
         </Scroll>
       );
     });
-  }, [autoOpenSecondary, bubbles, carousel, classes.bubble, history, scroll, secondary, steps, templateName, type]);
+  }, [autoOpenSidebar, bubbles, carousel, classes.bubble, history, scroll, sidebar, steps, templateName, type]);
 
   useDebounce(
     () => {
@@ -331,14 +331,14 @@ Interaction.defaultProps = {
 };
 
 Interaction.propTypes = {
-  autoOpenSecondary: PropTypes.bool,
+  autoOpenSidebar: PropTypes.bool,
   askFeedback: PropTypes.bool,
   carousel: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.bool,
   scroll: PropTypes.bool,
-  secondary: PropTypes.any,
+  sidebar: PropTypes.any,
   steps: PropTypes.array,
   templateName: PropTypes.string,
   contexts: PropTypes.any,

@@ -21,18 +21,18 @@ import { useSurvey } from 'src/Survey/SurveyProvider';
 import { useTheme } from 'react-jss';
 
 /**
- * Render secondary content. The content can be modal and blocking for the rest
+ * Render sidebar content. The content can be modal and blocking for the rest
  * of the chatbox by being placed over the conversation or less intrusive on a
  * side of the chatbox.
  */
-export default function Secondary({ anchor, mode }) {
+export default function Sidebar({ anchor, mode }) {
   const { configuration } = useConfiguration();
-  const { secondaryActive, secondaryContent } = useDialog();
+  const { sidebarActive, sidebarContent } = useDialog();
 
   const { flushStatesAndClose } = useSurvey();
   const root = useRef(null);
   const theme = useTheme();
-  const [initialMode, setMode] = useState(configuration.secondary.mode);
+  const [initialMode, setMode] = useState(configuration.sidebar.mode);
   mode = mode || initialMode;
   const {
     headerTransparency = true,
@@ -43,7 +43,7 @@ export default function Secondary({ anchor, mode }) {
     title,
     url,
     width,
-  } = secondaryContent || {};
+  } = sidebarContent || {};
 
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
@@ -64,7 +64,7 @@ export default function Secondary({ anchor, mode }) {
     return isDefined(bodyRenderer) ? (
       bodyRenderer()
     ) : (
-      <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />
+      <PrettyHtml className={c('dydu-sidebar-body', classes.body)} html={body} />
     );
   }, [body, bodyRenderer, classes.body]);
 
@@ -72,7 +72,7 @@ export default function Secondary({ anchor, mode }) {
     try {
       return title();
     } catch (e) {
-      return <StyledSidebarTitle className={c('dydu-secondary-title')}>{title}</StyledSidebarTitle>;
+      return <StyledSidebarTitle className={c('dydu-sidebar-title')}>{title}</StyledSidebarTitle>;
     }
   }, [title]);
 
@@ -80,9 +80,9 @@ export default function Secondary({ anchor, mode }) {
     return isDefined(headerRenderer) ? (
       headerRenderer()
     ) : (
-      <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-secondary-header')}>
+      <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-sidebar-header')}>
         {titleContent}
-        <StyledSidebarActions className={c('dydu-secondary-actions')}>
+        <StyledSidebarActions className={c('dydu-sidebar-actions')}>
           <Button color="primary" onClick={flushStatesAndClose} type="button" variant="icon">
             <Icon icon={icons?.close} alt="close" />
           </Button>
@@ -91,16 +91,16 @@ export default function Secondary({ anchor, mode }) {
     );
   }, [headerRenderer, title, flushStatesAndClose]);
 
-  return secondaryActive ? (
+  return sidebarActive ? (
     <StyledSidebarMode
       $mode={mode}
       $configuration={configuration}
       $height={height}
       $width={width}
       theme={theme}
-      className={c('dydu-secondary', `dydu-secondary-${mode}`)}
+      className={c('dydu-sidebar', `dydu-sidebar-${mode}`)}
       ref={root}
-      id="dydu-secondary"
+      id="dydu-sidebar"
     >
       {renderHeader()}
       {renderBody()}
@@ -117,7 +117,7 @@ export default function Secondary({ anchor, mode }) {
   ) : null;
 }
 
-Secondary.propTypes = {
+Sidebar.propTypes = {
   anchor: PropTypes.object,
   mode: PropTypes.string,
 };

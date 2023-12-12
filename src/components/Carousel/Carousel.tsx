@@ -34,22 +34,22 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   const interactionWidth = useMemo(() => carouselRef?.current?.offsetWidth, [resizeCount]);
 
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
-  const automaticSecondary = isFullScreen
-    ? !!configuration?.secondary.automatic?.fullScreen
-    : !!configuration?.secondary.automatic?.desktop;
-  const { secondaryActive, toggleSecondary } = useDialog();
+  const automaticSidebar = isFullScreen
+    ? !!configuration?.sidebar.automatic?.fullScreen
+    : !!configuration?.sidebar.automatic?.desktop;
+  const { sidebarActive, toggleSidebar } = useDialog();
 
   const onToggle = useCallback(
     (open) => {
-      if (secondaryActive) {
-        toggleSecondary &&
-          toggleSecondary(open, {
+      if (sidebarActive) {
+        toggleSidebar &&
+          toggleSidebar(open, {
             body: step.sidebar.content,
             ...step.sidebar,
           })();
       }
     },
-    [secondaryActive, step, toggleSecondary],
+    [sidebarActive, step, toggleSidebar],
   );
 
   // Method to change aria-hidden attribute on focus slide to false and other slides to true
@@ -70,10 +70,10 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   useEffect(() => {
     if (steps && step?.sidebar) {
       setStep(steps[index]);
-      onToggle(Local.get(Local.names.secondary) || automaticSecondary);
+      onToggle(Local.get(Local.names.sidebar) || automaticSidebar);
       changeAriaHiddenAttributForSlides();
     }
-  }, [index, steps, step, automaticSecondary, onToggle]);
+  }, [index, steps, step, automaticSidebar, onToggle]);
 
   const renderSteps = () =>
     children?.map((item, i) => (

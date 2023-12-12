@@ -39,7 +39,7 @@ export const ACTIONS = {
   '#iframe#': null,
   '#lorem#': () => window.dydu.lorem.standard(),
   '#meta#': meta,
-  '#secondary#': () => window.dydu.ui?.secondary(true, { body: LOREM_HTML, title: 'Secondary' }),
+  '#sidebar#': () => window.dydu.ui?.sidebar(true, { body: LOREM_HTML, title: 'Sidebar' }),
   '#space#': () => window.dydu.chat.reply(dydu.getSpace()),
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,

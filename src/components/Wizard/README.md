@@ -124,10 +124,10 @@ const documentation = {
 
   root: ['HTML ID to attach the application onto', 'String'],
 
-  secondary: {
+  sidebar: {
     automatic: {
-      desktop: ['Automatically display the secondary panel when CV5 is in small size/desktop', 'Boolean'],
-      fullScreen: ['Automatically display the secondary panel when CV5 in fullscreen size', 'Boolean'],
+      desktop: ['Automatically display the sidebar panel when CV5 is in small size/desktop', 'Boolean'],
+      fullScreen: ['Automatically display the sidebar panel when CV5 in fullscreen size', 'Boolean'],
     },
     fixedDimensions: ['Override dimensions sent by backend', 'Boolean'],
     width: ['Set a fixed width', 'String'],
