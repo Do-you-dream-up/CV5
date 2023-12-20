@@ -71,5 +71,14 @@ configuration.initialize().then((configuration) => {
         document.head?.append(style);
       }
     });
+
+    Axios.get(`${process.env.PUBLIC_URL}override/custom.js`, axiosConfigNoCache).then((res) => {
+      if (res?.data.length > 0) {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.textContent = res.data;
+        document.head?.append(script);
+      }
+    });
   }
 });
