@@ -38,6 +38,7 @@ export const configuration = new (class Configuration {
           this.configuration.avatar.teaser.image = images?.teaser;
           this.configuration.header.logo.imageLink.understood = images?.understood;
           this.configuration.header.logo.imageLink.misunderstood = images?.misunderstood;
+          this.configuration.header.logo.imageLink.livechat = images?.livechat;
           this.configuration.header.logo.imageLink.reword = images?.reword;
           this.configuration.onboarding.items[0].image.src = images?.onboarding1;
           this.configuration.onboarding.items[1].image.src = images?.onboarding2;

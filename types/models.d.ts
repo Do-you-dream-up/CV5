@@ -251,6 +251,7 @@ declare namespace Models {
 
   export interface ImageLink {
     misunderstood: string;
+    livechat: string;
     reword: string;
     understood: string;
   }
