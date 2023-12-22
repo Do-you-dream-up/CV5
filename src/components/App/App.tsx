@@ -1,4 +1,5 @@
 import '../../../public/override/style.css';
+import '../../../public/override/custom.js';
 import '../../../public/chatboxHomepage.css';
 
 import { AuthProtected, AuthProvider } from '../auth/AuthContext';
