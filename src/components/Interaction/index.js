@@ -350,7 +350,15 @@ Interaction.propTypes = {
 const Writing = () => {
   const { configuration } = useConfiguration();
   // eslint-disable
-  const avatarImageUrl = useMemo(() => asset(configuration?.avatar?.response?.image), []);
+  const avatarImageUrl = useMemo(() => {
+    const isLivechatOn = Local.isLivechatOn.load();
+
+    if (configuration?.header?.logo?.customAvatar && isLivechatOn) {
+      return asset(configuration?.header?.logo?.imageLink?.livechat) || asset(configuration?.avatar?.response?.image);
+    }
+
+    return asset(configuration?.avatar?.response?.image);
+  }, [configuration?.header?.logo?.customAvatar]);
 
   return (
     <Scroll>
