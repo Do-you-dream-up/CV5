@@ -94,7 +94,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
 }
 
 PrettyHtml.defaultProps = {
-  component: 'p',
+  component: 'div',
 };
 
 PrettyHtml.propTypes = {
