@@ -3,14 +3,13 @@ import './tools/prototypes/prototypes-augmented';
 import { JssProvider, ThemeProvider } from 'react-jss';
 
 import App from './components/App/App';
-import Axios from 'axios';
 import { BotInfoProvider } from './contexts/BotInfoContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import { EventsProvider } from './contexts/EventsContext';
 import ReactDOM from 'react-dom';
 import { ServerStatusProvider } from './contexts/ServerStatusContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
-import { axiosConfigNoCache } from './tools/axios';
+import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import { getCss } from './tools/css';
@@ -58,13 +57,13 @@ configuration.initialize().then((configuration) => {
   anchor = getRootDiv(configuration);
 
   if (anchor) {
-    Axios.get(`${process.env.PUBLIC_URL}override/theme.json`, axiosConfigNoCache).then(({ data = {} }) => {
+    getResourceWithoutCache('theme.json').then(({ data = {} }) => {
       data.palette.primary.main = getCss()?.main || data.palette.primary.main;
       data.breakpoints = breakpoints;
       configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
     });
 
-    Axios.get(`${process.env.PUBLIC_URL}override/style.css`, axiosConfigNoCache).then((res) => {
+    getResourceWithoutCache('style.css').then((res) => {
       if (res?.data.length > 0) {
         const style = document.createElement('style');
         style.textContent = scope(res.data, `#${configuration.root}`);
@@ -72,7 +71,7 @@ configuration.initialize().then((configuration) => {
       }
     });
 
-    Axios.get(`${process.env.PUBLIC_URL}override/custom.js`, axiosConfigNoCache).then((res) => {
+    getResourceWithoutCache('custom.js').then((res) => {
       if (res?.data.length > 0) {
         const script = document.createElement('script');
         script.type = 'text/javascript';

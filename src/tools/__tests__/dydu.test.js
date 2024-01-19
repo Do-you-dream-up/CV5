@@ -6,13 +6,30 @@ import { Cookie, Local } from '../storage';
 import { objectContainFields, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
-import Storage from '../../components/auth/Storage';
 
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
 
+import { emit, SERVLET_API } from '../axios';
+import { BOT } from '../bot';
+
+jest.mock('../axios', () => ({
+  emit: jest.fn().mockReturnValue(Promise.resolve({})),
+  setConfiguration: jest.fn(),
+  SERVLET_API: {
+    get: jest.fn(),
+    post: jest.fn(),
+  },
+}));
+
 jest.mock(dyduRelativeLocation, () => ({
   default: jest.fn(),
+}));
+
+jest.mock('../bot', () => ({
+  BOT: {
+    id: 'current-bot-id',
+  },
 }));
 
 jest.mock('../storage', () => ({
@@ -42,6 +59,9 @@ jest.mock('../storage', () => ({
       getKey: jest.fn(),
       isSet: jest.fn(),
       createAndSave: jest.fn(),
+      load: jest.fn(),
+    },
+    isChannels: {
       load: jest.fn(),
     },
   },
@@ -144,7 +164,7 @@ describe('dydu.js', function () {
 
   describe('getInfos', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getBotId', 'getLocale', 'getSpace']);
+      spied = jestSpyOnList(dydu, ['getLocale', 'getSpace']);
     });
     afterEach(() => {
       jestRestoreMocked(Object.values(spied));
@@ -166,7 +186,7 @@ describe('dydu.js', function () {
     });
     it('should call methods to feed the info object', async () => {
       // GIVEN
-      const methods = ['getBotId', 'getLocale', 'getSpace'];
+      const methods = ['getLocale', 'getSpace'];
 
       // WHEN
       await dydu.getInfos();
@@ -180,7 +200,7 @@ describe('dydu.js', function () {
 
   describe('getSurvey', () => {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getBotId', 'getLocale', 'getConfiguration', 'post', 'emit']);
+      spied = jestSpyOnList(dydu, ['getLocale', 'getConfiguration', 'post']);
     });
     afterEach(() => {
       jestRestoreMocked(Object.values(spied));
@@ -282,31 +302,14 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('get', function () {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['emit']);
-    });
-    it('should call |emit| with axios.get as first parameter', () => {
-      // GIVEN
-      // WHEN
-      dydu.get('path/to/ressource', {});
-
-      // THEN
-      expect(dydu.emit).toHaveBeenCalled();
-    });
-  });
-
   describe('whoami', () => {
     it('should GET request on whoami/ api', async () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['emit']);
-      spied.emit.mockResolvedValue({});
       // WHEN
       await dydu.whoami();
 
       // THEN
       const paramPosition = 1;
-      const effectiveValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       const expectedPath = 'whoami/';
       expect(effectiveValue).toEqual(expectedPath);
     });
@@ -314,14 +317,7 @@ describe('dydu.js', function () {
 
   describe('welcomeCall', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, [
-        'emit',
-        'getContextId',
-        'getLocale',
-        'getSpace',
-        'getConfiguration',
-        'getVariables',
-      ]);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getLocale', 'getSpace', 'getConfiguration', 'getVariables']);
     });
     it('should call |getContextId|', () => {
       // GIVEN
@@ -335,7 +331,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(dydu.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       const expectedPath = 'chat/welcomecall/';
       expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
     });
@@ -345,9 +341,9 @@ describe('dydu.js', function () {
       await dydu.welcomeCall();
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(isUrlFormEncoded(effectivePayloadParameterValue)).toEqual(true);
     });
     it('should match correct datas', async () => {
@@ -368,7 +364,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expectedKeys.forEach((keyString) => {
         expect(strContains(effectivePayloadParameterValue, keyString)).toEqual(true);
       });
@@ -377,7 +373,7 @@ describe('dydu.js', function () {
 
   describe('top', () => {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['emit', 'getLocale', 'getSpace', 'getConfiguration']);
+      spied = jestSpyOnList(dydu, ['getLocale', 'getSpace', 'getConfiguration']);
     });
     it('should POST on chat/topknowledge api', async () => {
       // GIVEN
@@ -386,7 +382,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(dydu.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       const expectedPath = 'chat/topknowledge';
       expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
     });
@@ -396,9 +392,9 @@ describe('dydu.js', function () {
       await dydu.top();
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(isUrlFormEncoded(effectivePayloadParameterValue)).toEqual(true);
     });
     it('should match correct datas', async () => {
@@ -421,7 +417,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expectedKeys.forEach((keyString) => {
         expect(strContains(effectivePayloadParameterValue, keyString)).toEqual(true);
       });
@@ -430,7 +426,7 @@ describe('dydu.js', function () {
 
   describe('poll', () => {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['emit', 'getContextId', 'getLocale', 'getConfiguration', 'getSpace']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getLocale', 'getConfiguration', 'getSpace']);
     });
 
     it('should POST on /chat/poll/last', async () => {
@@ -442,7 +438,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(dydu.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       const expectedPath = 'chat/poll/last/';
       expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
     });
@@ -452,9 +448,9 @@ describe('dydu.js', function () {
       await dydu.poll({});
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(isUrlFormEncoded(effectivePayloadParameterValue)).toEqual(true);
     });
     it('should send correct payload', async () => {
@@ -475,7 +471,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       Object.keys(payload).forEach((key) => {
         expect(strContains(effectiveParamValue, key)).toEqual(true);
       });
@@ -484,16 +480,16 @@ describe('dydu.js', function () {
 
   describe('getSaml2Status', () => {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['emit', 'getConfiguration']);
+      spied = jestSpyOnList(dydu, ['getConfiguration']);
     });
     it('should GET request on /saml2/status with query parameter', async () => {
       const expectedValue = 'saml2/status';
 
       await dydu.getSaml2Status();
 
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectiveParamValue, expectedValue)).toEqual(true);
     });
     it('should send saml value in payload when saml is enabled', () => {
@@ -506,23 +502,23 @@ describe('dydu.js', function () {
       dydu.getSaml2Status(tokenValue);
 
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectiveParamValue, tokenValue)).toEqual(true);
     });
   });
 
   describe('getSaml2UserInfo', () => {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['emit', 'getConfiguration']);
+      spied = jestSpyOnList(dydu, ['getConfiguration']);
     });
     it('should GET request on /saml2/status with query parameter', async () => {
       const expectedValue = 'saml2/userinfo';
 
       await dydu.getSaml2UserInfo();
 
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectiveParamValue, expectedValue)).toEqual(true);
     });
     it('should send saml value in payload when saml is enabled', () => {
@@ -535,7 +531,7 @@ describe('dydu.js', function () {
       dydu.getSaml2UserInfo(tokenValue);
 
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectiveParamValue, tokenValue)).toEqual(true);
     });
   });
@@ -543,13 +539,13 @@ describe('dydu.js', function () {
   describe('suggest', () => {
     it('should call |emit| for POST on /chat/search with bot id', () => {
       //GIVEN
-      spied = jestSpyOnList(dydu, ['getLocale', 'getSpace', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getLocale', 'getSpace', 'getConfiguration']);
       const text = 'voici le texte';
       //WHEN
       dydu.suggest(text);
       const paramPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
-      const expectedPath = `chat/search/${dydu.getBotId()}`;
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, paramPosition);
+      const expectedPath = `chat/search/${BOT.id}`;
 
       //THEN
       expect(strContains(effectiveParamValue, expectedPath)).toEqual(true);
@@ -649,14 +645,11 @@ describe('dydu.js', function () {
 
   describe('pushrules', () => {
     it('should call |emit|', async () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['emit']);
-
       // WHEN
       await dydu.pushrules();
 
       // THEN
-      expect(dydu.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
     });
   });
 
@@ -802,7 +795,6 @@ describe('dydu.js', function () {
   describe('getContextIdStorageKey', function () {
     it('should call |Local.contextId.createKey|', () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, ['getBotId']);
       const s = jest.spyOn(Local.contextId, 'createKey');
 
       // THEN
@@ -816,8 +808,6 @@ describe('dydu.js', function () {
 
   describe('getClientId', function () {
     it('should call |Local.clientId.getKey| with infoObject', () => {
-      dydu.initInfos();
-
       // WHEN
       dydu.getClientId();
 
@@ -913,7 +903,7 @@ describe('dydu.js', function () {
     it('should include the |choiceKey| parameter in payload', async () => {
       // GIVEN
 
-      spied = jestSpyOnList(dydu, ['getConfiguration', 'getContextId', 'emit']);
+      spied = jestSpyOnList(dydu, ['getConfiguration', 'getContextId']);
       const config = new ConfigurationFixture();
       config.enableSaml();
       spied.getConfiguration.mockReturnValue(config.getConfiguration());
@@ -924,16 +914,16 @@ describe('dydu.js', function () {
       await dydu.feedbackInsatisfaction(choiceKey);
 
       // THEN
-      expect(spied.emit).toHaveBeenCalledWith(
-        undefined,
-        'chat/feedback/insatisfaction/undefined/',
+      expect(emit).toHaveBeenCalledWith(
+        SERVLET_API.post,
+        'chat/feedback/insatisfaction/current-bot-id/',
         `choiceKey=${choiceKey}&contextUUID=&solutionUsed=ASSISTANT`,
       );
       s.mockRestore();
     });
     it('should call |emit|', async () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
       const c = new ConfigurationFixture();
       spied.getContextId.mockResolvedValue(null);
       spied.getConfiguration.mockReturnValue(c.getConfiguration());
@@ -943,11 +933,11 @@ describe('dydu.js', function () {
       await dydu.feedbackInsatisfaction();
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
     });
     it('should call |emit| with chat/feedback/insatisfaction/ as path argument', async () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
       const c = new ConfigurationFixture();
       spied.getContextId.mockResolvedValue(null);
       spied.getConfiguration.mockReturnValue(c.getConfiguration());
@@ -959,11 +949,11 @@ describe('dydu.js', function () {
       // THEN
 
       const targetPath = 'chat/feedback/insatisfaction/';
-      const pathArg = spied.emit.mock.calls[0][1];
+      const pathArg = emit.mock.calls[0][1];
       expect(strContains(pathArg, targetPath)).toEqual(true);
     });
     it('should call |emit| with form url encoded string as data argument', async () => {
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
       const c = new ConfigurationFixture();
       spied.getContextId.mockResolvedValue(null);
       spied.getConfiguration.mockReturnValue(c.getConfiguration());
@@ -973,7 +963,7 @@ describe('dydu.js', function () {
       await dydu.feedbackInsatisfaction();
 
       // THEN
-      const dataArg = spied.emit.mock.calls[0][2];
+      const dataArg = emit.mock.calls[0][2];
       expect(isUrlFormEncoded(dataArg)).toEqual(true);
     });
   });
@@ -981,7 +971,7 @@ describe('dydu.js', function () {
   describe('feedbackComment', function () {
     it('should call |getContextId|', async () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
       spied.getContextId.mockResolvedValue(null);
       const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
 
@@ -993,7 +983,7 @@ describe('dydu.js', function () {
     });
     it('should call |getConfiguration|', async () => {
       // GIVEN
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
       spied.getContextId.mockResolvedValue(null);
       const c = new ConfigurationFixture();
       const spiedSamlLoad = jest.spyOn(Local.saml, 'load');
@@ -1009,7 +999,7 @@ describe('dydu.js', function () {
 
   describe('feedback', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getConfiguration']);
     });
 
     it('should call |getContextId|', async () => {
@@ -1059,7 +1049,7 @@ describe('dydu.js', function () {
 
       // THEN
       const targetPath = 'chat/feedback/';
-      const pathArg = spied.emit.mock.calls[0][1];
+      const pathArg = emit.mock.calls[0][1];
       expect(strContains(pathArg, targetPath)).toEqual(true);
     });
     it('should call |emit| with form url payload', async () => {
@@ -1068,7 +1058,7 @@ describe('dydu.js', function () {
       await dydu.feedback();
 
       // THEN
-      const dataArg = spied.emit.mock.calls[0][2];
+      const dataArg = emit.mock.calls[0][2];
       expect(isUrlFormEncoded(dataArg)).toEqual(true);
     });
     it('should includes saml info in payload when saml is enabled in configuration', async () => {
@@ -1084,7 +1074,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const formUrlPayload = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const formUrlPayload = mockFnGetParamValueAtPosition(emit, paramPosition);
       const samlInfo = `saml2_info=${samlValue}`;
       expect(strContains(formUrlPayload, samlInfo)).toEqual(true);
       jestRestoreMocked([spiedSamlLoad]);
@@ -1095,7 +1085,7 @@ describe('dydu.js', function () {
       await dydu.feedback(false);
       // THEN
       const paramPosition = 2;
-      const formUrlPayload = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const formUrlPayload = mockFnGetParamValueAtPosition(emit, paramPosition);
       const feedbackKey = 'feedBack=';
       expect(strContains(formUrlPayload, feedbackKey)).toEqual(true);
     });
@@ -1106,7 +1096,7 @@ describe('dydu.js', function () {
       await dydu.feedback(userResponse);
       // THEN
       const paramPosition = 2;
-      const formUrlPayload = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const formUrlPayload = mockFnGetParamValueAtPosition(emit, paramPosition);
       const feedbackKey = 'feedBack=negative';
       expect(strContains(formUrlPayload, feedbackKey)).toEqual(true);
     });
@@ -1117,7 +1107,7 @@ describe('dydu.js', function () {
       await dydu.feedback(userResponse);
       // THEN
       const paramPosition = 2;
-      const formUrlPayload = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const formUrlPayload = mockFnGetParamValueAtPosition(emit, paramPosition);
       const feedbackKey = 'feedBack=positive';
       expect(strContains(formUrlPayload, feedbackKey)).toEqual(true);
     });
@@ -1125,7 +1115,7 @@ describe('dydu.js', function () {
 
   describe('exportConverstaion', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getContextId', 'getClientId', 'getLocale', 'getSpace', 'getConfiguration', 'emit']);
+      spied = jestSpyOnList(dydu, ['getContextId', 'getClientId', 'getLocale', 'getSpace', 'getConfiguration']);
     });
     it('should call |getContextId|', async () => {
       // GIVEN
@@ -1193,7 +1183,7 @@ describe('dydu.js', function () {
 
       // then
       const dataParamPosition = 2;
-      const effectiveParam = mockFnGetParamValueAtPosition(spied.emit, dataParamPosition);
+      const effectiveParam = mockFnGetParamValueAtPosition(emit, dataParamPosition);
       const samlInfoPayloadFormUrl = `saml2_info=${samlValue}`;
       expect(strContains(effectiveParam, samlInfoPayloadFormUrl)).toEqual(true);
       jestRestoreMocked([mockLocalSamlLoad]);
@@ -1204,10 +1194,10 @@ describe('dydu.js', function () {
       await dydu.exportConversation();
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const expectedPath = 'chat/talk';
       const paramPosition = 1;
-      const effectiveParam = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectiveParam = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectiveParam, expectedPath)).toEqual(true);
     });
     it('should call |emit| with form url encoded as payload parameter', async () => {
@@ -1216,9 +1206,9 @@ describe('dydu.js', function () {
       await dydu.exportConversation();
 
       // THEN
-      expect(spied.emit).toHaveBeenCalled();
+      expect(emit).toHaveBeenCalled();
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(isUrlFormEncoded(effectivePayloadParameterValue)).toEqual(true);
     });
     it('should include the text argument in the payload', async () => {
@@ -1230,7 +1220,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(strContains(effectivePayloadParameterValue, text)).toEqual(true);
     });
     it('should match payload with schema', async () => {
@@ -1249,7 +1239,7 @@ describe('dydu.js', function () {
 
       // THEN
       const paramPosition = 2;
-      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(spied.emit, paramPosition);
+      const effectivePayloadParameterValue = mockFnGetParamValueAtPosition(emit, paramPosition);
       expect(schemaKeyList.every((key) => strContains(effectivePayloadParameterValue, key))).toEqual(true);
     });
     it("should contains contextId in path if it's defined", async () => {
@@ -1262,176 +1252,8 @@ describe('dydu.js', function () {
 
       // THEN
       const pathParamPosition = 1;
-      const effectiveParamValue = mockFnGetParamValueAtPosition(spied.emit, pathParamPosition);
+      const effectiveParamValue = mockFnGetParamValueAtPosition(emit, pathParamPosition);
       expect(strContains(effectiveParamValue, contextId)).toEqual(false);
-    });
-  });
-
-  describe('setLastResponse', function () {
-    it('should set class attribute |lastResponse|', () => {
-      // GIVEN
-      const lastResponse = { response: true };
-
-      // WHEN
-      dydu.setLastResponse(lastResponse);
-
-      // THEN
-      expect(dydu.lastResponse).toEqual(lastResponse); // reference comparison
-    });
-    it('should return value', () => {
-      // GIVEN
-      const lastResponse = { response: true };
-
-      // WHEN
-      const value = dydu.setLastResponse(lastResponse);
-
-      // THEN
-      expect(value).toEqual(lastResponse); // reference comparison
-    });
-  });
-
-  describe('emit', () => {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, [
-        'handleSetApiUrl',
-        'handleSetApiTimeout',
-        'setLastResponse',
-        'handleAxiosResponse',
-        'handleAxiosError',
-      ]);
-    });
-
-    describe('handleAxiosError', function () {
-      const getDefaultParams = () => [{}, {}, '', {}, 1];
-      let params = getDefaultParams();
-
-      beforeEach(() => {
-        spied = jestSpyOnList(dydu, ['handleTokenRefresh', 'emit']);
-        params = getDefaultParams();
-      });
-
-      afterEach(() => {
-        spied = jestSpyOnList(dydu, ['handleTokenRefresh', 'emit']);
-        params = getDefaultParams();
-      });
-
-      it('should call |handleTokenRefresh| as the argument response, satus is 401', async () => {
-        // GIVEN
-        const error = { response: { status: 401 } };
-
-        // WHEN
-        params[0] = error;
-        await dydu.handleAxiosError(...params);
-
-        // THEN
-        //expect(spied.handleTokenRefresh).toHaveBeenCalled();
-      });
-    });
-  });
-  describe('samlRenewnOrReject', function () {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['redirectAndRenewAuth', 'renewAuth']);
-    });
-    it("should call |redirectAndRenewAuth| as type is 'SAML_redirection'", () => {
-      // GIVEN
-      const param = {
-        type: 'SAML_redirection',
-        values: {},
-      };
-
-      // WHEN
-      dydu.samlRenewOrReject(param);
-
-      // THEN
-      expect(spied.redirectAndRenewAuth).toHaveBeenCalled();
-    });
-    it('should call |renewAuth|', () => {
-      // GIVEN
-      const param = {
-        type: '',
-        values: {},
-      };
-
-      // WHEN
-      dydu.samlRenewOrReject(param);
-
-      // THEN
-      expect(spied.renewAuth).toHaveBeenCalled();
-    });
-  });
-
-  describe('renewAuth', function () {
-    it('should call |Local.saml.save|', () => {
-      // GIVEN
-      const authParam = {};
-
-      // WHEN
-      dydu.renewAuth(authParam);
-
-      // THEN
-      expect(Local.saml.save).toHaveBeenCalled();
-    });
-  });
-
-  describe('handleTokenRefresh', function () {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['getConfiguration']);
-      const c = new ConfigurationFixture();
-      c.enableOidc();
-      spied.getConfiguration.mockReturnValue(c.getConfiguration());
-    });
-    it('should call |getConfiguration|', () => {
-      // GIVEN
-      dydu.tokenRefresher = jest.fn();
-      dydu.oidcLogin = jest.fn();
-      // WHEN
-      dydu.handleTokenRefresh();
-
-      // THEN
-      expect(spied.getConfiguration).toHaveBeenCalled();
-    });
-    it('should call |tokenRefresher|', () => {
-      // GIVEN
-      const loadTokenMock = jest.spyOn(Storage, 'loadToken');
-      loadTokenMock.mockReturnValue({ refresh_token: true });
-      dydu.tokenRefresher = jest.fn();
-
-      // WHEN
-      dydu.handleTokenRefresh();
-
-      // THEN
-      expect(dydu.tokenRefresher).toHaveBeenCalled();
-    });
-    it('should call |oidcLogin|', () => {
-      // GIVEN
-      const loadTokenMock = jest.spyOn(Storage, 'loadToken');
-      loadTokenMock.mockReturnValue({ refresh_token: null });
-      dydu.tokenRefresher = jest.fn();
-      dydu.oidcLogin = jest.fn();
-
-      // WHEN
-      dydu.handleTokenRefresh();
-
-      // THEN
-      expect(dydu.oidcLogin).toHaveBeenCalled();
-      jestRestoreMocked([loadTokenMock, dydu.tokenRefresher, dydu.oidcLogin]);
-    });
-  });
-
-  describe('initInfo', function () {
-    it('should initialize the |infos| class attribue', () => {
-      // GIVEN
-      dydu.infos = null;
-
-      // WHEN
-      dydu.initInfos();
-
-      // THEN
-      expect(dydu.infos).toBeTruthy();
-      const expectedKeys = ['locale', 'space', 'botId'];
-      Object.keys(dydu.infos).forEach((key) => {
-        expect(expectedKeys.includes(key)).toEqual(true);
-      });
     });
   });
 
@@ -1443,24 +1265,6 @@ describe('dydu.js', function () {
       dydu.alreadyCame();
       //THEN
       expect(dydu.alreadyCame).toHaveBeenCalled();
-    });
-  });
-
-  describe('class attributes initialisation', function () {
-    it('should correctly initialize attributes', () => {
-      const __dydu = jest.requireActual(dyduRelativeLocation).default;
-      const expected = {
-        mainServerStatus: 'Ok',
-        triesCounter: 0,
-        maxTries: 3,
-        minTimeoutForAnswer: secondsToMs(3),
-        maxTimeoutForAnswer: secondsToMs(30),
-        qualificationMode: false,
-      };
-
-      Object.keys(expected).forEach((key) => {
-        expect(__dydu[key]).toEqual(expected[key]);
-      });
     });
   });
 });

@@ -112,6 +112,7 @@ export class Cookie {
 export class Local {
   static names = {
     isLivechatOn: 'dydu.isLivechatOn',
+    isChannels: 'dydu.isChannels',
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',
@@ -131,6 +132,7 @@ export class Local {
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
     operator: 'dydu.operator',
+    servers: 'dydu.servers', // From Channels
   };
 
   /**
@@ -297,6 +299,26 @@ export class Local {
       return (isLivechatOn && JSON.parse(isLivechatOn)) || false;
     },
     reset: () => localStorage.setItem(Local.names.isLivechatOn, 'false'),
+  });
+
+  static isChannels = Object.create({
+    load: () => {
+      const isChannels = localStorage.getItem(Local.names.isChannels);
+      return (isChannels && JSON.parse(isChannels)) || false;
+    },
+  });
+
+  static servers = Object.create({
+    load: () => {
+      const servers = localStorage.getItem(Local.names.servers);
+      return servers && JSON.parse(servers);
+    },
+  });
+
+  static botId = Object.create({
+    save: (data: string) => localStorage.setItem(Local.names.botId, data),
+    load: () => localStorage.getItem(Local.names.botId) || null,
+    remove: () => localStorage.removeItem(Local.names.botId),
   });
 
   static saml = Object.create({

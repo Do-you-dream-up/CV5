@@ -11,10 +11,12 @@ import { useConversationHistory } from '../../contexts/ConversationHistoryContex
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useSurvey } from '../../Survey/SurveyProvider';
+import { BOT } from '../bot';
+import { buildServletUrl } from '../axios';
 
-const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '').split('/')[0];
+const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
-const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + (dydu.isLocalEnv() ? '' : '/servlet') + '/chatWs';
+const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
 
 const MESSAGE_TYPE = {
   survey: 'survey',
@@ -40,7 +42,7 @@ let onOperatorWriting = null;
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
     contextId: configuration.contextId || Local.contextId.load(),
-    botId: configuration.botId || dydu.getBotId() || Local.get(Local.names.botId),
+    botId: configuration.botId || BOT.id || Local.get(Local.names.botId),
     space: configuration.api.getSpace() || Local.get(Local.names.space),
     clientId: configuration.api.getClientId() || Local.get(Local.names.client),
     language: configuration.api.getLocale() || Local.get(Local.names.locale),
@@ -183,16 +185,13 @@ export default function useDyduWebsocket() {
     };
   }, [_onFail, close]);
 
-  const getSocketUrl = useCallback((configuration) => {
-    return makeWsUrl(configuration.api.getBot().server);
+  const getSocketUrl = useCallback(() => {
+    return makeWsUrl(buildServletUrl());
   }, []);
 
-  const initSocketProps = useCallback(
-    (configuration) => {
-      setSocketProps([getSocketUrl(configuration), getSocketConfig()]);
-    },
-    [getSocketConfig, getSocketUrl],
-  );
+  const initSocketProps = useCallback(() => {
+    setSocketProps([getSocketUrl(), getSocketConfig()]);
+  }, [getSocketConfig, getSocketUrl]);
 
   const setupOutputs = useCallback((configuration) => {
     onEndCommunication = configuration.endLivechat;
@@ -207,7 +206,7 @@ export default function useDyduWebsocket() {
       return new Promise((resolve) => {
         completeLivechatPayload(config);
         setupOutputs(config);
-        initSocketProps(config);
+        initSocketProps();
         resolve(true);
       });
     },

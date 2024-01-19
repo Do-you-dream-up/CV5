@@ -2,6 +2,14 @@ import { DialogContext, DialogProvider, extractParameterFromGuiAction, useDialog
 
 import { render } from '../../tools/test-utils';
 
+jest.mock('../../tools/axios', () => ({
+  emit: jest.fn().mockReturnValue(Promise.resolve()),
+  SERVLET_API: {
+    get: jest.fn(),
+  },
+  setCallOidcLogin: jest.fn(),
+}));
+
 const DialogContextValuesMock = {
   closeSidebar: jest.fn(),
   openSidebar: jest.fn(),

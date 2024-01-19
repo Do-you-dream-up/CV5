@@ -2,12 +2,17 @@ import '@testing-library/jest-dom';
 
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 
-import Autosuggest from 'react-autosuggest';
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import Input from './Input';
-import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useDialog } from '../../contexts/DialogContext';
+
+jest.mock('../../tools/axios', () => ({
+  emit: jest.fn().mockReturnValue(Promise.resolve()),
+  SERVLET_API: {
+    get: jest.fn(),
+  },
+  setCallOidcLogin: jest.fn(),
+}));
 
 jest.mock('../../contexts/ConfigurationContext', () => ({
   useConfiguration: jest.fn(),

@@ -10,9 +10,7 @@ jest.mock('../../tools/dydu', () => ({
     feedbackInsatisfaction: jest.fn(),
     feedbackComment: jest.fn(),
     talk: jest.fn(),
-    setServerStatusCheck: jest.fn(),
     setSpaceToDefault: jest.fn(),
-    setOidcLogin: jest.fn(),
     setLocale: jest.fn(),
     getBotLanguages: jest.fn(
       () =>

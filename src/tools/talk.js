@@ -1,6 +1,7 @@
 import Bowser from 'bowser';
 import { LOREM_HTML } from './lorem';
 import dydu from './dydu';
+import { BOT } from './bot';
 
 /**
  * Forge the #meta# response and add it the conversation.
@@ -12,7 +13,7 @@ export const meta = () => {
     ...[
       { label: 'Bot Name', value: '-' },
       { label: 'Bot Configuration', value: '-' },
-      { label: 'Bot ID', value: dydu.getBotId() || '-' },
+      { label: 'Bot ID', value: BOT.id || '-' },
       { label: 'Deployed On', value: '-' },
       { label: 'Language', value: dydu.getLocale() || '-' },
       { label: 'Space', value: dydu.getSpace() || '-' },

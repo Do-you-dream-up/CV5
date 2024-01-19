@@ -3,8 +3,7 @@ import { hasWizard, isLoadedFromChannels } from './wizard';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
 import { PureComponent } from 'react';
-import axios from 'axios';
-import { axiosConfigNoCache } from './axios';
+import { getResourceWithoutCache } from './resources';
 import dydu from './dydu';
 
 /**
@@ -24,8 +23,8 @@ export const configuration = new (class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
-    return axios.get(path, axiosConfigNoCache).then(({ data }) => {
+  initialize = async () => {
+    return getResourceWithoutCache('configuration.json').then(({ data }) => {
       this.configuration = null;
 
       if ((isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()) {
