@@ -82,20 +82,41 @@ export default function Bubble({
     element.setAttribute('tabindex', '0');
   };
 
+  function setFocusOnLastResponse(lastResponse) {
+    lastResponse.setAttribute('tabindex', '-1');
+    if (containsBubbleResponses(lastResponse)) {
+      lastResponse.getElementsByClassName('dydu-bubble-response').item(0).focus();
+    } else {
+      lastResponse.focus();
+    }
+  }
+
+  function containsBubbleResponses(lastResponse) {
+    return (
+      lastResponse.getElementsByClassName('dydu-bubble-response') &&
+      lastResponse.getElementsByClassName('dydu-bubble-response').length > 0
+    );
+  }
+
   useEffect(() => {
     if (type === 'response' && shouldSetFocusInScreenReaderMode()) {
       let allResponses = document.getElementsByClassName('dydu-interaction-response');
       if (allResponses && allResponses.length >= 1) {
         let lastResponse = allResponses[allResponses.length - 1];
         if (lastResponse) {
-          lastResponse.setAttribute('tabindex', '-1');
-          lastResponse.focus();
+          setFocusOnLastResponse(lastResponse);
           for (let response of allResponses) {
-            if (response.removeEventListener) {
-              response.removeEventListener('blur', setElementFocusable(response));
+            if (response.removeEventListener && containsBubbleResponses(lastResponse)) {
+              response.removeEventListener('blur', () =>
+                setElementFocusable(response.getElementsByClassName('dydu-bubble-response').item(0)),
+              );
             }
           }
-          lastResponse.addEventListener('blur', setElementFocusable(lastResponse));
+          if (containsBubbleResponses(lastResponse)) {
+            lastResponse.addEventListener('blur', () =>
+              setElementFocusable(lastResponse.getElementsByClassName('dydu-bubble-response').item(0)),
+            );
+          }
         }
       }
     }
