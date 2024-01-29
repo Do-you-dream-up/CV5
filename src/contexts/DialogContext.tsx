@@ -390,7 +390,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
        */
       function cspEval(guiActionCode) {
         try {
-          var newScript = document.createElement('script');
+          const newScript = document.createElement('script');
           newScript.innerHTML = guiActionCode;
           document.body.appendChild(newScript);
           document.body.removeChild(newScript);
@@ -486,11 +486,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [sidebarActive]);
 
   const addHistoryInteraction = (interaction) => {
+    const isLivechatOn = Local.isLivechatOn.load();
     const decodedInteraction = recursiveBase64DecodeString(interaction);
     const typedInteraction = {
       ...decodedInteraction,
       typeResponse: decodedInteraction?.type,
       isFromHistory: true,
+      user: isLivechatOn ? decodedInteraction.user : interaction.user,
     };
 
     !decodedInteraction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);

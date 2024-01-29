@@ -22,20 +22,16 @@ export const ConversationHistoryContext = createContext<ConversationHistoryConte
 export function ConversationHistoryProvider({ children }: ConversationHistoryProviderProps) {
   const [history, setHistory] = useState<ChatResponseArray | null>(null);
 
-  const fetch = () => {
+  const fetch = async () => {
     const isLivechatOn = Local.isLivechatOn.load();
 
-    return new Promise((resolve) => {
-      if (!isLivechatOn) {
-        dydu.history().then((res) => {
-          const interactions = res?.interactions;
-          if (interactions) {
-            setHistory(interactions);
-          }
-          return resolve(interactions);
-        });
+    if (!isLivechatOn) {
+      const { interactions } = await dydu.history();
+      if (interactions) {
+        setHistory(interactions);
       }
-    });
+      return interactions;
+    }
   };
 
   const props: ConversationHistoryContextProps = {
