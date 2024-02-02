@@ -99,6 +99,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
   };
 
+  const isPushCondition = (text) => {
+    return text.startsWith('_pushcondition_');
+  };
+
   const handleRewordClicked = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
@@ -107,10 +111,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         extra: options,
       };
 
-      if (!options.fromSurvey) {
-        options = JSON.parse(JSON.stringify(options));
-        options.hide = false;
-      }
+      options = JSON.parse(JSON.stringify(options));
+      options.hide = isPushCondition(text) || options.fromSurvey;
 
       if (followBadUrl(text, options)) {
         addRequest && addRequest(text);
