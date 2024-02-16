@@ -32,6 +32,7 @@ jest.mock('../../contexts/UploadFileContext', () => ({
     errorFormatMessage: '',
     isUploadFileReturnSuccess: false,
     fileName: 'file name',
+    setIsFileUploadSuccess: jest.fn(),
   }),
 }));
 describe('UploadInput', () => {
@@ -45,7 +46,7 @@ describe('UploadInput', () => {
   });
 
   test('should call sendUploadFile function when Send button is clicked', () => {
-    const mockSendUploadFile = jest.spyOn(dydu, 'sendUploadFile');
+    const mockSendUploadFile = jest.spyOn(dydu, 'sendUploadFile').mockResolvedValue(true);
     const fileContent = 'file content';
     const file = new File([new Blob([fileContent], { type: 'application/pdf' })], 'filename.pdf', {
       type: 'application/pdf',

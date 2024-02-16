@@ -223,6 +223,7 @@ export default new (class Dydu {
   };
 
   handleAxiosResponse = (data = {}) => {
+    this.triesCounter = 0;
     data && this.getConfiguration()?.saml?.enable && this.samlRenewOrReject(data);
 
     if (!hasProperty(data, 'values')) return data;
@@ -939,36 +940,19 @@ export default new (class Dydu {
     return Boolean(status && status >= startHttpCode && status <= endHttpCode);
   };
 
-  setApiDefaultHeadersFormData = () => {
-    API.defaults.headers = {
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-      'Content-Type': 'multipart/form-data',
-    };
-  };
-
-  setApiDefaultHeadersFormUrlEncoded = () => {
-    API.defaults.headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-    };
-  };
-
-  setApiDefaultBaseUrlUploadFile = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/`;
-  };
-
-  setApiDefaultBaseUrl = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api`;
-  };
-
   sendUploadFile = (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
     const path = `fileupload?ctx=${this.contextId}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
-    this.setApiDefaultHeadersFormData();
-    this.setApiDefaultBaseUrlUploadFile();
 
-    return API.post(path, formData)
+    return axios
+      .post(path, formData, {
+        headers: {
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Content-Type': 'multipart/form-data',
+        },
+        baseURL: `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/`,
+      })
       .then((response) => {
         const responseObject = htmlToJsonForSendUploadFile(response.data);
 
@@ -978,15 +962,13 @@ export default new (class Dydu {
           throw new Error('La requête a échoué');
         } else {
           this.displayUploadFileSent(file.name);
+          return true;
         }
       })
       .catch((error) => {
         // Gérer l'erreur ici
         console.error(error);
-      })
-      .finally(() => {
-        this.setApiDefaultHeadersFormUrlEncoded();
-        this.setApiDefaultBaseUrl();
+        return false;
       });
   };
 
