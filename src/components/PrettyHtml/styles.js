@@ -89,6 +89,7 @@ export default createUseStyles((theme) => ({
     width: '1px',
     '& + .p1': {
       marginTop: 0,
+      marginBottom: 16,
     },
     '& + p': {
       marginTop: 0,

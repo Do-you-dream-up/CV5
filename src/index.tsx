@@ -13,71 +13,111 @@ import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import { getCss } from './tools/css';
-import keycloak from './tools/keycloak';
-import scope from 'scope-css';
+import increaseSpecificity from 'jss-increase-specificity';
+import jss from 'jss';
+import preset from 'jss-preset-default';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './contexts/i18nProvider';
-let _configuration;
-let anchor;
+import ShadowProvider from './contexts/ShadowProvider';
+import { StyleSheetManager } from 'styled-components';
+import createCache, { EmotionCache } from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 
-const getRootDiv = (configuration) => {
-  if (document.getElementById(configuration.root)) return document.getElementById(configuration.root);
-
-  const rootId = document.createElement('div');
-  rootId.id = configuration.root;
-  document.body.appendChild(rootId);
-  return document.getElementById(configuration.root);
-};
-
-const renderApp = (theme) =>
+const renderApp = (
+  jss: any,
+  shadow: ShadowRoot,
+  anchor: HTMLDivElement,
+  styleSlot: HTMLElement,
+  emotionCache: EmotionCache,
+  theme: any,
+  configuration: any,
+) =>
   // eslint-disable-next-line react/no-render-return-value
   ReactDOM.render(
-    <JssProvider id={{ minify: process.env.NODE_ENV === 'production' }}>
-      <ThemeProvider theme={theme}>
-        <ConfigurationProvider configuration={_configuration}>
-          <ServerStatusProvider>
-            <I18nextProvider i18n={i18n}>
-              <BotInfoProvider>
-                <ViewModeProvider>
-                  <EventsProvider>
-                    <App />
-                  </EventsProvider>
-                </ViewModeProvider>
-              </BotInfoProvider>
-            </I18nextProvider>
-          </ServerStatusProvider>
-        </ConfigurationProvider>
-      </ThemeProvider>
-    </JssProvider>,
+    <ShadowProvider root={anchor} shadow={shadow}>
+      <CacheProvider value={emotionCache}>
+        <JssProvider jss={jss} id={{ minify: process.env.NODE_ENV === 'production' }}>
+          <ThemeProvider theme={theme}>
+            <ConfigurationProvider configuration={configuration}>
+              <ServerStatusProvider>
+                <I18nextProvider i18n={i18n}>
+                  <BotInfoProvider>
+                    <ViewModeProvider>
+                      <EventsProvider>
+                        <StyleSheetManager target={styleSlot}>
+                          <App />
+                        </StyleSheetManager>
+                      </EventsProvider>
+                    </ViewModeProvider>
+                  </BotInfoProvider>
+                </I18nextProvider>
+              </ServerStatusProvider>
+            </ConfigurationProvider>
+          </ThemeProvider>
+        </JssProvider>
+      </CacheProvider>
+    </ShadowProvider>,
     anchor,
   );
 
 configuration.initialize().then((configuration) => {
-  _configuration = configuration;
-  anchor = getRootDiv(configuration);
+  let host = document.getElementById(configuration.root);
 
-  if (anchor) {
-    getResourceWithoutCache('theme.json').then(({ data = {} }) => {
-      data.palette.primary.main = getCss()?.main || data.palette.primary.main;
-      data.breakpoints = breakpoints;
-      configuration.keycloak.enable ? keycloak.initKeycloak(renderApp(data), configuration.keycloak) : renderApp(data);
-    });
-
-    getResourceWithoutCache('style.css').then((res) => {
-      if (res?.data.length > 0) {
-        const style = document.createElement('style');
-        style.textContent = scope(res.data, `#${configuration.root}`);
-        document.head?.append(style);
-      }
-    });
-
-    getResourceWithoutCache('custom.js').then((res) => {
-      if (res?.data.length > 0) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.textContent = res.data;
-        document.head?.append(script);
-      }
-    });
+  if (!host) {
+    host = document.createElement('div');
+    host.id = configuration.root;
+    document.body.appendChild(host);
   }
+
+  const shadow = host.attachShadow({ mode: 'open' });
+  const renderIn = document.createElement('div');
+  renderIn.id = configuration.root;
+
+  const templateSlot = document.createElement('template');
+
+  const emotionCache: EmotionCache = createCache({
+    key: 'shadow-css',
+    container: templateSlot,
+  });
+
+  shadow.appendChild(templateSlot);
+  shadow.appendChild(renderIn);
+
+  jss
+    .setup({
+      ...preset(),
+      insertionPoint: templateSlot,
+    })
+    .use(increaseSpecificity());
+
+  getResourceWithoutCache('override/theme.json').then(({ data = {} }) => {
+    data.palette.primary.main = getCss()?.main || data.palette.primary.main;
+    data.breakpoints = breakpoints;
+    renderApp(jss, shadow, renderIn, templateSlot, emotionCache, data, configuration);
+  });
+
+  getResourceWithoutCache('override/style.css').then((res) => {
+    if (res?.data.length > 0) {
+      const style = document.createElement('style');
+      style.textContent = res.data;
+      shadow.appendChild(style);
+    }
+  });
+
+  getResourceWithoutCache('override/custom.js').then((res) => {
+    if (res?.data.length > 0) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.textContent = res.data;
+      shadow.appendChild(script);
+    }
+  });
+
+  getResourceWithoutCache('chatboxHomepage.css').then((res) => {
+    if (res?.data.length > 0) {
+      const style = document.createElement('style');
+      style.textContent = res.data;
+      shadow.appendChild(style);
+    }
+  });
 });

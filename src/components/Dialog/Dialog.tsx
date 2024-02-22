@@ -14,6 +14,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 interface DialogProps {
   dialogRef: React.RefObject<any> | ((instance: any) => void) | null;
@@ -29,6 +30,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
   const isLiveChatOn = Local.isLivechatOn.load();
+  const { shadowAnchor } = useShadow();
 
   useEffect(() => {
     if (spacesActive) {
@@ -42,7 +44,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
    * Scroll to the bottom of the dialog on open chatbox
    */
   useEffect(() => {
-    const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+    const chatboxDiv = shadowAnchor?.querySelector('.dydu-chatbox-body');
     if (open && chatboxDiv) {
       chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
     }

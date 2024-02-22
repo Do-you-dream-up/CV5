@@ -12,11 +12,8 @@ import {
   browserName,
   compareObject,
   decodeHtml,
-  documentCreateElement,
   escapeHTML,
   extractDomainFromUrl,
-  getChatboxWidth,
-  getChatboxWidthTime,
   hasProperty,
   htmlToJsonForSendUploadFile,
   isDefined,
@@ -834,20 +831,6 @@ describe('helpers', () => {
     });
   });
 
-  describe('getChatboxWidthTime', () => {
-    const ref = {
-      width: 200,
-      getBoundingClientRect: () => ({
-        left: 1,
-        right: 1,
-      }),
-    };
-
-    it('get the chatbox width multiply by an integer', () => {
-      expect(getChatboxWidthTime(ref, 1)).toEqual(0);
-    });
-  });
-
   describe('decodeHtml', () => {
     it('decodes HTML-encoded characters in the input string', () => {
       const html = '&lt;p&gt;Hello, world!&lt;/p&gt;';
@@ -861,20 +844,6 @@ describe('helpers', () => {
       });
       const result = decodeHtml(html);
       expect(result).toEqual(expectedResult);
-    });
-  });
-
-  describe('getChatboxWidth', () => {
-    it('calculates the width of the chatbox element', () => {
-      document.getElementById = jest.fn().mockImplementation(() => {
-        return {
-          getBoundingClientRect: () => ({ left: 0, right: 200 }),
-        };
-      });
-
-      const expectedResult = 200;
-
-      expect(getChatboxWidth()).toEqual(expectedResult);
     });
   });
 

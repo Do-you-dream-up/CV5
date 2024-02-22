@@ -37,6 +37,7 @@ import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
 import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 import { useChatboxReady } from './ChatboxReadyContext';
+import { useShadow } from './ShadowProvider';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -157,6 +158,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
   const [rewordAfterGuiAction, setRewordAfterGuiAction] = useState<string>('');
+  const { shadowAnchor } = useShadow();
 
   useEffect(() => {
     fetchServerStatus();
@@ -394,8 +396,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
         try {
           const newScript = document.createElement('script');
           newScript.innerHTML = guiActionCode;
-          document.body.appendChild(newScript);
-          document.body.removeChild(newScript);
+          shadowAnchor?.appendChild(newScript);
+          shadowAnchor?.removeChild(newScript);
         } catch (e) {
           console.log('Error: ' + e);
         }

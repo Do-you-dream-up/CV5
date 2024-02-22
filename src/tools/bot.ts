@@ -53,7 +53,7 @@ export const getNextServerFromList = (servers: string[] | undefined, index: numb
 };
 
 export const initBotInfoFromJsonOrChannels = async () => {
-  const { data } = await getResourceWithoutCache('bot.json');
+  const { data } = await getResourceWithoutCache('override/bot.json');
 
   let botData = {
     ...data,

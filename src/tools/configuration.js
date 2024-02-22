@@ -24,7 +24,7 @@ export const configuration = new (class Configuration {
    * @returns {Promise}
    */
   initialize = async () => {
-    return getResourceWithoutCache('configuration.json').then(({ data }) => {
+    return getResourceWithoutCache('override/configuration.json').then(({ data }) => {
       this.configuration = null;
 
       if ((isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()) {

@@ -35,5 +35,9 @@ export default createUseStyles<any, any>((theme: any): any => ({
       maxWidth: '100%',
     },
     fontFamily: theme.font?.sansSerif,
+    fontSize: 'initial',
+    textAlign: 'initial',
+    lineHeight: 'initial',
+    fontWeight: 'initial',
   }),
 }));

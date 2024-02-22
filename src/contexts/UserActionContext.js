@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
+import { useShadow } from './ShadowProvider';
 
 /* THIS CONTEXT IS USED TO CHECK WHETHER THE USER IS NAVIGATING VIA CLICKS OR TAB KEY FOR ACCESSIBILITY REASONS */
 
@@ -14,6 +15,7 @@ export function UserActionProvider({ children }) {
   const [shiftPressed, setShiftPressed] = useState(false);
 
   const [rgaaRef, setRgaaRef] = useState({});
+  const { shadowAnchor } = useShadow();
 
   useEffect(() => {
     const keyListener = (e) => {
@@ -30,9 +32,9 @@ export function UserActionProvider({ children }) {
         setShiftPressed(false);
       }
     };
-    document.addEventListener('keydown', keyListener);
+    shadowAnchor?.addEventListener('keydown', keyListener);
     return () => {
-      document.removeEventListener('keydown', keyListener);
+      shadowAnchor?.removeEventListener('keydown', keyListener);
     };
   }, [tabPressed]);
 
@@ -44,9 +46,9 @@ export function UserActionProvider({ children }) {
       setTabPressed(false);
       setShiftPressed(false);
     };
-    document.addEventListener('click', clickListener);
+    shadowAnchor?.addEventListener('click', clickListener);
     return () => {
-      document.removeEventListener('click', clickListener);
+      shadowAnchor?.removeEventListener('click', clickListener);
     };
   }, [tabPressed]);
 

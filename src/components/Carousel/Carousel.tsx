@@ -1,5 +1,5 @@
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import slickStyle from 'slick-carousel/slick/slick.css';
+import slickTheme from 'slick-carousel/slick/slick-theme.css';
 
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -10,6 +10,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import useViewport from '../../tools/hooks/useViewport';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Typically used with the `Interaction` component.
@@ -32,12 +33,23 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   const [numberSlidesToShow, setNumberSlidesTosShow] = useState<number>(0);
   const [resizeCount, setResizeCount] = useState(0);
   const interactionWidth = useMemo(() => carouselRef?.current?.offsetWidth, [resizeCount]);
+  const { shadowAnchor } = useShadow();
 
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const automaticSidebar = isFullScreen
     ? !!configuration?.sidebar.automatic?.fullScreen
     : !!configuration?.sidebar.automatic?.desktop;
   const { sidebarActive, toggleSidebar } = useDialog();
+
+  useEffect(() => {
+    if (!shadowAnchor?.querySelector('#dydu-style-carousel')) {
+      const style = document.createElement('style');
+      style.innerHTML = slickStyle;
+      style.innerHTML += slickTheme;
+      style.id = 'dydu-style-carousel';
+      shadowAnchor?.appendChild(style);
+    }
+  }, [slickStyle, slickTheme]);
 
   const onToggle = useCallback(
     (open) => {
@@ -55,13 +67,13 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   // Method to change aria-hidden attribute on focus slide to false and other slides to true
   // Only use for carousel with steps for allow screen reader to read the content of slides
   const changeAriaHiddenAttributForSlides = useCallback(() => {
-    const slideSelected = document.querySelectorAll('[data-index="' + index + '"]');
-    const otherSlides = document.querySelectorAll('[data-index]:not([data-index="' + index + '"])');
+    const slideSelected = shadowAnchor?.querySelectorAll('[data-index="' + index + '"]');
+    const otherSlides = shadowAnchor?.querySelectorAll('[data-index]:not([data-index="' + index + '"])');
     if (slideSelected) {
       slideSelected.forEach((element) => {
         element.setAttribute('aria-hidden', 'false');
       });
-      otherSlides.forEach((element) => {
+      otherSlides?.forEach((element) => {
         element.setAttribute('aria-hidden', 'true');
       });
     }
@@ -97,8 +109,8 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   useEffect(() => {
     window.addEventListener('error', (e) => {
       if (e.message === 'ResizeObserver loop limit exceeded') {
-        const resizeObserverErrDiv = document.getElementById('webpack-dev-server-client-overlay-div');
-        const resizeObserverErr = document.getElementById('webpack-dev-server-client-overlay');
+        const resizeObserverErrDiv = shadowAnchor?.querySelector('#' + 'webpack-dev-server-client-overlay-div');
+        const resizeObserverErr = shadowAnchor?.querySelector('#' + 'webpack-dev-server-client-overlay');
         if (resizeObserverErr) {
           resizeObserverErr.setAttribute('style', 'display: none');
         }
