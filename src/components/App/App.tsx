@@ -22,6 +22,7 @@ import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import ChatboxReadyProvider from '../../contexts/ChatboxReadyContext';
 
 const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
@@ -82,23 +83,25 @@ const App = () => {
                 <ConversationHistoryProvider>
                   <WelcomeKnowledgeProvider>
                     <TopKnowledgeProvider>
-                      <UserActionProvider>
-                        <DialogProvider>
-                          <SurveyProvider>
-                            <UploadFileProvider>
-                              <LivechatProvider>
-                                <Chatbox
-                                  extended={isChatboxFullScreen}
-                                  open={isChatboxOpen}
-                                  toggle={toggle}
-                                  mode={mode}
-                                />
-                              </LivechatProvider>
-                            </UploadFileProvider>
-                          </SurveyProvider>
-                          <Teaser open={isChatboxMinimize} toggle={toggle} />
-                        </DialogProvider>
-                      </UserActionProvider>
+                      <ChatboxReadyProvider>
+                        <UserActionProvider>
+                          <DialogProvider>
+                            <SurveyProvider>
+                              <UploadFileProvider>
+                                <LivechatProvider>
+                                  <Chatbox
+                                    extended={isChatboxFullScreen}
+                                    open={isChatboxOpen}
+                                    toggle={toggle}
+                                    mode={mode}
+                                  />
+                                </LivechatProvider>
+                              </UploadFileProvider>
+                            </SurveyProvider>
+                            <Teaser open={isChatboxMinimize} toggle={toggle} />
+                          </DialogProvider>
+                        </UserActionProvider>
+                      </ChatboxReadyProvider>
                     </TopKnowledgeProvider>
                   </WelcomeKnowledgeProvider>
                 </ConversationHistoryProvider>

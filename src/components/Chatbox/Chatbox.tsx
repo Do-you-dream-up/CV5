@@ -108,11 +108,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (text) {
       const toSend = {
         qualification,
+        ...(options.doNotRegisterInteraction && {
+          doNotRegisterInteraction: options.doNotRegisterInteraction,
+        }),
         extra: options,
       };
 
       options = JSON.parse(JSON.stringify(options));
-      options.hide = isPushCondition(text) || options.fromSurvey;
+      options.hide |= isPushCondition(text) || options.fromSurvey;
 
       if (followBadUrl(text, options)) {
         addRequest && addRequest(text);
