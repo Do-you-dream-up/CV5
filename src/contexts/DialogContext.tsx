@@ -36,6 +36,7 @@ import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
 import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
+import { useChatboxReady } from './ChatboxReadyContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -133,6 +134,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { fetchBotLanguages, botLanguages } = useBotInfo();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
+  const { callChatboxReady } = useChatboxReady();
   const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
@@ -165,7 +167,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [serverStatusChecked]);
 
   const { exec, forceExec } = usePromiseQueue(
-    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge],
+    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge, callChatboxReady],
     hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
   );
 

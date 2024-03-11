@@ -3,6 +3,7 @@ declare module '*.svg';
 declare module '*.gif';
 interface Window {
   dyduAfterLoad: () => void | null;
+  dyduChatboxReady: () => void | null;
   dydu: any;
   reword: (str: string, options: any) => void;
   dyduClearPreviousInteractions: () => void;
