@@ -5,7 +5,7 @@ import LivechatPayload from '../LivechatPayload';
 import { Local } from '../storage';
 import { TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
-import { b64dAllFields, b64decode, isDefined } from '../helpers';
+import { b64dAllFields, b64decode, b64decodeObject, isDefined } from '../helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useConversationHistory } from '../../contexts/ConversationHistoryContext';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
@@ -91,7 +91,7 @@ export default function useDyduWebsocket() {
 
   const displayMessage = useCallback(() => {
     if (isDefined(messageText)) {
-      displayResponseText(messageText);
+      displayResponseText(b64decodeObject(messageData?.values));
 
       let operator = messageData?.values?.operatorExternalId?.fromBase64();
       if (operator) {

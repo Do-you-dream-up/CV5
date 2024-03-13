@@ -140,7 +140,7 @@ describe('useDyduPolling', () => {
       const response = { type: 'message', text: 'Hello world!' };
       const handler = typeToHandler[response.type];
       handler(response);
-      expect(mockDisplayResponse).toHaveBeenCalledWith(response.text);
+      expect(mockDisplayResponse).toHaveBeenCalledWith(response);
     });
 
     test('should call handleSurvey function for operatorSendSurvey type', () => {

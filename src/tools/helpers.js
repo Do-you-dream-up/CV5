@@ -234,6 +234,16 @@ export const b64encodeObject = (o) => {
   return res;
 };
 
+export const b64decodeObject = (o) => {
+  const res = Object.keys(o).reduce((resultMap, key) => {
+    const value = o[key];
+    resultMap[key] = isString(value) ? b64decode(value) : isObject(value) ? b64decodeObject(value) : value;
+
+    return resultMap;
+  }, {});
+  return res;
+};
+
 export const recursiveBase64EncodeString = (obj) => {
   return _recursiveBase64EncodeString(obj, Object.keys(obj), {});
 };
