@@ -42,6 +42,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { showUploadFileButton } = useUploadFile();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { onNewMessage } = useEvent();
+  const { addResponse } = useDialog();
 
   /* Init isLivechatOn value if not present */
   useEffect(() => {
@@ -52,9 +53,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [Local.isLivechatOn.load()]);
 
   const displayResponseText = useCallback(
-    (text) => {
+    (values) => {
       onNewMessage && onNewMessage();
-      window.dydu.chat.reply(text);
+      addResponse && addResponse(values);
     },
     [onNewMessage],
   );
