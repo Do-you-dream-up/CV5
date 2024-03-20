@@ -2,6 +2,14 @@ import { DialogProvider } from '../../../contexts/DialogContext';
 import Voice from '../';
 import { render } from '../../../tools/test-utils';
 
+jest.mock('../../../tools/axios', () => ({
+  emit: jest.fn().mockReturnValue(Promise.resolve()),
+  SERVLET_API: {
+    get: jest.fn(),
+  },
+  setCallOidcLogin: jest.fn(),
+}));
+
 describe('Voice component', () => {
   jest.mock('socket.io-client', () => ({
     connect: jest.fn(() => ({

@@ -8,6 +8,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 type Visibility = 'visible' | 'hidden' | 'collapse';
 
@@ -37,7 +38,7 @@ export default function Menu({ component, items, selected, ...rest }) {
   const menuRef = useRef<HTMLInputElement | null>(null);
   let lastFocusedElem = useRef<HTMLInputElement | null>(null);
   const classes = useStyles({ configuration });
-  const node = document && configuration && document.getElementById(configuration?.root);
+  const { shadowAnchor } = useShadow();
   const spacing: number | undefined = configuration && ~~configuration?.menu?.spacing;
   items = typeof items === 'function' ? items() : items;
 
@@ -58,7 +59,7 @@ export default function Menu({ component, items, selected, ...rest }) {
     event.preventDefault();
     setIsMenuListOpen?.(false);
     setOpen(false);
-    document.getElementById('dydu-textarea').focus();
+    shadowAnchor?.querySelector('#dydu-textarea')?.focus();
   };
 
   const onBlur = (event) => {
@@ -79,8 +80,8 @@ export default function Menu({ component, items, selected, ...rest }) {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
+    shadowAnchor?.addEventListener('mousedown', onClickOutside);
+    return () => shadowAnchor?.removeEventListener('mousedown', onClickOutside);
   }, []);
 
   const onDocumentClick = (event) => {
@@ -129,9 +130,9 @@ export default function Menu({ component, items, selected, ...rest }) {
 
   useEffect(() => {
     if (menuListPositionParameters) {
-      document.addEventListener('mousedown', onDocumentClick);
+      shadowAnchor?.addEventListener('mousedown', onDocumentClick);
     }
-    return () => document.removeEventListener('mousedown', onDocumentClick);
+    return () => shadowAnchor?.removeEventListener('mousedown', onDocumentClick);
   }, [menuListPositionParameters]);
 
   return (
@@ -142,7 +143,7 @@ export default function Menu({ component, items, selected, ...rest }) {
         ...rest,
       })}
       {open ? (
-        <Portal node={node}>
+        <Portal node={shadowAnchor}>
           <div
             className={c('dydu-menu', classes.root)}
             ref={menuRef}

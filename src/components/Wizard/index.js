@@ -5,6 +5,7 @@ import dydu from '../../tools/dydu';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEffect } from 'react';
 import useStyles from './styles';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Live-edit configuration widgets.
@@ -12,6 +13,7 @@ import useStyles from './styles';
 export default function Wizard() {
   const { configuration, reset } = useConfiguration();
   const classes = useStyles({ configuration });
+  const { shadowAnchor } = useShadow();
 
   const onSave = (data) => {
     Local.set(Wizard.storage.data, data);
@@ -35,9 +37,9 @@ export default function Wizard() {
       a.download = filename;
       a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(Local.get(Wizard.storage.data)));
       a.target = '_blank';
-      document.body.appendChild(a);
+      shadowAnchor?.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      shadowAnchor?.removeChild(a);
     }
   };
 

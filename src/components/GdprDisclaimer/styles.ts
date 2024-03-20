@@ -16,7 +16,9 @@ export default createUseStyles({
     margin: '0 1em 0 1em',
     alignItems: 'center',
     '& p': {
+      marginTop: '16px',
       marginBottom: '20px',
+      lineHeight: 'normal',
     },
   },
   title: {
@@ -24,7 +26,8 @@ export default createUseStyles({
     justifyContent: 'center',
     alignItems: 'end',
     fontSize: 25,
-    fontWeight: 'inherit',
+    fontWeight: '400',
+    margin: '20px 0',
   },
   root: {
     overflowY: 'auto',

@@ -1,7 +1,3 @@
-import '../../../public/override/style.css';
-import '../../../public/override/custom.js';
-import '../../../public/chatboxHomepage.css';
-
 import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
@@ -32,7 +28,6 @@ const Wizard = lazy(() => import('../Wizard'));
  *
  * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
-
 const App = () => {
   const { configuration } = useContext(ConfigurationContext);
   const { dispatchEvent } = useEvent();
@@ -63,14 +58,6 @@ const App = () => {
   useEffect(() => {
     dispatchEvent && dispatchEvent('chatbox', 'loadChatbox');
   }, []);
-
-  useEffect(() => {
-    const customFont = configuration?.font.url;
-    let documentFontHref = (document.getElementById('font') as HTMLAnchorElement)?.href;
-    if (customFont && customFont !== documentFontHref) {
-      documentFontHref = customFont;
-    }
-  }, [configuration]);
 
   return (
     <div className={c('dydu-application', classes.root)}>

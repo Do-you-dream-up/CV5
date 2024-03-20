@@ -310,21 +310,6 @@ export const numberOfDayInMs = (count = 1) => {
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
 
-export const getChatboxWidth = (chatboxRef) => {
-  if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
-  if (!isDefined(chatboxRef)) return 0;
-  const { left, right } = chatboxRef.getBoundingClientRect();
-  return Math.abs(right - left);
-};
-
-export const getChatboxWidthTime = (chatboxRef = null, time = 1, maxWidthPx = 850) => {
-  const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
-  if (error) throw new Error('getChatboxWidthTime: parameter error', time);
-  return getMinValue(getChatboxWidth(chatboxRef) * time, maxWidthPx);
-};
-
-const getMinValue = (a, b) => (a < b ? a : b);
-
 export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');
   txt.innerHTML = html;

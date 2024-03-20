@@ -1,5 +1,5 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { getChatboxWidthTime, isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
+import { isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';

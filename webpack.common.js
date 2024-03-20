@@ -23,7 +23,7 @@ const COMMON_RULE_LIST = [
     test: /\.(js|jsx|tsx|ts)$/,
   },
   {
-    use: ['style-loader', 'css-loader'],
+    use: ['css-loader'],
     test: /\.css$/,
   },
   {
@@ -57,7 +57,7 @@ module.exports = (env = {}) => {
       hints: false,
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx', '.js', '.css'],
       modules: [Path.resolve('./node_modules'), Path.resolve('./')],
     },
     plugins: getPluginList(env),

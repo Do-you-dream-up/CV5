@@ -1,7 +1,7 @@
 /* eslint-disable */
 
-import { DialogContext, useDialog } from '../../contexts/DialogContext';
-import { useContext, useState } from 'react';
+import { useDialog } from '../../contexts/DialogContext';
+import { useState } from 'react';
 
 import Bubble from '../Bubble';
 import Button from '../Button/Button';

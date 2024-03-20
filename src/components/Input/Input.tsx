@@ -18,6 +18,7 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 interface InputProps {
   onRequest?: (input: string) => void;
@@ -48,6 +49,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
   const textareaRef = useRef<null | any>(null);
+  const { shadowAnchor } = useShadow();
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
@@ -228,7 +230,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
     }
 
-    const textareaId = document.getElementById('dydu-textarea');
+    const textareaId = shadowAnchor?.querySelector('#' + 'dydu-textarea');
     if (isDefined(textareaId)) {
       textareaId && textareaId.removeAttribute('aria-autocomplete');
       textareaId && textareaId.removeAttribute('aria-controls');

@@ -4,13 +4,13 @@ import { currentLocationContainsCodeParameter, currentLocationContainsError, isD
 import PropTypes from 'prop-types';
 import Storage from './Storage';
 import axios from 'axios';
-import dydu from '../../tools/dydu';
 import { isLoadedFromChannels } from '../../tools/wizard';
 import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from './hooks/useAuthorizeRequest';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useTokenRequest from './hooks/useTokenRequest';
 import useUserInfo from './hooks/useUserInfo';
+import { setCallOidcLogin } from '../../tools/axios';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -30,6 +30,7 @@ export function AuthProvider({ children, configuration }) {
 
   useEffect(() => {
     if (tokenRetries > 3) {
+      Storage.clearToken();
       login();
     }
   }, [tokenRetries]);
@@ -69,7 +70,7 @@ export function AuthProvider({ children, configuration }) {
       ?.then(({ data }) => data && Storage.saveUserInfo(data));
 
   useEffect(() => {
-    dydu.setOidcLogin(authorize);
+    setCallOidcLogin(authorize);
   }, []);
 
   useLayoutEffect(() => {
@@ -77,14 +78,14 @@ export function AuthProvider({ children, configuration }) {
   }, []);
 
   useEffect(() => {
-    token && urlConfig?.userinfoUrl && fetchUserinfo();
+    token?.access_token && urlConfig?.userinfoUrl && fetchUserinfo();
   }, [token, urlConfig]);
 
   useEffect(() => {
     const canRequestToken =
       urlConfig &&
       currentLocationContainsCodeParameter() &&
-      Storage.containsPkce() &&
+      (!appConfiguration?.oidc?.pkceActive || isDefined(Storage.loadPkceCodeChallenge())) &&
       !isDefined(token?.access_token) &&
       !currentLocationContainsError();
 
@@ -96,7 +97,7 @@ export function AuthProvider({ children, configuration }) {
   }, [fetchToken, token, token?.access_token, urlConfig]);
 
   useEffect(() => {
-    if (isLoggedIn && token) {
+    if (isLoggedIn && token?.access_token) {
       try {
         const userInfo = jwtDecode(token?.id_token);
         setUserInfo(userInfo);
@@ -108,7 +109,7 @@ export function AuthProvider({ children, configuration }) {
 
   const login = useCallback(() => {
     const canRequestAuthorize =
-      urlConfig && !token && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
+      urlConfig && !token?.access_token && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
     if (tokenRetries > 3 || canRequestAuthorize) authorize();
   }, [authorize, isLoggedIn, tokenRetries, urlConfig]);
 

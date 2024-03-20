@@ -11,7 +11,6 @@ import {
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
 import getPkce from 'oauth-pkce';
 
@@ -52,14 +51,8 @@ export default function useAuthorizeRequest(configuration) {
 
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
-      if (!Cookie.get('dydu-code-challenge')) {
-        Cookie.set('dydu-code-verifier', verifier);
-        if (configuration?.pkceMode === 'S256') {
-          Cookie.set('dydu-code-challenge', challenge);
-        } else {
-          Cookie.set('dydu-code-challenge', base64_urlencode(verifier));
-        }
-      }
+      const storedChallenge = configuration?.pkceMode === 'S256' ? challenge : base64_urlencode(verifier);
+      Storage.setPkceData(storedChallenge, verifier);
 
       /*
       construct query params
@@ -69,7 +62,7 @@ export default function useAuthorizeRequest(configuration) {
         ...extractObjectFields(configuration, ['clientId', 'scope']),
         ...extractObjectFields(pkce, ['state', 'redirectUri']),
         ...(configuration?.pkceActive && {
-          codeChallenge: Cookie.get('dydu-code-challenge'),
+          codeChallenge: storedChallenge,
           codeChallengeMethod: configuration?.pkceMode,
         }),
       };

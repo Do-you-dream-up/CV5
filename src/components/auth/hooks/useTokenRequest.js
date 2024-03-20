@@ -8,11 +8,10 @@ import {
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Cookie } from '../../../tools/storage';
 import Storage from '../Storage';
-import dydu from '../../../tools/dydu';
 import { useConfiguration } from '../../../contexts/ConfigurationContext';
 import { useHarmonicIntervalFn } from 'react-use';
+import { setCallTokenRefresher } from '../../../tools/axios';
 
 export default function useTokenRequest(authConfiguration) {
   const [error, setError] = useState(false);
@@ -34,7 +33,7 @@ export default function useTokenRequest(authConfiguration) {
         ...(authConfiguration.clientSecret && { client_secret: authConfiguration.clientSecret }),
         grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
         ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
-        ...(pkceActive && { code_verifier: Cookie.get('dydu-code-verifier') }),
+        ...(pkceActive && { code_verifier: Storage.loadPkceCodeVerifier() }),
         ...(Storage.loadToken()?.refresh_token && { refresh_token: Storage.loadToken()?.refresh_token }),
       },
     };
@@ -81,7 +80,7 @@ export default function useTokenRequest(authConfiguration) {
     if (token) {
       Storage.saveToken(token);
       if (token?.refresh_token) {
-        dydu.setTokenRefresher(fetchToken);
+        setCallTokenRefresher(fetchToken);
       }
     }
   }, [currentToken, fetchToken]);

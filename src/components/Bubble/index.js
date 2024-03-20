@@ -17,6 +17,7 @@ import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * A conversation bubble.
@@ -54,6 +55,7 @@ export default function Bubble({
   const defaultAvatar = configuration.avatar?.response?.image;
   const { surveyConfig } = useSurvey();
   const { tabbing } = useUserAction();
+  const { shadowRoot, shadowAnchor } = useShadow();
 
   const stepSidebar = step ? step.sidebar : undefined;
   sidebar = sidebar ? sidebar : stepSidebar;
@@ -75,7 +77,7 @@ export default function Bubble({
   }, [autoOpenSidebar, automaticSidebar, history, onToggle, sidebar, canAutoOpen]);
 
   const shouldSetFocusInScreenReaderMode = () => {
-    return tabbing && document.activeElement.id !== 'dydu-textarea';
+    return tabbing && shadowRoot?.activeElement?.id !== 'dydu-textarea';
   };
 
   const setElementFocusable = (element) => {
@@ -100,7 +102,7 @@ export default function Bubble({
 
   useEffect(() => {
     if (type === 'response' && shouldSetFocusInScreenReaderMode()) {
-      let allResponses = document.getElementsByClassName('dydu-interaction-response');
+      let allResponses = shadowAnchor?.getElementsByClassName('dydu-interaction-response');
       if (allResponses && allResponses.length >= 1) {
         let lastResponse = allResponses[allResponses.length - 1];
         if (lastResponse) {
