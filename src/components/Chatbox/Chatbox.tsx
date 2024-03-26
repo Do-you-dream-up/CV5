@@ -203,7 +203,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         lock: (value = true) => setLocked && setLocked(value),
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
-        sidebar: (open, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
+        sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),
       };
 

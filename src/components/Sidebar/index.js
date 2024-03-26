@@ -29,7 +29,7 @@ export default function Sidebar({ anchor, mode }) {
   const { configuration } = useConfiguration();
   const { sidebarActive, sidebarContent } = useDialog();
 
-  const { flushStatesAndClose } = useSurvey();
+  const { close } = useSurvey();
   const root = useRef(null);
   const theme = useTheme();
   const [initialMode, setMode] = useState(configuration.sidebar.mode);
@@ -83,13 +83,13 @@ export default function Sidebar({ anchor, mode }) {
       <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-sidebar-header')}>
         {titleContent}
         <StyledSidebarActions className={c('dydu-sidebar-actions')}>
-          <Button color="primary" onClick={flushStatesAndClose} type="button" variant="icon">
+          <Button color="primary" onClick={close} type="button" variant="icon">
             <Icon icon={icons?.close} alt="close" />
           </Button>
         </StyledSidebarActions>
       </StyledSidebarHeader>
     );
-  }, [headerRenderer, title, flushStatesAndClose]);
+  }, [headerRenderer, title, close]);
 
   return sidebarActive ? (
     <StyledSidebarMode

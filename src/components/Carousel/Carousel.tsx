@@ -51,18 +51,13 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     }
   }, [slickStyle, slickTheme]);
 
-  const onToggle = useCallback(
-    (open) => {
-      if (sidebarActive) {
-        toggleSidebar &&
-          toggleSidebar(open, {
-            body: step.sidebar.content,
-            ...step.sidebar,
-          })();
-      }
-    },
-    [sidebarActive, step, toggleSidebar],
-  );
+  const onToggle = (open: boolean, step: any) => {
+    toggleSidebar &&
+      toggleSidebar(open, {
+        body: step.sidebar.content,
+        ...step.sidebar,
+      })();
+  };
 
   // Method to change aria-hidden attribute on focus slide to false and other slides to true
   // Only use for carousel with steps for allow screen reader to read the content of slides
@@ -80,12 +75,16 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   }, [index, step]);
 
   useEffect(() => {
-    if (steps && step?.sidebar) {
-      setStep(steps[index]);
-      onToggle(Local.get(Local.names.sidebar) || automaticSidebar);
-      changeAriaHiddenAttributForSlides();
+    if (steps) {
+      const currentStep = steps[index];
+
+      if (currentStep?.sidebar) {
+        setStep(currentStep);
+        onToggle(Local.get(Local.names.sidebar) || automaticSidebar, currentStep);
+        changeAriaHiddenAttributForSlides();
+      }
     }
-  }, [index, steps, step, automaticSidebar, onToggle]);
+  }, [index]);
 
   const renderSteps = () =>
     children?.map((item, i) => (
@@ -93,7 +92,9 @@ const Carousel = ({ children, steps }: CarouselProps) => {
         children={item}
         key={i}
         onFocus={() => {
-          setIndex(i), setStep(steps[index]), changeAriaHiddenAttributForSlides();
+          setIndex(i);
+          setStep(steps[index]);
+          changeAriaHiddenAttributForSlides();
         }}
       />
     ));
@@ -146,13 +147,24 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     arrows: true,
     focusOnSelect: true,
     accessibility: true,
+    initialSlide: 0,
+    onLazyLoad: () => {
+      if (steps) {
+        const currentStep = steps[0];
+
+        if (currentStep?.sidebar) {
+          onToggle(Local.get(Local.names.sidebar) || automaticSidebar, currentStep);
+        }
+      }
+    },
+    afterChange: (index: number) => {
+      setIndex(index);
+    },
   };
 
   return (
     <div ref={carouselRef} tabIndex={-1} className={c('dydu-carousel', classes.carousel)}>
-      <Slider {...settings} afterChange={setIndex}>
-        {renderSteps()}
-      </Slider>
+      <Slider {...settings}>{renderSteps()}</Slider>
     </div>
   );
 };
