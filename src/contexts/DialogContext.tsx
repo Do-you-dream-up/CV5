@@ -76,6 +76,7 @@ export interface DialogContextProps {
   setUploadActive?: Dispatch<SetStateAction<boolean>>;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
   toggleSidebar?: (open: boolean, props?: any) => any;
+  activeSidebarName?: string | undefined | null;
   typeResponse?: Servlet.ChatResponseType | null;
   uploadActive?: boolean;
   voiceContent?: any;
@@ -98,6 +99,7 @@ interface SidebarContentProps {
   url?: string;
   height?: number;
   width?: number;
+  surveyId?: string;
 }
 
 interface InteractionProps {
@@ -149,6 +151,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
+  const [activeSidebarName, setActiveSidebarName] = useState<string | undefined | null>(null);
   const [sidebarActive, setSidebarActive] = useState(false);
   const [sidebarContent, setSidebarContent] = useState<SidebarContentProps | null>(null);
   const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
@@ -221,7 +224,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const toggleSidebar = useCallback(
     (
-        open,
+        open: boolean,
         {
           headerTransparency = true,
           headerRenderer,
@@ -231,6 +234,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
           title,
           url,
           width,
+          surveyId,
         }: SidebarContentProps = {},
       ) =>
       () => {
@@ -250,6 +254,11 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setSidebarActive((previous) => {
           return open === undefined ? !previous : open;
         });
+        if (open) {
+          setActiveSidebarName(surveyId ? surveyId : title);
+        } else {
+          setActiveSidebarName(null);
+        }
       },
     [],
   );
@@ -333,6 +342,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         feedback,
         guiAction,
         sidebar,
+        survey,
         templateData,
         templateName,
         text,
@@ -359,7 +369,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
       setTypeResponse(typeResponse);
       if (sidebarTransient || isMobile) {
-        toggleSidebar(false)();
+        toggleSidebar(false);
       }
       if (urlRedirect) {
         window.open(urlRedirect, '_self');
@@ -446,6 +456,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               children={getContent(text, templateData, templateName)}
               type="response"
               sidebar={sidebar}
+              hasSurvey={isDefined(survey)}
               steps={steps}
               templateName={templateName}
               thinking
@@ -541,12 +552,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
   }, [toggleSidebar, chatboxNode]);
 
-  const openSidebar = useCallback(
-    (props) => {
-      if (!sidebarActive) toggleSidebar(true, props)();
-    },
-    [sidebarActive, toggleSidebar],
-  );
+  const openSidebar = (props: any) => {
+    toggleSidebar(true, props)();
+  };
 
   return (
     <DialogContext.Provider
@@ -577,6 +585,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setSidebar,
         setVoiceContent,
         toggleSidebar,
+        activeSidebarName,
         typeResponse,
         voiceContent,
         zoomSrc,

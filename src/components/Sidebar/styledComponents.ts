@@ -7,7 +7,6 @@ export const StyledSidebarMode = styled.div<{
   $width: number;
 }>`
   ${(props) => {
-    console.log(props.theme);
     const base = {
       backgroundColor: props.theme.palette.background.sidebar,
       boxShadow: props.theme.shadows[1],

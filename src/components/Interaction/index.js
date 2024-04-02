@@ -109,6 +109,7 @@ export default function Interaction({
   history,
   scroll,
   sidebar,
+  hasSurvey,
   steps,
   templateName,
   thinking,
@@ -263,6 +264,7 @@ export default function Interaction({
         step: steps ? (steps.length === 1 ? undefined : steps[index]) : undefined,
         component: scroll && !index ? Scroll : undefined,
         sidebar: index === bubbles.length - 1 ? sidebar : undefined,
+        hasSurvey: hasSurvey,
         [typeof it === 'string' ? 'html' : 'children']: it,
       };
 
@@ -339,6 +341,8 @@ Interaction.propTypes = {
   history: PropTypes.bool,
   scroll: PropTypes.bool,
   sidebar: PropTypes.any,
+  activeSidebarName: PropTypes.string,
+  hasSurvey: PropTypes.bool,
   steps: PropTypes.array,
   templateName: PropTypes.string,
   contexts: PropTypes.any,

@@ -54,7 +54,7 @@ export default function useDyduWebsocket() {
   const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
   const { setTopKnowledge, extractPayload } = useTopKnowledge();
-  const { setSurveyConfig } = useSurvey();
+  const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
 
   const messageData = useMemo(() => {
@@ -131,6 +131,7 @@ export default function useDyduWebsocket() {
     if (!isDefined(messageType)) return;
     switch (messageType) {
       case MESSAGE_TYPE.survey:
+        flushOldSurvey();
         return sendSurveyConfiguration(b64decode(messageData?.values?.survey));
 
       case MESSAGE_TYPE.surveyConfigurationResponse:

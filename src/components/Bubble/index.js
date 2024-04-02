@@ -1,4 +1,4 @@
-import { createElement, useCallback, useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
 import Avatar from '../Avatar/Avatar';
@@ -13,11 +13,12 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
-import { useSurvey } from '../../Survey/SurveyProvider';
+import { SidebarFormTitle, useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
+import SurveyForm from '../../Survey/SurveyForm';
 
 /**
  * A conversation bubble.
@@ -35,46 +36,77 @@ export default function Bubble({
   history,
   html,
   sidebar,
+  hasSurvey,
   step,
   templateName,
   thinking,
   type,
 }) {
   const { configuration } = useConfiguration();
-  const hasCarouselAndSidebar = carousel && step && step.sidebar;
-  const classes = useStyles({ configuration, hasCarouselAndSidebar });
-  const { sidebarActive, toggleSidebar, typeResponse } = useDialog();
+  const { surveyConfig } = useSurvey();
+  const { tabbing } = useUserAction();
+  const { activeSidebarName, toggleSidebar, typeResponse } = useDialog();
   const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
+  const { shadowRoot, shadowAnchor } = useShadow();
+  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSidebar);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(step?.sidebar || sidebar || hasSurvey);
+
+  const hasCarouselAndSidebar = carousel && step && step.sidebar;
+  const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const { desktop: sidebarDesktop, fullScreen: sidebarFullScreen } = configuration.sidebar.automatic;
   const automaticSidebar = isFullScreen ? !!sidebarFullScreen : !!sidebarDesktop;
-  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSidebar);
   const defaultAvatar = configuration.avatar?.response?.image;
-  const { surveyConfig } = useSurvey();
-  const { tabbing } = useUserAction();
-  const { shadowRoot, shadowAnchor } = useShadow();
 
   const stepSidebar = step ? step.sidebar : undefined;
-  sidebar = sidebar ? sidebar : stepSidebar;
+  sidebar = stepSidebar ? stepSidebar : sidebar;
 
-  const actions = [...(sidebar ? [{ children: sidebarActive ? less : more, onClick: () => onToggle() }] : [])];
+  const actions = [
+    ...(sidebar || (hasSurvey && surveyConfig)
+      ? [{ children: isSidebarOpen ? less : more, onClick: () => onSidebarButtonToggle(!isSidebarOpen) }]
+      : []),
+  ];
 
-  const onToggle = useCallback(
-    (open) => {
-      toggleSidebar && toggleSidebar(open, { body: sidebar.content, ...sidebar })();
-    },
-    [sidebar, toggleSidebar],
-  );
+  useEffect(() => {
+    if (type !== 'request') {
+      const isEmptyActiveSidebarName = !activeSidebarName;
+      const isNotSameSurvey = hasSurvey && activeSidebarName && activeSidebarName !== surveyConfig?.surveyId;
+      const isNotSameSidebar = !hasSurvey && activeSidebarName && activeSidebarName !== sidebar?.title;
+      if (isEmptyActiveSidebarName || isNotSameSurvey || isNotSameSidebar) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    }
+  }, [activeSidebarName, surveyConfig?.surveyId]);
+
+  const onSidebarButtonToggle = (open) => {
+    const surveyId = surveyConfig?.surveyId;
+    if (toggleSidebar) {
+      setIsSidebarOpen(open);
+      toggleSidebar(open, {
+        ...(hasSurvey && surveyId
+          ? {
+              width: configuration?.sidebar?.width || null,
+              bodyRenderer: () => <SurveyForm />,
+              title: () => <SidebarFormTitle />,
+              headerTransparency: false,
+              surveyId: surveyId,
+            }
+          : { body: sidebar.content, ...sidebar }),
+      })();
+    }
+  };
 
   useEffect(() => {
     if (sidebar && canAutoOpen) {
-      onToggle(Local.get(Local.names.sidebar) || (!history && automaticSidebar));
+      onSidebarButtonToggle(Local.get(Local.names.sidebar) || (!history && automaticSidebar));
       setCanAutoOpen(false);
     }
-  }, [autoOpenSidebar, automaticSidebar, history, onToggle, sidebar, canAutoOpen]);
+  }, [autoOpenSidebar, automaticSidebar, history, onSidebarButtonToggle, sidebar, canAutoOpen]);
 
   const shouldSetFocusInScreenReaderMode = () => {
     return tabbing && shadowRoot?.activeElement?.id !== 'dydu-textarea';
@@ -156,9 +188,7 @@ export default function Bubble({
             {(children || html) && (
               <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
             )}
-            {!!actions.length && !surveyConfig && (
-              <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />
-            )}
+            {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
           </div>,
         )
       )}
@@ -180,6 +210,7 @@ Bubble.propTypes = {
   history: PropTypes.bool,
   html: PropTypes.string,
   sidebar: PropTypes.any,
+  hasSurvey: PropTypes.bool,
   step: PropTypes.object,
   templateName: PropTypes.string,
   thinking: PropTypes.bool,
