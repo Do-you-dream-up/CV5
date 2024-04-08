@@ -39,7 +39,7 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   const automaticSidebar = isFullScreen
     ? !!configuration?.sidebar.automatic?.fullScreen
     : !!configuration?.sidebar.automatic?.desktop;
-  const { sidebarActive, toggleSidebar } = useDialog();
+  const { toggleSidebar } = useDialog();
 
   useEffect(() => {
     if (!shadowAnchor?.querySelector('#dydu-style-carousel')) {
@@ -48,6 +48,10 @@ const Carousel = ({ children, steps }: CarouselProps) => {
       style.innerHTML += slickTheme;
       style.id = 'dydu-style-carousel';
       shadowAnchor?.appendChild(style);
+
+      const styleLightDom = document.createElement('style');
+      styleLightDom.textContent = slickStyle + slickTheme;
+      document.head.append(styleLightDom);
     }
   }, [slickStyle, slickTheme]);
 
