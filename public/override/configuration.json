@@ -1,8 +1,13 @@
 {
   "application": {
     "open": 1,
-    "languages": ["fr", "en"],
-    "defaultLanguage": ["fr"],
+    "languages": [
+      "fr",
+      "en"
+    ],
+    "defaultLanguage": [
+      "fr"
+    ],
     "getDefaultLanguageFromSite": false,
     "cdn": "https://cdn.doyoudreamup.com/chatbox/",
     "directory": "main/"
@@ -53,30 +58,58 @@
     "active": false,
     "features": {
       "chatbox": {
-        "loadChatbox": ["chatboxLoad"],
-        "onMinimize": ["minimize"],
-        "questionSent": ["questionSent"],
-        "rewordDisplay": ["rewordDisplay"]
+        "loadChatbox": [
+          "chatboxLoad"
+        ],
+        "onMinimize": [
+          "minimize"
+        ],
+        "questionSent": [
+          "questionSent"
+        ],
+        "rewordDisplay": [
+          "rewordDisplay"
+        ]
       },
       "gdpr": {
-        "acceptGdpr": ["acceptGdpr"],
-        "getPersonalData": ["getPersonalData"],
-        "deletePersonalData": ["deletePersonalData"],
-        "displayGdpr": ["displayGdpr"]
+        "acceptGdpr": [
+          "acceptGdpr"
+        ],
+        "getPersonalData": [
+          "getPersonalData"
+        ],
+        "deletePersonalData": [
+          "deletePersonalData"
+        ],
+        "displayGdpr": [
+          "displayGdpr"
+        ]
       },
       "onboarding": {
-        "onboardingDisplay": ["onboardingDisplay"],
-        "onboardingCompleted": ["onboardingCompleted"]
+        "onboardingDisplay": [
+          "onboardingDisplay"
+        ],
+        "onboardingCompleted": [
+          "onboardingCompleted"
+        ]
       },
       "tab": {
-        "contactDisplay": ["contactDisplay"]
+        "contactDisplay": [
+          "contactDisplay"
+        ]
       },
       "teaser": {
-        "onClick": ["teaserClick"]
+        "onClick": [
+          "teaserClick"
+        ]
       },
       "top": {
-        "topDisplay": ["topDisplay"],
-        "topClicked": ["topClicked"]
+        "topDisplay": [
+          "topDisplay"
+        ],
+        "topClicked": [
+          "topClicked"
+        ]
       }
     },
     "verbosity": 2
@@ -138,7 +171,10 @@
     "displayNameUser": false,
     "NameUser": "",
     "NameBot": "",
-    "loader": [400, 600]
+    "loader": [
+      400,
+      600
+    ]
   },
   "keycloak": {
     "enable": false,
@@ -170,7 +206,9 @@
     "authUrl": "",
     "tokenUrl": "",
     "discoveryUrl": "",
-    "scopes": [""],
+    "scopes": [
+      ""
+    ],
     "withAuth": false
   },
   "saml": {
@@ -268,7 +306,9 @@
         }
       }
     ],
-    "items": ["default"]
+    "items": [
+      "default"
+    ]
   },
   "suggestions": {
     "limit": 0
@@ -299,16 +339,32 @@
     "size": 3
   },
   "Voice": {
-    "enable": false,
-    "ssml": "true",
-    "sttServerUrl": "",
-    "ttsServerUrl": "",
-    "voice": "Damien",
-    "voiceSpace": "default",
-    "color": "black"
-  },
-  "welcome": {
-    "enable": true,
-    "knowledgeName": "#welcome#"
+     "languages": {
+       "fr": {
+         "name": "XB0fDUnXU5powFXDhCwa",
+         "provider": "ELEVENLABS"
+      },
+       "en": {
+         "name": "Karen22k_HQ",
+         "provider": "ACAPELA"
+      },
+       "es": {
+         "name": "alloy",
+         "provider": "OPENAI"
+      }
+    },
+      "enable": false,
+      "ssml": "true",
+      "sttServerUrl": "https://voicebot.doyoudreamup.com",
+      "ttsServerUrl": "https://tts.callbotv3.doyoudreamup.com",
+      "ttsInstanceUuid": "",
+      "ttsServerUser": "",
+      "ttsServerPassword": "",
+      "color": "black"
+    },
+    "welcome": {
+      "enable": true,
+      "knowledgeName": "#welcome#"
+    }
   }
-}
+
