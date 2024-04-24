@@ -114,15 +114,18 @@
       "minFontSize": 0.75
     },
     "logo": {
-      "customAvatar": true,
+      "customAvatar": false,
       "title": true,
       "image": true,
       "imageLink": {
         "misunderstood": "dydu-misunderstood.svg",
-        "livechat": "dydu-livechat.svg",
         "reword": "dydu-reword.svg",
         "understood": "dydu-understood.svg"
       }
+    },
+    "livechatLogo": {
+      "livechatCustomAvatar": true,
+      "livechatImageLink": "dydu-livechat.svg"
     }
   },
   "input": {

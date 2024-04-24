@@ -357,12 +357,14 @@ const Writing = () => {
   const avatarImageUrl = useMemo(() => {
     const isLivechatOn = Local.isLivechatOn.load();
 
-    if (configuration?.header?.logo?.customAvatar && isLivechatOn) {
-      return asset(configuration?.header?.logo?.imageLink?.livechat) || asset(configuration?.avatar?.response?.image);
+    if (configuration?.header?.livechatLogo?.livechatCustomAvatar && isLivechatOn) {
+      return (
+        asset(configuration?.header?.livechatLogo?.livechatImageLink) || asset(configuration?.avatar?.response?.image)
+      );
     }
 
     return asset(configuration?.avatar?.response?.image);
-  }, [configuration?.header?.logo?.customAvatar]);
+  }, [configuration?.header?.livechatLogo?.livechatCustomAvatar]);
 
   return (
     <Scroll>

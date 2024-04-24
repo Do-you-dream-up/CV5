@@ -32,6 +32,7 @@ const AvatarsMatchingRequest = ({
 }: AvatarsMatchingRequestProps) => {
   const { configuration } = useConfiguration();
   const { customAvatar, image: hasImage, imageLink } = configuration?.header?.logo || {};
+  const { livechatCustomAvatar, livechatImageLink } = configuration?.header?.livechatLogo || {};
   const { interactions } = useDialog();
 
   const hasAvatar = useMemo(() => {
@@ -42,7 +43,6 @@ const AvatarsMatchingRequest = ({
     return {
       understood: { image: imageLink?.understood, pattern: RE_UNDERSTOOD },
       misunderstood: { image: imageLink?.misunderstood, pattern: RE_MISUNDERSTOOD },
-      livechat: { image: imageLink?.livechat, pattern: RE_LIVECHAT },
       reword: { image: imageLink?.reword, pattern: RE_REWORD },
     };
   }, [imageLink?.misunderstood, imageLink?.reword, imageLink?.understood]);
@@ -56,8 +56,11 @@ const AvatarsMatchingRequest = ({
   }
 
   const imageType = useMemo(() => {
-    if (!typeResponse && Local.isLivechatOn.load()) {
-      return imageLink?.livechat;
+    if (
+      (!typeResponse && Local.isLivechatOn.load()) ||
+      (livechatCustomAvatar && typeResponse && typeResponse.match(RE_LIVECHAT))
+    ) {
+      return livechatImageLink;
     } else if (!customAvatar || !typeResponse || shouldNotChangeCustomAvatar()) {
       return defaultAvatar;
     } else {
@@ -69,7 +72,7 @@ const AvatarsMatchingRequest = ({
         ? defaultAvatar
         : typeMapImage[resultMatchingImageType[0]].image;
     }
-  }, [customAvatar, defaultAvatar, typeMapImage, typeResponse]);
+  }, [customAvatar, defaultAvatar, typeMapImage, typeResponse, livechatCustomAvatar]);
 
   const linkAvatarDependOnType = useMemo(() => {
     return imageType?.includes('base64') ? imageType : `${process.env.PUBLIC_URL}assets/${imageType}`;
