@@ -216,6 +216,7 @@ declare namespace Models {
     fontSizeChange: FontSizeChange;
     icons: Icons;
     logo: Logo;
+    livechatLogo: livechatLogo;
   }
 
   export interface Actions {
@@ -242,6 +243,11 @@ declare namespace Models {
     more: string;
   }
 
+  export interface livechatLogo {
+    livechatCustomAvatar: boolean;
+    livechatImageLink: string;
+  }
+
   export interface Logo {
     customAvatar: boolean;
     title: boolean;
@@ -251,7 +257,6 @@ declare namespace Models {
 
   export interface ImageLink {
     misunderstood: string;
-    livechat: string;
     reword: string;
     understood: string;
   }
