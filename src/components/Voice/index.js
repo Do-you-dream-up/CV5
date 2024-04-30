@@ -13,6 +13,8 @@ import { useDialog } from '../../contexts/DialogContext';
 import useMousetrap from 'react-hook-mousetrap';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { generateTts } from './apiVoicebot';
+import dydu from '../../tools/dydu';
 
 /**
  * TTS / STT
@@ -38,8 +40,15 @@ const Voice = ({ show, v }) => {
   const { setLocked, locked, voiceContent, setVoiceContent } = useDialog();
   const { configuration } = useConfiguration();
   const themeColor = useTheme();
-  const { ssml, sttServerUrl, ttsServerUrl, voice, voiceSpace, debug = false } = configuration.Voice;
-
+  const {
+    sttServerUrl,
+    ttsServerUrl,
+    ttsServerUser,
+    ttsServerPassword,
+    voiceSpace,
+    languages,
+    debug = false,
+  } = configuration.Voice;
   const constraints = { audio: true };
   const silenceDelay = 3000;
   const bufferSize = 2048;
@@ -87,6 +96,7 @@ const Voice = ({ show, v }) => {
   const [handelVoice, setHandelVoice] = React.useState(false);
   const [url, setUrl] = useState('');
   const [reword, setReword] = useState('');
+  const selectedLanguage = dydu.getLocale();
 
   useMousetrap(['ctrl+m'], () => {
     if (isMacOs && !locked) {
@@ -95,6 +105,9 @@ const Voice = ({ show, v }) => {
       }, 100);
     }
   });
+
+  const providerSelected = languages[selectedLanguage]?.provider;
+  const nameOfCallBotSelected = languages[selectedLanguage]?.name;
 
   useMousetrap(['ctrl+space'], () => {
     if (isWindows && !locked) {
@@ -120,24 +133,31 @@ const Voice = ({ show, v }) => {
       if (template.reword && template.reword !== 'null') {
         setReword(template.reword);
       }
-      Tts.getAudioFromText(voiceContent.text, template.html, template.text, voice, ssml, ttsServerUrl).then(
-        (response) => {
-          if (response) {
-            audio.src = response;
-            play();
-          }
-        },
-      );
-    } else if (voiceContent) {
-      const template = voiceContent.templateData
-        ? JSON.parse(voiceContent.templateData)
-        : { html: null, text: null, url: null };
-      if (template.url && template.url !== 'null') {
-        window.open(template.url, '_blank');
-      }
+      generateTts(
+        ttsServerUrl,
+        ttsServerUser,
+        ttsServerPassword,
+        nameOfCallBotSelected,
+        voiceContent.text,
+        providerSelected,
+        selectedLanguage,
+      )
+        .then((response) => {
+          audio.src = URL.createObjectURL(response);
+          audio?.play().catch((error) => {
+            console.error('error', error);
+          });
+        })
+        .catch((error) => {
+          console.error('error', error);
+        });
     }
     setVoiceContent(null);
   }, [handelVoice, voiceContent]);
+
+  React.useEffect(() => {
+    setActions([startRecordButton]);
+  }, [selectedLanguage]);
 
   audio.onended = () => {
     stop(true);
