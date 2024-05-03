@@ -103,7 +103,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     return text.startsWith('_pushcondition_');
   };
 
-  const handleRewordClicked = (text, options, livechatActive) => {
+  const handleRewordClicked = (text, options) => {
     text = text.trim();
     if (text) {
       const toSend = {
@@ -121,7 +121,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         addRequest && addRequest(text);
       }
 
-      if (livechatActive) {
+      const isLivechatOn = Local.isLivechatOn.load();
+
+      if (isLivechatOn) {
         send && send(text, options);
       } else {
         talk(text, toSend).then(addResponse);
@@ -146,11 +148,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (ready) onAppReady && onAppReady();
   }, [onAppReady, ready]);
 
-  const getDyduChatObject = ({ livechatActive }: { livechatActive?: boolean }) => {
+  const getDyduChatObject = () => {
     return {
-      handleRewordClicked: (text, options) => {
-        handleRewordClicked(text, options, livechatActive);
-      },
+      handleRewordClicked: (text, options) => handleRewordClicked(text, options),
       clearInteractions: () => clearInteractions && clearInteractions(),
       reply: (text) => addResponse && addResponse({ text }),
       setDialogVariable: (name, value) => {
@@ -166,7 +166,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     if (!ready || Local.isLivechatOn.load()) {
       window.dydu = { ...window.dydu };
 
-      window.dydu.chat = getDyduChatObject({ livechatActive: Local.isLivechatOn.load() });
+      window.dydu.chat = getDyduChatObject();
 
       window.dydu.promptEmail = {
         prompt: (type) => setPrompt && setPrompt(type),
