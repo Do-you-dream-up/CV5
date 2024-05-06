@@ -69,6 +69,9 @@ configuration.initialize().then((configuration) => {
     document.body.appendChild(host);
   }
 
+  // To prevent dydu-root from being empty
+  // For example shopify add a display none to all div:empty
+  host.appendChild(document.createElement('div'));
   const shadow = host.attachShadow({ mode: 'open' });
   const renderIn = document.createElement('div');
   renderIn.id = configuration.root;
