@@ -10,6 +10,7 @@ Fill both the =id= and the =server= keys with a bot of your choice in public/ove
 cp public/override/bot.json.sample => public/override/bot.json
 cp public/override/configuration.json.sample => public/override/configuration.json
 cp public/override/style.css.sample => public/override/style.css
+cp public/override/custom.js.sample => public/override/custom.js
 cp public/override/theme.json.sample => public/override/theme.json
 #+END_SRC
 

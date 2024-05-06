@@ -131,11 +131,6 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 
-  const isUploadFileReturnSuccess = useCallback(() => {
-    dydu.isLastResponseStatusInRange(200, 206);
-    setIsFileUploadSuccess(true);
-  }, []);
-
   useEffect(() => {
     if (isFileUploadSuccess) {
       window.dydu?.chat?.handleRewordClicked(rewordAfterGuiAction, { hide: true, doNotRegisterInteraction: true });
@@ -156,8 +151,8 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       handleCancel,
       showConfirmSelectedFile,
       showUploadFileButton,
-      isUploadFileReturnSuccess,
       isFileUploadSuccess,
+      setIsFileUploadSuccess,
       fileName,
       buttonIdDisabled,
       setButtonIdDisabled,
@@ -172,12 +167,12 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       showButtonUploadFile,
       extractFileFromEvent,
       showConfirmSelectedFile,
-      isUploadFileReturnSuccess,
       validateFile,
       getFileSize,
       handleCancel,
       showUploadFileButton,
       isFileUploadSuccess,
+      setIsFileUploadSuccess,
       fileName,
       buttonIdDisabled,
       setButtonIdDisabled,

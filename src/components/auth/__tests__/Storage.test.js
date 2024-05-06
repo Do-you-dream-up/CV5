@@ -123,7 +123,7 @@ describe('Storage', () => {
     });
 
     it('should return null if token data is not in local storage', () => {
-      expect(Storage.loadToken()).toBe(false);
+      expect(Storage.loadToken()).toEqual({});
     });
   });
 

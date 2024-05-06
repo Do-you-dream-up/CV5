@@ -79,7 +79,6 @@ describe('Helpers', () => {
 
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('http://localhost/');
-      expect(pkce.codeVerifier).toMatch('1-2-3-4-5');
       expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
     });
 
@@ -89,7 +88,6 @@ describe('Helpers', () => {
 
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('https://example.com');
-      expect(pkce.codeVerifier).toMatch('1-2-3-4-5');
       expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
     });
   });

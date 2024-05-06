@@ -11,6 +11,7 @@ import useDyduPolling from '../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import { useEvent } from './EventsContext';
 import { useUploadFile } from '../contexts/UploadFileContext';
+import { currentServerIndex } from '../tools/axios';
 
 interface LivechatContextProps {
   isWebsocket?: boolean;
@@ -42,6 +43,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { showUploadFileButton } = useUploadFile();
   const { lastResponse, displayNotification: notify, showAnimationOperatorWriting } = useDialog();
   const { onNewMessage } = useEvent();
+  const { addResponse } = useDialog();
 
   /* Init isLivechatOn value if not present */
   useEffect(() => {
@@ -52,9 +54,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [Local.isLivechatOn.load()]);
 
   const displayResponseText = useCallback(
-    (text) => {
+    (values) => {
       onNewMessage && onNewMessage();
-      window.dydu.chat.reply(text);
+      addResponse && addResponse(values);
     },
     [onNewMessage],
   );
@@ -75,8 +77,10 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [lastResponse, Local.isLivechatOn.load()]);
 
   const onSuccessOpenTunnel = (tunnel) => {
-    const iswebsocket = isWebsocketTunnel(tunnel);
-    if (iswebsocket) setIsWebsocket(true);
+    if (isWebsocketTunnel(tunnel)) {
+      setIsWebsocket(true);
+    }
+
     Local.isLivechatOn.save(true);
     setTunnel(tunnel);
   };
@@ -160,6 +164,13 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
   }, [Local.isLivechatOn.load(), sendSurvey]);
   /* ============================================================== */
+
+  useEffect(() => {
+    endLivechat();
+    if (shouldStartLivechat && !tunnel) {
+      startLivechat();
+    }
+  }, [currentServerIndex]);
 
   useEffect(() => {
     if (shouldEndLivechat) endLivechat();

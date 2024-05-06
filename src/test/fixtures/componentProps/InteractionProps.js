@@ -9,7 +9,7 @@ const getBaseProps = () => ({
   typeResponse: null,
   carousel: false,
   children: null,
-  secondary: false,
+  sidebar: null,
   steps: [],
   templateName: '',
   type: '',

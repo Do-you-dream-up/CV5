@@ -112,6 +112,7 @@ export class Cookie {
 export class Local {
   static names = {
     isLivechatOn: 'dydu.isLivechatOn',
+    isChannels: 'dydu.isChannels',
     client: 'dydu.client',
     context: 'dydu.context',
     dragon: 'dydu.dragon',
@@ -124,13 +125,14 @@ export class Local {
     locale: 'dydu.locale',
     onboarding: 'dydu.onboarding',
     open: 'dydu.open',
-    secondary: 'dydu.secondary',
+    sidebar: 'dydu.sidebar',
     space: 'dydu.space',
     wizard: 'dydu.wizard.data',
     images: 'dydu.images',
     saml: 'dydu.saml.auth',
     visit: 'dydu.visit',
     operator: 'dydu.operator',
+    servers: 'dydu.servers', // From Channels
   };
 
   /**
@@ -299,6 +301,26 @@ export class Local {
     reset: () => localStorage.setItem(Local.names.isLivechatOn, 'false'),
   });
 
+  static isChannels = Object.create({
+    load: () => {
+      const isChannels = localStorage.getItem(Local.names.isChannels);
+      return (isChannels && JSON.parse(isChannels)) || false;
+    },
+  });
+
+  static servers = Object.create({
+    load: () => {
+      const servers = localStorage.getItem(Local.names.servers);
+      return servers && JSON.parse(servers);
+    },
+  });
+
+  static botId = Object.create({
+    save: (data: string) => localStorage.setItem(Local.names.botId, data),
+    load: () => localStorage.getItem(Local.names.botId) || null,
+    remove: () => localStorage.removeItem(Local.names.botId),
+  });
+
   static saml = Object.create({
     save: (data) => localStorage.setItem(Local.names.saml, data),
     load: () => localStorage.getItem(Local.names.saml) || null,
@@ -358,12 +380,12 @@ export class Local {
     },
   });
 
-  static secondary = Object.create({
-    getKey: () => Local.names.secondary,
-    load: () => localStorage.getItem(Local.secondary.getKey()) || false,
+  static sidebar = Object.create({
+    getKey: () => Local.names.sidebar,
+    load: () => localStorage.getItem(Local.sidebar.getKey()) || false,
     save: (newValue) => {
-      const currentSaved = Local.secondary.load();
-      if (currentSaved !== newValue) localStorage.setItem(Local.secondary.getKey(), newValue);
+      const currentSaved = Local.sidebar.load();
+      if (currentSaved !== newValue) localStorage.setItem(Local.sidebar.getKey(), newValue);
     },
   });
 

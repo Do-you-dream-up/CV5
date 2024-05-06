@@ -2,9 +2,17 @@ import { DialogContext, DialogProvider, extractParameterFromGuiAction, useDialog
 
 import { render } from '../../tools/test-utils';
 
+jest.mock('../../tools/axios', () => ({
+  emit: jest.fn().mockReturnValue(Promise.resolve()),
+  SERVLET_API: {
+    get: jest.fn(),
+  },
+  setCallOidcLogin: jest.fn(),
+}));
+
 const DialogContextValuesMock = {
-  closeSecondary: jest.fn(),
-  openSecondary: jest.fn(),
+  closeSidebar: jest.fn(),
+  openSidebar: jest.fn(),
   topList: [],
   showAnimationOperatorWriting: jest.fn(),
   displayNotification: jest.fn(),
@@ -44,15 +52,15 @@ const DialogContextValuesMock = {
   locked: false,
   placeholder: null,
   prompt: '',
-  secondaryActive: false,
-  secondaryContent: null,
+  sidebarActive: false,
+  sidebarContent: null,
   setDisabled: jest.fn(),
   setLocked: jest.fn(),
   setPlaceholder: jest.fn(),
   setPrompt: jest.fn(),
-  setSecondary: jest.fn(),
+  setSidebar: jest.fn(),
   setVoiceContent: jest.fn(),
-  toggleSecondary: jest.fn(),
+  toggleSidebar: jest.fn(),
   typeResponse: 'talkResponse',
   voiceContent: null,
   zoomSrc: null,

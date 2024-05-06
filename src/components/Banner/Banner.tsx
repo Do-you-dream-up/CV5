@@ -63,7 +63,7 @@ export default function Banner() {
           {
             children: t('banner.ok'),
             onClick: onDismiss,
-            secondary: true,
+            sidebar: true,
             id: 'dydu-banner-ok',
           },
         ]

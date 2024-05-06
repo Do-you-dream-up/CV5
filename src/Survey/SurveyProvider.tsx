@@ -1,5 +1,5 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { getChatboxWidthTime, isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
+import { isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
 
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 import Field from './Field';
@@ -20,8 +20,9 @@ interface SurveyConfigProps {
 interface SurveyContextProps {
   showSurvey?: (data: any) => void;
   surveyConfig?: any;
-  triggerSurvey?: () => void;
+  triggerSurvey?: (surveyId: string | undefined) => void;
   setSurveyConfig?: (data: any) => void;
+  flushStates: () => void;
 }
 
 interface SurveyProviderProps {
@@ -34,13 +35,12 @@ const SurveyContext = createContext<SurveyContextProps>({});
 
 export default function SurveyProvider({ children }: SurveyProviderProps) {
   const { getChatboxRef } = useEvent();
-  const { openSecondary, closeSecondary, lastResponse } = useDialog();
+  const { openSidebar, closeSidebar, lastResponse } = useDialog();
   const { configuration } = useConfiguration();
   const [surveyConfig, setSurveyConfig] = useState<SurveyConfigProps | null>(null);
   const [instances, setInstances] = useState<any[] | null>(null);
-  const [listeningCloseSecondary, setListeningCloseSecondary] = useState(false);
-
-  const secondaryTransient = configuration?.secondary?.transient;
+  const [listeningCloseSidebar, setListeningCloseSidebar] = useState(false);
+  const surveyId: string | undefined = surveyConfig?.surveyId;
 
   const flushStates = () => {
     setInstances(null);
@@ -53,6 +53,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     const id = extractId(data);
 
     if (!isLivechatOn) {
+      flushStates(); // Required to reset useEffect and show new survey
       getSurveyConfigurationById(id).then((res) => {
         setSurveyConfig(res);
       });
@@ -61,9 +62,14 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
 
   const flushStatesAndClose = useCallback(() => {
     flushStates();
-    closeSecondary && closeSecondary();
+    closeSidebar && closeSidebar();
     answerResultManager.clear();
-  }, [closeSecondary, flushStates, lastResponse]);
+  }, [closeSidebar, flushStates, lastResponse]);
+
+  const close = useCallback(() => {
+    closeSidebar && closeSidebar();
+    answerResultManager.clear();
+  }, [closeSidebar, lastResponse]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -74,33 +80,30 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, [getChatboxRef]);
 
   useEffect(() => {
-    if (lastResponse && secondaryTransient) flushStatesAndClose();
-  }, [lastResponse, secondaryTransient]);
-
-  useEffect(() => {
     dydu.setShowSurveyCallback(showSurvey);
   }, [showSurvey]);
 
   useEffect(() => {
-    if (listeningCloseSecondary || !isDefined(chatboxNode)) return;
-    chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSecondary, flushStatesAndClose);
-    setListeningCloseSecondary(true);
-  }, [chatboxNode, flushStatesAndClose, listeningCloseSecondary]);
+    if (listeningCloseSidebar || !isDefined(chatboxNode)) return;
+    chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSidebar, closeSidebar);
+    setListeningCloseSidebar(true);
+  }, [chatboxNode, flushStatesAndClose, listeningCloseSidebar]);
 
   useEffect(() => {
     return () => {
-      chatboxNode?.removeEventListener(CHATBOX_EVENT_NAME.closeSecondary);
-      setListeningCloseSecondary(false);
+      chatboxNode?.removeEventListener(CHATBOX_EVENT_NAME.closeSidebar);
+      setListeningCloseSidebar(false);
     };
   }, []);
 
   const triggerSurvey = () => {
-    openSecondary &&
-      openSecondary({
-        width: configuration?.secondary?.width || null,
+    openSidebar &&
+      openSidebar({
+        width: configuration?.sidebar?.width || null,
         bodyRenderer: () => <SurveyForm />,
-        title: () => <SecondaryFormTitle />,
+        title: () => <SidebarFormTitle />,
         headerTransparency: false,
+        surveyId: surveyId,
       });
   };
 
@@ -110,11 +113,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     if (!canInstanciateFields) return;
     const listFieldInstance = instanciateFields(fields);
     setInstances(listFieldInstance);
-  }, [instances, surveyConfig?.surveyId]);
-
-  useEffect(() => {
-    surveyConfig?.surveyId && triggerSurvey();
-  }, [surveyConfig?.surveyId]);
+    triggerSurvey();
+  }, [instances, surveyId]);
 
   const getSurveyAnswer = useCallback(() => {
     if (isDefined(instances)) {
@@ -134,12 +134,11 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
         fields: userAnswerObj,
       };
     },
-    [surveyConfig?.surveyId],
+    [surveyId],
   );
 
   const sendAnswer = useCallback(
     (answerObj) => {
-      console.log('sending answerObj', answerObj);
       const payload = createSurveyResponsePayloadWithUserAnswer(answerObj);
       if (!SurveyProvider.hasListeners()) return dydu.sendSurvey(payload);
       else return Promise.resolve(SurveyProvider.notifyListeners(payload));
@@ -162,7 +161,6 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       .then(sendAnswer)
       .then(flushStatesAndClose)
       .catch((answerManagerInstance) => {
-        console.log('missing felds !', answerManagerInstance);
         answerManagerInstance.forEachMissingField((fieldInstance) => fieldInstance.showRequiredMessageUi());
         answerManagerInstance.clear();
       });
@@ -176,9 +174,11 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       instances,
       onSubmit,
       triggerSurvey,
+      flushStates,
       flushStatesAndClose,
+      close,
     }),
-    [showSurvey, setSurveyConfig, instances, onSubmit, triggerSurvey, flushStatesAndClose],
+    [showSurvey, setSurveyConfig, instances, onSubmit, triggerSurvey, flushStates, flushStatesAndClose, close],
   );
 
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
@@ -215,8 +215,7 @@ const flatMap = (listFieldObject: any[] = []) => {
     if (isDefined(id)) mapRes[id] = fieldObject;
     if (!hasChildren) return mapRes;
 
-    let childrenMapRes = {};
-    childrenMapRes = flatMap(children);
+    const childrenMapRes = flatMap(children);
     return {
       ...mapRes,
       ...childrenMapRes,
@@ -249,9 +248,9 @@ SurveyProvider.addListener = (listenerId, callback) => (listeners[listenerId] = 
 //==================================================/
 // LOCAL COMPONENTS
 //==================================================/
-// const SecondaryHeader = () => <SecondaryFormTitle />;
+// const SidebarHeader = () => <SidebarFormTitle />;
 
-const SecondaryFormTitle = () => {
+export const SidebarFormTitle = () => {
   const style = useRef({
     hgroup: {
       lineHeight: '1.5rem',

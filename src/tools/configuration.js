@@ -3,8 +3,7 @@ import { hasWizard, isLoadedFromChannels } from './wizard';
 import { ConfigurationContext } from '../contexts/ConfigurationContext';
 import { Local } from './storage';
 import { PureComponent } from 'react';
-import axios from 'axios';
-import { axiosConfigNoCache } from './axios';
+import { getResourceWithoutCache } from './resources';
 import dydu from './dydu';
 
 /**
@@ -24,8 +23,8 @@ export const configuration = new (class Configuration {
    * @param {string} [path] - Configuration file path.
    * @returns {Promise}
    */
-  initialize = (path = `${process.env.PUBLIC_URL}override/configuration.json`) => {
-    return axios.get(path, axiosConfigNoCache).then(({ data }) => {
+  initialize = async () => {
+    return getResourceWithoutCache('override/configuration.json').then(({ data }) => {
       this.configuration = null;
 
       if ((isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()) {
@@ -38,6 +37,7 @@ export const configuration = new (class Configuration {
           this.configuration.avatar.teaser.image = images?.teaser;
           this.configuration.header.logo.imageLink.understood = images?.understood;
           this.configuration.header.logo.imageLink.misunderstood = images?.misunderstood;
+          this.configuration.header.logo.imageLink.livechat = images?.livechat;
           this.configuration.header.logo.imageLink.reword = images?.reword;
           this.configuration.onboarding.items[0].image.src = images?.onboarding1;
           this.configuration.onboarding.items[1].image.src = images?.onboarding2;

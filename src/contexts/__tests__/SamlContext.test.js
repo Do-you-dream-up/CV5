@@ -2,11 +2,20 @@ import { SamlContext, SamlProvider } from '../SamlContext';
 
 import { render } from '@testing-library/react';
 
+jest.mock('../../tools/dydu', () => ({
+  ...jest.requireActual('../../tools/dydu'),
+  getSaml2UserInfo: jest.fn().mockReturnValue(Promise.resolve()),
+  getSaml2Status: jest.fn().mockReturnValue(Promise.resolve()),
+}));
+
 jest.mock('../../tools/storage', () => ({
   Local: {
     saml: {
       save: jest.fn(),
       load: jest.fn(),
+    },
+    isChannels: {
+      load: jest.fn(() => false),
     },
     set: jest.fn(),
   },

@@ -16,7 +16,7 @@ describe('talk', () => {
     standard: jest.fn(() => 'Lorem ipsum'),
   };
   const uiApi = {
-    secondary: jest.fn(),
+    sidebar: jest.fn(),
   };
 
   window.dydu = {
@@ -86,9 +86,9 @@ describe('talk', () => {
     ACTIONS['#lorem#']();
     expect(window.dydu.lorem.standard).toHaveBeenCalled();
   });
-  it('should open a secondary panel', () => {
-    ACTIONS['#secondary#']();
-    expect(window.dydu.ui.secondary).toHaveBeenCalledWith(true, expect.anything());
+  it('should open a sidebar panel', () => {
+    ACTIONS['#sidebar#']();
+    expect(window.dydu.ui.sidebar).toHaveBeenCalledWith(true, expect.anything());
   });
 
   it('should call window.dydu.lorem.split() when #split# is passed to talk', () => {

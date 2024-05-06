@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import Draggable from 'react-draggable';
 import Skeleton from '../Skeleton';
@@ -10,6 +10,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 interface TeaserProps {
   open?: boolean;
@@ -32,11 +33,14 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
 
   const isDraggable: boolean | undefined = useMemo(() => isDragActive, [isDragActive]);
 
+  const { isMinimize } = useViewMode();
+
   const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { tabbing } = useContext(UserActionContext) || false;
   const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
+  const teaserRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const title: string = t('teaser.title');
   const titleHidden: string = t('teaser.titleHidden');
@@ -67,6 +71,12 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     event && event('onClick');
     toggle(2)();
   }, [event, toggle]);
+
+  useEffect(() => {
+    if (isMinimize && tabbing) {
+      teaserRef?.current?.focus();
+    }
+  }, [isMinimize, tabbing, teaserRef]);
 
   const handleLongPress = useCallback(() => {
     setIsCommandHandled(true);
@@ -131,6 +141,7 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
             title={mouseover}
             role="button"
             tabIndex={tabIndex}
+            ref={teaserRef}
             className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
               [classes.hideOutline]: !tabbing,
             })}

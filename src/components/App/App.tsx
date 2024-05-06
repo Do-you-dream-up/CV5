@@ -1,6 +1,3 @@
-import '../../../public/override/style.css';
-import '../../../public/chatboxHomepage.css';
-
 import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import { Suspense, lazy, useContext, useEffect, useMemo } from 'react';
 
@@ -21,6 +18,7 @@ import { hasWizard } from '../../tools/wizard';
 import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import ChatboxReadyProvider from '../../contexts/ChatboxReadyContext';
 
 const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
 const Wizard = lazy(() => import('../Wizard'));
@@ -30,7 +28,6 @@ const Wizard = lazy(() => import('../Wizard'));
  *
  * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
-
 const App = () => {
   const { configuration } = useContext(ConfigurationContext);
   const { dispatchEvent } = useEvent();
@@ -62,14 +59,6 @@ const App = () => {
     dispatchEvent && dispatchEvent('chatbox', 'loadChatbox');
   }, []);
 
-  useEffect(() => {
-    const customFont = configuration?.font.url;
-    let documentFontHref = (document.getElementById('font') as HTMLAnchorElement)?.href;
-    if (customFont && customFont !== documentFontHref) {
-      documentFontHref = customFont;
-    }
-  }, [configuration]);
-
   return (
     <div className={c('dydu-application', classes.root)}>
       <Suspense fallback={null}>
@@ -81,23 +70,25 @@ const App = () => {
                 <ConversationHistoryProvider>
                   <WelcomeKnowledgeProvider>
                     <TopKnowledgeProvider>
-                      <UserActionProvider>
-                        <DialogProvider>
-                          <SurveyProvider>
-                            <UploadFileProvider>
-                              <LivechatProvider>
-                                <Chatbox
-                                  extended={isChatboxFullScreen}
-                                  open={isChatboxOpen}
-                                  toggle={toggle}
-                                  mode={mode}
-                                />
-                              </LivechatProvider>
-                            </UploadFileProvider>
-                          </SurveyProvider>
-                          <Teaser open={isChatboxMinimize} toggle={toggle} />
-                        </DialogProvider>
-                      </UserActionProvider>
+                      <ChatboxReadyProvider>
+                        <UserActionProvider>
+                          <DialogProvider>
+                            <SurveyProvider>
+                              <UploadFileProvider>
+                                <LivechatProvider>
+                                  <Chatbox
+                                    extended={isChatboxFullScreen}
+                                    open={isChatboxOpen}
+                                    toggle={toggle}
+                                    mode={mode}
+                                  />
+                                </LivechatProvider>
+                              </UploadFileProvider>
+                            </SurveyProvider>
+                            <Teaser open={isChatboxMinimize} toggle={toggle} />
+                          </DialogProvider>
+                        </UserActionProvider>
+                      </ChatboxReadyProvider>
                     </TopKnowledgeProvider>
                   </WelcomeKnowledgeProvider>
                 </ConversationHistoryProvider>

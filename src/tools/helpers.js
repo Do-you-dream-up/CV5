@@ -234,6 +234,16 @@ export const b64encodeObject = (o) => {
   return res;
 };
 
+export const b64decodeObject = (o) => {
+  const res = Object.keys(o).reduce((resultMap, key) => {
+    const value = o[key];
+    resultMap[key] = isString(value) ? b64decode(value) : isObject(value) ? b64decodeObject(value) : value;
+
+    return resultMap;
+  }, {});
+  return res;
+};
+
 export const recursiveBase64EncodeString = (obj) => {
   return _recursiveBase64EncodeString(obj, Object.keys(obj), {});
 };
@@ -299,21 +309,6 @@ export const numberOfDayInMs = (count = 1) => {
 };
 
 export const strContains = (str = '', substr = '') => str.indexOf(substr) > -1;
-
-export const getChatboxWidth = (chatboxRef) => {
-  if (!isDefined(chatboxRef)) chatboxRef = document.getElementById('dydu-root');
-  if (!isDefined(chatboxRef)) return 0;
-  const { left, right } = chatboxRef.getBoundingClientRect();
-  return Math.abs(right - left);
-};
-
-export const getChatboxWidthTime = (chatboxRef = null, time = 1, maxWidthPx = 850) => {
-  const error = ![isDefined, isNumber, isPositiveNumber].every((fn) => fn(time));
-  if (error) throw new Error('getChatboxWidthTime: parameter error', time);
-  return getMinValue(getChatboxWidth(chatboxRef) * time, maxWidthPx);
-};
-
-const getMinValue = (a, b) => (a < b ? a : b);
 
 export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');

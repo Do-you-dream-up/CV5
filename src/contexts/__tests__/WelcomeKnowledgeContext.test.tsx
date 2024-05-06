@@ -20,6 +20,9 @@ jest.mock('../../tools/storage', () => ({
     isLivechatOn: {
       load: jest.fn(() => false),
     },
+    isChannels: {
+      load: jest.fn(() => false),
+    },
   },
 }));
 

@@ -106,7 +106,7 @@ export default createUseStyles<any, any>((theme: any): any => {
       width: 40,
     }),
 
-    secondary: ({ color = 'primary' }) => ({
+    sidebar: ({ color = 'primary' }) => ({
       '&:disabled': {
         backgroundColor: theme?.palette?.action?.disabled,
         border: 'none',

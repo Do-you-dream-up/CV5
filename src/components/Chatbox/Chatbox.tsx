@@ -19,7 +19,7 @@ import Modal from '../Modal/Modal';
 import ModalClose from '../ModalClose';
 import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
-import Secondary from '../Secondary';
+import Sidebar from '../Sidebar';
 import Tab from '../Tab';
 import { VIEW_MODE } from '../../tools/constants';
 import Zoom from '../Zoom';
@@ -55,13 +55,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     addResponse,
     clearInteractions,
     interactions,
-    secondaryActive,
+    sidebarActive,
     setDisabled,
     setLocked,
     setPlaceholder,
     setPrompt,
-    setSecondary,
-    toggleSecondary,
+    setSidebar,
+    toggleSidebar,
   } = useContext(DialogContext);
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
@@ -78,7 +78,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const labelChatbot = t('general.labelChatbot');
   const qualification = configuration?.qualification?.active;
   const { expandable } = configuration?.chatbox || {};
-  const secondaryMode = configuration?.secondary.mode;
+  const sidebarMode = configuration?.sidebar.mode;
   const dialogRef = useRef();
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
@@ -99,18 +99,23 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
   };
 
+  const isPushCondition = (text) => {
+    return text.startsWith('_pushcondition_');
+  };
+
   const handleRewordClicked = (text, options, livechatActive) => {
     text = text.trim();
     if (text) {
       const toSend = {
         qualification,
+        ...(options.doNotRegisterInteraction && {
+          doNotRegisterInteraction: options.doNotRegisterInteraction,
+        }),
         extra: options,
       };
 
-      if (!options.fromSurvey) {
-        options = JSON.parse(JSON.stringify(options));
-        options.hide = false;
-      }
+      options = JSON.parse(JSON.stringify(options));
+      options.hide |= isPushCondition(text) || options.fromSurvey;
 
       if (followBadUrl(text, options)) {
         addRequest && addRequest(text);
@@ -198,7 +203,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         lock: (value = true) => setLocked && setLocked(value),
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
-        secondary: (open, { body, title }) => toggleSecondary && toggleSecondary(open, { body, title })(),
+        sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
         toggle: (mode) => toggle(mode)(),
       };
 
@@ -226,10 +231,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     setLocked,
     setPlaceholder,
     setPrompt,
-    setSecondary,
+    setSidebar,
     t,
     toggle,
-    toggleSecondary,
+    toggleSidebar,
     gdprPassed,
     setGdprPassed,
     getDyduChatObject,
@@ -266,7 +271,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                 <div
                   tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
-                    [classes.bodyHidden]: secondaryActive && (secondaryMode === 'over' || extended),
+                    [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || extended),
                   })}
                 >
                   <Tab
@@ -282,13 +287,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   <Tab component={Contacts} value="contacts" children render={false} />
                   {poweredByActive && <PoweredBy />}
                 </div>
-                {(secondaryMode === 'over' || extended) && <Secondary mode="over" />}
+                {(sidebarMode === 'over' || extended) && <Sidebar mode="over" />}
                 {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
             </GdprDisclaimer>
           </>
           <Modal />
-          {secondaryMode !== 'over' && !extended && <Secondary anchor={root} />}
+          {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}
         </div>
       </div>
     </div>

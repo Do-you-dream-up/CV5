@@ -59,8 +59,7 @@ const responseToLivechatPayload = (r) => ({
 
 export const typeToHandler = {
   [RESPONSE_TYPE.message]: (response) => {
-    const { text } = response;
-    displayResponse(text);
+    displayResponse(response);
   },
   [RESPONSE_TYPE.notification]: (response) => {
     const notification = responseToLivechatPayload(response);

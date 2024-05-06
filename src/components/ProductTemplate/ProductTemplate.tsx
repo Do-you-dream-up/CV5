@@ -7,6 +7,7 @@ import { isDefined } from '../../tools/helpers';
 import { uppercaseFirstLetter } from '../../tools/text';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 interface ProductTemplateProps {
   classe?: string | null;
@@ -24,10 +25,11 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
   const readMoreActive = strippedString ? strippedString.length > READ_MORE_CARACTERS_TEXT.readmore : false;
   const [isEmptyImage, setIsEmptyImage] = useState(false);
   const [isTruncated, setIsTruncated] = useState(true);
+  const { shadowAnchor } = useShadow();
 
   useEffect(() => {
-    const carouselImages = document.querySelectorAll('.dydu-product-template-image img');
-    carouselImages.forEach((image) => {
+    const carouselImages = shadowAnchor?.querySelectorAll('.dydu-product-template-image img');
+    carouselImages?.forEach((image) => {
       if (!isDefined(image.getAttribute('src'))) {
         setIsEmptyImage(true);
       }

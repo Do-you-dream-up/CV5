@@ -1,5 +1,5 @@
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import slickStyle from 'slick-carousel/slick/slick.css';
+import slickTheme from 'slick-carousel/slick/slick-theme.css';
 
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -10,6 +10,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import useViewport from '../../tools/hooks/useViewport';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Typically used with the `Interaction` component.
@@ -32,48 +33,62 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   const [numberSlidesToShow, setNumberSlidesTosShow] = useState<number>(0);
   const [resizeCount, setResizeCount] = useState(0);
   const interactionWidth = useMemo(() => carouselRef?.current?.offsetWidth, [resizeCount]);
+  const { shadowAnchor } = useShadow();
 
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
-  const automaticSecondary = isFullScreen
-    ? !!configuration?.secondary.automatic?.fullScreen
-    : !!configuration?.secondary.automatic?.desktop;
-  const { secondaryActive, toggleSecondary } = useDialog();
+  const automaticSidebar = isFullScreen
+    ? !!configuration?.sidebar.automatic?.fullScreen
+    : !!configuration?.sidebar.automatic?.desktop;
+  const { toggleSidebar } = useDialog();
 
-  const onToggle = useCallback(
-    (open) => {
-      if (secondaryActive) {
-        toggleSecondary &&
-          toggleSecondary(open, {
-            body: step.sidebar.content,
-            ...step.sidebar,
-          })();
-      }
-    },
-    [secondaryActive, step, toggleSecondary],
-  );
+  useEffect(() => {
+    if (!shadowAnchor?.querySelector('#dydu-style-carousel')) {
+      const style = document.createElement('style');
+      style.innerHTML = slickStyle;
+      style.innerHTML += slickTheme;
+      style.id = 'dydu-style-carousel';
+      shadowAnchor?.appendChild(style);
+
+      const styleLightDom = document.createElement('style');
+      styleLightDom.textContent = slickStyle + slickTheme;
+      document.head.append(styleLightDom);
+    }
+  }, [slickStyle, slickTheme]);
+
+  const onToggle = (open: boolean, step: any) => {
+    toggleSidebar &&
+      toggleSidebar(open, {
+        body: step.sidebar.content,
+        ...step.sidebar,
+      })();
+  };
 
   // Method to change aria-hidden attribute on focus slide to false and other slides to true
   // Only use for carousel with steps for allow screen reader to read the content of slides
   const changeAriaHiddenAttributForSlides = useCallback(() => {
-    const slideSelected = document.querySelectorAll('[data-index="' + index + '"]');
-    const otherSlides = document.querySelectorAll('[data-index]:not([data-index="' + index + '"])');
+    const slideSelected = shadowAnchor?.querySelectorAll('[data-index="' + index + '"]');
+    const otherSlides = shadowAnchor?.querySelectorAll('[data-index]:not([data-index="' + index + '"])');
     if (slideSelected) {
       slideSelected.forEach((element) => {
         element.setAttribute('aria-hidden', 'false');
       });
-      otherSlides.forEach((element) => {
+      otherSlides?.forEach((element) => {
         element.setAttribute('aria-hidden', 'true');
       });
     }
   }, [index, step]);
 
   useEffect(() => {
-    if (steps && step?.sidebar) {
-      setStep(steps[index]);
-      onToggle(Local.get(Local.names.secondary) || automaticSecondary);
-      changeAriaHiddenAttributForSlides();
+    if (steps) {
+      const currentStep = steps[index];
+
+      if (currentStep?.sidebar) {
+        setStep(currentStep);
+        onToggle(Local.get(Local.names.sidebar) || automaticSidebar, currentStep);
+        changeAriaHiddenAttributForSlides();
+      }
     }
-  }, [index, steps, step, automaticSecondary, onToggle]);
+  }, [index]);
 
   const renderSteps = () =>
     children?.map((item, i) => (
@@ -81,7 +96,9 @@ const Carousel = ({ children, steps }: CarouselProps) => {
         children={item}
         key={i}
         onFocus={() => {
-          setIndex(i), setStep(steps[index]), changeAriaHiddenAttributForSlides();
+          setIndex(i);
+          setStep(steps[index]);
+          changeAriaHiddenAttributForSlides();
         }}
       />
     ));
@@ -97,8 +114,8 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   useEffect(() => {
     window.addEventListener('error', (e) => {
       if (e.message === 'ResizeObserver loop limit exceeded') {
-        const resizeObserverErrDiv = document.getElementById('webpack-dev-server-client-overlay-div');
-        const resizeObserverErr = document.getElementById('webpack-dev-server-client-overlay');
+        const resizeObserverErrDiv = shadowAnchor?.querySelector('#' + 'webpack-dev-server-client-overlay-div');
+        const resizeObserverErr = shadowAnchor?.querySelector('#' + 'webpack-dev-server-client-overlay');
         if (resizeObserverErr) {
           resizeObserverErr.setAttribute('style', 'display: none');
         }
@@ -134,13 +151,24 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     arrows: true,
     focusOnSelect: true,
     accessibility: true,
+    initialSlide: 0,
+    onLazyLoad: () => {
+      if (steps) {
+        const currentStep = steps[0];
+
+        if (currentStep?.sidebar) {
+          onToggle(Local.get(Local.names.sidebar) || automaticSidebar, currentStep);
+        }
+      }
+    },
+    afterChange: (index: number) => {
+      setIndex(index);
+    },
   };
 
   return (
     <div ref={carouselRef} tabIndex={-1} className={c('dydu-carousel', classes.carousel)}>
-      <Slider {...settings} afterChange={setIndex}>
-        {renderSteps()}
-      </Slider>
+      <Slider {...settings}>{renderSteps()}</Slider>
     </div>
   );
 };

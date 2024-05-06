@@ -114,11 +114,12 @@
       "minFontSize": 0.75
     },
     "logo": {
-      "customAvatar": false,
+      "customAvatar": true,
       "title": true,
       "image": true,
       "imageLink": {
         "misunderstood": "dydu-misunderstood.svg",
+        "livechat": "dydu-livechat.svg",
         "reword": "dydu-reword.svg",
         "understood": "dydu-understood.svg"
       }
@@ -208,7 +209,7 @@
     "active": false
   },
   "root": "dydu-root",
-  "secondary": {
+  "sidebar": {
     "automatic": {
       "desktop": true,
       "fullScreen": false

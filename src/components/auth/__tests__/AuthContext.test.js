@@ -45,16 +45,17 @@ jest.mock('../Storage', () => {
   };
 });
 
+jest.mock('../../../tools/axios', () => ({
+  setCallOidcLogin: jest.fn(),
+  setCallTokenRefresher: jest.fn(),
+}));
+
 jest.mock('../../../tools/dydu', () => {
-  let authorize = null;
   let botLanguages = ['en', 'fr'];
 
   return {
     __esModule: true,
     default: {
-      setOidcLogin: jest.fn(() => authorize),
-      setServerStatusCheck: jest.fn(),
-      setTokenRefresher: jest.fn(),
       setSpaceToDefault: jest.fn(),
       fetchUrlConfig: jest.fn(),
       setLocale: jest.fn(),

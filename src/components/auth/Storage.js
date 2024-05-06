@@ -8,8 +8,25 @@ const AUTH_URL = 'dydu-oauth-url';
 const USER_INFO = 'dydu-user-info';
 const TOKEN_KEY_ACCESS = 'dydu-oauth-token-access';
 const TOKEN_KEY_REFRESH = 'dydu-oauth-token-refresh';
+const PKCE_CODE_VERIFIER = 'dydu-code-verifier';
+const PKCE_CODE_CHALLENGE = 'dydu-code-challenge';
 
 export default class Storage {
+  static setPkceData(codeChallenge, codeVerifier) {
+    if (codeChallenge && codeVerifier) {
+      store.setItem(PKCE_CODE_CHALLENGE, codeChallenge);
+      store.setItem(PKCE_CODE_VERIFIER, codeVerifier);
+    }
+  }
+
+  static loadPkceCodeVerifier() {
+    return store.getItem(PKCE_CODE_VERIFIER);
+  }
+
+  static loadPkceCodeChallenge() {
+    return store.getItem(PKCE_CODE_CHALLENGE);
+  }
+
   static savePkce(pkceData) {
     store.setItem(PKCE_KEY, JSON.stringify(pkceData));
   }
@@ -50,25 +67,37 @@ export default class Storage {
   static saveToken = (token) => {
     cleanUrl();
     Storage.clearPkce();
-    localStorage.setItem(TOKEN_KEY_ID, token?.id_token);
-    localStorage.setItem(TOKEN_KEY_ACCESS, token?.access_token);
-    localStorage.setItem(TOKEN_KEY_REFRESH, token?.refresh_token);
+
+    if (isDefined(token?.id_token)) {
+      localStorage.setItem(TOKEN_KEY_ID, token?.id_token);
+    }
+
+    if (isDefined(token?.access_token)) {
+      localStorage.setItem(TOKEN_KEY_ACCESS, token?.access_token);
+    }
+
+    if (isDefined(token?.refresh_token)) {
+      localStorage.setItem(TOKEN_KEY_REFRESH, token?.refresh_token);
+    }
   };
 
   static clearToken() {
     localStorage.removeItem(TOKEN_KEY_ID);
     localStorage.removeItem(TOKEN_KEY_ACCESS);
     localStorage.removeItem(TOKEN_KEY_REFRESH);
+    localStorage.removeItem(PKCE_CODE_VERIFIER);
   }
 
   static loadToken() {
-    return (
-      isDefined(localStorage.getItem(TOKEN_KEY_ID)) && {
-        id_token: isDefined(localStorage.getItem(TOKEN_KEY_ID)) && localStorage.getItem(TOKEN_KEY_ID),
-        access_token: isDefined(localStorage.getItem(TOKEN_KEY_ACCESS)) && localStorage.getItem(TOKEN_KEY_ACCESS),
-        refresh_token: isDefined(localStorage.getItem(TOKEN_KEY_REFRESH)) && localStorage.getItem(TOKEN_KEY_REFRESH),
-      }
-    );
+    return {
+      id_token: isDefined(localStorage.getItem(TOKEN_KEY_ID)) ? localStorage.getItem(TOKEN_KEY_ID) : undefined,
+      access_token: isDefined(localStorage.getItem(TOKEN_KEY_ACCESS))
+        ? localStorage.getItem(TOKEN_KEY_ACCESS)
+        : undefined,
+      refresh_token: isDefined(localStorage.getItem(TOKEN_KEY_REFRESH))
+        ? localStorage.getItem(TOKEN_KEY_REFRESH)
+        : undefined,
+    };
   }
 
   static clearAll() {

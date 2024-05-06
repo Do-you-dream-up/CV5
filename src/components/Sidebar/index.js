@@ -10,20 +10,29 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
+import {
+  StyledSidebarMode,
+  StyledSidebarFrame,
+  StyledSidebarActions,
+  StyledSidebarHeader,
+  StyledSidebarTitle,
+} from './styledComponents';
 import { useSurvey } from 'src/Survey/SurveyProvider';
+import { useTheme } from 'react-jss';
 
 /**
- * Render secondary content. The content can be modal and blocking for the rest
+ * Render sidebar content. The content can be modal and blocking for the rest
  * of the chatbox by being placed over the conversation or less intrusive on a
  * side of the chatbox.
  */
-export default function Secondary({ anchor, mode }) {
+export default function Sidebar({ anchor, mode }) {
   const { configuration } = useConfiguration();
-  const { secondaryActive, secondaryContent } = useDialog();
+  const { sidebarActive, sidebarContent } = useDialog();
 
-  const { flushStatesAndClose } = useSurvey();
+  const { close } = useSurvey();
   const root = useRef(null);
-  const [initialMode, setMode] = useState(configuration.secondary.mode);
+  const theme = useTheme();
+  const [initialMode, setMode] = useState(configuration.sidebar.mode);
   mode = mode || initialMode;
   const {
     headerTransparency = true,
@@ -34,7 +43,7 @@ export default function Secondary({ anchor, mode }) {
     title,
     url,
     width,
-  } = secondaryContent || {};
+  } = sidebarContent || {};
 
   const classes = useStyles({ configuration, height, width });
   const { boundaries } = configuration.dragon;
@@ -55,7 +64,7 @@ export default function Secondary({ anchor, mode }) {
     return isDefined(bodyRenderer) ? (
       bodyRenderer()
     ) : (
-      <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />
+      <PrettyHtml className={c('dydu-sidebar-body', classes.body)} html={body} />
     );
   }, [body, bodyRenderer, classes.body]);
 
@@ -63,53 +72,52 @@ export default function Secondary({ anchor, mode }) {
     try {
       return title();
     } catch (e) {
-      return <h1 className={c('dydu-secondary-title', classes.title)}>{title}</h1>;
+      return <StyledSidebarTitle className={c('dydu-sidebar-title')}>{title}</StyledSidebarTitle>;
     }
   }, [title]);
-
-  const headerClass = useMemo(() => {
-    return headerTransparency ? classes.header : classes.headerWhite;
-  }, [headerTransparency]);
 
   const renderHeader = useCallback(() => {
     return isDefined(headerRenderer) ? (
       headerRenderer()
     ) : (
-      <div className={c('dydu-secondary-header', headerClass)}>
+      <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-sidebar-header')}>
         {titleContent}
-        <div className={c('dydu-secondary-actions', classes.actions)}>
-          <Button color="primary" onClick={flushStatesAndClose} type="button" variant="icon">
+        <StyledSidebarActions className={c('dydu-sidebar-actions')}>
+          <Button color="primary" onClick={close} type="button" variant="icon">
             <Icon icon={icons?.close} alt="close" />
           </Button>
-        </div>
-      </div>
+        </StyledSidebarActions>
+      </StyledSidebarHeader>
     );
-  }, [headerRenderer, titleContent, flushStatesAndClose]);
+  }, [headerRenderer, title, close]);
 
-  return secondaryActive ? (
-    <div
-      className={c('dydu-secondary', `dydu-secondary-${mode}`, classes.base, classes[mode])}
+  return sidebarActive ? (
+    <StyledSidebarMode
+      $mode={mode}
+      $configuration={configuration}
+      $height={height}
+      $width={width}
+      theme={theme}
+      className={c('dydu-sidebar', `dydu-sidebar-${mode}`)}
       ref={root}
-      id="dydu-secondary"
+      id="dydu-sidebar"
     >
       {renderHeader()}
       {renderBody()}
-      {/*body && <PrettyHtml className={c('dydu-secondary-body', classes.body)} html={body} />*/}
       {url && (
-        <iframe
+        <StyledSidebarFrame
           allow="fullscreen"
-          className={classes.frame}
           importance="low"
           sandbox="allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-forms"
           src={url}
           title={url}
         />
       )}
-    </div>
+    </StyledSidebarMode>
   ) : null;
 }
 
-Secondary.propTypes = {
+Sidebar.propTypes = {
   anchor: PropTypes.object,
   mode: PropTypes.string,
 };

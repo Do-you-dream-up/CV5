@@ -53,11 +53,11 @@ export default createUseStyles((theme) => ({
         '&:last-child': { marginBottom: 0 },
       },
       dt: {
-        color: theme?.palette?.text?.secondary,
+        color: theme?.palette?.text?.sidebar,
         textTransform: 'capitalize',
       },
       'dt:not(:first-child)': {
-        color: theme?.palette?.text?.secondary,
+        color: theme?.palette?.text?.sidebar,
         marginTop: '1em',
       },
       'h1, h2, h3, h4, h5, h6': {
@@ -89,6 +89,7 @@ export default createUseStyles((theme) => ({
     width: '1px',
     '& + .p1': {
       marginTop: 0,
+      marginBottom: 16,
     },
     '& + p': {
       marginTop: 0,

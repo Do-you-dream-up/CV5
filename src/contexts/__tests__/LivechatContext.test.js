@@ -30,6 +30,7 @@ describe('LivechatProvider', () => {
       lastResponse: {},
       displayNotification: jest.fn(),
       showAnimationOperatorWriting: jest.fn(),
+      addResponse: jest.fn(),
     });
     useEvent.mockReturnValue({
       onNewMessage: jest.fn(),
@@ -89,19 +90,17 @@ describe('LivechatProvider', () => {
     screen.getByRole('button', { name: 'Send Survey' }).click();
   });
 
-  it('should call window.dydu.chat.reply with the expected text', () => {
+  it('should call addResponse', () => {
     const { result } = renderHook(() => useLivechat(), {
       wrapper: LivechatProvider,
     });
 
-    const text = 'Example response text';
-    const windowSpy = jest.spyOn(window.dydu.chat, 'reply');
+    const values = "{ text: 'hello' }";
 
     act(() => {
-      result.current.displayResponseText(text);
+      result.current.displayResponseText(values);
     });
 
-    expect(windowSpy).toHaveBeenCalledWith(text);
-    windowSpy.mockRestore();
+    expect(useDialog().addResponse).toHaveBeenCalledWith(values);
   });
 });

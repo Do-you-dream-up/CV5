@@ -122,6 +122,7 @@ export const getConfigurationObject = (updates = {}) => {
         image: true,
         imageLink: {
           misunderstood: 'dydu-misunderstood.svg',
+          livechat: 'dydu-livechat.svg',
           reword: 'dydu-reword.svg',
           understood: 'dydu-understood.svg',
         },
@@ -211,7 +212,7 @@ export const getConfigurationObject = (updates = {}) => {
       active: false,
     },
     root: 'dydu-root',
-    secondary: {
+    sidebar: {
       automatic: {
         desktop: true,
         fullScreen: false,

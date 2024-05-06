@@ -1,4 +1,4 @@
-import { createElement, useCallback, useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 
 import Actions from '../Actions/Actions';
 import Avatar from '../Avatar/Avatar';
@@ -13,10 +13,12 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
-import { useSurvey } from '../../Survey/SurveyProvider';
+import { SidebarFormTitle, useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { useShadow } from '../../contexts/ShadowProvider';
+import SurveyForm from '../../Survey/SurveyForm';
 
 /**
  * A conversation bubble.
@@ -26,75 +28,129 @@ import { useUserAction } from '../../contexts/UserActionContext';
  * response should appear in front, on the left.
  */
 export default function Bubble({
-  autoOpenSecondary,
+  autoOpenSidebar,
   carousel,
   children,
   className,
   component,
   history,
   html,
-  secondary,
+  sidebar,
+  hasSurvey,
   step,
   templateName,
   thinking,
   type,
 }) {
   const { configuration } = useConfiguration();
-  const hasCarouselAndSidebar = carousel && step && step.sidebar;
-  const classes = useStyles({ configuration, hasCarouselAndSidebar });
-  const { secondaryActive, toggleSecondary, typeResponse } = useDialog();
+  const { surveyConfig } = useSurvey();
+  const { tabbing } = useUserAction();
+  const { activeSidebarName, toggleSidebar, typeResponse } = useDialog();
   const { isMobile } = useViewport();
   const { t } = useTranslation('translation');
+  const { shadowRoot, shadowAnchor } = useShadow();
+  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSidebar);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(step?.sidebar || sidebar || hasSurvey);
+
+  const hasCarouselAndSidebar = carousel && step && step.sidebar;
+  const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
-  const { desktop: secondaryDesktop, fullScreen: secondaryFullScreen } = configuration.secondary.automatic;
-  const automaticSecondary = isFullScreen ? !!secondaryFullScreen : !!secondaryDesktop;
-  const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSecondary);
+  const { desktop: sidebarDesktop, fullScreen: sidebarFullScreen } = configuration.sidebar.automatic;
+  const automaticSidebar = isFullScreen ? !!sidebarFullScreen : !!sidebarDesktop;
   const defaultAvatar = configuration.avatar?.response?.image;
-  const { surveyConfig } = useSurvey();
-  const { tabbing } = useUserAction();
 
-  const sidebar = secondary ? secondary : step ? step.sidebar : undefined;
+  const stepSidebar = step ? step.sidebar : undefined;
+  sidebar = stepSidebar ? stepSidebar : sidebar;
 
-  const actions = [...(sidebar ? [{ children: secondaryActive ? less : more, onClick: () => onToggle() }] : [])];
+  const actions = [
+    ...(sidebar || (hasSurvey && surveyConfig)
+      ? [{ children: isSidebarOpen ? less : more, onClick: () => onSidebarButtonToggle(!isSidebarOpen) }]
+      : []),
+  ];
 
-  const onToggle = useCallback(
-    (open) => {
-      toggleSecondary && toggleSecondary(open, { body: sidebar.content, ...sidebar })();
-    },
-    [sidebar, toggleSecondary],
-  );
+  useEffect(() => {
+    if (type !== 'request') {
+      const isEmptyActiveSidebarName = !activeSidebarName;
+      const isNotSameSurvey = hasSurvey && activeSidebarName && activeSidebarName !== surveyConfig?.surveyId;
+      const isNotSameSidebar = !hasSurvey && activeSidebarName && activeSidebarName !== sidebar?.title;
+      if (isEmptyActiveSidebarName || isNotSameSurvey || isNotSameSidebar) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    }
+  }, [activeSidebarName, surveyConfig?.surveyId]);
+
+  const onSidebarButtonToggle = (open) => {
+    const surveyId = surveyConfig?.surveyId;
+    if (toggleSidebar) {
+      setIsSidebarOpen(open);
+      toggleSidebar(open, {
+        ...(hasSurvey && surveyId
+          ? {
+              width: configuration?.sidebar?.width || null,
+              bodyRenderer: () => <SurveyForm />,
+              title: () => <SidebarFormTitle />,
+              headerTransparency: false,
+              surveyId: surveyId,
+            }
+          : { body: sidebar.content, ...sidebar }),
+      })();
+    }
+  };
 
   useEffect(() => {
     if (sidebar && canAutoOpen) {
-      onToggle(Local.get(Local.names.secondary) || (!history && automaticSecondary));
+      onSidebarButtonToggle(Local.get(Local.names.sidebar) || (!history && automaticSidebar));
       setCanAutoOpen(false);
     }
-  }, [autoOpenSecondary, automaticSecondary, history, onToggle, sidebar, canAutoOpen]);
+  }, [autoOpenSidebar, automaticSidebar, history, onSidebarButtonToggle, sidebar, canAutoOpen]);
 
   const shouldSetFocusInScreenReaderMode = () => {
-    return tabbing && document.activeElement.id !== 'dydu-textarea';
+    return tabbing && shadowRoot?.activeElement?.id !== 'dydu-textarea';
   };
 
   const setElementFocusable = (element) => {
     element.setAttribute('tabindex', '0');
   };
 
+  function setFocusOnLastResponse(lastResponse) {
+    lastResponse.setAttribute('tabindex', '-1');
+    if (containsBubbleResponses(lastResponse)) {
+      lastResponse.getElementsByClassName('dydu-bubble-response').item(0).focus();
+    } else {
+      lastResponse.focus();
+    }
+  }
+
+  function containsBubbleResponses(lastResponse) {
+    return (
+      lastResponse.getElementsByClassName('dydu-bubble-response') &&
+      lastResponse.getElementsByClassName('dydu-bubble-response').length > 0
+    );
+  }
+
   useEffect(() => {
     if (type === 'response' && shouldSetFocusInScreenReaderMode()) {
-      let allResponses = document.getElementsByClassName('dydu-interaction-response');
+      let allResponses = shadowAnchor?.getElementsByClassName('dydu-interaction-response');
       if (allResponses && allResponses.length >= 1) {
         let lastResponse = allResponses[allResponses.length - 1];
         if (lastResponse) {
-          lastResponse.setAttribute('tabindex', '-1');
-          lastResponse.focus();
+          setFocusOnLastResponse(lastResponse);
           for (let response of allResponses) {
-            if (response.removeEventListener) {
-              response.removeEventListener('blur', setElementFocusable(response));
+            if (response.removeEventListener && containsBubbleResponses(lastResponse)) {
+              response.removeEventListener('blur', () =>
+                setElementFocusable(response.getElementsByClassName('dydu-bubble-response').item(0)),
+              );
             }
           }
-          lastResponse.addEventListener('blur', setElementFocusable(lastResponse));
+          if (containsBubbleResponses(lastResponse)) {
+            lastResponse.addEventListener('blur', () =>
+              setElementFocusable(lastResponse.getElementsByClassName('dydu-bubble-response').item(0)),
+            );
+          }
         }
       }
     }
@@ -132,9 +188,7 @@ export default function Bubble({
             {(children || html) && (
               <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
             )}
-            {!!actions.length && !surveyConfig && (
-              <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />
-            )}
+            {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
           </div>,
         )
       )}
@@ -147,7 +201,7 @@ Bubble.defaultProps = {
 };
 
 Bubble.propTypes = {
-  autoOpenSecondary: PropTypes.bool,
+  autoOpenSidebar: PropTypes.bool,
   actions: PropTypes.node,
   carousel: PropTypes.bool,
   children: PropTypes.element,
@@ -155,7 +209,8 @@ Bubble.propTypes = {
   component: PropTypes.elementType,
   history: PropTypes.bool,
   html: PropTypes.string,
-  secondary: PropTypes.bool,
+  sidebar: PropTypes.any,
+  hasSurvey: PropTypes.bool,
   step: PropTypes.object,
   templateName: PropTypes.string,
   thinking: PropTypes.bool,

@@ -17,6 +17,8 @@ import { useConfiguration } from './ConfigurationContext';
 import useTabNotification from '../tools/hooks/useBlinkTitle';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from './ViewModeProvider';
+import { Local } from '../tools/storage';
+import { useShadow } from './ShadowProvider';
 
 interface EventsContextProps {
   isChatboxLoadedAndReady?: boolean;
@@ -53,21 +55,19 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [chatboxLoaded, setChatboxLoaded] = useState(false);
   const [chatboxRef, setChatboxRef] = useState<any>();
   const [isMenuListOpen, setIsMenuListOpen] = useState<boolean>(false);
-
-  const { t } = useTranslation('translation');
-  const newMessageText = t('livechat.notif.newMessage');
+  const { shadowAnchor } = useShadow();
 
   useEffect(() => {
-    document.addEventListener('mouseenter', clearTabNotification);
+    shadowAnchor?.addEventListener('mouseenter', clearTabNotification);
     return () => {
-      document.removeEventListener('mouseenter', clearTabNotification);
+      shadowAnchor?.removeEventListener('mouseenter', clearTabNotification);
     };
   }, [chatboxRef]);
 
   const onNewMessage = useCallback(() => {
     if (isOpen) {
       chatboxRef?.dispatchEvent(eventNewMessage);
-      setTabNotification(newMessageText);
+      setTabNotification();
     }
   }, [isOpen]);
 

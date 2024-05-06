@@ -1,8 +1,8 @@
 import { CHATBOX_EVENT_NAME } from '../tools/constants';
 
-export const eventOnSecondaryClosed = new CustomEvent(CHATBOX_EVENT_NAME.closeSecondary, {
+export const eventOnSidebarClosed = new CustomEvent(CHATBOX_EVENT_NAME.closeSidebar, {
   detail: {
-    message: CHATBOX_EVENT_NAME.closeSecondary,
+    message: CHATBOX_EVENT_NAME.closeSidebar,
     time: new Date(),
   },
   bubbles: true,

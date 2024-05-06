@@ -6,7 +6,7 @@ import c from 'classnames';
 import dydu from '../../tools/dydu';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
@@ -14,13 +14,29 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
 interface SendButtonProps {
   title: string;
   onClick: any;
+  className: any;
+  isClicked: boolean;
 }
+
+const SendButton = ({ title, onClick, className, isClicked }: SendButtonProps) => (
+  <Button
+    title={title}
+    onClick={() => {
+      onClick();
+    }}
+    className={className}
+    disabled={isClicked}
+  >
+    {title}
+  </Button>
+);
 
 const UploadInput = () => {
   const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
-  const { fileSelected, handleCancel, errorFormatMessage, isUploadFileReturnSuccess, fileName } = useUploadFile();
+  const { fileSelected, handleCancel, errorFormatMessage, fileName, setIsFileUploadSuccess } = useUploadFile();
+  const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
   const label = useMemo(
@@ -28,21 +44,31 @@ const UploadInput = () => {
     [errorFormatMessage],
   );
 
-  const SendButton = ({ title, onClick }: SendButtonProps) => (
-    <Button send title={title} onClick={() => onClick()} className={classes.upload}>
-      {title}
-    </Button>
-  );
-
   const sendFile = (file) => {
-    isUploadFileReturnSuccess && isUploadFileReturnSuccess();
-    return dydu.sendUploadFile(file);
+    return dydu
+      .sendUploadFile(file)
+      .then((success) => {
+        if (success) {
+          setIsFileUploadSuccess(true);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const renderAction = () =>
     !errorFormatMessage ? (
       <div>
-        <SendButton title={label} onClick={() => sendFile(fileSelected)} />
+        <SendButton
+          title={label}
+          onClick={() => {
+            sendFile(fileSelected);
+            setIsClicked(true);
+          }}
+          className={classes.upload}
+          isClicked={isClicked}
+        />
       </div>
     ) : (
       <FileUploadButton disabled={false} label={label} />

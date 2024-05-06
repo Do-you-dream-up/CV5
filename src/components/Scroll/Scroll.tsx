@@ -1,6 +1,7 @@
 import { createElement, useEffect, useRef } from 'react';
 
 import useDebounce from '../../tools/hooks/debounce';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Small wrapper to apply `Element.scrollIntoView` on an element. This feature
@@ -20,10 +21,11 @@ interface ScrollProps {
 function Scroll({ component = 'div', delay = 0, ...rest }: ScrollProps) {
   const elementRef = useRef<any>(null);
   const debouncedReady = useDebounce(elementRef, delay);
+  const { shadowAnchor } = useShadow();
 
   const scroll = () => {
     setTimeout(() => {
-      const chatboxDiv = document.querySelector('.dydu-chatbox-body');
+      const chatboxDiv = shadowAnchor?.querySelector('.dydu-chatbox-body');
       if (chatboxDiv) {
         chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
       }

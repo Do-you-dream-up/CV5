@@ -3,109 +3,33 @@ import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
-  hasProperty,
   htmlToJsonForSendUploadFile,
   isDefined,
   isEmptyString,
   isOfTypeString,
-  isPositiveNumber,
   secondsToMs,
   strContains,
   toFormUrlEncoded,
 } from './helpers';
-
+import { BOT } from './bot';
 import Bowser from 'bowser';
 import Storage from '../components/auth/Storage';
-import axios from 'axios';
-import { axiosConfigNoCache } from './axios';
-import bot from '../../public/override/bot.json';
-import debounce from 'debounce-promise';
-import { decode } from './cipher';
-import { getOidcEnableWithAuthStatus } from './oidc';
 import { hasWizard } from './wizard';
 import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
-
-const channelsBot = JSON.parse(localStorage.getItem('dydu.bot'));
+import {
+  SERVLET_API,
+  buildServletUrl,
+  emit,
+  SERVLET,
+  setLastResponse,
+  getLastResponse,
+  setConfiguration,
+} from './axios';
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
 
 const getUrl = window.location.href;
-
-/**
- * - Wait for the bot ID and the API server then create default API based on the server ;
- * - Use BOT from local storage for the chatbox preview in Channels ;
- * - Protocol http is used when bliss is used in local with Channels.
- */
-
-let BOT = {},
-  protocol,
-  API = {};
-
-(async function getBotInfo() {
-  const { data } = await axios.get(`${process.env.PUBLIC_URL}override/bot.json`, axiosConfigNoCache);
-  const getBackUpServerUrl = (botConf = {}) => {
-    const rootUrl = {
-      app1: 'app1',
-      app2: 'app2',
-    };
-
-    const getDefaultBackupServerUrl = () => botConf?.backUpServer;
-
-    const getApp1BackUpServerUrl = () => botConf?.server.replace(rootUrl.app1, rootUrl.app2);
-    const getApp2BackUpServerUrl = () => botConf?.server.replace(rootUrl.app2, rootUrl.app1);
-
-    const isApp1 = botConf?.server?.startsWith(rootUrl.app1);
-    const isApp2 = botConf?.server?.startsWith(rootUrl.app2);
-
-    if (isApp1) {
-      return getApp1BackUpServerUrl();
-    }
-
-    if (isApp2) {
-      return getApp2BackUpServerUrl();
-    }
-
-    return getDefaultBackupServerUrl();
-  };
-
-  const botData = {
-    ...data,
-    backUpServer: getBackUpServerUrl(data),
-  };
-
-  const overridedBot = channelsBot?.id && channelsBot?.server ? channelsBot : botData;
-
-  // create a copy of response data (source 1) and get the query params url (source 2) if "bot", "id" and "server" exists,
-  // and merge the both sources together into a BOT object (source 2 has priority over source 1)
-  BOT = Object.assign(
-    {},
-    overridedBot,
-    (({ backUpServer, bot: id, server, isLocalEnv, configId }) => ({
-      ...(id && { id }),
-      ...(configId && { configId }),
-      ...(server && { server }),
-      ...(isLocalEnv && { isLocalEnv }),
-      ...(backUpServer && { backUpServer }),
-    }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
-  );
-
-  Local.set(Local.names?.botId, BOT.id);
-
-  protocol = 'https';
-
-  API = getAxiosInstanceWithDyduConfig({
-    server: `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
-    backupServer: `${protocol}://${getBackUpServerUrl(data)}${BOT.isLocalEnv ? '' : '/servlet'}/api/`,
-    timeout: 3000,
-    axiosConf: {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-      },
-    },
-  });
-})();
 
 const variables = {};
 
@@ -117,38 +41,11 @@ export default new (class Dydu {
   constructor() {
     this.configuration = {};
     this.contextId = localStorage.getItem('dydu.context');
-    this.onServerChangeFn = null;
-    this.serverStatusChek = null;
-    this.tokenRefresher = null;
-    this.oidcLogin = null;
     this.locale = null;
     this.showSurveyCallback = null;
     this.space = null;
-    this.emit = debounce(this.emit, 100, { leading: true });
-    this.mainServerStatus = 'Ok';
-    this.triesCounter = 0;
-    this.maxTries = 3;
-    this.minTimeoutForAnswer = secondsToMs(3);
     this.maxTimeoutForAnswer = secondsToMs(30);
-    this.lastResponse = null;
     this.qualificationMode = false;
-    this.initInfos();
-  }
-
-  setServerStatusCheck(serverStatusChek) {
-    this.serverStatusChek = serverStatusChek;
-  }
-
-  setTokenRefresher(refreshToken) {
-    this.tokenRefresher = refreshToken;
-  }
-
-  setMainServerStatus(value) {
-    this.mainServerStatus = value;
-  }
-
-  setOidcLogin(loginOidc) {
-    this.oidcLogin = loginOidc;
   }
 
   getVariables() {
@@ -160,164 +57,11 @@ export default new (class Dydu {
     return Local.clientId.isSet(clientIdKey);
   }
 
-  initInfos() {
-    this.infos = {
-      locale: this.locale,
-      space: this.space,
-      botId: channelsBot || bot?.id,
-    };
-  }
-
   setContextId = (value) => {
     if (isDefined(value)) {
-      Local.contextId.save(this.getBotId(), value);
+      Local.contextId.save(BOT.id, value);
       this.contextId = value;
     }
-  };
-
-  handleTokenRefresh = () => {
-    if (this.getConfiguration()?.oidc?.enable) {
-      console.log('Refresh_token:', Storage.loadToken()?.refresh_token);
-      console.log('TriesCounter:', this.triesCounter);
-      if (Storage.loadToken()?.refresh_token && this.triesCounter < 2) {
-        console.log('Refreshing token...');
-        this.tokenRefresher();
-      } else {
-        console.log('No refresh token found, redirecting to login page...');
-        Storage.clearToken();
-        this.oidcLogin();
-      }
-    }
-  };
-
-  renewAuth = (auth) => {
-    if (auth) {
-      try {
-        Local.saml.save(atob(auth));
-      } catch {
-        Local.saml.save(auth);
-      }
-    }
-  };
-
-  redirectAndRenewAuth = (values) => {
-    const relayState = encodeURI(window.location.href);
-    // const relayState = JSON.stringify({ redirection: encodeURI(window.location.href), bot: BOT.id });
-    try {
-      this.renewAuth(atob(values?.auth));
-      window.location.href = `${atob(values?.redirection_url)}&RelayState=${relayState}`;
-    } catch {
-      this.renewAuth(values?.auth);
-      window.location.href = `${values?.redirection_url}&RelayState=${relayState}`;
-    }
-  };
-
-  samlRenewOrReject = ({ type, values }) => {
-    switch (type) {
-      case 'SAML_redirection':
-        this.redirectAndRenewAuth(values);
-        break;
-      default:
-        return this.renewAuth(values?.auth);
-    }
-  };
-
-  handleAxiosResponse = (data = {}) => {
-    data && this.getConfiguration()?.saml?.enable && this.samlRenewOrReject(data);
-
-    if (!hasProperty(data, 'values')) return data;
-    data.values = decode(data.values);
-    if (data.values.contextId) {
-      this.setContextId(data.values.contextId);
-    }
-    return data.values;
-  };
-
-  handleSetApiUrl = () => {
-    let apiUrl = BOT.server;
-    if (this.mainServerStatus === 'Error') {
-      if (BOT.backUpServer && BOT.backUpServer !== '') {
-        apiUrl = BOT.backUpServer;
-      }
-      API.defaults.baseURL = `https://${apiUrl}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
-    }
-  };
-
-  isLocalEnv = () => {
-    return BOT.isLocalEnv;
-  };
-
-  handleSetApiTimeout = (ms) => {
-    let timeout = this.minTimeoutForAnswer;
-    if (ms) {
-      timeout = ms;
-    }
-    if (API?.defaults) {
-      API.defaults.timeout = timeout;
-    }
-  };
-
-  handleAxiosError = (error, verb, path, data, timeout) => {
-    this.triesCounter = this.triesCounter + 1;
-
-    if (this.triesCounter >= this.maxTries) {
-      throw 'API Unreachable';
-    }
-
-    /**
-     * NO 401 ERROR
-     */
-    if (error?.response?.status !== 401) {
-      if (API.defaults.baseURL === `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`) {
-        this.mainServerStatus = 'Error';
-      }
-    }
-
-    /**
-     * IF 401
-     */
-    if (getOidcEnableWithAuthStatus()) {
-      this.handleTokenRefresh();
-    }
-
-    // Retry API Call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.emit(verb, path, data, timeout));
-      }, this.minTimeoutForAnswer);
-    });
-  };
-
-  /**
-   * Request against the provided path with the specified data. When
-   * the response contains values, decode it and refresh the context ID.
-   * if the request fail several times the request will be failover to back-up server.
-   *
-   * @param {function} verb - A verb method to request with.
-   * @param {string} path - Path to send the request to.
-   * @param {Object} data - Data to send.
-   * @param {number} tries - number of tries to send the request.
-   * @returns {Promise}
-   */
-
-  emit = (verb, path, data, timeout) => {
-    this.handleSetApiUrl();
-    this.handleSetApiTimeout(timeout);
-    try {
-      return verb(path, data)
-        .then(this.setLastResponse)
-        .then(({ data = {} }) => {
-          return this.handleAxiosResponse(data);
-        })
-        .catch((error) => this.handleAxiosError(error, verb, path, data, timeout));
-    } catch (e) {
-      console.error('while executing |emit()|', e);
-    }
-  };
-
-  setLastResponse = (res) => {
-    this.lastResponse = res;
-    return res;
   };
 
   /**
@@ -340,7 +84,7 @@ export default new (class Dydu {
       ...(options.extra && { extraParameters: options.extra }),
     });
     const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -357,7 +101,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -374,7 +118,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/comment/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -391,7 +135,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -414,11 +158,11 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
     const path = `chat/gdpr/${BOT.id}/`;
-    return Promise.all(methods.map((it) => this.emit(API.post, path, qs.stringify({ ...data, object: it }))));
+    return Promise.all(methods.map((it) => emit(SERVLET_API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
   hasUserAcceptedGdpr() {
-    const gdprSources = [Local.byBotId(this.getBotId()).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
+    const gdprSources = [Local.byBotId(BOT.id).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
     return gdprSources.some(isDefined);
   }
 
@@ -455,7 +199,7 @@ export default new (class Dydu {
 
     const path = `chat/context/${BOT.id}/`;
     try {
-      const response = await this.emit(API.post, path, data);
+      const response = await emit(SERVLET_API.post, path, data);
       return response?.contextId;
     } catch (e) {
       console.error('While executing getContextId() ', e);
@@ -464,7 +208,7 @@ export default new (class Dydu {
   };
 
   getContextIdStorageKey() {
-    return Local.contextId.createKey(this.getBotId(), this.getConfiguration()?.application?.directory);
+    return Local.contextId.createKey(BOT.id, this.getConfiguration()?.application?.directory);
   }
 
   getConfiguration() {
@@ -527,7 +271,7 @@ export default new (class Dydu {
         ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       });
       const path = `chat/history/${BOT.id}/`;
-      return await this.emit(API.post, path, data);
+      return await emit(SERVLET_API.post, path, data);
     }
   };
 
@@ -539,7 +283,7 @@ export default new (class Dydu {
   pushrules = () =>
     new Promise((resolve) => {
       const path = `chat/pushrules/${BOT.id}`;
-      resolve(this.emit(API.post, path));
+      resolve(emit(SERVLET_API.post, path));
     });
 
   /**
@@ -547,12 +291,9 @@ export default new (class Dydu {
    *
    *
    */
-
   printHistory = async () => {
     if (this.contextId) {
-      const path = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/history?context=${
-        this.contextId
-      }&format=html&userLabel=Moi&botLabel=Chatbot`;
+      const path = `${buildServletUrl()}/history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -673,7 +414,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/search/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -690,7 +431,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
-    return this.emit(API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
+    return emit(SERVLET_API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
   processTalkResponse = (talkResponse) => {
@@ -706,23 +447,13 @@ export default new (class Dydu {
   }
 
   /**
-   * getServerStatus
-   *
-   * @returns {Promise}
-   */
-  getServerStatus = () => {
-    const path = `/serverstatus`;
-    return this.emit(API.get, path, null, 5000);
-  };
-
-  /**
    * getBotLanguages
    *
    * @returns {Promise}
    */
   getBotLanguages = () => {
-    const path = `/account/dydubox/bots/language?botUUID=${this.getBotId()}`;
-    return this.emit(API.get, path);
+    const path = `/account/dydubox/bots/language?botUUID=${BOT.id}`;
+    return emit(SERVLET_API.get, path);
   };
 
   /**
@@ -738,7 +469,7 @@ export default new (class Dydu {
       botUUID: BOT.id,
     });
     const path = `saml2/status?${data}`;
-    return this.emit(API.get, path);
+    return emit(SERVLET_API.get, path);
   };
 
   /**
@@ -754,7 +485,7 @@ export default new (class Dydu {
       botUUID: BOT.id,
     });
     const path = `saml2/userinfo?${data}`;
-    return this.emit(API.get, path);
+    return emit(SERVLET_API.get, path);
   };
 
   #makeTLivechatTypingPayloadWithInput = async (input = '') => {
@@ -786,7 +517,7 @@ export default new (class Dydu {
   typing = async (text) => {
     const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
     const qs = this.#toQueryString(typingPayload);
-    const path = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${qs}`;
+    const path = `${buildServletUrl()}/chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
   };
 
@@ -802,10 +533,8 @@ export default new (class Dydu {
     };
 
     const path = `/chat/poll/last/${this.getBot()?.id}`;
-    return this.emit(API.post, path, toFormUrlEncoded(data));
+    return emit(SERVLET_API.post, path, toFormUrlEncoded(data));
   };
-
-  getBotId = () => BOT.id;
 
   /**
    * Fetch the top-asked topics. Limit results to the provided size.
@@ -823,7 +552,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/topknowledge/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -844,7 +573,7 @@ export default new (class Dydu {
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/variable/${BOT.id}/`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -863,7 +592,7 @@ export default new (class Dydu {
       variables: this.getVariables(),
     });
     const path = `chat/welcomecall/${BOT.id}`;
-    return this.emit(API.post, path, data);
+    return emit(SERVLET_API.post, path, data);
   };
 
   /**
@@ -872,7 +601,7 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   whoami = () =>
-    this.emit(API.get, 'whoami/').then(({ headers = [] }) => {
+    emit(SERVLET_API.get, 'whoami/').then(({ headers = [] }) => {
       const data = headers.find((it) => it && it.host);
       return data && data.host;
     });
@@ -901,8 +630,8 @@ export default new (class Dydu {
     this.onServerChangeFn = cb;
   }
 
-  post = (...postArgs) => this.emit(...[API.post].concat(postArgs));
-  get = (...getArgs) => this.emit(...[API.get].concat(getArgs));
+  post = (...postArgs) => emit(...[SERVLET_API.post].concat(postArgs));
+  get = (...getArgs) => emit(...[SERVLET_API.get].concat(getArgs));
 
   formatFieldsForSurveyAnswerRequest = (survey = {}) => {
     const reducerPrependFieldTag = (objResult, fieldId) => {
@@ -935,40 +664,16 @@ export default new (class Dydu {
   });
 
   isLastResponseStatusInRange = (startHttpCode, endHttpCode) => {
-    const status = this.getLastResponse()?.status;
+    const status = getLastResponse()?.status;
     return Boolean(status && status >= startHttpCode && status <= endHttpCode);
-  };
-
-  setApiDefaultHeadersFormData = () => {
-    API.defaults.headers = {
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-      'Content-Type': 'multipart/form-data',
-    };
-  };
-
-  setApiDefaultHeadersFormUrlEncoded = () => {
-    API.defaults.headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-    };
-  };
-
-  setApiDefaultBaseUrlUploadFile = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/`;
-  };
-
-  setApiDefaultBaseUrl = () => {
-    API.defaults.baseURL = `${protocol}://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api`;
   };
 
   sendUploadFile = (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
     const path = `fileupload?ctx=${this.contextId}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
-    this.setApiDefaultHeadersFormData();
-    this.setApiDefaultBaseUrlUploadFile();
 
-    return API.post(path, formData)
+    return SERVLET.post(path, formData)
       .then((response) => {
         const responseObject = htmlToJsonForSendUploadFile(response.data);
 
@@ -978,20 +683,18 @@ export default new (class Dydu {
           throw new Error('La requête a échoué');
         } else {
           this.displayUploadFileSent(file.name);
+          return true;
         }
       })
       .catch((error) => {
         // Gérer l'erreur ici
         console.error(error);
-      })
-      .finally(() => {
-        this.setApiDefaultHeadersFormUrlEncoded();
-        this.setApiDefaultBaseUrl();
+        return false;
       });
   };
 
   isLastResponseStartsLivechat = () => {
-    return Boolean(!this.getLastResponse().data?.values?.startLivechat);
+    return Boolean(!getLastResponse().data?.values?.startLivechat);
   };
 
   displayUploadFileSent = (fileName) => {
@@ -1018,11 +721,9 @@ export default new (class Dydu {
       }),
     };
     try {
-      const response = await fetch(
-        `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/chatHttp?data=${_stringify(payload)}`,
-      );
+      const response = await fetch(`${buildServletUrl()}/chatHttp?data=${_stringify(payload)}`);
       const jsonResponse = await response.json();
-      this.setLastResponse(jsonResponse);
+      setLastResponse(jsonResponse);
       return this.displaySurveySent(payload.parameters.reword);
     } catch (error) {
       console.error(error);
@@ -1040,7 +741,7 @@ export default new (class Dydu {
 
   displaySurveySent = (reword, res, status = null) => {
     return new Promise((resolve) => {
-      status = status || this.getLastResponse().status;
+      status = status || getLastResponse().status;
       const statusOk = status >= 200 && status <= 206;
       if (statusOk) {
         if (reword) {
@@ -1055,9 +756,6 @@ export default new (class Dydu {
     });
   };
 
-  getLastResponse = () => {
-    return this.lastResponse || {};
-  };
   /*
    * Survey sent by a Knowledge
    */
@@ -1072,7 +770,7 @@ export default new (class Dydu {
 
   getSurvey = async (surveyId = '') => {
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
-    const path = `/chat/survey/configuration/${this.getBotId()}`;
+    const path = `/chat/survey/configuration/${BOT.id}`;
     const data = toFormUrlEncoded({
       contextUuid: this.contextId,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -1086,7 +784,7 @@ export default new (class Dydu {
 
   getInfos = async () => {
     return {
-      botId: await this.getBotId(),
+      botId: await BOT.id,
       locale: this.getLocale(),
       space: this.getSpace(),
     };
@@ -1101,6 +799,7 @@ export default new (class Dydu {
 
   setConfiguration(configuration = {}) {
     this.configuration = configuration;
+    setConfiguration(configuration);
     this.onConfigurationLoaded();
   }
 
@@ -1131,39 +830,3 @@ export default new (class Dydu {
     }
   }
 })();
-
-/====================================================================================================/;
-
-const getAxiosInstanceWithDyduConfig = (config = {}) => {
-  if (!isDefined(config?.axiosConf)) config.axiosConf = {};
-
-  const instance = axios.create({
-    baseURL: config?.server,
-    timeout: isPositiveNumber(config?.timeout) ? config.timeout : axios.defaults.timeout,
-    ...config.axiosConf,
-  });
-
-  // when request is sent
-  instance.interceptors.request.use(
-    (config) => {
-      if (getOidcEnableWithAuthStatus()) {
-        config.headers['Authorization'] = `Bearer ${Storage.loadToken()?.id_token}`;
-        config.headers['OIDCAccessToken'] = `${Storage.loadToken()?.access_token}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    },
-  );
-
-  // when response code in range of 2xx
-  const onSuccess = (response) => {
-    API.defaults.baseURL = `https://${BOT.server}${BOT.isLocalEnv ? '' : '/servlet'}/api/`;
-    return response;
-  };
-
-  instance.interceptors.response.use(onSuccess);
-
-  return instance;
-};

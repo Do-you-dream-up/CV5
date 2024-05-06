@@ -11,6 +11,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useCustomRenderer from './useCustomRenderer';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
@@ -27,6 +28,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
   const { t } = useTranslation('translation');
   const { configuration } = useConfiguration();
   const { NameUser, NameBot } = configuration.interaction;
+  const { shadowAnchor } = useShadow();
 
   const userName = useMemo(
     () => (NameUser !== '' ? `${NameUser} ${t('screenReader.say')}` : t('screenReader.me')),
@@ -53,8 +55,8 @@ export default function PrettyHtml({ carousel, children, className, component, h
 
   // to focus the first interactive elements of the last response of the bot
   useEffect(() => {
-    if (document.querySelectorAll('.dydu-bubble-body')) {
-      const responsesBotContentArray = Array.from(document.querySelectorAll('.dydu-bubble-body'));
+    if (shadowAnchor?.querySelectorAll('.dydu-bubble-body')) {
+      const responsesBotContentArray = Array.from(shadowAnchor?.querySelectorAll('.dydu-bubble-body'));
       const lastResponseBotContent = responsesBotContentArray[responsesBotContentArray.length - 1];
 
       responsesBotContentArray.forEach((elementParent) => {
@@ -94,7 +96,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
 }
 
 PrettyHtml.defaultProps = {
-  component: 'p',
+  component: 'div',
 };
 
 PrettyHtml.propTypes = {

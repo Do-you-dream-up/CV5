@@ -1,79 +1,77 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import useTabNotification, { tick } from '../useBlinkTitle';
+import useTabNotification from '../useBlinkTitle';
 
 jest.useFakeTimers();
+
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: {
+        translation: {
+          livechat: {
+            notif: {
+              newMessage: 'New Message',
+            },
+          },
+        },
+      },
+    },
+    lng: 'en',
+    fallbackLng: 'en',
+  })
+  .then((r) => {});
 
 describe('useTabNotification', () => {
   afterEach(() => {
     document.title = '';
     jest.clearAllTimers();
   });
-  it('should update the document title correctly', () => {
+
+  test('should not keep the notification as a title when we stop to flash notification', () => {
     const { result } = renderHook(() => useTabNotification());
+    document.title = 'Title of the document';
     const message = 'New message';
 
     act(() => {
-      result.current.setTabNotification(message);
+      result.current.setTabNotification();
     });
-
-    expect(document.title).toBe(message);
 
     act(() => {
       result.current.clearTabNotification();
     });
-    setTimeout(() => {
-      expect(document.title).not.toBe(message);
-    }, 500);
+
+    expect(document.title).not.toBe(message);
   });
 
-  it('should update the message correctly', () => {
+  test('flash function should display alternatively title and notification', () => {
     const { result } = renderHook(() => useTabNotification());
-    const message = 'New message';
+    document.title = 'Page title';
+    const message = 'New Message';
 
-    act(() => {
-      result.current.setTabNotification(message);
-    });
+    const updatedTitle = result.current.displayAlternativelyPageTitleAndNotification();
+    expect(updatedTitle).toBe(message);
 
-    expect(document.title).toBe(message);
+    const updatedAgainTitle = result.current.displayAlternativelyPageTitleAndNotification();
+    expect(updatedAgainTitle).not.toBe(message);
   });
 
-  it('should clear the tab notification and revert the document title to the original', () => {
-    document.title = 'Original title';
+  test('the title of the page could be changed', () => {
     const { result } = renderHook(() => useTabNotification());
 
-    // check that document title has been updated
-    act(() => {
-      result.current.setTabNotification('New message');
-    });
-    expect(document.title).toBe('New message');
+    document.title = 'Page title 1';
+    const title1 = result.current.changeOrKeepTitlePage();
+    expect(title1).toBe('Page title 1');
 
-    // clear notification
-    act(() => {
-      result.current.clearTabNotification();
-    });
-    console.log(document.title);
-    // check that document title has been reset to original title
-    setTimeout(() => {
-      expect(document.title).toBe('Original title');
-    }, 500);
-  });
+    document.title = 'Page title 2';
+    const title2 = result.current.changeOrKeepTitlePage();
+    expect(title2).toBe('Page title 2');
 
-  test('tick function should update document title', () => {
-    document.title = 'Original title';
-    const message = 'New message';
-    tick(message);
-    expect(document.title).toBe(message);
-    tick(message);
-    setTimeout(() => {
-      expect(document.title).toBe('Original title');
-    }, 500);
-  });
-
-  it('should revert original title when unmounted', () => {
-    const originalTitle = document.title;
-    document.title = 'New title';
-    const { unmount } = renderHook(() => useTabNotification(100));
-    unmount();
-    expect(document.title).toBe(originalTitle);
+    document.title = 'Page title 3';
+    const title3 = result.current.changeOrKeepTitlePage();
+    expect(title3).toBe('Page title 3');
   });
 });
