@@ -111,7 +111,6 @@ publish:
     - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
     - build
-  when: manual
 
 functional-test:
   stage: quality
