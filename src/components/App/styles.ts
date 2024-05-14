@@ -39,5 +39,6 @@ export default createUseStyles<any, any>((theme: any): any => ({
     textAlign: 'initial',
     lineHeight: 'initial',
     fontWeight: 'initial',
+    color: 'initial',
   }),
 }));

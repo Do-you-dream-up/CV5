@@ -13,7 +13,6 @@ import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
 import { getCss } from './tools/css';
-import increaseSpecificity from 'jss-increase-specificity';
 import jss from 'jss';
 import preset from 'jss-preset-default';
 import { I18nextProvider } from 'react-i18next';
@@ -86,12 +85,10 @@ configuration.initialize().then((configuration) => {
   shadow.appendChild(templateSlot);
   shadow.appendChild(renderIn);
 
-  jss
-    .setup({
-      ...preset(),
-      insertionPoint: templateSlot,
-    })
-    .use(increaseSpecificity());
+  jss.setup({
+    ...preset(),
+    insertionPoint: templateSlot,
+  });
 
   getResourceWithoutCache('override/theme.json').then(({ data = {} }) => {
     data.palette.primary.main = getCss()?.main || data.palette.primary.main;
