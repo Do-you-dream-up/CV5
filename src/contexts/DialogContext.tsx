@@ -356,7 +356,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       const steps = flattenSteps(response);
 
       if (configuration?.Voice.enable) {
-        if (templateName && configuration.Voice.voiceSpace.toLowerCase() === templateName?.toLowerCase()) {
+        if (templateName) {
           setVoiceContent({ templateData, text });
         } else {
           setVoiceContent({ templateData: null, text });
@@ -475,7 +475,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     [
       displayNotification,
       configuration?.Voice.enable,
-      configuration?.Voice.voiceSpace,
       sidebarTransient,
       isMobile,
       add,
