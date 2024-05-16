@@ -45,7 +45,6 @@ const Voice = ({ show, v }) => {
     ttsServerUrl,
     ttsServerUser,
     ttsServerPassword,
-    voiceSpace,
     languages,
     debug = false,
   } = configuration.Voice;
@@ -364,7 +363,6 @@ const Voice = ({ show, v }) => {
           resultText = transcript;
           if (resultText !== '') {
             const space = window.dydu.space.get();
-            window.dydu.space.set(voiceSpace, { quiet: true });
             setHandelVoice(true);
             window.dydu.chat.handleRewordClicked(resultText, { type: 'ask' });
             window.dydu.space.set(space, { quiet: true });
@@ -404,7 +402,6 @@ const Voice = ({ show, v }) => {
 
   const talk = (text) => {
     const space = window.dydu.space.get();
-    window.dydu.space.set(voiceSpace, { quiet: true });
     window.dydu.chat.handleRewordClicked(text, { type: 'ask' });
     window.dydu.space.set(space, { quiet: true });
     stopRecording();
