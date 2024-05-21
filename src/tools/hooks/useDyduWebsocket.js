@@ -11,6 +11,7 @@ import { useConversationHistory } from '../../contexts/ConversationHistoryContex
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useSurvey } from '../../Survey/SurveyProvider';
+import { useDialog } from '../../contexts/DialogContext';
 import { BOT } from '../bot';
 import { buildServletUrl } from '../axios';
 
@@ -31,6 +32,8 @@ const MESSAGE_TYPE = {
   endPolling: 'endPolling',
   uploadRequest: 'uploadRequest',
   startPolling: 'StartPolling',
+  leaveWaitingQueue: 'LeaveWaitingQueue',
+  dialogPicked: 'DialogPicked',
 };
 
 let onFail = null;
@@ -50,6 +53,7 @@ const completeLivechatPayload = (configuration) =>
 
 export default function useDyduWebsocket() {
   const { showUploadFileButton } = useUploadFile();
+  const { setLastWebSocketResponse } = useDialog();
   const [socketProps, setSocketProps] = useState([null, {}]);
   const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
@@ -59,6 +63,7 @@ export default function useDyduWebsocket() {
 
   const messageData = useMemo(() => {
     if (!isDefined(lastMessage)) return null;
+    setLastWebSocketResponse(JSON.parse(lastMessage?.data));
     return JSON.parse(lastMessage?.data);
   }, [lastMessage]);
 
@@ -75,6 +80,7 @@ export default function useDyduWebsocket() {
 
   const messageType = useMemo(() => {
     if (!isDefined(messageData)) return null;
+    if (LivechatPayload.is.leaveWaitingQueue(messageData)) return MESSAGE_TYPE.leaveWaitingQueue;
     if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.historyResponse(messageData)) return MESSAGE_TYPE.historyResponse;
     if (LivechatPayload.is.surveyConfigurationResponse(messageData)) return MESSAGE_TYPE.surveyConfigurationResponse;
@@ -83,6 +89,7 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
     if (LivechatPayload.is.operatorSendUploadRequest(messageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
+    if (LivechatPayload.is.dialogPicked(messageData)) return MESSAGE_TYPE.dialogPicked;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, messageData]);
 
@@ -145,6 +152,7 @@ export default function useDyduWebsocket() {
         return displayMessage();
 
       case MESSAGE_TYPE.notification:
+        Local.waitingQueue.save(false);
         return displayNotification();
 
       case MESSAGE_TYPE.historyResponse:
@@ -164,7 +172,20 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.endPolling:
         displayNotification();
+        Local.isLivechatOn.save(false);
+        Local.operator.remove();
         return close();
+
+      case MESSAGE_TYPE.leaveWaitingQueue:
+        displayNotification();
+        Local.isLivechatOn.save(false);
+        Local.waitingQueue.save(false);
+        Local.operator.remove();
+        return close();
+
+      case MESSAGE_TYPE.dialogPicked:
+        Local.waitingQueue.save(false);
+        return displayNotification();
     }
   }, [close, displayMessage, displayNotification, messageData, messageType, showUploadFileButton]);
 

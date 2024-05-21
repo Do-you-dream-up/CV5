@@ -32,6 +32,7 @@ import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import usePushrules from '../tools/hooks/usePushrules';
 import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
+import { useTranslation } from 'react-i18next';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
@@ -88,6 +89,8 @@ export interface DialogContextProps {
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
+  lastWebSocketResponse?: Servlet.ChatResponseValues | null;
+  setLastWebSocketResponse?: Dispatch<SetStateAction<Servlet.ChatResponseValues | null>>;
 }
 
 interface SidebarContentProps {
@@ -131,6 +134,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const sidebarTransient = configuration?.sidebar?.transient;
+  const { t } = useTranslation();
 
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
@@ -158,6 +162,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState<Servlet.ChatResponseType | null | undefined>(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
+  const [lastWebSocketResponse, setLastWebSocketResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
@@ -252,7 +257,17 @@ export function DialogProvider({ children }: DialogProviderProps) {
           id,
         ].some((v) => isDefined(v));
         if (someFieldsDefined) {
-          setSidebarContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width, id });
+          setSidebarContent({
+            headerTransparency,
+            headerRenderer,
+            bodyRenderer,
+            body,
+            height,
+            title,
+            url,
+            width,
+            id,
+          });
         }
         setSidebarActive((previous) => {
           return open === undefined ? !previous : open;
@@ -334,12 +349,18 @@ export function DialogProvider({ children }: DialogProviderProps) {
     });
   }, []);
 
+  const isStartWaitingResponse = (response) => LivechatPayload.is.startWaitingQueue(response);
+
   const addResponse = useCallback(
     (response: Servlet.ChatResponseValues = {}) => {
       setLastResponse(response);
-
       if (isStartLivechatResponse(response)) return displayNotification(response);
-
+      if (isStartWaitingResponse(response)) {
+        Local.waitingQueue.save(true);
+        // Need to be fix in Back to remove line 361 and use the good text in back response
+        response.text = t('livechat.queue.start');
+        return displayNotification(response);
+      }
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -577,6 +598,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
+        lastWebSocketResponse,
         add,
         addRequest,
         addResponse,
@@ -594,6 +616,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setPrompt,
         setSidebar,
         setVoiceContent,
+        setLastWebSocketResponse,
         toggleSidebar,
         activeSidebarName,
         typeResponse,

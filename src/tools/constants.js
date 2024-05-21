@@ -53,6 +53,7 @@ export const INTERACTION_TYPE = {
 
 export const ATRIA_TYPE_RESPONSE = {
   dmLivechatConnectionSucceed: 'DMLiveChatConnectionSucceed',
+  dMLiveChatLeaveQueue: 'DMLiveChatLeaveQueue',
   naAutoCloseDialog: 'NAAutoCloseDialog',
   naAutoCloseDialogBecauseUserLeft: 'NAAutoCloseDialogBecauseUserLeft',
   opLivechatEndByOperator: 'OPLiveChatEndByOperator',
@@ -69,11 +70,15 @@ export const INTERACTION_NOTIFICATION_TYPE = {
   timeout: 'timeout',
   writing: 'writing',
   dialogTransferredAutomatically: 'dialogTransferredAutomatically',
+  waitingQueue: 'waitingQueue',
+  leaveWaitingQueue: 'leaveWaitingQueue',
 };
 
 export const RESPONSE_SPECIAL_ACTION = {
   startPolling: 'StartPolling',
   endPolling: 'EndPolling',
+  startWaitingQueue: 'StartWaitingQueue',
+  leaveWaitingQueue: 'LeaveWaitingQueue',
 };
 
 export const LIVECHAT_NOTIFICATION = {
@@ -87,6 +92,7 @@ export const LIVECHAT_NOTIFICATION = {
   almostTimeout: 'AlmostTimedOut',
   dialogTransferredManually: 'DialogTransferredManually',
   dialogTransferredAutomatically: 'DialogTransferredAutomatically',
+  dialogPicked: 'DialogPicked',
 };
 
 export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;

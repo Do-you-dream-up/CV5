@@ -112,6 +112,8 @@ export class Cookie {
 export class Local {
   static names = {
     isLivechatOn: 'dydu.isLivechatOn',
+    livechatType: 'dydu.livechatType',
+    waitingQueue: 'dydu.waitingQueue',
     isChannels: 'dydu.isChannels',
     client: 'dydu.client',
     context: 'dydu.context',
@@ -300,6 +302,21 @@ export class Local {
       return (isLivechatOn && JSON.parse(isLivechatOn)) || false;
     },
     reset: () => localStorage.setItem(Local.names.isLivechatOn, 'false'),
+  });
+
+  static livechatType = Object.create({
+    save: (data) => localStorage.setItem(Local.names.livechatType, data),
+    load: () => localStorage.getItem(Local.names.livechatType),
+    remove: () => localStorage.removeItem(Local.names.livechatType),
+  });
+
+  static waitingQueue = Object.create({
+    save: (data) => localStorage.setItem(Local.names.waitingQueue, data),
+    load: () => {
+      const waitingQueue = localStorage.getItem(Local.names.waitingQueue);
+      return (waitingQueue && JSON.parse(waitingQueue)) || false;
+    },
+    reset: () => localStorage.setItem(Local.names.waitingQueue, 'false'),
   });
 
   static isChannels = Object.create({

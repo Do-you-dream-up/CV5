@@ -17,6 +17,14 @@ const isOperatorWriting = (notification) => {
   return LivechatPayload.is.operatorWriting(notification) ? INTERACTION_NOTIFICATION_TYPE.writing : null;
 };
 
+const isStartWaitingQueue = (notification) => {
+  return LivechatPayload.is.startWaitingQueue(notification) ? INTERACTION_NOTIFICATION_TYPE.waitingQueue : null;
+};
+
+const isUserLeaveWaitingQueue = (notification) => {
+  return LivechatPayload.is.leaveWaitingQueue(notification) ? INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue : null;
+};
+
 const isOperatorDisconnected = (notification) =>
   LivechatPayload.is.operatorDisconnected(notification) ? INTERACTION_NOTIFICATION_TYPE.operatorDisconnected : null;
 
@@ -46,6 +54,8 @@ const notificationTypeGetterList = [
   hasOperatorManuallyTransferredDialog,
   hasOperatorAutomaticallyTransferredDialog,
   isOperatorWriting,
+  isUserLeaveWaitingQueue,
+  isStartWaitingQueue,
 ];
 
 const getNotificationType = (notification) => {
@@ -68,6 +78,8 @@ const notificationTypeToIconName = {
   [INTERACTION_NOTIFICATION_TYPE.timeout]: icons.time,
   [INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually]: icons.checkCircle,
   [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.waitingQueue]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue]: icons.checkCircle,
 };
 
 export default function useNotificationHelper(notification) {
