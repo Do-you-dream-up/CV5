@@ -92,7 +92,7 @@ export default function Onboarding({ children }: OnboardingProps) {
                       [classes.active]: i === stepIndex,
                     })}
                     key={i}
-                    onClick={() => onStep?.(i + 1)}
+                    onClick={() => onStep?.(i)}
                     id={`bullet-${i.toString()}`}
                     aria-controls={`step-${i.toString()}`}
                   />
