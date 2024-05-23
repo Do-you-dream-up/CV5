@@ -6,7 +6,7 @@ import Storage from '../components/auth/Storage';
 import { decode } from './cipher';
 import debounce from 'debounce-promise';
 import dydu from './dydu';
-import { Cookie, Local } from './storage';
+import { Local } from './storage';
 
 interface AxiosDyduConfig {
   server: string;
@@ -227,6 +227,26 @@ const handleTokenRefresh = (retry: any) => {
   }
 };
 
+const formatConsoleError = (error: any) => {
+  console.group('An error occurred while sending the request to Dydu. Please send us this group of logs :');
+  console.log('Date : ', new Date());
+  console.log('Error : ', error.message);
+  console.log('Status : ', error.status || error?.response?.status);
+  console.log('Request : [%s] %s%s', error.config.method.toUpperCase(), error.config.baseURL, error.config.url);
+  console.log('Headers :', JSON.stringify(error.config.headers));
+  console.log(
+    'Data :\n%s',
+    error.config.data
+      ? error.config.data
+          .trim()
+          .split('&')
+          .map((s: string) => decodeURIComponent(s))
+          .join('\n')
+      : 'no data',
+  );
+  console.groupEnd();
+};
+
 /**
  * Request against the provided path with the specified data. When
  * the response contains values, decode it and refresh the context ID.
@@ -235,7 +255,9 @@ const handleTokenRefresh = (retry: any) => {
  * @param {function} verb - A verb method to request with.
  * @param {string} path - Path to send the request to.
  * @param {Object} data - Data to send.
- * @param {number} tries - number of tries to send the request.
+ * @param {number} timeout - timeout value to use.
+ * @param {boolean} ignoreSwitch - set tu true, the server switch will not occur.
+ * @param {number} currentServerPreviouslyUsed - server index used with the last request. Used to switch server
  * @returns {Promise}
  */
 const emit = debounce(
@@ -243,10 +265,12 @@ const emit = debounce(
     handleSwitchToBackup(currentServerPreviouslyUsed);
     handleSetApiTimeout(timeout);
 
+    const pathWithoutTrailingSlash = path.replace(/\/$/, '');
+
     const currentServerIndexForThisRequest = currentServerIndex;
 
     try {
-      return verb(path, data)
+      return verb(pathWithoutTrailingSlash, data)
         .then((response: any) => {
           lastResponse = response;
           lastStatus = 'OK';
@@ -258,10 +282,15 @@ const emit = debounce(
           return handleAxiosResponse(data);
         })
         .catch((error: any) => {
-          console.log(error);
-          const response = handleAxiosError(error, verb, path, data, timeout, currentServerIndexForThisRequest);
-          console.log('Response=' + JSON.stringify(response));
-          return response;
+          formatConsoleError(error);
+          return handleAxiosError(
+            error,
+            verb,
+            pathWithoutTrailingSlash,
+            data,
+            timeout,
+            currentServerIndexForThisRequest,
+          );
         });
     } catch (e) {
       console.error('while executing |emit()|', e);
