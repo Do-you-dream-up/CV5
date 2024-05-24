@@ -241,8 +241,8 @@
     "errorFormatAndSizeMessage": "The file size is too large and the format is not accepted",
     "errorFormatMessage": "The file format is not accepted",
     "errorSizeMessage": "The file size is too large (max accepted 10 Mo)",
-    "sentMessage": "Your file <strong>{{name}}</strong> has been sent successfully!",
-    "errorMessage": "I am sorry, your file <strong>{{name}}</strong> could not be sent."
+    "sentMessage": "Your file <strong>{{name}}</strong> has been uploaded successfully!",
+    "errorMessage": "I am sorry, your file <strong>{{name}}</strong> could not be uploaded."
   },
   "survey": {
     "sentMessage": "Your answer to the survey has been sent.",

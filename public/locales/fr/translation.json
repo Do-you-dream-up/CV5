@@ -235,8 +235,8 @@
     "errorFormatAndSizeMessage": "La taille du fichier est trop élevée et le format n'est pas accepté",
     "errorFormatMessage": "Le format du fichier n'est pas accepté",
     "errorSizeMessage": "La taille du fichier est trop élevée (max accepté 10 Mo)",
-    "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été envoyé !",
-    "errorMessage": "Votre fichier <strong>{{name}}</strong> n’a malheureusement pas pu être envoyé."
+    "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été chargé !",
+    "errorMessage": "Votre fichier <strong>{{name}}</strong> n’a malheureusement pas pu être chargé."
   },
   "survey": {
     "sentMessage": "Votre réponse au questionnaire a bien été envoyée.",
