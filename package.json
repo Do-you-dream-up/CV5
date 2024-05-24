@@ -41,7 +41,7 @@
     "react-draggable": "^4.4.5",
     "react-hook-mousetrap": "^2.0.4",
     "react-i18next": "^11.3.3",
-    "react-idle-timer": "^5.4.2",
+    "react-idle-timer": "^5.7.2",
     "react-jss": "^10.9.2",
     "react-portal": "^4.2.1",
     "react-script": "^2.0.5",

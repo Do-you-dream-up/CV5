@@ -19,6 +19,7 @@ import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
+import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
 
 interface InputProps {
   onRequest?: (input: string) => void;
@@ -51,6 +52,14 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const textareaRef = useRef<null | any>(null);
   const { shadowAnchor } = useShadow();
 
+  const { idleTimer } = useIdleTimeout({
+    onIdle: () => {
+      livechatTyping?.(input);
+    },
+    idleTimeout: 1000,
+    disabled: !Local.isLivechatOn.load(),
+  });
+
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
 
   const onChange = (event) => {
@@ -72,7 +81,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   };
 
   useEffect(() => {
-    if (Local.isLivechatOn.load() && typing) livechatTyping?.(input);
+    idleTimer.reset();
   }, [input, Local.isLivechatOn.load(), livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
