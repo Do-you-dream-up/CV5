@@ -8,6 +8,7 @@ import Slider from 'react-slick';
 import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
+import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import useViewport from '../../tools/hooks/useViewport';
 import { useShadow } from '../../contexts/ShadowProvider';
@@ -34,6 +35,7 @@ const Carousel = ({ children, steps }: CarouselProps) => {
   const [resizeCount, setResizeCount] = useState(0);
   const interactionWidth = useMemo(() => carouselRef?.current?.offsetWidth, [resizeCount]);
   const { shadowAnchor } = useShadow();
+  const [t] = useTranslation();
 
   const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
   const automaticSidebar = isFullScreen
@@ -140,6 +142,24 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     }
   }, [interactionWidth]);
 
+  const CarouselNextArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div className={className} style={{ ...style }} onClick={onClick}>
+        {t('carousel.next')}
+      </div>
+    );
+  };
+
+  const CarouselPrevArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    return (
+      <div className={className} style={{ ...style }} onClick={onClick}>
+        {t('carousel.previous')}
+      </div>
+    );
+  };
+
   const settings = {
     className: 'center',
     centerMode: true,
@@ -152,6 +172,8 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     focusOnSelect: true,
     accessibility: true,
     initialSlide: 0,
+    nextArrow: <CarouselNextArrow />,
+    prevArrow: <CarouselPrevArrow />,
     onLazyLoad: () => {
       if (steps) {
         const currentStep = steps[0];
