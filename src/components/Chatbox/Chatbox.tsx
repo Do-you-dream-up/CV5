@@ -33,6 +33,9 @@ import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
+import ScrollToBottom from '../ScrollToBottom/ScrollToBottom';
+import { useTimeout } from 'react-use';
+import scrollToBottom from '../ScrollToBottom/ScrollToBottom';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -85,6 +88,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
   const { mode } = useViewMode();
   const [prevMode, setPrevMode] = useState<number | null>(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+
+  let scrollToBottomTimeout: any = {};
 
   useEffect(() => {
     if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
@@ -252,6 +258,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   }, [gdprPassed, setGdprPassed]);
 
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop - 20 <= e.target.clientHeight;
+    clearTimeout(scrollToBottomTimeout);
+    scrollToBottomTimeout = setTimeout(() => setShowScrollToBottom(!bottom), 300);
+  };
+
   return (
     <div className={classnames} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
       <div tabIndex={0} ref={root} aria-label={labelChatbot}>
@@ -273,6 +285,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || extended),
                   })}
+                  onScroll={handleScroll}
                 >
                   <Tab
                     component={Dialog}
@@ -291,6 +304,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                 {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
               </Onboarding>
             </GdprDisclaimer>
+            {showScrollToBottom ? <ScrollToBottom /> : null}
           </>
           <Modal />
           {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}

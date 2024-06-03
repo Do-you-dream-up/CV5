@@ -33,4 +33,5 @@ export default {
   timer: 'icon-timer',
   checkCircle: 'check-circle',
   time: 'icon-time',
+  caretDown: 'icon-caret-down',
 };

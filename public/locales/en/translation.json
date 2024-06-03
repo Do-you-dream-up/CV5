@@ -1,6 +1,7 @@
 {
   "general": {
-    "labelChatbot": "Chatbot window"
+    "labelChatbot": "Chatbot window",
+    "scrollToBottom": "Scroll to the bottom"
   },
   "banner": {
     "html": "<p> Put forward <em>your news</em>.</p><p>It can concern your business or your industry.</p>",

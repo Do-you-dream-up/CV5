@@ -27,7 +27,13 @@ function Scroll({ component = 'div', delay = 0, ...rest }: ScrollProps) {
     setTimeout(() => {
       const chatboxDiv = shadowAnchor?.querySelector('.dydu-chatbox-body');
       if (chatboxDiv) {
-        chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
+        const responseBubbles = shadowAnchor?.getElementsByClassName('dydu-interaction-response');
+        const requestBubbles = shadowAnchor?.getElementsByClassName('dydu-interaction-request');
+        const lastRequestBubble: Element | null | undefined = requestBubbles?.item(requestBubbles?.length - 1);
+        const lastResponseBubble: Element | null | undefined = responseBubbles?.item(responseBubbles?.length - 1);
+        chatboxDiv.scrollTop =
+          chatboxDiv?.scrollHeight -
+          (lastResponseBubble ? lastResponseBubble.scrollHeight + (lastRequestBubble?.scrollHeight || 0) : 0);
       }
     }, delay);
   };

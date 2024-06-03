@@ -1,6 +1,7 @@
 {
   "general": {
-    "labelChatbot": "Boîte de dialogue avec le chatbot"
+    "labelChatbot": "Boîte de dialogue avec le chatbot",
+    "scrollToBottom": "Aller en bas"
   },
   "banner": {
     "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",

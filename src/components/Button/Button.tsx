@@ -25,6 +25,7 @@ export interface ButtonProps {
   type?: string;
   variant?: 'contained' | 'icon' | 'text';
   rollOver?: string;
+  className?: any[];
 }
 
 export default forwardRef((props: ButtonProps, ref) => <Button {...props} reference={ref} />);
@@ -52,6 +53,7 @@ const Button = ({
   title,
   type,
   variant = 'contained',
+  className,
   ...rest
 }: ButtonProps) => {
   const { configuration } = useConfiguration();
@@ -88,6 +90,7 @@ const Button = ({
         classes[variant],
         { [classes.hideOutline]: !tabbing },
         { [classes.grow]: grow },
+        className,
       ),
       ref: reference,
       disabled,
