@@ -37,6 +37,7 @@ export const LIVECHAT_ID_LISTENER = 'listener/livechat';
 
 export const INTERACTION_TEMPLATE = {
   carousel: 'dydu_carousel_001',
+  carousel_array: 'dydu_carousel_array',
   product: 'dydu_product_001',
   quickReply: 'dydu_quick_reply_001',
   uploadFile: 'dydu_upload_001',

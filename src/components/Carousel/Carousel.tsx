@@ -22,9 +22,10 @@ import { useShadow } from '../../contexts/ShadowProvider';
 interface CarouselProps {
   children: any[];
   steps: Servlet.ChatResponseValues[];
+  handleSlickInit: () => void;
 }
 
-const Carousel = ({ children, steps }: CarouselProps) => {
+const Carousel = ({ children, steps, handleSlickInit }: CarouselProps) => {
   const classes = useStyles();
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
@@ -162,6 +163,7 @@ const Carousel = ({ children, steps }: CarouselProps) => {
 
   const settings = {
     className: 'center',
+    lazyLoad: 'ondemand',
     centerMode: true,
     infinite: false,
     slidesToShow: numberSlidesToShow,
@@ -174,6 +176,7 @@ const Carousel = ({ children, steps }: CarouselProps) => {
     initialSlide: 0,
     nextArrow: <CarouselNextArrow />,
     prevArrow: <CarouselPrevArrow />,
+    onInit: handleSlickInit,
     onLazyLoad: () => {
       if (steps) {
         const currentStep = steps[0];

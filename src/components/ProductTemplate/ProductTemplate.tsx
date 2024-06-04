@@ -39,9 +39,11 @@ export default function ProductTemplate({ classe = null, html }: ProductTemplate
   return isDefined(product) ? (
     <div className={classe || c('dydu-product-template', classes.root)}>
       {!!text && <div className={c('dydu-product-template-content', classes.text)}>{text}</div>}
-      <div className={c('dydu-product-template-image', classes.image)}>
-        <img src={product.imageLink} alt={product.imageName} className={c(isEmptyImage && 'empty-image')} />
-      </div>
+      {product.imageLink ? (
+        <div className={c('dydu-product-template-image', classes.image)}>
+          <img src={product.imageLink} alt={product.imageName} className={c(isEmptyImage && 'empty-image')} />
+        </div>
+      ) : null}
       <div className={c('dydu-product-template-container-body', classes.body, !isTruncated && classes.bodyTruncated)}>
         <div className={c('dydu-product-template-text', classes.text)}>
           {product?.title && <h3>{uppercaseFirstLetter(product.title)}</h3>}

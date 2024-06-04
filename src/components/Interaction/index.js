@@ -17,7 +17,6 @@ import Scroll from '../Scroll/Scroll';
 import c from 'classnames';
 import sanitize from '../../tools/sanitize';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useDebounce } from 'react-use';
 import useNotificationHelper from '../../tools/hooks/useNotificationHelper';
 import useStyles from './styles';
 
@@ -66,7 +65,21 @@ const templateNameToBubbleCreateAction = {
       }
 
       if (typeof el === 'object') {
-        for (let i = 1; i < 6; i++) {
+        let i = 0;
+        let hasItemForIndex = (json, i) => {
+          return (
+            isDefined(json[`buttonA${i}`]) ||
+            isDefined(json[`buttonB${i}`]) ||
+            isDefined(json[`buttonC${i}`]) ||
+            isDefined(json[`imageLink${i}`]) ||
+            isDefined(json[`imageName${i}`]) ||
+            isDefined(json[`imageName${i}`]) ||
+            isDefined(json[`subtitle${i}`]) ||
+            isDefined(json[`title${i}`])
+          );
+        };
+        do {
+          i++;
           const product = {};
           product['buttonA'] = el[`buttonA${i}`];
           product['buttonB'] = el[`buttonB${i}`];
@@ -80,9 +93,20 @@ const templateNameToBubbleCreateAction = {
           if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
             bubbles.push(JSON.stringify(bubble));
           }
-        }
+        } while (hasItemForIndex(el, i + 1));
       }
     });
+    return bubbles;
+  },
+  [INTERACTION_TEMPLATE.carousel_array]: (list) => {
+    const bubbles = [];
+    const bubble = {};
+    for (const product of list) {
+      bubble.product = product;
+      if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
+        bubbles.push(JSON.stringify(bubble));
+      }
+    }
     return bubbles;
   },
   [INTERACTION_TEMPLATE.uploadFile]: (list) => {
@@ -119,7 +143,6 @@ export default function Interaction({
   const [bubbles, setBubbles] = useState([]);
   const [hasLoader, setHasLoader] = useState(!!thinking);
   const [ready, setReady] = useState(false);
-  const [readyCarousel, setReadyCarousel] = useState(false);
 
   const { configuration } = useConfiguration();
   const { customAvatar: hasAvatarMatchingRequest } = configuration.header.logo;
@@ -143,7 +166,11 @@ export default function Interaction({
 
   children = Array.isArray(children) ? children : [children];
 
-  const carouselTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.carousel), [templateName]);
+  const carouselTemplate = useMemo(
+    () =>
+      templateName?.equals(INTERACTION_TEMPLATE.carousel) || templateName?.equals(INTERACTION_TEMPLATE.carousel_array),
+    [templateName],
+  );
   const productTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.product), [templateName]);
   const quickTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.quickReply), [templateName]);
 
@@ -276,24 +303,24 @@ export default function Interaction({
     });
   }, [autoOpenSidebar, bubbles, carousel, classes.bubble, history, scroll, sidebar, steps, templateName, type]);
 
-  useDebounce(
-    () => {
-      setReadyCarousel(true);
-    },
-    700,
-    [bubbleList],
-  );
+  const handleCarouselInitOk = () => {
+    setHasLoader(false);
+  };
 
   const ListBubble = useMemo(() => {
     if (!isDefined(bubbleList)) return null;
 
-    const wrapperProps = {
+    let wrapperProps = {
       className: c('dydu-interaction-bubbles', classes.bubbles),
       steps: steps,
       templateName: templateName,
     };
 
     if (isCarousel) {
+      wrapperProps = {
+        ...wrapperProps,
+        handleSlickInit: handleCarouselInitOk,
+      };
       return <Carousel {...wrapperProps}>{bubbleList}</Carousel>;
     }
 
@@ -301,7 +328,7 @@ export default function Interaction({
   }, [bubbleList, classes.bubbles, isCarousel, steps, templateName]);
 
   return (
-    ((isCarousel && readyCarousel) || (!isCarousel && (bubbles.length || hasLoader))) && (
+    (isCarousel || (!isCarousel && (bubbles.length || hasLoader))) && (
       <div
         className={c(
           'dydu-interaction',

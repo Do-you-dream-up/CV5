@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   root: {
+    width: '100%',
     marginBlockStart: 0,
     marginBlockEnd: 0,
     '@global': {

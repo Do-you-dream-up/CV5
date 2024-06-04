@@ -22,7 +22,7 @@ import { Local } from '../tools/storage';
 import dotget from '../tools/dotget';
 import { eventOnSidebarClosed } from '../events/chatboxIndex';
 import { flattenSteps } from '../tools/steps';
-import { knownTemplates } from '../tools/template';
+import { CAROUSEL_ARRAY_TEMPLATE, CAROUSSEL_TEMPLATE, knownTemplates, PRODUCT_TEMPLATE } from '../tools/template';
 import parseActions from '../tools/actions';
 import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
@@ -432,7 +432,11 @@ export function DialogProvider({ children }: DialogProviderProps) {
       const interactionChildrenList = getContent(text, templateData, templateName);
 
       const verifyInteractionDataType = () => {
-        if (templateName === 'dydu_carousel_001' || templateName === 'dydu_product_001') {
+        if (
+          templateName === CAROUSSEL_TEMPLATE ||
+          templateName === PRODUCT_TEMPLATE ||
+          templateName === CAROUSEL_ARRAY_TEMPLATE
+        ) {
           const interactionData = {
             askFeedback,
             carousel: steps.length > 1,

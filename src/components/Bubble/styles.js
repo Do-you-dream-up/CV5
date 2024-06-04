@@ -65,7 +65,7 @@ export default createUseStyles((theme) => {
         alignItems: 'normal',
         borderRadius: 10,
         boxShadow: '0px 2px 4px #BABFC4',
-        height: '364px !important',
+        height: '100% !important',
         '& .dydu-bubble-body': {
           alignItems: 'center',
           padding: 0,

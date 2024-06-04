@@ -1,4 +1,10 @@
-import { CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates } from '../../tools/template';
+import {
+  CAROUSSEL_TEMPLATE,
+  PRODUCT_TEMPLATE,
+  QUICK_REPLY,
+  knownTemplates,
+  CAROUSEL_ARRAY_TEMPLATE,
+} from '../../tools/template';
 import { createElement, useEffect, useMemo, useState } from 'react';
 
 import CarouselTemplate from '../CarouselTemplate/CarouselTemplate';
@@ -88,7 +94,9 @@ export default function PrettyHtml({ carousel, children, className, component, h
       {children}
       {<p className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></p>}
       {templateName === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
-      {templateName === CAROUSSEL_TEMPLATE && <CarouselTemplate html={htmlContent} />}
+      {(templateName === CAROUSSEL_TEMPLATE || templateName === CAROUSEL_ARRAY_TEMPLATE) && (
+        <CarouselTemplate html={htmlContent} />
+      )}
       {templateName === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
       {!knownTemplates.includes(templateName) && htmlContent && parse(htmlContent, customRenderer)}
     </>,
