@@ -11,6 +11,7 @@ export default createUseStyles(() => ({
     fontSize: '16px',
     background: 'inherit',
     textAlign: 'left',
+    verticalAlign: 'top',
     '&:focus': {
       textDecoration: 'none !important',
     },
