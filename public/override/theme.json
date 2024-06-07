@@ -1,7 +1,7 @@
 {
   "font": {
     "monospace": "monospace",
-    "sansSerif": "'Roboto Regular', 'Assistant', sans-serif",
+    "sansSerif": "'Roboto Regular', 'Open Sans', sans-serif",
     "serif": "sans-serif"
   },
 

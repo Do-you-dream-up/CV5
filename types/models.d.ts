@@ -404,7 +404,7 @@ declare namespace Models {
     color?: any;
     font: {
       monospace: string;
-      sansSerif: 'Roboto Regular' | 'Assistant' | 'sans-serif';
+      sansSerif: 'Roboto Regular' | 'Open Sans' | 'sans-serif';
       serif: 'sans-serif';
     };
     palette: {
