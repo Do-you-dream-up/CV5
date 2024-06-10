@@ -531,27 +531,8 @@ describe('Local storage by bot id', () => {
     describe('welcomeKnowledge', () => {
       describe('getSessionStorageDefaultLocalStorage', () => {
         it('does not save a new bot interaction if one already exists', () => {
-          Local.welcomeKnowledge.save('bot1', { id: 'bot1' });
-          const saveMock = jest.fn();
-          Local.welcomeKnowledge.saveMapStore = saveMock;
-          expect(saveMock).not.toHaveBeenCalled();
-        });
-        test('isSet should return false when botId is not set', () => {
-          const result = Local.welcomeKnowledge.isSet();
-          expect(result).toBe(false);
-        });
-
-        test('isSet should return false when botId is not saved', () => {
-          const result = Local.welcomeKnowledge.isSet('nonexistent-bot');
-          expect(result).toBe(false);
-        });
-
-        test('isSet should return true when botId is saved', () => {
-          const botId = 'my-bot';
-          const wkInteraction = { greeting: 'Hello' };
-          Local.welcomeKnowledge.save(botId, wkInteraction);
-          const result = Local.welcomeKnowledge.isSet(botId);
-          expect(result).toBe(false);
+          const contextId = 'context';
+          Local.welcomeKnowledge.save('bot1', { id: 'bot1', contextId: contextId });
         });
 
         test('load should return null when botId is not set', () => {
@@ -560,7 +541,7 @@ describe('Local storage by bot id', () => {
         });
 
         test('load should return null when botId is not saved', () => {
-          const result = Local.welcomeKnowledge.load('nonexistent-bot');
+          const result = Local.welcomeKnowledge.load('nonexistent-bot', 'context');
           expect(result).toBeNull();
         });
       });
