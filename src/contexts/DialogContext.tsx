@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { isDefined, isOfTypeString, recursiveBase64DecodeString } from '../tools/helpers';
+import { isDefined, isOfTypeString, isValidUrl, recursiveBase64DecodeString } from '../tools/helpers';
 
 import FileUploadButton from '../components/FileUploadButton/FileUploadButton';
 import Interaction from '../components/Interaction';
@@ -371,7 +371,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       if (sidebarTransient || isMobile) {
         toggleSidebar(false);
       }
-      if (urlRedirect) {
+      if (urlRedirect && isValidUrl(urlRedirect)) {
         window.open(urlRedirect, '_self');
       }
 
