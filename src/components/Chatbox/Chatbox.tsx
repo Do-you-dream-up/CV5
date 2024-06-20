@@ -21,7 +21,7 @@ import Onboarding from '../Onboarding/Onboarding';
 import PoweredBy from '../PoweredBy/PoweredBy';
 import Sidebar from '../Sidebar';
 import Tab from '../Tab';
-import { VIEW_MODE } from '../../tools/constants';
+import { E_QUESTION_TYPE, VIEW_MODE } from '../../tools/constants';
 import Zoom from '../Zoom';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -34,8 +34,6 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import ScrollToBottom from '../ScrollToBottom/ScrollToBottom';
-import { useTimeout } from 'react-use';
-import scrollToBottom from '../ScrollToBottom/ScrollToBottom';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -101,10 +99,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   }, [mode]);
 
-  const followBadUrl = (text, options) => {
-    return !options.hide && options?.type !== 'javascript' && !isValidUrl(text);
-  };
-
   const isPushCondition = (text) => {
     return text.startsWith('_pushcondition_');
   };
@@ -123,7 +117,22 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       options = JSON.parse(JSON.stringify(options));
       options.hide |= isPushCondition(text) || options.fromSurvey;
 
-      if (followBadUrl(text, options)) {
+      if (
+        (toSend.extra.type === E_QUESTION_TYPE.redirection ||
+          toSend.extra.type === E_QUESTION_TYPE.redirection_newpage) &&
+        !isValidUrl(text)
+      ) {
+        toSend.extra.type = E_QUESTION_TYPE.redirection_invalidlink;
+        options.type = E_QUESTION_TYPE.redirection_invalidlink;
+      }
+
+      if (
+        !options.hide &&
+        options.type !== E_QUESTION_TYPE.redirection &&
+        options.type !== E_QUESTION_TYPE.redirection_newpage &&
+        options.type !== E_QUESTION_TYPE.redirection_invalidlink &&
+        (options.type?.startsWith('redirection') || options.type?.startsWith('reword'))
+      ) {
         addRequest && addRequest(text);
       }
 

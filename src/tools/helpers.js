@@ -80,18 +80,16 @@ export function b64decode(str) {
   );
 }
 
-export const isValidUrl = (string) => {
-  const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$', // fragment locator
+export const isValidUrl = (urlToCheck) => {
+  const regExp = new RegExp(
+    '^(https?:\\/\\/)?' +
+      '(([-a-z0-9]{1,63}\\.*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(:\\d{1,5})?((\\/|\\?)(%[0-9a-f]{2}|[-\\w\\+\\.\\?\\/@~#&=])*)?$',
     'i',
   );
 
-  return pattern.test(string);
+  return regExp.test(urlToCheck);
 };
 
 export const isOfTypeBoolean = (v) => Object.prototype.toString.call(v) === '[object Boolean]';

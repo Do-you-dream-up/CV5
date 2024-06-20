@@ -42,11 +42,11 @@ import {
   strContainsOneOfList,
   toFormUrlEncoded,
   b64dAllFields,
+  isValidUrl,
 } from '../helpers';
 
 import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
-import { mockFieldClass } from '../../Survey/components/utils';
 
 describe('helpers', () => {
   describe('isDefined', () => {
@@ -917,7 +917,7 @@ describe('helpers', () => {
           isRoot: false,
         },
       };
-      expect(recursiveBase64EncodeString(fields, Object.keys(fields), {})).toEqual(fields);
+      expect(recursiveBase64EncodeString(fields)).toEqual(fields);
     });
   });
 
@@ -1087,9 +1087,10 @@ describe('helpers', () => {
 describe('removeStartingSlash', () => {
   const pathIn = '/urldetest/';
   const pathOut = 'urldetest/';
+  const invalidPath = '3';
 
   it('with not valid param', () => {
-    expect(removeStartingSlash(3)).toEqual(3);
+    expect(removeStartingSlash(invalidPath)).toEqual(invalidPath);
   });
 
   it('returns a string with first slash removed', () => {
@@ -1100,9 +1101,10 @@ describe('removeStartingSlash', () => {
 describe('removeEndingSlash', () => {
   const urlIn = 'http://localhost/urldetest/';
   const urlOut = 'http://localhost/urldetest';
+  const invalidPath = '3';
 
   it('with not valid param', () => {
-    expect(removeEndingSlash(3)).toEqual(3);
+    expect(removeEndingSlash(invalidPath)).toEqual(invalidPath);
   });
 
   it('returns a string with last slash removed', () => {
@@ -1207,5 +1209,49 @@ describe('mergeDeep', () => {
       //THEN
       expect(result).toEqual(expectedResult);
     });
+  });
+});
+
+describe('REGEX URL', () => {
+  test('valid http url', () => {
+    const validHttpUrl = 'http://google.fr';
+    expect(isValidUrl(validHttpUrl)).toBeTruthy();
+  });
+
+  test('valid https url', () => {
+    const validHttspUrl = 'https://google.fr';
+    expect(isValidUrl(validHttspUrl)).toBeTruthy();
+    const otherValidHttspUrl = 'https://google.fr';
+    expect(isValidUrl(otherValidHttspUrl)).toBeTruthy();
+  });
+
+  test('valid url with two dots', () => {
+    const validHttspUrlWuthTwoDots = 'https://google.form.fr';
+    expect(isValidUrl(validHttspUrlWuthTwoDots)).toBeTruthy();
+  });
+
+  test('valid url with uppercases', () => {
+    const validHttspUrlWithUppercase = 'Https://gOOgle.form.fr';
+    expect(isValidUrl(validHttspUrlWithUppercase)).toBeTruthy();
+  });
+
+  test('invalid url with text', () => {
+    const invalidHttspUrl = 'bonjour voici une url https://google.fr et voila une autre https://google.form.fr';
+    expect(isValidUrl(invalidHttspUrl)).toBeFalsy();
+  });
+
+  test('invalid url with specials characters', () => {
+    const invalidHttspUrl = 'https://google$$.fr';
+    expect(isValidUrl(invalidHttspUrl)).toBeFalsy();
+  });
+
+  test('valid url with fragment', () => {
+    const validHttspUrl = 'https://maretraitepublique.caissedesdepots.fr/espace-prive/plateforme/#/acces-direct/90';
+    expect(isValidUrl(validHttspUrl)).toBeTruthy();
+  });
+
+  test('valid url with IPV4', () => {
+    const validHttspUrl = 'https://127.0.0.1/espace-prive/plateforme/#/acces-direct/90';
+    expect(isValidUrl(validHttspUrl)).toBeTruthy();
   });
 });

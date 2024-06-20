@@ -67,7 +67,7 @@ const Carousel = ({ children, steps, handleSlickInit }: CarouselProps) => {
   };
 
   // Method to change aria-hidden attribute on focus slide to false and other slides to true
-  // Only use for carousel with steps for allow screen reader to read the content of slides
+  // Only use for carousel with steps to allow screen reader to read the content of slides
   const changeAriaHiddenAttributForSlides = useCallback(() => {
     const slideSelected = shadowAnchor?.querySelectorAll('[data-index="' + index + '"]');
     const otherSlides = shadowAnchor?.querySelectorAll('[data-index]:not([data-index="' + index + '"])');

@@ -136,3 +136,10 @@ export const ALLOWED_FORMAT = [
   'text/plain',
   'text/log',
 ];
+
+// from Atria EQuestionType enum
+export const E_QUESTION_TYPE = {
+  redirection: 'redirection',
+  redirection_newpage: 'redirection_newpage',
+  redirection_invalidlink: 'redirection_invalidlink',
+};
