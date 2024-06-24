@@ -12,7 +12,7 @@ import ViewModeProvider from './contexts/ViewModeProvider';
 import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
 import { configuration } from './tools/configuration';
-import { getCss } from './tools/css';
+import { getCss, getMain } from './tools/css';
 import jss from 'jss';
 import preset from 'jss-preset-default';
 import { I18nextProvider } from 'react-i18next';
@@ -21,6 +21,7 @@ import ShadowProvider from './contexts/ShadowProvider';
 import { StyleSheetManager } from 'styled-components';
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
+import { Local } from './tools/storage';
 
 const renderApp = (
   jss: any,
@@ -91,7 +92,7 @@ configuration.initialize().then((configuration) => {
   });
 
   getResourceWithoutCache('override/theme.json').then(({ data = {} }) => {
-    data.palette.primary.main = getCss()?.main || data.palette.primary.main;
+    data.palette.primary.main = getMain()?.main || data.palette.primary.main;
     data.breakpoints = breakpoints;
     renderApp(jss, shadow, renderIn, templateSlot, emotionCache, data, configuration);
   });
@@ -120,4 +121,12 @@ configuration.initialize().then((configuration) => {
       shadow.appendChild(style);
     }
   });
+
+  const isChannels = Local.isChannels.load();
+
+  if (isChannels && getCss()) {
+    const style = document.createElement('style');
+    style.textContent = getCss();
+    shadow.appendChild(style);
+  }
 });
