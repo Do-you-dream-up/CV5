@@ -43,11 +43,6 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   const { configuration } = useConfiguration();
   const [welcomeKnowledge, setWelcomeKnowledge] = useState<WelcomeKnowledge>(null);
   const tagWelcome = configuration?.welcome?.knowledgeName || null;
-  const actualContextId = localStorage.getItem('dydu.context');
-  const isContextIdInWelcomeIsSameAsDyduContext = Local.welcomeKnowledge.isSetWithActualContextIdFromLocal(
-    BOT.id,
-    actualContextId,
-  );
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
@@ -55,19 +50,31 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   }, [Local.isLivechatOn.load(), welcomeKnowledge, isTagWelcomeDefined]);
 
   useEffect(() => {
-    if (!isContextIdInWelcomeIsSameAsDyduContext) return setWelcomeKnowledge(null);
-    setWelcomeKnowledge(Local.welcomeKnowledge.load(BOT.id));
+    const currentContextUUID = localStorage.getItem('dydu.context');
+    const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
+
+    if (!welcome) return setWelcomeKnowledge(null);
+    setWelcomeKnowledge(welcome);
   }, [BOT.id]);
 
   const getWelcomeKnowledge = async (tagWelcome: string) => {
+    const currentContextUUID = localStorage.getItem('dydu.context');
+
     try {
-      const wkFoundInStorage: boolean = Local.welcomeKnowledge.isSet(BOT.id);
-      if (wkFoundInStorage && isContextIdInWelcomeIsSameAsDyduContext)
-        return Promise.resolve(Local.welcomeKnowledge.load(BOT.id));
+      const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
+
+      if (welcome) {
+        return Promise.resolve(welcome);
+      }
+
       const talkOption = { hide: true, doNotRegisterInteraction: true };
       const talkResponse: TalkResponseInterface = await dydu.talk(tagWelcome, talkOption);
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
-      if (!isInteractionResponse) return null;
+
+      if (!isInteractionResponse) {
+        return null;
+      }
+
       Local.welcomeKnowledge.save(BOT.id, talkResponse);
       return talkResponse;
     } catch (error) {

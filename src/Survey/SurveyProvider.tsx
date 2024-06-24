@@ -97,14 +97,16 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, []);
 
   const triggerSurvey = () => {
-    openSidebar &&
-      openSidebar({
-        width: configuration?.sidebar?.width || null,
-        bodyRenderer: () => <SurveyForm />,
-        title: () => <SidebarFormTitle />,
-        headerTransparency: false,
-        surveyId: surveyId,
-      });
+    if (surveyId) {
+      openSidebar &&
+        openSidebar({
+          width: configuration?.sidebar?.width || null,
+          bodyRenderer: () => <SurveyForm />,
+          title: () => <SidebarFormTitle />,
+          headerTransparency: false,
+          surveyId: surveyId,
+        });
+    }
   };
 
   useEffect(() => {

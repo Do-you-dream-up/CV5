@@ -102,7 +102,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   );
 
   const endLivechat = () => {
-    console.warn('ending livechat...');
     setIsWebsocket(false);
     Local.isLivechatOn.save(false);
     Local.operator.remove();

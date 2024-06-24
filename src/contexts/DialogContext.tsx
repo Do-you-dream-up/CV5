@@ -238,17 +238,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         }: SidebarContentProps = {},
       ) =>
       () => {
-        const someFieldsDefined = [
-          headerTransparency,
-          headerRenderer,
-          bodyRenderer,
-          body,
-          height,
-          title,
-          url,
-          width,
-        ].some((v) => isDefined(v));
-        if (someFieldsDefined) {
+        if (title) {
           setSidebarContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
         }
         setSidebarActive((previous) => {
