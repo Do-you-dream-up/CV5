@@ -81,15 +81,11 @@ export function b64decode(str) {
 }
 
 export const isValidUrl = (urlToCheck) => {
-  const regExp = new RegExp(
-    '^(https?:\\/\\/)?' +
-      '(([-a-z0-9]{1,63}\\.*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(:\\d{1,5})?((\\/|\\?)(%[0-9a-f]{2}|[-\\w\\+\\.\\?\\/@~#&=])*)?$',
-    'i',
-  );
-
-  return regExp.test(urlToCheck);
+  try {
+    return Boolean(new URL(urlToCheck));
+  } catch (e) {
+    return false;
+  }
 };
 
 export const isOfTypeBoolean = (v) => Object.prototype.toString.call(v) === '[object Boolean]';
