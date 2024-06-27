@@ -1240,9 +1240,9 @@ describe('REGEX URL', () => {
     expect(isValidUrl(invalidHttspUrl)).toBeFalsy();
   });
 
-  test('invalid url with specials characters', () => {
-    const invalidHttspUrl = 'https://google$$.fr';
-    expect(isValidUrl(invalidHttspUrl)).toBeFalsy();
+  test('valid url with specials characters', () => {
+    const invalidHttspUrl = 'https://google$$éé.fr';
+    expect(isValidUrl(invalidHttspUrl)).toBeTruthy();
   });
 
   test('valid url with fragment', () => {
@@ -1252,6 +1252,12 @@ describe('REGEX URL', () => {
 
   test('valid url with IPV4', () => {
     const validHttspUrl = 'https://127.0.0.1/espace-prive/plateforme/#/acces-direct/90';
+    expect(isValidUrl(validHttspUrl)).toBeTruthy();
+  });
+
+  test('valid complex url', () => {
+    const validHttspUrl =
+      'https://localhost:9043/login?servercode=dev.dydu.local&locale=fr&loginmessage=eyJhcHBXZWxjb21lU2VudGVuY2UiOiJjYXMubG9naW4ud2VsY29tZS5ibXMiLCJtc2dMZXZlbCI6IklORk8ifQ%3D%3D&service=https%3A%2F%2Fdev.dydu.local%2Fwebsite%2Fcallback%3Fclient_name%3DCasClient';
     expect(isValidUrl(validHttspUrl)).toBeTruthy();
   });
 });
