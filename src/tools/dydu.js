@@ -44,7 +44,7 @@ export default new (class Dydu {
     this.locale = null;
     this.showSurveyCallback = null;
     this.space = null;
-    this.maxTimeoutForAnswer = secondsToMs(30);
+    this.maxTimeoutForAnswer = secondsToMs(50);
     this.qualificationMode = false;
   }
 
