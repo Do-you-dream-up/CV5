@@ -198,8 +198,6 @@ const handleAxiosError = (
     );
   }
 
-  lastStatus = 'Error';
-
   // Retry API Call
   return new Promise((resolve) => {
     setTimeout(() => {
