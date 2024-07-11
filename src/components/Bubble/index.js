@@ -74,7 +74,7 @@ export default function Bubble({
     if (type !== 'request') {
       const isEmptyActiveSidebarName = !activeSidebarName;
       const isNotSameSurvey = hasSurvey && activeSidebarName && activeSidebarName !== surveyConfig?.surveyId;
-      const isNotSameSidebar = !hasSurvey && activeSidebarName && activeSidebarName !== sidebar?.title;
+      const isNotSameSidebar = !hasSurvey && activeSidebarName && activeSidebarName !== sidebar?.id;
       if (isEmptyActiveSidebarName || isNotSameSurvey || isNotSameSidebar) {
         setIsSidebarOpen(false);
       } else {
