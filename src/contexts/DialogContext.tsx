@@ -100,6 +100,7 @@ interface SidebarContentProps {
   height?: number;
   width?: number;
   surveyId?: string;
+  id?: string;
 }
 
 interface InteractionProps {
@@ -235,17 +236,29 @@ export function DialogProvider({ children }: DialogProviderProps) {
           url,
           width,
           surveyId,
+          id,
         }: SidebarContentProps = {},
       ) =>
       () => {
-        if (title) {
-          setSidebarContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width });
+        const someFieldsDefined = [
+          headerTransparency,
+          headerRenderer,
+          bodyRenderer,
+          body,
+          height,
+          title,
+          url,
+          width,
+          id,
+        ].some((v) => isDefined(v));
+        if (someFieldsDefined) {
+          setSidebarContent({ headerTransparency, headerRenderer, bodyRenderer, body, height, title, url, width, id });
         }
         setSidebarActive((previous) => {
           return open === undefined ? !previous : open;
         });
         if (open) {
-          setActiveSidebarName(surveyId ? surveyId : title);
+          setActiveSidebarName(surveyId ? surveyId : id);
         } else {
           setActiveSidebarName(null);
         }
@@ -344,6 +357,10 @@ export function DialogProvider({ children }: DialogProviderProps) {
       const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
 
       const steps = flattenSteps(response);
+
+      if (response?.sidebar) {
+        response.sidebar['id'] = crypto.randomUUID();
+      }
 
       if (configuration?.Voice.enable) {
         if (templateName) {
@@ -444,7 +461,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
           const isResponseFromHistory = isDefined(response.isFromHistory) && response.isFromHistory === true;
           return (
             <Interaction
-              autoOpenSidebar={!isResponseFromHistory}
+              autoOpenSidebar={!isResponseFromHistory && steps.length === 1}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
               children={getContent(text, templateData, templateName)}
