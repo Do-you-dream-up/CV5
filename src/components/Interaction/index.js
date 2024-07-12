@@ -263,11 +263,7 @@ export default function Interaction({
   }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes, type]);
 
   const _Feedback = useMemo(() => {
-    return !hasLoader && askFeedback ? (
-      <Scroll>
-        <Feedback />
-      </Scroll>
-    ) : null;
+    return !hasLoader && askFeedback ? <Feedback /> : null;
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {

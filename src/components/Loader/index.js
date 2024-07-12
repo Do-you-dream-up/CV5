@@ -17,7 +17,7 @@ export default function Loader({ className, scroll, size, variant }) {
   const { size: defaultSize } = configuration.loader;
   return createElement(
     scroll ? Scroll : 'div',
-    { className: c('dydu-loader', classes.root, className) },
+    { scrollToBottom: true, className: c('dydu-loader', classes.root, className) },
     <>
       {[...Array(size || defaultSize)].map((it, index) => (
         <div
