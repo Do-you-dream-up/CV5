@@ -41,6 +41,7 @@ export default function Bubble({
   templateName,
   thinking,
   type,
+  scrollToBottom,
 }) {
   const { configuration } = useConfiguration();
   const { surveyConfig } = useSurvey();
@@ -183,6 +184,7 @@ export default function Bubble({
             ),
             id: `dydu-bubble-${type}`,
             tabIndex: '0',
+            scrollToBottom,
           },
           <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
             {(children || html) && (
@@ -215,4 +217,5 @@ Bubble.propTypes = {
   templateName: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
+  scrollToBottom: PropTypes.bool,
 };

@@ -140,12 +140,18 @@ export default function Feedback() {
           </div>
         )}
         {showChoices && (
-          <Bubble component={Scroll} thinking={thinking} type="response" data-testid="feedback-choices">
+          <Bubble
+            component={Scroll}
+            thinking={thinking}
+            type="response"
+            data-testid="feedback-choices"
+            scrollToBottom={true}
+          >
             <FeedbackChoices onSelect={onChoicesSelect} />
           </Bubble>
         )}
         {showComment && (
-          <Bubble component={Scroll} type="response" data-testid="feedback-comment">
+          <Bubble component={Scroll} type="response" data-testid="feedback-comment" scrollToBottom={true}>
             <Form className="dydu-feedback-comment" data={{ comment: '' }} onResolve={onComment} onDismiss={onDismiss}>
               {({ data, onChange }) => (
                 <>
