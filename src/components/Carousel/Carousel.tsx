@@ -165,7 +165,7 @@ const Carousel = ({ children, steps, handleSlickInit }: CarouselProps) => {
     className: 'center',
     lazyLoad: 'ondemand',
     centerMode: true,
-    infinite: false,
+    infinite: true,
     slidesToShow: numberSlidesToShow,
     speed: 500,
     rows: 1,
