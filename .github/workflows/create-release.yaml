@@ -1,0 +1,68 @@
+name: Trigger Workflow from GitLab
+
+on:
+  repository_dispatch:
+    types:   # Spécifiez les types d'événements que vous attendez du webhook GitLab
+      - from_gitlab
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Update version
+      shell: bash
+      env:
+        VERSION: ${{ github.event.client_payload.version }}
+        GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      run: |
+        version=$VERSION
+        REGEX='^chatbox_edge_[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+        if [[ $version =~ $REGEX ]]
+        then
+            echo "Updating $version"
+            git checkout main
+            git remote add bliss "https://github_fetch:$GITLAB_TOKEN@gitlab.ci.dydu-priv.com/front/bliss.git"
+            git config --global user.email "infra@dydu.ai"
+            git config --global user.name "dyduai"
+        
+            git fetch --all
+            git reset --hard bliss/$version
+
+            # Suppression des répertoires cachés
+            rm -rf .ssh
+            rm -rf .ansible
+            rm .gitlab-ci.yml
+
+            # Ajouter les suppressions des répertoires
+            git add -A
+
+            # Commettre les suppressions
+            git commit -m "Remove hidden files"
+
+            # Pousser les changements 
+            git push --force-with-lease
+            git tag $version
+            git push origin tag $version
+            git remote remove bliss
+            echo "Done, now go to and create a release from the last tag"
+        else
+            echo "Specified version is invalid"
+            exit 1
+        fi
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        tag_name: ${{ github.event.client_payload.version }}
+        release_name: Release ${{ github.event.client_payload.version }}
+        body: |
+          Release notes for version ${{ github.event.client_payload.version }}
+        draft: false
+        prerelease: false
