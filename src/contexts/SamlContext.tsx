@@ -111,7 +111,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
   }, [configuration?.saml?.enable]);
 
   useEffect(() => {
-    saml2Info && fetchUserinfo();
+    configuration?.saml?.enable && saml2Info && fetchUserinfo();
   }, [saml2Info]);
 
   const props: SamlContextProps = {
