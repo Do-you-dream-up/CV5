@@ -123,13 +123,12 @@ publish_public_repo:
   before_script:
     - apk add --no-cache curl
   script:
-    - |
+    - >
       curl -X POST
       -H "Authorization: token $GITHUB_TOKEN"
       -H "Accept: application/vnd.github.everest-preview+json"
-      -d "{\"event_type\":
-        \"from_gitlab\", \"client_payload\": { \"version\": \"$CI_COMMIT_BRANCH\" } }"
-        https://api.github.com/repos/Do-you-dream-up/CV5/dispatches
+      -d "{\"event_type\": \"from_gitlab\", \"client_payload\": { \"version\": \"$CI_COMMIT_BRANCH\" } }"
+      https://api.github.com/repos/Do-you-dream-up/CV5/dispatches
   rules:
     - if: '$CI_COMMIT_BRANCH =~ /^chatbox_edge_\d{4}-\d{2}-\d{2}$/'
       when: manual
