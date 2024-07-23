@@ -75,7 +75,6 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
         <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
       </div>
     );
-
   return (
     <>
       <div className={c('dydu-footer', classes.root)} {...rest}>

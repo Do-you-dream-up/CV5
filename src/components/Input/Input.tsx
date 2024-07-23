@@ -20,6 +20,7 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
 import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
+import Button from '../Button/Button';
 
 interface InputProps {
   onRequest?: (input: string) => void;
@@ -29,7 +30,7 @@ interface InputProps {
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
-  const { send, typing: livechatTyping } = useLivechat();
+  const { send, typing: livechatTyping, endLivechat } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent, isMenuListOpen } = useEvent();
   const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
@@ -78,6 +79,12 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const onSubmit = (event) => {
     event.preventDefault();
     submit(input);
+  };
+
+  const leaveLiveChatQueue = () => {
+    send && send('#livechatleavequeue#', { hide: true });
+    Local.waitingQueue.save(false);
+    endLivechat && endLivechat();
   };
 
   useEffect(() => {
@@ -226,17 +233,17 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementSuggestionsContainer.setAttribute('aria-label', 'dydu-input-suggestions-container');
       nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
       nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
-      if (nodeElementSuggestionsChildren.length === 0) {
+      if (nodeElementSuggestionsChildren?.length === 0) {
         nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
       } else {
         nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
       }
     }
 
-    if (nodeElementSuggestionsChildren.length === 0) {
-      nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
+    if (nodeElementSuggestionsChildren?.length === 0) {
+      nodeElementSuggestionsContainer?.setAttribute('aria-hidden', 'true');
     } else {
-      nodeElementSuggestionsContainer.removeAttribute('aria-hidden');
+      nodeElementSuggestionsContainer?.removeAttribute('aria-hidden');
     }
 
     const textareaId = shadowAnchor?.querySelector('#' + 'dydu-textarea');
@@ -286,7 +293,19 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       : null;
   }, [voice, counter, maxLength]);
 
-  return (
+  const isWaitingQueue = Local.waitingQueue.load();
+
+  return isWaitingQueue ? (
+    <Button
+      onClick={() => {
+        {
+          leaveLiveChatQueue && leaveLiveChatQueue();
+        }
+      }}
+    >
+      {t('livechat.queue.leaveQueue')}
+    </Button>
+  ) : (
     <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input" data-testid="footer-form">
       <Autosuggest
         getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}

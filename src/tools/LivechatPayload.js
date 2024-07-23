@@ -214,6 +214,21 @@ const LivechatPayloadChecker = {
       payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling)
     );
   },
+  dialogPicked: (payload) => {
+    return payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogPicked);
+  },
+  leaveWaitingQueue: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return (
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dMLiveChatLeaveQueue) ||
+      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
+      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.leaveWaitingQueue)
+    );
+  },
+  startWaitingQueue: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.startWaitingQueue);
+  },
 };
 
 const LivechatPayload = {

@@ -7,7 +7,7 @@
     "html": "<p> Mettez en avant <em>vos informations</em>.</p><p> Cela peut-être en fonction de votre actualité ou de celle du marché.</p>",
     "more": "En savoir plus",
     "ok": "Merci",
-    "rollOver" : "Lien pour en savoir plus"
+    "rollOver": "Lien pour en savoir plus"
   },
   "avatar": {
     "altAnswer": "a répondu"
@@ -157,7 +157,7 @@
       "fontIncrease": "Agrandir police"
     },
     "title": "Besoin d'aide ?",
-    "logo" : "Logo de dydu"
+    "logo": "Logo de dydu"
   },
   "input": {
     "actions": {
@@ -210,7 +210,7 @@
     "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"
   },
   "tabs": {
-    "rollOver" :{
+    "rollOver": {
       "contacts": "Les contacts",
       "dialog": "La conversation"
     },
@@ -246,6 +246,10 @@
   "livechat": {
     "notif": {
       "newMessage": "1 nouveau message"
+    },
+    "queue": {
+      "leaveQueue": "Quitter la file d'attente",
+      "start": "Vous êtes en attente d'un conseiller"
     }
   }
 }

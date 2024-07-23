@@ -115,13 +115,18 @@ const startPolling = () => {
   clearInterval(interval);
   interval = setInterval(() => {
     if (!isDefined(lastResponse)) return;
-    api.poll(lastResponse).then((pollResponse) => {
-      saveLastResponse(pollResponse);
-      const handler = getHandler(pollResponse);
-      const dataMessage = recursiveBase64DecodeString(pollResponse);
-      if (isDefined(handler)) handler(dataMessage);
-      else console.warn('received response but no handler', dataMessage);
-    });
+    api
+      .poll(lastResponse)
+      .then((pollResponse) => {
+        saveLastResponse(pollResponse);
+        const handler = getHandler(pollResponse);
+        const dataMessage = recursiveBase64DecodeString(pollResponse);
+        if (isDefined(handler)) handler(dataMessage);
+        else console.warn('received response but no handler', dataMessage);
+      })
+      .catch((error) => {
+        console.error('Error polling', error);
+      });
   }, INTERVAL_MS);
 };
 
