@@ -50,6 +50,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     if (!Local.isLivechatOn.load()) {
       Local.isLivechatOn.save(false);
       Local.operator.remove();
+      tunnel?.close();
+      setTunnel(null);
     }
   }, [Local.isLivechatOn.load()]);
 
@@ -105,6 +107,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWebsocket(false);
     Local.isLivechatOn.save(false);
     Local.operator.remove();
+    tunnel?.close();
     setTunnel(null);
     triggerSurvey && triggerSurvey();
   };
@@ -117,6 +120,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       displayResponseText,
       displayNotification,
       onFail: onFailOpenTunnel,
+      onEndCommunication: endLivechat,
       showAnimationOperatorWriting,
       showUploadFileButton,
     };
