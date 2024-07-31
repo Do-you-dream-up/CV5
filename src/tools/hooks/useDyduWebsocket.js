@@ -203,6 +203,7 @@ export default function useDyduWebsocket() {
       },
       onError: (errorEvent) => {
         console.log('websocket: on error !', errorEvent);
+        _onFail();
       },
     };
   }, [_onFail, close]);

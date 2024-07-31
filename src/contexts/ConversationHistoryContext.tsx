@@ -2,6 +2,8 @@ import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useS
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
+import { TUNNEL_MODE } from '../tools/constants';
+import { Servlet } from '../../types/servlet';
 
 type ChatResponseArray = Servlet.ChatResponseValues[];
 
@@ -24,8 +26,9 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
 
   const fetch = async () => {
     const isLivechatOn = Local.isLivechatOn.load();
+    const livechatType = Local.livechatType.load();
 
-    if (!isLivechatOn) {
+    if (!isLivechatOn || (isLivechatOn && livechatType === TUNNEL_MODE.polling)) {
       const { interactions } = await dydu.history();
       if (interactions) {
         setHistory(interactions);

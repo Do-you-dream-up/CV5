@@ -10,7 +10,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import useDyduWebsocket from '../../hooks/useDyduWebsocket';
 
 jest.mock('../../../tools/axios', () => ({
-  buildServletUrl: jest.fn().mockReturnValue('http://localhost:1234/servlet'),
+  buildServletUrl: jest.fn().mockReturnValue('http://localhost:1234/servlet/'),
 }));
 
 jest.mock('../../../contexts/DialogContext', () => ({

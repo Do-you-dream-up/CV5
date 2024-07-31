@@ -104,11 +104,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   };
 
   const onSuccessOpenTunnel = (tunnel) => {
-    if (isWebsocketTunnel(tunnel)) {
-      Local.livechatType.save('websocket');
-    } else {
-      Local.livechatType.save('polling');
-    }
+    Local.livechatType.save(tunnel.mode);
     Local.isLivechatOn.save(true);
     setTunnel(tunnel);
   };

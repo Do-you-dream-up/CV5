@@ -4,6 +4,8 @@ import { _parse, b64decode, isArray, isDefined } from '../tools/helpers';
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
+import { TUNNEL_MODE } from '../tools/constants';
+import { Servlet } from '../../types/servlet';
 
 type ChatResponseArray = Servlet.ChatResponseValues[];
 
@@ -28,9 +30,10 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
 
   const fetch = () => {
     const isLivechatOn = Local.isLivechatOn.load();
+    const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
-      if (!isLivechatOn && configuration) {
+      if (configuration && (!isLivechatOn || (isLivechatOn && livechatType === TUNNEL_MODE.polling))) {
         dydu
           .top(configuration.top?.period, configuration.top?.size)
           .then(extractPayload)
