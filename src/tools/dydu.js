@@ -293,7 +293,7 @@ export default new (class Dydu {
    */
   printHistory = async () => {
     if (this.contextId) {
-      const path = `${buildServletUrl()}/history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+      const path = `${buildServletUrl()}history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -517,7 +517,7 @@ export default new (class Dydu {
   typing = async (text) => {
     const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
     const qs = this.#toQueryString(typingPayload);
-    const path = `${buildServletUrl()}/chatHttp?data=${qs}`;
+    const path = `${buildServletUrl()}chatHttp?data=${qs}`;
     return fetch(path).then((r) => r.json());
   };
 
@@ -721,7 +721,7 @@ export default new (class Dydu {
       }),
     };
     try {
-      const response = await fetch(`${buildServletUrl()}/chatHttp?data=${_stringify(payload)}`);
+      const response = await fetch(`${buildServletUrl()}chatHttp?data=${_stringify(payload)}`);
       const jsonResponse = await response.json();
       setLastResponse(jsonResponse);
       return this.displaySurveySent(payload.parameters.reword);
