@@ -107,7 +107,9 @@ export default function useDyduWebsocket() {
       return;
     }
 
-    if (LivechatPayload.is.operatorWriting(messageData)) return onOperatorWriting();
+    if (LivechatPayload.is.operatorWriting(messageData) && messageData?.values?.text?.length > 0) {
+      return onOperatorWriting();
+    }
     displayNotificationMessage(messageData);
   }, [messageData, messageText]);
 
@@ -151,6 +153,7 @@ export default function useDyduWebsocket() {
         if (!messageData?.values?.interactions || messageData?.values?.interactions?.length === 0) {
           Local.isLivechatOn.save(false);
           Local.operator.remove();
+          close();
         } else if (!history || history?.length === 0) {
           setHistory(messageData.values.interactions);
         }
@@ -182,6 +185,7 @@ export default function useDyduWebsocket() {
       },
       onError: (errorEvent) => {
         console.log('websocket: on error !', errorEvent);
+        _onFail();
       },
     };
   }, [_onFail, close]);
