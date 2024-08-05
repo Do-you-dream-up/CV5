@@ -41,6 +41,7 @@ declare namespace Servlet {
     user?: string;
     isFromHistory?: boolean;
     specialAction?: Base64 | string;
+    hideRequest?: boolean;
   }
 
   export interface ChatResponse {
