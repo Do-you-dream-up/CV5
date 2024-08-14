@@ -541,7 +541,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
       user: isLivechatOn ? decodedInteraction.user : interaction.user,
     };
 
-    !decodedInteraction?.user?.includes('_pushcondition_:') && addRequest(typedInteraction?.user);
+    if (!decodedInteraction?.user?.includes('_pushcondition_:') && !interaction.hideRequest) {
+      addRequest(typedInteraction?.user);
+    }
     addResponse(typedInteraction);
   };
 
