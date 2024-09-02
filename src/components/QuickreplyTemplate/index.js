@@ -2,11 +2,21 @@ import { isDefined, isOfTypeObject } from '../../tools/helpers';
 
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import useStyles from './styles';
 
 export default function QuickreplyTemplate({ html }) {
   const classes = useStyles();
+
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      const linkElement = event.currentTarget.querySelector('a');
+      if (linkElement) {
+        linkElement.click();
+      }
+    }
+  }, []);
 
   const content = useMemo(() => {
     if (!isDefined(html)) return null;
@@ -29,15 +39,6 @@ export default function QuickreplyTemplate({ html }) {
     if (!isDefined(content)) return null;
     return content.quick || {};
   }, [content]);
-
-  if (quick !== null) {
-    for (const key in quick) {
-      const isAnExternalLink = quick[key]?.includes('https');
-      if (!isAnExternalLink) {
-        quick[key] = quick[key]?.replace('<a', '<button role="button"');
-      }
-    }
-  }
 
   const separator = useMemo(() => {
     if (!isDefined(content)) return null;
@@ -62,6 +63,7 @@ export default function QuickreplyTemplate({ html }) {
                 className={c('dydu-quickreply-template-buttons', classes.buttons)}
                 key={index}
                 dangerouslySetInnerHTML={{ __html: quick[el] }}
+                onKeyDown={handleKeyDown}
               />
             )
           );
