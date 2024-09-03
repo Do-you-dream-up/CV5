@@ -28,6 +28,8 @@ build:
     paths:
       - .npm/_logs/
     expire_in: 24h
+  tags:
+    - build
 
 sonar-sast:
   stage: test
@@ -81,6 +83,8 @@ pack:
     - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
     - build
+  tags:
+    - build
 
 publish:
   stage: delivery
@@ -115,6 +119,8 @@ publish:
       when: manual
     - if: '$CI_COMMIT_REF_NAME =~ /^.*(edge|lts)_.*/'
   needs:
+    - build
+  tags:
     - build
 
 publish_public_repo:
