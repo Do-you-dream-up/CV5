@@ -4,10 +4,10 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   buttons: () => ({
+    width: '100%',
     '& > button[href], a[href]': {
       color: theme.palette.primary.text,
       fontSize: '1em',
-      display: 'flex',
       flexShrink: '0',
       justifyContent: 'center',
       padding: '0.5em 1.2em',
@@ -42,6 +42,9 @@ export default createUseStyles((theme) => ({
     },
   }),
   separator: () => ({
+    width: '100%',
+  }),
+  text: () => ({
     width: '100%',
   }),
 }));
