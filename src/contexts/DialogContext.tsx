@@ -39,6 +39,7 @@ import useVisitManager from '../tools/hooks/useVisitManager';
 import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 import { useChatboxReady } from './ChatboxReadyContext';
 import { useShadow } from './ShadowProvider';
+import uuid4 from 'uuid4';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -380,7 +381,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       const steps = flattenSteps(response);
 
       if (response?.sidebar) {
-        response.sidebar['id'] = crypto.randomUUID();
+        response.sidebar['id'] = uuid4();
       }
 
       if (configuration?.Voice.enable) {

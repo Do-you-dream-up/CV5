@@ -7,7 +7,7 @@ const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicke
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
 const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
 const RE_LIVECHAT =
-  /^(OPRegularOperatorAnswer|NAWaitingForOperator|DMLiveChatConnectionSucceed|NANotificationFromOperator|OPAutoOperatorAnswer|DMLiveChatConnectionInQueue)$/g;
+  /^(OPRegularOperatorAnswer|OPRegularManagerAnswer|NAWaitingForOperator|DMLiveChatConnectionSucceed|NANotificationFromOperator|OPAutoOperatorAnswer|DMLiveChatConnectionInQueue)$/g;
 
 interface AvatarsMatchingRequestProps {
   AvatarComponent: any;
