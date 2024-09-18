@@ -3,6 +3,7 @@
 import { SOLUTION_TYPE, TUNNEL_MODE } from '../constants';
 import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Session } from '../storage';
 
 import LivechatPayload from '../LivechatPayload';
 
@@ -119,6 +120,7 @@ const startPolling = () => {
       .poll(lastResponse)
       .then((pollResponse) => {
         saveLastResponse(pollResponse);
+        Session.set(Session?.names.lastPoll, pollResponse.lastPoll);
         const handler = getHandler(pollResponse);
         const dataMessage = recursiveBase64DecodeString(pollResponse);
         if (isDefined(handler)) handler(dataMessage);

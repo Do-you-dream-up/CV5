@@ -37,7 +37,6 @@ export const LivechatContext = createContext<LivechatContextProps>({});
 
 export const useLivechat = () => useContext(LivechatContext);
 
-const isWebsocketTunnel = (tunnel) => tunnel?.mode === TUNNEL_MODE?.websocket;
 const findFirstAvailableTunnelInList = (tunnelList) => tunnelList.find((tunnel) => tunnel.isAvailable());
 const findFallbackTunnelInList = (tunnelList) => tunnelList[tunnelList.length - 1];
 const containsStartLivechat = (response) => LivechatPayload.is.startLivechat(response);

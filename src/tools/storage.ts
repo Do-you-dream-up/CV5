@@ -11,6 +11,7 @@ export class Session {
     newMessage: 'dydu.newMessage',
     banner: 'dydu.banner',
     pushruleTrigger: 'pushruleTrigger',
+    lastPoll: 'dydu.lastPoll',
   };
 
   /**
