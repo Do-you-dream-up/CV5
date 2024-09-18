@@ -1,4 +1,4 @@
-import { Cookie, Local } from './storage';
+import { Cookie, Local, Session } from './storage';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
@@ -528,7 +528,7 @@ export default new (class Dydu {
       space: this.getSpace(),
       contextUuid: contextId || context?.fromBase64() || this.contextId,
       language: this.getLocale(),
-      lastPoll: serverTime || pollTime,
+      lastPoll: serverTime || pollTime || Session.get(Session.names.lastPoll),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
 
@@ -745,7 +745,11 @@ export default new (class Dydu {
       const statusOk = status >= 200 && status <= 206;
       if (statusOk) {
         if (reword) {
-          window.dydu.chat.handleRewordClicked(reword, { hide: true, type: 'redirection_knowledge', fromSurvey: true });
+          window.dydu.chat.handleRewordClicked(reword, {
+            hide: true,
+            type: 'redirection_knowledge',
+            fromSurvey: true,
+          });
         } else {
           window.dydu.chat.reply(i18n.t('survey.sentMessage'));
         }

@@ -2,7 +2,7 @@
 
 import '../prototypes/strings';
 
-import { Cookie, Local } from '../storage';
+import { Cookie, Local, Session } from '../storage';
 import { objectContainFields, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
@@ -67,6 +67,12 @@ jest.mock('../storage', () => ({
   },
   Cookie: {
     get: jest.fn(),
+  },
+  Session: {
+    names: {
+      lastPoll: 'dydu.lastPoll',
+    },
+    get: jest.fn(() => ''),
   },
 }));
 
