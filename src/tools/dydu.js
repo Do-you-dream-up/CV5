@@ -1,4 +1,4 @@
-import { Cookie, Local, Session } from './storage';
+import { Cookie, Local } from './storage';
 import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
@@ -528,12 +528,16 @@ export default new (class Dydu {
       space: this.getSpace(),
       contextUuid: contextId || context?.fromBase64() || this.contextId,
       language: this.getLocale(),
-      lastPoll: serverTime || pollTime || Session.get(Session.names.lastPoll),
+      lastPoll: pollTime || serverTime,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
 
-    const path = `/chat/poll/last/${this.getBot()?.id}`;
-    return emit(SERVLET_API.post, path, toFormUrlEncoded(data));
+    if (data.lastPoll) {
+      const path = `/chat/poll/last/${this.getBot()?.id}`;
+      return emit(SERVLET_API.post, path, toFormUrlEncoded(data));
+    }
+
+    return new Promise(() => {});
   };
 
   /**

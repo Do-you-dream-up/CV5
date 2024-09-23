@@ -3,9 +3,9 @@ import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useS
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { TUNNEL_MODE } from '../tools/constants';
-import { Servlet } from '../../types/servlet';
+import { ChatHistoryResponse, Servlet } from '../../types/servlet';
 
-type ChatResponseArray = Servlet.ChatResponseValues[];
+type ChatResponseArray = Servlet.ChatHistoryResponse[];
 
 interface ConversationHistoryContextProps {
   fetch?: () => void;
@@ -22,7 +22,7 @@ export const useConversationHistory = () => useContext(ConversationHistoryContex
 export const ConversationHistoryContext = createContext<ConversationHistoryContextProps>({});
 
 export function ConversationHistoryProvider({ children }: ConversationHistoryProviderProps) {
-  const [history, setHistory] = useState<ChatResponseArray | null>(null);
+  const [history, setHistory] = useState<ChatHistoryResponse | null>(null);
 
   const fetch = async () => {
     const isLivechatOn = Local.isLivechatOn.load();
@@ -31,6 +31,13 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
     if (!isLivechatOn || (isLivechatOn && livechatType === TUNNEL_MODE.polling)) {
       const { interactions } = await dydu.history();
       if (interactions) {
+        if (isLivechatOn && livechatType === TUNNEL_MODE.polling) {
+          for (const interaction of interactions) {
+            if (!interaction.pollTime) {
+              interaction.pollTime = interaction.timestamp;
+            }
+          }
+        }
         setHistory(interactions);
       }
       return interactions;

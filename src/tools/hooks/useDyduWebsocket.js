@@ -14,6 +14,7 @@ import { useSurvey } from '../../Survey/SurveyProvider';
 import { useDialog } from '../../contexts/DialogContext';
 import { BOT } from '../bot';
 import { buildServletUrl } from '../axios';
+import { decode } from '../cipher';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
@@ -163,7 +164,7 @@ export default function useDyduWebsocket() {
           Local.operator.remove();
           close();
         } else if (!history || history?.length === 0) {
-          setHistory(messageData.values.interactions);
+          setHistory(decode(messageData.values).interactions);
         }
         return;
 
@@ -315,5 +316,6 @@ export default function useDyduWebsocket() {
     displayNotification,
     displayResponseText,
     sendJsonMessage,
+    setLastResponse: () => {},
   };
 }

@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { isDefined, isOfTypeString, isValidUrl, recursiveBase64DecodeString } from '../tools/helpers';
+import { isDefined, isOfTypeString, isValidUrl } from '../tools/helpers';
 
 import FileUploadButton from '../components/FileUploadButton/FileUploadButton';
 import Interaction from '../components/Interaction';
@@ -52,6 +52,7 @@ export interface DialogContextProps {
   displayNotification?: (notification: any) => void;
   extractTextWithRegex?: (inputString: string) => string | null;
   lastResponse?: Servlet.ChatResponseValues | null;
+  listInteractionHistory?: Servlet.ChatHistoryResponse[] | null;
   add?: (interaction: Servlet.ChatResponse) => void;
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
@@ -534,15 +535,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const addHistoryInteraction = (interaction) => {
     const isLivechatOn = Local.isLivechatOn.load();
-    const decodedInteraction = recursiveBase64DecodeString(interaction);
     const typedInteraction = {
-      ...decodedInteraction,
-      typeResponse: decodedInteraction?.type,
+      ...interaction,
+      typeResponse: interaction?.type,
       isFromHistory: true,
-      user: isLivechatOn ? decodedInteraction.user : interaction.user,
+      user: isLivechatOn ? interaction.user : interaction.user,
     };
 
-    if (!decodedInteraction?.user?.includes('_pushcondition_:') && !interaction.hideRequest) {
+    if (!interaction?.user?.includes('_pushcondition_:') && !interaction.hideRequest) {
       addRequest(typedInteraction?.user);
     }
     addResponse(typedInteraction);
@@ -601,6 +601,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
+        listInteractionHistory,
         lastWebSocketResponse,
         add,
         addRequest,

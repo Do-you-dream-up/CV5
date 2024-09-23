@@ -3,7 +3,6 @@
 import { SOLUTION_TYPE, TUNNEL_MODE } from '../constants';
 import { isDefined, isEmptyString, recursiveBase64DecodeString } from '../helpers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Session } from '../storage';
 
 import LivechatPayload from '../LivechatPayload';
 
@@ -97,65 +96,61 @@ export const getHandler = (response) => {
   return typeToHandler[type];
 };
 
-let lastResponse = null;
-const saveLastResponse = (r) => {
-  if (!isDefined(r)) return;
-
-  lastResponse = {
-    ...lastResponse,
-    ...r,
-  };
-};
-
 const isAvailable = () => true;
 let initialized = false;
 const initializationDone = () => (initialized = true);
 const hasAlreadyBeenInitialized = () => initialized === true;
 
-const startPolling = () => {
-  clearInterval(interval);
-  interval = setInterval(() => {
-    if (!isDefined(lastResponse)) return;
-    api
-      .poll(lastResponse)
-      .then((pollResponse) => {
-        saveLastResponse(pollResponse);
-        Session.set(Session?.names.lastPoll, pollResponse.lastPoll);
-        const handler = getHandler(pollResponse);
-        const dataMessage = recursiveBase64DecodeString(pollResponse);
-        if (isDefined(handler)) handler(dataMessage);
-        else console.warn('received response but no handler', dataMessage);
-      })
-      .catch((error) => {
-        console.error('Error polling', error);
-      });
-  }, INTERVAL_MS);
-};
-
 export default function useDyduPolling() {
   const [intervalId, setIntervalId] = useState(null);
+  let lastResponse = null;
+
+  const setLastResponse = (newLastResponse) => {
+    lastResponse = newLastResponse;
+  };
 
   const isRunning = useMemo(() => isDefined(intervalId), [intervalId]);
   const isConnected = useMemo(() => isRunning, [isRunning]);
 
   useEffect(() => () => stopPolling(), []);
 
+  const startPolling = () => {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      if (!isDefined(lastResponse)) {
+        return;
+      }
+      api
+        .poll(lastResponse)
+        .then((pollResponse) => {
+          if (pollResponse?.pollTime) {
+            setLastResponse(pollResponse);
+          }
+          const handler = getHandler(pollResponse);
+          const dataMessage = recursiveBase64DecodeString(pollResponse);
+          if (isDefined(handler)) handler(dataMessage);
+          else console.warn('received response but no handler', dataMessage);
+        })
+        .catch((error) => {
+          console.error('Error polling', error);
+        });
+    }, INTERVAL_MS);
+  };
+
   const promiseInit = useCallback((initialData) => {
-    return new Promise((resolve, reject) => {
-      saveConfiguration(initialData);
-      saveLastResponse(initialData);
-      initializationDone();
-      resolve(true);
-    });
+    saveConfiguration(initialData);
+    setLastResponse(initialData);
+    initializationDone();
   }, []);
 
-  const open = useCallback((initialData) => {
+  const open = (initialData) => {
     return new Promise((resolve, reject) => {
       if (hasAlreadyBeenInitialized()) resolve(true);
-      promiseInit(initialData).then(startPolling);
+      promiseInit(initialData);
+      startPolling();
       resolve(true);
     });
-  }, []);
+  };
 
   const sendSurvey = useCallback((surveyUserAnswer) => {
     api.sendSurveyPolling(surveyUserAnswer, { solutionUsed: SOLUTION_TYPE.livechat });
@@ -170,6 +165,11 @@ export default function useDyduPolling() {
     api.typing(userInput);
   }, []);
 
+  const close = useCallback(() => {
+    setIntervalId(null);
+    if (isRunning && onEndLivechat) onEndLivechat();
+  }, []);
+
   return {
     isConnected,
     isRunning,
@@ -180,5 +180,6 @@ export default function useDyduPolling() {
     sendSurvey,
     close,
     onUserTyping,
+    setLastResponse,
   };
 }
