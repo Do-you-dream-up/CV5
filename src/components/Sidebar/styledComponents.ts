@@ -37,6 +37,7 @@ export const StyledSidebarMode = styled.div<{
         borderRadius: 0,
         left: 0,
         marginRight: 'unset',
+        position: 'inherit',
         right: 0,
         width: 'unset !important',
         top: '3.4em',
@@ -72,6 +73,7 @@ export const StyledSidebarActions = styled.div`
   & > :not(:first-child): {
     margin-left: 1em;
   }
+
   display: flex;
   margin-left: auto;
 `;
