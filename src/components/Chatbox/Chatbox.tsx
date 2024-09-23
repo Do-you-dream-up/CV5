@@ -287,6 +287,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
               onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
               onMinimize={onMinimize}
             />
+            {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding>
                 <div
@@ -316,7 +317,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             {showScrollToBottom ? <ScrollToBottom /> : null}
           </>
           <Modal />
-          {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}
         </div>
       </div>
     </div>
