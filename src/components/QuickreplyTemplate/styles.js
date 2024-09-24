@@ -4,11 +4,14 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   buttons: () => ({
-    width: '100%',
+    '&:has(div[style*="text-align"])': {
+      width: '100%',
+    },
     '& > button[href], a[href]': {
       color: theme.palette.primary.text,
       fontSize: '1em',
       flexShrink: '0',
+      display: 'inline-block',
       justifyContent: 'center',
       padding: '0.5em 1.2em',
       alignItems: 'center',
