@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Feedback() {
   const { configuration } = useConfiguration();
-  const { addResponse } = useDialog();
+  const { addNotificationOrResponse } = useDialog();
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showVote, setShowVote] = useState(true);
@@ -51,7 +51,7 @@ export default function Feedback() {
       dydu.feedbackComment(value).then(() => {
         setShowComment(false);
         if (commentThanks) {
-          addResponse({ text: commentThanks });
+          addNotificationOrResponse({ text: commentThanks });
         }
       });
     }
@@ -69,14 +69,14 @@ export default function Feedback() {
       setShowVote(false);
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
         dydu.talk(customFeedback?.negativeCustom, { doNotRegisterInteraction: false, hide: false }).then((response) => {
-          addResponse(response);
+          addNotificationOrResponse(response);
         });
       } else if (askChoices) {
         setShowChoices(true);
       } else if (askComment) {
         setShowComment(true);
       } else if (voteThanks) {
-        addResponse({ text: voteThanks });
+        addNotificationOrResponse({ text: voteThanks });
       }
     });
   };
@@ -87,10 +87,10 @@ export default function Feedback() {
 
       if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
         dydu.talk(customFeedback?.positiveCustom, { doNotRegisterInteraction: false, hide: false }).then((response) => {
-          addResponse(response);
+          addNotificationOrResponse(response);
         });
       } else if (voteThanks) {
-        addResponse({ text: voteThanks });
+        addNotificationOrResponse({ text: voteThanks });
       }
     });
   };
@@ -103,7 +103,7 @@ export default function Feedback() {
         if (askComment) {
           setShowComment(true);
         } else if (voteThanks) {
-          addResponse({ text: voteThanks });
+          addNotificationOrResponse({ text: voteThanks });
         }
         setThinking(false);
       }, 1000),

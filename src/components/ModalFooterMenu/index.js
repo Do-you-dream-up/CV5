@@ -1,7 +1,6 @@
-import { createElement, useContext, useEffect, useRef } from 'react';
+import { createElement, useEffect, useRef } from 'react';
 
 import Button from '../Button/Button';
-import { DialogContext } from '../../contexts/DialogContext';
 import MenuList from '../MenuList/MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
@@ -11,6 +10,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { useDialog } from '../../contexts/DialogContext';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -27,7 +27,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
-  const { interactions } = useContext(DialogContext);
+  const { interactions } = useDialog();
   const titleRef = useRef(null);
 
   const items = [

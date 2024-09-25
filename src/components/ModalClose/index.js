@@ -17,11 +17,11 @@ export default function ModalClose({ className, component, onReject, onResolve, 
   const body = t('close.body', { defaultValue: '' });
   const no = t('close.no');
   const title = t('close.title', { defaultValue: '' });
-  const liveChatEnd = "En fermant cette fenêtre vous mettrez fin à la conversation avec l'opérateur.";
+  const liveChatEnd = t('close.livechatEnd');
   const yes = t('close.yes');
-  const isLiveChatOn = Local.isLivechatOn.load();
+  const liveChatType = Local.livechatType.load();
   const onClick = () => {
-    if (isLiveChatOn) {
+    if (liveChatType) {
       send && send('#livechatend#', { hide: true });
       onResolve();
     } else {
@@ -35,7 +35,7 @@ export default function ModalClose({ className, component, onReject, onResolve, 
     <>
       {title && <h3 children={title} className={classes.title} />}
       {body && <p children={body} className={classes.body} />}
-      {isLiveChatOn && liveChatEnd && <p children={liveChatEnd} className={classes.liveChatEnd} />}
+      {liveChatType && liveChatEnd && <p children={liveChatEnd} className={classes.liveChatEnd} />}
       <div children={title} className={classes.actions} data-testid="modal-close">
         {typeof onReject === 'function' && <Button children={no} onClick={onReject} sidebar={true} />}
         <Button children={yes} onClick={onClick} />

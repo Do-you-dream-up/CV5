@@ -72,7 +72,7 @@ const Button = ({
           alt={rollOver}
         />
       ) : null}
-      <p className={classes.txt} children={children} />
+      <div className={classes.txt} children={children} />
     </div>
   );
 

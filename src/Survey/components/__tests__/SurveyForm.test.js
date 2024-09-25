@@ -8,20 +8,6 @@ jest.mock('../../SurveyProvider', () => ({
 }));
 
 describe('SurveyForm', () => {
-  test('close form if no instances are defined', () => {
-    const flushStatesAndClose = jest.fn();
-    useSurvey.mockReturnValue({
-      instances: null,
-      showSurvey: jest.fn(),
-      onSubmit: jest.fn(),
-      flushStatesAndClose: flushStatesAndClose,
-    });
-
-    render(<SurveyForm />);
-
-    expect(flushStatesAndClose).toBeCalled();
-  });
-
   test('renders a form with fields and a submit button if instances are defined', () => {
     const mockInstance1 = {
       render: jest.fn(() => <input type="text" name="field1" data-testid="field1" />),
@@ -32,7 +18,7 @@ describe('SurveyForm', () => {
 
     useSurvey.mockReturnValue({
       instances: [mockInstance1, mockInstance2],
-      showSurvey: jest.fn(),
+      getSurvey: jest.fn(),
       onSubmit: jest.fn(),
     });
 

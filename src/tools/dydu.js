@@ -42,7 +42,7 @@ export default new (class Dydu {
     this.configuration = {};
     this.contextId = localStorage.getItem('dydu.context');
     this.locale = null;
-    this.showSurveyCallback = null;
+    this.getSurveyCallback = null;
     this.space = null;
     this.maxTimeoutForAnswer = secondsToMs(50);
     this.qualificationMode = false;
@@ -822,8 +822,8 @@ export default new (class Dydu {
     this.setInitialSpace(defaultSpaceName);
   }
 
-  setShowSurveyCallback(showSurvey) {
-    this.showSurveyCallback = showSurvey;
+  setGetSurveyCallback(getSurvey) {
+    this.getSurveyCallback = getSurvey;
   }
 
   handleKnownledgeQuerySurveyWithTalkResponse(response) {
@@ -832,7 +832,9 @@ export default new (class Dydu {
       const isNotLivechat = human === false && isDefined(knowledgeId);
       const isQuerySurvey = isDefined(survey) && !isEmptyString(survey);
       const shouldShowSurvey = isNotLivechat && isQuerySurvey;
-      if (shouldShowSurvey) this.showSurveyCallback(response);
+      if (shouldShowSurvey) {
+        this.getSurveyCallback(response);
+      }
     } catch (e) {
       console.log('catched Error', e);
     }

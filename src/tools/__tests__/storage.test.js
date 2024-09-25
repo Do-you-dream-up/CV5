@@ -177,38 +177,38 @@ describe('Local storage by bot id', () => {
       });
     });
 
-    describe('isLivechatOn', () => {
+    describe('livechatType', () => {
       beforeEach(() => {
         localStorage.clear();
       });
 
       describe('save', () => {
         it('should save data to local storage', () => {
-          Local.isLivechatOn.save(true);
-          const savedData = JSON.parse(localStorage.getItem(Local.names.isLivechatOn));
-          expect(savedData).toEqual(true);
+          Local.livechatType.save('websocket');
+          const savedLivechatType = localStorage.getItem(Local.names.livechatType);
+          expect(savedLivechatType).toEqual('websocket');
         });
       });
 
       describe('load', () => {
         it('should return an empty object if no data is saved', () => {
-          const loadedData = Local.isLivechatOn.load();
-          expect(loadedData).toEqual(false);
+          const livechatType = Local.livechatType.load();
+          expect(livechatType).toBeNull();
         });
 
         it('should return the saved data', () => {
-          localStorage.setItem(Local.names.isLivechatOn, JSON.stringify(true));
-          const loadedData = Local.isLivechatOn.load();
-          expect(loadedData).toEqual(true);
+          localStorage.setItem(Local.names.livechatType, 'websocket');
+          const livechatType = Local.livechatType.load();
+          expect(livechatType).toEqual('websocket');
         });
       });
 
       describe('reset', () => {
         it('should reset the saved data to an empty object', () => {
-          localStorage.setItem(Local.names.isLivechatOn, JSON.stringify(true));
-          Local.isLivechatOn.reset();
-          const savedData = JSON.parse(localStorage.getItem(Local.names.isLivechatOn));
-          expect(savedData).toEqual(false);
+          localStorage.setItem(Local.names.livechatType, 'websocket');
+          Local.livechatType.remove();
+          const livechatType = localStorage.getItem(Local.names.livechatType);
+          expect(livechatType).toBeNull();
         });
       });
     });

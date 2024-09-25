@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import useWebsocket, { ReadyState } from 'react-use-websocket';
+import useWebsocket from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
 import { Local } from '../storage';
@@ -11,7 +11,6 @@ import { useConversationHistory } from '../../contexts/ConversationHistoryContex
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useSurvey } from '../../Survey/SurveyProvider';
-import { useDialog } from '../../contexts/DialogContext';
 import { BOT } from '../bot';
 import { buildServletUrl } from '../axios';
 import { decode } from '../cipher';
@@ -19,6 +18,25 @@ import { decode } from '../cipher';
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
 const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
+
+let endLivechat = null;
+let addNewMessageAndNotificationOrResponse = null;
+let decodeAndDisplayNotification = null;
+let showAnimationOperatorWriting = null;
+let leaveWaitingQueue = null;
+let onFailOpenTunnel = null;
+
+const linkToLivechatFunctions = (livechatContextFunctions) => {
+  endLivechat = livechatContextFunctions.endLivechat;
+  addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
+  decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
+  showAnimationOperatorWriting = livechatContextFunctions.showAnimationOperatorWriting;
+  onFailOpenTunnel = livechatContextFunctions.onFailOpenTunnel;
+  leaveWaitingQueue = livechatContextFunctions.leaveWaitingQueue;
+};
+
+let needToAnswerSurvey = false;
+let endPollingReceived = false;
 
 const MESSAGE_TYPE = {
   survey: 'survey',
@@ -37,73 +55,69 @@ const MESSAGE_TYPE = {
   dialogPicked: 'DialogPicked',
 };
 
-let onFail = null;
-let onEndCommunication = null;
-let displayResponseText = null;
-let displayNotificationMessage = null;
-let onOperatorWriting = null;
-
 const completeLivechatPayload = (configuration) =>
   LivechatPayload.addPayloadCommonContent({
     contextId: configuration.contextId || Local.contextId.load(),
     botId: configuration.botId || BOT.id || Local.get(Local.names.botId),
-    space: configuration.api.getSpace() || Local.get(Local.names.space),
-    clientId: configuration.api.getClientId() || Local.get(Local.names.client),
-    language: configuration.api.getLocale() || Local.get(Local.names.locale),
+    space: dydu.getSpace() || Local.get(Local.names.space),
+    clientId: dydu.getClientId() || Local.get(Local.names.client),
+    language: dydu.getLocale() || Local.get(Local.names.locale),
   });
 
 export default function useDyduWebsocket() {
   const { showUploadFileButton } = useUploadFile();
-  const { setLastWebSocketResponse } = useDialog();
   const [socketProps, setSocketProps] = useState([null, {}]);
-  const { lastMessage, sendJsonMessage, readyState } = useWebsocket(socketProps[0], socketProps[1]);
+  const { lastMessage, sendJsonMessage } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
   const { setTopKnowledge, extractPayload } = useTopKnowledge();
   const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
 
-  const messageData = useMemo(() => {
-    if (!isDefined(lastMessage)) return null;
-    setLastWebSocketResponse(JSON.parse(lastMessage?.data));
-    return JSON.parse(lastMessage?.data);
+  const lastMessageData = useMemo(() => {
+    if (lastMessage && lastMessage.data) {
+      return JSON.parse(lastMessage.data);
+    }
+    return null;
   }, [lastMessage]);
 
-  const isOperatorStateNotification = useCallback((messageData) => {
+  const isOperatorStateNotification = useCallback((lastMessageData) => {
     return (
-      LivechatPayload.is.operatorWriting(messageData) ||
-      LivechatPayload.is.operatorBusy(messageData) ||
-      LivechatPayload.is.operatorConnected(messageData) ||
-      LivechatPayload.is.operatorDisconnected(messageData) ||
-      LivechatPayload.is.operatorManuallyTransferredDialog(messageData) ||
-      LivechatPayload.is.operatorAutomaticallyTransferredDialog(messageData)
+      LivechatPayload.is.operatorWriting(lastMessageData) ||
+      LivechatPayload.is.operatorBusy(lastMessageData) ||
+      LivechatPayload.is.operatorConnected(lastMessageData) ||
+      LivechatPayload.is.operatorDisconnected(lastMessageData) ||
+      LivechatPayload.is.operatorManuallyTransferredDialog(lastMessageData) ||
+      LivechatPayload.is.operatorAutomaticallyTransferredDialog(lastMessageData) ||
+      LivechatPayload.is.startLivechat(lastMessageData)
     );
   }, []);
 
   const messageType = useMemo(() => {
-    if (!isDefined(messageData)) return null;
-    if (LivechatPayload.is.leaveWaitingQueue(messageData)) return MESSAGE_TYPE.leaveWaitingQueue;
-    if (LivechatPayload.is.getContextResponse(messageData)) return MESSAGE_TYPE.contextResponse;
-    if (LivechatPayload.is.historyResponse(messageData)) return MESSAGE_TYPE.historyResponse;
-    if (LivechatPayload.is.surveyConfigurationResponse(messageData)) return MESSAGE_TYPE.surveyConfigurationResponse;
-    if (LivechatPayload.is.topKnowledgeResponse(messageData)) return MESSAGE_TYPE.topKnowledge;
-    if (LivechatPayload.is.endPolling(messageData)) return MESSAGE_TYPE.endPolling;
-    if (LivechatPayload.is.operatorSendSurvey(messageData)) return MESSAGE_TYPE.survey;
-    if (LivechatPayload.is.operatorSendUploadRequest(messageData)) return MESSAGE_TYPE.uploadRequest;
-    if (isOperatorStateNotification(messageData)) return MESSAGE_TYPE.notification;
-    if (LivechatPayload.is.dialogPicked(messageData)) return MESSAGE_TYPE.dialogPicked;
+    if (!isDefined(lastMessageData)) return null;
+    if (LivechatPayload.is.leaveWaitingQueue(lastMessageData)) return MESSAGE_TYPE.leaveWaitingQueue;
+    if (LivechatPayload.is.getContextResponse(lastMessageData)) return MESSAGE_TYPE.contextResponse;
+    if (LivechatPayload.is.historyResponse(lastMessageData)) return MESSAGE_TYPE.historyResponse;
+    if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData))
+      return MESSAGE_TYPE.surveyConfigurationResponse;
+    if (LivechatPayload.is.topKnowledgeResponse(lastMessageData)) return MESSAGE_TYPE.topKnowledge;
+    if (LivechatPayload.is.endPolling(lastMessageData)) return MESSAGE_TYPE.endPolling;
+    if (LivechatPayload.is.operatorSendSurvey(lastMessageData)) return MESSAGE_TYPE.survey;
+    if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
+    if (isOperatorStateNotification(lastMessageData)) return MESSAGE_TYPE.notification;
+    if (LivechatPayload.is.dialogPicked(lastMessageData)) return MESSAGE_TYPE.dialogPicked;
     return MESSAGE_TYPE.operatorResponse;
-  }, [isOperatorStateNotification, messageData]);
+  }, [isOperatorStateNotification, lastMessageData]);
 
   const messageText = useMemo(() => {
-    if (!isDefined(messageData)) return null;
-    return messageData?.values?.text?.fromBase64();
-  }, [messageData]);
+    if (!isDefined(lastMessageData)) return null;
+    return lastMessageData.values?.text?.fromBase64();
+  }, [lastMessageData]);
 
   const displayMessage = useCallback(() => {
     if (isDefined(messageText)) {
-      displayResponseText(b64decodeObject(messageData?.values));
+      addNewMessageAndNotificationOrResponse(b64decodeObject(lastMessageData?.values));
 
-      let operator = messageData?.values?.operatorExternalId?.fromBase64();
+      let operator = lastMessageData?.values?.operatorExternalId?.fromBase64();
       if (operator) {
         Local.operator.save(operator);
       }
@@ -115,37 +129,37 @@ export default function useDyduWebsocket() {
       return;
     }
 
-    if (LivechatPayload.is.operatorWriting(messageData) && messageData?.values?.text?.length > 0) {
-      return onOperatorWriting();
+    if (LivechatPayload.is.operatorWriting(lastMessageData) && lastMessageData?.values?.text?.length > 0) {
+      return showAnimationOperatorWriting();
     }
-    displayNotificationMessage(messageData);
-  }, [messageData, messageText]);
+    decodeAndDisplayNotification(lastMessageData);
+  }, [lastMessageData, messageText]);
 
   const _onFail = useCallback(() => {
     console.log('_onFail', 'Failing connection !');
-    if (isDefined(onFail)) onFail();
+    if (isDefined(onFailOpenTunnel)) onFailOpenTunnel();
     flushSocketProps();
   }, [flushSocketProps]);
 
   const flushSocketProps = useCallback(() => {
-    console.log('Flushing Socket Props');
     setSocketProps([null, {}]);
   }, []);
 
   const close = useCallback(() => {
     flushSocketProps();
-    if (onEndCommunication) onEndCommunication();
+    if (endLivechat) endLivechat();
   }, [flushSocketProps]);
 
   useEffect(() => {
     if (!isDefined(messageType)) return;
     switch (messageType) {
       case MESSAGE_TYPE.survey:
+        needToAnswerSurvey = true;
         flushOldSurvey();
-        return sendSurveyConfiguration(b64decode(messageData?.values?.survey));
+        return getSurveyConfiguration(b64decode(lastMessageData?.values?.survey));
 
       case MESSAGE_TYPE.surveyConfigurationResponse:
-        setSurveyConfig(b64dAllFields(messageData?.values));
+        setSurveyConfig(b64dAllFields(lastMessageData?.values));
         return;
 
       case MESSAGE_TYPE.uploadRequest:
@@ -155,43 +169,42 @@ export default function useDyduWebsocket() {
         return displayMessage();
 
       case MESSAGE_TYPE.notification:
-        Local.waitingQueue.save(false);
+        return displayNotification();
+
+      case MESSAGE_TYPE.dialogPicked:
+        leaveWaitingQueue();
         return displayNotification();
 
       case MESSAGE_TYPE.historyResponse:
-        if (!messageData?.values?.interactions || messageData?.values?.interactions?.length === 0) {
-          Local.isLivechatOn.save(false);
-          Local.operator.remove();
+        if (!lastMessageData?.values?.interactions || lastMessageData?.values?.interactions?.length === 0) {
           close();
-        } else if (!history || history?.length === 0) {
-          setHistory(decode(messageData.values).interactions);
+        } else if (!history) {
+          const decodedInteractions = decode(lastMessageData.values).interactions;
+          setHistory(decodedInteractions);
         }
         return;
 
       case MESSAGE_TYPE.topKnowledge:
-        if (messageData) {
-          setTopKnowledge(extractPayload(messageData));
+        if (lastMessageData) {
+          setTopKnowledge(extractPayload(lastMessageData));
         }
         return;
 
       case MESSAGE_TYPE.endPolling:
+        endPollingReceived = true;
         displayNotification();
-        Local.isLivechatOn.save(false);
-        Local.operator.remove();
-        return close();
+        if (!needToAnswerSurvey) {
+          endPollingReceived = false;
+          close();
+        }
+        return;
 
       case MESSAGE_TYPE.leaveWaitingQueue:
         displayNotification();
-        Local.isLivechatOn.save(false);
-        Local.waitingQueue.save(false);
-        Local.operator.remove();
+        leaveWaitingQueue();
         return close();
-
-      case MESSAGE_TYPE.dialogPicked:
-        Local.waitingQueue.save(false);
-        return displayNotification();
     }
-  }, [close, displayMessage, displayNotification, messageData, messageType, showUploadFileButton]);
+  }, [close, displayMessage, displayNotification, lastMessageData, messageType, showUploadFileButton]);
 
   const getSocketConfig = useCallback(() => {
     return {
@@ -220,37 +233,34 @@ export default function useDyduWebsocket() {
     setSocketProps([getSocketUrl(), getSocketConfig()]);
   }, [getSocketConfig, getSocketUrl]);
 
-  const setupOutputs = useCallback((configuration) => {
-    onEndCommunication = configuration.endLivechat;
-    displayResponseText = configuration.displayResponseText;
-    displayNotificationMessage = configuration.displayNotification;
-    onOperatorWriting = configuration.showAnimationOperatorWriting;
-    onFail = configuration.onFail;
-  }, []);
-
   const open = useCallback(
-    (config) => {
+    (livechatContextFunctions) => {
       return new Promise((resolve) => {
-        completeLivechatPayload(config);
-        setupOutputs(config);
+        completeLivechatPayload(livechatContextFunctions);
+        linkToLivechatFunctions(livechatContextFunctions);
         initSocketProps();
         resolve(true);
       });
     },
-    [initSocketProps, setupOutputs],
+    [initSocketProps, linkToLivechatFunctions],
   );
 
   const sendSurvey = useCallback((surveyAnswer) => {
     const message = LivechatPayload.create.surveyAnswerMessage(surveyAnswer);
     try {
+      needToAnswerSurvey = false;
       trySendMessage(message);
       dydu.displaySurveySent(surveyAnswer.reword, {}, 200);
+      if (endPollingReceived) {
+        endPollingReceived = false;
+        close();
+      }
     } catch (e) {
       console.error(e);
     }
   }, []);
 
-  const sendSurveyConfiguration = (surveyId) => {
+  const getSurveyConfiguration = (surveyId) => {
     const message = LivechatPayload.create.surveyConfigurationMessage(surveyId);
     try {
       trySendMessage(message);
@@ -288,10 +298,6 @@ export default function useDyduWebsocket() {
     [sendJsonMessage],
   );
 
-  const isRunning = useMemo(() => isDefined(socketProps[0]), [socketProps]);
-
-  const isConnected = readyState === ReadyState.OPEN;
-
   const onUserTyping = useCallback(
     (userInput) => {
       const message = LivechatPayload.create.userTypingMessage(userInput);
@@ -301,21 +307,13 @@ export default function useDyduWebsocket() {
   );
 
   return {
-    isConnected,
-    isRunning,
     isAvailable: () => isDefined(window.WebSocket),
     mode: TUNNEL_MODE.websocket,
     open,
     send,
-    sendHistory,
-    sendSurveyConfiguration,
     sendSurvey,
     close,
     onUserTyping,
-    displayMessage,
-    displayNotification,
-    displayResponseText,
-    sendJsonMessage,
-    setLastResponse: () => {},
+    setLastPollingResponse: () => {},
   };
 }

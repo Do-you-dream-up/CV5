@@ -26,7 +26,8 @@
     "body": "Si vous souhaitez ré-afficher le bot, veuillez rafraîchir la page.",
     "no": "Annuler",
     "title": "Faire disparaitre le chatbot ?",
-    "yes": "Fermer"
+    "yes": "Fermer",
+    "livechatEnd": "Si vous fermez la fenêtre, vous ne pourrez plus reprendre la conversation avec l'opérateur."
   },
   "contacts": {
     "phone": {
@@ -154,7 +155,8 @@
       "shrink": "Quitter le mode plein écran",
       "tests": "Tests",
       "fontDecrease": "Réduire police",
-      "fontIncrease": "Agrandir police"
+      "fontIncrease": "Agrandir police",
+      "exitLivechat": "Quitter le Livechat"
     },
     "title": "Besoin d'aide ?",
     "logo": "Logo de dydu"
@@ -249,7 +251,10 @@
     },
     "queue": {
       "leaveQueue": "Quitter la file d'attente",
-      "start": "Vous êtes en attente d'un conseiller"
+      "start": "<p>Vous êtes en file d'attente, un opérateur va bientôt vous répondre.</p>",
+      "position": "Position dans la file : {{position}}",
+      "estimation": " - Estimation de votre attente : {{estimation}} minute(s)",
+      "addedToQueueForHistory": "Vous avez été mis en file d'attente"
     }
   }
 }

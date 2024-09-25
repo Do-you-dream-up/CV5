@@ -24,7 +24,7 @@ describe('LivechatProvider', () => {
   };
   beforeEach(() => {
     useSurvey.mockReturnValue({
-      showSurvey: jest.fn(),
+      getSurvey: jest.fn(),
     });
     useDialog.mockReturnValue({
       lastResponse: {},
@@ -67,11 +67,10 @@ describe('LivechatProvider', () => {
 
   it('should provide livechat context', () => {
     const ChildComponent = () => {
-      const { isWebsocket, send, typing, sendSurvey, sendHistory } = useLivechat();
+      const { send, typing, sendSurvey, sendHistory } = useLivechat();
       return (
         <div>
-          <span>{isWebsocket.toString()}</span>
-          <span>{Local.isLivechatOn.load().toString()}</span>
+          <span>{Local.livechatType.load()}</span>
           <button onClick={() => send('test')}>Send</button>
           <button onClick={() => typing('test')}>Typing</button>
           <button onClick={() => sendSurvey('test')}>Send Survey</button>
@@ -88,19 +87,5 @@ describe('LivechatProvider', () => {
     expect(useDyduPolling().send).toBeDefined();
     screen.getByRole('button', { name: 'Typing' }).click();
     screen.getByRole('button', { name: 'Send Survey' }).click();
-  });
-
-  it('should call addResponse', () => {
-    const { result } = renderHook(() => useLivechat(), {
-      wrapper: LivechatProvider,
-    });
-
-    const values = "{ text: 'hello' }";
-
-    act(() => {
-      result.current.displayResponseText(values);
-    });
-
-    expect(useDialog().addResponse).toHaveBeenCalledWith(values);
   });
 });

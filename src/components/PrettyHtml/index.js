@@ -27,7 +27,7 @@ const RE_HREF = /(<a href([^>]+)>)/g;
  *
  * Basically an opinionated reset.
  */
-export default function PrettyHtml({ carousel, children, className, component, html, templateName, type, ...rest }) {
+export default function PrettyHtml({ carousel, children, className, component, html, templatename, type, ...rest }) {
   const [htmlContent, setHtmlContent] = useState(null);
   const customRenderer = useCustomRenderer();
   const classes = useStyles();
@@ -73,7 +73,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
             if (
               elementChild === interactiveElementsArray[0] &&
               !carousel &&
-              knownTemplates.includes(templateName) === false
+              knownTemplates.includes(templatename) === false
             ) {
               elementChild.focus();
             }
@@ -81,7 +81,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
         }
       });
     }
-  }, [carousel, templateName]);
+  }, [carousel, templatename]);
 
   const interactionType = useMemo(() => {
     return type === 'response' ? botName : userName;
@@ -93,12 +93,12 @@ export default function PrettyHtml({ carousel, children, className, component, h
     <>
       {children}
       {<p className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></p>}
-      {templateName === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
-      {(templateName === CAROUSSEL_TEMPLATE || templateName === CAROUSEL_ARRAY_TEMPLATE) && (
+      {templatename === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
+      {(templatename === CAROUSSEL_TEMPLATE || templatename === CAROUSEL_ARRAY_TEMPLATE) && (
         <CarouselTemplate html={htmlContent} />
       )}
-      {templateName === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
-      {!knownTemplates.includes(templateName) && htmlContent && parse(htmlContent, customRenderer)}
+      {templatename === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
+      {!knownTemplates.includes(templatename) && htmlContent && parse(htmlContent, customRenderer)}
     </>,
   );
 }
@@ -113,6 +113,6 @@ PrettyHtml.propTypes = {
   className: PropTypes.string,
   component: PropTypes.elementType,
   html: PropTypes.string,
-  templateName: PropTypes.string,
+  templatename: PropTypes.string,
   type: PropTypes.string,
 };

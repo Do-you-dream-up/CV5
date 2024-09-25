@@ -38,7 +38,7 @@ export default function Bubble({
   sidebar,
   hasSurvey,
   step,
-  templateName,
+  templatename,
   thinking,
   type,
   scrollToBottom,
@@ -179,7 +179,7 @@ export default function Bubble({
               `dydu-bubble-${type}`,
               classes.base,
               classes[type],
-              isDefined(templateName) && templateName !== QUICK_REPLY && 'template-style',
+              isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
               className,
             ),
             id: `dydu-bubble-${type}`,
@@ -188,7 +188,7 @@ export default function Bubble({
           },
           <div tabIndex="-1" className={c('dydu-bubble-body', classes.body)}>
             {(children || html) && (
-              <PrettyHtml children={children} html={html} templateName={templateName} type={type} carousel={carousel} />
+              <PrettyHtml children={children} html={html} templatename={templatename} type={type} carousel={carousel} />
             )}
             {!!actions.length && <Actions actions={actions} className={c('dydu-bubble-actions', classes.actions)} />}
           </div>,
@@ -214,7 +214,7 @@ Bubble.propTypes = {
   sidebar: PropTypes.any,
   hasSurvey: PropTypes.bool,
   step: PropTypes.object,
-  templateName: PropTypes.string,
+  templatename: PropTypes.string,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   scrollToBottom: PropTypes.bool,
