@@ -59,6 +59,7 @@ const InterfaceTunnel = {
   sendSurveyConfiguration: jest.fn(),
   close: jest.fn(),
   isConnected: false,
+  setLastResponse: jest.fn(),
 };
 
 function instanciateHook(hook, ...hookArg) {

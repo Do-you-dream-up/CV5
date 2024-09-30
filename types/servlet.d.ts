@@ -44,6 +44,50 @@ declare namespace Servlet {
     hideRequest?: boolean;
   }
 
+  interface ChatHistoryInteractionSidebar {
+    title?: Base64 | string;
+    content?: Base64 | string;
+    url?: Base64 | string;
+    height?: number;
+    width?: Base64 | string;
+  }
+
+  interface ChatHistoryInteraction {
+    from?: Base64 | string;
+    user?: Base64 | string;
+    text?: Base64 | string;
+    redirectUrl?: Base64 | string;
+    operatorName?: Base64 | string;
+    operatorLastName?: Base64 | string;
+    operatorMail?: Base64 | string;
+    operatorExternalId?: Base64 | string;
+    templateName?: Base64 | string;
+    templateData?: Base64 | string;
+    feedBack?: Base64 | string;
+    feedbackChoiceKey?: Base64 | string;
+    feedbackComment?: Base64 | string;
+    inputsInfo?: Base64 | string;
+    type?: Base64 | string;
+    sidebar?: ChatHistoryInteractionSidebar;
+    date?: string;
+    timestamp?: number;
+    hideRequest?: boolean;
+  }
+
+  export interface ChatHistoryResponse {
+    callbackFunctionName?: Base64 | string;
+    html?: Base64 | string;
+    mustShowFirstMessage?: boolean;
+    dialog?: Base64 | string;
+    interactions?: ChatHistoryInteraction[];
+    livechatEnabled?: boolean;
+    contextId?: Base64 | string;
+    botUUID?: Base64 | string;
+    saml2Assertion?: Base64 | string;
+    serverTime?: number;
+    pollTime?: number;
+  }
+
   export interface ChatResponse {
     values: ChatResponseValues;
     type: ChatResponseType;

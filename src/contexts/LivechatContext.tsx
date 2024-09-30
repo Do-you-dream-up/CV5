@@ -55,7 +55,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     lastWebSocketResponse,
   } = useDialog();
   const { onNewMessage } = useEvent();
-  const { addResponse } = useDialog();
+  const { addResponse, listInteractionHistory } = useDialog();
 
   /* Init isLivechatOn value if not present */
   useEffect(() => {
@@ -163,7 +163,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const startLivechat = (tunnel = null) => {
     const _tunnel = tunnel || findFirstAvailableTunnelInList(tunnelList);
 
-    _tunnel
+    return _tunnel
       ?.open(tunnelInitialConfig)
       .then(() => {
         onSuccessOpenTunnel(_tunnel);
@@ -214,6 +214,22 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     }
   }, [lastResponse]);
 
+  useEffect(() => {
+    if (tunnel) {
+      if (listInteractionHistory && listInteractionHistory.length > 0) {
+        tunnel?.setLastResponse(listInteractionHistory[listInteractionHistory.length - 1]);
+      }
+    }
+  }, [tunnel, listInteractionHistory]);
+
+  useEffect(() => {
+    if (tunnel) {
+      if (lastResponse && Object.keys(lastResponse).length > 0) {
+        tunnel?.setLastResponse(lastResponse);
+      }
+    }
+  }, [tunnel, lastResponse]);
+
   const send = useCallback(
     (userInput, options) => {
       const _tunnel = findFirstAvailableTunnelInList(tunnelList);
@@ -221,7 +237,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       if (isTunnelStillAvailable) {
         tunnel?.send(userInput, options);
       } else {
-        startLivechat(_tunnel);
+        startLivechat(_tunnel)?.then(() => tunnel?.send(userInput, options));
       }
     },
     [tunnel, Local.isLivechatOn.load()],
