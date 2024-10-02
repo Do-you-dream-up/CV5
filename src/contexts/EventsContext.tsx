@@ -12,13 +12,12 @@ import {
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import dotget from '../tools/dotget';
-import { eventNewMessage } from '../events/chatboxIndex';
+import { createEventNewMessages } from '../events/chatboxIndex';
 import { useConfiguration } from './ConfigurationContext';
 import useTabNotification from '../tools/hooks/useBlinkTitle';
-import { useTranslation } from 'react-i18next';
 import { useViewMode } from './ViewModeProvider';
-import { Local } from '../tools/storage';
 import { useShadow } from './ShadowProvider';
+import { Local } from '../tools/storage';
 
 interface EventsContextProps {
   isChatboxLoadedAndReady?: boolean;
@@ -27,7 +26,7 @@ interface EventsContextProps {
   setIsMenuListOpen?: Dispatch<SetStateAction<boolean>>;
   onAppReady?: () => void;
   onChatboxLoaded?: (chatboxNodeElement: any) => void;
-  onNewMessage?: () => void;
+  onNewMessage?: (messageCount: number) => void;
   onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
   event?: (str: string) => void;
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;
@@ -46,7 +45,7 @@ export const EventsContext = createContext<EventsContextProps>({});
 
 export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { isOpen } = useViewMode();
-  const { setTabNotification, clearTabNotification } = useTabNotification();
+  const { setTabNotification, clearTabNotification, setLivechatNotification } = useTabNotification();
   const { configuration } = useConfiguration();
 
   const [event, setEvent] = useState<any | null>();
@@ -56,18 +55,32 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [chatboxRef, setChatboxRef] = useState<any>();
   const [isMenuListOpen, setIsMenuListOpen] = useState<boolean>(false);
   const { shadowAnchor } = useShadow();
+  const [messageCount, setMessageCount] = useState<number>(0);
+
+  const handleMouseEnter = () => {
+    if (Local.isLivechatOn.load()) {
+      clearTabNotification();
+      setMessageCount(0);
+    }
+  };
 
   useEffect(() => {
-    shadowAnchor?.addEventListener('mouseenter', clearTabNotification);
+    shadowAnchor?.addEventListener('mouseenter', handleMouseEnter);
     return () => {
-      shadowAnchor?.removeEventListener('mouseenter', clearTabNotification);
+      shadowAnchor?.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [chatboxRef]);
+  }, [shadowAnchor]);
 
   const onNewMessage = useCallback(() => {
-    if (isOpen) {
-      chatboxRef?.dispatchEvent(eventNewMessage);
-      setTabNotification();
+    if (isOpen && Local.isLivechatOn.load()) {
+      setMessageCount((prevCount) => {
+        const newCount = prevCount + 1;
+        const eventNewMessage = createEventNewMessages(newCount);
+        chatboxRef?.dispatchEvent(eventNewMessage);
+        setLivechatNotification(eventNewMessage.detail.message);
+        setTabNotification();
+        return newCount;
+      });
     }
   }, [isOpen]);
 

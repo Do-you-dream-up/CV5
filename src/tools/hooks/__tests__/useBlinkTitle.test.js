@@ -5,6 +5,7 @@ jest.useFakeTimers();
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Local } from '../../storage';
 
 i18n
   .use(initReactI18next)
@@ -49,6 +50,7 @@ describe('useTabNotification', () => {
 
   test('flash function should display alternatively title and notification', () => {
     const { result } = renderHook(() => useTabNotification());
+    jest.spyOn(Local.isLivechatOn, 'load').mockReturnValue(true);
     document.title = 'Page title';
     const message = 'New Message';
 

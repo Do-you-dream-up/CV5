@@ -17,3 +17,17 @@ export const eventNewMessage = new CustomEvent(CHATBOX_EVENT_NAME.newMessage, {
   bubbles: true,
   cancelable: true,
 });
+
+export const createEventNewMessages = (messageCount: number) => {
+  if (messageCount === 1) {
+    return eventNewMessage;
+  }
+  return new CustomEvent(CHATBOX_EVENT_NAME.newMessage, {
+    detail: {
+      message: `${messageCount} nouveaux messages`,
+      time: new Date(),
+    },
+    bubbles: true,
+    cancelable: true,
+  });
+};
