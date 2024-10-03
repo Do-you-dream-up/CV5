@@ -34,4 +34,5 @@ export default {
   checkCircle: 'check-circle',
   time: 'icon-time',
   caretDown: 'icon-caret-down',
+  exit: 'icon-exit',
 };

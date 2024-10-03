@@ -23,6 +23,8 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
 import useViewport from '../../tools/hooks/useViewport';
+import Button from '../Button/Button';
+import { useLivechat } from '../../contexts/LivechatContext';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -63,6 +65,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
   const moreOptionsRef = useRef(null);
+  const { send } = useLivechat();
 
   useEffect(() => {
     addRgaaRef('moreOptionsRef', moreOptionsRef);
@@ -204,6 +207,13 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     },
   ];
 
+  const shouldDisplayLivechatEnd = Local.isLivechatOn.load() && !Local.waitingQueue.load();
+
+  const leaveLiveChat = () => {
+    send && send('#livechatend#', { hide: true });
+    Local.isLivechatOn.save(false);
+  };
+
   return (
     <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
       <div
@@ -242,6 +252,24 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           {!singleTab && <Tabs />}
           <Banner />
         </>
+      )}
+      {shouldDisplayLivechatEnd && (
+        <Button
+          className={c('dydu-header-button', classes.endLivechat)}
+          onClick={(e) => {
+            e.stopPropagation();
+            leaveLiveChat();
+          }}
+        >
+          <div className={c('dydu-header-buttonContent', classes.buttonContent)}>
+            {'Quitter le Livechat'}
+            <Icon
+              icon={icons?.exit}
+              alt={'exit-livechat'}
+              className={c('dydu-header-endLivechatIcon', classes.endLivechatIcon)}
+            />
+          </div>
+        </Button>
       )}
     </div>
   );
