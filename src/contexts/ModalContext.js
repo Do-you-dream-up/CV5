@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 const OPTIONS = { dismissable: true, variant: 'center' };
 
 export const ModalContext = createContext();
+
 export function ModalProvider({ children }) {
   const [Component, setComponent] = useState(null);
   const [onReject, setOnReject] = useState(null);

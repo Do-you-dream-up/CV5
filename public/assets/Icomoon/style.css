@@ -1,299 +1,392 @@
 @font-face {
-  font-family: 'Dydu-Font-Icon';
-  src: url('fonts/Dydu-Font-Icon.eot?46tx4h');
-  src: url('fonts/Dydu-Font-Icon.eot?46tx4h#iefix') format('embedded-opentype'),
+    font-family: 'Dydu-Font-Icon';
+    src: url('fonts/Dydu-Font-Icon.eot?46tx4h');
+    src: url('fonts/Dydu-Font-Icon.eot?46tx4h#iefix') format('embedded-opentype'),
     url('fonts/Dydu-Font-Icon.ttf?46tx4h') format('truetype'), url('fonts/Dydu-Font-Icon.woff?46tx4h') format('woff'),
     url('fonts/Dydu-Font-Icon.svg?46tx4h#Dydu-Font-Icon') format('svg');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
 }
 
 #dydu-root [class^='dydu-icon'],
 #dydu-root [class^='dydu-icon']:before,
 #dydu-root [class*=' dydu-icon'],
 #dydu-root [class*=' dydu-icon']:before {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'Dydu-Font-Icon' !important;
-  speak: never;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'Dydu-Font-Icon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #dydu-root .icon-power:before {
-  content: '\e957' !important;
+    content: '\e957' !important;
 }
+
 #dydu-root .icon-time:before {
-  content: '\e958' !important;
+    content: '\e958' !important;
 }
+
 #dydu-root .icon-timer:before {
-  content: '\e959' !important;
+    content: '\e959' !important;
 }
+
 #dydu-root .icon-microphon:before {
-  content: '\e952' !important;
+    content: '\e952' !important;
 }
+
 #dydu-root .icon-pause:before {
-  content: '\e953' !important;
+    content: '\e953' !important;
 }
+
 #dydu-root .icon-play:before {
-  content: '\e954' !important;
+    content: '\e954' !important;
 }
+
 #dydu-root .icon-replay:before {
-  content: '\e955' !important;
+    content: '\e955' !important;
 }
+
 #dydu-root .icon-stop:before {
-  content: '\e956' !important;
+    content: '\e956' !important;
 }
+
 #dydu-root .icon-database:before {
-  content: '\e94a' !important;
+    content: '\e94a' !important;
 }
+
 #dydu-root .icon-font-minus:before {
-  content: '\e94b' !important;
+    content: '\e94b' !important;
 }
+
 #dydu-root .icon-printer:before {
-  content: '\e94c' !important;
+    content: '\e94c' !important;
 }
+
 #dydu-root .icon-loading:before {
-  content: '\e94d' !important;
+    content: '\e94d' !important;
 }
+
 #dydu-root .icon-font-plus:before {
-  content: '\e94e' !important;
+    content: '\e94e' !important;
 }
+
 #dydu-root .icon-open-in-new:before {
-  content: '\e94f' !important;
+    content: '\e94f' !important;
 }
+
 #dydu-root .icon-shield-lock:before {
-  content: '\e950' !important;
+    content: '\e950' !important;
 }
+
 #dydu-root .icon-email-send:before {
-  content: '\e951' !important;
+    content: '\e951' !important;
 }
+
 #dydu-root .icon-Visible:before {
-  content: '\e948' !important;
+    content: '\e948' !important;
 }
+
 #dydu-root .icon-Invisible:before {
-  content: '\e949' !important;
+    content: '\e949' !important;
 }
+
 #dydu-root .icon-chatbox_reduire:before {
-  content: '\e941' !important;
+    content: '\e941' !important;
 }
+
 #dydu-root .icon-chatbox_phone:before {
-  content: '\e942' !important;
+    content: '\e942' !important;
 }
+
 #dydu-root .icon-chatbox_mail:before {
-  content: '\e943' !important;
+    content: '\e943' !important;
 }
+
 #dydu-root .icon-chatbox_account:before {
-  content: '\e944' !important;
+    content: '\e944' !important;
 }
+
 #dydu-root .icon-chatbox_conversation:before {
-  content: '\e945' !important;
+    content: '\e945' !important;
 }
+
 #dydu-root .icon-chatbox_contact:before {
-  content: '\e946' !important;
+    content: '\e946' !important;
 }
+
 #dydu-root .icon-chatbox_option:before {
-  content: '\e947' !important;
+    content: '\e947' !important;
 }
+
 #dydu-root .icon-calendar:before {
-  content: '\e937' !important;
+    content: '\e937' !important;
 }
+
 #dydu-root .icon-dynamic:before {
-  content: '\e938' !important;
+    content: '\e938' !important;
 }
+
 #dydu-root .icon-equalizer:before {
-  content: '\e939' !important;
+    content: '\e939' !important;
 }
+
 #dydu-root .icon-feather:before {
-  content: '\e93a' !important;
+    content: '\e93a' !important;
 }
+
 #dydu-root .icon-flag:before {
-  content: '\e93b' !important;
+    content: '\e93b' !important;
 }
+
 #dydu-root .icon-handle:before {
-  content: '\e93c' !important;
+    content: '\e93c' !important;
 }
+
 #dydu-root .icon-headphones:before {
-  content: '\e93d' !important;
+    content: '\e93d' !important;
 }
+
 #dydu-root .icon-info-bulle:before {
-  content: '\e93e' !important;
+    content: '\e93e' !important;
 }
+
 #dydu-root .icon-junction:before {
-  content: '\e93f' !important;
+    content: '\e93f' !important;
 }
+
 #dydu-root .icon-whatsapp:before {
-  content: '\e940' !important;
+    content: '\e940' !important;
 }
+
 #dydu-root .icon-dots:before {
-  content: '\e936' !important;
+    content: '\e936' !important;
 }
+
 #dydu-root .icon-branche:before {
-  content: '\e935' !important;
+    content: '\e935' !important;
 }
+
 #dydu-root .icon-color-picker:before {
-  content: '\e934' !important;
+    content: '\e934' !important;
 }
+
 #dydu-root .icon-arrow-down:before {
-  content: '\e900' !important;
+    content: '\e900' !important;
 }
+
 #dydu-root .icon-arrow-left:before {
-  content: '\e901' !important;
+    content: '\e901' !important;
 }
+
 #dydu-root .icon-arrow-right:before {
-  content: '\e902' !important;
+    content: '\e902' !important;
 }
+
 #dydu-root .icon-arrow-up:before {
-  content: '\e903' !important;
+    content: '\e903' !important;
 }
+
 #dydu-root .icon-caret-down:before {
-  content: '\e904' !important;
+    content: '\e904' !important;
 }
+
 #dydu-root .icon-caret-left:before {
-  content: '\e905' !important;
+    content: '\e905' !important;
 }
+
 #dydu-root .icon-caret-right:before {
-  content: '\e906' !important;
+    content: '\e906' !important;
 }
+
 #dydu-root .icon-caret-up:before {
-  content: '\e907' !important;
+    content: '\e907' !important;
 }
+
 #dydu-root .icon-add:before {
-  content: '\e908' !important;
+    content: '\e908' !important;
 }
+
 #dydu-root .icon-check:before {
-  content: '\e909' !important;
+    content: '\e909' !important;
 }
+
 #dydu-root .icon-close:before {
-  content: '\e90a' !important;
+    content: '\e90a' !important;
 }
+
 #dydu-root .icon-add-to-list:before {
-  content: '\e90b' !important;
+    content: '\e90b' !important;
 }
+
 #dydu-root .icon-bell:before {
-  content: '\e90c' !important;
+    content: '\e90c' !important;
 }
+
 #dydu-root .icon-bookmark:before {
-  content: '\e90d' !important;
+    content: '\e90d' !important;
 }
+
 #dydu-root .icon-chart:before {
-  content: '\e90e' !important;
+    content: '\e90e' !important;
 }
+
 #dydu-root .icon-chat-bubble:before {
-  content: '\e90f' !important;
+    content: '\e90f' !important;
 }
+
 #dydu-root .icon-check-circle:before {
-  content: '\e910' !important;
+    content: '\e910' !important;
 }
+
 #dydu-root .icon-close-circle:before {
-  content: '\e911' !important;
+    content: '\e911' !important;
 }
+
 #dydu-root .icon-warning:before {
-  content: '\e912' !important;
+    content: '\e912' !important;
 }
+
 #dydu-root .icon-info:before {
-  content: '\e913' !important;
+    content: '\e913' !important;
 }
+
 #dydu-root .icon-code:before {
-  content: '\e914' !important;
+    content: '\e914' !important;
 }
+
 #dydu-root .icon-contact-book:before {
-  content: '\e915' !important;
+    content: '\e915' !important;
 }
+
 #dydu-root .icon-copy:before {
-  content: '\e916' !important;
+    content: '\e916' !important;
 }
+
 #dydu-root .icon-download:before {
-  content: '\e917' !important;
+    content: '\e917' !important;
 }
+
 #dydu-root .icon-eraser:before {
-  content: '\e918' !important;
+    content: '\e918' !important;
 }
+
 #dydu-root .icon-excel:before {
-  content: '\e919' !important;
+    content: '\e919' !important;
 }
+
 #dydu-root .icon-eye:before {
-  content: '\e91a' !important;
+    content: '\e91a' !important;
 }
+
 #dydu-root .icon-hand:before {
-  content: '\e91b' !important;
+    content: '\e91b' !important;
 }
+
 #dydu-root .icon-instagram:before {
-  content: '\e91c' !important;
+    content: '\e91c' !important;
 }
+
 #dydu-root .icon-key:before {
-  content: '\e91d' !important;
+    content: '\e91d' !important;
 }
+
 #dydu-root .icon-keyboard:before {
-  content: '\e91e' !important;
+    content: '\e91e' !important;
 }
+
 #dydu-root .icon-link:before {
-  content: '\e91f' !important;
+    content: '\e91f' !important;
 }
+
 #dydu-root .icon-magnifier:before {
-  content: '\e920' !important;
+    content: '\e920' !important;
 }
+
 #dydu-root .icon-mail:before {
-  content: '\e921' !important;
+    content: '\e921' !important;
 }
+
 #dydu-root .icon-masks:before {
-  content: '\e922' !important;
+    content: '\e922' !important;
 }
+
 #dydu-root .icon-maximize:before {
-  content: '\e923' !important;
+    content: '\e923' !important;
 }
+
 #dydu-root .icon-messenger:before {
-  content: '\e924' !important;
+    content: '\e924' !important;
 }
+
 #dydu-root .icon-minimize:before {
-  content: '\e925' !important;
+    content: '\e925' !important;
 }
+
 #dydu-root .icon-palette:before {
-  content: '\e926' !important;
+    content: '\e926' !important;
 }
+
 #dydu-root .icon-pencil:before {
-  content: '\e927' !important;
+    content: '\e927' !important;
 }
+
 #dydu-root .icon-profile:before {
-  content: '\e928' !important;
+    content: '\e928' !important;
 }
+
 #dydu-root .icon-puzzle:before {
-  content: '\e929' !important;
+    content: '\e929' !important;
 }
+
 #dydu-root .icon-send:before {
-  content: '\e92a' !important;
+    content: '\e92a' !important;
 }
+
 #dydu-root .icon-signature:before {
-  content: '\e92b' !important;
+    content: '\e92b' !important;
 }
+
 #dydu-root .icon-star:before {
-  content: '\e92c' !important;
+    content: '\e92c' !important;
 }
+
 #dydu-root .icon-switch:before {
-  content: '\e92d' !important;
+    content: '\e92d' !important;
 }
+
 #dydu-root .icon-target:before {
-  content: '\e92e' !important;
+    content: '\e92e' !important;
 }
+
 #dydu-root .icon-thumb-down:before {
-  content: '\e92f' !important;
+    content: '\e92f' !important;
 }
+
 #dydu-root .icon-thumb-up:before {
-  content: '\e930' !important;
+    content: '\e930' !important;
 }
+
 #dydu-root .icon-translate:before {
-  content: '\e931' !important;
+    content: '\e931' !important;
 }
+
 #dydu-root .icon-trash:before {
-  content: '\e932' !important;
+    content: '\e932' !important;
 }
+
 #dydu-root .icon-upload:before {
-  content: '\e933' !important;
+    content: '\e933' !important;
+}
+
+#dydu-root .icon-exit:before {
+    content: "\ea14" !important;
 }
