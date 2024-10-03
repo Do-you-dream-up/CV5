@@ -83,8 +83,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const leaveLiveChatQueue = () => {
     send && send('#livechatleavequeue#', { hide: true });
-    Local.waitingQueue.save(false);
-    endLivechat && endLivechat();
   };
 
   useEffect(() => {
