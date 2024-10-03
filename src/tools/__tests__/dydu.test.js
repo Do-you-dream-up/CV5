@@ -440,7 +440,7 @@ describe('dydu.js', function () {
       spied.getContextId.mockResolvedValue('');
 
       // WHEN
-      await dydu.poll({ pollTime: 123456 });
+      await dydu.poll({ pollUpdatedInteractionDate: 123456 });
 
       // THEN
       const paramPosition = 1;
@@ -451,7 +451,7 @@ describe('dydu.js', function () {
     it('should use form url encoded', async () => {
       //GIVEN
       // WHEN
-      await dydu.poll({ pollTime: 123456 });
+      await dydu.poll({ pollUpdatedInteractionDate: 123456 });
 
       // THEN
       expect(emit).toHaveBeenCalled();
@@ -473,7 +473,7 @@ describe('dydu.js', function () {
       spied.getSpace.mockReturnValue('');
 
       // WHEN
-      await dydu.poll({ contextId: '', pollTime: 123456 });
+      await dydu.poll({ contextId: '', pollUpdatedInteractionDate: 123456 });
 
       // THEN
       const paramPosition = 2;
