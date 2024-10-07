@@ -1,5 +1,4 @@
 import { MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-
 import Draggable from 'react-draggable';
 import Skeleton from '../Skeleton';
 import { UserActionContext } from '../../contexts/UserActionContext';
@@ -57,6 +56,8 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
   const voice: boolean | undefined = configuration?.Voice ? configuration?.Voice.enable : false;
   const [isCommandHandled, setIsCommandHandled] = useState<boolean>(false);
   const [buttonPressTimer, setButtonPressTimer] = useState<number>();
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const positionRef = useRef(position);
 
   // DISPLAY TEASER TYPE
   const { AVATAR_AND_TEXT, AVATAR_ONLY, TEXT_ONLY } = TEASER_TYPES;
@@ -128,8 +129,36 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     ) : null;
   }, [configuration]);
 
+  // Origin (x:0, y:0) is positioned at the bottom-right corner
+  const handleResize = () => {
+    const rect = teaserRef.current.getBoundingClientRect();
+    let newX = positionRef.current.x;
+    let newY = positionRef.current.y;
+    if (rect.left < 0) {
+      newX = positionRef.current.x - rect.left;
+    }
+    if (rect.top < 0) {
+      newY = positionRef.current.y - rect.top;
+    }
+    if (newY != positionRef.current.y || newX != positionRef.current.x) {
+      setPosition({ x: newX, y: newY });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const handleDrag = (_e: any, data: { x: any; y: any }) => {
+    positionRef.current = position;
+    setPosition({ x: data.x, y: data.y });
+  };
+
   return (
-    <Draggable disabled={!isDraggable} bounds="html">
+    <Draggable disabled={!isDraggable} bounds="html" position={position} onDrag={handleDrag}>
       <div
         data-testid="teaser-chatbot"
         className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
