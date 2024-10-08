@@ -77,6 +77,30 @@ export default function Dragon({ component, reset, ...rest }) {
     setOffset({ x: 0, y: 0 });
   }, []);
 
+  // Origin (x:0, y:0) is positioned at the bottom-right corner
+  const adjustChatboxPositionOnWindowBounds = () => {
+    if (current) {
+      const rect = root.current.getBoundingClientRect();
+      let newY = current.y;
+      let newX = current.x;
+      if (current.y > 0) {
+        newY = 0;
+      }
+      if (current.x > 0) {
+        newX = 0;
+      }
+      if (rect.left < 0) {
+        newX = current.x + -rect.left;
+      }
+      if (current.x !== newX || current.y !== newY) {
+        setCurrent(() => ({
+          x: newX,
+          y: newY,
+        }));
+      }
+    }
+  };
+
   useEffect(() => {
     if (current && persist) {
       Local.set(Local.names.dragon, current);
@@ -90,6 +114,7 @@ export default function Dragon({ component, reset, ...rest }) {
 
   useEvent('mousemove', onDrag);
   useEvent('mouseup', onDragEnd);
+  useEvent('resize', adjustChatboxPositionOnWindowBounds);
 
   const transform =
     !!current && !reset
