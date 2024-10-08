@@ -64,7 +64,7 @@ export default createUseStyles((theme) => ({
     lineHeight: '1.7em',
     padding: [['.4em', '3em', '.4em', '13px']], // DEBT
     whiteSpace: 'pre-wrap',
-    width: '105%',
+    width: '100%',
     wordBreak: 'break-word',
   },
 
