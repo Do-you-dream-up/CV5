@@ -84,7 +84,7 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
 
   const handleButtonPress = useCallback(
     (e) => {
-      if (e.button !== 0) return;
+      if (e.button === 2) return;
       if (buttonPressTimer) clearTimeout(buttonPressTimer);
 
       setButtonPressTimer(setTimeout(handleLongPress, 250, e));
@@ -96,7 +96,7 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
 
   const handleButtonRelease = useCallback(
     (e) => {
-      if (e.button !== 0) return;
+      if (e.button === 2) return;
       if (!isCommandHandled) {
         openChatboxOnClickOrTouch();
         //isCommandHandled isn't updated here, as a result logic is executed always
