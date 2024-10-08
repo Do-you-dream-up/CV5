@@ -84,6 +84,7 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
 
   const handleButtonPress = useCallback(
     (e) => {
+      if (e.button !== 0) return;
       if (buttonPressTimer) clearTimeout(buttonPressTimer);
 
       setButtonPressTimer(setTimeout(handleLongPress, 250, e));
@@ -93,16 +94,20 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     [buttonPressTimer, handleLongPress],
   );
 
-  const handleButtonRelease = useCallback(() => {
-    if (!isCommandHandled) {
-      openChatboxOnClickOrTouch();
-      //isCommandHandled isn't updated here, as a result logic is executed always
-      // got regular click, not long press
-      setIsCommandHandled(true);
-    }
+  const handleButtonRelease = useCallback(
+    (e) => {
+      if (e.button !== 0) return;
+      if (!isCommandHandled) {
+        openChatboxOnClickOrTouch();
+        //isCommandHandled isn't updated here, as a result logic is executed always
+        // got regular click, not long press
+        setIsCommandHandled(true);
+      }
 
-    clearTimeout(buttonPressTimer);
-  }, [buttonPressTimer, isCommandHandled, openChatboxOnClickOrTouch]);
+      clearTimeout(buttonPressTimer);
+    },
+    [buttonPressTimer, isCommandHandled, openChatboxOnClickOrTouch],
+  );
 
   const onKeyDown = (event) => {
     if (event.keyCode === 32 || event.keyCode === 13) {
