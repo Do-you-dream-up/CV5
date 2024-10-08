@@ -1,12 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Local } from '../storage';
 
 export function useTabNotification(interval = 1000) {
-  let pageTitle = document.title;
+  const pageTitleRef = useRef(document.title);
   const { t } = useTranslation('translation');
-  const livechatNotification = t('livechat.notif.newMessage');
+  const [livechatNotification, setLivechatNotification] = useState<string>(t('livechat.notif.newMessage'));
   const [flashingNotificationActivated, setFlashingNotificationActivated] = useState(false);
   const notificationIntervalId = useRef<any>();
+  const notificationPattern = /\d+ nouveau(x)? message(s)?/;
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const newTitle = document.title;
+
+      if (!notificationPattern.test(newTitle)) {
+        pageTitleRef.current = newTitle;
+      }
+    });
+
+    const titleElement = document.querySelector('title');
+    if (titleElement) {
+      observer.observe(titleElement, { childList: true });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    stopNotifying();
+    startNotifying();
+  }, [livechatNotification]);
 
   function setTabNotification() {
     setFlashingNotificationActivated(true);
@@ -19,18 +43,18 @@ export function useTabNotification(interval = 1000) {
   }
 
   function changeOrKeepTitlePage() {
-    if (document.title !== pageTitle) {
-      if (document.title !== '' && document.title != livechatNotification) {
-        pageTitle = document.title;
-      } else {
-        document.title = pageTitle;
-      }
+    if (document.title !== '' && !document.title.match(notificationPattern)) {
+      pageTitleRef.current = document.title;
+    } else {
+      document.title = pageTitleRef.current;
     }
-    return pageTitle;
+    return pageTitleRef.current;
   }
 
   useEffect(() => {
-    if (!notificationIntervalId.current && flashingNotificationActivated) startNotifying();
+    if (!notificationIntervalId.current && flashingNotificationActivated) {
+      startNotifying();
+    }
   }, [flashingNotificationActivated]);
 
   function startNotifying() {
@@ -38,10 +62,12 @@ export function useTabNotification(interval = 1000) {
   }
 
   function displayAlternativelyPageTitleAndNotification() {
-    if (document.title === livechatNotification) {
-      document.title = pageTitle;
-    } else {
-      document.title = livechatNotification;
+    if (Local.isLivechatOn.load()) {
+      if (document.title === livechatNotification) {
+        document.title = pageTitleRef.current;
+      } else {
+        document.title = livechatNotification;
+      }
     }
     return document.title;
   }
@@ -52,12 +78,13 @@ export function useTabNotification(interval = 1000) {
   }
 
   return {
-    pageTitle,
+    pageTitle: pageTitleRef.current,
     changeOrKeepTitlePage,
     setTabNotification,
     clearTabNotification,
     notificationIntervalId,
     displayAlternativelyPageTitleAndNotification,
+    setLivechatNotification,
   };
 }
 
