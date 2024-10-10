@@ -1,6 +1,6 @@
 import { DialogContext } from '../../contexts/DialogContext';
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import useStyles from './styles';
 
 const Zoom = ({ src }) => {
@@ -8,6 +8,14 @@ const Zoom = ({ src }) => {
   const { setZoomSrc } = useContext(DialogContext);
 
   const closeZoom = () => setZoomSrc(null);
+
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
 
   return (
     <div className={classes.zoom} onClick={closeZoom}>
