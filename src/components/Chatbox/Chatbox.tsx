@@ -131,7 +131,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         options.type !== E_QUESTION_TYPE.redirection &&
         options.type !== E_QUESTION_TYPE.redirection_newpage &&
         options.type !== E_QUESTION_TYPE.redirection_invalidlink &&
-        (options.type?.startsWith('redirection') || options.type?.startsWith('reword'))
+        (options.type?.startsWith('redirection') ||
+          options.type?.startsWith('reword') ||
+          options.type?.startsWith('ask'))
       ) {
         addRequest && addRequest(text);
       }
