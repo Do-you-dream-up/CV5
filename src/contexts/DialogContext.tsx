@@ -359,7 +359,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
       if (isStartLivechatResponse(response)) return displayNotification(response);
       if (isStartWaitingResponse(response)) {
         Local.waitingQueue.save(true);
-        // Need to be fix in Back to remove line 361 and use the good text in back response
         response.text = t('livechat.queue.start');
         return displayNotification(response);
       }

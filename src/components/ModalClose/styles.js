@@ -14,4 +14,8 @@ export default createUseStyles({
   title: () => ({
     textAlign: 'center',
   }),
+  liveChatEnd: () => ({
+    textAlign: 'center',
+    color: 'red',
+  }),
 });

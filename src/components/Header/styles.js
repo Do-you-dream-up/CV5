@@ -77,4 +77,32 @@ export default createUseStyles((theme) => ({
     margin: 0,
     width: '100%',
   }),
+  endLivechat: () => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    cursor: 'pointer',
+    backgroundColor: 'white',
+    color: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+      color: 'white',
+    },
+  }),
+
+  buttonContent: () => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    textAlign: 'center',
+  }),
+
+  endLivechatIcon: () => ({
+    marginLeft: '8px',
+    fontSize: '16px',
+  }),
 }));
