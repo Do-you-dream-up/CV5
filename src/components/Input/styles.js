@@ -98,7 +98,7 @@ export default createUseStyles((theme) => ({
   root: () => ({
     display: 'flex',
     flex: 'auto',
-    height: '100%',
+    height: '40px',
     borderRadius: theme?.shape?.radius?.inner,
     overflow: 'hidden',
     '&:focus': {
