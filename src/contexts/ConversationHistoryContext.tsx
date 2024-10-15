@@ -33,8 +33,8 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
       if (interactions) {
         if (isLivechatOn && livechatType === TUNNEL_MODE.polling) {
           for (const interaction of interactions) {
-            if (!interaction.pollTime) {
-              interaction.pollTime = interaction.timestamp;
+            if (!interaction.pollUpdatedInteractionDate) {
+              interaction.pollUpdatedInteractionDate = interaction.timestamp;
             }
           }
         }

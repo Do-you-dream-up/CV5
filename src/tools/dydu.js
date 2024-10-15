@@ -521,14 +521,14 @@ export default new (class Dydu {
     return fetch(path).then((r) => r.json());
   };
 
-  poll = async ({ serverTime, pollTime, contextId, context }) => {
+  poll = async ({ serverTime, pollUpdatedInteractionDate, contextId, context }) => {
     const data = {
       solutionUsed: SOLUTION_TYPE.livechat,
       format: RESPONSE_QUERY_FORMAT.json,
       space: this.getSpace(),
       contextUuid: contextId || context?.fromBase64() || this.contextId,
       language: this.getLocale(),
-      lastPoll: pollTime || serverTime,
+      lastPoll: pollUpdatedInteractionDate || serverTime,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
 

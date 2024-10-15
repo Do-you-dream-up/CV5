@@ -85,7 +85,7 @@ declare namespace Servlet {
     botUUID?: Base64 | string;
     saml2Assertion?: Base64 | string;
     serverTime?: number;
-    pollTime?: number;
+    pollUpdatedInteractionDate?: number;
   }
 
   export interface ChatResponse {

@@ -123,7 +123,7 @@ export default function useDyduPolling() {
       api
         .poll(lastResponse)
         .then((pollResponse) => {
-          if (pollResponse?.pollTime) {
+          if (pollResponse?.pollUpdatedInteractionDate) {
             setLastResponse(pollResponse);
           }
           const handler = getHandler(pollResponse);
