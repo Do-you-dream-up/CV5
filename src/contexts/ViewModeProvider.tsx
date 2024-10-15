@@ -30,17 +30,19 @@ const ViewModeContext = createContext<ViewModeContextProps>({});
 export default function ViewModeProvider({ children }: ViewModeProviderProps) {
   const { configuration } = useConfiguration();
 
-  const [viewMode, updateViewMode] = useLocalStorage<any>(Local.names.open);
+  const [viewMode, updateViewMode, removeViewMode] = useLocalStorage<any>(Local.names.open);
   const defaultMode = useMemo(() => parseInt(viewMode) || configuration?.application.open, [viewMode]);
   const [mode, setMode] = useState<any>(defaultMode);
 
-  const isOpen = useMemo(() => mode && mode > VIEW_MODE.minimize, [mode]);
-  const isFull = useMemo(() => mode && mode === VIEW_MODE.full, [mode]);
-  const isPopin = useMemo(() => mode && mode === VIEW_MODE.popin, [mode]);
-  const isClose = useMemo(() => mode && mode === VIEW_MODE.close, [mode]);
-  const isMinimize = useMemo(() => mode && mode === VIEW_MODE.minimize, [mode]);
+  const isFull = mode && mode === VIEW_MODE.full;
+  const isPopin = mode && mode === VIEW_MODE.popin;
+  const isClose = mode && mode === VIEW_MODE.close;
+  const isMinimize = mode === null || mode === undefined || mode === VIEW_MODE.minimize;
+  const isOpen = isPopin || isFull;
 
-  const toggle = useCallback((val: number) => () => setMode(~~val), []);
+  const toggle = (val: number) => {
+    setMode(~~val);
+  };
 
   const close = useCallback(() => {
     !isClose && setMode(VIEW_MODE.close);
@@ -59,8 +61,13 @@ export default function ViewModeProvider({ children }: ViewModeProviderProps) {
   }, [isMinimize]);
 
   useEffect(() => {
-    Local.viewMode.save(mode);
-    updateViewMode(mode);
+    if (mode !== VIEW_MODE.minimize) {
+      Local.viewMode.save(mode);
+      updateViewMode(mode);
+    } else {
+      Local.viewMode.remove(mode);
+      removeViewMode();
+    }
   }, [mode]);
 
   useEffect(() => {

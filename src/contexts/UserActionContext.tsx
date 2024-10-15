@@ -1,15 +1,27 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, ReactElement, useContext, useEffect, useState } from 'react';
 
-import PropTypes from 'prop-types';
 import { useShadow } from './ShadowProvider';
 
 /* THIS CONTEXT IS USED TO CHECK WHETHER THE USER IS NAVIGATING VIA CLICKS OR TAB KEY FOR ACCESSIBILITY REASONS */
 
+interface UserActionProps {
+  tabbing?: boolean;
+  shiftPressed?: boolean;
+  addRgaaRef?: (name: string, ref) => void;
+  getRgaaRef?: (ref) => any;
+  rgaaRef?: any;
+  removeRgaaRef?: (name: string) => void;
+}
+
+interface UserActionProviderProps {
+  children?: ReactElement;
+}
+
 export const useUserAction = () => useContext(UserActionContext);
 
-export const UserActionContext = createContext();
+export const UserActionContext = createContext<UserActionProps>({});
 
-export function UserActionProvider({ children }) {
+export function UserActionProvider({ children }: UserActionProviderProps) {
   const [tabbing, setTabbing] = useState(false);
   const [tabPressed, setTabPressed] = useState(false);
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -84,7 +96,3 @@ export function UserActionProvider({ children }) {
     />
   );
 }
-
-UserActionProvider.propTypes = {
-  children: PropTypes.object,
-};

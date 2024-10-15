@@ -1,53 +1,13 @@
 import { createUseStyles } from 'react-jss';
 
-export default createUseStyles<any, any>((theme: any): any => ({
-  background: () => ({
-    position: 'absolute',
-  }),
-  iframe: () => ({
-    '& .dydu-actions': {
-      '& button:first-child': {
-        display: 'none',
-      },
-      marginLeft: '10px',
-      marginTop: 0,
-    },
-    '& :first-child': {
-      flexGrow: 1,
-    },
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: '15px',
-  }),
+export default createUseStyles((theme: any) => ({
   root: () => ({
-    '& *': {
-      boxSizing: 'border-box',
-    },
-    '& iframe': {
-      maxWidth: '100%',
-    },
-    '& img': {
-      display: 'block',
-      maxWidth: '100%',
-    },
-    '& p > img': {
-      display: 'inline-block',
-      maxWidth: '100%',
-    },
-    fontFamily: theme.font?.sansSerif,
-    fontSize: 'initial',
-    textAlign: 'initial',
-    lineHeight: 'initial',
-    fontWeight: 'initial',
-    color: 'initial',
-  }),
-  cookiesDisclaimerRoot: () => ({
     fontSize: '16px',
     fontWeight: 'normal',
     marginRight: '5px',
     marginBottom: '5px',
   }),
-  cookiesDisclaimerTitle: () => ({
+  title: () => ({
     fontSize: '18px',
     minWidth: '6.7em',
     maxWidth: '30em',
@@ -64,7 +24,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     },
     zIndex: 1,
   }),
-  cookiesDisclaimerContent: () => ({
+  content: () => ({
     minWidth: '6.7em',
     maxWidth: '30em',
     padding: '.5em .5em',
@@ -78,7 +38,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     },
     zIndex: 1,
   }),
-  cookiesDisclaimerActions: {
+  actions: {
     '& > :not(:last-child)': {
       marginRight: '.5em',
     },

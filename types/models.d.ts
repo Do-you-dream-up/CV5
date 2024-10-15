@@ -13,6 +13,7 @@ declare namespace Models {
     font: Font;
     footer: Footer;
     gdprDisclaimer: GdprDisclaimer;
+    cookiesDisclaimer: CookiesDisclaimer;
     header: Header;
     input: Input;
     interaction: Interaction;
@@ -208,6 +209,10 @@ declare namespace Models {
   }
 
   export interface GdprDisclaimer {
+    enable: boolean;
+  }
+
+  export interface CookiesDisclaimer {
     enable: boolean;
   }
 

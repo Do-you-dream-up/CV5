@@ -1,7 +1,6 @@
-import { MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import Skeleton from '../Skeleton';
-import { UserActionContext } from '../../contexts/UserActionContext';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
@@ -10,10 +9,14 @@ import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import { useUserAction } from '../../contexts/UserActionContext';
+import { VIEW_MODE } from '../../tools/constants';
 
 interface TeaserProps {
-  open?: boolean;
-  toggle?: any;
+  id?: string;
+  toggle?: (mode: number) => void;
+  openDisclaimer?: boolean;
+  disclaimer?: any;
 }
 
 const TEASER_TYPES = {
@@ -25,19 +28,17 @@ const TEASER_TYPES = {
 /**
  * Minified version of the chatbox.
  */
-const Teaser = ({ open, toggle }: TeaserProps) => {
+const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   const { configuration } = useConfiguration();
 
   const isDragActive: boolean | undefined = configuration?.dragon?.active;
-
-  const isDraggable: boolean | undefined = useMemo(() => isDragActive, [isDragActive]);
 
   const { isMinimize } = useViewMode();
 
   const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
-  const { tabbing } = useContext(UserActionContext) || false;
+  const { tabbing } = useUserAction();
   const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
   const teaserRef = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -68,10 +69,10 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
       ? AVATAR_AND_TEXT
       : configuration?.teaser?.displayType;
 
-  const openChatboxOnClickOrTouch = useCallback(() => {
+  const openChatboxOnClickOrTouch = () => {
     event && event('onClick');
-    toggle(2)();
-  }, [event, toggle]);
+    toggle && toggle(VIEW_MODE.popin);
+  };
 
   useEffect(() => {
     if (isMinimize && tabbing) {
@@ -79,36 +80,30 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     }
   }, [isMinimize, tabbing, teaserRef]);
 
-  const handleLongPress = useCallback(() => {
+  const handleLongPress = () => {
     setIsCommandHandled(true);
-  }, []);
+  };
 
-  const handleButtonPress = useCallback(
-    (e) => {
-      if (e.button === 2) return;
-      if (buttonPressTimer) clearTimeout(buttonPressTimer);
+  const handleButtonPress = (e) => {
+    if (e.button === 2) return;
+    if (buttonPressTimer) clearTimeout(buttonPressTimer);
 
-      setButtonPressTimer(setTimeout(handleLongPress, 250, e));
+    setButtonPressTimer(setTimeout(handleLongPress, 250, e));
 
-      setIsCommandHandled(false);
-    },
-    [buttonPressTimer, handleLongPress],
-  );
+    setIsCommandHandled(false);
+  };
 
-  const handleButtonRelease = useCallback(
-    (e) => {
-      if (e.button === 2) return;
-      if (!isCommandHandled) {
-        openChatboxOnClickOrTouch();
-        //isCommandHandled isn't updated here, as a result logic is executed always
-        // got regular click, not long press
-        setIsCommandHandled(true);
-      }
+  const handleButtonRelease = (e) => {
+    if (e.button === 2) return;
+    if (!isCommandHandled) {
+      openChatboxOnClickOrTouch();
+      //isCommandHandled isn't updated here, as a result logic is executed always
+      // got regular click, not long press
+      setIsCommandHandled(true);
+    }
 
-      clearTimeout(buttonPressTimer);
-    },
-    [buttonPressTimer, isCommandHandled, openChatboxOnClickOrTouch],
-  );
+    clearTimeout(buttonPressTimer);
+  };
 
   const onKeyDown = (event) => {
     if (event.keyCode === 32 || event.keyCode === 13) {
@@ -117,17 +112,13 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
     }
   };
 
-  const tabIndex: number = parseInt('0', 10);
+  const tabIndex: number = parseInt('1', 10);
 
-  const showVoiceInput: boolean | undefined = useMemo(() => {
-    return dydu.hasUserAcceptedGdpr() && open && voice && disclaimerEnable;
-  }, [open, disclaimerEnable, voice]);
-
-  const renderVoiceInput = useCallback(() => {
-    return showVoiceInput ? (
+  const renderVoiceInput = () => {
+    return dydu.hasUserAcceptedGdpr() && isMinimize && voice && disclaimerEnable ? (
       <Voice configuration={configuration} show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
     ) : null;
-  }, [configuration]);
+  };
 
   // Origin (x:0, y:0) is positioned at the bottom-right corner
   const handleResize = () => {
@@ -158,43 +149,46 @@ const Teaser = ({ open, toggle }: TeaserProps) => {
   };
 
   return (
-    <Draggable disabled={!isDraggable} bounds="html" position={position} onDrag={handleDrag}>
+    <Draggable disabled={!isDragActive} bounds="html" position={position} onDrag={handleDrag}>
       <div
-        data-testid="teaser-chatbot"
-        className={c('dydu-teaser', classes.root, { [classes.hidden]: !open })}
-        id="dydu-teaser"
-        aria-labelledby="teaser-chatbot"
+        data-testid={id}
+        className={c('dydu-teaser', classes.root, { [classes.hidden]: !isMinimize })}
+        id={id}
+        aria-labelledby={id + '-chatbot'}
       >
-        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)} id="teaser-chatbot">
-          <div
-            onMouseDown={handleButtonPress}
-            onMouseUp={handleButtonRelease}
-            onKeyDown={onKeyDown}
-            onTouchStart={handleButtonPress}
-            onTouchEnd={handleButtonRelease}
-            title={mouseover}
-            role="button"
-            tabIndex={tabIndex}
-            ref={teaserRef}
-            className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
-              [classes.hideOutline]: !tabbing,
-            })}
-          >
-            {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
-              <p className={c('dydu-teaser-button', classes.button)}>
-                <Skeleton children={title} hide={!ready} width="3em" />
-              </p>
-            )}
-            {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
-              <div
-                className={c('dydu-teaser-brand', classes.brand, teaserAvatarBackground && classes.backgroundAvatar)}
-              >
-                <h1>{titleHidden}</h1>
-                <img onKeyDown={onKeyDown} alt="" src={logoTeaser} />
-              </div>
-            )}
+        <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)} id={id + '-chatbot'}>
+          {openDisclaimer && disclaimer ? disclaimer() : null}
+          <div className={c('dydu-teaser-container-content', classes.dyduTeaserContainerContent)}>
+            <div
+              onMouseDown={handleButtonPress}
+              onMouseUp={handleButtonRelease}
+              onKeyDown={onKeyDown}
+              onTouchStart={handleButtonPress}
+              onTouchEnd={handleButtonRelease}
+              title={mouseover}
+              role="button"
+              tabIndex={tabIndex}
+              ref={teaserRef}
+              className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
+                [classes.hideOutline]: !tabbing,
+              })}
+            >
+              {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
+                <p className={c('dydu-teaser-button', classes.button)}>
+                  <Skeleton children={title} hide={!ready} width="3em" />
+                </p>
+              )}
+              {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
+                <div
+                  className={c('dydu-teaser-brand', classes.brand, teaserAvatarBackground && classes.backgroundAvatar)}
+                >
+                  <h1>{titleHidden}</h1>
+                  <img onKeyDown={onKeyDown} alt="" src={logoTeaser} />
+                </div>
+              )}
+            </div>
+            {renderVoiceInput()}
           </div>
-          {renderVoiceInput()}
         </div>
       </div>
     </Draggable>

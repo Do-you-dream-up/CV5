@@ -63,6 +63,27 @@
       ]
     }
   },
+  "cookies": {
+    "disclaimer": {
+      "title": "Cookies Usage",
+      "body": [
+        {
+          "text": "This application does not use any marketing or advertising cookies."
+        },
+        {
+          "text": "All cookies stored by this application are essential for its proper functioning."
+        },
+        {
+          "text": "The cookies help maintain your session, store preferences, and ensure the smooth operation of the service."
+        },
+        {
+          "text": "Please note that refusing these cookies will prevent the application from working."
+        }
+      ],
+      "cancel": "I refuse",
+      "ok": "I accept"
+    }
+  },
   "exportConv": {
     "get": {
       "error": "We apologize, there was an error with the export.",
@@ -243,7 +264,8 @@
   },
   "survey": {
     "sentMessage": "Your answer to the survey has been sent.",
-    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent."
+    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent.",
+    "placeholder": "Enter your answer here."
   },
   "livechat": {
     "notif": {

@@ -6,10 +6,8 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
-import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 import dotget from '../tools/dotget';
 import { createEventNewMessages } from '../events/chatboxIndex';
@@ -20,19 +18,14 @@ import { useShadow } from './ShadowProvider';
 import { Local } from '../tools/storage';
 
 interface EventsContextProps {
-  isChatboxLoadedAndReady?: boolean;
-  hasAfterLoadBeenCalled?: boolean;
   isMenuListOpen?: boolean;
   setIsMenuListOpen?: Dispatch<SetStateAction<boolean>>;
-  onAppReady?: () => void;
-  onChatboxLoaded?: (chatboxNodeElement: any) => void;
   onNewMessage?: (messageCount: number) => void;
   onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
   event?: (str: string) => void;
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;
+  saveChatboxRef?: (ref) => void;
   getChatboxRef?: () => null;
-  fetchServerStatus?: any;
-  serverStatusChecked?: boolean;
 }
 
 interface EventsProviderProps {
@@ -49,13 +42,12 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { configuration } = useConfiguration();
 
   const [event, setEvent] = useState<any | null>();
-  const [afterLoadCalled, setAfterLoadCalled] = useState<any>(false);
-  const [isAppReady, setIsAppReady] = useState(false);
-  const [chatboxLoaded, setChatboxLoaded] = useState(false);
-  const [chatboxRef, setChatboxRef] = useState<any>();
   const [isMenuListOpen, setIsMenuListOpen] = useState<boolean>(false);
   const { shadowAnchor } = useShadow();
   const [messageCount, setMessageCount] = useState<number>(0);
+  const [chatboxRef, setChatboxRef] = useState<any>();
+
+  const saveChatboxRef = (ref: any) => setChatboxRef(ref);
 
   const handleMouseEnter = () => {
     if (Local.livechatType.load()) {
@@ -84,42 +76,30 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     }
   }, [isOpen]);
 
-  const saveChatboxRef = (ref: any) => setChatboxRef(ref);
-
-  const execDyduAfterLoad = () =>
-    new Promise((resolve) => {
-      const _fnAfterLoad = window?.dyduAfterLoad;
-      if (isDefined(_fnAfterLoad) && isOfTypeFunction(_fnAfterLoad())) _fnAfterLoad();
-      resolve(true);
-    });
-
-  const hasAfterLoadBeenCalled = useMemo(() => afterLoadCalled === true, [afterLoadCalled]);
-
-  const processDyduAfterLoad = useCallback(() => {
-    if (!hasAfterLoadBeenCalled) execDyduAfterLoad().then(setAfterLoadCalled);
-  }, [hasAfterLoadBeenCalled]);
-
-  const isChatboxLoadedAndReady = useMemo(() => chatboxLoaded && isAppReady, [chatboxLoaded, isAppReady]);
-
-  useEffect(() => {
-    if (!isChatboxLoadedAndReady) return;
-    const bootstrapAfterLoadAndReadyFnList = [processDyduAfterLoad];
-    bootstrapAfterLoadAndReadyFnList.forEach((fn) => fn());
-  }, [isChatboxLoadedAndReady, processDyduAfterLoad]);
-
-  const onAppReady = useCallback(() => setIsAppReady(true), []);
-
-  const onChatboxLoaded = useCallback((chatboxNodeElement) => {
-    saveChatboxRef(chatboxNodeElement);
-    setChatboxLoaded(true);
-  }, []);
-
+  /**
+   * Call `window` method by feature and event name.<br/>
+   * If you have in your configuration.json :<br/>
+   * ```json
+   * events: {
+   *   teaser: {
+   *     onClick: ["teaserClick"]
+   *     miscEvent: ["misc.event"]
+   *   }
+   * }
+   * ```
+   * **Feature**=teaser ; **Events**=onClick,miscEvent<br/>
+   * The methods `window.teaserClick()` and `window.misc.event()` will be called<br/<br/>
+   *
+   * onEvent call example : `onEvent("teaser")("onClick");`
+   *
+   * @param feature : name of the feature in configuration.json
+   */
   const onEvent =
-    (feature) =>
-    (event, ...rest) => {
+    (feature: string) =>
+    (event: string, ...rest: any[]) => {
       setEvent(`${feature}/${event}`);
       if (configuration?.events.active) {
-        const actions = (configuration?.events?.[feature] || {})[event];
+        const actions = (configuration?.events?.features[feature] || {})[event];
         if (Array.isArray(actions)) {
           actions.forEach((action) => {
             if (configuration?.events.verbosity > 1) {
@@ -146,16 +126,13 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     <EventsContext.Provider
       children={children}
       value={{
-        isChatboxLoadedAndReady,
         isMenuListOpen,
         setIsMenuListOpen,
-        hasAfterLoadBeenCalled,
-        onAppReady,
-        onChatboxLoaded,
         onNewMessage,
         onEvent,
         dispatchEvent,
         event,
+        saveChatboxRef,
         getChatboxRef: () => chatboxRef,
       }}
     />

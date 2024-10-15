@@ -58,7 +58,7 @@ export const initBotInfoFromJsonOrChannels = async () => {
   let botData = {
     ...data,
     ...(isChannels && {
-      id: Local.botId.load(),
+      id: Local.botIdForChannels.load(),
       servers: Local.servers.load(),
     }),
   };
@@ -79,5 +79,4 @@ export const initBotInfoFromJsonOrChannels = async () => {
   };
 
   BOT = Object.assign({}, botData);
-  Local.botId.save(botData.id);
 };

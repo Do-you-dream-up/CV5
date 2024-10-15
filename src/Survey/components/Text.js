@@ -4,9 +4,11 @@ import Field from '../Field';
 import MessageRequired from '../MessageRequired';
 import PropTypes from 'prop-types';
 import { useTextInputConfig } from './useTextInputConfig';
+import { useTranslation } from 'react-i18next';
 
 export default function Text({ field }) {
-  const { attributes } = useTextInputConfig();
+  const { t } = useTranslation();
+  const { attributes } = useTextInputConfig(t);
 
   const onChange = useCallback(
     (event) => {

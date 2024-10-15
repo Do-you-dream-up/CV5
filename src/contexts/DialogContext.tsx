@@ -39,6 +39,7 @@ import { useChatboxReady } from './ChatboxReadyContext';
 import { useShadow } from './ShadowProvider';
 import uuid4 from 'uuid4';
 import { Servlet } from '../../types/servlet';
+import { useChatboxLoaded } from './ChatboxLoadedProvider';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -135,7 +136,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const sidebarTransient = configuration?.sidebar?.transient;
 
-  const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
+  const { dispatchEvent, getChatboxRef } = useEvent();
+  const { hasAfterLoadBeenCalled } = useChatboxLoaded();
 
   const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
   const { fetchBotLanguages, botLanguages } = useBotInfo();

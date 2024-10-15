@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 
-export function useTextInputConfig() {
+export function useTextInputConfig(t) {
   const commonAttributes = useRef({
     root: {
       maxLength: 200,
-      placeholder: 'Saisissez votre réponse ici.',
+      placeholder: t('survey.placeholder'),
     },
     style: {
       width: '100%',

@@ -8,6 +8,11 @@
     <link href="./chatboxHomepage.css" rel="stylesheet">
     <title>Dydu Chatbox</title>
     <script type="module" src="chatboxHomepage.js" defer></script>
+    <script>
+      dyduAfterLoad = () => {console.log("dyduAfterLoad");}
+      dyduChatboxReady = () => {console.log("dyduChatboxReady");}
+      window.avatarPlayAnim = () => {}
+    </script>
   </head>
   <body style="width: inherit; height: inherit; margin: 0;">
     <div id="chatbot-external" style="width: inherit; height: inherit;">

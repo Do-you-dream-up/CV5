@@ -49,6 +49,12 @@ export default createUseStyles<any, any>((theme: any): any => ({
   }),
   dyduTeaserContainer: () => ({
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'end',
+  }),
+  dyduTeaserContainerContent: () => ({
+    display: 'flex',
+    flexDirection: 'row',
   }),
   dyduTeaserTitle: () => ({
     alignItems: 'center',

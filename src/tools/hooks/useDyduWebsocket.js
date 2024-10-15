@@ -55,14 +55,16 @@ const MESSAGE_TYPE = {
   dialogPicked: 'DialogPicked',
 };
 
-const completeLivechatPayload = (configuration) =>
-  LivechatPayload.addPayloadCommonContent({
-    contextId: configuration.contextId || Local.contextId.load(),
-    botId: configuration.botId || BOT.id || Local.get(Local.names.botId),
-    space: dydu.getSpace() || Local.get(Local.names.space),
-    clientId: dydu.getClientId() || Local.get(Local.names.client),
-    language: dydu.getLocale() || Local.get(Local.names.locale),
+const completeLivechatPayload = (configuration) => {
+  const botId = configuration.botId || BOT.id || Local.get(Local.names.botId);
+  return LivechatPayload.addPayloadCommonContent({
+    contextId: configuration.contextId || Local.contextId.load(botId),
+    botId: botId,
+    space: dydu.getSpace() || Local.space.load(),
+    clientId: dydu.getClientId() || Local.clientId.load(),
+    language: dydu.getLocale() || Local.locale.load(),
   });
+};
 
 export default function useDyduWebsocket() {
   const { showUploadFileButton } = useUploadFile();

@@ -2,6 +2,7 @@ import { fireEvent, screen } from '@testing-library/react';
 
 import Form from './index';
 import { render } from '../../tools/test-utils';
+import { DEFAULT_CONSULTATION_SPACE } from '../../tools/constants';
 
 describe('Form', () => {
   const mockOnResolve = jest.fn();
@@ -67,6 +68,6 @@ describe('Form', () => {
     fireEvent.change(input, { target: { value: 'test value' } });
     fireEvent.click(submitButton);
 
-    expect(mockOnResolve).toHaveBeenCalledWith({ space: 'default' });
+    expect(mockOnResolve).toHaveBeenCalledWith({ space: DEFAULT_CONSULTATION_SPACE });
   });
 });

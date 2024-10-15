@@ -133,6 +133,9 @@
   "gdprDisclaimer": {
     "enable": true
   },
+  "cookiesDisclaimer": {
+    "enable": false
+  },
   "header": {
     "actions": {
       "close": false,
@@ -307,7 +310,7 @@
       }
     ],
     "items": [
-      "default"
+      "Defaut"
     ]
   },
   "suggestions": {

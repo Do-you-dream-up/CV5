@@ -7,8 +7,8 @@ import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
 import { useConfiguration } from '../contexts/ConfigurationContext';
 import { useDialog } from '../contexts/DialogContext';
-import { useEvent } from '../contexts/EventsContext';
 import { Local } from '../tools/storage';
+import { useEvent } from '../contexts/EventsContext';
 
 interface SurveyConfigProps {
   fields?: any;
