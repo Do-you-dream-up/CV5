@@ -211,7 +211,6 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const leaveLiveChat = () => {
     send && send('#livechatend#', { hide: true });
-    Local.isLivechatOn.save(false);
   };
 
   return (

@@ -17,7 +17,7 @@ export default function ModalClose({ className, component, onReject, onResolve, 
   const body = t('close.body', { defaultValue: '' });
   const no = t('close.no');
   const title = t('close.title', { defaultValue: '' });
-  const liveChatEnd = "Si vous fermez la fenêtre, vous ne pourrez plus reprendre la conversation avec l'opérateur.";
+  const liveChatEnd = "En fermant cette fenêtre vous mettrez fin à la conversation avec l'opérateur.";
   const yes = t('close.yes');
   const isLiveChatOn = Local.isLivechatOn.load();
   const onClick = () => {
