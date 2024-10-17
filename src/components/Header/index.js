@@ -4,7 +4,6 @@ import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions/Actions';
 import AvatarsMatchingRequest from '../AvatarsMatchingRequest/AvatarsMatchingRequest';
 import Banner from '../Banner/Banner';
-import { DialogContext } from '../../contexts/DialogContext';
 import { DragonContext } from '../../contexts/DragonContext';
 import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
@@ -25,6 +24,7 @@ import { useUserAction } from '../../contexts/UserActionContext';
 import useViewport from '../../tools/hooks/useViewport';
 import Button from '../Button/Button';
 import { useLivechat } from '../../contexts/LivechatContext';
+import { useDialog } from '../../contexts/DialogContext';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -55,12 +55,13 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const actionFontIncrease = t('header.actions.fontIncrease');
   const actionFontDecrease = t('header.actions.fontDecrease');
   const actionTest = t('header.actions.tests');
+  const exitLivechat = t('header.actions.exitLivechat');
   const headerLogo = t('header.logo');
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = dydu.hasUserAcceptedGdpr();
   const singleTab = !configuration.tabs.hasContactTab;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
-  const { interactions, typeResponse } = useContext(DialogContext);
+  const { interactions, typeResponse } = useDialog();
   const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
@@ -207,7 +208,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     },
   ];
 
-  const shouldDisplayLivechatEnd = Local.isLivechatOn.load() && !Local.waitingQueue.load();
+  const shouldDisplayLivechatEnd = Local.livechatType.load() && !Local.waitingQueue.load();
 
   const leaveLiveChat = () => {
     send && send('#livechatend#', { hide: true });
@@ -261,10 +262,10 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           }}
         >
           <div className={c('dydu-header-buttonContent', classes.buttonContent)}>
-            {'Quitter le Livechat'}
+            {exitLivechat}
             <Icon
               icon={icons?.exit}
-              alt={'exit-livechat'}
+              alt={exitLivechat}
               className={c('dydu-header-endLivechatIcon', classes.endLivechatIcon)}
             />
           </div>

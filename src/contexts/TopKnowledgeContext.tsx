@@ -29,11 +29,10 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
   const { configuration } = useConfiguration();
 
   const fetch = () => {
-    const isLivechatOn = Local.isLivechatOn.load();
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
-      if (configuration && (!isLivechatOn || (isLivechatOn && livechatType === TUNNEL_MODE.polling))) {
+      if (configuration && (!livechatType || livechatType === TUNNEL_MODE.polling)) {
         dydu
           .top(configuration.top?.period, configuration.top?.size)
           .then(extractPayload)

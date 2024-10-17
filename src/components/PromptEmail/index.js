@@ -1,4 +1,3 @@
-import { DialogContext } from '../../contexts/DialogContext';
 import { EventsContext } from '../../contexts/EventsContext';
 import Form from '../Form';
 import Interaction from '../Interaction';
@@ -9,12 +8,13 @@ import dydu from '../../tools/dydu';
 import { useContext } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useDialog } from '../../contexts/DialogContext';
 
 /**
  * Form to prompt user for his email for gdpr requests or conversation export.
  */
 export default function PromptEmail({ onResolve, scroll, thinking, type }) {
-  const { setPrompt } = useContext(DialogContext);
+  const { setPrompt } = useDialog();
   const { ready, t } = useTranslation('translation');
   const event = useContext(EventsContext).onEvent('gdpr');
   const welcome = t('exportConv.welcome', { defaultValue: '' });

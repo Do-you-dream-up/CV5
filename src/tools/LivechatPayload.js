@@ -202,7 +202,8 @@ const LivechatPayloadChecker = {
     const payloadValues = payload?.values || payload;
     return (
       payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.startPolling) ||
-      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dmLivechatConnectionSucceed)
+      (payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dmLivechatConnectionSucceed) &&
+        !payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.startWaitingQueue))
     );
   },
   endPolling: (payload) => {
@@ -220,14 +221,27 @@ const LivechatPayloadChecker = {
   leaveWaitingQueue: (payload) => {
     const payloadValues = payload?.values || payload;
     return (
-      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dMLiveChatLeaveQueue) ||
-      payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling) ||
+      payloadValues?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dmLiveChatLeaveQueue) ||
       payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.leaveWaitingQueue)
     );
   },
   startWaitingQueue: (payload) => {
+    // in response from POST
     const payloadValues = payload?.values || payload;
     return payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.startWaitingQueue);
+  },
+  liveChatConnectionInQueue: (payload) => {
+    // ex: in response from chatWs history
+    const payloadValues = payload?.values || payload;
+    return payloadValues?.type?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.dmLiveChatConnectionInQueue);
+  },
+  waitingQueuePosition: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return payloadValues?.queuePosition ? payloadValues.queuePosition : '';
+  },
+  waitingQueueEstimatedWaitingDuration: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return payloadValues?.estimatedWaitingDuration ? Math.ceil(payloadValues.estimatedWaitingDuration / 60) : '';
   },
 };
 

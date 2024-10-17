@@ -4,68 +4,23 @@ import icons from '../../tools/icon-constants';
 import { isDefined } from '../helpers';
 import { useMemo } from 'react';
 
-const isTimeout = (notification) =>
-  LivechatPayload.is.timeout(notification) ? INTERACTION_NOTIFICATION_TYPE.timeout : null;
-
-const isEndLivechat = (notification) =>
-  LivechatPayload.is.endPolling(notification) ? INTERACTION_NOTIFICATION_TYPE.close : null;
-
-const isStartLivechat = (notification) =>
-  LivechatPayload.is.startLivechat(notification) ? INTERACTION_NOTIFICATION_TYPE.success : null;
-
-const isOperatorWriting = (notification) => {
-  return LivechatPayload.is.operatorWriting(notification) ? INTERACTION_NOTIFICATION_TYPE.writing : null;
-};
-
-const isStartWaitingQueue = (notification) => {
-  return LivechatPayload.is.startWaitingQueue(notification) ? INTERACTION_NOTIFICATION_TYPE.waitingQueue : null;
-};
-
-const isUserLeaveWaitingQueue = (notification) => {
-  return LivechatPayload.is.leaveWaitingQueue(notification) ? INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue : null;
-};
-
-const isOperatorDisconnected = (notification) =>
-  LivechatPayload.is.operatorDisconnected(notification) ? INTERACTION_NOTIFICATION_TYPE.operatorDisconnected : null;
-
-const isOperatorConnected = (notification) =>
-  LivechatPayload.is.operatorConnected(notification) ? INTERACTION_NOTIFICATION_TYPE.operatorConnected : null;
-
-const isOperatorBusy = (notification) =>
-  LivechatPayload.is.operatorBusy(notification) ? INTERACTION_NOTIFICATION_TYPE.operatorBusy : null;
-
-const hasOperatorManuallyTransferredDialog = (notification) =>
-  LivechatPayload.is.operatorManuallyTransferredDialog(notification)
-    ? INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually
-    : null;
-
-const hasOperatorAutomaticallyTransferredDialog = (notification) =>
-  LivechatPayload.is.operatorAutomaticallyTransferredDialog(notification)
-    ? INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically
-    : null;
-
-const notificationTypeGetterList = [
-  isTimeout,
-  isEndLivechat,
-  isStartLivechat,
-  isOperatorBusy,
-  isOperatorConnected,
-  isOperatorDisconnected,
-  hasOperatorManuallyTransferredDialog,
-  hasOperatorAutomaticallyTransferredDialog,
-  isOperatorWriting,
-  isUserLeaveWaitingQueue,
-  isStartWaitingQueue,
-];
-
 const getNotificationType = (notification) => {
-  let foundType = null;
-  let i = 0;
-  while (!isDefined(foundType) && i < notificationTypeGetterList.length) {
-    const getType = notificationTypeGetterList[i++];
-    foundType = getType(notification);
-  }
-  return foundType;
+  if (LivechatPayload.is.timeout(notification)) return INTERACTION_NOTIFICATION_TYPE.timeout;
+  if (LivechatPayload.is.endPolling(notification)) return INTERACTION_NOTIFICATION_TYPE.close;
+  if (LivechatPayload.is.startLivechat(notification)) return INTERACTION_NOTIFICATION_TYPE.success;
+  if (LivechatPayload.is.operatorBusy(notification)) return INTERACTION_NOTIFICATION_TYPE.operatorBusy;
+  if (LivechatPayload.is.operatorConnected(notification)) return INTERACTION_NOTIFICATION_TYPE.operatorConnected;
+  if (LivechatPayload.is.operatorDisconnected(notification)) return INTERACTION_NOTIFICATION_TYPE.operatorDisconnected;
+  if (LivechatPayload.is.operatorManuallyTransferredDialog(notification))
+    return INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually;
+  if (LivechatPayload.is.operatorAutomaticallyTransferredDialog(notification))
+    return INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically;
+  if (LivechatPayload.is.operatorWriting(notification)) return INTERACTION_NOTIFICATION_TYPE.writing;
+  if (LivechatPayload.is.leaveWaitingQueue(notification)) return INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue;
+  if (LivechatPayload.is.startWaitingQueue(notification)) return INTERACTION_NOTIFICATION_TYPE.waitingQueue;
+  if (LivechatPayload.is.liveChatConnectionInQueue(notification))
+    return INTERACTION_NOTIFICATION_TYPE.dmLiveChatConnectionInQueue;
+  return null;
 };
 
 const notificationTypeToIconName = {
@@ -80,6 +35,7 @@ const notificationTypeToIconName = {
   [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: icons.checkCircle,
   [INTERACTION_NOTIFICATION_TYPE.waitingQueue]: icons.checkCircle,
   [INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.dmLiveChatConnectionInQueue]: icons.checkCircle,
 };
 
 export default function useNotificationHelper(notification) {
@@ -88,14 +44,8 @@ export default function useNotificationHelper(notification) {
 
   const iconName = useMemo(() => (!isDefined(type) ? null : notificationTypeToIconName[type]), [type]);
 
-  const isWriting = useMemo(() => {
-    if (!isDefined(type)) return null;
-    return type?.equals(INTERACTION_NOTIFICATION_TYPE.writing);
-  }, [type]);
-
   return {
     text,
     iconName,
-    isWriting,
   };
 }

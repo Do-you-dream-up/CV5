@@ -46,8 +46,8 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
   const canRequest = useMemo(() => {
-    return !isDefined(welcomeKnowledge) && !Local.isLivechatOn.load() && isTagWelcomeDefined;
-  }, [Local.isLivechatOn.load(), welcomeKnowledge, isTagWelcomeDefined]);
+    return !isDefined(welcomeKnowledge) && !Local.livechatType.load() && isTagWelcomeDefined;
+  }, [Local.livechatType.load(), welcomeKnowledge, isTagWelcomeDefined]);
 
   useEffect(() => {
     const currentContextUUID = localStorage.getItem('dydu.context');
@@ -91,7 +91,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
             return wkResponse;
           });
     // eslint-disable-next-line
-  }, [canRequest, Local.isLivechatOn.load(), welcomeKnowledge, BOT.id, dydu.contextId]);
+  }, [canRequest, Local.livechatType.load(), welcomeKnowledge, BOT.id, dydu.contextId]);
 
   const props: WelcomeKnowledgeContextProps = {
     welcomeKnowledge,

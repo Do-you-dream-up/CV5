@@ -6,6 +6,5 @@ describe('useNotificationHelper', () => {
     const { result } = renderHook(() => useNotificationHelper(undefined));
     expect(result.current.text).toBe(undefined);
     expect(result.current.iconName).toBeNull();
-    expect(result.current.isWriting).toBeNull();
   });
 });

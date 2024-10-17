@@ -29,7 +29,6 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
   const { top } = configuration?.dialog || {};
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
-  const isLiveChatOn = Local.isLivechatOn.load();
   const { shadowAnchor } = useShadow();
 
   useEffect(() => {
@@ -52,7 +51,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
 
   return (
     <>
-      <p
+      <div
         className={c('dydu-dialog', classes.root)}
         ref={dialogRef}
         style={style}
@@ -62,7 +61,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
       >
         {!!top && <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />}
         {interactions.map((it: any, index: number | null) => ({ ...it, key: index }))}
-        {isWaitingForResponse && !isLiveChatOn && (
+        {isWaitingForResponse && !Local.livechatType.load() && (
           <Interaction type="response" className="container-loader-interaction">
             <Loader />
           </Interaction>
@@ -70,7 +69,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
         {prompt === 'gdpr' && <PromptEmail type="gdpr" />}
         {prompt === 'spaces' && <Spaces />}
         {prompt === 'exportConv' && <PromptEmail type="exportConv" />}
-      </p>
+      </div>
     </>
   );
 };

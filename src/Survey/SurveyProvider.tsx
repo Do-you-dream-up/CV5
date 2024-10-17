@@ -18,9 +18,9 @@ interface SurveyConfigProps {
 }
 
 interface SurveyContextProps {
-  showSurvey?: (data: any) => void;
+  getSurveyConfiguration?: (data: any) => void;
   surveyConfig?: any;
-  triggerSurvey?: (surveyId: string | undefined) => void;
+  triggerSurvey?: () => void;
   setSurveyConfig?: (data: any) => void;
   flushStates: () => void;
 }
@@ -47,14 +47,12 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     setSurveyConfig(null);
   };
 
-  const showSurvey = (data) => {
-    const isLivechatOn = Local.isLivechatOn.load();
-
+  const getSurveyConfiguration = (data) => {
     const id = extractId(data);
 
-    if (!isLivechatOn) {
+    if (!Local.livechatType.load()) {
       flushStates(); // Required to reset useEffect and show new survey
-      getSurveyConfigurationById(id).then((res) => {
+      dydu.getSurvey(id).then((res) => {
         setSurveyConfig(res);
       });
     }
@@ -80,8 +78,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, [getChatboxRef]);
 
   useEffect(() => {
-    dydu.setShowSurveyCallback(showSurvey);
-  }, [showSurvey]);
+    dydu.setGetSurveyCallback(getSurveyConfiguration);
+  }, [getSurveyConfiguration]);
 
   useEffect(() => {
     if (listeningCloseSidebar || !isDefined(chatboxNode)) return;
@@ -116,7 +114,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     const listFieldInstance = instanciateFields(fields);
     setInstances(listFieldInstance);
     triggerSurvey();
-  }, [instances, surveyId]);
+  }, [surveyConfig]);
 
   const getSurveyAnswer = useCallback(() => {
     if (isDefined(instances)) {
@@ -171,7 +169,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const api = useMemo(
     () => ({
       surveyConfig,
-      showSurvey,
+      getSurveyConfiguration,
       setSurveyConfig,
       instances,
       onSubmit,
@@ -180,7 +178,16 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       flushStatesAndClose,
       close,
     }),
-    [showSurvey, setSurveyConfig, instances, onSubmit, triggerSurvey, flushStates, flushStatesAndClose, close],
+    [
+      getSurveyConfiguration,
+      setSurveyConfig,
+      instances,
+      onSubmit,
+      triggerSurvey,
+      flushStates,
+      flushStatesAndClose,
+      close,
+    ],
   );
 
   return <SurveyContext.Provider value={api}>{children}</SurveyContext.Provider>;
@@ -229,8 +236,6 @@ const extractId = (data) => {
   const id = data?.values?.survey?.fromBase64() || data?.survey;
   return id || '';
 };
-
-const getSurveyConfigurationById = dydu.getSurvey;
 
 //==================================================/
 // STATICS

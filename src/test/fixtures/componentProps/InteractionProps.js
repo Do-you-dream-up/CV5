@@ -11,7 +11,7 @@ const getBaseProps = () => ({
   children: null,
   sidebar: null,
   steps: [],
-  templateName: '',
+  templatename: '',
   type: '',
 });
 
@@ -46,7 +46,7 @@ export class InteractionProps {
     return this;
   }
   withTemplateNameValue(value) {
-    this.props.templateName = value;
+    this.props.templatename = value;
     return this;
   }
   setCarousel() {

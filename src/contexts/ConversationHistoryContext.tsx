@@ -3,14 +3,12 @@ import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useS
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { TUNNEL_MODE } from '../tools/constants';
-import { ChatHistoryResponse, Servlet } from '../../types/servlet';
-
-type ChatResponseArray = Servlet.ChatHistoryResponse[];
+import { Servlet } from '../../types/servlet';
 
 interface ConversationHistoryContextProps {
-  fetch?: () => void;
-  history?: ChatResponseArray | null;
-  setHistory?: Dispatch<SetStateAction<ChatResponseArray | null>>;
+  fetch?: () => any;
+  history?: Servlet.ChatHistoryResponse | null;
+  setHistory?: Dispatch<SetStateAction<Servlet.ChatHistoryResponse | null>>;
 }
 
 interface ConversationHistoryProviderProps {
@@ -22,26 +20,29 @@ export const useConversationHistory = () => useContext(ConversationHistoryContex
 export const ConversationHistoryContext = createContext<ConversationHistoryContextProps>({});
 
 export function ConversationHistoryProvider({ children }: ConversationHistoryProviderProps) {
-  const [history, setHistory] = useState<ChatHistoryResponse | null>(null);
+  const [history, setHistory] = useState<Servlet.ChatHistoryResponse | null>(null);
 
-  const fetch = async () => {
-    const isLivechatOn = Local.isLivechatOn.load();
+  const fetch = () => {
     const livechatType = Local.livechatType.load();
 
-    if (!isLivechatOn || (isLivechatOn && livechatType === TUNNEL_MODE.polling)) {
-      const { interactions } = await dydu.history();
-      if (interactions) {
-        if (isLivechatOn && livechatType === TUNNEL_MODE.polling) {
-          for (const interaction of interactions) {
-            if (!interaction.pollUpdatedInteractionDate) {
-              interaction.pollUpdatedInteractionDate = interaction.timestamp;
+    return new Promise((resolve) => {
+      if (!livechatType || livechatType === TUNNEL_MODE.polling) {
+        dydu.history().then((res) => {
+          const interactionsFromHistory = res?.interactions;
+          if (interactionsFromHistory) {
+            if (livechatType === TUNNEL_MODE.polling) {
+              for (const interactionFromHistory of interactionsFromHistory) {
+                if (!interactionFromHistory.pollUpdatedInteractionDate) {
+                  interactionFromHistory.pollUpdatedInteractionDate = interactionFromHistory.timestamp;
+                }
+              }
             }
+            setHistory(interactionsFromHistory);
           }
-        }
-        setHistory(interactions);
+          return resolve(interactionsFromHistory);
+        });
       }
-      return interactions;
-    }
+    });
   };
 
   const props: ConversationHistoryContextProps = {

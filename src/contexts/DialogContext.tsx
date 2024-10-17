@@ -17,7 +17,6 @@ import { isDefined, isOfTypeString, isValidUrl } from '../tools/helpers';
 
 import FileUploadButton from '../components/FileUploadButton/FileUploadButton';
 import Interaction from '../components/Interaction';
-import LivechatPayload from '../tools/LivechatPayload';
 import { Local } from '../tools/storage';
 import dotget from '../tools/dotget';
 import { eventOnSidebarClosed } from '../events/chatboxIndex';
@@ -32,7 +31,6 @@ import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import usePushrules from '../tools/hooks/usePushrules';
 import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
-import { useTranslation } from 'react-i18next';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
@@ -40,6 +38,7 @@ import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 import { useChatboxReady } from './ChatboxReadyContext';
 import { useShadow } from './ShadowProvider';
 import uuid4 from 'uuid4';
+import { Servlet } from '../../types/servlet';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -52,7 +51,7 @@ export interface DialogContextProps {
   displayNotification?: (notification: any) => void;
   extractTextWithRegex?: (inputString: string) => string | null;
   lastResponse?: Servlet.ChatResponseValues | null;
-  listInteractionHistory?: Servlet.ChatHistoryResponse[] | null;
+  setLastResponse: (response: Servlet.ChatResponseValues) => void;
   add?: (interaction: Servlet.ChatResponse) => void;
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
@@ -79,7 +78,7 @@ export interface DialogContextProps {
   setUploadActive?: Dispatch<SetStateAction<boolean>>;
   setVoiceContent?: Dispatch<SetStateAction<any>>;
   toggleSidebar?: (open: boolean, props?: any) => any;
-  activeSidebarName?: string | undefined | null;
+  activeSidebarName?: string | null;
   typeResponse?: Servlet.ChatResponseType | null;
   uploadActive?: boolean;
   voiceContent?: any;
@@ -91,8 +90,7 @@ export interface DialogContextProps {
   isWaitingForResponse?: boolean;
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
-  lastWebSocketResponse?: Servlet.ChatResponseValues | null;
-  setLastWebSocketResponse?: Dispatch<SetStateAction<Servlet.ChatResponseValues | null>>;
+  clearInteractionsAndAddWelcome: () => void;
 }
 
 interface SidebarContentProps {
@@ -114,7 +112,7 @@ interface InteractionProps {
   children: any;
   sidebar: any;
   steps: [];
-  templateName?: string;
+  templatename?: string;
   type?: string;
 }
 
@@ -136,7 +134,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { configuration } = useConfiguration();
   const suggestionActiveOnConfig = configuration?.suggestions?.limit !== 0;
   const sidebarTransient = configuration?.sidebar?.transient;
-  const { t } = useTranslation();
 
   const { getChatboxRef, hasAfterLoadBeenCalled, dispatchEvent } = useEvent();
 
@@ -147,14 +144,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { callChatboxReady } = useChatboxReady();
   const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
-  const { fetch: fetchHistory, history: listInteractionHistory } = useConversationHistory();
+  const { fetch: fetchHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
   const { connected: saml2Connected } = useSaml();
   const additionalListInteraction = useRef([]);
   const { isMobile } = useViewport();
 
   const [disabled, setDisabled] = useState(false);
-  const [interactions, setInteractions] = useState<ReactElement[]>([]);
+  const [interactions, setInteractions] = useState<[]>([]);
   const [locked, setLocked] = useState<boolean>(false);
   const [placeholder, setPlaceholder] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
@@ -164,7 +161,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState<Servlet.ChatResponseType | null | undefined>(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
-  const [lastWebSocketResponse, setLastWebSocketResponse] = useState<Servlet.ChatResponseValues | null>(null);
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
@@ -204,8 +200,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     const last = list[list.length - 1];
     return last?.type?.name === Interaction.Writing.name;
   };
-
-  const isStartLivechatResponse = (response) => LivechatPayload.is.startLivechat(response);
 
   let isTimeoutRunning: any = false;
   const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
@@ -307,12 +301,11 @@ export function DialogProvider({ children }: DialogProviderProps) {
     delayStopAnimationOperatorWriting(add);
   }, [add]);
 
-  const displayNotification = useCallback(
-    (notification) => {
-      if (isDefined(notification)) add(<Interaction.Notification notification={notification} />);
-    },
-    [add],
-  );
+  const displayNotification = (notification) => {
+    if (isDefined(notification)) {
+      add(<Interaction.Notification notification={notification} />);
+    }
+  };
 
   const addRequest = useCallback(
     (text) => {
@@ -340,9 +333,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
       const props = {
         type: 'response',
         ...interactionAttributeObject,
-        templateName: isOfTypeString(interactionAttributeObject?.children)
+        templatename: isOfTypeString(interactionAttributeObject?.children)
           ? undefined
-          : interactionAttributeObject.templateName,
+          : interactionAttributeObject.templatename,
         askFeedback: isOfTypeString(interactionAttributeObject?.children)
           ? false
           : interactionAttributeObject?.askFeedback,
@@ -351,17 +344,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     });
   }, []);
 
-  const isStartWaitingResponse = (response) => LivechatPayload.is.startWaitingQueue(response);
-
   const addResponse = useCallback(
     (response: Servlet.ChatResponseValues = {}) => {
       setLastResponse(response);
-      if (isStartLivechatResponse(response)) return displayNotification(response);
-      if (isStartWaitingResponse(response)) {
-        Local.waitingQueue.save(true);
-        response.text = t('livechat.queue.start');
-        return displayNotification(response);
-      }
       const {
         askFeedback: _askFeedback,
         feedback,
@@ -369,7 +354,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         sidebar,
         survey,
         templateData,
-        templateName,
+        templateName: templatename,
         text,
         typeResponse,
         urlRedirect,
@@ -385,7 +370,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       }
 
       if (configuration?.Voice.enable) {
-        if (templateName) {
+        if (templatename) {
           setVoiceContent({ templateData, text });
         } else {
           setVoiceContent({ templateData: null, text });
@@ -446,9 +431,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
         dispatchEvent && dispatchEvent('chatbox', 'rewordDisplay');
       }
 
-      const getContent = (text: any, templateData: any, templateName: any) => {
+      const getContent = (text: any, templateData: any, templatename: any) => {
         const list: any[] = [].concat(text ? steps.map(({ text }) => text) : [text]);
-        if (templateData && knownTemplates.includes(templateName)) {
+        if (templateData && knownTemplates.includes(templatename)) {
           try {
             list.push(JSON.parse(templateData));
           } catch (error) {
@@ -458,13 +443,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
         return list;
       };
 
-      const interactionChildrenList = getContent(text, templateData, templateName);
+      const interactionChildrenList = getContent(text, templateData, templatename);
 
       const verifyInteractionDataType = () => {
         if (
-          templateName === CAROUSSEL_TEMPLATE ||
-          templateName === PRODUCT_TEMPLATE ||
-          templateName === CAROUSEL_ARRAY_TEMPLATE
+          templatename === CAROUSSEL_TEMPLATE ||
+          templatename === PRODUCT_TEMPLATE ||
+          templatename === CAROUSEL_ARRAY_TEMPLATE
         ) {
           const interactionData = {
             askFeedback,
@@ -472,7 +457,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
             type: 'response',
             sidebar: sidebar,
             steps,
-            templateName,
+            templatename,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
             interactionChildrenList,
@@ -486,12 +471,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
               autoOpenSidebar={!isResponseFromHistory && steps.length === 1}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
-              children={getContent(text, templateData, templateName)}
+              children={getContent(text, templateData, templatename)}
               type="response"
               sidebar={sidebar}
               hasSurvey={isDefined(survey)}
               steps={steps}
-              templateName={templateName}
+              templatename={templatename}
               thinking
               typeResponse={typeResponse}
             />
@@ -532,21 +517,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     Local.sidebar.save(sidebarActive);
   }, [sidebarActive]);
 
-  const addHistoryInteraction = (interaction) => {
-    const isLivechatOn = Local.isLivechatOn.load();
-    const typedInteraction = {
-      ...interaction,
-      typeResponse: interaction?.type,
-      isFromHistory: true,
-      user: isLivechatOn ? interaction.user : interaction.user,
-    };
-
-    if (!interaction?.user?.includes('_pushcondition_:') && !interaction.hideRequest) {
-      addRequest(typedInteraction?.user);
-    }
-    addResponse(typedInteraction);
-  };
-
   const checkIfBehindSamlAndConnected = useMemo(() => {
     return !configuration?.saml?.enable || saml2Connected;
   }, [configuration?.saml, saml2Connected]);
@@ -559,13 +529,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
     if (isInteractionListEmpty && !welcomeKnowledge && checkIfBehindSamlAndConnected) forceExec();
   }, [isInteractionListEmpty, welcomeKnowledge, checkIfBehindSamlAndConnected]);
 
-  useEffect(() => {
-    if (welcomeKnowledge || listInteractionHistory) {
+  const clearInteractionsAndAddWelcome = () => {
+    if (welcomeKnowledge) {
       clearInteractions();
+      addResponse(welcomeKnowledge);
     }
-    welcomeKnowledge && addResponse(welcomeKnowledge);
-    listInteractionHistory && listInteractionHistory?.forEach(addHistoryInteraction);
-  }, [welcomeKnowledge, listInteractionHistory]);
+  };
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -600,8 +569,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         showAnimationOperatorWriting,
         displayNotification,
         lastResponse,
-        listInteractionHistory,
-        lastWebSocketResponse,
+        setLastResponse,
         add,
         addRequest,
         addResponse,
@@ -619,7 +587,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setPrompt,
         setSidebar,
         setVoiceContent,
-        setLastWebSocketResponse,
         toggleSidebar,
         activeSidebarName,
         typeResponse,
@@ -631,6 +598,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         showUploadFileButton,
         setRewordAfterGuiAction,
         rewordAfterGuiAction,
+        clearInteractionsAndAddWelcome,
       }}
     />
   );

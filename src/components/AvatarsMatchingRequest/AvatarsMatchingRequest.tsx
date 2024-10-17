@@ -57,7 +57,7 @@ const AvatarsMatchingRequest = ({
 
   const imageType = useMemo(() => {
     if (
-      (!typeResponse && Local.isLivechatOn.load()) ||
+      (!typeResponse && Local.livechatType.load()) || // maybe typing
       (livechatCustomAvatar && typeResponse && typeResponse.match(RE_LIVECHAT))
     ) {
       return livechatImageLink;
