@@ -9,7 +9,7 @@ import { useTheme } from 'react-jss';
 import { useShadow } from '../contexts/ShadowProvider';
 
 export default function SurveyForm() {
-  const { instances, onSubmit, flushStatesAndClose, surveyConfig } = useSurvey();
+  const { instances, onSubmit, surveyConfig } = useSurvey();
   const { shadowAnchor } = useShadow();
 
   const buttonWording = surveyConfig?.submitValue !== undefined ? surveyConfig?.submitValue : 'Envoyer mes réponses';
@@ -29,7 +29,7 @@ export default function SurveyForm() {
   }, [instances]);
 
   return !isDefined(instances) ? (
-    <>{flushStatesAndClose()}</>
+    <></>
   ) : (
     <form className="survey-form-container">
       {renderFields()}

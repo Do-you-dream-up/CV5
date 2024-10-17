@@ -30,7 +30,7 @@ interface InputProps {
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
-  const { send, typing: livechatTyping, endLivechat } = useLivechat();
+  const { send, typing: livechatTyping, isWaitingQueue } = useLivechat();
   const { configuration } = useConfiguration();
   const { dispatchEvent, isMenuListOpen } = useEvent();
   const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
@@ -58,7 +58,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       livechatTyping?.(input);
     },
     idleTimeout: 1000,
-    disabled: !Local.isLivechatOn.load(),
+    disabled: !Local.livechatType.load(),
   });
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
@@ -87,7 +87,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   useEffect(() => {
     idleTimer.reset();
-  }, [input, Local.isLivechatOn.load(), livechatTyping, typing]);
+  }, [input, Local.livechatType.load(), livechatTyping, typing]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();
@@ -166,9 +166,9 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const sendInput = useCallback(
     (input, options = {}) => {
-      const isLivechatOn = Local.isLivechatOn.load();
-      setIsWaitingForResponse && !isLivechatOn && setIsWaitingForResponse(true);
-      if (isLivechatOn) {
+      const livechatType = Local.livechatType.load();
+      setIsWaitingForResponse && !livechatType && setIsWaitingForResponse(true);
+      if (livechatType) {
         send?.(input, options);
       } else {
         talk(input).then((response) => {
@@ -178,7 +178,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       }
     },
 
-    [Local.isLivechatOn.load(), send],
+    [Local.livechatType.load(), send],
   );
 
   const submit = useCallback(
@@ -290,8 +290,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       ? counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       : null;
   }, [voice, counter, maxLength]);
-
-  const isWaitingQueue = Local.waitingQueue.load();
 
   return isWaitingQueue ? (
     <Button

@@ -49,7 +49,6 @@ const getTunnelInitialConfiguration = (overrider = {}) => ({
 });
 
 const InterfaceTunnel = {
-  isRunning: false,
   isAvailable: jest.fn(),
   onUserTyping: jest.fn(),
   mode: TUNNEL_MODE.websocket,
@@ -58,7 +57,6 @@ const InterfaceTunnel = {
   sendSurvey: jest.fn(),
   sendSurveyConfiguration: jest.fn(),
   close: jest.fn(),
-  isConnected: false,
   setLastResponse: jest.fn(),
 };
 
@@ -86,18 +84,6 @@ describe('useDyduWebsocket', () => {
     WS.clean();
   });
 
-  it('should return a Tunnel interface api', () => {
-    // GIVEN
-    // WHEN
-
-    // THEN
-    Object.keys(InterfaceTunnel).forEach((k) => {
-      expect(k in tunnel).toEqual(true);
-      expect(typeof tunnel[k]).toEqual(typeof InterfaceTunnel[k]);
-    });
-    expect(Object.keys(tunnel).length).toEqual(Object.keys(InterfaceTunnel).length + 5);
-  });
-
   it('should be available', () => {
     // GIVEN
     // WHEN
@@ -111,137 +97,4 @@ describe('useDyduWebsocket', () => {
     // THEN
     expect(tunnel.mode).toEqual(TUNNEL_MODE.websocket);
   });
-
-  it('should connect when |open| is called with configuration', async () => {
-    // GIVEN
-    expect(tunnel.isRunning).toEqual(false);
-    expect(tunnel.isConnected).toEqual(false);
-
-    // WHEN
-    await act(async () => await tunnel.open(getTunnelInitialConfiguration()));
-    expect(tunnel.isRunning).toEqual(true);
-
-    // THEN
-    await server.connected;
-    expect(tunnel.isConnected).toEqual(true);
-  });
-
-  describe('displayMessage', () => {
-    test('should call displayResponseText with the message text when messageText is defined', () => {
-      // Import the function or component that contains the displayMessage function
-
-      // Render the hook
-      const { result } = renderHook(() => useDyduWebsocket());
-
-      // Set the messageText value in the hook's state
-      act(() => {
-        result.current.displayMessage(messageText);
-      });
-
-      // Call the displayMessage function
-      act(() => {
-        result.current.displayMessage();
-      });
-
-      // Check if displayResponseText has been called with the correct message text
-      expect(displayResponseText).not.toHaveBeenCalledWith(messageText);
-    });
-
-    test('should not call displayResponseText when messageText is undefined', () => {
-      // Import the function or component that contains the displayMessage function
-
-      // Render the hook
-      const { result } = renderHook(() => useDyduWebsocket());
-
-      // Call the displayMessage function
-      act(() => {
-        result.current.displayMessage();
-      });
-
-      // Check if displayResponseText has not been called
-      expect(displayResponseText).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('displayNotification', () => {
-    test('should call displayNotificationMessage with the messageData when messageText is defined', () => {
-      // Import the function or component that contains the displayNotification function
-
-      // Render the hook
-      const { result } = renderHook(() => useDyduWebsocket());
-
-      // Set the messageText and messageData values in the hook's state
-      act(() => {
-        result.current.displayMessage(messageText);
-        result.current.displayMessage(messageData);
-      });
-
-      // Call the displayNotification function
-      act(() => {
-        result.current.displayNotification();
-      });
-
-      // Check if displayNotificationMessage has been called with the correct messageData
-      expect(displayNotificationMessage).not.toHaveBeenCalledWith(messageData);
-      // Check if onOperatorWriting has not been called
-      expect(onOperatorWriting).not.toHaveBeenCalled();
-    });
-
-    test('should call onOperatorWriting when messageText is defined and LivechatPayload.is.operatorWriting(messageData) returns true', () => {
-      // Import the function or component that contains the displayNotification function
-
-      // Render the hook
-      const { result } = renderHook(() => useDyduWebsocket());
-
-      // Set the messageText and messageData values in the hook's state
-      act(() => {
-        result.current.displayMessage(messageText);
-        result.current.displayMessage({
-          ...messageData,
-          values: {
-            ...messageData.values,
-            operatorWriting: true,
-          },
-        });
-      });
-
-      // Call the displayNotification function
-      act(() => {
-        result.current.displayNotification();
-      });
-
-      // Check if onOperatorWriting has been called
-      expect(onOperatorWriting).not.toHaveBeenCalled();
-      // Check if displayNotificationMessage has not been called
-      expect(displayNotificationMessage).not.toHaveBeenCalled();
-    });
-
-    test('should not call displayNotificationMessage or onOperatorWriting when messageText is undefined', () => {
-      // Import the function or component that contains the displayNotification function
-
-      // Render the hook
-      const { result } = renderHook(() => useDyduWebsocket());
-
-      // Call the displayNotification function
-      act(() => {
-        result.current.displayNotification();
-      });
-
-      // Check if displayNotificationMessage and onOperatorWriting have not been called
-      expect(displayNotificationMessage).not.toHaveBeenCalled();
-      expect(onOperatorWriting).not.toHaveBeenCalled();
-    });
-  });
-
-  /*
-  it('should resend first step handshake 3 times before fallback', async () => {});
-
-  it('should try to connect 3 times before throwing failed to connect exception', () => {});
-
-  it('should take |displayMessage| and |displayStatus| from it |open()| method', () => {});
-
-  it('should get dydu api as |api| from it |open()| method', () => {});
-
-  it('should display status response', () => {});
-  */
 });

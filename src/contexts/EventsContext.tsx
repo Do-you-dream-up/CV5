@@ -58,7 +58,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const [messageCount, setMessageCount] = useState<number>(0);
 
   const handleMouseEnter = () => {
-    if (Local.isLivechatOn.load()) {
+    if (Local.livechatType.load()) {
       clearTabNotification();
       setMessageCount(0);
     }
@@ -72,7 +72,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   }, [shadowAnchor]);
 
   const onNewMessage = useCallback(() => {
-    if (isOpen && Local.isLivechatOn.load()) {
+    if (isOpen && Local.livechatType.load()) {
       setMessageCount((prevCount) => {
         const newCount = prevCount + 1;
         const eventNewMessage = createEventNewMessages(newCount);

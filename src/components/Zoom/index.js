@@ -1,11 +1,11 @@
-import { DialogContext } from '../../contexts/DialogContext';
 import PropTypes from 'prop-types';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import useStyles from './styles';
+import { useDialog } from '../../contexts/DialogContext';
 
 const Zoom = ({ src }) => {
   const classes = useStyles();
-  const { setZoomSrc } = useContext(DialogContext);
+  const { setZoomSrc } = useDialog();
 
   const closeZoom = () => setZoomSrc(null);
 

@@ -303,10 +303,7 @@ const getServerFromIndex = (index: number): string | null => {
 };
 
 const isLocalServer = (server: string | null): boolean => {
-  return (
-    server !== null &&
-    (server.includes('dev.dydu.local') || server.includes('localhost') || server.endsWith('.loca.lt'))
-  );
+  return server !== null && (server.includes('localhost') || server.endsWith('.loca.lt'));
 };
 
 const buildServletUrl = (server?: string | null): string => {

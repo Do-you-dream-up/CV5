@@ -9,7 +9,7 @@ import { render, waitFor } from '@testing-library/react';
 import { InteractionProps } from '../../test/fixtures/componentProps/InteractionProps';
 import '@testing-library/jest-dom'; // => expose .toBeInTheDocument(), etc..
 import { getConfigurationObject } from '../../test/fixtures/configuration';
-import { INTERACTION_TEMPLATE } from '../../tools/constants';
+import { INTERACTION_TEMPLATE, TUNNEL_MODE } from '../../tools/constants';
 import { uppercaseFirstLetter } from '../../tools/text';
 import { useUserAction } from '../../contexts/UserActionContext';
 
@@ -52,7 +52,7 @@ const _render = (mountedComponent) => render(withTheme(mountedComponent));
 describe('Interaction', function () {
   beforeEach(() => {
     useConfiguration.mockReturnValue({ configuration: getConfigurationObject() });
-    useLivechat.mockReturnValue({ isLivechatOn: false });
+    useLivechat.mockReturnValue({ livechatType: TUNNEL_MODE.websocket });
     useDialog.mockReturnValue({});
     useUserAction.mockReturnValue({ tabbing: false });
   });

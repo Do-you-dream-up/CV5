@@ -9,7 +9,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
 import Dialog from '../Dialog/Dialog';
-import { DialogContext } from '../../contexts/DialogContext';
+import { useDialog } from '../../contexts/DialogContext';
 import Dragon from '../Dragon';
 import Footer from '../Footer/Footer';
 import GdprDisclaimer from '../GdprDisclaimer/GdprDisclaimer';
@@ -51,9 +51,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const { send } = useLivechat();
   const { minimize: minimizeChatbox } = useViewMode();
   const {
-    add,
     addRequest,
-    addResponse,
     clearInteractions,
     interactions,
     sidebarActive,
@@ -63,7 +61,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     setPrompt,
     setSidebar,
     toggleSidebar,
-  } = useContext(DialogContext);
+  } = useDialog();
+  const { addNotificationOrResponse } = useLivechat();
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
@@ -138,12 +137,10 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         addRequest && addRequest(text);
       }
 
-      const isLivechatOn = Local.isLivechatOn.load();
-
-      if (isLivechatOn) {
+      if (Local.livechatType.load()) {
         send && send(text, options);
       } else {
-        talk(text, toSend).then(addResponse);
+        talk(text, toSend).then(addNotificationOrResponse);
       }
     }
   };
@@ -169,7 +166,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     return {
       handleRewordClicked: (text, options) => handleRewordClicked(text, options),
       clearInteractions: () => clearInteractions && clearInteractions(),
-      reply: (text) => addResponse && addResponse({ text }),
+      reply: (text) => addNotificationOrResponse && addNotificationOrResponse({ text }),
       setDialogVariable: (name, value) => {
         dydu.setDialogVariable(name, escapeHTML(value));
       },
@@ -180,7 +177,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   };
 
   useEffect(() => {
-    if (!ready || Local.isLivechatOn.load()) {
+    if (!ready || Local.livechatType.load()) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = getDyduChatObject();
@@ -234,7 +231,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       setReady(true);
     }
   }, [
-    addResponse,
+    addNotificationOrResponse,
     handleRewordClicked,
     configuration?.application.defaultLanguage,
     configuration?.application.languages,
@@ -303,7 +300,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                     component={Dialog}
                     dialogRef={dialogRef}
                     interactions={interactions}
-                    onAdd={add}
                     open={open}
                     render
                     value="dialog"
@@ -313,7 +309,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   {poweredByActive && <PoweredBy />}
                 </div>
                 {(sidebarMode === 'over' || extended) && <Sidebar mode="over" />}
-                {!current && <Footer onRequest={addRequest} onResponse={addResponse} />}
+                {!current && <Footer onRequest={addRequest} onResponse={addNotificationOrResponse} />}
               </Onboarding>
             </GdprDisclaimer>
             {showScrollToBottom ? <ScrollToBottom /> : null}
@@ -326,7 +322,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 }
 
 export function ChatboxWrapper(rest) {
-  const { zoomSrc } = useContext(DialogContext);
+  const { zoomSrc } = useDialog();
   return (
     <GdprProvider>
       <OnboardingProvider>

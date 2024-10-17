@@ -1,18 +1,17 @@
-import { DialogContext } from '../../contexts/DialogContext';
 import Form from '../Form';
 import Interaction from '../Interaction';
 import PropTypes from 'prop-types';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
-import { useContext } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useDialog } from '../../contexts/DialogContext';
 
 /**
  * Display a form and enable consulting space selection.
  */
 export default function Spaces({ onResolve, scroll, thinking }) {
   const { configuration } = useConfiguration();
-  const { setPrompt } = useContext(DialogContext);
+  const { setPrompt } = useDialog();
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
   const welcome = t('spaces.welcome', { defaultValue: '' });

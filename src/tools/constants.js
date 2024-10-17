@@ -53,7 +53,8 @@ export const INTERACTION_TYPE = {
 
 export const ATRIA_TYPE_RESPONSE = {
   dmLivechatConnectionSucceed: 'DMLiveChatConnectionSucceed',
-  dMLiveChatLeaveQueue: 'DMLiveChatLeaveQueue',
+  dmLiveChatConnectionInQueue: 'DMLiveChatConnectionInQueue',
+  dmLiveChatLeaveQueue: 'DMLiveChatLeaveQueue',
   naAutoCloseDialog: 'NAAutoCloseDialog',
   naAutoCloseDialogBecauseUserLeft: 'NAAutoCloseDialogBecauseUserLeft',
   opLivechatEndByOperator: 'OPLiveChatEndByOperator',
@@ -72,6 +73,7 @@ export const INTERACTION_NOTIFICATION_TYPE = {
   dialogTransferredAutomatically: 'dialogTransferredAutomatically',
   waitingQueue: 'waitingQueue',
   leaveWaitingQueue: 'leaveWaitingQueue',
+  dmLiveChatConnectionInQueue: 'DMLiveChatConnectionInQueue',
 };
 
 export const RESPONSE_SPECIAL_ACTION = {

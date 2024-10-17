@@ -1,5 +1,5 @@
 import { documentCreateElement, isDefined } from '../../tools/helpers';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { Button } from '../../styles/styledComponent';
 import Scroll from '../Scroll/Scroll';

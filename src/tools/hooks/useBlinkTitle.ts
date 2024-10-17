@@ -62,7 +62,7 @@ export function useTabNotification(interval = 1000) {
   }
 
   function displayAlternativelyPageTitleAndNotification() {
-    if (Local.isLivechatOn.load()) {
+    if (Local.livechatType.load()) {
       if (document.title === livechatNotification) {
         document.title = pageTitleRef.current;
       } else {

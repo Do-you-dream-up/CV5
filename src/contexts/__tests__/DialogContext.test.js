@@ -34,7 +34,7 @@ const DialogContextValuesMock = {
     feedback: 'positive',
     sidebar: false,
     templateData: 'Base64 | string',
-    templateName: '',
+    templatename: '',
     urlRedirect: '',
     nextStepResponse: '',
     date: new Date(),

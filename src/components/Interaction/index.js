@@ -135,7 +135,7 @@ export default function Interaction({
   sidebar,
   hasSurvey,
   steps,
-  templateName,
+  templatename,
   thinking,
   type,
   typeResponse,
@@ -168,11 +168,11 @@ export default function Interaction({
 
   const carouselTemplate = useMemo(
     () =>
-      templateName?.equals(INTERACTION_TEMPLATE.carousel) || templateName?.equals(INTERACTION_TEMPLATE.carousel_array),
-    [templateName],
+      templatename?.equals(INTERACTION_TEMPLATE.carousel) || templatename?.equals(INTERACTION_TEMPLATE.carousel_array),
+    [templatename],
   );
-  const productTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.product), [templateName]);
-  const quickTemplate = useMemo(() => templateName?.equals(INTERACTION_TEMPLATE.quickReply), [templateName]);
+  const productTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.product), [templatename]);
+  const quickTemplate = useMemo(() => templatename?.equals(INTERACTION_TEMPLATE.quickReply), [templatename]);
 
   const addBubbles = useCallback(
     (newBubbles) => {
@@ -215,7 +215,7 @@ export default function Interaction({
     if (!ready && children) {
       setReady(true);
 
-      const createBubbleListFn = templateNameToBubbleCreateAction[templateName] || createBubbleListNoTemplate;
+      const createBubbleListFn = templateNameToBubbleCreateAction[templatename] || createBubbleListNoTemplate;
 
       const bubbles = createBubbleListFn(children);
       addBubbles(bubbles);
@@ -228,7 +228,7 @@ export default function Interaction({
     children,
     productTemplate,
     ready,
-    templateName,
+    templatename,
     quickTemplate,
     sidebar,
     createBubbleListNoTemplate,
@@ -267,9 +267,9 @@ export default function Interaction({
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
-    if (Local.isLivechatOn.load()) return null;
+    if (Local.livechatType.load()) return null;
     return hasLoader ? <Loader className={classes.loader} scroll={scroll} /> : null;
-  }, [classes.loader, hasLoader, Local.isLivechatOn.load(), scroll]);
+  }, [classes.loader, hasLoader, Local.livechatType.load(), scroll]);
 
   const bubbleList = useMemo(() => {
     if (bubbles.length <= 0) return null;
@@ -293,11 +293,11 @@ export default function Interaction({
 
       return (
         <Scroll key={index} className={classes.bubble}>
-          <Bubble templateName={templateName} {...attributes} />
+          <Bubble templatename={templatename} {...attributes} />
         </Scroll>
       );
     });
-  }, [autoOpenSidebar, bubbles, carousel, classes.bubble, history, scroll, sidebar, steps, templateName, type]);
+  }, [autoOpenSidebar, bubbles, carousel, classes.bubble, history, scroll, sidebar, steps, templatename, type]);
 
   const handleCarouselInitOk = () => {
     setHasLoader(false);
@@ -309,7 +309,7 @@ export default function Interaction({
     let wrapperProps = {
       className: c('dydu-interaction-bubbles', classes.bubbles),
       steps: steps,
-      templateName: templateName,
+      templatename: templatename,
     };
 
     if (isCarousel) {
@@ -321,7 +321,7 @@ export default function Interaction({
     }
 
     return <div {...wrapperProps}>{bubbleList}</div>;
-  }, [bubbleList, classes.bubbles, isCarousel, steps, templateName]);
+  }, [bubbleList, classes.bubbles, isCarousel, steps, templatename]);
 
   return (
     (isCarousel || (!isCarousel && (bubbles.length || hasLoader))) && (
@@ -329,7 +329,7 @@ export default function Interaction({
         className={c(
           'dydu-interaction',
           `dydu-interaction-${type}`,
-          !!templateName && templateName !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
+          !!templatename && templatename !== INTERACTION_TEMPLATE.quickReply && 'dydu-interaction-template',
           classes.base,
           classes[type],
           { [classes.barf]: carousel && bubbles.length },
@@ -367,7 +367,7 @@ Interaction.propTypes = {
   activeSidebarName: PropTypes.string,
   hasSurvey: PropTypes.bool,
   steps: PropTypes.array,
-  templateName: PropTypes.string,
+  templatename: PropTypes.string,
   contexts: PropTypes.any,
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
@@ -378,9 +378,7 @@ const Writing = () => {
   const { configuration } = useConfiguration();
   // eslint-disable
   const avatarImageUrl = useMemo(() => {
-    const isLivechatOn = Local.isLivechatOn.load();
-
-    if (configuration?.header?.livechatLogo?.livechatCustomAvatar && isLivechatOn) {
+    if (configuration?.header?.livechatLogo?.livechatCustomAvatar && Local.livechatType.load()) {
       return (
         asset(configuration?.header?.livechatLogo?.livechatImageLink) || asset(configuration?.avatar?.response?.image)
       );

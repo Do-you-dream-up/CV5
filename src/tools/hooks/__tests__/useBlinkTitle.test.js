@@ -50,7 +50,7 @@ describe('useTabNotification', () => {
 
   test('flash function should display alternatively title and notification', () => {
     const { result } = renderHook(() => useTabNotification());
-    jest.spyOn(Local.isLivechatOn, 'load').mockReturnValue(true);
+    jest.spyOn(Local.livechatType, 'load').mockReturnValue(true);
     document.title = 'Page title';
     const message = 'New Message';
 
