@@ -20,11 +20,6 @@ import { useUserAction } from '../../contexts/UserActionContext';
     }));
 */
 
-jest.mock('../PrettyHtml/useCustomRenderer', () => ({
-  __esModule: true,
-  default: jest.fn().mockReturnValue(() => () => ({ replace: jest.fn() })),
-}));
-
 jest.mock('../../contexts/DialogContext', () => ({
   useDialog: jest.fn(),
 }));
