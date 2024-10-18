@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { useDialog } from '../../contexts/DialogContext';
+import { useLivechat } from '../../contexts/LivechatContext';
 import { useState } from 'react';
 
 import Bubble from '../Bubble';
@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
  */
 export default function Feedback() {
   const { configuration } = useConfiguration();
-  const { addNotificationOrResponse } = useDialog();
+  const { addNotificationOrResponse } = useLivechat();
   const [showChoices, setShowChoices] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showVote, setShowVote] = useState(true);
