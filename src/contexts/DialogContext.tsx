@@ -203,15 +203,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     return last?.type?.name === Interaction.Writing.name;
   };
 
-  let isTimeoutRunning: any = false;
-  const delayStopAnimationOperatorWriting = (stopAnimationCallback) => {
-    if (isTimeoutRunning) return;
-    isTimeoutRunning = setTimeout(() => {
-      stopAnimationCallback();
-      isTimeoutRunning = false;
-    }, 5000);
-  };
-
   const canTriggerPushRules = useMemo(() => {
     return configuration?.pushrules.active && !isDefined(pushrules);
   }, [configuration, pushrules]);
@@ -298,10 +289,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
     });
   }, []);
 
-  const showAnimationOperatorWriting = useCallback(() => {
+  const showAnimationOperatorWriting = () => {
     add(<Interaction.Writing />);
-    delayStopAnimationOperatorWriting(add);
-  }, [add]);
+  };
 
   const displayNotification = (notification) => {
     if (isDefined(notification)) {
