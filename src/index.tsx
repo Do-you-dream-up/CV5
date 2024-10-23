@@ -21,7 +21,6 @@ import { StyleSheetManager } from 'styled-components';
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { Local } from './tools/storage';
-import CookiesDisclaimer from './components/CookiesDisclaimer/CookiesDisclaimer';
 
 const renderApp = (
   jss: any,
@@ -59,6 +58,8 @@ const renderApp = (
   );
 
 configuration.initialize().then((configuration) => {
+  Local.resetAllLocalStorageIfTooOld(configuration?.application?.localStorageKeepTimeInMs);
+
   let host = document.getElementById(configuration.root);
 
   if (!host) {

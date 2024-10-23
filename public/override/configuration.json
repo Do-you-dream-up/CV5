@@ -10,7 +10,8 @@
     ],
     "getDefaultLanguageFromSite": false,
     "cdn": "https://cdn.doyoudreamup.com/chatbox/",
-    "directory": "main/"
+    "directory": "main/",
+    "localStorageKeepTimeInMs": 15778458000
   },
   "avatar": {
     "response": {

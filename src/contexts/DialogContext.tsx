@@ -348,6 +348,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const addResponse = useCallback(
     (response: Servlet.ChatResponseValues = {}) => {
+      Local.lastInteraction.save(); // Used to refresh localStorage usage
+
       setLastResponse(response);
       const {
         askFeedback: _askFeedback,

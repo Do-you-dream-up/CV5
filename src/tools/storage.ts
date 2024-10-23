@@ -138,6 +138,7 @@ export class Local {
     welcome: 'dydu.chatbox.welcomeKnowledge',
     operator: 'dydu.chatbox.operator',
     servers: 'dydu.chatbox.servers', // From Channels
+    lastInteraction: 'dydu.chatbox.interaction.last',
   };
 
   /**
@@ -300,6 +301,19 @@ export class Local {
     },
   });
 
+  static lastInteraction = Object.create({
+    load: () => {
+      const content = localStorage.getItem(Local.names.lastInteraction);
+      return isDefined(content) && content ? Number(content) : null;
+    },
+    save: () => {
+      localStorage.setItem(Local.names.lastInteraction, Date.now().toString());
+    },
+    reset: () => {
+      localStorage.removeItem(Local.names.lastInteraction);
+    },
+  });
+
   static clientId = Object.create({
     getKey: () => Local.names.client,
     load: (keyString = '') => {
@@ -343,6 +357,9 @@ export class Local {
         localStorage.setItem(Local.welcomeKnowledge.getKey(botId), JSON.stringify(stored));
       }
     },
+    reset: (botId) => {
+      localStorage.removeItem(Local.welcomeKnowledge.getKey(botId));
+    },
   });
 
   static contextId = Object.create({
@@ -355,7 +372,24 @@ export class Local {
         localStorage.setItem(Local.contextId.getKey(botId), newValue);
       }
     },
+    reset: (botId) => {
+      localStorage.removeItem(Local.contextId.getKey(botId));
+    },
   });
+
+  static resetAllLocalStorageIfTooOld = (timeToKeep) => {
+    const lastInteraction = Local.lastInteraction.load();
+
+    if (lastInteraction) {
+      const now = Date.now();
+      const timeSpent = now - lastInteraction;
+
+      if (timeSpent > timeToKeep) {
+        console.log('LocalStorage too old (', timeSpent, 'ms). Cleaning...');
+        localStorage.clear();
+      }
+    }
+  };
 }
 
 const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);

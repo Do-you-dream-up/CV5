@@ -75,6 +75,7 @@ declare namespace Models {
     getDefaultLanguageFromSite: boolean;
     cdn: string;
     directory: string;
+    localStorageKeepTimeInMs: number;
   }
 
   export interface Avatar {
