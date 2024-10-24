@@ -42,7 +42,6 @@ export default function Top({ className, component, ...rest }) {
               item?.reword && (
                 <li key={index}>
                   <button
-                    href="#"
                     className={c('dydu-top-items', classes.accessibility, {
                       [classes.hideOutline]: !tabbing,
                     })}
