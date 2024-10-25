@@ -22,7 +22,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
   const { t } = useTranslation('translation');
   const theme = useTheme();
 
-  const getSubmitIcon = () => thinking && <Icon icon={icons.form} color={theme.palette.primary.text} alt="submit" />;
+  const getSubmitIcon = () => thinking && <Icon icon={icons.form} color={theme.palette.primary.text} alt="" />;
 
   const onCancel =
     typeof onReject === 'function'

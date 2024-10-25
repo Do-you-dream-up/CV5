@@ -18,6 +18,9 @@
       "less": "Less"
     }
   },
+  "sidebar": {
+    "close": "close"
+  },
   "carousel": {
     "next": "Next",
     "previous": "Previous"
@@ -263,6 +266,7 @@
     "errorMessage": "I am sorry, your file <strong>{{name}}</strong> could not be uploaded."
   },
   "survey": {
+    "send": "Send my answer",
     "sentMessage": "Your answer to the survey has been sent.",
     "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent.",
     "placeholder": "Enter your answer here."
@@ -278,5 +282,8 @@
       "estimation": " - Estimated waiting time: {{estimation}} minute(s)",
       "addedToQueueForHistory": "You have been added to waiting queue"
     }
+  },
+  "zoom": {
+    "close": "Close zoom"
   }
 }
