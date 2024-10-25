@@ -45,7 +45,7 @@ export default createUseStyles((theme) => ({
     },
   }),
   separator: () => ({
-    width: '100%',
+    marginBlockEnd: '20px !important',
   }),
   text: () => ({
     width: '100%',
