@@ -217,8 +217,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   useEffect(() => {
     const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
     if (isDefined(nodeElementInputContainer)) {
-      nodeElementInputContainer.setAttribute('aria-label', t('input.label'));
-      nodeElementInputContainer.setAttribute('title', t('input.label'));
+      nodeElementInputContainer.setAttribute('aria-label', counterRemaining);
+      nodeElementInputContainer.setAttribute('title', counterRemaining);
       nodeElementInputContainer.removeAttribute('role');
       nodeElementInputContainer.removeAttribute('aria-haspopup');
       nodeElementInputContainer.removeAttribute('aria-owns');
