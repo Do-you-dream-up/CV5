@@ -40,19 +40,20 @@ export default function QuickreplyTemplate({ html }) {
     return content.quick || {};
   }, [content]);
 
-  const separator = useMemo(() => {
-    if (!isDefined(content)) return null;
-    return content.separator;
-  }, [content]);
+  const hasQuickButton = (quick) => {
+    return Object.keys(quick).some((key) => quick[key]);
+  };
 
   if (!isDefined(content)) return null;
   return (
     <div className={c('dydu-quickreply-template', classes.quick)}>
       {!!text && (
-        <p className={c('dydu-quickreply-template-content', classes.text)} dangerouslySetInnerHTML={{ __html: text }} />
-      )}
-      {separator && (
-        <p data-testid="separator" className={c('dydu-quickreply-template-separator', classes.separator)} />
+        <p
+          className={c('dydu-quickreply-template-content', classes.text, {
+            [classes.separator]: hasQuickButton(quick),
+          })}
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
       )}
       {Object.keys(quick)
         .sort()

@@ -17,11 +17,6 @@ describe('QuickreplyTemplate', () => {
     expect(getByText('Hello World')).toBeDefined();
   });
 
-  it('renders the separator if it exists', () => {
-    const { getByTestId } = render(<QuickreplyTemplate html='{"separator": true}' />);
-    expect(getByTestId('separator')).toBeDefined();
-  });
-
   it('renders the quick reply buttons if they exist', () => {
     const { getByText } = render(
       <QuickreplyTemplate html='{"quick": {"button1": "Button 1", "button2": "Button 2"}}' />,
