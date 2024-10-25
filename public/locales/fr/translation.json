@@ -198,8 +198,7 @@
         "stop": "Fin de l'enregistrement"
       }
     },
-    "placeholder": "Tapez votre message ici",
-    "label": "Ecrire sa réponse"
+    "placeholder": "Tapez votre message ici"
   },
   "interaction": {
     "languageChange": "A partir de maintenant, je vous répondrai en",
