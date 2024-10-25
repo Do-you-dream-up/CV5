@@ -25,8 +25,6 @@ export default function FeedbackChoices({ onSelect }) {
           {choices?.map((choice, index) => (
             <li key={index}>
               <button
-                role="button"
-                href="choice"
                 children={choice}
                 className={c('dydu-link', classes.accessibility, {
                   [classes.hideOutline]: !tabbing,
