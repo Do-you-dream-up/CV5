@@ -268,7 +268,7 @@ export const getConfigurationObject = (updates = {}) => {
           },
         },
       ],
-      items: ['default'],
+      items: ['Defaut'],
     },
     suggestions: {
       limit: 0,
@@ -304,7 +304,7 @@ export const getConfigurationObject = (updates = {}) => {
       sttServerUrl: '',
       ttsServerUrl: '',
       voice: 'Damien',
-      voiceSpace: 'default',
+      voiceSpace: 'Defaut',
       color: 'black',
     },
     welcome: {

@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import useStyles from './styles';
 import useViewport from '../../tools/hooks/useViewport';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { VIEW_MODE } from '../../tools/constants';
 
 /**
  * Typically used with the `Interaction` component.
@@ -38,7 +39,7 @@ const Carousel = ({ children, steps, handleSlickInit }: CarouselProps) => {
   const { shadowAnchor } = useShadow();
   const [t] = useTranslation();
 
-  const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
+  const isFullScreen = isMobile || Local.viewMode.load() === VIEW_MODE.full;
   const automaticSidebar = isFullScreen
     ? !!configuration?.sidebar.automatic?.fullScreen
     : !!configuration?.sidebar.automatic?.desktop;

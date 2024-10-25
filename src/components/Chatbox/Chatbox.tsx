@@ -1,4 +1,4 @@
-import { EventsContext, useEvent } from '../../contexts/EventsContext';
+import { EventsContext } from '../../contexts/EventsContext';
 import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
@@ -34,6 +34,7 @@ import { useUploadFile } from '../../contexts/UploadFileContext';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import ScrollToBottom from '../ScrollToBottom/ScrollToBottom';
+import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -43,7 +44,7 @@ interface ChatboxProps {
   extended: boolean;
   open: boolean;
   root: any;
-  toggle: (val: number) => any;
+  toggle: (val: number) => void;
 }
 
 export default function Chatbox({ extended, open, root, toggle, ...rest }: ChatboxProps) {
@@ -66,12 +67,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const { showUploadFileButton } = useUploadFile();
   const { current } = useContext(TabContext) || {};
   const event = useContext?.(EventsContext)?.onEvent?.('chatbox');
-  const { onChatboxLoaded, onAppReady } = useEvent();
+  const { setChatboxRefAndMarkAsLoaded, setIsAppLoaded } = useChatboxLoaded();
   const { isOnboardingAlreadyDone } = useContext(OnboardingContext);
   const { gdprPassed, setGdprPassed } = useContext(GdprContext);
   const onboardingEnable = configuration?.onboarding.enable;
   const { modal } = useContext(ModalContext);
-  const [ready, setReady] = useState<boolean>(false);
+  const [areWindowFunctionsCreated, setAreWindowFunctionsCreated] = useState<boolean>(false);
   const [afterLoadTriggered] = useState<boolean>(false);
   const classes = useStyles({ configuration });
   const [t, i18n] = useTranslation();
@@ -145,7 +146,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     }
   };
 
-  const onClose = () => modal(ModalClose).then(toggle(0), () => {});
+  const onClose = () =>
+    modal(ModalClose).then(
+      () => toggle(VIEW_MODE.close),
+      () => {},
+    );
 
   const onMinimize = () => {
     event && event('onMinimize', 'params', 'params2');
@@ -154,13 +159,15 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   useEffect(() => {
     if (isDefined(root.current)) {
-      onChatboxLoaded && onChatboxLoaded(root.current);
+      setChatboxRefAndMarkAsLoaded && setChatboxRefAndMarkAsLoaded(root.current);
     }
-  }, [onChatboxLoaded, root]);
+  }, [setChatboxRefAndMarkAsLoaded, root]);
 
   useEffect(() => {
-    if (ready) onAppReady && onAppReady();
-  }, [onAppReady, ready]);
+    if (areWindowFunctionsCreated) {
+      setIsAppLoaded && setIsAppLoaded(true);
+    }
+  }, [areWindowFunctionsCreated]);
 
   const getDyduChatObject = () => {
     return {
@@ -177,7 +184,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   };
 
   useEffect(() => {
-    if (!ready || Local.livechatType.load()) {
+    if (!areWindowFunctionsCreated) {
       window.dydu = { ...window.dydu };
 
       window.dydu.chat = getDyduChatObject();
@@ -218,7 +225,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
-        toggle: (mode) => toggle(mode)(),
+        toggle: (mode: number) => toggle(mode),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
@@ -228,7 +235,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window._dydu_lockTextField = window.dydu.ui.lock;
       window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
 
-      setReady(true);
+      setAreWindowFunctionsCreated(true);
     }
   }, [
     addNotificationOrResponse,
@@ -239,7 +246,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
     clearInteractions,
     i18n,
     modal,
-    ready,
+    areWindowFunctionsCreated,
     afterLoadTriggered,
     setDisabled,
     setLocked,
@@ -283,7 +290,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
               extended={extended}
               minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
               onClose={onClose}
-              onExpand={expandable ? (value) => toggle(value ? 3 : 2) : null}
+              onExpand={expandable ? (value) => toggle(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
               onMinimize={onMinimize}
             />
             {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}

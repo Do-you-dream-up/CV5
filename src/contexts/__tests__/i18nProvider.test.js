@@ -28,8 +28,8 @@ describe('i18n initialization', () => {
   });
 
   it('should have the correct lookupCookie and lookupLocalStorage values in the language detection configuration', () => {
-    expect(i18n.options.detection.lookupCookie).toBe('dydu.locale');
-    expect(i18n.options.detection.lookupLocalStorage).toBe('dydu.locale');
+    expect(i18n.options.detection.lookupCookie).toBe('dydu.chatbox.locale');
+    expect(i18n.options.detection.lookupLocalStorage).toBe('dydu.chatbox.locale');
   });
 
   it('should have the correct lookupQuerystring value in the language detection configuration', () => {

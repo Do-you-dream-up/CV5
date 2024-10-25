@@ -18,6 +18,9 @@
       "less": "Less"
     }
   },
+  "sidebar": {
+    "close": "close"
+  },
   "carousel": {
     "next": "Next",
     "previous": "Previous"
@@ -61,6 +64,27 @@
           "socialUrl": "https://www.linkedin.com/company/dydu/"
         }
       ]
+    }
+  },
+  "cookies": {
+    "disclaimer": {
+      "title": "Cookies Usage",
+      "body": [
+        {
+          "text": "This application does not use any marketing or advertising cookies."
+        },
+        {
+          "text": "All cookies stored by this application are essential for its proper functioning."
+        },
+        {
+          "text": "The cookies help maintain your session, store preferences, and ensure the smooth operation of the service."
+        },
+        {
+          "text": "Please note that refusing these cookies will prevent the application from working."
+        }
+      ],
+      "cancel": "I refuse",
+      "ok": "I accept"
     }
   },
   "exportConv": {
@@ -242,8 +266,10 @@
     "errorMessage": "I am sorry, your file <strong>{{name}}</strong> could not be uploaded."
   },
   "survey": {
+    "send": "Send my answer",
     "sentMessage": "Your answer to the survey has been sent.",
-    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent."
+    "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent.",
+    "placeholder": "Enter your answer here."
   },
   "livechat": {
     "notif": {
@@ -256,5 +282,8 @@
       "estimation": " - Estimated waiting time: {{estimation}} minute(s)",
       "addedToQueueForHistory": "You have been added to waiting queue"
     }
+  },
+  "zoom": {
+    "close": "Close zoom"
   }
 }

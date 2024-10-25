@@ -3,7 +3,7 @@ export const getCss = () => {
 };
 
 export const getMain = () => {
-  const css = localStorage.getItem('dydu.main');
+  const css = localStorage.getItem('dydu.chatbox.main');
   if (typeof css === 'string') {
     return JSON.parse(css);
   }

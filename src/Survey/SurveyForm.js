@@ -7,12 +7,14 @@ import { useCallback, useEffect } from 'react';
 import { useSurvey } from './SurveyProvider';
 import { useTheme } from 'react-jss';
 import { useShadow } from '../contexts/ShadowProvider';
+import { useTranslation } from 'react-i18next';
 
 export default function SurveyForm() {
   const { instances, onSubmit, surveyConfig } = useSurvey();
   const { shadowAnchor } = useShadow();
+  const { t } = useTranslation('translation');
 
-  const buttonWording = surveyConfig?.submitValue !== undefined ? surveyConfig?.submitValue : 'Envoyer mes réponses';
+  const buttonWording = surveyConfig?.submitValue !== undefined ? surveyConfig?.submitValue : t('survey.send');
 
   useEffect(() => {
     if (!shadowAnchor?.querySelector('#dydu-style-survey')) {
@@ -50,7 +52,7 @@ const ButtonSubmit = ({ onSubmit, wording }) => {
       onClick={onSubmit}
       style={{ backgroundColor: theme?.palette?.primary?.main ?? '#41479B' }}
     >
-      <i>{wording}</i> <img src={asset('check-circle.svg')} alt="submit" />
+      <i>{wording}</i> <img src={asset('check-circle.svg')} alt="" />
     </button>
   );
 };

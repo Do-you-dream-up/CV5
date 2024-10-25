@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import useStyles from './styles';
 import { useDialog } from '../../contexts/DialogContext';
+import { useTranslation } from 'react-i18next';
 
 const Zoom = ({ src }) => {
   const classes = useStyles();
   const { setZoomSrc } = useDialog();
+  const { t } = useTranslation('translation');
 
   const closeZoom = () => setZoomSrc(null);
 
@@ -19,7 +21,7 @@ const Zoom = ({ src }) => {
 
   return (
     <div className={classes.zoom} onClick={closeZoom}>
-      <img src={src} className={classes.image} onClick={closeZoom} alt="closeZoom" />
+      <img src={src} className={classes.image} onClick={closeZoom} alt={t('zoom.close')} />
     </div>
   );
 };

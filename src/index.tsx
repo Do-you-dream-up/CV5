@@ -5,7 +5,6 @@ import { JssProvider, ThemeProvider } from 'react-jss';
 import App from './components/App/App';
 import { BotInfoProvider } from './contexts/BotInfoContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
-import { EventsProvider } from './contexts/EventsContext';
 import ReactDOM from 'react-dom';
 import { ServerStatusProvider } from './contexts/ServerStatusContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
@@ -43,11 +42,9 @@ const renderApp = (
                 <I18nextProvider i18n={i18n}>
                   <BotInfoProvider>
                     <ViewModeProvider>
-                      <EventsProvider>
-                        <StyleSheetManager target={styleSlot}>
-                          <App />
-                        </StyleSheetManager>
-                      </EventsProvider>
+                      <StyleSheetManager target={styleSlot}>
+                        <App />
+                      </StyleSheetManager>
                     </ViewModeProvider>
                   </BotInfoProvider>
                 </I18nextProvider>
@@ -61,6 +58,8 @@ const renderApp = (
   );
 
 configuration.initialize().then((configuration) => {
+  Local.resetAllLocalStorageIfTooOld(configuration?.application?.localStorageKeepTimeInMs);
+
   let host = document.getElementById(configuration.root);
 
   if (!host) {

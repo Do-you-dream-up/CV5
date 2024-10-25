@@ -17,13 +17,13 @@ interface GdprProviderProps {
 export const GdprContext = createContext<GdprContextProps>({});
 
 export function GdprProvider({ children }: GdprProviderProps) {
-  const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.get(Local.names.gdpr, undefined, true));
+  const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.gdpr.load());
   const { dispatchEvent } = useEvent();
 
   const onAccept = useCallback(() => {
     setGdprPassed(true);
     dispatchEvent && dispatchEvent('gdpr', 'acceptGdpr');
-    Local.set(Local.names.gdpr, undefined);
+    Local.gdpr.save(true);
   }, [dispatchEvent]);
 
   const onDecline = useCallback(() => {

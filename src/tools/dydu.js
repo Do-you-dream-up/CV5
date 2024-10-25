@@ -1,5 +1,5 @@
 import { Cookie, Local } from './storage';
-import { RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
+import { DEFAULT_CONSULTATION_SPACE, RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
   b64encodeObject,
@@ -162,8 +162,7 @@ export default new (class Dydu {
   };
 
   hasUserAcceptedGdpr() {
-    const gdprSources = [Local.byBotId(BOT.id).get(Local.names.gdpr), Local.get(Local.names.gdpr)];
-    return gdprSources.some(isDefined);
+    return Local.gdpr.load();
   }
 
   getBot = () => BOT;
@@ -206,10 +205,6 @@ export default new (class Dydu {
       return '';
     }
   };
-
-  getContextIdStorageKey() {
-    return Local.contextId.createKey(BOT.id, this.getConfiguration()?.application?.directory);
-  }
 
   getConfiguration() {
     return this.configuration;
@@ -254,7 +249,6 @@ export default new (class Dydu {
       }
     }
     if (!isDefined(this.space)) this.space = this.getConfiguration().spaces?.items[0];
-    Local.set(Local.names?.space, this.space);
     return this.space;
   };
 
@@ -310,7 +304,7 @@ export default new (class Dydu {
   initLocaleWithConfiguration(configuration) {
     const shouldGetLanguageFromBrowser = configuration?.application?.getDefaultLanguageFromSite;
     let locale = shouldGetLanguageFromBrowser
-      ? Local.get(Local.names.locale) // at this point in time, this value comes from browser language, set by i18nProvider or by locale already set by a previous usage
+      ? Local.locale.load() // at this point in time, this value comes from browser language, set by i18nProvider or by locale already set by a previous usage
       : this.getConfigurationDefaultLanguage(configuration);
     this.setLocaleFromConfiguration(locale, configuration);
   }
@@ -346,7 +340,6 @@ export default new (class Dydu {
 
   setLocale(localeToSet) {
     this.locale = localeToSet;
-    Local.set(Local.names.locale, localeToSet);
     i18n.changeLanguage(localeToSet);
   }
 
@@ -375,7 +368,7 @@ export default new (class Dydu {
     return list;
   };
 
-  setInitialSpace(initialSpace = 'default') {
+  setInitialSpace(initialSpace = DEFAULT_CONSULTATION_SPACE) {
     this.space = initialSpace;
   }
 
@@ -386,9 +379,7 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   setSpace = (space) => {
-    const value = space?.toLocaleLowerCase() === 'default' ? String(space).trim().toLowerCase() : String(space);
-    Local.set(Local.names.space, value);
-    this.space = value;
+    this.space = space?.trim();
   };
 
   setQualificationMode = (value) => {
@@ -442,7 +433,10 @@ export default new (class Dydu {
 
   handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
-    if (guiCSName) this.setSpace(guiCSName);
+    if (guiCSName) {
+      this.setSpace(guiCSName);
+      Local.space.save(guiCSName);
+    }
     return response;
   }
 
@@ -591,7 +585,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
-      space: this.getSpace() || 'default',
+      space: this.getSpace() || DEFAULT_CONSULTATION_SPACE,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       variables: this.getVariables(),
     });
@@ -818,8 +812,7 @@ export default new (class Dydu {
   }
 
   setSpaceToDefault() {
-    const defaultSpaceName = 'default';
-    this.setInitialSpace(defaultSpaceName);
+    this.setInitialSpace(DEFAULT_CONSULTATION_SPACE);
   }
 
   setGetSurveyCallback(getSurvey) {

@@ -19,6 +19,7 @@ import useViewport from '../../tools/hooks/useViewport';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
 import SurveyForm from '../../Survey/SurveyForm';
+import { VIEW_MODE } from '../../tools/constants';
 
 /**
  * A conversation bubble.
@@ -57,7 +58,7 @@ export default function Bubble({
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
   const more = t('bubble.sidebar.more');
   const less = t('bubble.sidebar.less');
-  const isFullScreen = isMobile || Local.get(Local.names.open) === 3;
+  const isFullScreen = isMobile || Local.viewMode.load() === VIEW_MODE.full;
   const { desktop: sidebarDesktop, fullScreen: sidebarFullScreen } = configuration.sidebar.automatic;
   const automaticSidebar = isFullScreen ? !!sidebarFullScreen : !!sidebarDesktop;
   const defaultAvatar = configuration.avatar?.response?.image;

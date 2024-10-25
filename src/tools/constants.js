@@ -1,3 +1,6 @@
+// As defined in astro -> ConsultationSpaceMg::DEFAULT
+export const DEFAULT_CONSULTATION_SPACE = 'Defaut';
+
 export const PAYLOAD_TYPE = {
   survey: 'survey',
 };

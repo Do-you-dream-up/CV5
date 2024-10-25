@@ -18,6 +18,9 @@
       "less": "Moins"
     }
   },
+  "sidebar": {
+    "close": "fermer"
+  },
   "carousel": {
     "next": "Suivant",
     "previous": "Précédent"
@@ -61,6 +64,27 @@
           "socialUrl": "https://www.linkedin.com/company/dydu/"
         }
       ]
+    }
+  },
+  "cookies": {
+    "disclaimer": {
+      "title": "Utilisation des Cookies",
+      "body": [
+        {
+          "text": "Cette application n'utilise aucun cookie à des fins marketing ou publicitaires."
+        },
+        {
+          "text": "Tous les cookies stockés par cette application sont essentiels à son bon fonctionnement."
+        },
+        {
+          "text": "Les cookies permettent de maintenir votre session, de stocker vos préférences et d'assurer le bon fonctionnement du service."
+        },
+        {
+          "text": "Veuillez noter que refuser ces cookies empêchera l'application de fonctionner."
+        }
+      ],
+      "cancel": "Je refuse",
+      "ok": "J'accepte"
     }
   },
   "exportConv": {
@@ -242,8 +266,10 @@
     "errorMessage": "Votre fichier <strong>{{name}}</strong> n’a malheureusement pas pu être chargé."
   },
   "survey": {
+    "send": "Envoyer ma réponse",
     "sentMessage": "Votre réponse au questionnaire a bien été envoyée.",
-    "errorMessage": "Une erreur est survenue votre réponse au questionnaire n’a malheureusement pas été envoyée."
+    "errorMessage": "Une erreur est survenue votre réponse au questionnaire n’a malheureusement pas été envoyée.",
+    "placeholder": "Saisissez votre réponse ici"
   },
   "livechat": {
     "notif": {
@@ -256,5 +282,8 @@
       "estimation": " - Estimation de votre attente : {{estimation}} minute(s)",
       "addedToQueueForHistory": "Vous avez été mis en file d'attente"
     }
+  },
+  "zoom": {
+    "close": "Fermer le zoom"
   }
 }

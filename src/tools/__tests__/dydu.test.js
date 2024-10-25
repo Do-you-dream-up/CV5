@@ -12,6 +12,7 @@ let _dydu = jest.requireActual(dyduRelativeLocation).default;
 
 import { emit, SERVLET_API } from '../axios';
 import { BOT } from '../bot';
+import { DEFAULT_CONSULTATION_SPACE } from '../constants';
 
 jest.mock('../axios', () => ({
   emit: jest.fn().mockReturnValue(Promise.resolve({})),
@@ -605,26 +606,6 @@ describe('dydu.js', function () {
       //THEN
       expect(dydu.space).toEqual(newSpace);
     });
-    it('should save the space to localStorage', () => {
-      //GIVEN
-      const newSpace = 'newSpace';
-
-      //WHEN
-      dydu.setSpace(newSpace);
-
-      //THEN
-      expect(Local.set).toHaveBeenCalledWith(Local.names.space, newSpace);
-    });
-    it("should save lowercased if value is 'default'", () => {
-      //GIVEN
-      const space = 'default';
-
-      //WHEN
-      dydu.setSpace(space);
-
-      //THEN
-      expect(Local.set).toHaveBeenCalledWith(Local.names.space, space);
-    });
   });
   describe('getContextVariables', () => {
     it('should return an html list of variables', () => {
@@ -674,17 +655,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(receivedSpace).toEqual(defaultSpace);
-    });
-    it('should save space to localStorage', () => {
-      // GIVEN
-      const currentSpace = 'current-space';
-
-      // WHEN
-      dydu.space = currentSpace;
-      dydu.getSpace();
-
-      // THEN
-      expect(Local.set).toHaveBeenCalledWith(Local.names.space, currentSpace);
     });
     it('should return the |space| class attribute', () => {
       // GIVEN
@@ -830,71 +800,6 @@ describe('dydu.js', function () {
 
       // THEN
       expect(Local.clientId.createAndSave).toHaveBeenCalled();
-    });
-  });
-
-  describe('hasUserAcceptedGdpr', () => {
-    it('should return false', () => {
-      // GIVEN
-      const value = null;
-      const expected = !!value;
-      Local.get.mockReturnValue(value);
-      Local.byBotId.mockReturnValue({ get: jest.fn().mockReturnValue(value) });
-
-      // WHEN
-      const received = dydu.hasUserAcceptedGdpr();
-
-      // THEN
-      expect(received).toEqual(expected);
-    });
-    it('should return true', () => {
-      // GIVEN
-      const value = 'value';
-      const expected = !!value;
-      Local.get.mockReturnValue(value);
-      Local.byBotId.mockReturnValue({ get: jest.fn().mockReturnValue(value) });
-
-      // WHEN
-      const received = dydu.hasUserAcceptedGdpr();
-
-      // THEN
-      expect(received).toEqual(expected);
-    });
-    it('should call |getBotId|', () => {
-      // GIVEN
-      dydu.getBotId = jest.fn();
-      Local.byBotId.mockReturnValue({ get: jest.fn() });
-
-      // WHEN
-      dydu.hasUserAcceptedGdpr();
-      // THEN
-      expect(Local.byBotId).toHaveBeenCalled();
-    });
-    it('should call |Local.byBotId| with current botId', () => {
-      // GIVEN
-      const currentBotId = 'current-bot-id';
-      dydu.getBotId = jest.fn().mockReturnValue(currentBotId);
-      Local.byBotId.mockReturnValue({ get: jest.fn() });
-
-      // WHEN
-      dydu.hasUserAcceptedGdpr();
-      // THEN
-      expect(Local.byBotId).toHaveBeenCalledWith(currentBotId);
-    });
-    it('should call |Local.get| with gdpr localStorage key name', () => {
-      // GIVEN
-      const gdprLSKeyName = 'gdrp';
-      Local.names.gdpr = gdprLSKeyName;
-      const spiedLocalGet = jest.spyOn(Local, 'get');
-      const spiedByBotId = jest.spyOn(Local, 'byBotId');
-      spiedByBotId.mockReturnValue({ get: jest.fn() });
-
-      // WHEN
-      dydu.hasUserAcceptedGdpr();
-
-      // THEN
-      expect(spiedLocalGet).toHaveBeenCalledWith(gdprLSKeyName);
-      jestRestoreMocked([spiedLocalGet, spiedByBotId]);
     });
   });
 

@@ -19,6 +19,7 @@ import {
 } from './styledComponents';
 import { useSurvey } from 'src/Survey/SurveyProvider';
 import { useTheme } from 'react-jss';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Render sidebar content. The content can be modal and blocking for the rest
@@ -32,6 +33,7 @@ export default function Sidebar({ anchor, mode }) {
   const { close } = useSurvey();
   const root = useRef(null);
   const theme = useTheme();
+  const { t } = useTranslation('translation');
   const [initialMode, setMode] = useState(configuration.sidebar.mode);
   mode = mode || initialMode;
   const {
@@ -84,7 +86,7 @@ export default function Sidebar({ anchor, mode }) {
         {titleContent}
         <StyledSidebarActions className={c('dydu-sidebar-actions')}>
           <Button color="primary" onClick={close} type="button" variant="icon">
-            <Icon icon={icons?.close} alt="close" />
+            <Icon icon={icons?.close} alt={t('sidebar.close')} />
           </Button>
         </StyledSidebarActions>
       </StyledSidebarHeader>
