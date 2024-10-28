@@ -182,7 +182,7 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
                 <div
                   className={c('dydu-teaser-brand', classes.brand, teaserAvatarBackground && classes.backgroundAvatar)}
                 >
-                  <h1>{titleHidden}</h1>
+                  <p>{titleHidden}</p>
                   <img onKeyDown={onKeyDown} alt="" src={logoTeaser} />
                 </div>
               )}

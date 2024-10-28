@@ -16,7 +16,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
       height: 'auto',
       pointerEvents: 'none',
     },
-    '& h1': {
+    '& p': {
       position: 'absolute',
       left: '-10000em',
       top: 'auto',
