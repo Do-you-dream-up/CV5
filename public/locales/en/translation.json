@@ -199,7 +199,9 @@
       }
     },
     "placeholder": "Type your message here",
-    "label": "Write your answer"
+    "livechat": {
+      "placeholder": "Type your message here"
+    }
   },
   "interaction": {
     "languageChange": "From now on, I will answer you in",

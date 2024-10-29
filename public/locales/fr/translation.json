@@ -198,7 +198,10 @@
         "stop": "Fin de l'enregistrement"
       }
     },
-    "placeholder": "Tapez votre message ici"
+    "placeholder": "Tapez votre message ici",
+    "livechat": {
+      "placeholder": "Tapez votre message ici"
+    }
   },
   "interaction": {
     "languageChange": "A partir de maintenant, je vous répondrai en",
