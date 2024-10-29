@@ -183,7 +183,10 @@
       "exitLivechat": "Quitter le Livechat"
     },
     "title": "Besoin d'aide ?",
-    "logo": "Logo de dydu"
+    "logo": "Logo de dydu",
+    "livechat": {
+      "title": "Besoin d'aide ?"
+    }
   },
   "input": {
     "actions": {
