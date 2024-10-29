@@ -43,7 +43,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const inputPlaceholder = t('input.placeholder');
-  const counterRemaining = t('input.actions.counterRemaining');
+  const counterRemaining = `${counter} ${t('input.actions.counterRemaining')}`;
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const themeColor = useTheme<Models.Theme>();
@@ -139,7 +139,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
               <span
                 className={c('dydu-counter-hidden', classes.hidden)}
                 aria-live={counter === maxLength ? 'off' : 'assertive'}
-              >{`${counter} ${counterRemaining}`}</span>
+              >{`${counterRemaining}`}</span>
             </div>
           )}
         </div>
@@ -214,11 +214,15 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     }
   }, [debouncedInput, suggest, typing]);
 
+  const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
+  if (isDefined(nodeElementInputContainer)) {
+    nodeElementInputContainer.setAttribute('aria-label', counterRemaining);
+    nodeElementInputContainer.setAttribute('title', counterRemaining);
+  }
+
   useEffect(() => {
     const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
     if (isDefined(nodeElementInputContainer)) {
-      nodeElementInputContainer.setAttribute('aria-label', counterRemaining);
-      nodeElementInputContainer.setAttribute('title', counterRemaining);
       nodeElementInputContainer.removeAttribute('role');
       nodeElementInputContainer.removeAttribute('aria-haspopup');
       nodeElementInputContainer.removeAttribute('aria-owns');
