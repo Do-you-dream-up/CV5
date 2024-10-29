@@ -11,7 +11,7 @@ export default function Title({ field }) {
 
   const text = useMemo(() => field?.getLabel(), [field]);
 
-  return <h1 className="title">{text}</h1>;
+  return <p className="title">{text}</p>;
 }
 
 Title.propTypes = {
