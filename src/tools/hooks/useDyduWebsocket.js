@@ -39,8 +39,9 @@ let needToAnswerSurvey = false;
 let endPollingReceived = false;
 
 const MESSAGE_TYPE = {
-  survey: 'survey',
-  surveyConfigurationResponse: 'surveyConfigurationResponse',
+  survey: 'survey', // received when server informs client that there is a survey to answer, providing surveyId
+  surveyConfigurationResponse: 'surveyConfigurationResponse', // received when server provide full survey config, asked by client
+  surveyResponse: 'surveyResponse', // received when server acknowledge survey response sent by client
   error: 'error',
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
@@ -99,11 +100,13 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.leaveWaitingQueue(lastMessageData)) return MESSAGE_TYPE.leaveWaitingQueue;
     if (LivechatPayload.is.getContextResponse(lastMessageData)) return MESSAGE_TYPE.contextResponse;
     if (LivechatPayload.is.historyResponse(lastMessageData)) return MESSAGE_TYPE.historyResponse;
-    if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData))
+    if (LivechatPayload.is.operatorSendSurvey(lastMessageData)) return MESSAGE_TYPE.survey;
+    if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData)) {
       return MESSAGE_TYPE.surveyConfigurationResponse;
+    }
+    if (LivechatPayload.is.surveyResponse(lastMessageData)) return MESSAGE_TYPE.surveyResponse;
     if (LivechatPayload.is.topKnowledgeResponse(lastMessageData)) return MESSAGE_TYPE.topKnowledge;
     if (LivechatPayload.is.endPolling(lastMessageData)) return MESSAGE_TYPE.endPolling;
-    if (LivechatPayload.is.operatorSendSurvey(lastMessageData)) return MESSAGE_TYPE.survey;
     if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(lastMessageData)) return MESSAGE_TYPE.notification;
     if (LivechatPayload.is.dialogPicked(lastMessageData)) return MESSAGE_TYPE.dialogPicked;
@@ -162,6 +165,11 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.surveyConfigurationResponse:
         setSurveyConfig(b64dAllFields(lastMessageData?.values));
+        return;
+
+      case MESSAGE_TYPE.surveyResponse:
+        console.log('Survey response has been received by server, close tunnel');
+        close();
         return;
 
       case MESSAGE_TYPE.uploadRequest:
@@ -253,10 +261,7 @@ export default function useDyduWebsocket() {
       needToAnswerSurvey = false;
       trySendMessage(message);
       dydu.displaySurveySent(surveyAnswer.reword, {}, 200);
-      if (endPollingReceived) {
-        endPollingReceived = false;
-        close();
-      }
+      console.log('endPollingReceived:', endPollingReceived);
     } catch (e) {
       console.error(e);
     }

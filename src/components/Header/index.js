@@ -208,7 +208,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     },
   ];
 
-  const shouldDisplayLivechatEnd = Local.livechatType.load() && !Local.waitingQueue.load();
+  const shouldDisplayExitLivechatButton = Local.livechatType.load() && !Local.waitingQueue.load();
 
   const leaveLiveChat = () => {
     send && send('#livechatend#', { hide: true });
@@ -253,7 +253,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           <Banner />
         </>
       )}
-      {shouldDisplayLivechatEnd && (
+      {shouldDisplayExitLivechatButton && (
         <Button
           className={c('dydu-header-button', classes.endLivechat)}
           onClick={(e) => {
