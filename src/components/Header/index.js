@@ -45,6 +45,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { items: consultationSpaces = [] } = configuration.spaces;
   const { image: hasImage, title: hasTitle } = configuration.header.logo;
   const defaultAvatar = configuration.avatar?.response?.image;
+  const { livechatCustomAvatar, livechatImageLink } = configuration?.header?.livechatLogo || {};
   const { factor, maxFontSize, minFontSize } = configuration.header.fontSizeChange;
   const actionClose = t('header.actions.close');
   const actionExpand = t('header.actions.expand');
@@ -214,6 +215,13 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     send && send('#livechatend#', { hide: true });
   };
 
+  const renderHeaderLogo =
+    Local.livechatType.load() && livechatCustomAvatar ? (
+      <img src={`${process.env.PUBLIC_URL}assets/${livechatImageLink}`} alt={headerLogo} />
+    ) : (
+      <AvatarsMatchingRequest typeResponse={typeResponse} headerAvatar={true} defaultAvatar={defaultAvatar} type={''} />
+    );
+
   return (
     <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
       <div
@@ -227,12 +235,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
         <div className={c('dydu-header-logo', classes.logo)} id="dydu-header-logo">
           {!!hasImage && (
             <div className={c('dydu-header-image', classes.image)} id="dydu-header-image" title={headerLogo}>
-              <AvatarsMatchingRequest
-                typeResponse={typeResponse}
-                headerAvatar={true}
-                defaultAvatar={defaultAvatar}
-                type={''}
-              />
+              {renderHeaderLogo}
             </div>
           )}
           {!!hasTitle && (
