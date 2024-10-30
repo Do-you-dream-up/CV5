@@ -17,7 +17,7 @@ import {
   StyledSidebarHeader,
   StyledSidebarTitle,
 } from './styledComponents';
-import { useSurvey } from 'src/Survey/SurveyProvider';
+import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 

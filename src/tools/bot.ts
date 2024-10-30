@@ -1,6 +1,5 @@
 import { Local } from './storage';
 import { getResourceWithoutCache } from './resources';
-import { isDefined } from './helpers';
 
 /**
  * - Wait for the bot ID and the API server then create default API based on the server ;

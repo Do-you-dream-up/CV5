@@ -113,7 +113,7 @@ configuration.initialize().then((configuration) => {
     }
   });
 
-  getResourceWithoutCache('chatboxHomepage.css').then((res) => {
+  getResourceWithoutCache('./chatboxHomepage.css').then((res) => {
     if (res?.data.length > 0) {
       const style = document.createElement('style');
       style.textContent = res.data;

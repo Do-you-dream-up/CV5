@@ -2,8 +2,6 @@ import { LivechatProvider, useLivechat } from '../LivechatContext';
 import { render, screen } from '@testing-library/react';
 
 import { Local } from '../../tools/storage';
-import { act } from 'react-dom/test-utils';
-import { renderHook } from '@testing-library/react-hooks';
 import { useDialog } from '../DialogContext';
 import useDyduPolling from '../../tools/hooks/useDyduPolling';
 import useDyduWebsocket from '../../tools/hooks/useDyduWebsocket';

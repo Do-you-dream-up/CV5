@@ -6,14 +6,6 @@
 Copy the bot configuration sample files 
 Fill both the =id= and the =server= keys with a bot of your choice in public/override/bot.json.
 
-#+BEGIN_SRC sh
-cp public/override/bot.json.sample => public/override/bot.json
-cp public/override/configuration.json.sample => public/override/configuration.json
-cp public/override/style.css.sample => public/override/style.css
-cp public/override/custom.js.sample => public/override/custom.js
-cp public/override/theme.json.sample => public/override/theme.json
-#+END_SRC
-
 A token is needed to install some dependencies like voice-module, ask for it.
 #+BEGIN_SRC sh
 export NPM_TOKEN=XXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX

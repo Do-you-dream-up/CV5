@@ -6,6 +6,7 @@ const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 const GitRevision = require('git-revision-webpack-plugin');
+const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env) => {
   const getCommitHash = () => {
@@ -18,22 +19,15 @@ module.exports = (env) => {
     return new GitRevision().branch();
   };
 
-  let ASSET = './';
+  const buildTime = Date.now();
 
   console.log('env.CHATBOX_VERSION', env.CHATBOX_VERSION);
   console.log('env.CHATBOX_REVISION', env.CHATBOX_REVISION);
 
-  if (env.CHATBOX_VERSION && env.CHATBOX_VERSION !== '$CHATBOX_VERSION' && env.CHATBOX_VERSION !== '') {
-    ASSET = `${configuration.application.cdn}${env.CHATBOX_VERSION}/`;
-    console.log(ASSET);
-  } else {
-    ASSET = configuration.application.cdn + '/' + configuration.application.directory;
-  }
-
-  console.log('ASSET CDN URL', ASSET);
+  let ASSET = 'TIMESTAMPED_CDN_URL' + '/';
 
   return Merge.strategy({ plugins: 'prepend' })(common(env), {
-    devtool: 'source-map',
+    devtool: 'nosources-source-map',
     mode: 'production',
     output: {
       filename: 'bundle.min.js',
@@ -41,10 +35,11 @@ module.exports = (env) => {
       chunkFilename: `[name].${env.CHATBOX_VERSION || getBranchName().replace('/', '.')}.${
         env.CHATBOX_REVISION || getCommitHash()
       }.js`,
-      path: Path.resolve(__dirname, 'build'),
+      path: Path.resolve(__dirname, 'build/'.concat(buildTime)), // backend will now buildtime based on the name of this directory
       publicPath: ASSET,
     },
     plugins: [
+      // new WebpackBundleAnalyzer(), // uncomment this line in local to analyze bundles
       new Clean(),
       new Copy({
         patterns: [
@@ -54,8 +49,23 @@ module.exports = (env) => {
             globOptions: {
               dot: true,
               gitignore: true,
-              ignore: ['**/index.html', '**/*.json.sample', '**/*.css.sample'],
+              ignore: ['**/loader.js', '**/bundle.min.js', '**/preview.index.html', '**/index.html'],
             },
+          },
+          {
+            from: Path.resolve(__dirname, 'public/loader.js'),
+            toType: 'file',
+            to: '../loader.js',
+          },
+          {
+            from: Path.resolve(__dirname, 'public/bundle.min.js'),
+            toType: 'file',
+            to: '../bundle.min.js',
+          },
+          {
+            from: Path.resolve(__dirname, 'public/preview.index.html'),
+            toType: 'file',
+            to: '../preview.index.html',
           },
         ],
       }),

@@ -1,5 +1,15 @@
 import { AuthProtected, AuthProvider } from '../auth/AuthContext';
-import { Suspense, lazy, useContext, useEffect, useMemo, useState, useRef, MutableRefObject } from 'react';
+import {
+  Suspense,
+  lazy,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  MutableRefObject,
+  ComponentType,
+} from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
 import { ConversationHistoryProvider } from '../../contexts/ConversationHistoryContext';
@@ -22,13 +32,34 @@ import ChatboxReadyProvider from '../../contexts/ChatboxReadyContext';
 import { useTranslation } from 'react-i18next';
 import CheckCookiesAllowedProvider from '../CheckCookiesAllowedProvider/CheckCookiesAllowedProvider';
 import { ChatboxLoadedProvider } from '../../contexts/ChatboxLoadedProvider';
-import { Local } from '../../tools/storage';
+import {Local, Session} from '../../tools/storage';
 import Skeleton from '../Skeleton';
 import Actions from '../Actions/Actions';
 import { VIEW_MODE } from '../../tools/constants';
 
-const Chatbox = lazy(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper })));
+const Chatbox = lazy(() =>
+  lazyRetry(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper }))),
+);
 const Wizard = lazy(() => import('../Wizard'));
+
+const lazyRetry = function (componentImport) {
+  return new Promise<{ default: ComponentType<any> }>((resolve, reject) => {
+    // try to import the component
+    componentImport()
+      .then((component) => {
+        Session.clear(Session.names.retryLazyRefreshed);
+        resolve(component);
+      })
+      .catch((error) => {
+        if (!Session.get(Session.names.retryLazyRefreshed)) {
+          Session.set(Session.names.retryLazyRefreshed, 'true');
+          return window.location.reload();
+        }
+        Session.clear(Session.names.retryLazyRefreshed);
+        reject(error);
+      });
+  });
+};
 
 interface BodyText {
   text: string;

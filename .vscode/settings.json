@@ -1,7 +1,0 @@
-{
-    "i18n-ally.localesPaths": [
-        "public/locales"
-    ],
-    "eslint.format.enable": true,
-    "i18n-ally.keystyle": "nested"
-}

@@ -34,7 +34,7 @@ module.exports = (env) =>
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
-          PUBLIC_URL: JSON.stringify('./'),
+          PUBLIC_URL: JSON.stringify('http://localhost:8081/'),
         },
       }),
     ],

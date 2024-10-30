@@ -12,6 +12,7 @@ export class Session {
     banner: 'dydu.chatbox.banner',
     pushruleTrigger: 'dydu.chatbox.pushruleTrigger',
     lastPoll: 'dydu.chatbox.lastPoll',
+    retryLazyRefreshed: 'dydu.chatbox.retry.lazy.refreshed',
   };
 
   /**

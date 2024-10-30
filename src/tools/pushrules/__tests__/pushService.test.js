@@ -14,7 +14,6 @@ import {
 } from '../pushService';
 
 import ComplianceInfo from '../complianceInfo';
-import { VIEW_MODE } from '../../../tools/constants';
 import configuration from '../../../../public/override/configuration.json';
 import dydu from '../../../tools/dydu';
 
