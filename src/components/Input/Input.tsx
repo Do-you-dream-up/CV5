@@ -43,6 +43,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const { ready, t } = useTranslation('translation');
   const actionSend = t('input.actions.send');
   const inputPlaceholder = t('input.placeholder');
+  const livechatInputPlaceholder = t('input.livechat.placeholder');
   const counterRemaining = `${counter} ${t('input.actions.counterRemaining')}`;
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
@@ -52,6 +53,8 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const containerRef = useRef<null | any>(null);
   const textareaRef = useRef<null | any>(null);
   const { shadowAnchor } = useShadow();
+
+  const isLivechatTypeDefined = !!Local.livechatType.load();
 
   const { idleTimer } = useIdleTimeout({
     onIdle: () => {
@@ -120,7 +123,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
           <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
-            {inputPlaceholder}
+            {isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
           </label>
           <textarea
             {...data}
@@ -268,7 +271,11 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: ((ready && placeholder) || t('input.placeholder') || '')?.slice?.(0, 50),
+    placeholder: (
+      (ready && placeholder) ||
+      (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
+      ''
+    )?.slice?.(0, 50),
     value: input,
   };
 

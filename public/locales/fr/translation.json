@@ -183,7 +183,10 @@
       "exitLivechat": "Quitter le Livechat"
     },
     "title": "Besoin d'aide ?",
-    "logo": "Logo de dydu"
+    "logo": "Logo de dydu",
+    "livechat": {
+      "title": "Besoin d'aide ?"
+    }
   },
   "input": {
     "actions": {
@@ -198,7 +201,10 @@
         "stop": "Fin de l'enregistrement"
       }
     },
-    "placeholder": "Tapez votre message ici"
+    "placeholder": "Tapez votre message ici",
+    "livechat": {
+      "placeholder": "Tapez votre message ici"
+    }
   },
   "interaction": {
     "languageChange": "A partir de maintenant, je vous répondrai en",
