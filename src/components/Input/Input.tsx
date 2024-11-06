@@ -127,6 +127,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
           </label>
           <textarea
             {...data}
+            maxLength={!Local.livechatType.load() ? maxLength : undefined}
             disabled={prompt || locked}
             id={textareaId}
             data-testId="textareaId"
@@ -136,7 +137,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             ref={textareaRef}
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && (
+          {!!showCounter && !Local.livechatType.load() && (
             <div>
               <span children={counter} className={classes.counter} />
               <span
