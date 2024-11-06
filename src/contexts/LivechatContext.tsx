@@ -53,7 +53,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     clearInteractionsAndAddWelcome,
     interactions,
   } = useDialog();
-  const { onNewMessage } = useEvent();
+  const { onNewMessage, messageCount } = useEvent();
   const { welcomeKnowledge } = useWelcomeKnowledge();
   const { history } = useConversationHistory();
   const [isWaitingQueue, setIsWaitingQueue] = useState<boolean>(Local.waitingQueue.load());
@@ -94,7 +94,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
     if (LivechatPayload.is.liveChatConnectionInQueue(response)) {
       // from chatWs history
-      let decodedResponse = recursiveBase64DecodeString(response);
+      const decodedResponse = recursiveBase64DecodeString(response);
       decodedResponse.text = t('livechat.queue.addedToQueueForHistory');
       displayNotification && displayNotification(decodedResponse);
     } else if (LivechatPayload.is.startWaitingQueue(response)) {
@@ -260,6 +260,12 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       }
     }
   }, [tunnel, lastResponse]);
+
+  useEffect(() => {
+    if (Local.livechatType.load() && messageCount === 0) {
+      tunnel?.onUserReading();
+    }
+  }, [messageCount]);
 
   const send = useCallback(
     (userInput, options) => {

@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 
 import dotget from '../tools/dotget';
@@ -26,6 +27,7 @@ interface EventsContextProps {
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;
   saveChatboxRef?: (ref) => void;
   getChatboxRef?: () => null;
+  messageCount?: number;
 }
 
 interface EventsProviderProps {
@@ -46,25 +48,40 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   const { shadowAnchor } = useShadow();
   const [messageCount, setMessageCount] = useState<number>(0);
   const [chatboxRef, setChatboxRef] = useState<any>();
+  const isOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
   const saveChatboxRef = (ref: any) => setChatboxRef(ref);
 
-  const handleMouseEnter = () => {
-    if (Local.livechatType.load()) {
+  const handleUserActive = () => {
+    if (isOpenRef.current && Local.livechatType.load()) {
       clearTabNotification();
       setMessageCount(0);
     }
   };
 
   useEffect(() => {
-    shadowAnchor?.addEventListener('mouseenter', handleMouseEnter);
+    if (isOpenRef.current) {
+      handleUserActive();
+    }
+  }, [isOpenRef.current]);
+
+  useEffect(() => {
+    shadowAnchor?.addEventListener('mouseenter', handleUserActive);
+    shadowAnchor?.addEventListener('touchstart', handleUserActive);
+    shadowAnchor?.addEventListener('focusin', handleUserActive);
     return () => {
-      shadowAnchor?.removeEventListener('mouseenter', handleMouseEnter);
+      shadowAnchor?.removeEventListener('mouseenter', handleUserActive);
+      shadowAnchor?.removeEventListener('touchstart', handleUserActive);
+      shadowAnchor?.removeEventListener('focusin', handleUserActive);
     };
   }, [shadowAnchor]);
 
   const onNewMessage = useCallback(() => {
-    if (isOpen && Local.livechatType.load()) {
+    if (Local.livechatType.load()) {
       setMessageCount((prevCount) => {
         const newCount = prevCount + 1;
         const eventNewMessage = createEventNewMessages(newCount);
@@ -74,7 +91,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         return newCount;
       });
     }
-  }, [isOpen]);
+  }, []);
 
   /**
    * Call `window` method by feature and event name.<br/>
@@ -133,6 +150,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         dispatchEvent,
         event,
         saveChatboxRef,
+        messageCount,
         getChatboxRef: () => chatboxRef,
       }}
     />

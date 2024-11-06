@@ -46,6 +46,7 @@ export const REQUEST_TYPE = {
   typing: 'typing',
   history: 'history',
   topKnowledge: 'topknowledge',
+  reading: 'reading',
 };
 
 export const LivechatPayloadCreator = {
@@ -77,6 +78,15 @@ export const LivechatPayloadCreator = {
       ...getPayloadCommonContentBase64Encoded(),
       typing: !isEmptyString(userInput),
       content: b64encode(userInput),
+    },
+  }),
+
+  userReadingMessage: () => ({
+    type: REQUEST_TYPE.reading,
+    parameters: {
+      ...getPayloadCommonContentBase64Encoded(),
+      reading: true,
+      content: '',
     },
   }),
 
