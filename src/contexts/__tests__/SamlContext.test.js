@@ -18,6 +18,9 @@ jest.mock('../../tools/storage', () => ({
       load: jest.fn(() => false),
     },
     set: jest.fn(),
+    contextId: {
+      load: jest.fn(),
+    },
   },
   Storage: {
     loadUserInfo: jest.fn(),
