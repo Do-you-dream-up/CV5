@@ -56,10 +56,7 @@ const AvatarsMatchingRequest = ({
   }
 
   const imageType = useMemo(() => {
-    if (
-      (!typeResponse && Local.livechatType.load()) || // maybe typing
-      (livechatCustomAvatar && typeResponse && typeResponse.match(RE_LIVECHAT))
-    ) {
+    if (livechatCustomAvatar && typeResponse && typeResponse.match(RE_LIVECHAT) && Local.livechatType.load()) {
       return livechatImageLink;
     } else if (!customAvatar || !typeResponse || shouldNotChangeCustomAvatar()) {
       return defaultAvatar;
@@ -73,6 +70,8 @@ const AvatarsMatchingRequest = ({
         : typeMapImage[resultMatchingImageType[0]].image;
     }
   }, [customAvatar, defaultAvatar, typeMapImage, typeResponse, livechatCustomAvatar]);
+
+  console.log('ImageType in avatarsmatchingrequest', imageType);
 
   const linkAvatarDependOnType = useMemo(() => {
     return imageType?.includes('base64') ? imageType : `${process.env.PUBLIC_URL}assets/${imageType}`;
