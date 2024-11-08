@@ -35,6 +35,7 @@ import { useViewMode } from '../../contexts/ViewModeProvider';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import ScrollToBottom from '../ScrollToBottom/ScrollToBottom';
 import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
+import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -84,6 +85,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
+  const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const { mode } = useViewMode();
   const [prevMode, setPrevMode] = useState<number | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
@@ -198,8 +200,9 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         set: (locale) => {
           return Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)])
             .then(() => clearInteractions && clearInteractions())
-            .then(() => localStorage.removeItem('dydu.context'))
+            .then(() => Local.contextId.reset(dydu.getBot().id))
             .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
+            .then(() => fetchTopKnowledge?.())
             .then(() => fetchWelcomeKnowledge?.());
         },
       };

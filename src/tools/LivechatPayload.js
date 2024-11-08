@@ -107,7 +107,7 @@ export const LivechatPayloadCreator = {
   },
 
   historyMessage: () => {
-    const contextId = localStorage.getItem('dydu.context');
+    const contextId = Local.contextId.load(dydu.getBot().id);
 
     return {
       type: REQUEST_TYPE.history,
