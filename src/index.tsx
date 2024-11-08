@@ -73,7 +73,7 @@ configuration.initialize().then((configuration) => {
   host.appendChild(document.createElement('div'));
   const shadow = host.attachShadow({ mode: 'open' });
   const renderIn = document.createElement('div');
-  renderIn.id = configuration.root;
+  renderIn.className = 'dydu-icons';
 
   const templateSlot = document.createElement('template');
 
