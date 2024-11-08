@@ -50,7 +50,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   }, [Local.livechatType.load(), welcomeKnowledge, isTagWelcomeDefined]);
 
   useEffect(() => {
-    const currentContextUUID = localStorage.getItem('dydu.context');
+    const currentContextUUID = Local.contextId.load(BOT.id);
     const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
 
     if (!welcome) return setWelcomeKnowledge(null);
@@ -58,7 +58,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   }, [BOT.id]);
 
   const getWelcomeKnowledge = async (tagWelcome: string) => {
-    const currentContextUUID = localStorage.getItem('dydu.context');
+    const currentContextUUID = Local.contextId.load(BOT.id);
 
     try {
       const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);

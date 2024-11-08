@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dydu from '../dydu';
 import { useLocation } from 'react-use';
+import { Local } from '../storage';
 
 export interface PushRule {
   conditions?: PushRuleConfiguration[];
@@ -40,7 +41,7 @@ const usePushrules = (): PushRulesResponse => {
       clearCurrentTimeout();
       processRules(pushrules, getExternalInfos(new Date().getTime()));
     }
-  }, [pushrules, location, localStorage.getItem('dydu.context')]);
+  }, [pushrules, location, Local.contextId.load(dydu.getBot().id)]);
 
   const canRequest = useMemo(() => {
     return !isDefined(pushrules);

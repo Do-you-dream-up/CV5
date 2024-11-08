@@ -1,5 +1,5 @@
 export const getCss = () => {
-  return localStorage.getItem('dydu.css');
+  return localStorage.getItem('dydu.chatbox.css');
 };
 
 export const getMain = () => {

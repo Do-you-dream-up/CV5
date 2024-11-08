@@ -113,7 +113,6 @@ export class Cookie {
 export class Local {
   static names = {
     livechatType: 'dydu.chatbox.livechatType',
-    livechatType: 'dydu.chatbox.livechatType',
     waitingQueue: 'dydu.chatbox.waitingQueue',
     isChannels: 'dydu.chatbox.isChannels',
     client: 'dydu.chatbox.client',

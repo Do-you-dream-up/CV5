@@ -40,7 +40,7 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
-    this.contextId = localStorage.getItem('dydu.context');
+    this.contextId = Local.contextId.load(BOT.id);
     this.locale = null;
     this.getSurveyCallback = null;
     this.space = null;

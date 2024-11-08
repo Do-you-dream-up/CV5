@@ -53,7 +53,7 @@ jest.mock('../storage', () => ({
     byBotId: jest.fn(),
     contextId: {
       save: jest.fn(),
-      load: jest.fn(),
+      load: (val) => '',
       createKey: jest.fn(),
     },
     clientId: {
