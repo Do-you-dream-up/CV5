@@ -55,6 +55,7 @@ const App = () => {
   ); // Cookies are allowed if disclaimer is disabled, or if disclaimer has already been accepted
 
   const { mode, isOpen: isChatboxOpen, isFull: isChatboxFullScreen, isMinimize, toggle } = useViewMode();
+  const idLabel = 'dydu-cookies-text';
 
   const onAccept = () => {
     setAreCookiesAllowed(true);
@@ -99,6 +100,7 @@ const App = () => {
           <Actions
             actions={actions}
             className={c('dydu-gdpr-disclaimer-actions', classes.cookiesDisclaimerActions)}
+            groupId={idLabel}
             role="group"
           />
         </div>
