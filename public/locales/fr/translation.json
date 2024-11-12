@@ -204,7 +204,8 @@
     "placeholder": "Tapez votre message ici",
     "livechat": {
       "placeholder": "Tapez votre message ici"
-    }
+    },
+    "autosuggest": "Envoyer ce message au chatbot"
   },
   "interaction": {
     "languageChange": "A partir de maintenant, je vous répondrai en",

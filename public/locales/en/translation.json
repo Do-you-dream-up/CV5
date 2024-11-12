@@ -204,7 +204,8 @@
     "placeholder": "Type your message here",
     "livechat": {
       "placeholder": "Type your message here"
-    }
+    },
+    "autosuggest": "Send this message to the chatbot"
   },
   "interaction": {
     "languageChange": "From now on, I will answer you in",

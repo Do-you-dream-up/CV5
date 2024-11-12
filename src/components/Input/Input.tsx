@@ -97,6 +97,9 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     setTyping(false);
     setInput(suggestionValue);
     submit(suggestionValue);
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
   };
 
   const handleFocusChange = (e) => {
@@ -238,7 +241,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     if (isDefined(nodeElementSuggestionsContainer)) {
       nodeElementSuggestionsContainer.setAttribute('aria-label', 'dydu-input-suggestions-container');
       nodeElementSuggestionsContainer.setAttribute('aria-labelledby', 'dydu-input-suggestions');
-      nodeElementSuggestionsContainer.setAttribute('title', 'dydu-input-suggestions-container');
+      nodeElementSuggestionsContainer.setAttribute('title', t('input.autosuggest'));
       if (nodeElementSuggestionsChildren?.length === 0) {
         nodeElementSuggestionsContainer.setAttribute('aria-hidden', 'true');
       } else {
@@ -327,6 +330,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
         theme={theme}
         ref={containerRef}
         data-testid="suggestId"
+        focusInputOnSuggestionClick={false}
       />
       {renderVoiceInput()}
       {renderSubmit()}
