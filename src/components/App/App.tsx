@@ -74,11 +74,15 @@ const App = () => {
       children: t('cookies.disclaimer.cancel'),
       id: 'dydu-disclaimer-refuse',
       onClick: onDecline,
+      onTouchStart: onDecline,
+      onMouseDown: onDecline,
       sidebar: true,
     },
     {
       children: t('cookies.disclaimer.ok'),
       onClick: onAccept,
+      onTouchStart: onAccept,
+      onMouseDown: onAccept,
       id: 'dydu-disclaimer-ok',
     },
   ];
