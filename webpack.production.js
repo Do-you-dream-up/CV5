@@ -1,5 +1,5 @@
 const Path = require('path');
-const { CleanWebpackPlugin: Clean } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const Copy = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const Merge = require('webpack-merge');
@@ -36,11 +36,12 @@ module.exports = (env) => {
         env.CHATBOX_REVISION || getCommitHash()
       }.js`,
       path: Path.resolve(__dirname, 'build/'.concat(buildTime)), // backend will now buildtime based on the name of this directory
-      publicPath: ASSET,
     },
     plugins: [
       // new WebpackBundleAnalyzer(), // uncomment this line in local to analyze bundles
-      new Clean(),
+      new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: [Path.join(__dirname, 'build/**/*')],
+      }),
       new Copy({
         patterns: [
           {
