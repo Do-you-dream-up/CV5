@@ -11,7 +11,7 @@ import {
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
-import Storage from '../Storage';
+import Auth from '../../../tools/storage';
 import getPkce from 'oauth-pkce';
 
 export default function useAuthorizeRequest(configuration) {
@@ -28,10 +28,10 @@ export default function useAuthorizeRequest(configuration) {
   };
 
   useEffect(() => {
-    if (currentLocationContainsCodeParameter() && isDefined(Storage.loadPkce())) {
+    if (currentLocationContainsCodeParameter() && isDefined(Auth.loadPkce())) {
       setAuthorizeDone(true);
     } else if (currentLocationContainsError()) {
-      Storage.clearPkce();
+      Auth.clearPkce();
       setError(true);
       throw new Error(
         'authorization request error, aborting process',
@@ -52,7 +52,7 @@ export default function useAuthorizeRequest(configuration) {
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
       const storedChallenge = configuration?.pkceMode === 'S256' ? challenge : base64_urlencode(verifier);
-      Storage.setPkceData(storedChallenge, verifier);
+      Auth.setPkceData(storedChallenge, verifier);
 
       /*
       construct query params

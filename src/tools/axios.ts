@@ -2,11 +2,10 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { hasProperty, isDefined, isPositiveNumber, secondsToMs } from './helpers';
 import { BOT, initBotInfoFromJsonOrChannels } from './bot';
 import { getOidcEnableWithAuthStatus } from './oidc';
-import Storage from '../components/auth/Storage';
 import { decode } from './cipher';
 import debounce from 'debounce-promise';
 import dydu from './dydu';
-import { Local } from './storage';
+import Auth, { Local } from './storage';
 
 interface AxiosDyduConfig {
   server: string;
@@ -40,7 +39,7 @@ const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig) => {
   instance.interceptors.request.use(
     (config: AxiosRequestConfig) => {
       if (getOidcEnableWithAuthStatus()) {
-        const tokenInfo = Storage.loadToken();
+        const tokenInfo = Auth.loadToken();
         const idToken: string | null | undefined = isDefined(tokenInfo?.id_token) ? tokenInfo.id_token : undefined;
         const accessToken: string | null | undefined = isDefined(tokenInfo?.access_token)
           ? tokenInfo.access_token
@@ -208,17 +207,17 @@ const handleAxiosError = (
 
 const handleTokenRefresh = (retry: any) => {
   if (configuration?.oidc?.enable) {
-    const tokenInfo = Storage.loadToken();
+    const tokenInfo = Auth.loadToken();
     const refreshToken = isDefined(tokenInfo?.refresh_token) ? tokenInfo.refresh_token : undefined;
 
-    if (refreshToken && refreshToken?.length > 0 && triesCounter < 2 && Storage.loadPkceCodeVerifier()) {
+    if (refreshToken && refreshToken?.length > 0 && triesCounter < 2 && Auth.loadPkceCodeVerifier()) {
       console.log('Refreshing token...');
       callTokenRefresher().then(() => {
         return retry();
       });
     } else {
       console.log('No refresh token found, redirecting to login page...');
-      Storage.clearToken();
+      Auth.clearToken();
       callOidcLogin();
       return Promise.resolve();
     }

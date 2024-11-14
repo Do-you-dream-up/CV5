@@ -1,4 +1,4 @@
-import { Cookie, Local } from './storage';
+import Auth, { Cookie, Local } from './storage';
 import { DEFAULT_CONSULTATION_SPACE, RESPONSE_QUERY_FORMAT, SOLUTION_TYPE } from './constants';
 import {
   _stringify,
@@ -13,7 +13,6 @@ import {
 } from './helpers';
 import { BOT } from './bot';
 import Bowser from 'bowser';
-import Storage from '../components/auth/Storage';
 import { hasWizard } from './wizard';
 import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
@@ -172,7 +171,7 @@ export default new (class Dydu {
    */
   getClientId = () => {
     const clientIdKey = Local.clientId.getKey();
-    const userInfo = Storage.loadUserInfo();
+    const userInfo = Auth.loadUserInfo();
     if (!this.alreadyCame()) Local.clientId.createAndSave(clientIdKey, userInfo?.email);
     return Local.clientId.load(clientIdKey);
   };

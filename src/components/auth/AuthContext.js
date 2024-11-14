@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { currentLocationContainsCodeParameter, currentLocationContainsError, isDefined } from './helpers';
 
 import PropTypes from 'prop-types';
-import Storage from './Storage';
+import Auth from '../../tools/storage';
 import axios from 'axios';
 import { isLoadedFromChannels } from '../../tools/wizard';
 import jwtDecode from 'jwt-decode';
@@ -16,9 +16,9 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children, configuration }) {
-  const [token, setToken] = useState(Storage.loadToken());
+  const [token, setToken] = useState(Auth.loadToken());
   const { configuration: appConfiguration } = useConfiguration();
-  const [urlConfig, setUrlConfig] = useState(Storage.loadUrls() || null);
+  const [urlConfig, setUrlConfig] = useState(Auth.loadUrls() || null);
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
@@ -30,7 +30,7 @@ export function AuthProvider({ children, configuration }) {
 
   useEffect(() => {
     if (tokenRetries > 3) {
-      Storage.clearToken();
+      Auth.clearToken();
       login();
     }
   }, [tokenRetries]);
@@ -38,24 +38,24 @@ export function AuthProvider({ children, configuration }) {
   const fetchUrlConfig = () => {
     if (configuration.discoveryUrl) {
       axios.get(configuration.discoveryUrl)?.then(({ data }) => {
-        Storage.clearUserInfo();
-        Storage.clearUrls();
+        Auth.clearUserInfo();
+        Auth.clearUrls();
         const config = {
           authUrl: data?.authorization_endpoint,
           tokenUrl: data?.token_endpoint,
           userinfoUrl: data?.userinfo_endpoint,
         };
-        Storage.saveUrls(config);
+        Auth.saveUrls(config);
         setUrlConfig(config);
       });
     } else {
-      Storage.clearUserInfo();
-      Storage.clearUrls();
+      Auth.clearUserInfo();
+      Auth.clearUrls();
       const config = {
         authUrl: configuration?.authUrl,
         tokenUrl: configuration?.tokenUrl,
       };
-      Storage.saveUrls(config);
+      Auth.saveUrls(config);
       setUrlConfig(config);
     }
   };
@@ -67,7 +67,7 @@ export function AuthProvider({ children, configuration }) {
           Authorization: `Bearer ${token?.access_token}`,
         },
       })
-      ?.then(({ data }) => data && Storage.saveUserInfo(data));
+      ?.then(({ data }) => data && Auth.saveUserInfo(data));
 
   useEffect(() => {
     setCallOidcLogin(authorize);
@@ -85,7 +85,7 @@ export function AuthProvider({ children, configuration }) {
     const canRequestToken =
       urlConfig &&
       currentLocationContainsCodeParameter() &&
-      (!appConfiguration?.oidc?.pkceActive || isDefined(Storage.loadPkceCodeChallenge())) &&
+      (!appConfiguration?.oidc?.pkceActive || isDefined(Auth.loadPkceCodeChallenge())) &&
       !isDefined(token?.access_token) &&
       !currentLocationContainsError();
 

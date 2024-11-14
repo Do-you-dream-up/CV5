@@ -7,18 +7,11 @@ import {
   isDefined,
 } from '../helpers';
 
-import { Cookie } from '../../../tools/storage';
-import Storage from '../Storage';
+import Auth, { Cookie } from '../../../tools/storage';
 import { renderHook } from '@testing-library/react-hooks';
 import useAuthorizeRequest from '../hooks/useAuthorizeRequest';
 
-jest.mock('../../../tools/storage', () => ({
-  Cookie: {
-    get: jest.fn(),
-    set: jest.fn(),
-    remove: jest.fn(),
-  },
-}));
+jest.mock('../../../tools/storage');
 
 jest.mock('oauth-pkce', () => ({
   __esModule: true,
@@ -40,8 +33,8 @@ describe('useAuthorizeRequest', () => {
     Cookie.get.mockClear();
     Cookie.set.mockClear();
     Cookie.remove.mockClear();
-    jest.spyOn(Storage, 'loadPkce').mockReturnValue(true);
-    jest.spyOn(Storage, 'clearPkce').mockReturnValue(true);
+    jest.spyOn(Auth, 'loadPkce').mockReturnValue(true);
+    jest.spyOn(Auth, 'clearPkce').mockReturnValue(true);
     jest.spyOn(window.document, 'cookie', 'get').mockReturnValue('');
     jest.spyOn(window.document, 'cookie', 'set').mockReturnValue('');
     delete window.location;
@@ -49,7 +42,7 @@ describe('useAuthorizeRequest', () => {
   });
 
   beforeAll(() => {
-    Storage.savePkce(false);
+    Auth.savePkce(false);
   });
 
   afterAll(() => {
@@ -113,7 +106,7 @@ describe('useAuthorizeRequest', () => {
       expect(window.location.search).toEqual('?error=');
 
       expect(currentLocationContainsError()).toBe(true);
-      Storage.clearPkce();
+      Auth.clearPkce();
       expect(() => {
         throw new Error(
           'authorization request error, aborting process',
@@ -150,7 +143,7 @@ describe('useAuthorizeRequest', () => {
       state: 'state',
       redirectUri: 'https://example.com/callback',
     };
-    jest.spyOn(Storage, 'loadPkce').mockReturnValueOnce(pkce);
+    jest.spyOn(Auth, 'loadPkce').mockReturnValueOnce(pkce);
 
     const { result } = renderHook(() => useAuthorizeRequest(configuration));
     const queryParams = `?response_type=code&client_id=client-id&scope=scope&state=${

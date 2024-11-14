@@ -8,24 +8,7 @@ jest.mock('../../tools/dydu', () => ({
   getSaml2Status: jest.fn().mockReturnValue(Promise.resolve()),
 }));
 
-jest.mock('../../tools/storage', () => ({
-  Local: {
-    saml: {
-      save: jest.fn(),
-      load: jest.fn(),
-    },
-    isChannels: {
-      load: jest.fn(() => false),
-    },
-    set: jest.fn(),
-    contextId: {
-      load: jest.fn(),
-    },
-  },
-  Storage: {
-    loadUserInfo: jest.fn(),
-  },
-}));
+jest.mock('../../tools/storage');
 
 describe('SamlContext', () => {
   it('should provide the correct initial context values', () => {
