@@ -71,8 +71,6 @@ const AvatarsMatchingRequest = ({
     }
   }, [customAvatar, defaultAvatar, typeMapImage, typeResponse, livechatCustomAvatar]);
 
-  console.log('ImageType in avatarsmatchingrequest', imageType);
-
   const linkAvatarDependOnType = useMemo(() => {
     return imageType?.includes('base64') ? imageType : `${process.env.PUBLIC_URL}assets/${imageType}`;
   }, [imageType]);
