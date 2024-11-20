@@ -30,18 +30,18 @@ describe('useServerStatus', () => {
 
   it('should return the server status context', () => {
     const { result } = renderHook(() => useServerStatus(), { wrapper: ServerStatusProvider });
-    expect(result.current.fetch).toBeDefined();
-    expect(result.current.checked).toBe(false);
+    expect(result.current.checkServerStatus).toBeDefined();
+    expect(result.current.isServerAvailable).toBe(false);
   });
 
   describe('fetch', () => {
     it('should set result and checked state on success', async () => {
       const { result, waitForNextUpdate } = renderHook(() => useServerStatus(), { wrapper: ServerStatusProvider });
       await act(async () => {
-        await result.current.fetch();
+        result.current.checkServerStatus();
         await waitForNextUpdate();
       });
-      expect(result.current.checked).toBe(true);
+      expect(result.current.isServerAvailable).toBe(true);
     });
   });
 });

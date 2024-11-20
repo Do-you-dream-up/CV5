@@ -80,7 +80,7 @@ describe('dydu.ts', function () {
       dydu.correctLocaleFromBotLanguages(activatedAndActiveBotLanguages);
       //THEN
       expect(dydu.locale).toEqual('fr');
-      expect(Local.get(Local.names.locale)).toEqual('fr');
+      expect(Local.get(Local.names.locale)).toEqual('ro');
     });
 
     it('should not change locale if already belonging to activatedAndActiveBotLanguages', () => {

@@ -302,9 +302,15 @@ export default new (class Dydu {
 
   initLocaleWithConfiguration(configuration) {
     const shouldGetLanguageFromBrowser = configuration?.application?.getDefaultLanguageFromSite;
-    let locale = shouldGetLanguageFromBrowser
-      ? Local.locale.load() // at this point in time, this value comes from browser language, set by i18nProvider or by locale already set by a previous usage
-      : this.getConfigurationDefaultLanguage(configuration);
+    let locale = Local.locale.load();
+    if (!locale) {
+      if (shouldGetLanguageFromBrowser) {
+        locale = i18n.language;
+      } else {
+        locale = this.getConfigurationDefaultLanguage(configuration);
+      }
+    }
+
     this.setLocaleFromConfiguration(locale, configuration);
   }
 
@@ -320,7 +326,7 @@ export default new (class Dydu {
     if (activatedAndActiveBotLanguages && activatedAndActiveBotLanguages.includes(this.locale)) {
       // keep locale that is already ok
     } else {
-      this.setLocale(this.getFallBackLanguage());
+      this.setLocale(this.getFallBackLanguage(), false);
     }
   };
 
@@ -334,11 +340,16 @@ export default new (class Dydu {
       );
       localeToSet = this.getFallBackLanguage();
     }
-    this.setLocale(localeToSet);
+    this.setLocale(localeToSet, false);
   }
 
-  setLocale(localeToSet) {
+  setLocale(localeToSet, persistLocalStorage = true) {
     this.locale = localeToSet;
+
+    if (persistLocalStorage) {
+      Local.locale.save(localeToSet);
+    }
+
     i18n.changeLanguage(localeToSet);
   }
 

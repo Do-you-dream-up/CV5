@@ -6,7 +6,6 @@ declare namespace Models {
     chatbox: ConfigurationChatbox;
     checkAuthorization: CheckAuthorization;
     contacts: Contacts;
-    dialog: Dialog;
     dragon: Dragon;
     events: Events;
     feedback: Feedback;
@@ -35,7 +34,7 @@ declare namespace Models {
     tabs: Tabs;
     teaser: ConfigurationTeaser;
     templateProduct: TemplateProduct;
-    top: ConfigurationTop;
+    topKnowledge: ConfigurationTopKnowledge;
     Voice: Voice;
     welcome: Welcome;
   }
@@ -119,10 +118,6 @@ declare namespace Models {
     phone: boolean;
     email: boolean;
     socialNetwork: boolean;
-  }
-
-  export interface Dialog {
-    top: boolean;
   }
 
   export interface Dragon {
@@ -396,7 +391,8 @@ declare namespace Models {
     readmore: number;
   }
 
-  export interface ConfigurationTop {
+  export interface ConfigurationTopKnowledge {
+    enable: boolean;
     period: string;
     size: number;
   }

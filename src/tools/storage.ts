@@ -13,6 +13,7 @@ export class Session {
     banner: 'dydu.chatbox.banner',
     lastPoll: 'dydu.chatbox.lastPoll',
     retryLazyRefreshed: 'dydu.chatbox.retry.lazy.refreshed',
+    currentServer: 'dydu.chatbox.server',
   };
 
   /**
@@ -63,6 +64,12 @@ export class Session {
    * @param {string} [name] - Name of the session storage variable to delete.
    */
   static clear = (name) => (name ? sessionStorage.removeItem(name) : sessionStorage.clear());
+
+  static serverIndex = Object.create({
+    save: (data): void => sessionStorage.setItem(Session.names.currentServer, data),
+    load: (): number => Number(sessionStorage.getItem(Session.names.currentServer)) || 0,
+    remove: (): void => sessionStorage.removeItem(Session.names.currentServer),
+  });
 }
 
 /**
@@ -139,7 +146,8 @@ export class Local {
     operator: 'dydu.chatbox.operator',
     servers: 'dydu.chatbox.servers', // From Channels
     lastInteraction: 'dydu.chatbox.interaction.last',
-    pushruleTrigger: 'dydu.chatbox.pushruleTrigger',
+    pushRules: 'dydu.chatbox.pushRules',
+    pushRulesTrigger: 'dydu.chatbox.pushRulesTriggered',
     pkce_key: 'pkce',
     token_key_id: 'dydu-oauth-token-id',
     auth_url: 'dydu-oauth-url',
@@ -150,7 +158,6 @@ export class Local {
     pkce_code_challenge: 'dydu-code-challenge',
     dydu_chatbox_css: 'dydu.chatbox.css',
     dydu_chatbox_main: 'dydu.chatbox.main',
-    dydu_push: 'DYDU_PUSH',
   };
 
   static applyIdSuffix(id: any) {
@@ -224,6 +231,15 @@ export class Local {
       return (areCookiesAccepted && JSON.parse(areCookiesAccepted)) || false;
     },
     reset: () => localStorage.removeItem(Local.names.cookies),
+  });
+
+  static dragon = Object.create({
+    save: (data) => localStorage.setItem(Local.names.dragon, JSON.stringify(data)),
+    load: () => {
+      const dragonValue = localStorage.getItem(Local.names.dragon);
+      return (dragonValue && JSON.parse(dragonValue)) || null;
+    },
+    reset: () => localStorage.removeItem(Local.names.dragon),
   });
 
   static gdpr = Object.create({
@@ -377,6 +393,71 @@ export class Local {
     },
     reset: (botId) => {
       localStorage.removeItem(Local.welcomeKnowledge.getKey(botId));
+    },
+  });
+
+  static pushRules = Object.create({
+    getKey: (space: string, botId: string) => `${Local.names.pushRules}_${space}_${botId}`,
+    load: (space: string, botId: string) => {
+      const data = localStorage.getItem(Local.pushRules.getKey(space, botId));
+      if (data) {
+        return JSON.parse(data) || {};
+      }
+      return {};
+    },
+    save: (space: string, botId: string, key: string, value: any) => {
+      if (key && value) {
+        const stored = Local.pushRules.load(space, botId) || {};
+        stored[key] = value;
+        localStorage.setItem(Local.pushRules.getKey(space, botId), JSON.stringify(stored));
+      }
+    },
+    reset: (space: string, botId: string) => {
+      localStorage.removeItem(Local.pushRules.getKey(space, botId));
+    },
+    getValueOfRuleCondition: (
+      space: string,
+      botId: string,
+      ruleId: string,
+      conditionId: string,
+      defaultValue: string,
+    ): string => {
+      const ruleKey = `r_${ruleId}`;
+      const cookieData = Local.pushRules.load(space, botId);
+      const ruleConditions = cookieData[ruleKey];
+
+      return ruleConditions?.[conditionId] ?? defaultValue;
+    },
+    setValueOfRuleCondition: (space: string, botId: string, ruleId: string, conditionId: string, value: any): void => {
+      const ruleKey = `r_${ruleId}`;
+      const cookieData = Local.pushRules.load(space, botId);
+      const ruleConditions = cookieData[ruleKey] || {};
+
+      ruleConditions[conditionId] = value;
+      Local.pushRules.save(space, botId, ruleKey, ruleConditions);
+    },
+  });
+
+  static pushRulesTrigger = Object.create({
+    getKey: (botId: string): string => `${Local.names.pushRulesTrigger}_${botId}`,
+    load: (botId: string): string[] => {
+      const data: string | null = localStorage.getItem(Local.pushRulesTrigger.getKey(botId));
+      if (data) {
+        return JSON.parse(data) || [];
+      }
+      return [];
+    },
+    save: (botId: string, value: any): void => {
+      if (value) {
+        const stored: string[] = Local.pushRulesTrigger.load(botId) || [];
+        if (!stored.some((item: string) => item === value)) {
+          stored.push(value);
+        }
+        localStorage.setItem(Local.pushRulesTrigger.getKey(botId), JSON.stringify(stored));
+      }
+    },
+    reset: (botId: string): void => {
+      localStorage.removeItem(Local.pushRulesTrigger.getKey(botId));
     },
   });
 

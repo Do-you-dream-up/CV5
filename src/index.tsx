@@ -38,17 +38,13 @@ const renderApp = (
         <JssProvider jss={jss} id={{ minify: process.env.NODE_ENV === 'production' }}>
           <ThemeProvider theme={theme}>
             <ConfigurationProvider configuration={configuration}>
-              <ServerStatusProvider>
-                <I18nextProvider i18n={i18n}>
-                  <BotInfoProvider>
-                    <ViewModeProvider>
-                      <StyleSheetManager target={styleSlot}>
-                        <App />
-                      </StyleSheetManager>
-                    </ViewModeProvider>
-                  </BotInfoProvider>
-                </I18nextProvider>
-              </ServerStatusProvider>
+              <I18nextProvider i18n={i18n}>
+                <ViewModeProvider>
+                  <StyleSheetManager target={styleSlot}>
+                    <App />
+                  </StyleSheetManager>
+                </ViewModeProvider>
+              </I18nextProvider>
             </ConfigurationProvider>
           </ThemeProvider>
         </JssProvider>

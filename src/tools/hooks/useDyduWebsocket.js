@@ -72,7 +72,7 @@ export default function useDyduWebsocket() {
   const [socketProps, setSocketProps] = useState([null, {}]);
   const { lastMessage, sendJsonMessage } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
-  const { setTopKnowledge, extractPayload } = useTopKnowledge();
+  const { isEnabled: isTopKnowledgeEnabled, setTopKnowledge, extractPayload } = useTopKnowledge();
   const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
 
@@ -308,8 +308,13 @@ export default function useDyduWebsocket() {
 
   const sendTopKnowledge = useCallback(
     (configuration) => {
-      const message = LivechatPayload.create.topKnowledgeMessage(configuration?.top?.period, configuration?.top?.size);
-      trySendMessage(message);
+      if (isTopKnowledgeEnabled) {
+        const message = LivechatPayload.create.topKnowledgeMessage(
+          configuration?.topKnowledge?.period,
+          configuration?.topKnowledge?.size,
+        );
+        trySendMessage(message);
+      }
     },
     [sendJsonMessage],
   );

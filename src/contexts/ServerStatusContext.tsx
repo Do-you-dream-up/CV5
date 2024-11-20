@@ -7,8 +7,8 @@ export interface ServerStatusProviderProps {
 }
 
 export interface ServerStatusContextProps {
-  fetch: () => Promise<any>;
-  checked: boolean;
+  checkServerStatus: () => void;
+  isServerAvailable: boolean;
 }
 
 export const useServerStatus = () => useContext<ServerStatusContextProps>(ServerStatusContext);
@@ -16,26 +16,22 @@ export const useServerStatus = () => useContext<ServerStatusContextProps>(Server
 export const ServerStatusContext = createContext({} as ServerStatusContextProps);
 
 export const ServerStatusProvider = ({ children }: ServerStatusProviderProps) => {
-  const [checked, setChecked] = useState(false);
+  const [isServerAvailable, setIsServerAvailable] = useState(false);
 
-  const fetch = useCallback(() => {
-    return new Promise((resolve) => {
-      if (SERVLET_API) {
-        const path = `/serverstatus`;
-        return emit(SERVLET_API.get, path, null, 5000)
-          .then(() => {
-            return resolve({ status: 'OK' });
-          })
-          .finally(() => {
-            setChecked(true);
-          });
-      }
-    });
-  }, [SERVLET_API]);
+  const checkServerStatus = () => {
+    if (SERVLET_API) {
+      const path = `/serverstatus`;
+      emit(SERVLET_API.get, path, null, 5000)
+        .then(() => {
+          setIsServerAvailable(true);
+        })
+        .catch(() => setIsServerAvailable(false));
+    }
+  };
 
   const value: ServerStatusContextProps = {
-    fetch,
-    checked,
+    checkServerStatus,
+    isServerAvailable,
   };
 
   return <ServerStatusContext.Provider value={value}>{children}</ServerStatusContext.Provider>;

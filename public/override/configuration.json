@@ -46,9 +46,6 @@
     "email": true,
     "socialNetwork": true
   },
-  "dialog": {
-    "top": true
-  },
   "dragon": {
     "active": true,
     "boundaries": true,
@@ -338,7 +335,8 @@
   "templateProduct": {
     "readmore": 100
   },
-  "top": {
+  "topKnowledge": {
+    "enable": true,
     "period": "Last30Days",
     "size": 3
   },

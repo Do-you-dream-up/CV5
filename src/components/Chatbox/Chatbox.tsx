@@ -1,5 +1,5 @@
 import { EventsContext } from '../../contexts/EventsContext';
-import { GdprContext, GdprProvider } from '../../contexts/GdprContext';
+import { GdprContext } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
@@ -199,7 +199,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
         get: () => dydu.getLocale(),
         set: (locale) => {
           return talk('#reset#', { hide: true, doNotRegisterInteraction: true })
-            .then(() => Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)]))
+            .then(() => Promise.all([dydu.setLocale(locale, true)]))
+            .then(() => Local.locale.save(locale))
             .then(() => clearInteractions && clearInteractions())
             .then(() => Local.contextId.reset(dydu.getBot().id))
             .then(() => fetchTopKnowledge?.())
@@ -348,15 +349,13 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 export function ChatboxWrapper(rest) {
   const { zoomSrc } = useDialog();
   return (
-    <GdprProvider>
-      <OnboardingProvider>
-        <ModalProvider>
-          <TabProvider>
-            <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
-            {zoomSrc && <Zoom src={zoomSrc} />}
-          </TabProvider>
-        </ModalProvider>
-      </OnboardingProvider>
-    </GdprProvider>
+    <OnboardingProvider>
+      <ModalProvider>
+        <TabProvider>
+          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+          {zoomSrc && <Zoom src={zoomSrc} />}
+        </TabProvider>
+      </ModalProvider>
+    </OnboardingProvider>
   );
 }

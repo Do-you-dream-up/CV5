@@ -2,10 +2,9 @@ import { MutableRefObject, createElement, useContext, useEffect } from 'react';
 
 import Actions from '../Actions/Actions';
 import { EventsContext } from '../../contexts/EventsContext';
-import { GdprContext } from '../../contexts/GdprContext';
+import { useGdpr } from '../../contexts/GdprContext';
 import Skeleton from '../Skeleton';
 import c from 'classnames';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 
@@ -30,11 +29,9 @@ export default function GdprDisclaimer({
   gdprRef,
   ...rest
 }: GdprDisclaimerProps) {
-  const { configuration } = useConfiguration();
   const classes = useStyles();
   const { ready, t } = useTranslation('translation');
-  const { gdprPassed, onAccept, onDecline } = useContext(GdprContext) || {};
-  const enable = configuration?.gdprDisclaimer && configuration?.gdprDisclaimer?.enable;
+  const { gdprEnabled, gdprPassed, onAccept, onDecline } = useGdpr();
   const event = useContext?.(EventsContext)?.onEvent?.('gdpr');
   const titleDisclaimer = t('gdpr.disclaimer.title');
 
@@ -59,7 +56,7 @@ export default function GdprDisclaimer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return !enable || gdprPassed
+  return !gdprEnabled || gdprPassed
     ? children
     : createElement(
         component,

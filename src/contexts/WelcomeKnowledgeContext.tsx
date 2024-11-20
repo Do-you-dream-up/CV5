@@ -30,6 +30,7 @@ export interface TalkResponseInterface {
 }
 
 export interface WelcomeKnowledgeContextProps {
+  isEnabled?: boolean;
   welcomeKnowledge: WelcomeKnowledge;
   setWelcomeKnowledge: Dispatch<SetStateAction<WelcomeKnowledge>>;
   fetchWelcomeKnowledge: () => void;
@@ -45,9 +46,11 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   const tagWelcome = configuration?.welcome?.knowledgeName || null;
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
 
-  const canRequest = useMemo(() => {
-    return !isDefined(welcomeKnowledge) && !Local.livechatType.load() && isTagWelcomeDefined;
-  }, [Local.livechatType.load(), welcomeKnowledge, isTagWelcomeDefined]);
+  const isEnabled = configuration?.welcome?.enable;
+
+  const canRequest = () => {
+    return !isDefined(welcomeKnowledge) && !Local.livechatType.load() && isTagWelcomeDefined && isEnabled;
+  };
 
   useEffect(() => {
     const currentContextUUID = Local.contextId.load(BOT.id);
@@ -94,6 +97,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   }, [canRequest, Local.livechatType.load(), welcomeKnowledge, BOT.id, Local.contextId.load(BOT.id)]);
 
   const props: WelcomeKnowledgeContextProps = {
+    isEnabled,
     welcomeKnowledge,
     setWelcomeKnowledge,
     fetchWelcomeKnowledge,

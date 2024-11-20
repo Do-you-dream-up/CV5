@@ -24,6 +24,7 @@ i18n
       lookupLocalStorage: Local?.names?.locale,
       lookupQuerystring: 'language',
       order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+      caches: [],
     },
     fallbackLng: 'fr',
     interpolation: { escapeValue: false },
