@@ -168,8 +168,10 @@ export default function useDyduWebsocket() {
         return;
 
       case MESSAGE_TYPE.surveyResponse:
-        console.log('Survey response has been received by server, close tunnel');
-        close();
+        if (endPollingReceived) {
+          endPollingReceived = false;
+          close();
+        }
         return;
 
       case MESSAGE_TYPE.uploadRequest:
@@ -267,6 +269,13 @@ export default function useDyduWebsocket() {
     }
   }, []);
 
+  const closeLivechatIfEndSurveyClosed = (surveyClosed) => {
+    if (endPollingReceived && surveyClosed) {
+      endPollingReceived = false;
+      close();
+    }
+  };
+
   const getSurveyConfiguration = (surveyId) => {
     const message = LivechatPayload.create.surveyConfigurationMessage(surveyId);
     try {
@@ -326,6 +335,7 @@ export default function useDyduWebsocket() {
     sendSurvey,
     close,
     onUserTyping,
+    closeLivechatIfEndSurveyClosed,
     onUserReading,
     setLastPollingResponse: () => {},
   };

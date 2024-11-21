@@ -107,6 +107,8 @@ export default function useDyduPolling() {
     });
   };
 
+  const closeLivechatIfEndSurveyClosed = () => {};
+
   const sendSurvey = useCallback((surveyUserAnswer) => {
     dydu.sendSurveyPolling(surveyUserAnswer, { solutionUsed: SOLUTION_TYPE.livechat });
   }, []);
@@ -133,5 +135,6 @@ export default function useDyduPolling() {
     close,
     onUserTyping,
     setLastPollingResponse,
+    closeLivechatIfEndSurveyClosed,
   };
 }

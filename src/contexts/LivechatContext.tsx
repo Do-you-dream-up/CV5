@@ -41,7 +41,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { t } = useTranslation();
   const tunnelList = [useDyduWebsocket(), useDyduPolling()];
   const [tunnel, setTunnel] = useState<any>(null);
-  const { getSurveyConfiguration, triggerSurvey } = useSurvey();
+  const { getSurveyConfiguration, triggerSurvey, surveyClosed, setSurveyClosed } = useSurvey();
   const { showUploadFileButton } = useUploadFile();
   const {
     lastResponse,
@@ -226,6 +226,13 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     SurveyProvider.addListener(LIVECHAT_ID_LISTENER, sendSurvey);
   }, [Local.livechatType.load(), sendSurvey]);
   /* ============================================================== */
+
+  useEffect(() => {
+    if (surveyClosed) {
+      tunnel?.closeLivechatIfEndSurveyClosed(surveyClosed);
+      setSurveyClosed && setSurveyClosed(false);
+    }
+  }, [surveyClosed]);
 
   useEffect(() => {
     if (shouldEndLivechat) {
