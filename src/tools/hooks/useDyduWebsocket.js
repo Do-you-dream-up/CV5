@@ -313,6 +313,11 @@ export default function useDyduWebsocket() {
     [sendJsonMessage],
   );
 
+  const onUserReading = useCallback(() => {
+    const message = LivechatPayload.create.userReadingMessage();
+    trySendMessage(message);
+  }, [sendJsonMessage]);
+
   return {
     isAvailable: () => isDefined(window.WebSocket),
     mode: TUNNEL_MODE.websocket,
@@ -321,6 +326,7 @@ export default function useDyduWebsocket() {
     sendSurvey,
     close,
     onUserTyping,
+    onUserReading,
     setLastPollingResponse: () => {},
   };
 }
