@@ -91,7 +91,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
             return wkResponse;
           });
     // eslint-disable-next-line
-  }, [canRequest, Local.livechatType.load(), welcomeKnowledge, BOT.id, dydu.contextId]);
+  }, [canRequest, Local.livechatType.load(), welcomeKnowledge, BOT.id, Local.contextId.load(BOT.id)]);
 
   const props: WelcomeKnowledgeContextProps = {
     welcomeKnowledge,
