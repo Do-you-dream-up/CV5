@@ -40,7 +40,6 @@ const variables = {};
 export default new (class Dydu {
   constructor() {
     this.configuration = {};
-    this.contextId = Local.contextId.load(BOT.id);
     this.locale = null;
     this.getSurveyCallback = null;
     this.space = null;
@@ -60,7 +59,6 @@ export default new (class Dydu {
   setContextId = (value) => {
     if (isDefined(value)) {
       Local.contextId.save(BOT.id, value);
-      this.contextId = value;
     }
   };
 
@@ -78,12 +76,12 @@ export default new (class Dydu {
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
-      userInput: `#dydumailto:${this.contextId}:${text}#`,
+      userInput: `#dydumailto:${Local.contextId.load(BOT.id)}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       ...(options.extra && { extraParameters: options.extra }),
     });
-    const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${Local.contextId.load(BOT.id) ? `${Local.contextId.load(BOT.id)}/` : ''}`;
     return emit(SERVLET_API.post, path, data);
   };
 
@@ -95,7 +93,7 @@ export default new (class Dydu {
    */
   feedback = async (value) => {
     const data = qs.stringify({
-      contextUUID: this.contextId,
+      contextUUID: Local.contextId.load(BOT.id),
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -113,7 +111,7 @@ export default new (class Dydu {
   feedbackComment = async (comment) => {
     const data = qs.stringify({
       comment,
-      contextUUID: this.contextId,
+      contextUUID: Local.contextId.load(BOT.id),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -130,7 +128,7 @@ export default new (class Dydu {
   feedbackInsatisfaction = async (choiceKey) => {
     const data = qs.stringify({
       choiceKey,
-      contextUUID: this.contextId,
+      contextUUID: Local.contextId.load(BOT.id),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -258,9 +256,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   history = async () => {
-    if (this.contextId) {
+    if (Local.contextId.load(BOT.id)) {
       const data = qs.stringify({
-        contextUuid: this.contextId,
+        contextUuid: Local.contextId.load(BOT.id),
         solutionUsed: SOLUTION_TYPE.assistant,
         ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       });
@@ -286,8 +284,10 @@ export default new (class Dydu {
    *
    */
   printHistory = async () => {
-    if (this.contextId) {
-      const path = `${buildServletUrl()}history?context=${this.contextId}&format=html&userLabel=Moi&botLabel=Chatbot`;
+    if (Local.contextId.load(BOT.id)) {
+      const path = `${buildServletUrl()}history?context=${Local.contextId.load(
+        BOT.id,
+      )}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -421,7 +421,7 @@ export default new (class Dydu {
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    const path = `chat/talk/${BOT.id}/${this.contextId ? `${this.contextId}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${Local.contextId.load(BOT.id) ? `${Local.contextId.load(BOT.id)}/` : ''}`;
     return emit(SERVLET_API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
@@ -490,7 +490,7 @@ export default new (class Dydu {
         alreadyCame: this.alreadyCame(),
         typing: isDefined(input) && !isEmptyString(input),
         content: input?.toBase64(),
-        contextId: this.contextId,
+        contextId: Local.contextId.load(BOT.id),
         botId: this.getBot()?.id?.toBase64(),
         qualificationMode: this.qualificationMode,
         language: this.getLocale().toBase64(),
@@ -520,7 +520,7 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.livechat,
       format: RESPONSE_QUERY_FORMAT.json,
       space: this.getSpace(),
-      contextUuid: contextId || context?.fromBase64() || this.contextId,
+      contextUuid: contextId || context?.fromBase64() || Local.contextId.load(BOT.id),
       language: this.getLocale(),
       lastPoll: pollUpdatedInteractionDate || serverTime,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -564,7 +564,7 @@ export default new (class Dydu {
    */
   setDialogVariable = async (name, value) => {
     const data = qs.stringify({
-      contextUuid: this.contextId,
+      contextUuid: Local.contextId.load(BOT.id),
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
@@ -581,7 +581,7 @@ export default new (class Dydu {
    */
   welcomeCall = async () => {
     const data = qs.stringify({
-      contextUuid: this.contextId,
+      contextUuid: Local.contextId.load(BOT.id),
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -643,7 +643,7 @@ export default new (class Dydu {
   };
 
   getTalkBasePayload = async (options) => ({
-    contextId: this.contextId,
+    contextId: Local.contextId.load(BOT.id),
     alreadyCame: this.alreadyCame(),
     browser: `${browser.name} ${browser.version}`,
     clientId: this.getClientId(),
@@ -669,7 +669,9 @@ export default new (class Dydu {
   sendUploadFile = (file) => {
     const formData = new FormData();
     formData.append('dydu-upload-file', file);
-    const path = `fileupload?ctx=${this.contextId}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+    const path = `fileupload?ctx=${Local.contextId.load(
+      BOT.id,
+    )}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
 
     return SERVLET.post(path, formData)
       .then((response) => {
@@ -731,7 +733,7 @@ export default new (class Dydu {
 
   async createSurveyPayload(surveyId, fieldObject) {
     return {
-      ctx: this.contextId,
+      ctx: Local.contextId.load(BOT.id),
       uuid: surveyId,
       ...fieldObject,
     };
@@ -774,7 +776,7 @@ export default new (class Dydu {
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
     const path = `/chat/survey/configuration/${BOT.id}`;
     const data = toFormUrlEncoded({
-      contextUuid: this.contextId,
+      contextUuid: Local.contextId.load(BOT.id),
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,
