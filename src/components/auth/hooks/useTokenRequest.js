@@ -8,7 +8,7 @@ import {
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
-import Storage from '../Storage';
+import Auth from '../../../tools/storage';
 import { useConfiguration } from '../../../contexts/ConfigurationContext';
 import { useHarmonicIntervalFn } from 'react-use';
 import { setCallTokenRefresher } from '../../../tools/axios';
@@ -31,10 +31,10 @@ export default function useTokenRequest(authConfiguration) {
       ...{
         client_id: authConfiguration.clientId,
         ...(authConfiguration.clientSecret && { client_secret: authConfiguration.clientSecret }),
-        grant_type: Storage.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
-        ...(!Storage.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
-        ...(pkceActive && { code_verifier: Storage.loadPkceCodeVerifier() }),
-        ...(Storage.loadToken()?.refresh_token && { refresh_token: Storage.loadToken()?.refresh_token }),
+        grant_type: Auth.loadToken()?.refresh_token ? 'refresh_token' : 'authorization_code',
+        ...(!Auth.loadToken()?.refresh_token && { code: extractParamFromUrl('code') }),
+        ...(pkceActive && { code_verifier: Auth.loadPkceCodeVerifier() }),
+        ...(Auth.loadToken()?.refresh_token && { refresh_token: Auth.loadToken()?.refresh_token }),
       },
     };
 
@@ -76,9 +76,9 @@ export default function useTokenRequest(authConfiguration) {
   }, [authConfiguration, tokenRetries]);
 
   useEffect(() => {
-    const token = currentToken || Storage.loadToken();
+    const token = currentToken || Auth.loadToken();
     if (token) {
-      Storage.saveToken(token);
+      Auth.saveToken(token);
       if (token?.refresh_token) {
         setCallTokenRefresher(fetchToken);
       }

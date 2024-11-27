@@ -2,7 +2,7 @@ import { isValidStringOperator, rulesDefinitions as rulesDefinitionsImport } fro
 
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfoProcessor } from './externalInfoProcessor';
-import { Session } from '../storage';
+import { Local } from '../storage';
 import { VIEW_MODE } from '../constants';
 import configuration from '../../../public/override/configuration.json';
 import dydu from '../dydu';
@@ -199,13 +199,13 @@ export function processConditionCompliance(condition, ruleId, externInfos) {
 }
 
 export function pushKnowledge(ruleId) {
-  const sessionKey = Session?.names?.pushruleTrigger + '_' + ruleId;
-  const shouldDisplay = !isDefined(localStorage.getItem(sessionKey));
+  const localKey = Local?.names?.pushruleTrigger + '_' + ruleId;
+  const shouldDisplay = !isDefined(localStorage.getItem(localKey));
   currentTimer.counter = null;
   if (shouldDisplay) {
     window.dydu?.ui.toggle(VIEW_MODE.popin);
     window.reword('_pushcondition_:' + ruleId, { hide: true });
-    localStorage.setItem(sessionKey, ruleId);
+    localStorage.setItem(localKey, ruleId);
   }
 }
 

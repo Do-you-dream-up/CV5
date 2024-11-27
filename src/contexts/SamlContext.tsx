@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-import { Local } from '../tools/storage';
-import Storage from '../components/auth/Storage';
+import Auth, { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { useIdleTimer } from 'react-idle-timer';
@@ -33,7 +32,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
   const [user, setUser] = useState(null);
 
   const [saml2Info, setSaml2Info] = useState(Local.saml.load());
-  const [userInfo, setUserInfo] = useState(Storage.loadUserInfo());
+  const [userInfo, setUserInfo] = useState(Auth.loadUserInfo());
   const [connected, setConnected] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<null | string>(null);
 
@@ -81,7 +80,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
           try {
             const data = response?.attribute || {};
             setUserInfo(data);
-            response?.attribute && Storage.saveUserInfo(data);
+            response?.attribute && Auth.saveUserInfo(data);
           } catch {
             console.log('error Userinfo');
           }

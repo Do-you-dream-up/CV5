@@ -1,4 +1,4 @@
-import Storage from './Storage';
+import Auth from '../../tools/storage';
 import { encode as base64encode } from 'base64-arraybuffer';
 
 export const getRedirectUri = () => window.location.origin + window.location.pathname;
@@ -53,11 +53,11 @@ export const createPkce = (configuration = { redirectUri: null }) => {
     state,
     redirectUri: redirectUri || getRedirectUri(),
   };
-  Storage.savePkce(pkce);
+  Auth.savePkce(pkce);
   return pkce;
 };
 
-export const loadPkce = (configuration) => Storage.loadPkce() || createPkce(configuration);
+export let loadPkce = (configuration) => Auth.loadPkce() || createPkce(configuration);
 
 export const cleanUrl = () => {};
 

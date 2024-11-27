@@ -1,7 +1,8 @@
-import { _parse, _stringify, isDefined, isEmptyObject, isEmptyString, trimSlashes } from './helpers';
+import { _parse, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
+import { cleanUrl } from '../components/auth/helpers';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -10,7 +11,6 @@ export class Session {
   static names = {
     newMessage: 'dydu.chatbox.newMessage',
     banner: 'dydu.chatbox.banner',
-    pushruleTrigger: 'dydu.chatbox.pushruleTrigger',
     lastPoll: 'dydu.chatbox.lastPoll',
     retryLazyRefreshed: 'dydu.chatbox.retry.lazy.refreshed',
   };
@@ -139,7 +139,25 @@ export class Local {
     operator: 'dydu.chatbox.operator',
     servers: 'dydu.chatbox.servers', // From Channels
     lastInteraction: 'dydu.chatbox.interaction.last',
+    pushruleTrigger: 'dydu.chatbox.pushruleTrigger',
+    pkce_key: 'pkce',
+    token_key_id: 'dydu-oauth-token-id',
+    auth_url: 'dydu-oauth-url',
+    user_info: 'dydu-user-info',
+    token_key_access: 'dydu-oauth-token-access',
+    token_key_refresh: 'dydu-oauth-token-refresh',
+    pkce_code_verifier: 'dydu-code-verifier',
+    pkce_code_challenge: 'dydu-code-challenge',
+    dydu_chatbox_css: 'dydu.chatbox.css',
+    dydu_chatbox_main: 'dydu.chatbox.main',
+    dydu_push: 'DYDU_PUSH',
   };
+
+  static applyIdSuffix(id: any) {
+    Object.keys(this.names).forEach((key) => {
+      this.names[key] = `${this.names[key]}.${id}`;
+    });
+  }
 
   /**
    * Clear a local storage variable or all variables if no name is specified.
@@ -390,6 +408,107 @@ export class Local {
       }
     }
   };
+}
+
+export default class Auth {
+  static setPkceData(codeChallenge, codeVerifier) {
+    if (codeChallenge && codeVerifier) {
+      localStorage.setItem(Local?.names?.pkce_code_challenge, codeChallenge);
+      localStorage.setItem(Local?.names?.pkce_code_verifier, codeVerifier);
+    }
+  }
+
+  static loadPkceCodeVerifier() {
+    return localStorage.getItem(Local?.names?.pkce_code_verifier);
+  }
+
+  static loadPkceCodeChallenge() {
+    return localStorage.getItem(Local?.names?.pkce_code_challenge);
+  }
+
+  static savePkce(pkceData) {
+    localStorage.setItem(Local?.names?.pkce_key, JSON.stringify(pkceData));
+  }
+
+  static clearPkce() {
+    localStorage.removeItem(Local?.names?.pkce_key);
+  }
+
+  static loadPkce() {
+    const pkce = localStorage.getItem(Local?.names?.pkce_key);
+    return isDefined(pkce) ? JSON.parse(<string>pkce) : null;
+  }
+
+  static saveUrls = (urls) => {
+    localStorage.setItem(Local?.names?.auth_url, JSON.stringify(urls));
+  };
+
+  static loadUrls() {
+    return JSON.parse(<string>localStorage.getItem(Local?.names?.auth_url));
+  }
+
+  static clearUrls() {
+    localStorage.removeItem(Local?.names?.auth_url);
+  }
+
+  static saveUserInfo = (info) => {
+    localStorage.setItem(Local?.names?.user_info, JSON.stringify(info));
+  };
+
+  static loadUserInfo() {
+    return JSON.parse(<string>localStorage.getItem(Local?.names?.user_info));
+  }
+
+  static clearUserInfo() {
+    localStorage.removeItem(Local?.names?.user_info);
+  }
+
+  static saveToken = (token) => {
+    cleanUrl();
+    Auth.clearPkce();
+
+    if (isDefined(token?.id_token)) {
+      localStorage.setItem(Local?.names?.token_key_id, token?.id_token);
+    }
+
+    if (isDefined(token?.access_token)) {
+      localStorage.setItem(Local?.names?.token_key_access, token?.access_token);
+    }
+
+    if (isDefined(token?.refresh_token)) {
+      localStorage.setItem(Local?.names?.token_key_refresh, token?.refresh_token);
+    }
+  };
+
+  static clearToken() {
+    localStorage.removeItem(Local?.names?.token_key_id);
+    localStorage.removeItem(Local?.names?.token_key_access);
+    localStorage.removeItem(Local?.names?.token_key_refresh);
+    localStorage.removeItem(Local?.names?.pkce_code_verifier);
+  }
+
+  static loadToken() {
+    return {
+      id_token: isDefined(localStorage.getItem(Local?.names?.token_key_id))
+        ? localStorage.getItem(Local?.names?.token_key_id)
+        : undefined,
+      access_token: isDefined(localStorage.getItem(Local?.names?.token_key_access))
+        ? localStorage.getItem(Local?.names?.token_key_access)
+        : undefined,
+      refresh_token: isDefined(localStorage.getItem(Local?.names?.token_key_refresh))
+        ? localStorage.getItem(Local?.names?.token_key_refresh)
+        : undefined,
+    };
+  }
+
+  static clearAll() {
+    Auth.clearPkce();
+    Auth.clearToken();
+  }
+
+  static containsPkce() {
+    return Auth.loadPkce() !== null;
+  }
 }
 
 const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);

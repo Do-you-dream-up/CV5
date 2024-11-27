@@ -2,7 +2,7 @@
 
 import '../prototypes/strings';
 
-import { Cookie, Local, Session } from '../storage';
+import Auth, { Cookie, Local, Session } from '../storage';
 import { objectContainFields, secondsToMs, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
@@ -33,7 +33,7 @@ jest.mock('../bot', () => ({
   },
 }));
 
-jest.mock('../storage', () => ({
+jest.mock('../../tools/storage', () => ({
   Local: {
     visit: {
       save: jest.fn(),
@@ -75,6 +75,7 @@ jest.mock('../storage', () => ({
     },
     get: jest.fn(() => ''),
   },
+  loadUserInfo: jest.fn(),
 }));
 
 let spied = [];

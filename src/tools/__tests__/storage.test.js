@@ -1,4 +1,4 @@
-import { Cookie, Local, Session } from '../storage';
+import Auth, { Cookie, Session } from '../storage';
 
 import cookie from 'js-cookie';
 
@@ -109,3 +109,145 @@ describe('Cookie', () => {
     expect(cookie.remove).toHaveBeenCalledWith(name);
   });
 });
+
+describe('Auth', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  describe('savePkce()', () => {
+    it('should save pkce data to local storage', () => {
+      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      Auth.savePkce(pkceData);
+      expect(localStorage.getItem('pkce')).toBe(JSON.stringify(pkceData));
+    });
+  });
+
+  describe('clearPkce()', () => {
+    it('should remove pkce data from local storage', () => {
+      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      Auth.savePkce(pkceData);
+      Auth.clearPkce();
+      expect(localStorage.getItem('pkce')).toBe(null);
+    });
+  });
+
+  describe('loadPkce()', () => {
+    it('should load pkce data from local storage', () => {
+      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      Auth.savePkce(pkceData);
+      expect(Auth.loadPkce()).toEqual(pkceData);
+    });
+
+    it('should return null if pkce data is not in local storage', () => {
+      expect(Auth.loadPkce()).toBe(null);
+    });
+  });
+
+  describe('containsPkce()', () => {
+    it('should return true if pkce data is in local storage', () => {
+      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      Auth.savePkce(pkceData);
+      expect(Auth.containsPkce()).toBe(true);
+    });
+
+    it('should return false if pkce data is in local storage', () => {
+      expect(Auth.containsPkce()).toBe(false);
+    });
+  });
+
+  describe('saveUrls', () => {
+    it('saves urls to localStorage', () => {
+      const urls = ['http://example.com', 'http://test.com'];
+      Auth.saveUrls(urls);
+      expect(localStorage.getItem('dydu-oauth-url')).toBe(JSON.stringify(urls));
+    });
+  });
+
+  describe('loadUrls', () => {
+    it('loads urls from localStorage', () => {
+      const urls = ['http://example.com', 'http://test.com'];
+      localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
+      expect(Auth.loadUrls()).toEqual(urls);
+    });
+  });
+
+  describe('clearUrls', () => {
+    it('clears urls from localStorage', () => {
+      const urls = ['http://example.com', 'http://test.com'];
+      localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
+      Auth.clearUrls();
+      expect(localStorage.getItem('dydu-oauth-url')).toBeNull();
+    });
+  });
+
+  describe('saveUserInfo', () => {
+    it('saves user info to localStorage', () => {
+      const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
+      Auth.saveUserInfo(userInfo);
+      expect(localStorage.getItem('dydu-user-info')).toBe(JSON.stringify(userInfo));
+    });
+  });
+
+  describe('loadUserInfo', () => {
+    it('loads user info from localStorage', () => {
+      const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
+      localStorage.setItem('dydu-user-info', JSON.stringify(userInfo));
+      expect(Auth.loadUserInfo()).toEqual(userInfo);
+    });
+  });
+
+  describe('clearUserInfo', () => {
+    it('clears user info from localStorage', () => {
+      const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
+      localStorage.setItem('dydu-user-info', JSON.stringify(userInfo));
+      Auth.clearUserInfo();
+      expect(localStorage.getItem('dydu-user-info')).toBeNull();
+    });
+  });
+
+  describe('saveToken()', () => {
+    it('should save token data to local storage', () => {
+      const token = { access_token: '1234567890', refresh_token: '0987654321' };
+      Auth.saveToken(token);
+      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(token.access_token);
+      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(token.refresh_token);
+    });
+  });
+
+  describe('clearToken()', () => {
+    it('should remove token data from local storage', () => {
+      const token = { access_token: '1234567890', refresh_token: '0987654321' };
+      Auth.saveToken(token);
+      Auth.clearToken();
+      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(null);
+      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(null);
+    });
+  });
+
+  describe('loadToken()', () => {
+    it('should load token data from local storage', () => {
+      const token = { id_token: '1234567890', access_token: '1234567890', refresh_token: '0987654321' };
+      Auth.saveToken(token);
+      expect(Auth.loadToken()).toEqual(token);
+    });
+
+    it('should return null if token data is not in local storage', () => {
+      expect(Auth.loadToken()).toEqual({});
+    });
+  });
+
+  describe('clearAll()', () => {
+    it('should clear all stored data from local storage', () => {
+      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      const token = { access_token: '1234567890', refresh_token: '0987654321' };
+      Auth.savePkce(pkceData);
+      Auth.saveToken(token);
+      Auth.clearAll();
+      expect(localStorage.getItem('pkce')).toBe(null);
+      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(null);
+      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(null);
+    });
+  });
+});
+

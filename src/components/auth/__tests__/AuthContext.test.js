@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import Storage from '../Storage';
+import Auth from '../../../tools/storage';
 import axios from 'axios';
 import { render } from '../../../tools/test-utils';
 
@@ -17,7 +17,7 @@ const oidcConfig = {
   withAuth: true,
 };
 
-jest.mock('../Storage', () => {
+jest.mock('../../../tools/storage', () => {
   let token = null;
 
   return {
@@ -41,6 +41,14 @@ jest.mock('../Storage', () => {
         token = t;
       }),
       containsPkce: jest.fn(),
+    },
+    Local: {
+      viewMode: {
+        remove: jest.fn(),
+      },
+      names: {
+        open: 'mocked_open_value',
+      },
     },
   };
 });
@@ -74,14 +82,14 @@ jest.mock('axios');
 describe('AuthProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    Storage.clearUserInfo();
-    Storage.clearUrls();
+    Auth.clearUserInfo();
+    Auth.clearUrls();
   });
 
   afterAll(() => {
-    Storage.clearToken();
-    Storage.clearPkce();
-    Storage.clearUrls();
+    Auth.clearToken();
+    Auth.clearPkce();
+    Auth.clearUrls();
   });
 
   it('should save urls to storage and set url config', async () => {
@@ -99,13 +107,13 @@ describe('AuthProvider', () => {
       userinfoUrl: data.userinfo_endpoint,
     };
 
-    Storage.clearUserInfo();
-    Storage.clearUrls();
-    Storage.saveUrls(urls);
+    Auth.clearUserInfo();
+    Auth.clearUrls();
+    Auth.saveUrls(urls);
 
-    expect(Storage.clearUserInfo).toHaveBeenCalled();
-    expect(Storage.clearUrls).toHaveBeenCalled();
-    expect(Storage.saveUrls).toHaveBeenCalledWith(urls);
+    expect(Auth.clearUserInfo).toHaveBeenCalled();
+    expect(Auth.clearUrls).toHaveBeenCalled();
+    expect(Auth.saveUrls).toHaveBeenCalledWith(urls);
   });
 
   test('renders children', () => {
@@ -126,8 +134,8 @@ describe('AuthProvider', () => {
 
     const mockUserInfo = { email: 'mgauchedaumet@dydu.ai' };
 
-    Storage.saveToken(mockToken);
-    // Storage.saveUserInfo(mockUserInfo);
+    Auth.saveToken(mockToken);
+    // Auth.saveUserInfo(mockUserInfo);
 
     const { getByText } = render(<div>Protected Content</div>, {
       configuration: {
@@ -144,7 +152,7 @@ describe('AuthProvider', () => {
       refresh_token: 'pasbon',
     };
 
-    Storage.saveToken(mockToken);
+    Auth.saveToken(mockToken);
 
     const { getByText } = render(<div>Protected Content</div>, {
       configuration: {

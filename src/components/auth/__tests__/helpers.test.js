@@ -2,7 +2,7 @@ import * as helpers from '../helpers';
 
 import { TextDecoder, TextEncoder } from 'util';
 
-import Storage from '../Storage';
+import Auth from '../../../tools/storage';
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
@@ -18,7 +18,7 @@ global.extractParamFromUrl = () => {
   return { state: fromProvider };
 };
 
-jest.mock('../Storage');
+jest.mock('../../../tools/storage');
 
 describe('Helpers', () => {
   const mockGetRandomValues = jest.fn(() => [1, 2, 3, 4, 5]);
@@ -51,7 +51,7 @@ describe('Helpers', () => {
     const defaultConfiguration = { redirectUri: null };
 
     beforeEach(() => {
-      Storage.savePkce.mockClear();
+      Auth.savePkce.mockClear();
     });
 
     it('should create and save PKCE with default configuration', () => {
@@ -60,7 +60,7 @@ describe('Helpers', () => {
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('http://localhost/');
       expect(pkce.codeVerifier).toBeUndefined();
-      expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
+      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
     });
 
     it('should create and save PKCE with custom redirectUri', () => {
@@ -70,7 +70,7 @@ describe('Helpers', () => {
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('https://example.com');
       expect(pkce.codeVerifier).toBeUndefined();
-      expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
+      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
     });
 
     it('should create and save PKCE with codeVerifier when pkceActive is true', () => {
@@ -79,7 +79,7 @@ describe('Helpers', () => {
 
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('http://localhost/');
-      expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
+      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
     });
 
     it('should create and save PKCE with custom redirectUri and codeVerifier when pkceActive is true', () => {
@@ -88,7 +88,7 @@ describe('Helpers', () => {
 
       expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
       expect(pkce.redirectUri).toBe('https://example.com');
-      expect(Storage.savePkce).toHaveBeenCalledWith(pkce);
+      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
     });
   });
 

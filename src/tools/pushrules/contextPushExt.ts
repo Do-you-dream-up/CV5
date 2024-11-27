@@ -126,7 +126,7 @@ function resetSessionCount(now) {
 }
 
 function readCookie(space) {
-  let c = Local.get('DYDU_PUSH_' + space + BOT.id, undefined, false);
+  let c = Local.get(Local?.names?.dydu_push + '_' + space + BOT.id, undefined, false);
   if (typeof c === 'undefined' || c === null || c === '') {
     c = {};
   }
@@ -155,7 +155,7 @@ function writeCookie(ruleId, conditionId, value, space) {
   const t = c['r_' + ruleId] || {};
   t[conditionId] = value;
   c['r_' + ruleId] = t;
-  Local.set('DYDU_PUSH_' + space + BOT.id, c);
+  Local.set(Local?.names?.dydu_push + '_' + space + BOT.id, c);
 }
 
 // Not working with google !

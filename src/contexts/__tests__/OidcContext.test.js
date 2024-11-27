@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 
 import { OidcProvider } from '../OidcContext';
-import Storage from '../../components/auth/Storage';
+import Auth from '../../tools/storage';
 import { isLoadedFromChannels } from '../../tools/wizard';
 import { render } from '@testing-library/react';
 import { useConfiguration } from '../ConfigurationContext';
@@ -9,7 +9,7 @@ import { useViewMode } from '../ViewModeProvider';
 
 jest.mock('../ConfigurationContext');
 jest.mock('../ViewModeProvider');
-jest.mock('../../components/auth/Storage');
+jest.mock('../../tools/storage');
 jest.mock('../../tools/wizard');
 
 describe('OidcContext', () => {
@@ -21,7 +21,7 @@ describe('OidcContext', () => {
   beforeEach(() => {
     useConfiguration.mockReturnValue({ configuration: mockConfiguration });
     useViewMode.mockReturnValue({ close: mockClose });
-    Storage.loadToken.mockReturnValue(mockToken);
+    Auth.loadToken.mockReturnValue(mockToken);
     isLoadedFromChannels.mockImplementation(mockIsLoadedFromChannels);
   });
 
@@ -68,7 +68,7 @@ describe('OidcContext', () => {
 
   it('should close view mode if token is missing and authorization check is active', () => {
     mockIsLoadedFromChannels.mockReturnValue(false);
-    Storage.loadToken.mockReturnValue(null);
+    Auth.loadToken.mockReturnValue(null);
 
     render(
       <OidcProvider>
@@ -82,7 +82,7 @@ describe('OidcContext', () => {
   it('should not close view mode if authorization check is not active', () => {
     mockIsLoadedFromChannels.mockReturnValue(false);
     mockConfiguration.checkAuthorization.active = false;
-    Storage.loadToken.mockReturnValue(null);
+    Auth.loadToken.mockReturnValue(null);
 
     render(
       <OidcProvider>
