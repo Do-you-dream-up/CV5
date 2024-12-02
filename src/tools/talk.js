@@ -45,6 +45,7 @@ export const ACTIONS = {
   '#split#': () => window.dydu.lorem.split(),
   '#steps#': null,
   '#template#': null,
+  '#newdialog#': () => window.dydu.newdialog(),
 };
 
 /**

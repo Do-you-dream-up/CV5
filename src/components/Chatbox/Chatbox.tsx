@@ -198,13 +198,20 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
       window.dydu.localization = {
         get: () => dydu.getLocale(),
         set: (locale) => {
-          return Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)])
+          return talk('#reset#', { hide: true, doNotRegisterInteraction: true })
+            .then(() => Promise.all([dydu.setLocale(locale), i18n.changeLanguage(locale)]))
             .then(() => clearInteractions && clearInteractions())
             .then(() => Local.contextId.reset(dydu.getBot().id))
-            .then(() => talk('#reset#', { hide: true, doNotRegisterInteraction: true }))
             .then(() => fetchTopKnowledge?.())
             .then(() => fetchWelcomeKnowledge?.());
         },
+      };
+
+      window.dydu.newdialog = () => {
+        return talk('#reset#', { hide: true, doNotRegisterInteraction: true })
+          .then(() => Local.contextId.reset(dydu.getBot().id))
+          .then(() => fetchTopKnowledge?.())
+          .then(() => fetchWelcomeKnowledge?.());
       };
 
       window.dydu.lorem = {
