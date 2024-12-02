@@ -13,7 +13,7 @@ const PoweredBy = () => {
     <div className={c(classes.poweredText)}>
       <p>
         powered by
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225.55 266.9">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225.55 266.9" aria-hidden={true}>
           <g data-name="Calque 2">
             <g data-name="Calque 1">
               <path

@@ -27,7 +27,7 @@ describe('AvatarsMatchingRequest', () => {
       configuration: mockConfiguration,
     });
 
-    const element = screen.getByRole('img');
+    const element = screen.getByTestId('header-avatar');
 
     expect(element).toBeTruthy();
   });

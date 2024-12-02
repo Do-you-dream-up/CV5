@@ -217,7 +217,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const renderHeaderLogo =
     Local.livechatType.load() && livechatCustomAvatar ? (
-      <img src={`${process.env.PUBLIC_URL}assets/${livechatImageLink}`} alt={headerLogo} />
+      <img src={`${process.env.PUBLIC_URL}assets/${livechatImageLink}`} alt={headerLogo} aria-hidden={true} />
     ) : (
       <AvatarsMatchingRequest typeResponse={typeResponse} headerAvatar={true} defaultAvatar={defaultAvatar} type={''} />
     );
