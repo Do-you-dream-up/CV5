@@ -21,10 +21,15 @@ module.exports = (env) => {
 
   const buildTime = Date.now();
 
+  // regarding "https://cdn.doyoudreamup.com/chatbox/",
+  // this value must not come from configuration.json as it must not be changed
+  // it is used 'as is' to deploy preview chatbox on the CDN (used by channels)
+  // and replaced also at publish time by backend by for example
+  // https://cdn.doyoudreamup.com/dydubox/configurations/preprod/dd3f55a4-c47e-4c2e-a175-a44d1998b924/7f000101-9229-157f-8192-29764abf0000/
+  let ASSET = 'https://cdn.doyoudreamup.com/chatbox/' + `${env.CHATBOX_VERSION}/` + buildTime;
+
   console.log('env.CHATBOX_VERSION', env.CHATBOX_VERSION);
   console.log('env.CHATBOX_REVISION', env.CHATBOX_REVISION);
-
-  let ASSET = 'TIMESTAMPED_CDN_URL' + '/';
 
   return Merge.strategy({ plugins: 'prepend' })(common(env), {
     devtool: 'nosources-source-map',
@@ -35,7 +40,7 @@ module.exports = (env) => {
       chunkFilename: `[name].${env.CHATBOX_VERSION || getBranchName().replace('/', '.')}.${
         env.CHATBOX_REVISION || getCommitHash()
       }.js`,
-      path: Path.resolve(__dirname, 'build/'.concat(buildTime)), // backend will now buildtime based on the name of this directory
+      path: Path.resolve(__dirname, 'build/'.concat(buildTime)), // backend will know buildtime based on the name of this directory
     },
     plugins: [
       // new WebpackBundleAnalyzer(), // uncomment this line in local to analyze bundles
@@ -57,22 +62,23 @@ module.exports = (env) => {
             from: Path.resolve(__dirname, 'public/loader.js'),
             toType: 'file',
             to: '../loader.js',
+            transform: (buffer) => {
+              return buffer.toString().replace('TIMESTAMPED_CDN_URL', ASSET);
+            },
           },
           {
             from: Path.resolve(__dirname, 'public/bundle.min.js'),
             toType: 'file',
             to: '../bundle.min.js',
-          },
-          {
-            from: Path.resolve(__dirname, 'public/preview.index.html'),
-            toType: 'file',
-            to: '../preview.index.html',
+            transform: (buffer) => {
+              return buffer.toString().replace('TIMESTAMPED_CDN_URL', ASSET);
+            },
           },
         ],
       }),
       new webpack.DefinePlugin({
         'process.env': {
-          PUBLIC_URL: JSON.stringify(ASSET),
+          PUBLIC_URL: JSON.stringify(ASSET + '/'),
         },
       }),
     ],
