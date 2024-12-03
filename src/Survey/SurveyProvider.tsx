@@ -22,7 +22,9 @@ interface SurveyContextProps {
   surveyConfig?: any;
   triggerSurvey?: () => void;
   setSurveyConfig?: (data: any) => void;
-  flushStates: () => void;
+  flushStates?: () => void;
+  surveyClosed?: boolean;
+  setSurveyClosed?: (value: boolean) => void;
 }
 
 interface SurveyProviderProps {
@@ -41,6 +43,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const [instances, setInstances] = useState<any[] | null>(null);
   const [listeningCloseSidebar, setListeningCloseSidebar] = useState(false);
   const surveyId: string | undefined = surveyConfig?.surveyId;
+  const [surveyClosed, setSurveyClosed] = useState(false);
 
   const flushStates = () => {
     setInstances(null);
@@ -59,15 +62,13 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   };
 
   const flushStatesAndClose = useCallback(() => {
+    if (surveyId) {
+      setSurveyClosed(true);
+    }
     flushStates();
     closeSidebar && closeSidebar();
     answerResultManager.clear();
   }, [closeSidebar, flushStates, lastResponse]);
-
-  const close = useCallback(() => {
-    closeSidebar && closeSidebar();
-    answerResultManager.clear();
-  }, [closeSidebar, lastResponse]);
 
   const chatboxNode: any = useMemo(() => {
     try {
@@ -176,7 +177,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       triggerSurvey,
       flushStates,
       flushStatesAndClose,
-      close,
+      surveyClosed,
+      setSurveyClosed,
     }),
     [
       getSurveyConfiguration,
@@ -186,7 +188,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       triggerSurvey,
       flushStates,
       flushStatesAndClose,
-      close,
+      surveyClosed,
+      setSurveyClosed,
     ],
   );
 
@@ -305,21 +308,27 @@ class AnswerResultManager {
     this.listMissings = [];
     this.result = {};
   }
+
   getAnswer() {
     return this.result;
   }
+
   addAnswer(answer) {
     this.result[answer.id] = answer.value;
   }
+
   addMissingField(field) {
     this.listMissings.push(field);
   }
+
   hasMissing() {
     return !isEmptyArray(this.listMissings);
   }
+
   forEachMissingField(callback) {
     this.listMissings.forEach(callback);
   }
+
   clear() {
     this.listMissings = [];
     this.result = {};
