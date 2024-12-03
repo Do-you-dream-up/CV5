@@ -140,7 +140,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: <Icon icon={icons?.dots} color={iconColorWhite} alt={actionTest} />,
+      children: <Icon icon={icons?.dots} color={iconColorWhite} alt={actionTest} ariaLabel={actionTest} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && isOnboardingAlreadyDone && testsMenu.flat().length > 0,
@@ -148,7 +148,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-dots',
     },
     {
-      children: <Icon icon={icons?.more} color={iconColorWhite} alt={actionMore} />,
+      children: <Icon icon={icons?.more} color={iconColorWhite} alt={actionMore} ariaLabel={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
@@ -157,7 +157,14 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       ref: moreOptionsRef,
     },
     {
-      children: <Icon icon={icons?.fontIncrease} color={iconColorWhite} alt={actionFontIncrease} />,
+      children: (
+        <Icon
+          icon={icons?.fontIncrease}
+          color={iconColorWhite}
+          alt={actionFontIncrease}
+          ariaLabel={actionFontIncrease}
+        />
+      ),
       disabled: fontSize >= maxFontSize,
       onClick: () => changeFontSize('increase'),
       variant: 'icon',
@@ -166,7 +173,14 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-increase',
     },
     {
-      children: <Icon icon={icons?.fontDecrease} color={iconColorWhite} alt={actionFontDecrease} />,
+      children: (
+        <Icon
+          icon={icons?.fontDecrease}
+          color={iconColorWhite}
+          alt={actionFontDecrease}
+          ariaLabel={actionFontDecrease}
+        />
+      ),
       disabled: fontSize <= minFontSize,
       onClick: () => changeFontSize('decrease'),
       variant: 'icon',
@@ -175,7 +189,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-decrease',
     },
     {
-      children: <Icon icon={icons?.expand} color={iconColorWhite} alt={actionExpand} />,
+      children: <Icon icon={icons?.expand} color={iconColorWhite} alt={actionExpand} ariaLabel={actionExpand} />,
 
       onClick: () => onExpand(true),
       variant: 'icon',
@@ -184,7 +198,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-expand',
     },
     {
-      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt={actionShrink} />,
+      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt={actionShrink} ariaLabel={actionShrink} />,
       onClick: () => onExpand(false),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
@@ -192,7 +206,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-collapse',
     },
     {
-      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt={actionMinimize} />,
+      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt={actionMinimize} ariaLabel={actionMinimize} />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
@@ -200,7 +214,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-minimize',
     },
     {
-      children: <Icon icon={icons?.close} color={iconColorWhite} alt={actionClose} />,
+      children: <Icon icon={icons?.close} color={iconColorWhite} alt={actionClose} ariaLabel={actionClose} />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,
