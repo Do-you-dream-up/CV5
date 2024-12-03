@@ -138,6 +138,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             ref={textareaRef}
             title={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
             placeholder={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
+            aria-label={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && !Local.livechatType.load() && (
