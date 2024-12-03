@@ -125,9 +125,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
-          <label htmlFor={textareaId} className={c('dydu-input-label', classes.label)}>
-            {isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
-          </label>
+          <label htmlFor={textareaId}></label>
           <textarea
             {...data}
             maxLength={!Local.livechatType.load() ? maxLength : undefined}
@@ -138,11 +136,19 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             onBlur={handleBlur}
             tabIndex={tabIndex}
             ref={textareaRef}
+            title={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
+            placeholder={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && !Local.livechatType.load() && (
             <div>
-              <span children={counter} className={classes.counter} />
+              <span
+                children={counter}
+                className={classes.counter}
+                aria-labelledby={counterRemaining}
+                title={counterRemaining}
+                placeholder={counterRemaining}
+              />
               <span
                 className={c('dydu-counter-hidden', classes.hidden)}
                 aria-live={counter === maxLength ? 'off' : 'assertive'}
@@ -221,12 +227,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     }
   }, [debouncedInput, suggest, typing]);
 
-  const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
-  if (isDefined(nodeElementInputContainer)) {
-    nodeElementInputContainer.setAttribute('aria-label', counterRemaining);
-    nodeElementInputContainer.setAttribute('title', counterRemaining);
-  }
-
   useEffect(() => {
     const nodeElementInputContainer = containerRef?.current?.suggestionsContainer?.parentElement;
     if (isDefined(nodeElementInputContainer)) {
@@ -234,6 +234,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       nodeElementInputContainer.removeAttribute('aria-haspopup');
       nodeElementInputContainer.removeAttribute('aria-owns');
       nodeElementInputContainer.removeAttribute('aria-label');
+      nodeElementInputContainer.removeAttribute('aria-expanded');
     }
 
     const nodeElementSuggestionsContainer = containerRef?.current?.suggestionsContainer;
