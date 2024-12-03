@@ -10,7 +10,7 @@ const PoweredBy = () => {
   const lang = dydu.getLocale();
 
   return (
-    <div className={c(classes.poweredText)}>
+    <div className={c(classes.poweredText)} lang="en">
       <p>
         powered by
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225.55 266.9" aria-hidden={true}>
