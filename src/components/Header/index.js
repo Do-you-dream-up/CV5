@@ -253,7 +253,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
             </div>
           )}
           {!!hasTitle && (
-            <h1 tabIndex={0} className={c('dydu-header-title', classes.title)}>
+            <h1 className={c('dydu-header-title', classes.title)}>
               <Skeleton
                 children={Local.livechatType.load() ? t('header.livechat.title') : t('header.title')}
                 hide={!ready}
