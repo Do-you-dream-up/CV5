@@ -307,11 +307,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding>
                 <div
-                  tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || extended),
                   })}
                   onScroll={handleScroll}
+                  tabIndex={-1}
                 >
                   <Tab
                     component={Dialog}
