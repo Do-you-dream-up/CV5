@@ -29,15 +29,23 @@ describe('useUserAction', () => {
   });
 
   it('should set tabbing to false when a click event occurs', () => {
+    const mockDiv = document.createElement('div');
+    document.body.appendChild(mockDiv);
+
+    useShadow.mockReturnValue({
+      shadowAnchor: mockDiv,
+    });
+
     const { result } = renderHook(() => useUserAction(), {
       wrapper: UserActionProvider,
     });
 
-    expect(result.current.tabbing).toBe(false);
+    expect(result.current.tabbing).toBe(true);
 
-    const clickEvent = new MouseEvent('click');
-    document.dispatchEvent(clickEvent);
-
+    act(() => {
+      const clickEvent = new MouseEvent('click', { bubbles: true });
+      mockDiv.dispatchEvent(clickEvent);
+    });
     expect(result.current.tabbing).toBe(false);
   });
 });
