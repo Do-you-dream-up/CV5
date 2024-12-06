@@ -1,6 +1,7 @@
 import c from 'classnames';
 import useStyles from './styles';
 import dydu from '../../tools/dydu';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Display the "powered by dydu" phrase at the end of the conversation, if this parameter is active into the Dialog component
@@ -8,12 +9,13 @@ import dydu from '../../tools/dydu';
 const PoweredBy = () => {
   const classes = useStyles();
   const lang = dydu.getLocale();
+  const { t } = useTranslation('translation');
 
   return (
-    <div className={c(classes.poweredText)}>
+    <div className={c(classes.poweredText)} lang="en">
       <p>
         powered by
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225.55 266.9">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225.55 266.9" aria-hidden={true}>
           <g data-name="Calque 2">
             <g data-name="Calque 1">
               <path
@@ -31,7 +33,12 @@ const PoweredBy = () => {
             </g>
           </g>
         </svg>
-        <a href={lang === 'fr' ? 'https://www.dydu.ai' : 'https://www.dydu.ai/en'} target="_blank" rel="noreferrer">
+        <a
+          href={lang === 'fr' ? 'https://www.dydu.ai' : 'https://www.dydu.ai/en'}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={'dydu ' + t('general.linkNewWindow')}
+        >
           dydu
         </a>
       </p>

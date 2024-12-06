@@ -71,16 +71,14 @@ export default function GdprDisclaimer({
         <>
           {body && (
             <>
-              <h2 tabIndex={0} className={c('dydu-gdpr-disclaimer-title', classes.title)} id={idLabel}>
+              <h2 className={c('dydu-gdpr-disclaimer-title', classes.title)} id={idLabel}>
                 {titleDisclaimer}
               </h2>
               <div className={c('dydu-gdpr-disclaimer-body', classes.body)}>
                 <Skeleton hide={!ready} height="7em" variant="paragraph" width="17em">
                   {body &&
                     ready &&
-                    body.map((item, index) => (
-                      <p key={index} tabIndex={0} dangerouslySetInnerHTML={{ __html: item.text }} />
-                    ))}
+                    body.map((item, index) => <p key={index} dangerouslySetInnerHTML={{ __html: item.text }} />)}
                 </Skeleton>
               </div>
             </>

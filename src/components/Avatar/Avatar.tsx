@@ -51,7 +51,7 @@ const Avatar = ({ path, type, linkAvatarDependOnType }: AvatarProps) => {
 
   return (
     <div className={_className} id={`dydu-avatar-${type}`}>
-      {!!_path && <img alt={altText} className="dydu-avatar-image" src={_path} />}
+      {!!_path && <img alt={altText} className="dydu-avatar-image" src={_path} aria-hidden={true} />}
     </div>
   );
 };
