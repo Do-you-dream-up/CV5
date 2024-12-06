@@ -83,7 +83,7 @@ const AvatarsMatchingRequest = ({
   }, [carousel, carouselTemplate, hasAvatar, hasLoader]);
 
   if (showHeaderAvatar) {
-    return <img alt="" src={linkAvatarDependOnType} />;
+    return <img alt="" src={linkAvatarDependOnType} aria-hidden={true} data-testid="header-avatar" />;
   }
 
   if (showInteractionAvatar) {

@@ -138,6 +138,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             ref={textareaRef}
             title={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
             placeholder={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
+            aria-label={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && !Local.livechatType.load() && (
@@ -286,7 +287,14 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const actions: ActionProps[] = [
     {
-      children: <Icon icon={icons?.submit || ''} color={themeColor?.palette?.primary.main} alt={actionSend} />,
+      children: (
+        <Icon
+          icon={icons?.submit || ''}
+          color={themeColor?.palette?.primary.main}
+          alt={actionSend}
+          ariaLabel={actionSend}
+        />
+      ),
       type: 'submit',
       variant: 'icon',
       title: actionSend,

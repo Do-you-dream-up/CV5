@@ -15,6 +15,7 @@ interface IconWrapperPropsInterface {
 interface IconPropsInterface extends IconWrapperPropsInterface {
   size?: number;
   icon: string;
+  ariaLabel?: string;
 }
 
 const Icon = ({
@@ -25,6 +26,7 @@ const Icon = ({
   onClick,
   alt = '',
   title = undefined,
+  ariaLabel,
 }: IconPropsInterface) => {
   const { shadowAnchor } = useShadow();
 
@@ -53,7 +55,7 @@ const Icon = ({
     [color, className, title, alt, onClick],
   );
 
-  return <IconWrapper {...iconWrapperProps}></IconWrapper>;
+  return <IconWrapper {...iconWrapperProps} aria-label={ariaLabel}></IconWrapper>;
 };
 
 export default Icon;

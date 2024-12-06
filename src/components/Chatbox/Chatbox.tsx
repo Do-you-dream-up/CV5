@@ -284,7 +284,14 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   return (
     <div className={classnames} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <div tabIndex={0} ref={root} aria-label={labelChatbot}>
+      <div
+        tabIndex={0}
+        ref={root}
+        aria-label={labelChatbot}
+        role="dialog"
+        aria-modal={true}
+        aria-labelledby="dydu-gdpr-text"
+      >
         <div className={classes.container}>
           <>
             <Header
@@ -300,11 +307,11 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding>
                 <div
-                  tabIndex={0}
                   className={c('dydu-chatbox-body', classes.body, {
                     [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || extended),
                   })}
                   onScroll={handleScroll}
+                  tabIndex={-1}
                 >
                   <Tab
                     component={Dialog}
