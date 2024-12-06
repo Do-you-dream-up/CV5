@@ -1,11 +1,14 @@
-import { Dispatch, ReactElement, SetStateAction, createContext, useCallback, useState } from 'react';
+import { Dispatch, ReactElement, SetStateAction, createContext, useCallback, useState, useContext } from 'react';
 
 import { Local } from '../tools/storage';
 import { useEvent } from './EventsContext';
+import { useConfiguration } from './ConfigurationContext';
+import { VIEW_MODE } from '../tools/constants';
 
 interface GdprContextProps {
-  gdprPassed?: boolean | null;
-  setGdprPassed?: Dispatch<SetStateAction<boolean | null>>;
+  gdprEnabled?: boolean;
+  gdprPassed?: boolean;
+  setGdprPassed?: Dispatch<SetStateAction<boolean>>;
   onAccept?: () => void;
   onDecline?: () => void;
 }
@@ -14,10 +17,13 @@ interface GdprProviderProps {
   children: ReactElement;
 }
 
+export const useGdpr = () => useContext(GdprContext);
+
 export const GdprContext = createContext<GdprContextProps>({});
 
 export function GdprProvider({ children }: GdprProviderProps) {
-  const [gdprPassed, setGdprPassed] = useState<boolean | null>(Local.gdpr.load());
+  const { configuration } = useConfiguration();
+  const [gdprPassed, setGdprPassed] = useState<boolean>(Local.gdpr.load());
   const { dispatchEvent } = useEvent();
 
   const onAccept = useCallback(() => {
@@ -27,13 +33,14 @@ export function GdprProvider({ children }: GdprProviderProps) {
   }, [dispatchEvent]);
 
   const onDecline = useCallback(() => {
-    window.dydu.ui.toggle(1);
+    window.dydu.ui.toggle(VIEW_MODE.minimize);
   }, []);
 
   return (
     <GdprContext.Provider
       children={children}
       value={{
+        gdprEnabled: !!(configuration?.gdprDisclaimer && configuration?.gdprDisclaimer?.enable),
         gdprPassed,
         onAccept,
         onDecline,

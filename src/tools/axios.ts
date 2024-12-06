@@ -5,7 +5,7 @@ import { getOidcEnableWithAuthStatus } from './oidc';
 import { decode } from './cipher';
 import debounce from 'debounce-promise';
 import dydu from './dydu';
-import Auth, { Local } from './storage';
+import Auth, { Local, Session } from './storage';
 
 interface AxiosDyduConfig {
   server: string;
@@ -13,7 +13,8 @@ interface AxiosDyduConfig {
   axiosConf: any;
 }
 
-const sessionCurrentServerIndex = sessionStorage.getItem('dydu.server');
+const sessionCurrentServerIndex = Session.serverIndex.load();
+
 let currentServerIndex: number = sessionCurrentServerIndex ? Number.parseInt(sessionCurrentServerIndex) : 0;
 let lastStatus = 'OK';
 const minTimeoutForAnswer: number = secondsToMs(3);
@@ -26,7 +27,7 @@ let lastResponse: any = null;
 let callTokenRefresher: any = null;
 let callOidcLogin: any = null;
 
-const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig) => {
+const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig): AxiosInstance => {
   if (!isDefined(config?.axiosConf)) config.axiosConf = {};
 
   const instance = axios.create({
@@ -124,6 +125,12 @@ const handleAxiosResponse = (data: any) => {
 
   if (hasProperty(data, 'values')) {
     data.values = decode(data.values);
+    if (data.values.guiCSName) {
+      dydu.setSpace(data.values.guiCSName);
+    }
+    if (data.values.language) {
+      dydu.setLocale(data.values.language, true);
+    }
     if (data.values.contextId) {
       dydu.setContextId(data.values.contextId);
     }
@@ -272,7 +279,9 @@ const emit = debounce(
           lastResponse = response;
           lastStatus = 'OK';
           triesCounter = 0;
-          sessionStorage.setItem('dydu.server', currentServerIndex.toString());
+          if (currentServerIndex !== 0) {
+            Session.serverIndex.save(currentServerIndex.toString());
+          }
           return response;
         })
         .then(({ data = {} }) => {
@@ -291,6 +300,7 @@ const emit = debounce(
         });
     } catch (e) {
       console.error('while executing |emit()|', e);
+      return Promise.resolve();
     }
   },
   100,

@@ -10,6 +10,7 @@ import { Servlet } from '../../types/servlet';
 type ChatResponseArray = Servlet.ChatResponseValues[];
 
 interface TopKnowledgeContextProps {
+  isEnabled?: boolean;
   fetch?: () => void;
   topKnowledge?: ChatResponseArray | null;
   setTopKnowledge?: Dispatch<SetStateAction<ChatResponseArray | null>>;
@@ -28,13 +29,15 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
   const [topKnowledge, setTopKnowledge] = useState<ChatResponseArray | null>(null);
   const { configuration } = useConfiguration();
 
+  const isEnabled = configuration?.topKnowledge?.enable;
+
   const fetch = () => {
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
-      if (configuration && (!livechatType || livechatType === TUNNEL_MODE.polling)) {
+      if (configuration && (!livechatType || livechatType === TUNNEL_MODE.polling) && isEnabled) {
         dydu
-          .top(configuration.top?.period, configuration.top?.size)
+          .top(configuration.topKnowledge?.period, configuration.topKnowledge?.size)
           .then(extractPayload)
           .then((knowledgeList) => {
             setTopKnowledge(knowledgeList);
@@ -56,6 +59,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
   };
 
   const props: TopKnowledgeContextProps = {
+    isEnabled,
     fetch,
     topKnowledge,
     setTopKnowledge,

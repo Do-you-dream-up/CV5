@@ -65,6 +65,9 @@ jest.mock('../../tools/storage', () => ({
     isChannels: {
       load: jest.fn(),
     },
+    locale: {
+      load: jest.fn(),
+    },
   },
   Cookie: {
     get: jest.fn(),

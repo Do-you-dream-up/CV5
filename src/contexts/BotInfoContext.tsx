@@ -2,6 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
+import { Local } from '../tools/storage';
+import { TUNNEL_MODE } from '../tools/constants';
+import { Servlet } from '../../types/servlet';
 
 export interface BotInfoProviderProps {
   children?: any;
@@ -20,8 +23,8 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
 
-  const fetchBotLanguages = useCallback(() => {
-    return new Promise(() => {
+  const fetchBotLanguages = () => {
+    return new Promise((resolve) => {
       dydu
         .getBotLanguages()
         .then((botLanguagesFromAtria) => {
@@ -32,9 +35,12 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
           setBotLanguages(activatedAndActiveBotLanguages);
           dydu.correctLocaleFromBotLanguages(activatedAndActiveBotLanguages);
         })
-        .catch(() => setBotLanguages(computeDefaultBotLanguages(configuration)));
+        .catch(() => {
+          setBotLanguages(computeDefaultBotLanguages(configuration));
+        })
+        .finally(() => resolve(true));
     });
-  }, []);
+  };
 
   const value: BotInfoContextProps = {
     fetchBotLanguages,
@@ -50,7 +56,7 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
  * @param botLanguagesFromAtria array of all languages currently handled by bot
  */
 export function getActivatedAndActiveBotLanguages(configuration: any, botLanguagesFromAtria: any): string[] {
-  let result = [];
+  let result: string[] = [];
   const configurationLanguages = configuration?.application?.languages;
   const defaultLanguage = computeDefaultBotLanguages(configuration);
   if (configurationLanguages && botLanguagesFromAtria) {

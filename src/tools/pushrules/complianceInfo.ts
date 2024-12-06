@@ -1,90 +1,102 @@
-export default function ComplianceInfo(delays, priority) {
-  delays = delays || { delay: -1, idleDelay: -1 };
-  priority = priority || {
-    equalsCount: 0,
-    rulesCount: -1,
-    rulesValueLength: 0,
-  };
-  this.delays = { delay: delays.delay, idleDelay: delays.idleDelay };
-  this.priority = {
-    equalsCount: priority.equalsCount || 0,
-    rulesCount: priority.rulesCount || -1,
-    rulesValueLength: priority.rulesValueLength || 0, // length for string values not using Equals operator.
-  };
+interface Delays {
+  delay: number;
+  idleDelay: number;
+}
 
-  this.comparePriorities = function (other) {
-    //return negative number if this is less prioritary, 0 if same, positive if more prioritary
+interface Priority {
+  equalsCount: number;
+  rulesCount: number;
+  rulesValueLength: number;
+}
+
+export default class ComplianceInfo {
+  delays: Delays;
+  priority: Priority;
+
+  constructor(
+    delays: Delays = { delay: -1, idleDelay: -1 },
+    priority: Priority = { equalsCount: 0, rulesCount: -1, rulesValueLength: 0 },
+  ) {
+    this.delays = { delay: delays.delay, idleDelay: delays.idleDelay };
+    this.priority = {
+      equalsCount: priority.equalsCount || 0,
+      rulesCount: priority.rulesCount || -1,
+      rulesValueLength: priority.rulesValueLength || 0,
+    };
+  }
+
+  comparePriorities(other: ComplianceInfo): number {
     if (this.priority.equalsCount !== other.priority.equalsCount) {
       return this.priority.equalsCount - other.priority.equalsCount;
     } else if (this.priority.rulesCount !== other.priority.rulesCount) {
       return this.priority.rulesCount - other.priority.rulesCount;
     }
     return this.priority.rulesValueLength - other.priority.rulesValueLength;
-  };
+  }
 
-  this.complyWithoutDelay = function () {
+  complyWithoutDelay(): boolean {
     return this.delays.delay === 0 || this.delays.idleDelay === 0;
-  };
+  }
 
-  this.copy = function (other) {
+  copy(other: ComplianceInfo): void {
     this.delays.delay = other.delays.delay;
     this.delays.idleDelay = other.delays.idleDelay;
     this.priority.equalsCount = other.priority.equalsCount;
     this.priority.rulesCount = other.priority.rulesCount;
     this.priority.rulesValueLength = other.priority.rulesValueLength;
-  };
+  }
 
-  this.getDelay = function () {
+  getDelay(): number {
     return this.delays.delay;
-  };
+  }
 
-  this.getIdleDelay = function () {
+  getIdleDelay(): number {
     return this.delays.idleDelay;
-  };
+  }
 
-  this.getPriority = function () {
+  getPriority(): Priority {
     return this.priority;
-  };
+  }
 
-  this.hasHigherPriorityThan = function (other) {
+  hasHigherPriorityThan(other: ComplianceInfo): boolean {
     return this.comparePriorities(other) > 0;
-  };
+  }
 
-  this.hasSamePriorityAs = function (other) {
+  hasSamePriorityAs(other: ComplianceInfo): boolean {
     return this.comparePriorities(other) === 0;
-  };
+  }
 
-  this.isDelayValid = function () {
+  isDelayValid(): boolean {
     return this.delays.delay >= 0 || this.delays.idleDelay >= 0;
-  };
+  }
 
-  this.mergeDelayIfSmaller = function (other) {
+  mergeDelayIfSmaller(other: ComplianceInfo): boolean {
     if (this.delays.delay === -1 || (other.delays.delay >= 0 && other.delays.delay < this.delays.delay)) {
       this.delays.delay = other.delays.delay;
       return true;
     }
     return false;
-  };
+  }
 
-  this.mergeDelaysForAndCondition = function (other) {
-    //Use the biggest delays, for 'and' conditions
+  mergeDelaysForAndCondition(other: ComplianceInfo): void {
+    // Use the largest delays for 'and' conditions
     if (this.delays.delay !== -1) {
       this.delays.delay = Math.max(this.delays.delay, other.delays.delay);
     }
     if (other.delays.delay === -1) {
-      //Condition complies only if idleDelay is respected.
+      // Condition complies only if idleDelay is respected.
       this.delays.delay = -1;
     }
     this.delays.idleDelay = Math.max(this.delays.idleDelay, other.delays.idleDelay);
-  };
+  }
 
-  this.mergeDelaysForOrCondition = function (other) {
-    //Use the smallest delays, for 'or' conditions
+  mergeDelaysForOrCondition(other: ComplianceInfo): void {
+    // Use the smallest delays for 'or' conditions
     this.mergeDelayIfSmaller(other);
     this.mergeIdleDelayIfSmaller(other);
-  };
+  }
 
-  this.mergeIdleDelayIfSmaller = function (other) {
+  mergeIdleDelayIfSmaller(other: ComplianceInfo): boolean {
     if (
       this.delays.idleDelay === -1 ||
       (other.delays.idleDelay >= 0 && other.delays.idleDelay < this.delays.idleDelay)
@@ -93,20 +105,20 @@ export default function ComplianceInfo(delays, priority) {
       return true;
     }
     return false;
-  };
+  }
 
-  this.setPriority = function (priority) {
+  setPriority(priority: Priority): void {
     this.priority.equalsCount = priority.equalsCount;
     this.priority.rulesCount = priority.rulesCount;
     this.priority.rulesValueLength += priority.rulesValueLength;
-  };
+  }
 
-  this.updatePriority = function (isEqualsOperator, comparedValue) {
+  updatePriority(isEqualsOperator: boolean, comparedValue: string | undefined | null): void {
     if (isEqualsOperator) {
       this.priority.equalsCount++;
     } else if (comparedValue) {
       this.priority.rulesValueLength += comparedValue.length;
     }
     this.priority.rulesCount++;
-  };
+  }
 }

@@ -7,7 +7,7 @@ import { Servlet } from '../../types/servlet';
 
 interface ConversationHistoryContextProps {
   fetch?: () => any;
-  history?: Servlet.ChatHistoryResponse | null;
+  history?: Servlet.ChatHistoryInteraction[] | null;
   setHistory?: Dispatch<SetStateAction<Servlet.ChatHistoryResponse | null>>;
 }
 
@@ -20,15 +20,15 @@ export const useConversationHistory = () => useContext(ConversationHistoryContex
 export const ConversationHistoryContext = createContext<ConversationHistoryContextProps>({});
 
 export function ConversationHistoryProvider({ children }: ConversationHistoryProviderProps) {
-  const [history, setHistory] = useState<Servlet.ChatHistoryResponse | null>(null);
+  const [history, setHistory] = useState<Servlet.ChatHistoryInteraction[] | null>(null);
 
   const fetch = () => {
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
       if (!livechatType || livechatType === TUNNEL_MODE.polling) {
-        dydu.history().then((res) => {
-          const interactionsFromHistory = res?.interactions;
+        dydu.history().then((res: Servlet.ChatHistoryResponse) => {
+          const interactionsFromHistory: Servlet.ChatHistoryInteraction[] | undefined = res?.interactions;
           if (interactionsFromHistory) {
             if (livechatType === TUNNEL_MODE.polling) {
               for (const interactionFromHistory of interactionsFromHistory) {

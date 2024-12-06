@@ -1,182 +1,134 @@
-import { Local } from '../../tools/storage';
 import bot from '../../../public/override/bot.json';
 import qs from 'qs';
+import { Local } from '../storage';
 
-interface contextPushProps {
-  getGlobalVisitDuration?: any;
-  getGlobalVisitCount?: any;
-  setGlobalVisitCount?: any;
-  getLastVisitTime?: any;
-  setLastVisitTime?: any;
-  getLastPageLoadedTime?: any;
-  setLastPageLoadedTime?: any;
-  getPagesViewedCount?: any;
-  setPagesViewedCount?: any;
-  resetSessionCount?: any;
-  getCountry?: any;
-  setCountry?: any;
-  getCity?: any;
-  setCity?: any;
-  computeDurationSinceLastVisit?: any;
-  getDurationSinceLastVisit?: any;
-  setPushData?: any;
-  getPushData?: any;
-  processKeywords?: any;
+interface ContextPushProps {
+  getGlobalVisitDuration: (now: number) => number;
+  getGlobalVisitCount: () => number;
+  setGlobalVisitCount: (count: number) => void;
+  getLastVisitTime: (now: number) => number;
+  setLastVisitTime: (now: number) => void;
+  getLastPageLoadedTime: () => number;
+  setLastPageLoadedTime: (now: number) => void;
+  getPagesViewedCount: () => number;
+  setPagesViewedCount: (value: number) => void;
+  resetSessionCount: (now: number) => void;
+  getCountry: () => string;
+  setCountry: (value: string) => void;
+  getCity: () => string;
+  setCity: (value: string) => void;
+  computeDurationSinceLastVisit: (now: number) => void;
+  getDurationSinceLastVisit: () => number;
+  setPushData: (space: string, botId: string, ruleId: string, conditionId: string, value: any) => void;
+  getPushData: (space: string, botId: string, ruleId: string, conditionId: string, defaultValue: string) => string;
+  processKeywords: (ref: string) => string[];
 }
 
-const BOT = Object.assign(
-  {},
-  bot,
-  (({ bot: id }) => ({
-    ...(id && { id }),
-  }))(qs.parse(window.location.search, { ignoreQueryPrefix: true })),
-);
-
-const contextPush: contextPushProps = {};
-contextPush.getGlobalVisitDuration = getGlobalVisitDuration;
-contextPush.getGlobalVisitCount = getGlobalVisitCount;
-contextPush.setGlobalVisitCount = setGlobalVisitCount;
-contextPush.getLastVisitTime = getLastVisitTime;
-contextPush.setLastVisitTime = setLastVisitTime;
-contextPush.getLastPageLoadedTime = getLastPageLoadedTime;
-contextPush.setLastPageLoadedTime = setLastPageLoadedTime;
-contextPush.getPagesViewedCount = getPagesViewedCount;
-contextPush.setPagesViewedCount = setPagesViewedCount;
-contextPush.resetSessionCount = resetSessionCount;
-contextPush.getCountry = getCountry;
-contextPush.setCountry = setCountry;
-contextPush.getCity = getCity;
-contextPush.setCity = setCity;
-contextPush.computeDurationSinceLastVisit = computeDurationSinceLastVisit;
-contextPush.getDurationSinceLastVisit = getDurationSinceLastVisit;
-contextPush.setPushData = writeCookie;
-contextPush.getPushData = readCookieValue;
-contextPush.processKeywords = processKeywords;
-
-function getGlobalVisitDuration(now) {
-  return (now - getLastVisitTime(now)) / 1000;
+enum SPACE {
+  GLOBAL = 'global',
+  SESSION = 'session',
 }
 
-function getGlobalVisitCount() {
-  return parseInt(readCookieValue('visit', 'count', 0, 'global'));
-}
+// BOT configuré à partir des paramètres d'URL
+const BOT = {
+  ...bot,
+  ...(qs.parse(window.location.search, { ignoreQueryPrefix: true }).bot && {
+    id: qs.parse(window.location.search, { ignoreQueryPrefix: true }).bot,
+  }),
+};
 
-function setGlobalVisitCount(count) {
-  //Keep for 60days..
-  writeCookie('visit', 'count', count, 'global');
-}
+const getGlobalVisitDuration = (now: number): number => (now - getLastVisitTime(now)) / 1000;
 
-function getLastVisitTime(now) {
-  return parseInt(readCookieValue('lastvisit', 'time', now, 'global'));
-}
+const getGlobalVisitCount = (): number =>
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'visit', 'count', '0'), 10);
 
-function setLastVisitTime(now) {
-  writeCookie('lastvisit', 'time', now, 'global');
-}
+const setGlobalVisitCount = (count: number): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'visit', 'count', count);
 
-function getLastPageLoadedTime() {
-  return parseInt(readCookieValue('lastpageloaded', 'time', -1, 'session'));
-}
+const getLastVisitTime = (now: number): number =>
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'time', `${now}`), 10);
 
-function setLastPageLoadedTime(now) {
-  writeCookie('lastpageloaded', 'time', now, 'session');
-}
+const setLastVisitTime = (now: number): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'time', now);
 
-function setPagesViewedCount(value) {
-  writeCookie('pagesViewed', 'count', value, 'session');
-}
+const getLastPageLoadedTime = (): number =>
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'lastpageloaded', 'time', '-1'), 10);
 
-function getCountry() {
-  return readCookieValue('localisation', 'country', 'undefined', 'session');
-}
+const setLastPageLoadedTime = (now: number): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'lastpageloaded', 'time', now);
 
-function setCountry(value) {
-  writeCookie('localisation', 'country', value, 'session');
-}
+const setPagesViewedCount = (value: number): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'pagesViewed', 'count', value);
 
-function getCity() {
-  return readCookieValue('localisation', 'city', 'undefined', 'session');
-}
+const getCountry = (): string =>
+  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'country', 'undefined');
 
-function setCity(value) {
-  writeCookie('localisation', 'city', value, 'session');
-}
+const setCountry = (value: string): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'country', value);
 
-function getPagesViewedCount() {
-  //Should be used after getGlobalVisitCount
-  //Should be used only once par page loaded...
-  const count = parseInt(readCookieValue('pagesViewed', 'count', 0, 'session')) + 1;
+const getCity = (): string =>
+  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'city', 'undefined');
+
+const setCity = (value: string): void =>
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'city', value);
+
+const getPagesViewedCount = (): number => {
+  const count =
+    parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'pagesViewed', 'count', '0'), 10) + 1;
   setPagesViewedCount(count);
   return count;
-}
+};
 
-function computeDurationSinceLastVisit(now) {
+const computeDurationSinceLastVisit = (now: number): void => {
   const timeSinceLastVisit = now - getLastVisitTime(now);
-  writeCookie('lastvisit', 'durationsince', timeSinceLastVisit, 'global');
-}
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'durationsince', timeSinceLastVisit);
+};
 
-function getDurationSinceLastVisit() {
-  return parseInt(readCookieValue('lastvisit', 'durationsince', 0, 'global')) / 1000;
-}
+const getDurationSinceLastVisit = (): number =>
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'durationsince', '0'), 10) / 1000;
 
-function resetSessionCount(now) {
+const resetSessionCount = (now: number): void => {
   computeDurationSinceLastVisit(now);
   setLastVisitTime(now);
   setPagesViewedCount(0);
-}
+};
 
-function readCookie(space) {
-  let c = Local.get(Local?.names?.dydu_push + '_' + space + BOT.id, undefined, false);
-  if (typeof c === 'undefined' || c === null || c === '') {
-    c = {};
-  }
-  return c;
-}
+const processKeywords = (ref: string): string[] => {
+  if (!ref.includes('?')) return [];
 
-function readCookieValue(ruleId, conditionId, defaultValue, space) {
-  space = space || '';
-  const c = readCookie(space);
-  let t = c['r_' + ruleId];
-  if (typeof t === 'undefined' || t === null) {
-    return defaultValue;
-  } else {
-    t = t[conditionId];
-    if (typeof t === 'undefined' || t === null) {
-      return defaultValue;
-    } else {
-      return t;
+  const queryString = ref.substring(ref.indexOf('?') + 1);
+  const queryParams = queryString.split('&');
+
+  for (const param of queryParams) {
+    const [key, value] = param.split('=');
+    if (key === 'q' || key === 'p') {
+      return decodeURI(value.replace(/\+/g, ' ')).split(' ');
     }
   }
-}
 
-function writeCookie(ruleId, conditionId, value, space) {
-  space = space || '';
-  const c = readCookie(space);
-  const t = c['r_' + ruleId] || {};
-  t[conditionId] = value;
-  c['r_' + ruleId] = t;
-  Local.set(Local?.names?.dydu_push + '_' + space + BOT.id, c);
-}
-
-// Not working with google !
-function processKeywords(ref) {
-  if (ref.indexOf('?') === -1) {
-    return [];
-  }
-  const qs = ref.substr(ref.indexOf('?') + 1);
-  const qsa = qs.split('&');
-  for (let i = 0; i < qsa.length; i++) {
-    const qsip = qsa[i].split('=');
-    if (qsip.length === 1) {
-      continue;
-    }
-    if (qsip[0] === 'q' || qsip[0] === 'p') {
-      // q= for Google, p= for Yahoo
-      const wordstring = unescape(qsip[1].replace(/\+/g, ' '));
-      return wordstring.split(' ');
-    }
-  }
   return [];
-}
+};
+
+const contextPush: ContextPushProps = {
+  getGlobalVisitDuration,
+  getGlobalVisitCount,
+  setGlobalVisitCount,
+  getLastVisitTime,
+  setLastVisitTime,
+  getLastPageLoadedTime,
+  setLastPageLoadedTime,
+  getPagesViewedCount,
+  setPagesViewedCount,
+  resetSessionCount,
+  getCountry,
+  setCountry,
+  getCity,
+  setCity,
+  computeDurationSinceLastVisit,
+  getDurationSinceLastVisit,
+  setPushData: Local.pushRules.setValueOfRuleCondition,
+  getPushData: Local.pushRules.getValueOfRuleCondition,
+  processKeywords,
+};
 
 export default contextPush;

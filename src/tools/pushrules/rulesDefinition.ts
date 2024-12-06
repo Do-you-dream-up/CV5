@@ -1,8 +1,11 @@
 import contextPush from './contextPushExt';
-import { processConditionCompliance } from './pushService';
+import { BOT } from '../bot';
+import ComplianceInfo from './complianceInfo';
+import { ExternalInfos } from '../../contexts/PushrulesContext';
 
 const INVALID_DELAY = { delay: -1, idleDelay: -1 };
 const VALID_DELAY = { delay: 0, idleDelay: -1 };
+
 const OPERATOR = {
   Contains: 'Contains',
   DoesNotStartWith: 'DoesNotStartWith',
@@ -14,37 +17,78 @@ const OPERATOR = {
   StartsWith: 'StartsWith',
 };
 
-export const rulesDefinitions = [
+interface Condition {
+  type: string;
+  operator: string;
+  value: string;
+  index?: string;
+  children?: Condition[];
+}
+
+interface Rule {
+  name: string;
+  processDelays: (
+    condition: Condition,
+    ruleId: string,
+    externInfos: ExternalInfos,
+  ) => { delay: number; idleDelay: number };
+}
+
+const processConditionCompliance = (condition: any, ruleId: string, externInfos: ExternalInfos) => {
+  let result = new ComplianceInfo();
+
+  rulesDefinitions.forEach((ruleDefinition) => {
+    if (condition.type === ruleDefinition.name) {
+      result = new ComplianceInfo(ruleDefinition.processDelays(condition, ruleId, externInfos));
+    }
+  });
+
+  return result;
+};
+
+export const rulesDefinitions: Rule[] = [
   {
     name: 'Container',
-    processDelays: function () {
+    processDelays: function (): { delay: number; idleDelay: number } {
       return VALID_DELAY;
     },
   },
   {
     name: 'CurrentPage',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isStringValueCompliant(condition, externInfos.windowLocation);
     },
   },
 
   {
     name: 'PastPage',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isStringValueCompliant(condition, externInfos.windowLocation);
     },
   },
   {
     name: 'PageVisitCount',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       if (isValidNumericOperator(condition.operator)) {
-        let compliantConditionIndexes = getPageConditions(condition, ruleId, externInfos, true);
-        let pageConditions = getPageConditions(condition, ruleId, externInfos, false);
+        const compliantConditionIndexes: Condition[] = getPageConditions(condition, ruleId, externInfos, true);
+        const pageConditions: Condition[] = getPageConditions(condition, ruleId, externInfos, false);
         let isCompliant = false;
-        //Check rule compliance
+
         for (let i = 0; i < pageConditions.length; i++) {
-          let conditionId = condition.index + '-' + pageConditions[i].index;
-          let pageVisitCount = parseInt(contextPush.getPushData(ruleId, conditionId, 0));
+          const conditionId = condition.index + '-' + pageConditions[i].index;
+          let pageVisitCount = parseInt(contextPush.getPushData('', BOT.id, ruleId, conditionId, '0'));
           if (pageConditions[i].type === 'CurrentPage') {
             pageVisitCount++;
           }
@@ -52,12 +96,14 @@ export const rulesDefinitions = [
             isCompliant = true;
           }
         }
-        //Increment past pages values
+
         for (let j = 0; j < compliantConditionIndexes.length; j++) {
-          let compliantConditionId = condition.index + '-' + compliantConditionIndexes[j];
-          let compliantPageVisitCount = parseInt(contextPush.getPushData(ruleId, compliantConditionId, 0)) + 1;
-          contextPush.setPushData(ruleId, compliantConditionId, compliantPageVisitCount);
+          const compliantConditionId = condition.index + '-' + compliantConditionIndexes[j].index;
+          const compliantPageVisitCount =
+            parseInt(contextPush.getPushData('', BOT.id, ruleId, compliantConditionId, '0')) + 1;
+          contextPush.setPushData('', BOT.id, ruleId, compliantConditionId, compliantPageVisitCount);
         }
+
         if (isCompliant) {
           return VALID_DELAY;
         }
@@ -67,7 +113,7 @@ export const rulesDefinitions = [
   },
   {
     name: 'PageVisitDuration',
-    processDelays: function (condition) {
+    processDelays: function (condition: Condition): { delay: number; idleDelay: number } {
       if (isValidNumericOperator(condition.operator)) {
         const delay = parseInt(condition.value);
         if (!isNaN(delay)) {
@@ -83,9 +129,9 @@ export const rulesDefinitions = [
   },
   {
     name: 'IdleDuration',
-    processDelays: function (condition) {
+    processDelays: function (condition: Condition): { delay: number; idleDelay: number } {
       if (isValidNumericOperator(condition.operator)) {
-        let delay = parseInt(condition.value);
+        const delay = parseInt(condition.value);
         if (!isNaN(delay)) {
           if (condition.operator === OPERATOR.LesserThan) {
             return VALID_DELAY;
@@ -99,14 +145,22 @@ export const rulesDefinitions = [
   },
   {
     name: 'GlobalVisitCount',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isNumberValueCompliant(condition, externInfos.visitCount);
     },
   },
   {
     name: 'GlobalVisitDuration',
-    processDelays: function (condition, ruleId, externInfos) {
-      let delay = parseInt(condition.value);
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
+      const delay = parseInt(condition.value);
       if (VALID_DELAY === isNumberValueCompliant(condition, externInfos.visitDuration)) {
         return VALID_DELAY;
       } else if (isValidNumericOperator(condition.operator) && externInfos.visitDuration < delay) {
@@ -117,19 +171,31 @@ export const rulesDefinitions = [
   },
   {
     name: 'PreviousPage',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isStringValueCompliant(condition, externInfos.referrer);
     },
   },
   {
     name: 'PagesViewedCount',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isNumberValueCompliant(condition, externInfos.pagesViewedCount);
     },
   },
   {
     name: 'City',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       if (!externInfos.city) {
         localisationProcessor(externInfos);
       }
@@ -138,7 +204,11 @@ export const rulesDefinitions = [
   },
   {
     name: 'Country',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       if (!externInfos.country) {
         localisationProcessor(externInfos);
       }
@@ -147,19 +217,31 @@ export const rulesDefinitions = [
   },
   {
     name: 'Language',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isStringValueCompliant(condition, externInfos.language);
     },
   },
   {
     name: 'NumberOfPreviousChat',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isNumberValueCompliant(condition, externInfos.numberOfPreviousChat);
     },
   },
   {
     name: 'UsedKeyWords',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       for (let i = 0; i < externInfos.usedKeywords.length; i++) {
         if (VALID_DELAY === isStringValueCompliant(condition, externInfos.usedKeywords[i])) {
           return VALID_DELAY;
@@ -170,14 +252,18 @@ export const rulesDefinitions = [
   },
   {
     name: 'DurationSinceLastVisit',
-    processDelays: function (condition, ruleId, externInfos) {
+    processDelays: function (
+      condition: Condition,
+      ruleId: string,
+      externInfos: ExternalInfos,
+    ): { delay: number; idleDelay: number } {
       return isNumberValueCompliant(condition, externInfos.durationSinceLastVisit);
     },
   },
 ];
 
-export function isStringValueCompliant(condition, valueToCompare) {
-  if (isValidStringOperator(condition.operator)) {
+export const isStringValueCompliant = (condition: Condition, valueToCompare: string | undefined) => {
+  if (valueToCompare && isValidStringOperator(condition.operator)) {
     const pattern = computeRegex(condition.value, condition.operator);
     if (condition.operator !== OPERATOR.IsContained) {
       return isStringCompliant(valueToCompare, pattern, condition.operator) ? VALID_DELAY : INVALID_DELAY;
@@ -186,9 +272,9 @@ export function isStringValueCompliant(condition, valueToCompare) {
     }
   }
   return INVALID_DELAY;
-}
+};
 
-export function isValidStringOperator(operator) {
+export const isValidStringOperator = (operator: string) => {
   return (
     operator === OPERATOR.Equals ||
     operator === OPERATOR.NotEquals ||
@@ -197,17 +283,17 @@ export function isValidStringOperator(operator) {
     operator === OPERATOR.IsContained ||
     operator === OPERATOR.Contains
   );
-}
+};
 
-function isStringCompliant(url, pattern, operator) {
+export const isStringCompliant = (url: string, pattern: string, operator: string) => {
   if (operator === OPERATOR.DoesNotStartWith) {
     return !new RegExp(pattern, 'i').test(url);
   } else {
     return new RegExp(pattern, 'i').test(url);
   }
-}
+};
 
-function computeRegex(val, operator) {
+export const computeRegex = (val: string, operator: string) => {
   val = val || '';
   val = val.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
   if (operator === OPERATOR.StartsWith || operator === OPERATOR.DoesNotStartWith) {
@@ -218,26 +304,27 @@ function computeRegex(val, operator) {
     val = '^(?!' + val + '$)';
   }
   return val;
-}
+};
 
-function isNumberValueCompliant(condition, valueToCompare) {
-  return isValidNumericOperator(condition.operator) &&
+export const isNumberValueCompliant = (condition: Condition, valueToCompare: number | undefined) => {
+  return valueToCompare &&
+    isValidNumericOperator(condition.operator) &&
     isNumberCompliant(valueToCompare, condition.value, condition.operator)
     ? VALID_DELAY
     : INVALID_DELAY;
-}
+};
 
-function isValidNumericOperator(operator) {
+export const isValidNumericOperator = (operator: string) => {
   return (
     operator === OPERATOR.Equals ||
     operator === OPERATOR.NotEquals ||
     operator === OPERATOR.GreaterThan ||
     operator === OPERATOR.LesserThan
   );
-}
+};
 
-function isNumberCompliant(number1, number2, operator) {
-  const n1 = parseInt(number1);
+export const isNumberCompliant = (number1: number, number2: string, operator: string) => {
+  const n1 = parseInt(number1.toString());
   const n2 = parseInt(number2);
   if (operator === OPERATOR.Equals) {
     return n1 === n2;
@@ -249,27 +336,32 @@ function isNumberCompliant(number1, number2, operator) {
     return n1 !== n2;
   }
   return false;
-}
+};
 
-function getPageConditions(condition, ruleId, externInfos, compliantIndexesOnly) {
-  const indexes = [];
-  const conditions = [];
+export const getPageConditions = (
+  condition: Condition,
+  ruleId: string,
+  externInfos: ExternalInfos,
+  compliantIndexesOnly: boolean,
+): Condition[] => {
+  let compliantConditions: Condition[] = [];
+  const conditions: Condition[] = [];
   getChildrenPageConditions(condition, conditions);
-  //Get compliant indexes -> Pages condition in direct children.
+
   if (compliantIndexesOnly) {
     for (let i = 0; i < conditions.length; i++) {
       const compliance = processConditionCompliance(conditions[i], ruleId, externInfos);
       if (compliance.isDelayValid()) {
-        indexes.push(conditions[i].index);
+        compliantConditions.push(conditions[i]);
       }
     }
   } else {
-    return conditions;
+    compliantConditions = [...conditions];
   }
-  return indexes;
-}
+  return compliantConditions;
+};
 
-function getChildrenPageConditions(condition, conditions) {
+export const getChildrenPageConditions = (condition: Condition, conditions: Condition[]) => {
   if (condition.children) {
     for (let i = 0; i < condition.children.length; i++) {
       const childCondition = condition.children[i];
@@ -278,26 +370,13 @@ function getChildrenPageConditions(condition, conditions) {
       }
     }
   }
-}
+};
 
-//Process only on demand
-function localisationProcessor(externalInfos) {
-  // function cityAndCountrySetter(data) {
-  //   contextPush.setCity(data.city);
-  //   contextPush.setCountry(data.country);
-  //   externalInfos.city = contextPush.getCity();
-  //   externalInfos.country = contextPush.getCountry();
-  // }
-
+export const localisationProcessor = (externalInfos: ExternalInfos) => {
   if (contextPush.getCity() === 'undefined') {
-    /*$http.jsonp($configurations.get('servletUrl') + '/localisation?format=angular&callback=JSON_CALLBACK')
-            .success(cityAndCountrySetter)
-            .error(function () {
-                $http.jsonp($configurations.get('backupServletUrl') + '/localisation?format=angular&callback=JSON_CALLBACK')
-                    .success(cityAndCountrySetter);
-            });*/
+    // Uncomment and implement the logic for city/country fetching
   } else {
     externalInfos.city = contextPush.getCity();
     externalInfos.country = contextPush.getCountry();
   }
-}
+};

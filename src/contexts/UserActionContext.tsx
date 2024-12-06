@@ -59,6 +59,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
       setShiftPressed(false);
     };
     shadowAnchor?.addEventListener('click', clickListener);
+
     return () => {
       shadowAnchor?.removeEventListener('click', clickListener);
     };

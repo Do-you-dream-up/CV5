@@ -15,6 +15,7 @@ import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 
 interface DialogProps {
   dialogRef: React.RefObject<any> | ((instance: any) => void) | null;
@@ -26,7 +27,7 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
   const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt, isWaitingForResponse } = useDialog();
   const classes = useStyles();
-  const { top } = configuration?.dialog || {};
+  const { isEnabled: isTopKnowledgeEnabled } = useTopKnowledge();
   const { t } = useTranslation('translation');
   const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
   const { shadowAnchor } = useShadow();
@@ -59,7 +60,9 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
         aria-live="polite"
         id="dydu-dialog"
       >
-        {!!top && <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />}
+        {!!isTopKnowledgeEnabled && (
+          <Top component={Paper} elevation={1} title={t('top.title')} className={'dydu-top'} />
+        )}
         {interactions.map((it: any, index: number | null) => ({ ...it, key: index }))}
         {isWaitingForResponse && !Local.livechatType.load() && (
           <Interaction type="response" className="container-loader-interaction">

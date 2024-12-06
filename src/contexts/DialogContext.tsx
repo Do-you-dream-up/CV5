@@ -2,7 +2,6 @@ import * as Constants from '../tools/constants';
 
 import {
   Dispatch,
-  ReactElement,
   ReactNode,
   SetStateAction,
   createContext,
@@ -28,7 +27,6 @@ import { useConfiguration } from './ConfigurationContext';
 import { useConversationHistory } from './ConversationHistoryContext';
 import { useEvent } from './EventsContext';
 import usePromiseQueue from '../tools/hooks/usePromiseQueue';
-import usePushrules from '../tools/hooks/usePushrules';
 import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
@@ -40,6 +38,9 @@ import { useShadow } from './ShadowProvider';
 import uuid4 from 'uuid4';
 import { Servlet } from '../../types/servlet';
 import { useChatboxLoaded } from './ChatboxLoadedProvider';
+import { useViewMode } from './ViewModeProvider';
+import { useGdpr } from './GdprContext';
+import { usePushrules } from './PushrulesContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -138,13 +139,15 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { dispatchEvent, getChatboxRef } = useEvent();
   const { hasAfterLoadBeenCalled } = useChatboxLoaded();
+  const { isOpen } = useViewMode();
+  const { gdprEnabled, gdprPassed } = useGdpr();
 
-  const { fetch: fetchServerStatus, checked: serverStatusChecked } = useServerStatus();
-  const { fetchBotLanguages, botLanguages } = useBotInfo();
+  const { checkServerStatus, isServerAvailable } = useServerStatus();
+  const { fetchBotLanguages } = useBotInfo();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const { callChatboxReady } = useChatboxReady();
-  const { fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
+  const { isEnabled: isWelcomeEnabled, fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
@@ -170,16 +173,21 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { shadowAnchor } = useShadow();
 
   useEffect(() => {
-    fetchServerStatus();
-  }, []);
-
-  useEffect(() => {
-    serverStatusChecked && fetchBotLanguages();
-  }, [serverStatusChecked]);
+    if (!isServerAvailable) {
+      checkServerStatus();
+    }
+  }, [isServerAvailable]);
 
   const { exec, forceExec } = usePromiseQueue(
-    [fetchVisitorRegistration, fetchWelcomeKnowledge, fetchHistory, fetchTopKnowledge, callChatboxReady],
-    hasAfterLoadBeenCalled && serverStatusChecked && botLanguages,
+    [
+      fetchBotLanguages,
+      fetchVisitorRegistration,
+      fetchWelcomeKnowledge,
+      fetchHistory,
+      fetchTopKnowledge,
+      callChatboxReady,
+    ],
+    isOpen && (!gdprEnabled || gdprPassed) && hasAfterLoadBeenCalled && isServerAvailable,
   );
 
   const addAdditionalInteraction = (interaction) => {
@@ -208,8 +216,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [configuration, pushrules]);
 
   const shouldTriggerPushRules = useMemo(() => {
-    return canTriggerPushRules && hasAfterLoadBeenCalled && serverStatusChecked && welcomeKnowledge;
-  }, [canTriggerPushRules, hasAfterLoadBeenCalled, serverStatusChecked, welcomeKnowledge]);
+    return canTriggerPushRules && hasAfterLoadBeenCalled && isServerAvailable;
+  }, [canTriggerPushRules, hasAfterLoadBeenCalled, isServerAvailable]);
 
   useEffect(() => {
     if (shouldTriggerPushRules) {
@@ -460,12 +468,13 @@ export function DialogProvider({ children }: DialogProviderProps) {
           return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
         } else {
           const isResponseFromHistory = isDefined(response.isFromHistory) && response.isFromHistory === true;
+
           return (
             <Interaction
               autoOpenSidebar={!isResponseFromHistory && steps.length === 1}
               askFeedback={askFeedback}
               carousel={steps.length > 1}
-              children={getContent(text, templateData, templatename)}
+              children={interactionChildrenList}
               type="response"
               sidebar={sidebar}
               hasSurvey={isDefined(survey)}
@@ -524,7 +533,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [isInteractionListEmpty, welcomeKnowledge, checkIfBehindSamlAndConnected]);
 
   const clearInteractionsAndAddWelcome = () => {
-    if (welcomeKnowledge) {
+    if (isWelcomeEnabled && welcomeKnowledge) {
       clearInteractions();
       addResponse(welcomeKnowledge);
     }

@@ -102,13 +102,13 @@ export default function Dragon({ component, reset, ...rest }) {
   };
 
   useEffect(() => {
-    if (current && persist) {
-      Local.set(Local.names.dragon, current);
+    if (current && persist && (current.x !== 0 || current.y !== 0)) {
+      Local.dragon.save(current);
     }
   }, [current, persist]);
 
   useEffect(() => {
-    const { x, y } = persist ? Local.get(Local.names.dragon) || {} : { x: 0, y: 0 };
+    const { x, y } = persist ? Local.dragon.load() || {} : { x: 0, y: 0 };
     onReset({ x, y });
   }, [onReset, persist]);
 

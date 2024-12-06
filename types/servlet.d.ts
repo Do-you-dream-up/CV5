@@ -72,6 +72,7 @@ declare namespace Servlet {
     date?: string;
     timestamp?: number;
     hideRequest?: boolean;
+    pollUpdatedInteractionDate?: number;
   }
 
   export interface ChatHistoryResponse {
