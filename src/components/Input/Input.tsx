@@ -136,9 +136,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             onBlur={handleBlur}
             tabIndex={tabIndex}
             ref={textareaRef}
-            title={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
-            placeholder={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
-            aria-label={isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder}
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && !Local.livechatType.load() && (
@@ -272,16 +269,21 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     suggestionsContainer: c('dydu-suggestions', classes.suggestions),
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
+
+  const displayedPlaceholderTitleAriaLabel = (
+    (ready && placeholder) ||
+    (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
+    ''
+  )?.slice?.(0, 50);
+
   const inputProps = {
     disabled,
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: (
-      (ready && placeholder) ||
-      (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
-      ''
-    )?.slice?.(0, 50),
+    placeholder: displayedPlaceholderTitleAriaLabel,
+    title: displayedPlaceholderTitleAriaLabel,
+    ariaLabel: displayedPlaceholderTitleAriaLabel,
     value: input,
   };
 
