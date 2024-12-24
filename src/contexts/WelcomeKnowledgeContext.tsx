@@ -5,6 +5,7 @@ import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { BOT } from '../tools/bot';
+import { Servlet } from '../../types/servlet';
 
 type WelcomeKnowledge = Servlet.ChatResponseValues | null;
 
@@ -27,14 +28,15 @@ export interface TalkResponseInterface {
   startLivechat: boolean;
   text: string;
   typeResponse: string;
+  isContextStillAvailable: Promise<boolean>;
 }
 
 export interface WelcomeKnowledgeContextProps {
   isEnabled?: boolean;
   welcomeKnowledge: WelcomeKnowledge;
   setWelcomeKnowledge: Dispatch<SetStateAction<WelcomeKnowledge>>;
-  fetchWelcomeKnowledge: () => void;
-  getWelcomeKnowledge: (tagWelcome: string) => Promise<WelcomeKnowledge>;
+  fetchWelcomeKnowledge: () => Promise<void>;
+  verifyAvailabilityDialogContext: () => Promise<boolean>;
 }
 
 export const WelcomeKnowledgeContext = createContext({} as WelcomeKnowledgeContextProps);
@@ -43,65 +45,64 @@ export const useWelcomeKnowledge = () => useContext<WelcomeKnowledgeContextProps
 export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderProps) => {
   const { configuration } = useConfiguration();
   const [welcomeKnowledge, setWelcomeKnowledge] = useState<WelcomeKnowledge>(null);
-  const tagWelcome = configuration?.welcome?.knowledgeName || null;
+  const tagWelcome = configuration?.welcome?.knowledgeName;
   const isTagWelcomeDefined = useMemo(() => isDefined(tagWelcome) || !isEmptyString(tagWelcome), [tagWelcome]);
-
   const isEnabled = configuration?.welcome?.enable;
 
-  const canRequest = () => {
-    return !isDefined(welcomeKnowledge) && !Local.livechatType.load() && isTagWelcomeDefined && isEnabled;
+  const mustFetchWelcome = (): boolean => {
+    const currentContextUUID = Local.contextId.load(BOT.id);
+    return (
+      (!currentContextUUID || !Local.welcomeKnowledge.load(BOT.id, currentContextUUID)) &&
+      !Local.livechatType.load() &&
+      isTagWelcomeDefined &&
+      isEnabled
+    );
   };
 
-  useEffect(() => {
+  const verifyAvailabilityDialogContext = async () => {
     const currentContextUUID = Local.contextId.load(BOT.id);
-    const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
-
-    if (!welcome) return setWelcomeKnowledge(null);
-    setWelcomeKnowledge(welcome);
-  }, [BOT.id]);
-
-  const getWelcomeKnowledge = async (tagWelcome: string) => {
-    const currentContextUUID = Local.contextId.load(BOT.id);
-
-    try {
-      const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
-
-      if (welcome) {
-        return Promise.resolve(welcome);
+    return dydu.checkContextIdStillAvailable().then(async (response) => {
+      if (!response) {
+        Local.livechatType.remove();
+        Local.space.remove();
+        Local.lastInteraction.reset();
+        Local.welcomeKnowledge.reset(BOT.id, currentContextUUID);
+        Local.contextId.reset(BOT.id);
+        return false;
       }
+      return true;
+    });
+  };
 
+  const fetchWelcomeKnowledge = async () => {
+    const currentContextUUID = Local.contextId.load(BOT.id);
+
+    if (mustFetchWelcome()) {
       const talkOption = { hide: true, doNotRegisterInteraction: true };
       const talkResponse: TalkResponseInterface = await dydu.talk(tagWelcome, talkOption);
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
 
       if (!isInteractionResponse) {
-        return null;
+        return Promise.resolve();
       }
-
+      setWelcomeKnowledge(talkResponse);
       Local.welcomeKnowledge.save(BOT.id, talkResponse);
       return talkResponse;
-    } catch (error) {
-      console.error(error);
+    }
+
+    const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
+    if (welcome) {
+      setWelcomeKnowledge(welcome);
+      return Promise.resolve(welcome);
     }
   };
-
-  const fetchWelcomeKnowledge = useCallback(() => {
-    return !canRequest
-      ? Promise.resolve()
-      : tagWelcome &&
-          getWelcomeKnowledge(tagWelcome)?.then((wkResponse) => {
-            wkResponse && setWelcomeKnowledge(wkResponse);
-            return wkResponse;
-          });
-    // eslint-disable-next-line
-  }, [canRequest, Local.livechatType.load(), welcomeKnowledge, BOT.id, Local.contextId.load(BOT.id)]);
 
   const props: WelcomeKnowledgeContextProps = {
     isEnabled,
     welcomeKnowledge,
     setWelcomeKnowledge,
     fetchWelcomeKnowledge,
-    getWelcomeKnowledge,
+    verifyAvailabilityDialogContext,
   };
 
   return <WelcomeKnowledgeContext.Provider value={props}>{children}</WelcomeKnowledgeContext.Provider>;

@@ -93,6 +93,7 @@ export interface DialogContextProps {
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
   clearInteractionsAndAddWelcome: () => void;
+  exec: () => Promise<any>;
 }
 
 interface SidebarContentProps {
@@ -139,15 +140,20 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const { dispatchEvent, getChatboxRef } = useEvent();
   const { hasAfterLoadBeenCalled } = useChatboxLoaded();
-  const { isOpen } = useViewMode();
-  const { gdprEnabled, gdprPassed } = useGdpr();
 
   const { checkServerStatus, isServerAvailable } = useServerStatus();
   const { fetchBotLanguages } = useBotInfo();
+  const { isOpen } = useViewMode();
+  const { gdprEnabled, gdprPassed } = useGdpr();
 
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const { callChatboxReady } = useChatboxReady();
-  const { isEnabled: isWelcomeEnabled, fetchWelcomeKnowledge, welcomeKnowledge } = useWelcomeKnowledge();
+  const {
+    isEnabled: isWelcomeEnabled,
+    fetchWelcomeKnowledge,
+    welcomeKnowledge,
+    verifyAvailabilityDialogContext,
+  } = useWelcomeKnowledge();
   const { fetch: fetchPushrules, pushrules } = usePushrules();
   const { fetch: fetchHistory } = useConversationHistory();
   const { fetch: fetchVisitorRegistration } = useVisitManager();
@@ -178,17 +184,15 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
   }, [isServerAvailable]);
 
-  const { exec, forceExec } = usePromiseQueue(
-    [
-      fetchBotLanguages,
-      fetchVisitorRegistration,
-      fetchWelcomeKnowledge,
-      fetchHistory,
-      fetchTopKnowledge,
-      callChatboxReady,
-    ],
-    isOpen && (!gdprEnabled || gdprPassed) && hasAfterLoadBeenCalled && isServerAvailable,
-  );
+  const { exec } = usePromiseQueue([
+    verifyAvailabilityDialogContext,
+    fetchBotLanguages,
+    fetchVisitorRegistration,
+    fetchTopKnowledge,
+    fetchWelcomeKnowledge,
+    fetchHistory,
+    callChatboxReady,
+  ]);
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
@@ -525,12 +529,16 @@ export function DialogProvider({ children }: DialogProviderProps) {
   }, [configuration?.saml, saml2Connected]);
 
   useEffect(() => {
-    if (hasAfterLoadBeenCalled && checkIfBehindSamlAndConnected) exec();
-  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected]);
-
-  useEffect(() => {
-    if (isInteractionListEmpty && !welcomeKnowledge && checkIfBehindSamlAndConnected) forceExec();
-  }, [isInteractionListEmpty, welcomeKnowledge, checkIfBehindSamlAndConnected]);
+    if (
+      hasAfterLoadBeenCalled &&
+      checkIfBehindSamlAndConnected &&
+      isOpen &&
+      (!gdprEnabled || gdprPassed) &&
+      isServerAvailable
+    ) {
+      exec();
+    }
+  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected, isOpen, gdprEnabled, gdprPassed, isServerAvailable]);
 
   const clearInteractionsAndAddWelcome = () => {
     if (isWelcomeEnabled && welcomeKnowledge) {
@@ -602,6 +610,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setRewordAfterGuiAction,
         rewordAfterGuiAction,
         clearInteractionsAndAddWelcome,
+        exec,
       }}
     />
   );

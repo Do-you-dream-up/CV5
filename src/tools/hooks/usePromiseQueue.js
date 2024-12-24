@@ -1,28 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { isEmptyArray } from '../helpers';
 
-export default function usePromiseQueue(orderedList = [], hasAfterLoadBeenCalled) {
-  const [queue, setQueue] = useState(orderedList);
-  const [unqueue, setUnqueue] = useState(false);
-
-  useEffect(() => {
-    if (!hasAfterLoadBeenCalled || isEmptyArray(queue) || !unqueue) return;
-    const q = queue.slice();
-    const fn = q.shift();
-    fn?.().then(() => setQueue(q));
-    if (q.length === 0) setUnqueue(false);
-  }, [unqueue, queue, hasAfterLoadBeenCalled]);
-
-  const exec = useCallback(() => setUnqueue(true), []);
-
-  const forceExec = useCallback(() => {
-    setQueue(orderedList);
-    setUnqueue(true);
-  }, [orderedList]);
-
+export default function usePromiseQueue(orderedList) {
   return {
-    exec,
-    forceExec,
+    exec: () => {
+      if (isEmptyArray(orderedList)) {
+        return Promise.resolve();
+      }
+      return orderedList.reduce((promise, functionInList) => {
+        return promise.then(() => functionInList && functionInList());
+      }, Promise.resolve());
+    },
   };
 }

@@ -22,6 +22,8 @@ interface LivechatContextProps {
   endLivechat?: () => void;
   addNotificationOrResponse?: (values: Servlet.ChatResponseValues) => void;
   isWaitingQueue?: boolean;
+  hasToVerifyContextAfterLivechatClosed?: boolean;
+  setHasToVerifyContextAfterLivechatClosed?: (boolean) => void;
 }
 
 interface LivechatProviderProps {
@@ -57,6 +59,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { welcomeKnowledge } = useWelcomeKnowledge();
   const { history } = useConversationHistory();
   const [isWaitingQueue, setIsWaitingQueue] = useState<boolean>(Local.waitingQueue.load());
+  const [hasToVerifyContextAfterLivechatClosed, setHasToVerifyContextAfterLivechatClosed] = useState<boolean>(false);
 
   const addHistoryInteraction = (interaction) => {
     const typedInteraction = {
@@ -165,6 +168,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   const endLivechat = () => {
     Local.livechatType.remove();
+    setHasToVerifyContextAfterLivechatClosed(true);
     leaveWaitingQueue();
     Local.operator.remove();
     tunnel?.close();
@@ -301,6 +305,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     endLivechat,
     addNotificationOrResponse,
     isWaitingQueue,
+    hasToVerifyContextAfterLivechatClosed,
+    setHasToVerifyContextAfterLivechatClosed,
   };
   return <LivechatContext.Provider value={props}>{children}</LivechatContext.Provider>;
 }

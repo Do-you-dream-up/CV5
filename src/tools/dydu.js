@@ -267,6 +267,24 @@ export default new (class Dydu {
   };
 
   /**
+   * Check if the context ID from the local storage is still available,
+   *
+   * @returns {Promise} The context ID is still available or not.
+   */
+  checkContextIdStillAvailable = () => {
+    const contextUuid = Local.contextId.load(BOT.id);
+    if (contextUuid) {
+      const path = `chat/availablecontext/${BOT.id}/${contextUuid}/`;
+      return new Promise((resolve) => {
+        resolve(emit(SERVLET_API.post, path));
+      }).then((response) => response?.isContextStillAvailable);
+    }
+    return new Promise((resolve) => {
+      resolve(false);
+    });
+  };
+
+  /**
    * Fetch pushrules.
    *
    * @returns {Promise}

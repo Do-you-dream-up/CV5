@@ -486,8 +486,24 @@ export class Local {
       if (timeSpent > timeToKeep) {
         console.log('LocalStorage too old (', timeSpent, 'ms). Cleaning...');
         localStorage.clear();
+        return true;
       }
     }
+    return false;
+  };
+
+  static isDialogTimeOver = () => {
+    const lastInteraction = Local.lastInteraction.load();
+
+    if (lastInteraction) {
+      const now = Date.now();
+      const timeSpent = now - lastInteraction;
+
+      if (timeSpent > 600000) {
+        return true;
+      }
+    }
+    return false;
   };
 }
 

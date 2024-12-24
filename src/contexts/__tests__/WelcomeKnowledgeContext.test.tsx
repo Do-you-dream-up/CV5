@@ -2,6 +2,7 @@ import { WelcomeKnowledgeProvider, useWelcomeKnowledge } from '../WelcomeKnowled
 
 import { Local } from '../../tools/storage';
 import { renderHook } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 jest.mock('../../tools/dydu', () => ({
   getBotId: jest.fn(() => 'botId'),
@@ -15,7 +16,6 @@ jest.mock('../../tools/storage', () => ({
     },
     welcomeKnowledge: {
       load: jest.fn(() => 'Welcome Knowledge'),
-      isSet: jest.fn(() => false),
     },
     livechatType: {
       load: jest.fn(() => 'websocket'),
@@ -27,15 +27,17 @@ jest.mock('../../tools/storage', () => ({
 }));
 
 describe('WelcomeKnowledgeProvider', () => {
-  it('should fetch and provide welcome knowledge', async () => {
+  it('should not fetch welcome knowledge', async () => {
     Local.welcomeKnowledge.save = jest.fn(() => void 0);
 
     const { result } = renderHook(() => useWelcomeKnowledge(), { wrapper: WelcomeKnowledgeProvider });
 
     const talkSpy = jest.spyOn(require('../../tools/dydu'), 'talk');
-    result.current.getWelcomeKnowledge('tagWelcome');
+    await act(async () => {
+      await result.current.fetchWelcomeKnowledge('tagWelcome');
+    });
 
-    await expect(talkSpy).not.toHaveBeenCalled();
+    expect(talkSpy).not.toHaveBeenCalled();
     expect(Local.welcomeKnowledge.save).not.toHaveBeenCalled();
   });
 });

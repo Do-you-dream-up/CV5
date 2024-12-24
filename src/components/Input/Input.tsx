@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
 import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
 import Button from '../Button/Button';
-
+import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 interface InputProps {
   onRequest?: (input: string) => void;
   onResponse?: (input: Servlet.ChatResponseValues) => void;
@@ -30,10 +30,26 @@ interface InputProps {
 }
 
 export default function Input({ onRequest, onResponse }: InputProps) {
-  const { send, typing: livechatTyping, isWaitingQueue } = useLivechat();
-  const { configuration } = useConfiguration();
+  const {
+    send,
+    typing: livechatTyping,
+    isWaitingQueue,
+    hasToVerifyContextAfterLivechatClosed,
+    setHasToVerifyContextAfterLivechatClosed,
+  } = useLivechat();
   const { dispatchEvent, isMenuListOpen } = useEvent();
-  const { prompt, disabled, locked, placeholder, autoSuggestionActive, setIsWaitingForResponse } = useDialog();
+  const { verifyAvailabilityDialogContext } = useWelcomeKnowledge();
+  const {
+    prompt,
+    disabled,
+    locked,
+    placeholder,
+    autoSuggestionActive,
+    setIsWaitingForResponse,
+    clearInteractions,
+    exec,
+  } = useDialog();
+  const { configuration } = useConfiguration();
 
   const classes = useStyles();
   const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
@@ -72,16 +88,34 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     setCounter(maxLength - event.target.value.length);
   };
 
+  const resetIfNecessaryBeforeSubmit = (text): void => {
+    if (Local.isDialogTimeOver() || hasToVerifyContextAfterLivechatClosed) {
+      verifyAvailabilityDialogContext().then((isContextAvailable) => {
+        if (!isContextAvailable) {
+          clearInteractions && clearInteractions();
+          exec().then(() => {
+            setHasToVerifyContextAfterLivechatClosed && setHasToVerifyContextAfterLivechatClosed(false);
+            submit(text);
+          });
+        } else {
+          submit(text);
+        }
+      });
+    } else {
+      submit(text);
+    }
+  };
+
   const onKeyDown = (event) => {
     if (event.keyCode === 13 && !event.defaultPrevented) {
       event.preventDefault();
-      submit(input);
+      resetIfNecessaryBeforeSubmit(input);
     }
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
-    submit(input);
+    resetIfNecessaryBeforeSubmit(input);
   };
 
   const leaveLiveChatQueue = () => {
