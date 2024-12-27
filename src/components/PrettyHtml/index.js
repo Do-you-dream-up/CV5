@@ -50,6 +50,12 @@ export default function PrettyHtml({ carousel, children, className, component, h
 
   const hrefMatchs = useMemo(() => html && html.match(RE_HREF), [html]);
 
+  const decodeHtmlEntities = (html) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = html;
+    return textarea.value;
+  };
+
   useEffect(() => {
     if (!html) {
       setHtmlContent('');
@@ -72,6 +78,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
         _html = filter.process({ html: _html });
       }
     });
+    _html = decodeHtmlEntities(_html);
 
     setHtmlContent(_html);
   }, [hrefMatchs, html]);
