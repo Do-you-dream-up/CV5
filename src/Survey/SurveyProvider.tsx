@@ -61,11 +61,10 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     }
   };
 
-  const flushStatesAndClose = useCallback(() => {
+  const closeSurveyAndSidebar = useCallback(() => {
     if (surveyId) {
       setSurveyClosed(true);
     }
-    flushStates();
     closeSidebar && closeSidebar();
     answerResultManager.clear();
   }, [closeSidebar, flushStates, lastResponse]);
@@ -86,7 +85,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     if (listeningCloseSidebar || !isDefined(chatboxNode)) return;
     chatboxNode?.addEventListener(CHATBOX_EVENT_NAME.closeSidebar, closeSidebar);
     setListeningCloseSidebar(true);
-  }, [chatboxNode, flushStatesAndClose, listeningCloseSidebar]);
+  }, [chatboxNode, closeSurveyAndSidebar, listeningCloseSidebar]);
 
   useEffect(() => {
     return () => {
@@ -160,7 +159,8 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
     validateAnswer()
       .then(prepareResponsePayloadWithAnswerObject)
       .then(sendAnswer)
-      .then(flushStatesAndClose)
+      .then(closeSurveyAndSidebar)
+      .then(flushStates)
       .catch((answerManagerInstance) => {
         answerManagerInstance.forEachMissingField((fieldInstance) => fieldInstance.showRequiredMessageUi());
         answerManagerInstance.clear();
@@ -176,7 +176,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       onSubmit,
       triggerSurvey,
       flushStates,
-      flushStatesAndClose,
+      closeSurveyAndSidebar,
       surveyClosed,
       setSurveyClosed,
     }),
@@ -187,7 +187,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       onSubmit,
       triggerSurvey,
       flushStates,
-      flushStatesAndClose,
+      closeSurveyAndSidebar,
       surveyClosed,
       setSurveyClosed,
     ],
