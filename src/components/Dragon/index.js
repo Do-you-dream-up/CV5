@@ -83,15 +83,22 @@ export default function Dragon({ component, reset, ...rest }) {
       const rect = root.current.getBoundingClientRect();
       let newY = current.y;
       let newX = current.x;
-      if (current.y > 0) {
+
+      if (rect.top < 0) {
+        newY = current.y - rect.top;
+      }
+
+      if (rect.bottom > window.innerHeight) {
         newY = 0;
       }
+
       if (current.x > 0) {
         newX = 0;
       }
       if (rect.left < 0) {
         newX = current.x + -rect.left;
       }
+
       if (current.x !== newX || current.y !== newY) {
         setCurrent(() => ({
           x: newX,
