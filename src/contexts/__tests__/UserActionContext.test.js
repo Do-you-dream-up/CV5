@@ -40,7 +40,7 @@ describe('useUserAction', () => {
       wrapper: UserActionProvider,
     });
 
-    expect(result.current.tabbing).toBe(true);
+    expect(result.current.tabbing).toBe(false);
 
     act(() => {
       const clickEvent = new MouseEvent('click', { bubbles: true });

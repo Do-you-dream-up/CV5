@@ -169,9 +169,7 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
               role="button"
               tabIndex={tabIndex}
               ref={teaserRef}
-              className={c('dydu-teaser-title', classes.dyduTeaserTitle, {
-                [classes.hideOutline]: !tabbing,
-              })}
+              className={c('dydu-teaser-title', classes.dyduTeaserTitle)}
               aria-haspopup="dialog"
             >
               {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
