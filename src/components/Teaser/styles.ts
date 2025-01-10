@@ -66,9 +66,6 @@ export default createUseStyles<any, any>((theme: any): any => ({
       display: 'none',
     },
   }),
-  hideOutline: () => ({
-    outline: 'none',
-  }),
   root: ({ configuration }) => ({
     alignItems: 'center',
     bottom: configuration?.teaser?.bottom,
