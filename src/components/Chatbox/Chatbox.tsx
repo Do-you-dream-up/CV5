@@ -42,16 +42,13 @@ import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
  */
 
 interface ChatboxProps {
-  extended: boolean;
-  open: boolean;
   root: any;
-  toggle: (val: number) => void;
 }
 
-export default function Chatbox({ extended, open, root, toggle, ...rest }: ChatboxProps) {
+export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const { configuration } = useConfiguration();
   const { send } = useLivechat();
-  const { minimize: minimizeChatbox } = useViewMode();
+  const { toggle, mode, isFull, isOpen } = useViewMode();
   const {
     addRequest,
     clearInteractions,
@@ -86,7 +83,6 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   const poweredByActive = configuration?.poweredBy?.active;
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
-  const { mode } = useViewMode();
   const [prevMode, setPrevMode] = useState<number | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
@@ -156,7 +152,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
   const onMinimize = () => {
     event && event('onMinimize', 'params', 'params2');
-    minimizeChatbox && minimizeChatbox();
+    toggle && toggle(VIEW_MODE.minimize);
   };
 
   useEffect(() => {
@@ -273,8 +269,8 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
   ]);
 
   const classnames = c('dydu-chatbox', classes.root, {
-    [classes.rootExtended]: extended,
-    [classes.rootHidden]: !open,
+    [classes.rootExtended]: isFull,
+    [classes.rootHidden]: !isOpen,
   });
   const idLabel = 'dydu-window-label-bot';
 
@@ -305,18 +301,18 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
             <Header
               dialogRef={dialogRef}
               gdprRef={gdprRef}
-              extended={extended}
+              extended={isFull}
               minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
               onClose={onClose}
               onExpand={expandable ? (value) => toggle(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
               onMinimize={onMinimize}
             />
-            {sidebarMode !== 'over' && !extended && <Sidebar anchor={root} />}
+            {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding>
                 <div
                   className={c('dydu-chatbox-body', classes.body, {
-                    [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || extended),
+                    [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || isFull),
                   })}
                   onScroll={handleScroll}
                   tabIndex={-1}
@@ -325,7 +321,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                     component={Dialog}
                     dialogRef={dialogRef}
                     interactions={interactions}
-                    open={open}
+                    open={isOpen}
                     render
                     value="dialog"
                     children
@@ -333,7 +329,7 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
                   <Tab component={Contacts} value="contacts" children render={false} />
                   {poweredByActive && <PoweredBy />}
                 </div>
-                {(sidebarMode === 'over' || extended) && <Sidebar mode="over" />}
+                {(sidebarMode === 'over' || isFull) && <Sidebar mode="over" />}
                 {!current && <Footer onRequest={addRequest} onResponse={addNotificationOrResponse} />}
               </Onboarding>
             </GdprDisclaimer>
@@ -348,11 +344,12 @@ export default function Chatbox({ extended, open, root, toggle, ...rest }: Chatb
 
 export function ChatboxWrapper(rest) {
   const { zoomSrc } = useDialog();
+  const { isFull } = useViewMode();
   return (
     <OnboardingProvider>
       <ModalProvider>
         <TabProvider>
-          <Dragon component={Chatbox} reset={!!rest.extended} {...rest} />
+          <Dragon component={Chatbox} reset={!!isFull} {...rest} />
           {zoomSrc && <Zoom src={zoomSrc} />}
         </TabProvider>
       </ModalProvider>

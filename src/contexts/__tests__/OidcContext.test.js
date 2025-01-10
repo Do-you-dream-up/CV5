@@ -15,12 +15,12 @@ jest.mock('../../tools/wizard');
 describe('OidcContext', () => {
   const mockToken = { access_token: 'mock_token' };
   const mockConfiguration = { oidc: { enable: true }, checkAuthorization: { active: true } };
-  const mockClose = jest.fn();
+  const mockToggle = jest.fn();
   const mockIsLoadedFromChannels = jest.fn().mockReturnValue(true);
 
   beforeEach(() => {
     useConfiguration.mockReturnValue({ configuration: mockConfiguration });
-    useViewMode.mockReturnValue({ close: mockClose });
+    useViewMode.mockReturnValue({ toggle: mockToggle });
     Auth.loadToken.mockReturnValue(mockToken);
     isLoadedFromChannels.mockImplementation(mockIsLoadedFromChannels);
   });
@@ -76,7 +76,7 @@ describe('OidcContext', () => {
       </OidcProvider>,
     );
 
-    expect(mockClose).toHaveBeenCalled();
+    expect(mockToggle).toHaveBeenCalled();
   });
 
   it('should not close view mode if authorization check is not active', () => {
@@ -90,6 +90,6 @@ describe('OidcContext', () => {
       </OidcProvider>,
     );
 
-    expect(mockClose).not.toHaveBeenCalled();
+    expect(mockToggle).not.toHaveBeenCalled();
   });
 });

@@ -89,14 +89,14 @@ const App = () => {
     !isCookiesDisclaimerEnabled || Local.cookies.load(),
   ); // Cookies are allowed if disclaimer is disabled, or if disclaimer has already been accepted
 
-  const { mode, isOpen: isChatboxOpen, isFull: isChatboxFullScreen, isMinimize, toggle } = useViewMode();
+  const { isMinimize, toggle } = useViewMode();
   const idLabel = 'dydu-cookies-text';
 
   const onAccept = () => {
     setAreCookiesAllowed(true);
     setIsOpenDisclaimer(false);
     Local.cookies.save(true);
-    toggle && toggle(VIEW_MODE.popin);
+    toggle && toggle(configuration?.application.open === VIEW_MODE.full ? VIEW_MODE.full : VIEW_MODE.popin);
   };
 
   const onDecline = () => {
@@ -192,12 +192,7 @@ const App = () => {
                                           <CheckCookiesAllowedProvider areCookiesAllowed={areCookiesAllowed}>
                                             <UploadFileProvider>
                                               <LivechatProvider>
-                                                <Chatbox
-                                                  extended={isChatboxFullScreen}
-                                                  open={isChatboxOpen}
-                                                  toggle={toggle}
-                                                  mode={mode}
-                                                />
+                                                <Chatbox />
                                               </LivechatProvider>
                                             </UploadFileProvider>
                                           </CheckCookiesAllowedProvider>

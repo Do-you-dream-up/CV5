@@ -5,6 +5,7 @@ import Auth from '../tools/storage';
 import { isLoadedFromChannels } from '../tools/wizard';
 import { useConfiguration } from './ConfigurationContext';
 import { useViewMode } from './ViewModeProvider';
+import { VIEW_MODE } from '../tools/constants';
 
 export const OidcContext = createContext({});
 
@@ -12,13 +13,13 @@ export const OidcProvider = ({ children }) => {
   const token = Auth.loadToken();
   const { configuration } = useConfiguration();
 
-  const { close } = useViewMode();
+  const { toggle } = useViewMode();
 
   const hasAuthStorageCheck = configuration?.checkAuthorization?.active;
 
   useEffect(() => {
-    if (hasAuthStorageCheck && !token?.access_token) close();
-  }, [close, hasAuthStorageCheck, token?.access_token]);
+    if (hasAuthStorageCheck && !token?.access_token) toggle(VIEW_MODE.close);
+  }, [hasAuthStorageCheck, token?.access_token]);
 
   const value = {};
 
