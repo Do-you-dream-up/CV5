@@ -22,7 +22,7 @@ export const useUserAction = () => useContext(UserActionContext);
 export const UserActionContext = createContext<UserActionProps>({});
 
 export function UserActionProvider({ children }: UserActionProviderProps) {
-  const [tabbing, setTabbing] = useState(true);
+  const [tabbing, setTabbing] = useState(false);
   const [tabPressed, setTabPressed] = useState(false);
   const [shiftPressed, setShiftPressed] = useState(false);
 
