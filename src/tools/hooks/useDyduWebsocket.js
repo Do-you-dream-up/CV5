@@ -54,6 +54,7 @@ const MESSAGE_TYPE = {
   startPolling: 'StartPolling',
   leaveWaitingQueue: 'LeaveWaitingQueue',
   dialogPicked: 'DialogPicked',
+  checkContextAvailability: 'checkContextAvailabilityResponse',
 };
 
 const completeLivechatPayload = (configuration) => {
@@ -99,6 +100,8 @@ export default function useDyduWebsocket() {
     if (!isDefined(lastMessageData)) return null;
     if (LivechatPayload.is.leaveWaitingQueue(lastMessageData)) return MESSAGE_TYPE.leaveWaitingQueue;
     if (LivechatPayload.is.getContextResponse(lastMessageData)) return MESSAGE_TYPE.contextResponse;
+    if (LivechatPayload.is.checkContextAvailabilityResponse(lastMessageData))
+      return MESSAGE_TYPE.checkContextAvailabilityResponse;
     if (LivechatPayload.is.historyResponse(lastMessageData)) return MESSAGE_TYPE.historyResponse;
     if (LivechatPayload.is.operatorSendSurvey(lastMessageData)) return MESSAGE_TYPE.survey;
     if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData)) {
@@ -188,9 +191,7 @@ export default function useDyduWebsocket() {
         return displayNotification();
 
       case MESSAGE_TYPE.historyResponse:
-        if (!lastMessageData?.values?.interactions || lastMessageData?.values?.interactions?.length === 0) {
-          close();
-        } else if (!history) {
+        if (!history) {
           const decodedInteractions = decode(lastMessageData.values).interactions;
           setHistory(decodedInteractions);
         }
@@ -199,6 +200,12 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.topKnowledge:
         if (lastMessageData) {
           setTopKnowledge(extractPayload(lastMessageData));
+        }
+        return;
+
+      case MESSAGE_TYPE.checkContextAvailability:
+        if (!lastMessageData) {
+          close();
         }
         return;
 
@@ -224,6 +231,7 @@ export default function useDyduWebsocket() {
       onReconnectStop: _onFail,
       onOpen: (onOpen) => {
         console.log('websocket: on open !', onOpen);
+        sendCheckContextAvailability();
         sendTopKnowledge(configuration);
         sendHistory();
       },
@@ -303,6 +311,11 @@ export default function useDyduWebsocket() {
 
   const sendHistory = useCallback(() => {
     const message = LivechatPayload.create.historyMessage();
+    trySendMessage(message);
+  }, [sendJsonMessage]);
+
+  const sendCheckContextAvailability = useCallback(() => {
+    const message = LivechatPayload.create.checkContextAvailabilityMessage();
     trySendMessage(message);
   }, [sendJsonMessage]);
 
