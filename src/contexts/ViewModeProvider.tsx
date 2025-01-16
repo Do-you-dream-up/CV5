@@ -3,16 +3,11 @@ import { ReactElement, createContext, useCallback, useContext, useEffect, useMem
 import { Local } from '../tools/storage';
 import { VIEW_MODE } from '../tools/constants';
 import { useConfiguration } from './ConfigurationContext';
-import { useLocalStorage } from 'react-use';
 
 interface ViewModeContextProps {
   isOpen?: boolean;
   toggle?: (mode: number) => void;
   mode?: number;
-  close?: () => void;
-  popin?: () => void;
-  openFull?: () => void;
-  minimize?: () => void;
   isFull?: boolean;
   isPopin?: boolean;
   isClose?: boolean;
@@ -30,67 +25,47 @@ const ViewModeContext = createContext<ViewModeContextProps>({});
 export default function ViewModeProvider({ children }: ViewModeProviderProps) {
   const { configuration } = useConfiguration();
 
-  const [viewMode, updateViewMode, removeViewMode] = useLocalStorage<any>(Local.names.open);
-  const defaultMode = useMemo(() => parseInt(viewMode) || configuration?.application.open, [viewMode]);
-  const [mode, setMode] = useState<any>(defaultMode);
+  const [mode, setMode] = useState<any>(parseInt(Local.viewMode.load() || configuration?.application.open));
 
-  const isFull = mode && mode === VIEW_MODE.full;
-  const isPopin = mode && mode === VIEW_MODE.popin;
-  const isClose = mode && mode === VIEW_MODE.close;
-  const isMinimize = mode === null || mode === undefined || mode === VIEW_MODE.minimize;
-  const isOpen = isPopin || isFull;
+  const [isFull, setIsFull] = useState<boolean>(mode === VIEW_MODE.full);
+  const [isPopin, setIsPopin] = useState<boolean>(mode === VIEW_MODE.popin);
+  const [isClose, setIsClose] = useState<boolean>(mode === VIEW_MODE.close);
+  const [isMinimize, setIsMinimize] = useState<boolean>(
+    mode === null || mode === undefined || mode === VIEW_MODE.minimize,
+  );
+  const [isOpen, setIsOpen] = useState<boolean>(mode === VIEW_MODE.popin || mode === VIEW_MODE.full);
 
   const toggle = (val: number) => {
-    setMode(~~val);
+    setMode(val);
   };
 
-  const close = useCallback(() => {
-    !isClose && setMode(VIEW_MODE.close);
-  }, [isClose]);
-
-  const popin = useCallback(() => {
-    !isPopin && setMode(VIEW_MODE.popin);
-  }, [isPopin]);
-
-  const openFull = useCallback(() => {
-    !isFull && setMode(VIEW_MODE.full);
-  }, [isFull]);
-
-  const minimize = useCallback(() => {
-    !isMinimize && setMode(VIEW_MODE.minimize);
-  }, [isMinimize]);
-
+  /*
+    never store in local minimized value, a no value in local is interpreted as minimized
+  */
   useEffect(() => {
     if (mode !== VIEW_MODE.minimize) {
       Local.viewMode.save(mode);
-      updateViewMode(mode);
     } else {
       Local.viewMode.remove(mode);
-      removeViewMode();
     }
+    setIsFull(mode === VIEW_MODE.full);
+    setIsPopin(mode === VIEW_MODE.popin);
+    setIsClose(mode === VIEW_MODE.close);
+    setIsMinimize(mode === null || mode === undefined || mode === VIEW_MODE.minimize);
+    setIsOpen(mode === VIEW_MODE.popin || mode === VIEW_MODE.full);
   }, [mode]);
-
-  useEffect(() => {
-    if (viewMode) {
-      setMode(mode);
-    }
-  }, [viewMode]);
 
   const context = useMemo(
     () => ({
       toggle,
       mode,
-      close,
-      popin,
-      openFull,
-      minimize,
       isOpen,
       isFull,
       isPopin,
       isClose,
       isMinimize,
     }),
-    [toggle, mode, close, popin, openFull, minimize, isOpen, isFull, isPopin, isClose, isMinimize],
+    [toggle, mode, isOpen, isFull, isPopin, isClose, isMinimize],
   );
 
   return <ViewModeContext.Provider value={context}>{children}</ViewModeContext.Provider>;

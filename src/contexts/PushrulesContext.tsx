@@ -13,14 +13,13 @@ import {
 
 import dydu from '../tools/dydu';
 import { useLocation } from 'react-use';
-import { Local, Session } from '../tools/storage';
+import { Local } from '../tools/storage';
 import contextPush from '../tools/pushrules/contextPushExt';
 import ComplianceInfo from '../tools/pushrules/complianceInfo';
 import { useChatboxReady } from './ChatboxReadyContext';
 import configuration from '../../public/override/configuration.json';
 import { isValidStringOperator, rulesDefinitions } from '../tools/pushrules/rulesDefinition';
 import { VIEW_MODE } from '../tools/constants';
-import { BOT } from '../tools/bot';
 
 export interface ExternalInfos {
   windowLocation: string;
@@ -88,7 +87,6 @@ export function PushrulesProvider({ children }: PushrulesProviderProps) {
   const actionsToExecute: MutableRefObject<(() => void)[]> = useRef([]);
 
   const currentTimer: MutableRefObject<PushRulesTimer> = useRef({ counter: null });
-  let chatboxNodeElement: HTMLElement | null = null;
 
   useEffect(() => {
     MOVING_ON_WEBSITE_EVENTS.forEach((event) => {
@@ -342,12 +340,19 @@ export function PushrulesProvider({ children }: PushrulesProviderProps) {
     }
   };
 
-  const getChatboxNodeElement = () => {
-    if (!isDefined(chatboxNodeElement)) {
-      chatboxNodeElement = document.getElementById(configuration?.root);
-    }
-    return chatboxNodeElement;
-  };
+  /*
+    Do not use useViewMode to retrieve mode, as when pushKnowledge method is called from interaction() method
+    that has been added as eventListener for mousemove, click and keypress events, the mode from useViewMode
+    is always the value at the time the eventListener has been added, whatever the current value is really
+   */
+  function isOpen(): boolean {
+    const mode = getMode();
+    return mode === VIEW_MODE.popin || mode === VIEW_MODE.full;
+  }
+
+  function getMode(): number {
+    return Local.viewMode.load() || configuration?.application.open;
+  }
 
   const pushKnowledge = (ruleId: string | undefined) => {
     if (!ruleId) return;
@@ -357,7 +362,9 @@ export function PushrulesProvider({ children }: PushrulesProviderProps) {
 
     currentTimer.current.counter = null;
     if (shouldDisplay) {
-      window.dydu?.ui.toggle(VIEW_MODE.popin);
+      if (!isOpen()) {
+        window.dydu?.ui.toggle(VIEW_MODE.popin);
+      }
       addActionsToExecute(wrapFunction(window.reword, [`_pushcondition_:${ruleId}`, { hide: true }]));
       Local.pushRulesTrigger.save(dydu.getBot().id, ruleId);
     }
