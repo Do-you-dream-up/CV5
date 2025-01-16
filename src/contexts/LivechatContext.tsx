@@ -173,7 +173,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     Local.operator.remove();
     tunnel?.close();
     setTunnel(null);
-    triggerSurvey && triggerSurvey();
   };
 
   const livechatContextFunctions = useMemo(() => {
