@@ -45,6 +45,7 @@ jest.mock('../../../tools/storage', () => {
     Local: {
       viewMode: {
         remove: jest.fn(),
+        load: jest.fn(() => 1),
       },
       names: {
         open: 'mocked_open_value',
