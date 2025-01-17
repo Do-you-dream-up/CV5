@@ -1,8 +1,9 @@
-import { _parse, isDefined, isEmptyObject, isEmptyString } from './helpers';
+import { _parse, getCdnScriptId, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
 import { cleanUrl } from '../components/auth/helpers';
+import { isLoadedFromChannels } from './wizard';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -115,56 +116,57 @@ export class Cookie {
   static remove = (name) => cookie.remove(name);
 }
 
+let suffix = '';
+const scriptId = getCdnScriptId();
+if (scriptId.length > 0) {
+  suffix = '.' + scriptId;
+} else if (isLoadedFromChannels()) {
+  suffix = '.' + 'preview';
+}
+
 /**
  * Small wrapper for localStorage methods.
  */
 export class Local {
   static names = {
-    livechatType: 'dydu.chatbox.livechatType',
-    waitingQueue: 'dydu.chatbox.waitingQueue',
-    isChannels: 'dydu.chatbox.isChannels',
-    client: 'dydu.chatbox.client',
-    context: 'dydu.chatbox.context',
-    dragon: 'dydu.chatbox.dragon',
-    fontSize: 'dydu.chatbox.fontSize',
-    gdpr: 'dydu.chatbox.gdpr',
-    cookies: 'dydu.chatbox.cookies',
-    botId: 'dydu.chatbox.botId',
+    livechatType: 'dydu.chatbox.livechatType' + suffix,
+    waitingQueue: 'dydu.chatbox.waitingQueue' + suffix,
+    client: 'dydu.chatbox.client' + suffix,
+    context: 'dydu.chatbox.context' + suffix,
+    dragon: 'dydu.chatbox.dragon' + suffix,
+    fontSize: 'dydu.chatbox.fontSize' + suffix,
+    gdpr: 'dydu.chatbox.gdpr' + suffix,
+    cookies: 'dydu.chatbox.cookies' + suffix,
+    botId: 'dydu.chatbox.botId' + suffix,
     // used for chat talk and i18n, filled first if empty with browser Language by i18n
     // then maybe updated by configuration and/or bot languages from Atria
     // and if user switch language in chatbox
-    locale: 'dydu.chatbox.locale',
-    onboarding: 'dydu.chatbox.onboarding',
-    open: 'dydu.chatbox.open',
-    sidebar: 'dydu.chatbox.sidebar',
-    space: 'dydu.chatbox.space',
-    wizard: 'dydu.chatbox.wizard.data',
-    images: 'dydu.chatbox.images',
-    saml: 'dydu.chatbox.saml.auth',
-    visit: 'dydu.chatbox.visit',
-    welcome: 'dydu.chatbox.welcomeKnowledge',
-    operator: 'dydu.chatbox.operator',
-    servers: 'dydu.chatbox.servers', // From Channels
-    lastInteraction: 'dydu.chatbox.interaction.last',
-    pushRules: 'dydu.chatbox.pushRules',
-    pushRulesTrigger: 'dydu.chatbox.pushRulesTriggered',
-    pkce_key: 'pkce',
-    token_key_id: 'dydu-oauth-token-id',
-    auth_url: 'dydu-oauth-url',
-    user_info: 'dydu-user-info',
-    token_key_access: 'dydu-oauth-token-access',
-    token_key_refresh: 'dydu-oauth-token-refresh',
-    pkce_code_verifier: 'dydu-code-verifier',
-    pkce_code_challenge: 'dydu-code-challenge',
-    dydu_chatbox_css: 'dydu.chatbox.css',
-    dydu_chatbox_main: 'dydu.chatbox.main',
+    locale: 'dydu.chatbox.locale' + suffix,
+    onboarding: 'dydu.chatbox.onboarding' + suffix,
+    open: 'dydu.chatbox.open' + suffix,
+    sidebar: 'dydu.chatbox.sidebar' + suffix,
+    space: 'dydu.chatbox.space' + suffix,
+    wizard: 'dydu.chatbox.wizard.data' + suffix,
+    images: 'dydu.chatbox.images' + suffix,
+    saml: 'dydu.chatbox.saml.auth' + suffix,
+    visit: 'dydu.chatbox.visit' + suffix,
+    welcome: 'dydu.chatbox.welcomeKnowledge' + suffix,
+    operator: 'dydu.chatbox.operator' + suffix,
+    servers: 'dydu.chatbox.servers' + suffix, // From Channels
+    lastInteraction: 'dydu.chatbox.interaction.last' + suffix,
+    pushRules: 'dydu.chatbox.pushRules' + suffix,
+    pushRulesTrigger: 'dydu.chatbox.pushRulesTriggered' + suffix,
+    pkce_key: 'pkce' + suffix,
+    token_key_id: 'dydu-oauth-token-id' + suffix,
+    auth_url: 'dydu-oauth-url' + suffix,
+    user_info: 'dydu-user-info' + suffix,
+    token_key_access: 'dydu-oauth-token-access' + suffix,
+    token_key_refresh: 'dydu-oauth-token-refresh' + suffix,
+    pkce_code_verifier: 'dydu-code-verifier' + suffix,
+    pkce_code_challenge: 'dydu-code-challenge' + suffix,
+    dydu_chatbox_css: 'dydu.chatbox.css' + suffix,
+    dydu_chatbox_main: 'dydu.chatbox.main' + suffix,
   };
-
-  static applyIdSuffix(id: any) {
-    Object.keys(this.names).forEach((key) => {
-      this.names[key] = `${this.names[key]}.${id}`;
-    });
-  }
 
   static clearAll() {
     Object.keys(localStorage)
@@ -224,15 +226,6 @@ export class Local {
     localStorage.setItem(name, value);
   };
 
-  // TODO: review with someone
-
-  // The root key associated  to the 'botsById' store ino the local storage
-  static _getInitialStore = () => ({});
-  static _getInitialBot = (botId) => ({
-    id: botId,
-    [Local.names.context]: '',
-  });
-
   static cookies = Object.create({
     save: (data) => localStorage.setItem(Local.names.cookies, data),
     load: () => {
@@ -273,13 +266,6 @@ export class Local {
       return (waitingQueue && JSON.parse(waitingQueue)) || false;
     },
     remove: () => localStorage.removeItem(Local.names.waitingQueue),
-  });
-
-  static isChannels = Object.create({
-    load: () => {
-      const isChannels = localStorage.getItem(Local.names.isChannels);
-      return (isChannels && JSON.parse(isChannels)) || false;
-    },
   });
 
   static servers = Object.create({

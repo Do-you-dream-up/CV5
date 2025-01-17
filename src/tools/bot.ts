@@ -1,5 +1,6 @@
 import { Local } from './storage';
 import { getResourceWithoutCache } from './resources';
+import {isLoadedFromChannels} from "./wizard";
 
 /**
  * - Wait for the bot ID and the API server then create default API based on the server ;
@@ -14,8 +15,6 @@ interface BotConfig {
   getServer: (index: number) => string | null;
   getNextServer: (index: number, previousIndexUsed?: number) => string | null;
 }
-
-const isChannels = Local.isChannels.load();
 
 export let BOT: BotConfig = {
   id: '',
@@ -56,7 +55,7 @@ export const initBotInfoFromJsonOrChannels = async () => {
 
   let botData = {
     ...data,
-    ...(isChannels && {
+    ...(isLoadedFromChannels() && {
       id: Local.botIdForChannels.load(),
       servers: Local.servers.load(),
     }),

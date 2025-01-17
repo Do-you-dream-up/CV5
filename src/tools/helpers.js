@@ -429,3 +429,21 @@ export const htmlToJsonForSendUploadFile = (html) => {
 
   return JSON.parse(correctedJsonText);
 };
+
+export function getCdnScriptId() {
+  // url will be replaced by Backend at publish time
+  const cdnUrl = 'CDN_URL';
+  const loaderScript = document.querySelector(`script[src="${cdnUrl}loader.js"]`);
+  let scriptId = '';
+
+  if (loaderScript && loaderScript.id) {
+    scriptId = loaderScript.id;
+  } else {
+    // Check if there is a bundle.min.js script for clients who haven't updated their script tags to ensure backward compatibility
+    const bundleScript = document.querySelector(`script[src="${cdnUrl}bundle.min.js"]`);
+    if (bundleScript && bundleScript.id) {
+      scriptId = bundleScript.id;
+    }
+  }
+  return scriptId;
+}

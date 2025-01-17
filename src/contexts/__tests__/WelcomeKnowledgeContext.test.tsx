@@ -20,9 +20,6 @@ jest.mock('../../tools/storage', () => ({
     livechatType: {
       load: jest.fn(() => 'websocket'),
     },
-    isChannels: {
-      load: jest.fn(() => false),
-    },
   },
 }));
 

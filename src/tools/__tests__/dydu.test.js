@@ -62,9 +62,6 @@ jest.mock('../../tools/storage', () => ({
       createAndSave: jest.fn(),
       load: jest.fn(),
     },
-    isChannels: {
-      load: jest.fn(),
-    },
     locale: {
       load: jest.fn(),
     },

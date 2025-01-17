@@ -3,10 +3,8 @@ import './tools/prototypes/prototypes-augmented';
 import { JssProvider, ThemeProvider } from 'react-jss';
 
 import App from './components/App/App';
-import { BotInfoProvider } from './contexts/BotInfoContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import ReactDOM from 'react-dom';
-import { ServerStatusProvider } from './contexts/ServerStatusContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
@@ -21,6 +19,8 @@ import { StyleSheetManager } from 'styled-components';
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { Local } from './tools/storage';
+import { getCdnScriptId } from './tools/helpers';
+import { isLoadedFromChannels } from './tools/wizard';
 
 const renderApp = (
   jss: any,
@@ -53,33 +53,10 @@ const renderApp = (
     anchor,
   );
 
-function getCdnScriptId() {
-  // url will be replaced by Backend at publish time
-  const cdnUrl = 'CDN_URL';
-  const loaderScript = document.querySelector(`script[src="${cdnUrl}loader.js"]`);
-  let scriptId = '';
-
-  if (loaderScript && loaderScript.id) {
-    scriptId = loaderScript.id;
-  } else {
-    // Check if there is a bundle.min.js script for clients who haven't updated their script tags to ensure backward compatibility
-    const bundleScript = document.querySelector(`script[src="${cdnUrl}bundle.min.js"]`);
-    if (bundleScript && bundleScript.id) {
-      scriptId = bundleScript.id;
-    }
-  }
-  return scriptId;
-}
-
 configuration.initialize().then((configuration) => {
   Local.resetAllLocalStorageIfTooOld(configuration?.application?.localStorageKeepTimeInMs);
 
   let host = document.getElementById(configuration.root);
-
-  const scriptId = getCdnScriptId();
-  if (scriptId.length > 0) {
-    Local.applyIdSuffix(scriptId);
-  }
 
   if (!host) {
     host = document.createElement('div');
@@ -140,9 +117,7 @@ configuration.initialize().then((configuration) => {
     }
   });
 
-  const isChannels = Local.isChannels.load();
-
-  if (isChannels && getCss()) {
+  if (isLoadedFromChannels() && getCss()) {
     const style = document.createElement('style');
     style.textContent = getCss();
     shadow.appendChild(style);

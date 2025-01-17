@@ -341,32 +341,32 @@
     "size": 3
   },
   "Voice": {
-     "languages": {
-       "fr": {
-         "name": "XB0fDUnXU5powFXDhCwa",
-         "provider": "ELEVENLABS"
+    "languages": {
+      "fr": {
+        "name": "XB0fDUnXU5powFXDhCwa",
+        "provider": "ELEVENLABS"
       },
-       "en": {
-         "name": "Karen22k_HQ",
-         "provider": "ACAPELA"
+      "en": {
+        "name": "Karen22k_HQ",
+        "provider": "ACAPELA"
       },
-       "es": {
-         "name": "alloy",
-         "provider": "OPENAI"
+      "es": {
+        "name": "alloy",
+        "provider": "OPENAI"
       }
     },
-      "enable": false,
-      "ssml": "true",
-      "sttServerUrl": "https://voicebot.doyoudreamup.com",
-      "ttsServerUrl": "https://tts.callbotv3.doyoudreamup.com",
-      "ttsInstanceUuid": "",
-      "ttsServerUser": "",
-      "ttsServerPassword": "",
-      "color": "black"
-    },
-    "welcome": {
-      "enable": true,
-      "knowledgeName": "#welcome#"
-    }
+    "enable": false,
+    "ssml": "true",
+    "sttServerUrl": "https://voicebot.doyoudreamup.com",
+    "ttsServerUrl": "https://tts.callbotv3.doyoudreamup.com",
+    "ttsInstanceUuid": "",
+    "ttsServerUser": "",
+    "ttsServerPassword": "",
+    "color": "black"
+  },
+  "welcome": {
+    "enable": true,
+    "knowledgeName": "#welcome#"
   }
+}
 
