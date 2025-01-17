@@ -275,7 +275,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const idLabel = 'dydu-window-label-bot';
 
   useEffect(() => {
-    if (gdprPassed === null && !configuration?.gdprDisclaimer.enable) {
+    if (!configuration?.gdprDisclaimer.enable) {
       setGdprPassed && setGdprPassed(true);
     }
   }, [gdprPassed, setGdprPassed]);
