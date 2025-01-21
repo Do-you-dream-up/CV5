@@ -47,6 +47,7 @@ export const REQUEST_TYPE = {
   history: 'history',
   topKnowledge: 'topknowledge',
   reading: 'reading',
+  checkContextAvailability: 'checkContextAvailability',
 };
 
 export const LivechatPayloadCreator = {
@@ -130,6 +131,15 @@ export const LivechatPayloadCreator = {
     };
   },
 
+  checkContextAvailabilityMessage: () => {
+    return {
+      type: REQUEST_TYPE.checkContextAvailability,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+      },
+    };
+  },
+
   topKnowledgeMessage: (period, size) => {
     return {
       type: REQUEST_TYPE.topKnowledge,
@@ -195,6 +205,10 @@ const LivechatPayloadChecker = {
       payload?.type?.equals('notification') &&
       payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.operatorWriting)
     );
+  },
+  checkContextAvailabilityResponse: (payload) => {
+    const payloadValues = payload?.values || payload;
+    return payloadValues?.isContextStillAvailable;
   },
   getContextResponse: (payload) => {
     return payload?.type?.equals('getContextResponse');
