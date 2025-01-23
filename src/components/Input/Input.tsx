@@ -22,6 +22,7 @@ import { useShadow } from '../../contexts/ShadowProvider';
 import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
 import Button from '../Button/Button';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
+import PromiseQueue from '../../tools/hooks/PromiseQueue';
 interface InputProps {
   onRequest?: (input: string) => void;
   onResponse?: (input: Servlet.ChatResponseValues) => void;
@@ -47,7 +48,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     autoSuggestionActive,
     setIsWaitingForResponse,
     clearInteractions,
-    exec,
+    promiseQueueList,
   } = useDialog();
   const { configuration } = useConfiguration();
 
@@ -93,7 +94,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       verifyAvailabilityDialogContext().then((isContextAvailable) => {
         if (!isContextAvailable) {
           clearInteractions && clearInteractions();
-          exec().then(() => {
+          PromiseQueue.exec(promiseQueueList).then(() => {
             setHasToVerifyContextAfterLivechatClosed && setHasToVerifyContextAfterLivechatClosed(false);
             submit(text);
           });

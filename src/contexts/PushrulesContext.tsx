@@ -65,7 +65,7 @@ interface PushRulesContainer {
 
 interface PushrulesContextProps {
   pushrules?: PushRule[] | null;
-  fetch?: () => void;
+  fetchPushrules?: () => void;
 }
 
 interface PushrulesProviderProps {
@@ -150,7 +150,7 @@ export function PushrulesProvider({ children }: PushrulesProviderProps) {
     return !isDefined(pushrules);
   }, [pushrules]);
 
-  const fetch = useCallback(
+  const fetchPushrules = useCallback(
     (update = false) => {
       return (
         (canRequest || update) &&
@@ -408,7 +408,7 @@ export function PushrulesProvider({ children }: PushrulesProviderProps) {
 
   const props: PushrulesContextProps = {
     pushrules,
-    fetch,
+    fetchPushrules,
   };
 
   return <PushrulesContext.Provider value={props}>{children}</PushrulesContext.Provider>;

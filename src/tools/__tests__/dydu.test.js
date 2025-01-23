@@ -155,24 +155,6 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('registerVisit', () => {
-    beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['welcomeCall', 'getInfos']);
-      spied.welcomeCall.mockResolvedValue(true);
-    });
-    afterEach(() => {
-      jestRestoreMocked(Object.values(spied));
-    });
-    it('should call |this.welcomeCall|', () => {
-      // GIVEN
-      // WHEN
-      dydu.registerVisit();
-
-      // THEN
-      expect(spied.welcomeCall).toHaveBeenCalled();
-    });
-  });
-
   describe('getInfos', function () {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['getLocale', 'getSpace']);

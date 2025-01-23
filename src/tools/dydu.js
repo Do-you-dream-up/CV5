@@ -275,13 +275,11 @@ export default new (class Dydu {
     const contextUuid = Local.contextId.load(BOT.id);
     if (contextUuid) {
       const path = `chat/availablecontext/${BOT.id}/${contextUuid}/`;
-      return new Promise((resolve) => {
-        resolve(emit(SERVLET_API.post, path));
-      }).then((response) => response?.isContextStillAvailable);
+      return Promise.resolve(emit(SERVLET_API.post, path))
+        .then((response) => response?.isContextStillAvailable)
+        .catch((e) => console.log('Error in checkContextIdStillAvailable ', e));
     }
-    return new Promise((resolve) => {
-      resolve(false);
-    });
+    return Promise.resolve(false);
   };
 
   /**
@@ -618,7 +616,7 @@ export default new (class Dydu {
       variables: this.getVariables(),
     });
     const path = `chat/welcomecall/${BOT.id}`;
-    return emit(SERVLET_API.post, path, data);
+    return Promise.resolve(emit(SERVLET_API.post, path, data));
   };
 
   /**
@@ -814,20 +812,13 @@ export default new (class Dydu {
     return this.post(path, data);
   };
 
-  getInfos = async () => {
+  getInfos = () => {
     return {
-      botId: await BOT.id,
+      botId: BOT.id,
       locale: this.getLocale(),
       space: this.getSpace(),
     };
   };
-
-  registerVisit() {
-    this.welcomeCall().then(async () => {
-      const keyInfos = await this.getInfos();
-      Local.visit.save(keyInfos);
-    });
-  }
 
   setConfiguration(configuration = {}) {
     this.configuration = configuration;

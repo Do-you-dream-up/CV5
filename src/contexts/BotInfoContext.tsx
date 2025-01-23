@@ -23,7 +23,7 @@ export const BotInfoProvider = ({ children }: BotInfoProviderProps) => {
   const { configuration } = useConfiguration();
   const [botLanguages, setBotLanguages] = useState<string[] | null>(null);
 
-  const fetchBotLanguages = () => {
+  const fetchBotLanguages = (): Promise<any> => {
     return new Promise((resolve) => {
       dydu
         .getBotLanguages()
