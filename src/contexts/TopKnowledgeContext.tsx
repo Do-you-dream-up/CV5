@@ -11,7 +11,7 @@ type ChatResponseArray = Servlet.ChatResponseValues[];
 
 interface TopKnowledgeContextProps {
   isEnabled?: boolean;
-  fetch?: () => void;
+  fetchTopKnowledge?: () => void;
   topKnowledge?: ChatResponseArray | null;
   setTopKnowledge?: Dispatch<SetStateAction<ChatResponseArray | null>>;
   extractPayload?: (response) => [];
@@ -31,7 +31,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
 
   const isEnabled = configuration?.topKnowledge?.enable;
 
-  const fetch = () => {
+  const fetchTopKnowledge = () => {
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
@@ -60,7 +60,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
 
   const props: TopKnowledgeContextProps = {
     isEnabled,
-    fetch,
+    fetchTopKnowledge,
     topKnowledge,
     setTopKnowledge,
     extractPayload,

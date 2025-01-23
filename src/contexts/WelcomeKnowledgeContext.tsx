@@ -59,22 +59,22 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
     );
   };
 
-  const verifyAvailabilityDialogContext = async () => {
+  const verifyAvailabilityDialogContext = async (): Promise<boolean> => {
     const currentContextUUID = Local.contextId.load(BOT.id);
-    return dydu.checkContextIdStillAvailable().then(async (response) => {
+    return dydu.checkContextIdStillAvailable().then(async (response): Promise<boolean> => {
       if (!response) {
         Local.livechatType.remove();
         Local.space.remove();
         Local.lastInteraction.reset();
         Local.welcomeKnowledge.reset(BOT.id, currentContextUUID);
         Local.contextId.reset(BOT.id);
-        return false;
+        return Promise.resolve(false);
       }
-      return true;
+      return Promise.resolve(true);
     });
   };
 
-  const fetchWelcomeKnowledge = async () => {
+  const fetchWelcomeKnowledge = async (): Promise<void> => {
     const currentContextUUID = Local.contextId.load(BOT.id);
 
     if (mustFetchWelcome()) {
@@ -87,7 +87,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
       }
       setWelcomeKnowledge(talkResponse);
       Local.welcomeKnowledge.save(BOT.id, talkResponse);
-      return talkResponse;
+      return Promise.resolve(talkResponse);
     }
 
     const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);

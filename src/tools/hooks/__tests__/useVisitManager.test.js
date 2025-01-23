@@ -6,7 +6,7 @@ import useVisitManager from '../useVisitManager';
 
 jest.mock('../../dydu', () => ({
   getInfos: jest.fn(),
-  registerVisit: jest.fn(),
+  welcomeCall: jest.fn(),
 }));
 jest.mock('../../storage');
 jest.mock('axios');
@@ -16,16 +16,7 @@ describe('useVisitManager', () => {
     jest.clearAllMocks();
   });
 
-  it('should call registerVisit when visit is not found', async () => {
-    const { result, waitFor } = renderHook(() => useVisitManager());
-
-    await act(async () => {
-      await result.current.fetch();
-      await waitFor(() => result.current.result === true);
-    });
-  });
-
-  it('should not call registerVisit when visit is found and has not expired', async () => {
+  it('should not call welcomeCall when visit is found and has not expired', async () => {
     const getInfosMock = jest.fn(() => ({
       someInfo: 'someValue',
     }));
@@ -40,7 +31,7 @@ describe('useVisitManager', () => {
     expect(result.current.result).toBe(false);
 
     await act(async () => {
-      await result.current.fetch();
+      await result.current.fetchVisitorRegistration();
       await waitFor(() => result.current.result === true);
     });
 
@@ -49,10 +40,10 @@ describe('useVisitManager', () => {
     expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
     expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
     expect(result.current.result).toBe(true);
-    expect(dydu.registerVisit).not.toHaveBeenCalled();
+    expect(dydu.welcomeCall).not.toHaveBeenCalled();
   });
 
-  it('should call registerVisit when visit is found but has expired', async () => {
+  it('should call welcomeCall when visit is found but has expired', async () => {
     const getInfosMock = jest.fn(() => ({
       someInfo: 'someValue',
     }));
@@ -63,14 +54,14 @@ describe('useVisitManager', () => {
     Local.visit.load.mockReturnValueOnce(Date.now() - 86400000);
 
     const registerVisitMock = jest.fn();
-    dydu.registerVisit.mockResolvedValueOnce(registerVisitMock());
+    dydu.welcomeCall.mockResolvedValueOnce(registerVisitMock());
 
     const { result, waitFor } = renderHook(() => useVisitManager());
 
     expect(result.current.result).toBe(false);
 
     await act(async () => {
-      await result.current.fetch();
+      await result.current.fetchVisitorRegistration();
       await waitFor(() => result.current.result === true);
     });
 
@@ -78,7 +69,7 @@ describe('useVisitManager', () => {
     expect(Local.visit.getKey).toHaveBeenCalled();
     expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
     expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
-    expect(dydu.registerVisit).toHaveBeenCalled();
+    expect(dydu.welcomeCall).toHaveBeenCalled();
     expect(result.current.result).toBe(true);
   });
 });

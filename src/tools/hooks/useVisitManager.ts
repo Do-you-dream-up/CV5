@@ -1,19 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { Local } from '../storage';
-import dydu from '../dydu';
 import { numberOfDayInMs } from '../helpers';
+import dydu from '../dydu';
 
 export default function useVisitManager() {
   const [result, setResult] = useState(false);
 
-  const fetch = useCallback(async () => {
+  const fetchVisitorRegistration = async (): Promise<any> => {
     const visitKey = Local.visit.getKey();
     const visitFound = Local.visit.isSet(visitKey);
 
     if (!visitFound) {
       setResult(true);
-      return dydu.registerVisit();
+      return registerVisit();
     } else {
       setResult(true);
     }
@@ -24,12 +24,26 @@ export default function useVisitManager() {
 
     if (hasCookieVisitExpired) {
       setResult(true);
-      return dydu.registerVisit();
+      return registerVisit();
     }
-  }, []);
+  };
+
+  const registerVisit = (): Promise<void> => {
+    return dydu
+      .welcomeCall()
+      .then(() => {
+        const keyInfos = dydu.getInfos();
+        Local.visit.save(keyInfos);
+        return Promise.resolve();
+      })
+      .catch((e) => {
+        console.log('Error in registerVisit', e);
+        return Promise.resolve();
+      });
+  };
 
   return {
-    fetch,
+    fetchVisitorRegistration,
     result,
   };
 }
