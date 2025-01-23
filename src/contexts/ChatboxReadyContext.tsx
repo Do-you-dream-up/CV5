@@ -2,7 +2,7 @@ import { createContext, ReactElement, useContext, useMemo, useState } from 'reac
 import { isDefined, isOfTypeFunction } from '../tools/helpers';
 
 interface ChatboxReadyContextProps {
-  callChatboxReady?: () => void;
+  callChatboxReady?: () => Promise<any>;
   isChatboxReady?: boolean;
 }
 
@@ -17,7 +17,7 @@ const ChatboxReadyContext = createContext<ChatboxReadyContextProps>({});
 export default function ChatboxReadyProvider({ children }: ChatboxReadyProviderProps) {
   const [isChatboxReady, setIsChatbxReady] = useState<boolean>(false);
 
-  const callChatboxReady = async () =>
+  const callChatboxReady = async (): Promise<any> =>
     new Promise((resolve) => {
       const functionChatboxReady = window?.dyduChatboxReady;
       if (isDefined(functionChatboxReady) && isOfTypeFunction(functionChatboxReady())) functionChatboxReady();

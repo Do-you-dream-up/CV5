@@ -6,7 +6,7 @@ import { TUNNEL_MODE } from '../tools/constants';
 import { Servlet } from '../../types/servlet';
 
 interface ConversationHistoryContextProps {
-  fetch?: () => any;
+  fetchHistory?: () => Promise<any>;
   history?: Servlet.ChatHistoryInteraction[] | null;
   setHistory?: Dispatch<SetStateAction<Servlet.ChatHistoryResponse | null>>;
 }
@@ -22,7 +22,7 @@ export const ConversationHistoryContext = createContext<ConversationHistoryConte
 export function ConversationHistoryProvider({ children }: ConversationHistoryProviderProps) {
   const [history, setHistory] = useState<Servlet.ChatHistoryInteraction[] | null>(null);
 
-  const fetch = () => {
+  const fetchHistory = (): Promise<any> => {
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
@@ -46,7 +46,7 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
   };
 
   const props: ConversationHistoryContextProps = {
-    fetch,
+    fetchHistory,
     history,
     setHistory,
   };

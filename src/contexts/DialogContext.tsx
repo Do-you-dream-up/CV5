@@ -26,7 +26,6 @@ import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
 import { useConversationHistory } from './ConversationHistoryContext';
 import { useEvent } from './EventsContext';
-import usePromiseQueue from '../tools/hooks/usePromiseQueue';
 import { useSaml } from './SamlContext';
 import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
@@ -41,6 +40,7 @@ import { useChatboxLoaded } from './ChatboxLoadedProvider';
 import { useViewMode } from './ViewModeProvider';
 import { useGdpr } from './GdprContext';
 import { usePushrules } from './PushrulesContext';
+import PromiseQueue from '../tools/hooks/PromiseQueue';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -93,7 +93,7 @@ export interface DialogContextProps {
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
   clearInteractionsAndAddWelcome: () => void;
-  exec: () => Promise<any>;
+  promiseQueueList: [Promise<any>];
 }
 
 interface SidebarContentProps {
@@ -146,17 +146,17 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { isOpen } = useViewMode();
   const { gdprEnabled, gdprPassed } = useGdpr();
 
-  const { fetch: fetchTopKnowledge } = useTopKnowledge();
-  const { callChatboxReady } = useChatboxReady();
+  const { fetchTopKnowledge } = useTopKnowledge();
+  const { callChatboxReady, isChatboxReady } = useChatboxReady();
   const {
     isEnabled: isWelcomeEnabled,
     fetchWelcomeKnowledge,
     welcomeKnowledge,
     verifyAvailabilityDialogContext,
   } = useWelcomeKnowledge();
-  const { fetch: fetchPushrules, pushrules } = usePushrules();
-  const { fetch: fetchHistory } = useConversationHistory();
-  const { fetch: fetchVisitorRegistration } = useVisitManager();
+  const { fetchPushrules, pushrules } = usePushrules();
+  const { fetchHistory } = useConversationHistory();
+  const { fetchVisitorRegistration } = useVisitManager();
   const { connected: saml2Connected } = useSaml();
   const additionalListInteraction = useRef([]);
   const { isMobile } = useViewport();
@@ -184,7 +184,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
   }, [isServerAvailable]);
 
-  const { exec } = usePromiseQueue([
+  const promiseQueueList = [
     verifyAvailabilityDialogContext,
     fetchBotLanguages,
     fetchVisitorRegistration,
@@ -192,7 +192,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchWelcomeKnowledge,
     fetchHistory,
     callChatboxReady,
-  ]);
+  ];
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
@@ -530,13 +530,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   useEffect(() => {
     if (
+      !isChatboxReady &&
       hasAfterLoadBeenCalled &&
       checkIfBehindSamlAndConnected &&
       isOpen &&
       (!gdprEnabled || gdprPassed) &&
       isServerAvailable
     ) {
-      exec();
+      PromiseQueue.exec(promiseQueueList);
     }
   }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected, isOpen, gdprEnabled, gdprPassed, isServerAvailable]);
 
@@ -610,7 +611,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setRewordAfterGuiAction,
         rewordAfterGuiAction,
         clearInteractionsAndAddWelcome,
-        exec,
+        promiseQueueList,
       }}
     />
   );
