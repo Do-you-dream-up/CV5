@@ -101,7 +101,7 @@ const App = () => {
 
   const onDecline = () => {
     setIsOpenDisclaimer(false);
-    localStorage.clear();
+    Local.clearAll();
   };
 
   const actions = [

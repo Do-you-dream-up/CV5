@@ -166,6 +166,15 @@ export class Local {
     });
   }
 
+  static clearAll() {
+    Object.keys(localStorage)
+      .filter(
+        (key: string) =>
+          key.startsWith('dydu') || key.startsWith('pushruleTrigger_') || key.startsWith('DYDU_') || key === 'pkce',
+      )
+      .forEach((key: string) => localStorage.removeItem(key));
+  }
+
   /**
    * Clear a local storage variable or all variables if no name is specified.
    *
@@ -485,7 +494,7 @@ export class Local {
 
       if (timeSpent > timeToKeep) {
         console.log('LocalStorage too old (', timeSpent, 'ms). Cleaning...');
-        localStorage.clear();
+        Local.clearAll();
         return true;
       }
     }
