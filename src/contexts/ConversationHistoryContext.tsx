@@ -42,6 +42,7 @@ export function ConversationHistoryProvider({ children }: ConversationHistoryPro
           return resolve(interactionsFromHistory);
         });
       }
+      return Promise.resolve();
     });
   };
 
