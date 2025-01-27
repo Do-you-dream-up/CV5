@@ -222,9 +222,6 @@ const LivechatPayloadChecker = {
   surveyConfigurationResponse: (payload) => {
     return payload?.type?.equals('surveyConfigurationResponse');
   },
-  surveyResponse: (payload) => {
-    return payload?.type?.equals('surveyResponse');
-  },
   startLivechat: (payload) => {
     const payloadValues = payload?.values || payload;
     return (
