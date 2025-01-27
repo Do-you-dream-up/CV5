@@ -95,6 +95,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
       setWelcomeKnowledge(welcome);
       return Promise.resolve(welcome);
     }
+    return Promise.resolve();
   };
 
   const props: WelcomeKnowledgeContextProps = {

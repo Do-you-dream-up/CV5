@@ -44,6 +44,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
             return resolve(true);
           });
       }
+      return resolve(true);
     });
   };
 
