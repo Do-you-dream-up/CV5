@@ -26,6 +26,7 @@ export default function useVisitManager() {
       setResult(true);
       return registerVisit();
     }
+    return Promise.resolve();
   };
 
   const registerVisit = (): Promise<void> => {
