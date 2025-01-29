@@ -41,7 +41,6 @@ let endPollingReceived = false;
 const MESSAGE_TYPE = {
   survey: 'survey', // received when server informs client that there is a survey to answer, providing surveyId
   surveyConfigurationResponse: 'surveyConfigurationResponse', // received when server provide full survey config, asked by client
-  surveyResponse: 'surveyResponse', // received when server acknowledge survey response sent by client
   error: 'error',
   operatorResponse: 'operatorResponse',
   operatorWriting: 'operatorWriting',
@@ -107,7 +106,6 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData)) {
       return MESSAGE_TYPE.surveyConfigurationResponse;
     }
-    if (LivechatPayload.is.surveyResponse(lastMessageData)) return MESSAGE_TYPE.surveyResponse;
     if (LivechatPayload.is.topKnowledgeResponse(lastMessageData)) return MESSAGE_TYPE.topKnowledge;
     if (LivechatPayload.is.endPolling(lastMessageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
@@ -168,9 +166,6 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.surveyConfigurationResponse:
         setSurveyConfig(b64dAllFields(lastMessageData?.values));
-        return;
-
-      case MESSAGE_TYPE.surveyResponse:
         if (endPollingReceived) {
           endPollingReceived = false;
           close();
