@@ -43,10 +43,12 @@ import {
   toFormUrlEncoded,
   b64dAllFields,
   isValidUrl,
+  cleanHtml,
 } from '../helpers';
 
 import { VAR_TYPE } from '../constants';
 import { expect } from '@jest/globals';
+import PrettyHtml from '../../components/PrettyHtml';
 
 describe('helpers', () => {
   describe('isDefined', () => {
@@ -730,6 +732,7 @@ describe('helpers', () => {
       function testNegativeSecondsToMs() {
         secondsToMs(-3);
       }
+
       expect(testNegativeSecondsToMs).toThrow(new Error('Parameter have to be bigger or equal than 0'));
     });
   });
@@ -835,13 +838,6 @@ describe('helpers', () => {
     it('decodes HTML-encoded characters in the input string', () => {
       const html = '&lt;p&gt;Hello, world!&lt;/p&gt;';
       const expectedResult = '<p>Hello, world!</p>';
-
-      document.createElement = jest.fn().mockImplementation(() => {
-        return {
-          innerHTML: html,
-          value: expectedResult,
-        };
-      });
       const result = decodeHtml(html);
       expect(result).toEqual(expectedResult);
     });
@@ -862,6 +858,7 @@ describe('helpers', () => {
       function testNegativeNumberOfDayInMs() {
         numberOfDayInMs(-1);
       }
+
       expect(testNegativeNumberOfDayInMs).toThrow(new Error('Parameter have to be bigger or equal than 0'));
     });
   });
@@ -1259,5 +1256,29 @@ describe('REGEX URL', () => {
     const validHttspUrl =
       'https://localhost:9043/login?servercode=dev.dydu.local&locale=fr&loginmessage=eyJhcHBXZWxjb21lU2VudGVuY2UiOiJjYXMubG9naW4ud2VsY29tZS5ibXMiLCJtc2dMZXZlbCI6IklORk8ifQ%3D%3D&service=https%3A%2F%2Fdev.dydu.local%2Fwebsite%2Fcallback%3Fclient_name%3DCasClient';
     expect(isValidUrl(validHttspUrl)).toBeTruthy();
+  });
+});
+
+describe('cleanHtml', () => {
+  it('cleanHtml method 1', () => {
+    const htmlToCLean =
+      '<p>Saisissez votre nouvelle adresse depuis votre<a href="https://www.letese.urssaf.fr/cetpeweb/connectempl.jsp" target="_blank" onclick="try {reword(\'https://www.letese.urssaf.fr/cetpeweb/connectempl.jsp\',{\'botsource\':795,\'type\':\'redirection_newpage\'});}catch(e){}"> espace employeur<svg style="height: 20px;width: 20px;margin: 0px 0px -2px 3px;">  <use href="#action_external-link">  <svg id="action_external-link" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">  <use fill-rule="evenodd" xlink:href="#asa">  <path id="asa" d="M14.499 17.681H2v-12h6.959v1.55h-5.27v8.908h9.251v-5.117H14.5v6.66zM18 7.433h-2.014V5.625l-5.304 5.072-1.407-1.352 5.304-5.092h-1.883V2.32H18v5.113z"></path></use></svg></use></svg><span class="sr-only" style="display: none;">nouvelle fenêtre</span></a></p> <hr class="split"> <p>Rubrique <i>Adhésion &gt; Adresse de correspondance</i></p>';
+    const cleanedHtml =
+      '<p>Saisissez votre nouvelle adresse depuis votre<a href="https://www.letese.urssaf.fr/cetpeweb/connectempl.jsp" target="_blank" onclick="try {reword(\'https://www.letese.urssaf.fr/cetpeweb/connectempl.jsp\',{\'botsource\':795,\'type\':\'redirection_newpage\'});}catch(e){}"> espace employeur<svg style="height: 20px;width: 20px;margin: 0px 0px -2px 3px;">  <use href="#action_external-link">  <svg id="action_external-link" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">  <use fill-rule="evenodd" xlink:href="#asa">  <path id="asa" d="M14.499 17.681H2v-12h6.959v1.55h-5.27v8.908h9.251v-5.117H14.5v6.66zM18 7.433h-2.014V5.625l-5.304 5.072-1.407-1.352 5.304-5.092h-1.883V2.32H18v5.113z"></path></use></svg></use></svg><span class="sr-only" style="display: none;">nouvelle fenêtre</span></a></p> <hr class="split"> <p>Rubrique <i>Adhésion > Adresse de correspondance</i></p>';
+    expect(cleanHtml(htmlToCLean)).toBe(cleanedHtml);
+  });
+  it('cleanHtml method 2', () => {
+    const htmlToCLean = 'je suis un text simple';
+    expect(cleanHtml(htmlToCLean)).toBe(htmlToCLean);
+  });
+  it('cleanhtml  json 1', () => {
+    const jsonToClean =
+      '{"text":"Pouvez-vous me préciser votre profil ?","separator":true,"quick":{"button4":null,"button5":null,"button2":"<a href=\\"#\\" class=\\"reword\\" onclick=\\"try {rewordtest(\'Mon profil est &quot;diffuseur&quot;\',{\'personality_id\':792,\'lastcondition\':91854,\'botsource\':792,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Diffuseur</a>","button3":null,"button8":null,"button9":null,"button6":null,"button7":null,"button1":"<a href=\\"#\\" class=\\"reword\\" onclick=\\"try {rewordtest(\'Mon profil est &quot;artiste-auteur&quot;\',{\'personality_id\':792,\'lastcondition\':91854,\'botsource\':792,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Artiste-Auteur</a>"}}';
+    expect(cleanHtml(jsonToClean)).toBe(jsonToClean);
+  });
+  it('cleanhtml json 2', () => {
+    const jsonToClean =
+      '{"text":"<p><span>Veuillez consulter la définition ci-contre.<br/></span><span><em></em></span></p> <br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Je souhaiterais obtenir des informations sur Compliance Catalyst.\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Je souhaiterais obtenir des informations sur Compliance Catalyst.</a><br/><br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Comment utiliser le bouton &quot;RAID&quot; ?\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Comment utiliser le bouton \\"RAID\\" ?</a><br/><br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Qu\'est qu\'une diligence d\'honorabilité ?\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Qu\'est qu\'une diligence d\'honorabilité ?</a>","separator":true,"quick":{"button4":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1452966751_DBWikiPage/compliance-catalyst-dans-l-application-sylab\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Bouton Compliance Catalyst\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1452966751_DBWikiPage/compliance-catalyst-dans-l-application-sylab\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Bouton Compliance Catalyst</a>","button5":null,"button2":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/pr1_3042678/information-negative-ou-presse-negative\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Termes à connaitre\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/pr1_3042678/information-negative-ou-presse-negative\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Glossaire</a>","button3":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1566501934_DBWikiPage/raid-recherche-automatisee-d-information-defavorable-dans-sylab\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"RAID : Recherche Automatisée d\'Information Défavorable\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1566501934_DBWikiPage/raid-recherche-automatisee-d-information-defavorable-dans-sylab\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Bouton RAID</a>","button8":null,"button9":null,"button6":null,"button7":null,"button1":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1380190548_DBWikiPage/recherche-de-presse/information-negative-dans-le-cadre-de-la-lcb-ft\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Recherche de Presse/Information négative dans le cadre de la LCB-FT\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1380190548_DBWikiPage/recherche-de-presse/information-negative-dans-le-cadre-de-la-lcb-ft\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Recherche Presse négative</a>"}}';
+    expect(cleanHtml(jsonToClean)).toBe(jsonToClean);
   });
 });
