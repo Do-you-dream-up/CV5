@@ -1,4 +1,4 @@
-import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactElement, createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Local } from '../tools/storage';
 import { VIEW_MODE } from '../tools/constants';
@@ -6,8 +6,8 @@ import { useConfiguration } from './ConfigurationContext';
 
 interface ViewModeContextProps {
   isOpen?: boolean;
-  toggle?: (mode: number) => void;
   mode?: number;
+  setMode?: (mode: number) => void;
   isFull?: boolean;
   isPopin?: boolean;
   isClose?: boolean;
@@ -35,10 +35,6 @@ export default function ViewModeProvider({ children }: ViewModeProviderProps) {
   );
   const [isOpen, setIsOpen] = useState<boolean>(mode === VIEW_MODE.popin || mode === VIEW_MODE.full);
 
-  const toggle = (val: number) => {
-    setMode(val);
-  };
-
   /*
     never store in local minimized value, a no value in local is interpreted as minimized
   */
@@ -57,15 +53,15 @@ export default function ViewModeProvider({ children }: ViewModeProviderProps) {
 
   const context = useMemo(
     () => ({
-      toggle,
       mode,
+      setMode,
       isOpen,
       isFull,
       isPopin,
       isClose,
       isMinimize,
     }),
-    [toggle, mode, isOpen, isFull, isPopin, isClose, isMinimize],
+    [mode, setMode, isOpen, isFull, isPopin, isClose, isMinimize],
   );
 
   return <ViewModeContext.Provider value={context}>{children}</ViewModeContext.Provider>;

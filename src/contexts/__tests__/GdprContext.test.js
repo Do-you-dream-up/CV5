@@ -4,11 +4,19 @@ import { GdprContext, GdprProvider } from '../GdprContext';
 import { fireEvent, render } from '@testing-library/react';
 
 import { useEvent } from '../EventsContext';
+import { useViewMode } from '../ViewModeProvider';
 
+jest.mock('../ViewModeProvider');
 jest.mock('../EventsContext', () => ({
   useEvent: jest.fn(),
 }));
 describe('GdprProvider', () => {
+  const mockSetMode = jest.fn();
+
+  beforeEach(() => {
+    useViewMode.mockReturnValue({ setMode: mockSetMode });
+  });
+
   it('renders without crashing', () => {
     const dispatchEvent = jest.fn();
     useEvent.mockReturnValue({ dispatchEvent });
@@ -44,7 +52,6 @@ describe('GdprProvider', () => {
   });
 
   it('calls onDecline and opens chat window when decline button is clicked', () => {
-    window.dydu = { ui: { toggle: jest.fn() } };
     const dispatchEvent = jest.fn();
     useEvent.mockReturnValue({ dispatchEvent });
     const { getByTestId } = render(
@@ -59,7 +66,7 @@ describe('GdprProvider', () => {
       </GdprProvider>,
     );
     fireEvent.click(getByTestId('decline'));
-    expect(window.dydu.ui.toggle).toHaveBeenCalledWith(1);
+    expect(mockSetMode).toHaveBeenCalledWith(1);
   });
 
   it('calls dispatchEvent with "gdpr" and "acceptGdpr" when onAccept is called', () => {

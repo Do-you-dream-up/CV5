@@ -48,7 +48,7 @@ interface ChatboxProps {
 export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const { configuration } = useConfiguration();
   const { send } = useLivechat();
-  const { toggle, mode, isFull, isOpen } = useViewMode();
+  const { mode, setMode, isFull, isOpen } = useViewMode();
   const {
     addRequest,
     clearInteractions,
@@ -146,13 +146,13 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
 
   const onClose = () =>
     modal(ModalClose).then(
-      () => toggle(VIEW_MODE.close),
+      () => setMode(VIEW_MODE.close),
       () => {},
     );
 
   const onMinimize = () => {
     event && event('onMinimize', 'params', 'params2');
-    toggle && toggle(VIEW_MODE.minimize);
+    setMode && setMode(VIEW_MODE.minimize);
   };
 
   useEffect(() => {
@@ -232,7 +232,6 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
-        toggle: (mode: number) => toggle(mode),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
@@ -261,7 +260,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
     setPrompt,
     setSidebar,
     t,
-    toggle,
+    setMode,
     toggleSidebar,
     gdprPassed,
     setGdprPassed,
@@ -298,15 +297,17 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       >
         <div className={classes.container}>
           <>
-            <Header
-              dialogRef={dialogRef}
-              gdprRef={gdprRef}
-              extended={isFull}
-              minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
-              onClose={onClose}
-              onExpand={expandable ? (value) => toggle(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
-              onMinimize={onMinimize}
-            />
+            {(!isFull || configuration?.chatbox?.margin !== 0) && (
+              <Header
+                dialogRef={dialogRef}
+                gdprRef={gdprRef}
+                extended={isFull}
+                minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
+                onClose={onClose}
+                onExpand={expandable ? (value) => setMode(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
+                onMinimize={onMinimize}
+              />
+            )}
             {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
             <GdprDisclaimer gdprRef={gdprRef}>
               <Onboarding>

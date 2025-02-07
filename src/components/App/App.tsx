@@ -89,14 +89,14 @@ const App = () => {
     !isCookiesDisclaimerEnabled || Local.cookies.load(),
   ); // Cookies are allowed if disclaimer is disabled, or if disclaimer has already been accepted
 
-  const { isMinimize, toggle } = useViewMode();
+  const { isMinimize, setMode } = useViewMode();
   const idLabel = 'dydu-cookies-text';
 
   const onAccept = () => {
     setAreCookiesAllowed(true);
     setIsOpenDisclaimer(false);
     Local.cookies.save(true);
-    toggle && toggle(configuration?.application.open === VIEW_MODE.full ? VIEW_MODE.full : VIEW_MODE.popin);
+    setMode && setMode(configuration?.application.open === VIEW_MODE.full ? VIEW_MODE.full : VIEW_MODE.popin);
   };
 
   const onDecline = () => {
@@ -161,7 +161,7 @@ const App = () => {
   }, [configuration?.oidc?.scopes]);
 
   if (!areCookiesAllowed && !isMinimize) {
-    toggle && toggle(VIEW_MODE.minimize);
+    setMode && setMode(VIEW_MODE.minimize);
   }
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const App = () => {
                                           id={'dydu-teaser'}
                                           toggle={
                                             areCookiesAllowed
-                                              ? toggle
+                                              ? setMode
                                               : () => {
                                                   const newIsOpenDisclaimer = !isOpenDisclaimer;
                                                   setIsOpenDisclaimer(newIsOpenDisclaimer);
