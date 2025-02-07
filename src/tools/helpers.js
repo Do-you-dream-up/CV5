@@ -135,6 +135,15 @@ export const _stringify = (data) => {
   }
 };
 
+export const isJson = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 export const _parse = (data) => {
   try {
     return JSON.parse(data);
@@ -308,6 +317,13 @@ export const decodeHtml = (html) => {
   let txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
+};
+
+export const cleanHtml = (_html) => {
+  if (!isJson(_html)) {
+    _html = decodeHtml(_html);
+  }
+  return _html;
 };
 
 export const escapeHTML = (html) => {

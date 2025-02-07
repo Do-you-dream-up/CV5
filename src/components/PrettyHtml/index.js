@@ -17,7 +17,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
 import { useDialog } from '../../contexts/DialogContext';
-import { _parse } from '../../tools/helpers';
+import { cleanHtml } from '../../tools/helpers';
 
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
@@ -51,12 +51,6 @@ export default function PrettyHtml({ carousel, children, className, component, h
 
   const hrefMatchs = useMemo(() => html && html.match(RE_HREF), [html]);
 
-  const decodeHtmlEntities = (html) => {
-    const textarea = document.createElement('textarea');
-    textarea.innerHTML = html;
-    return textarea.value;
-  };
-
   useEffect(() => {
     if (!html) {
       setHtmlContent('');
@@ -79,11 +73,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
         _html = filter.process({ html: _html });
       }
     });
-
-    let jsonObjectFromHtml = _parse(_html);
-    if (jsonObjectFromHtml.text) {
-      jsonObjectFromHtml.text = decodeHtmlEntities(jsonObjectFromHtml.text);
-    }
+    _html = cleanHtml(_html);
 
     setHtmlContent(_html);
   }, [hrefMatchs, html]);
