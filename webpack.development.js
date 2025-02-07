@@ -53,7 +53,7 @@ module.exports = (env) =>
       }),
       new Html({
         hash: true,
-        template: Path.resolve(__dirname, 'public/index.html'),
+        template: Path.resolve(__dirname, 'public/debug.html'),
         templateParameters: { hash: getCommitHash(), now, version: getBranchName() },
       }),
     ],

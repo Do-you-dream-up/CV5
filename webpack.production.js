@@ -55,7 +55,7 @@ module.exports = (env) => {
             globOptions: {
               dot: true,
               gitignore: true,
-              ignore: ['**/loader.js', '**/bundle.min.js', '**/preview.index.html', '**/index.html'],
+              ignore: ['**/loader.js', '**/bundle.min.js', '**/index.html', '**/iframe.html', '**/iframe.debug.html', '**/debug.html'],
             },
           },
           {
@@ -74,6 +74,11 @@ module.exports = (env) => {
               return buffer.toString().replace('TIMESTAMPED_CDN_URL', ASSET);
             },
           },
+          {
+            from: Path.resolve(__dirname, 'public/iframe.html'),
+            toType: 'file',
+            to: '../iframe.html'
+          }
         ],
       }),
       new webpack.DefinePlugin({
