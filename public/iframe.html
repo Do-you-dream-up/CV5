@@ -7,7 +7,10 @@
     <title>Dydu Chatbox</title>
     <link rel="icon" href="./favicon.png" />
     <script type="module" src="./loader.js" defer></script>
-  </head>
+    <script>
+      dyduAfterLoad = () => {console.log("dyduAfterLoad"); window.maximizeIframe();}
+    </script>
+      </head>
   <body style="width: inherit; height: inherit; margin: 0;">
     <div id="dydu-root"></div>
   </body>

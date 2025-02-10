@@ -11,4 +11,5 @@ interface Window {
   rewordtest: (str: string, options: any) => void;
   _dydu_lockTextField: (val: boolean) => void;
   dyduKnowledgeUploadFile: () => void;
+  maximizeIframe: () => void;
 }
