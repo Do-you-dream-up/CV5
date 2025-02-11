@@ -13,12 +13,12 @@ export const OidcProvider = ({ children }) => {
   const token = Auth.loadToken();
   const { configuration } = useConfiguration();
 
-  const { toggle } = useViewMode();
+  const { setMode } = useViewMode();
 
   const hasAuthStorageCheck = configuration?.checkAuthorization?.active;
 
   useEffect(() => {
-    if (hasAuthStorageCheck && !token?.access_token) toggle(VIEW_MODE.close);
+    if (hasAuthStorageCheck && !token?.access_token) setMode(VIEW_MODE.close);
   }, [hasAuthStorageCheck, token?.access_token]);
 
   const value = {};

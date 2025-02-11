@@ -4,6 +4,7 @@ import { Local } from '../tools/storage';
 import { useEvent } from './EventsContext';
 import { useConfiguration } from './ConfigurationContext';
 import { VIEW_MODE } from '../tools/constants';
+import { useViewMode } from './ViewModeProvider';
 
 interface GdprContextProps {
   gdprEnabled?: boolean;
@@ -25,6 +26,7 @@ export function GdprProvider({ children }: GdprProviderProps) {
   const { configuration } = useConfiguration();
   const [gdprPassed, setGdprPassed] = useState<boolean>(Local.gdpr.load());
   const { dispatchEvent } = useEvent();
+  const { setMode } = useViewMode();
 
   const onAccept = useCallback(() => {
     setGdprPassed(true);
@@ -33,7 +35,7 @@ export function GdprProvider({ children }: GdprProviderProps) {
   }, [dispatchEvent]);
 
   const onDecline = useCallback(() => {
-    window.dydu.ui.toggle(VIEW_MODE.minimize);
+    setMode(VIEW_MODE.minimize);
   }, []);
 
   return (

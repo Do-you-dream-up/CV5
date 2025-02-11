@@ -28,7 +28,7 @@ import { useDialog } from '../../contexts/DialogContext';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
- * closing the chatbox or changing the current language.
+ * closing or expanding the chatbox
  */
 export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
   const { configuration } = useConfiguration();

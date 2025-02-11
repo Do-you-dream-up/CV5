@@ -35,9 +35,9 @@ const COMMON_RULE_LIST = [
 const COMMON_PLUGIN_LIST = [
   new Eslint(),
   new Html({
-    template: Path.resolve(__dirname, 'public/preview.index.html'),
+    template: Path.resolve(__dirname, 'public/index.html'),
     templateParameters: { hash: getCommitHash(), now, version: getBranchName() },
-    filename: '../preview.index.html',
+    filename: '../index.html',
   }),
 ];
 
