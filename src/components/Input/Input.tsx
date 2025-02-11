@@ -318,7 +318,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     onKeyDown,
     placeholder: displayedPlaceholderTitleAriaLabel,
     title: displayedPlaceholderTitleAriaLabel,
-    ariaLabel: displayedPlaceholderTitleAriaLabel,
+    'aria-label': displayedPlaceholderTitleAriaLabel,
     value: input,
   };
 
