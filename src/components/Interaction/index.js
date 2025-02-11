@@ -57,7 +57,7 @@ const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.carousel]: (list) => {
     const bubbles = [];
     /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the
-    product number (last character of property name), then creates a sortedArray with each product as a string */
+                    product number (last character of property name), then creates a sortedArray with each product as a string */
     list.forEach((el) => {
       const bubble = {};
       if (typeof el === 'string') {
@@ -103,7 +103,7 @@ const templateNameToBubbleCreateAction = {
     const bubble = {};
     for (const product of list) {
       bubble.product = product;
-      if (!Object.values(bubble.product).every((param) => param === null || param === undefined)) {
+      if (bubble.product && Object.values(bubble.product).some((param) => param !== null && param !== undefined)) {
         bubbles.push(JSON.stringify(bubble));
       }
     }
