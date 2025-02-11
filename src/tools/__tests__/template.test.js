@@ -1,16 +1,10 @@
-import {
-  CAROUSSEL_TEMPLATE,
-  PRODUCT_TEMPLATE,
-  QUICK_REPLY,
-  knownTemplates,
-  CAROUSEL_ARRAY_TEMPLATE,
-} from '../template';
+import { CAROUSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, knownTemplates, CAROUSEL_ARRAY_TEMPLATE } from '../template';
 
 describe('template', () => {
   describe('CAROUSSEL_TEMPLATE', () => {
     it('should return string template is equal to dydu_carousel_001', () => {
       //THEN
-      expect(CAROUSSEL_TEMPLATE).toEqual('dydu_carousel_001');
+      expect(CAROUSEL_TEMPLATE).toEqual('dydu_carousel_001');
     });
   });
 
@@ -31,7 +25,7 @@ describe('template', () => {
   describe('knownTemplates', () => {
     it('should return an array who contains CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE and QUICK_REPLY', () => {
       //THEN
-      expect(knownTemplates).toEqual([CAROUSSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, CAROUSEL_ARRAY_TEMPLATE]);
+      expect(knownTemplates).toEqual([CAROUSEL_TEMPLATE, PRODUCT_TEMPLATE, QUICK_REPLY, CAROUSEL_ARRAY_TEMPLATE]);
     });
   });
 });

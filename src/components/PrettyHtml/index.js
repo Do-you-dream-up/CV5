@@ -1,5 +1,5 @@
 import {
-  CAROUSSEL_TEMPLATE,
+  CAROUSEL_TEMPLATE,
   PRODUCT_TEMPLATE,
   QUICK_REPLY,
   knownTemplates,
@@ -113,7 +113,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
       {children}
       {<p className={classes.srOnly} dangerouslySetInnerHTML={{ __html: interactionType }}></p>}
       {templatename === PRODUCT_TEMPLATE && <ProductTemplate html={htmlContent} />}
-      {(templatename === CAROUSSEL_TEMPLATE || templatename === CAROUSEL_ARRAY_TEMPLATE) && (
+      {(templatename === CAROUSEL_TEMPLATE || templatename === CAROUSEL_ARRAY_TEMPLATE) && (
         <CarouselTemplate html={htmlContent} />
       )}
       {templatename === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}

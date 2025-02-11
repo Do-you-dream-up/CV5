@@ -20,7 +20,7 @@ import { Local } from '../tools/storage';
 import dotget from '../tools/dotget';
 import { eventOnSidebarClosed } from '../events/chatboxIndex';
 import { flattenSteps } from '../tools/steps';
-import { CAROUSEL_ARRAY_TEMPLATE, CAROUSSEL_TEMPLATE, knownTemplates, PRODUCT_TEMPLATE } from '../tools/template';
+import { CAROUSEL_ARRAY_TEMPLATE, CAROUSEL_TEMPLATE, knownTemplates, PRODUCT_TEMPLATE } from '../tools/template';
 import parseActions from '../tools/actions';
 import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
@@ -453,7 +453,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
       const verifyInteractionDataType = () => {
         if (
-          templatename === CAROUSSEL_TEMPLATE ||
+          templatename === CAROUSEL_TEMPLATE ||
           templatename === PRODUCT_TEMPLATE ||
           templatename === CAROUSEL_ARRAY_TEMPLATE
         ) {
