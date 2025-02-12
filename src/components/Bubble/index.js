@@ -7,7 +7,7 @@ import Loader from '../Loader';
 import { Local } from '../../tools/storage';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
-import { QUICK_REPLY } from '../../tools/template';
+import { CAROUSEL_ARRAY_TEMPLATE, CAROUSEL_TEMPLATE } from '../../tools/template';
 import c from 'classnames';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
@@ -158,6 +158,8 @@ export default function Bubble({
     }
   }, [type]);
 
+  const isCarouselTemplate = templatename === CAROUSEL_ARRAY_TEMPLATE || templatename === CAROUSEL_TEMPLATE;
+
   return (
     <>
       {thinking ? (
@@ -180,7 +182,7 @@ export default function Bubble({
               `dydu-bubble-${type}`,
               classes.base,
               classes[type],
-              isDefined(templatename) && templatename !== QUICK_REPLY && 'template-style',
+              isDefined(templatename) && isCarouselTemplate && 'template-style',
               className,
             ),
             id: `dydu-bubble-${type}`,
