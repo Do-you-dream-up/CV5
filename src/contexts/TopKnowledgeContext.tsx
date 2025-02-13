@@ -31,7 +31,7 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
 
   const isEnabled = configuration?.topKnowledge?.enable;
 
-  const fetchTopKnowledge = () => {
+  const fetchTopKnowledge = (): Promise<any> => {
     const livechatType = Local.livechatType.load();
 
     return new Promise((resolve) => {
@@ -43,8 +43,9 @@ export function TopKnowledgeProvider({ children }: TopKnowledgeProviderProps) {
             setTopKnowledge(knowledgeList);
             return resolve(true);
           });
+      } else {
+        return resolve(true);
       }
-      return resolve(true);
     });
   };
 
