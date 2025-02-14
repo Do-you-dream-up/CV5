@@ -58,11 +58,13 @@ configuration.initialize().then((configuration) => {
 
   let host = document.getElementById(configuration.root);
 
-  if (!host) {
-    host = document.createElement('div');
-    host.id = configuration.root;
-    document.body.appendChild(host);
+  if (host) {
+    // remove previously added chatbox if any
+    host.remove();
   }
+  host = document.createElement('div');
+  host.id = configuration.root;
+  document.body.appendChild(host);
 
   // To prevent dydu-root from being empty
   // For example shopify add a display none to all div:empty

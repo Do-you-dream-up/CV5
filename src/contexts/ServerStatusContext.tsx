@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import { emit, SERVLET_API } from '../tools/axios';
 
@@ -20,12 +20,14 @@ export const ServerStatusProvider = ({ children }: ServerStatusProviderProps) =>
 
   const checkServerStatus = () => {
     if (SERVLET_API) {
-      const path = `/serverstatus`;
+      const path = `serverstatus`;
       emit(SERVLET_API.get, path, null, 5000)
         .then(() => {
           setIsServerAvailable(true);
         })
-        .catch(() => setIsServerAvailable(false));
+        .catch(() => {
+          setIsServerAvailable(false);
+        });
     }
   };
 

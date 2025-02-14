@@ -1,19 +1,17 @@
 // this file MUST NOT be cached
 
-// url will be replaced by Backend at publish time
-const url = 'TIMESTAMPED_CDN_URL/bundle.min.js';
-
-function injectScript(src) {
+function injectScript() {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = src;
+    // url will be replaced by Backend at publish time
+    script.src = 'TIMESTAMPED_CDN_URL/bundle.min.js';
     script.addEventListener('load', resolve);
     script.addEventListener('error', (e) => reject(e.error));
     document.head.appendChild(script);
   });
 }
 
-injectScript(url)
+injectScript()
   .then(() => {
     console.log('Script loaded!');
   })
