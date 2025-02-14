@@ -8,7 +8,20 @@
     <link rel="icon" href="./favicon.png" />
     <script type="module" src="./loader.js" defer></script>
     <script>
-      dyduAfterLoad = () => {console.log("dyduAfterLoad"); window.maximizeIframe();}
+      dyduAfterLoad = (iframeId) => {
+        console.log("dyduAfterLoad");
+        window.dydu.maximizeIframe();
+        if (iframeId) {
+          console.log("in dyduAfterLoad, send dyduAfterLoad_done to parent with " + iframeId);
+          window.parent.postMessage(
+                  {
+                    type: 'dyduAfterLoad_done',
+                    source: iframeId,
+                  },
+                  '*'
+          );
+        }
+      }
     </script>
       </head>
   <body style="width: inherit; height: inherit; margin: 0;">

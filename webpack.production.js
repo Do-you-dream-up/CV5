@@ -55,7 +55,14 @@ module.exports = (env) => {
             globOptions: {
               dot: true,
               gitignore: true,
-              ignore: ['**/loader.js', '**/bundle.min.js', '**/index.html', '**/iframe.html', '**/iframe.debug.html', '**/debug.html'],
+              ignore: [
+                '**/loader.js',
+                '**/bundle.min.js',
+                '**/index.html',
+                '**/iframe.html',
+                '**/iframe.debug.html',
+                '**/debug.html',
+              ],
             },
           },
           {
@@ -77,8 +84,8 @@ module.exports = (env) => {
           {
             from: Path.resolve(__dirname, 'public/iframe.html'),
             toType: 'file',
-            to: '../iframe.html'
-          }
+            to: '../iframe.html',
+          },
         ],
       }),
       new webpack.DefinePlugin({

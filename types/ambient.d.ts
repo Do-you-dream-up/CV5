@@ -2,7 +2,7 @@ declare module '*.png';
 declare module '*.svg';
 declare module '*.gif';
 interface Window {
-  dyduAfterLoad: () => void | null;
+  dyduAfterLoad: (iframeId: string) => void | null;
   dyduChatboxReady: () => void | null;
   dydu: any;
   reword: (str: string, options: any) => void;

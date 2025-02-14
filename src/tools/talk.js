@@ -2,6 +2,7 @@ import Bowser from 'bowser';
 import { LOREM_HTML } from './lorem';
 import dydu from './dydu';
 import { BOT } from './bot';
+import { getChatboxId } from './helpers';
 
 /**
  * Forge the #meta# response and add it the conversation.
@@ -20,6 +21,7 @@ export const meta = () => {
       { label: 'Operating System', value: `${os.name} ${os.versionName}` },
       { label: 'Browser', value: `${browser.name} ${browser.version}` },
       { label: 'Platform', value: platform.type },
+      { label: 'Chatbox ID', value: getChatboxId() ? getChatboxId() : '-' },
     ].map((it) => `<dt>${it.label}</dt><dd>${it.value}</dd>`),
     '</dl>',
   ];

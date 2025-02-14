@@ -19,7 +19,6 @@ import { StyleSheetManager } from 'styled-components';
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { Local } from './tools/storage';
-import { getCdnScriptId } from './tools/helpers';
 import { isLoadedFromChannels } from './tools/wizard';
 
 const renderApp = (

@@ -430,11 +430,24 @@ export const htmlToJsonForSendUploadFile = (html) => {
   return JSON.parse(correctedJsonText);
 };
 
-export function getCdnScriptId() {
+export function getChatboxId() {
+  let chatBoxId = getScriptId();
+
+  if (!chatBoxId && isInIframe()) {
+    chatBoxId = new URLSearchParams(window.location.search).get('id');
+  }
+  return chatBoxId;
+}
+
+function isInIframe() {
+  return window.location !== window.parent.location;
+}
+
+function getScriptId() {
   // url will be replaced by Backend at publish time
   const cdnUrl = 'CDN_URL';
   const loaderScript = document.querySelector(`script[src="${cdnUrl}loader.js"]`);
-  let scriptId = '';
+  let scriptId;
 
   if (loaderScript && loaderScript.id) {
     scriptId = loaderScript.id;

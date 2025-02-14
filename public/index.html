@@ -10,7 +10,19 @@
     <link rel="icon" href="TIMESTAMPED_CDN_URL/favicon.png" />
     <script type="module" src="TIMESTAMPED_CDN_URL/chatboxHomepage.js" defer></script>
     <script>
-      dyduAfterLoad = () => {console.log("dyduAfterLoad");}
+      dyduAfterLoad = (iframeId) => {
+        console.log("dyduAfterLoad");
+        if (iframeId) {
+          console.log("in dyduAfterLoad, send dyduAfterLoad_done to parent with " + iframeId);
+          window.parent.postMessage(
+                  {
+                    type: 'dyduAfterLoad_done',
+                    source: iframeId,
+                  },
+                  '*'
+          );
+        }
+      }
       dyduChatboxReady = () => {console.log("dyduChatboxReady");}
       window.avatarPlayAnim = () => {}
     </script>

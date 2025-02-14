@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
-import { isDefined, isOfTypeFunction } from '../tools/helpers';
+import { getChatboxId, isDefined, isOfTypeFunction } from '../tools/helpers';
 import { useEvent } from './EventsContext';
 
 interface ChatboxLoadedProps {
@@ -32,7 +32,9 @@ export const ChatboxLoadedProvider = ({ children, areCookiesAllowed }: ChatboxLo
   const executeDyduAfterLoad = () =>
     new Promise((resolve) => {
       const dyduAfterLoad = window?.dyduAfterLoad;
-      if (isDefined(dyduAfterLoad) && isOfTypeFunction(dyduAfterLoad())) dyduAfterLoad();
+      if (isDefined(dyduAfterLoad) && isOfTypeFunction(dyduAfterLoad)) {
+        dyduAfterLoad(getChatboxId());
+      }
       resolve(true);
     });
 

@@ -39,6 +39,7 @@ describe('talk', () => {
       `<dt>Operating System</dt><dd>${os.name} ${os.versionName}</dd>`,
       `<dt>Browser</dt><dd>${browser.name} ${browser.version}</dd>`,
       `<dt>Platform</dt><dd>${platform.type}</dd>`,
+      `<dt>Chatbox ID</dt><dd>-</dd>`,
       '</dl>',
     ].join('');
 

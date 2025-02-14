@@ -4,7 +4,7 @@ import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
 import { OnboardingContext, OnboardingProvider } from '../../contexts/OnboardingContext';
 import { TabContext, TabProvider } from '../../contexts/TabContext';
-import { escapeHTML, isDefined, isValidUrl } from '../../tools/helpers';
+import { escapeHTML, getChatboxId, isDefined, isValidUrl } from '../../tools/helpers';
 import { useContext, useEffect, useRef, useState } from 'react';
 
 import Contacts from '../Contacts';
@@ -167,25 +167,17 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
     }
   }, [areWindowFunctionsCreated]);
 
-  const getDyduChatObject = () => {
-    return {
-      handleRewordClicked: (text, options) => handleRewordClicked(text, options),
-      clearInteractions: () => clearInteractions && clearInteractions(),
-      reply: (text) => addNotificationOrResponse && addNotificationOrResponse({ text }),
-      setDialogVariable: (name, value) => {
-        dydu.setDialogVariable(name, escapeHTML(value));
-      },
-      setRegisterContext: (name, value) => {
-        dydu.setRegisterContext(name, escapeHTML(value));
-      },
-    };
-  };
-
   useEffect(() => {
     if (!areWindowFunctionsCreated) {
-      window.dydu = { ...window.dydu };
+      window.dydu = { ...window.dydu }; // ensure window.dydu is a JSON and if eventually defined before, keep previous values
 
-      window.dydu.chat = getDyduChatObject();
+      window.dydu.chat = {
+        setRegisterContext: (name, value) => dydu.setRegisterContext(name, escapeHTML(value)),
+        handleRewordClicked: (text, options) => handleRewordClicked(text, options),
+        clearInteractions: () => clearInteractions && clearInteractions(),
+        reply: (text) => addNotificationOrResponse && addNotificationOrResponse({ text }),
+        setDialogVariable: (name, value) => dydu.setDialogVariable(name, escapeHTML(value)),
+      };
 
       window.dydu.promptEmail = {
         prompt: (type) => setPrompt && setPrompt(type),
@@ -241,10 +233,21 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       window.rewordtest = window.dydu.chat.handleRewordClicked; //reword reference for rewords in template
       window._dydu_lockTextField = window.dydu.ui.lock;
       window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
-      window.maximizeIframe = () => {
+      window.dydu.maximizeIframe = () => {
         setMode(VIEW_MODE.full);
         update('chatbox', 'margin', 0);
       };
+
+      // listen messages from parent to execute corresponding window.dydu functions
+      window.addEventListener('message', function (msg) {
+        if (msg.data) {
+          if (msg.data.type === 'window.dydu' && msg.data.target === getChatboxId()) {
+            const toExecute = 'window.dydu.' + msg.data.content;
+            // console.log(getChatboxId() + ' will execute ' + toExecute);
+            eval(toExecute);
+          }
+        }
+      });
 
       setAreWindowFunctionsCreated(true);
     }
@@ -269,7 +272,6 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
     toggleSidebar,
     gdprPassed,
     setGdprPassed,
-    getDyduChatObject,
   ]);
 
   const classnames = c('dydu-chatbox', classes.root, {

@@ -1,4 +1,4 @@
-import { _parse, getCdnScriptId, isDefined, isEmptyObject, isEmptyString } from './helpers';
+import { _parse, getChatboxId, isDefined, isEmptyObject, isEmptyString } from './helpers';
 
 import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
@@ -117,9 +117,9 @@ export class Cookie {
 }
 
 let suffix = '';
-const scriptId = getCdnScriptId();
-if (scriptId.length > 0) {
-  suffix = '.' + scriptId;
+const chatboxId = getChatboxId();
+if (chatboxId) {
+  suffix = '.' + chatboxId;
 } else if (isLoadedFromChannels()) {
   suffix = '.' + 'preview';
 }
