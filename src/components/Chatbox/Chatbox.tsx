@@ -232,6 +232,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
+        toggle: (mode: number) => setMode(mode),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
