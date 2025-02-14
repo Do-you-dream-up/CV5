@@ -3,7 +3,6 @@ import { hasProperty, isDefined, isPositiveNumber, secondsToMs } from './helpers
 import { BOT, initBotInfoFromJsonOrChannels } from './bot';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { decode } from './cipher';
-import debounce from 'debounce-promise';
 import dydu from './dydu';
 import Auth, { Local, Session } from './storage';
 
@@ -264,48 +263,37 @@ const formatConsoleError = (error: any) => {
  * @param {number} currentServerPreviouslyUsed - server index used with the last request. Used to switch server
  * @returns {Promise}
  */
-const emit = debounce(
-  (verb: any, path: string, data: any, timeout: number, currentServerPreviouslyUsed?: number) => {
-    handleSwitchToBackup(currentServerPreviouslyUsed);
-    handleSetApiTimeout(timeout);
+const emit = (verb: any, path: string, data: any, timeout: number, currentServerPreviouslyUsed?: number) => {
+  handleSwitchToBackup(currentServerPreviouslyUsed);
+  handleSetApiTimeout(timeout);
 
-    const pathWithoutTrailingSlash = path.replace(/\/$/, '');
+  const pathWithoutTrailingSlash = path.replace(/\/$/, '');
 
-    const currentServerIndexForThisRequest = currentServerIndex;
+  const currentServerIndexForThisRequest = currentServerIndex;
 
-    try {
-      return verb(pathWithoutTrailingSlash, data)
-        .then((response: any) => {
-          lastResponse = response;
-          lastStatus = 'OK';
-          triesCounter = 0;
-          if (currentServerIndex !== 0) {
-            Session.serverIndex.save(currentServerIndex.toString());
-          }
-          return response;
-        })
-        .then(({ data = {} }) => {
-          return handleAxiosResponse(data);
-        })
-        .catch((error: any) => {
-          formatConsoleError(error);
-          return handleAxiosError(
-            error,
-            verb,
-            pathWithoutTrailingSlash,
-            data,
-            timeout,
-            currentServerIndexForThisRequest,
-          );
-        });
-    } catch (e) {
-      console.error('while executing |emit()|', e);
-      return Promise.resolve();
-    }
-  },
-  100,
-  { leading: true },
-);
+  try {
+    return verb(pathWithoutTrailingSlash, data)
+      .then((response: any) => {
+        lastResponse = response;
+        lastStatus = 'OK';
+        triesCounter = 0;
+        if (currentServerIndex !== 0) {
+          Session.serverIndex.save(currentServerIndex.toString());
+        }
+        return response;
+      })
+      .then(({ data = {} }) => {
+        return handleAxiosResponse(data);
+      })
+      .catch((error: any) => {
+        formatConsoleError(error);
+        return handleAxiosError(error, verb, pathWithoutTrailingSlash, data, timeout, currentServerIndexForThisRequest);
+      });
+  } catch (e) {
+    console.error('while executing |emit()|', e);
+    return Promise.resolve();
+  }
+};
 
 const getServerFromIndex = (index: number): string | null => {
   return BOT !== null ? BOT.getServer(index) : null;

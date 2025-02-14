@@ -3,10 +3,8 @@ import './tools/prototypes/prototypes-augmented';
 import { JssProvider, ThemeProvider } from 'react-jss';
 
 import App from './components/App/App';
-import { BotInfoProvider } from './contexts/BotInfoContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import ReactDOM from 'react-dom';
-import { ServerStatusProvider } from './contexts/ServerStatusContext';
 import ViewModeProvider from './contexts/ViewModeProvider';
 import { getResourceWithoutCache } from './tools/resources';
 import breakpoints from './styles/breakpoints';
@@ -81,11 +79,13 @@ configuration.initialize().then((configuration) => {
     Local.applyIdSuffix(scriptId);
   }
 
-  if (!host) {
-    host = document.createElement('div');
-    host.id = configuration.root;
-    document.body.appendChild(host);
+  if (host) {
+    // remove previously added chatbox if any
+    host.remove();
   }
+  host = document.createElement('div');
+  host.id = configuration.root;
+  document.body.appendChild(host);
 
   // To prevent dydu-root from being empty
   // For example shopify add a display none to all div:empty
