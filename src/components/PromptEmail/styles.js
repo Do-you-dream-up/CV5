@@ -47,4 +47,11 @@ export default createUseStyles((theme) => ({
     padding: '.6em',
     width: '100%',
   },
+  srOnly: {
+    position: 'absolute',
+    clip: 'rect(0, 0, 0, 0)',
+  },
+  fieldset: {
+    border: 'none',
+  },
 }));
