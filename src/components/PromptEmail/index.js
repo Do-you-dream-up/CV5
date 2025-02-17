@@ -67,9 +67,11 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
                     name="email"
                     onChange={onChange}
                     placeholder={ready ? t('promptEmail.placeholder') : null}
+                    aria-label={ready ? t('promptEmail.placeholder') : null}
                     required
                     type="email"
                     value={data.email || ''}
+                    autoComplete="email"
                   />
                 </label>
                 {type === 'gdpr' && (
