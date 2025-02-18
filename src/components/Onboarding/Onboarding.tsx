@@ -68,7 +68,7 @@ export default function Onboarding({ children }: OnboardingProps) {
             <img src={srcImage} alt={''} />
           </div>
           {stepIndex !== undefined && stepsFiltered && stepsFiltered?.[stepIndex]?.title && (
-            <p className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[stepIndex]?.title}</p>
+            <h2 className={c('dydu-onboarding-title', classes.title)}>{stepsFiltered?.[stepIndex]?.title}</h2>
           )}
 
           {stepIndex !== undefined && stepsFiltered && stepsFiltered?.[stepIndex]?.body && (
