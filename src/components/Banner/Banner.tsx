@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import icons from '../../tools/icon-constants';
 import { useOnboarding } from '../../contexts/OnboardingContext';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { useDialog } from "../../contexts/DialogContext";
 
 /**
  * Top-content to be placed above the conversation. Typically used for ephemeral
@@ -31,6 +32,7 @@ export default function Banner() {
   const html = sanitize(t('banner.html'));
   const bannerRef = useRef() as MutableRefObject<HTMLDivElement>;
   const { tabbing } = useUserAction();
+  const { isInputFilled } = useDialog();
 
   const dismiss = useCallback(() => {
     if (storage) {
@@ -44,7 +46,7 @@ export default function Banner() {
   };
 
   useEffect(() => {
-    if (show && isOnboardingAlreadyDone && tabbing) {
+    if (show && isOnboardingAlreadyDone && tabbing && !isInputFilled) {
       bannerRef?.current?.focus();
     }
   }, [show, isOnboardingAlreadyDone, tabbing]);
