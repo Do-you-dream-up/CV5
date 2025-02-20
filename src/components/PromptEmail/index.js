@@ -75,7 +75,8 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
                   />
                 </label>
                 {type === 'gdpr' && (
-                  <>
+                  <fieldset className={c('dydu-gdpr-form-fieldset')}>
+                    <legend className={classes.srOnly}>{t('footer.menu.gdpr')}</legend>
                     <label className={c('dydu-gdpr-form-field', classes.fieldCheckbox)}>
                       <input checked={data.withGet || ''} name="withGet" onChange={onChange} type="checkbox" />
                       <Skeleton height="1em" hide={!ready} variant="paragraph" width="16em">
@@ -88,7 +89,7 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
                         <div children={t('gdpr.form.forget.description')} />
                       </Skeleton>
                     </label>
-                  </>
+                  </fieldset>
                 )}
               </>
             )}
