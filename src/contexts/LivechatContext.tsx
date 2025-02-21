@@ -167,10 +167,13 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   };
 
   const endLivechat = () => {
-    Local.livechatType.remove();
-    setHasToVerifyContextAfterLivechatClosed(true);
-    leaveWaitingQueue();
-    Local.operator.remove();
+    if (Local.livechatType.load()) {
+      Local.livechatType.remove();
+      setHasToVerifyContextAfterLivechatClosed(true);
+      leaveWaitingQueue();
+      Local.operator.remove();
+      closeTunnel();
+    }
   };
 
   const closeTunnel = () => {
@@ -243,7 +246,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   useEffect(() => {
     if (shouldEndLivechat) {
       endLivechat();
-      closeTunnel();
     } else if (shouldStartLivechat() && !tunnelRef.current) {
       startLivechat();
     }
@@ -252,7 +254,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   useEffect(() => {
     if (shouldEndLivechat) {
       endLivechat();
-      closeTunnel();
     }
   }, [shouldEndLivechat, endLivechat]);
 
