@@ -25,6 +25,7 @@ let decodeAndDisplayNotification = null;
 let showAnimationOperatorWriting = null;
 let leaveWaitingQueue = null;
 let onFailOpenTunnel = null;
+let clearInteractionsAndAddWelcome = null;
 
 const linkToLivechatFunctions = (livechatContextFunctions) => {
   endLivechat = livechatContextFunctions.endLivechat;
@@ -33,6 +34,7 @@ const linkToLivechatFunctions = (livechatContextFunctions) => {
   showAnimationOperatorWriting = livechatContextFunctions.showAnimationOperatorWriting;
   onFailOpenTunnel = livechatContextFunctions.onFailOpenTunnel;
   leaveWaitingQueue = livechatContextFunctions.leaveWaitingQueue;
+  clearInteractionsAndAddWelcome = livechatContextFunctions.clearInteractionsAndAddWelcome;
 };
 
 let needToAnswerSurvey = false;
@@ -187,6 +189,7 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.historyResponse:
         if (!history) {
+          clearInteractionsAndAddWelcome();
           const decodedInteractions = decode(lastMessageData.values).interactions;
           setHistory(decodedInteractions);
         }
