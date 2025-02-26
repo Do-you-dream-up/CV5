@@ -76,7 +76,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   };
 
   useEffect(() => {
-    if (welcomeKnowledge) {
+    if (welcomeKnowledge && !Local.livechatType.load()) {
       clearInteractionsAndAddWelcome();
     }
   }, [welcomeKnowledge]);
@@ -192,6 +192,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       getSurveyConfiguration,
       showUploadFileButton,
       leaveWaitingQueue,
+      clearInteractionsAndAddWelcome,
     };
   }, [
     lastResponse,
@@ -202,6 +203,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     showAnimationOperatorWriting,
     showUploadFileButton,
     getSurveyConfiguration,
+    clearInteractionsAndAddWelcome,
   ]);
 
   const startLivechat = (tunnel = null) => {

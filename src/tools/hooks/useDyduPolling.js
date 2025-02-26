@@ -107,7 +107,8 @@ export default function useDyduPolling() {
     });
   };
 
-  const closeLivechatIfEndSurveyClosed = () => {};
+  const closeLivechatIfEndSurveyClosed = () => {
+  };
 
   const sendSurvey = useCallback((surveyUserAnswer) => {
     dydu.sendSurveyPolling(surveyUserAnswer, { solutionUsed: SOLUTION_TYPE.livechat });
@@ -119,6 +120,10 @@ export default function useDyduPolling() {
 
   const onUserTyping = useCallback((userInput) => {
     dydu.typing(userInput);
+  }, []);
+
+  const onUserReading = useCallback((userInput) => {
+    //TODO : faire un endpoint back et l'appeler ici
   }, []);
 
   const close = useCallback(() => {
@@ -134,6 +139,7 @@ export default function useDyduPolling() {
     sendSurvey,
     close,
     onUserTyping,
+    onUserReading,
     setLastPollingResponse,
     closeLivechatIfEndSurveyClosed,
   };
