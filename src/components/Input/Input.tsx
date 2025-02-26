@@ -49,6 +49,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     setIsWaitingForResponse,
     clearInteractions,
     promiseQueueList,
+    setIsInputFilled,
   } = useDialog();
   const { configuration } = useConfiguration();
 
@@ -87,6 +88,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     setTyping(true);
     setInput(event.target.value);
     setCounter(maxLength - event.target.value.length);
+    setIsInputFilled && setIsInputFilled(event.target.value.length > 0);
   };
 
   const resetIfNecessaryBeforeSubmit = (text): void => {

@@ -94,6 +94,8 @@ export interface DialogContextProps {
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
   clearInteractionsAndAddWelcome: () => void;
   promiseQueueList: [Promise<any>];
+  isInputFilled?: boolean;
+  setIsInputFilled?: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SidebarContentProps {
@@ -176,6 +178,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
   const [rewordAfterGuiAction, setRewordAfterGuiAction] = useState<string>('');
+  const [isInputFilled, setIsInputFilled] = useState<boolean>(false);
   const { shadowAnchor } = useShadow();
 
   useEffect(() => {
@@ -612,6 +615,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
         rewordAfterGuiAction,
         clearInteractionsAndAddWelcome,
         promiseQueueList,
+        isInputFilled,
+        setIsInputFilled,
       }}
     />
   );
