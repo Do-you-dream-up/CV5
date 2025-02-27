@@ -52,6 +52,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const { send } = useLivechat();
   const { mode, setMode, isFull, isOpen } = useViewMode();
   const {
+    lastRequest,
     addRequest,
     clearInteractions,
     interactions,
@@ -108,6 +109,9 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
 
       options = JSON.parse(JSON.stringify(options));
       options.hide |= isPushCondition(text) || options.fromSurvey;
+      if (options.accessibilityContext && lastRequest) {
+        lastRequest.current = options.accessibilityContext;
+      }
 
       if (
         (toSend.extra.type === E_QUESTION_TYPE.redirection ||

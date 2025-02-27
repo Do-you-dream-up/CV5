@@ -27,7 +27,8 @@ import { useTranslation } from 'react-i18next';
  * 1. Choices
  * 1. Comment
  */
-export default function Feedback() {
+
+export default function Feedback({ notAddContext, lastRequest }) {
   const { configuration } = useConfiguration();
   const { addNotificationOrResponse } = useLivechat();
   const [showChoices, setShowChoices] = useState(false);
@@ -42,6 +43,8 @@ export default function Feedback() {
   const voteThanks = t('feedback.vote.thanks');
   const downVote = t('feedback.vote.negative');
   const upVote = t('feedback.vote.positive');
+  const altDownVote = notAddContext ? downVote : downVote + ' ' + lastRequest;
+  const altUpVote = notAddContext ? upVote : upVote + ' ' + lastRequest;
   const { customFeedback } = configuration?.feedback;
   const theme = useTheme();
 
@@ -127,7 +130,7 @@ export default function Feedback() {
               variant="icon"
               data-testid="vote-buttons-down"
             >
-              <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt={downVote} />
+              <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt={altDownVote} />
             </Button>
             <Button
               style={{ backgroundColor: `${COLOR_RGAA.success}` }}
@@ -135,7 +138,7 @@ export default function Feedback() {
               variant="icon"
               data-testid="vote-buttons-up"
             >
-              <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt={upVote} />
+              <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt={altUpVote} />
             </Button>
           </div>
         )}
@@ -181,3 +184,8 @@ export default function Feedback() {
     )
   );
 }
+
+Feedback.defaultProps = {
+  notAddContext: false,
+  lastRequest: '',
+};
