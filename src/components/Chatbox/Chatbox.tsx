@@ -36,6 +36,8 @@ import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import ScrollToBottom from '../ScrollToBottom/ScrollToBottom';
 import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
+import { useUserAction } from '../../contexts/UserActionContext';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -83,19 +85,11 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const poweredByActive = configuration?.poweredBy?.active;
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
-  const [prevMode, setPrevMode] = useState<number | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const { eventFired } = useUserAction();
+  const { shadowRoot } = useShadow();
 
   let scrollToBottomTimeout: any = {};
-
-  useEffect(() => {
-    if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
-      root?.current.focus();
-    }
-    if (mode !== undefined) {
-      setPrevMode(mode);
-    }
-  }, [mode]);
 
   const isPushCondition = (text) => {
     return text.startsWith('_pushcondition_');
@@ -292,16 +286,28 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
     scrollToBottomTimeout = setTimeout(() => setShowScrollToBottom(!bottom), 300);
   };
 
+  // UseEffect to handle the tab key press event and keep focus in chatbox. If you change first or last focusable element in chatbox
+  // you need to change focusableElements array.
+  // We use shadowRoot.activeElement to get the active element inside the shadowRoot.
+  useEffect(() => {
+    const rootElement = root.current;
+    const focusableElements = rootElement ? rootElement.querySelectorAll('button, textarea') : [];
+    if (focusableElements.length > 0 && eventFired?.key === 'Tab') {
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (eventFired?.shiftKey && shadowRoot?.activeElement === firstElement) {
+        eventFired?.preventDefault();
+        lastElement.focus();
+      } else if (!eventFired?.shiftKey && shadowRoot?.activeElement === lastElement) {
+        eventFired?.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, [eventFired]);
+
   return (
-    <div className={classnames} {...rest} role="region" aria-labelledby={idLabel} id="dydu-chatbox">
-      <div
-        tabIndex={0}
-        ref={root}
-        aria-label={labelChatbot}
-        role="dialog"
-        aria-modal={true}
-        aria-labelledby="dydu-gdpr-text"
-      >
+    <div className={classnames} {...rest} role="region" id="dydu-chatbox">
+      <div ref={root} aria-label={labelChatbot} role="dialog" aria-modal={true} id="dydu-root-focus">
         {hasAfterLoadBeenCalled ? (
           <div className={classes.container}>
             <>

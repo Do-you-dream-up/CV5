@@ -5,6 +5,7 @@ import { useShadow } from './ShadowProvider';
 /* THIS CONTEXT IS USED TO CHECK WHETHER THE USER IS NAVIGATING VIA CLICKS OR TAB KEY FOR ACCESSIBILITY REASONS */
 
 interface UserActionProps {
+  eventFired?: KeyboardEvent | null;
   tabbing?: boolean;
   shiftPressed?: boolean;
   addRgaaRef?: (name: string, ref) => void;
@@ -23,47 +24,50 @@ export const UserActionContext = createContext<UserActionProps>({});
 
 export function UserActionProvider({ children }: UserActionProviderProps) {
   const [tabbing, setTabbing] = useState(false);
-  const [tabPressed, setTabPressed] = useState(false);
+  const [eventFired, setEventFired] = useState(null);
   const [shiftPressed, setShiftPressed] = useState(false);
 
   const [rgaaRef, setRgaaRef] = useState({});
   const { shadowAnchor } = useShadow();
 
-  useEffect(() => {
-    const keyListener = (e) => {
-      if (e.keyCode === 9) {
-        setTabbing(true);
-        setTabPressed(true);
-      } else if (e.keyCode === 13 && tabPressed) {
-        setTabbing(true);
-      } else if (e.keyCode === 16) {
-        setShiftPressed(true);
-      } else {
-        setTabbing(false);
-        setTabPressed(false);
+  const pressedAccessibilityKeyDuringTabbing = (e: { code: string }, tabbing: boolean) => {
+    return (
+      (e.code === 'Enter' ||
+        e.code === 'ShiftLeft' ||
+        e.code === 'ShiftRight' ||
+        e.code === 'Escape' ||
+        e.code === 'Space') &&
+      tabbing
+    );
+  };
+
+  const keyListener = (e) => {
+    setEventFired(e);
+    setTabbing((prevTabbing) => {
+      if (e.key === 'Tab') {
+        setShiftPressed(e.shiftKey);
+        return true;
+      } else if (!pressedAccessibilityKeyDuringTabbing(e, prevTabbing)) {
         setShiftPressed(false);
+        return false;
       }
-    };
+      return prevTabbing;
+    });
+  };
+
+  const clickListener = () => {
+    setTabbing(false);
+    setShiftPressed(false);
+  };
+
+  useEffect(() => {
     shadowAnchor?.addEventListener('keydown', keyListener);
+    shadowAnchor?.addEventListener('mousedown', clickListener);
     return () => {
       shadowAnchor?.removeEventListener('keydown', keyListener);
+      shadowAnchor?.removeEventListener('mousedown', clickListener);
     };
-  }, [tabPressed]);
-
-  useEffect(() => {
-    const clickListener = () => {
-      if (!tabPressed) {
-        setTabbing(false);
-      }
-      setTabPressed(false);
-      setShiftPressed(false);
-    };
-    shadowAnchor?.addEventListener('click', clickListener);
-
-    return () => {
-      shadowAnchor?.removeEventListener('click', clickListener);
-    };
-  }, [tabPressed]);
+  }, []);
 
   const addRgaaRef = (name, ref) => setRgaaRef({ ...rgaaRef, [name]: ref });
 
@@ -87,6 +91,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
     <UserActionContext.Provider
       children={children}
       value={{
+        eventFired,
         tabbing,
         shiftPressed,
         addRgaaRef,

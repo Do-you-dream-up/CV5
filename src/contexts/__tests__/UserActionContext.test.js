@@ -19,7 +19,7 @@ describe('useUserAction', () => {
     });
 
     act(() => {
-      const tabKeyEvent = new KeyboardEvent('keydown', { keyCode: 9 });
+      const tabKeyEvent = new KeyboardEvent('keydown', { key: 'Tab' });
       mockDiv.dispatchEvent(tabKeyEvent);
     });
 
