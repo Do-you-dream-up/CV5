@@ -25,6 +25,8 @@ import useViewport from '../../tools/hooks/useViewport';
 import Button from '../Button/Button';
 import { useLivechat } from '../../contexts/LivechatContext';
 import { useDialog } from '../../contexts/DialogContext';
+import { VIEW_MODE } from '../../tools/constants';
+import { useViewMode } from '../../contexts/ViewModeProvider';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -38,6 +40,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { isOnboardingAlreadyDone } = useOnboarding();
   const onboardingEnable = configuration.onboarding.enable;
   const dragonZone = useRef();
+  const dyduHeader = useRef();
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
   const { isMobile } = useViewport();
@@ -68,6 +71,21 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const iconColorWhite = theme.palette.primary.text;
   const moreOptionsRef = useRef(null);
   const { send } = useLivechat();
+  const { isOpen, mode } = useViewMode();
+  const [prevMode, setPrevMode] = useState(null);
+
+  useEffect(() => {
+    if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
+      const rootElement = dyduHeader.current;
+      const focusableElements = rootElement ? rootElement.querySelectorAll('button') : [];
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+    }
+    if (mode !== undefined) {
+      setPrevMode(mode);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     addRgaaRef('moreOptionsRef', moreOptionsRef);
@@ -237,7 +255,12 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     );
 
   return (
-    <div className={c('dydu-header', classes.root, { [classes.flat]: minimal })} {...rest} id="dydu-header">
+    <div
+      className={c('dydu-header', classes.root, { [classes.flat]: minimal })}
+      {...rest}
+      id="dydu-header"
+      ref={dyduHeader}
+    >
       <div
         className={c('dydu-header-body', classes.body, {
           [classes.draggable]: onDragStart,

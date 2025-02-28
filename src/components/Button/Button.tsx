@@ -88,7 +88,6 @@ const Button = ({
         classes.base,
         { [classes.sidebar]: sidebar },
         classes[variant],
-        { [classes.hideOutline]: !tabbing },
         { [classes.grow]: grow },
         className,
       ),
