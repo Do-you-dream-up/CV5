@@ -41,6 +41,7 @@ import { useViewMode } from './ViewModeProvider';
 import { useGdpr } from './GdprContext';
 import { usePushrules } from './PushrulesContext';
 import PromiseQueue from '../tools/hooks/PromiseQueue';
+import useId from "../tools/hooks/useId";
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -96,6 +97,7 @@ export interface DialogContextProps {
   promiseQueueList: [Promise<any>];
   isInputFilled?: boolean;
   setIsInputFilled?: Dispatch<SetStateAction<boolean>>;
+  fileUploadButtonId?: any;
 }
 
 interface SidebarContentProps {
@@ -209,8 +211,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
     return additionalListInteraction.current;
   };
 
+  const [fileUploadButtonId, setFileUploadButtonId] = useState(null);
+
   const showUploadFileButton = useCallback(() => {
-    addAdditionalInteraction(<FileUploadButton />);
+    const newId = useId();
+    setFileUploadButtonId && setFileUploadButtonId(newId);
+    addAdditionalInteraction(<FileUploadButton id={newId}/>);
   }, []);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
@@ -617,6 +623,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         promiseQueueList,
         isInputFilled,
         setIsInputFilled,
+        fileUploadButtonId,
       }}
     />
   );

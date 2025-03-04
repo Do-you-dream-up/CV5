@@ -18,6 +18,7 @@ describe('FileUploadButton', () => {
 
     useUploadFile.mockReturnValue({
       onSelectFile: onSelectFileMock,
+      isFileSent: true,
       extractFileFromEvent: { name: 'fileName' },
     });
 

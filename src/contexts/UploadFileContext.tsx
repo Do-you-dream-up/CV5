@@ -1,7 +1,5 @@
 import {
-  Dispatch,
   ReactNode,
-  SetStateAction,
   createContext,
   useCallback,
   useContext,
@@ -10,11 +8,11 @@ import {
   useState,
 } from 'react';
 
-import { ALLOWED_FORMAT } from '../../src/tools/constants';
-import dydu from '../../src/tools/dydu';
+import { ALLOWED_FORMAT } from '../tools/constants';
 import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
+import useId from "../tools/hooks/useId";
 
 interface UploadFileContextProps {
   fileSelected?: File | null;
@@ -22,7 +20,7 @@ interface UploadFileContextProps {
   fileName?: string;
   validateFile?: (file: File) => boolean;
   displaySuccessOrErrorMessage?: (isFormatAllowed: Promise<boolean>, file: File) => boolean;
-  onSelectFile?: (file: File, inputRef: any) => void;
+  onSelectFile?: (file: File) => void;
   errorFormatMessage?: string | null;
   showButtonUploadFile?: boolean;
   getFileSize?: (file: File) => number;
@@ -33,10 +31,6 @@ interface UploadFileContextProps {
   isUploadFileReturnSuccess?: () => void;
   readBuffer?: (file: File) => any;
   arrayBufferToHexString?: (arrayBuffer: ArrayBuffer) => string;
-  buttonIdDisabled?: {
-    id?: boolean;
-  };
-  setButtonIdDisabled?: Dispatch<SetStateAction<{ id?: boolean | undefined }>>;
 }
 
 interface UploadFileProviderProps {
@@ -50,32 +44,30 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const { t } = useTranslation('translation');
   const { showUploadFileButton, rewordAfterGuiAction } = useDialog();
   const [selected, setSelected] = useState<File | null>(null);
-  const [inputRef, setInputRef] = useState<any>(null);
   const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<File | null>(null);
   const [isFileUploadSuccess, setIsFileUploadSuccess] = useState<boolean>(false);
-  const [buttonIdDisabled, setButtonIdDisabled] = useState<{ id?: boolean }>({});
   const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
   const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
   const getFileSize = (file) => Math.ceil(file.size / 1024 ** 1);
   const MSG_FORMAT_MAGIC_NUMBER = 'D0CF11E0A1B11AE1';
+  const [isFileSent, setIsFileSent] = useState<{ id?: boolean }>({});
 
   const validateFile: (file: File) => boolean = useCallback((file: File) => {
     let isFormatAllowed: Promise<boolean>;
-
     if (file.type) {
       isFormatAllowed = Promise.resolve(ALLOWED_FORMAT.includes(file.type));
     } else if (file.name?.slice(-4) === '.msg') {
       isFormatAllowed = checkMsgFormat(file);
+    } else {
+      isFormatAllowed = Promise.resolve(false);
     }
-
     return displaySuccessOrErrorMessage(isFormatAllowed, file);
   }, []);
 
   function displaySuccessOrErrorMessage(isFormatAllowed, file): boolean {
     return isFormatAllowed.then((isFormatAllowedResult: boolean) => {
       const fileSize = getFileSize(file);
-
       if (isFormatAllowedResult && fileSize <= 10000) setErrorFormatMessage('');
       else if (!isFormatAllowedResult && fileSize > 10000)
         setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
@@ -119,14 +111,12 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
     });
   }
 
-  const onSelectFile = (file, inputRef) => (
-    setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file), setInputRef(inputRef)
+  const onSelectFile = (file) => (
+    setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file)
   );
 
   const handleCancel = () => (
-    setSelected(null),
-    setButtonIdDisabled({ ...buttonIdDisabled, [inputRef.current.id]: false }),
-    (inputRef.current.value = null)
+    setSelected(null)
   );
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
@@ -154,11 +144,11 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       isFileUploadSuccess,
       setIsFileUploadSuccess,
       fileName,
-      buttonIdDisabled,
-      setButtonIdDisabled,
       displaySuccessOrErrorMessage,
       arrayBufferToHexString,
       readBuffer,
+      isFileSent,
+      setIsFileSent,
     }),
     [
       onSelectFile,
@@ -174,11 +164,11 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
       isFileUploadSuccess,
       setIsFileUploadSuccess,
       fileName,
-      buttonIdDisabled,
-      setButtonIdDisabled,
       displaySuccessOrErrorMessage,
       arrayBufferToHexString,
       readBuffer,
+      isFileSent,
+      setIsFileSent,
     ],
   );
 

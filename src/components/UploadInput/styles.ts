@@ -4,7 +4,20 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles<any, any>((theme: any): any => ({
   upload: () => ({
-    backgroundColor: theme?.palette?.primary?.main ?? 'rgb(65, 71, 155)',
+    '&:not(:disabled)': {
+      backgroundColor: theme?.palette?.primary?.main ?? 'rgb(65, 71, 155)',
+    },
+    '&:disabled': {
+      cursor: 'auto',
+    },
+  }),
+  sendfile: () => ({
+    '&:not(:disabled)': {
+      backgroundColor: theme?.palette?.primary?.main ?? 'rgb(65, 71, 155)',
+    },
+    '&:disabled': {
+      cursor: 'wait',
+    },
   }),
   color: () => ({
     color: theme?.palette?.primary?.main ?? 'rgb(65, 71, 155)',
