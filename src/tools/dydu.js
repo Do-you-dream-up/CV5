@@ -508,37 +508,28 @@ export default new (class Dydu {
     return emit(SERVLET_API.get, path);
   };
 
-  #makeTLivechatTypingPayloadWithInput = async (input = '') => {
+  typing = async (input) => {
     if (!isDefined(input)) return;
-    return {
-      type: 'typing',
-      parameters: {
-        alreadyCame: this.alreadyCame(),
-        typing: isDefined(input) && !isEmptyString(input),
-        content: input?.toBase64(),
-        contextId: Local.contextId.load(BOT.id),
-        botId: this.getBot()?.id?.toBase64(),
-        qualificationMode: this.qualificationMode,
-        language: this.getLocale().toBase64(),
-        space: this.getSpace().toBase64(),
-        solutionUsed: SOLUTION_TYPE.assistant,
-        clientId: this.getClientId(),
-        useServerCookieForContext: false,
-        saml2_info: '',
-        timestamp: new Date().getMilliseconds(),
-      },
-    };
+    const data = qs.stringify({
+      typing: true,
+      content: input?.toBase64(),
+      contextId: Local.contextId.load(BOT.id),
+      solutionUsed: SOLUTION_TYPE.assistant,
+      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
+    });
+    const path = `chat/typing/${BOT.id}/`;
+    return this.post(path, data);
   };
 
-  #toQueryString = (obj) => {
-    return encodeURIComponent(JSON.stringify(obj));
-  };
-
-  typing = async (text) => {
-    const typingPayload = await this.#makeTLivechatTypingPayloadWithInput(text);
-    const qs = this.#toQueryString(typingPayload);
-    const path = `${buildServletUrl()}chatHttp?data=${qs}`;
-    return fetch(path).then((r) => r.json());
+  reading = async () => {
+    const data = qs.stringify({
+      reading: true,
+      contextId: Local.contextId.load(BOT.id),
+      solutionUsed: SOLUTION_TYPE.assistant,
+      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
+    });
+    const path = `chat/reading/${BOT.id}/`;
+    return this.post(path, data);
   };
 
   poll = async ({ serverTime, pollUpdatedInteractionDate, contextId, context }) => {

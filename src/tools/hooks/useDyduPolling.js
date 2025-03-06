@@ -122,8 +122,8 @@ export default function useDyduPolling() {
     dydu.typing(userInput);
   }, []);
 
-  const onUserReading = useCallback((userInput) => {
-    //TODO : faire un endpoint back et l'appeler ici
+  const onUserReading = useCallback(() => {
+    dydu.reading();
   }, []);
 
   const close = useCallback(() => {
