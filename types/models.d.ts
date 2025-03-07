@@ -27,6 +27,7 @@ declare namespace Models {
     poweredBy: PoweredBy;
     pushrules: PoweredBy;
     qualification: PoweredBy;
+    registerVisit: RestrictedOnChatboxAccessInsteadOfSiteAccess;
     root: string;
     sidebar: Sidebar;
     spaces: Spaces;
@@ -332,6 +333,10 @@ declare namespace Models {
 
   export interface PoweredBy {
     active: boolean;
+  }
+
+  export interface RestrictedOnChatboxAccessInsteadOfSiteAccess {
+    restrictedOnChatboxAccessInsteadOfSiteAccess: boolean;
   }
 
   export interface Sidebar {

@@ -41,7 +41,7 @@ import { useViewMode } from './ViewModeProvider';
 import { useGdpr } from './GdprContext';
 import { usePushrules } from './PushrulesContext';
 import PromiseQueue from '../tools/hooks/PromiseQueue';
-import useId from "../tools/hooks/useId";
+import useId from '../tools/hooks/useId';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -189,7 +189,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
   }, [isServerAvailable]);
 
-  const promiseQueueList = [
+  const baseQueue = [
     verifyAvailabilityDialogContext,
     fetchBotLanguages,
     fetchVisitorRegistration,
@@ -198,6 +198,23 @@ export function DialogProvider({ children }: DialogProviderProps) {
     fetchHistory,
     callChatboxReady,
   ];
+
+  const promiseQueueList = () => {
+    if (configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false) {
+      baseQueue.splice(2, 1);
+    }
+    return baseQueue;
+  };
+
+  const shouldRegisterVisit = useMemo(() => {
+    return hasAfterLoadBeenCalled && isServerAvailable && configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false;
+  }, [hasAfterLoadBeenCalled, isServerAvailable]);
+
+  useEffect(() => {
+    if (shouldRegisterVisit) {
+      fetchVisitorRegistration();
+    }
+  }, [shouldRegisterVisit]);
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
@@ -216,7 +233,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const showUploadFileButton = useCallback(() => {
     const newId = useId();
     setFileUploadButtonId && setFileUploadButtonId(newId);
-    addAdditionalInteraction(<FileUploadButton id={newId}/>);
+    addAdditionalInteraction(<FileUploadButton id={newId} />);
   }, []);
 
   const isLastElementOfTypeAnimationWriting = (list) => {
@@ -546,7 +563,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       (!gdprEnabled || gdprPassed) &&
       isServerAvailable
     ) {
-      PromiseQueue.exec(promiseQueueList);
+      PromiseQueue.exec(promiseQueueList());
     }
   }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected, isOpen, gdprEnabled, gdprPassed, isServerAvailable]);
 
