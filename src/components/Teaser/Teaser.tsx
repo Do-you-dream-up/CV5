@@ -112,7 +112,7 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
     }
   };
 
-  const tabIndex: number = parseInt('1', 10);
+  const tabIndex: number = parseInt('0', 10);
 
   const renderVoiceInput = () => {
     return dydu.hasUserAcceptedGdpr() && isMinimize && voice && disclaimerEnable ? (
