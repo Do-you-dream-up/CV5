@@ -9,7 +9,6 @@ import { useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
-import { useUserAction } from '../../contexts/UserActionContext';
 import { VIEW_MODE } from '../../tools/constants';
 
 interface TeaserProps {
@@ -38,7 +37,6 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   const event = useEvent()?.onEvent?.('teaser');
   const classes = useStyles({ configuration });
   const { ready, t } = useTranslation('translation');
-  const { tabbing } = useUserAction();
   const { enable: disclaimerEnable } = configuration?.gdprDisclaimer || {};
   const teaserRef = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -75,10 +73,10 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   };
 
   useEffect(() => {
-    if (isMinimize && tabbing) {
+    if (isMinimize) {
       teaserRef?.current?.focus();
     }
-  }, [isMinimize, tabbing, teaserRef]);
+  }, [isMinimize, teaserRef]);
 
   const handleLongPress = () => {
     setIsCommandHandled(true);
