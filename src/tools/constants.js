@@ -97,7 +97,7 @@ export const LIVECHAT_NOTIFICATION = {
   almostTimeout: 'AlmostTimedOut',
   dialogTransferredManually: 'DialogTransferredManually',
   dialogTransferredAutomatically: 'DialogTransferredAutomatically',
-  dialogPicked: 'DialogPicked',
+  dialogAddedOperatorPanel: 'DialogAddedOperatorPanel',
 };
 
 export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
