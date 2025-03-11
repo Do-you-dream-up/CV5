@@ -12,6 +12,16 @@ export default createUseStyles((theme) => ({
     },
   }),
 
+  labelPlaceholder: () => ({
+    position: 'absolute',
+    top: '0.6em',
+    left: '13px',
+    color: '#46525F',
+    fontSize: '16px',
+    pointerEvents: 'none',
+    zIndex: 1,
+  }),
+
   container: () => ({
     flexGrow: 1,
     height: '100%',
@@ -73,9 +83,6 @@ export default createUseStyles((theme) => ({
 
   fieldText: () => ({
     height: '100%',
-    '&::placeholder': {
-      color: '#46525F',
-    },
     '&[disabled]': {
       cursor: 'not-allowed',
     },
