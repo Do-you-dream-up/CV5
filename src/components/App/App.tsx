@@ -122,6 +122,12 @@ const App = () => {
     },
   ];
 
+  useEffect(() => {
+    if (isOpenDisclaimer) {
+      cookiesDisclaimerRef?.current.focus();
+    }
+  }, [isOpenDisclaimer]);
+
   const body: BodyText[] = t('cookies.disclaimer.body');
 
   const cookiesDisclaimer = () => {
@@ -130,11 +136,11 @@ const App = () => {
         <div ref={cookiesDisclaimerRef} tabIndex={0} className={c('dydu-header-title', classes.cookiesDisclaimerTitle)}>
           <Skeleton children={t('cookies.disclaimer.title')} hide={!ready} variant="text" width="6em" />
         </div>
-        <div tabIndex={0} className={c('dydu-header-content', classes.cookiesDisclaimerContent)}>
+        <div className={c('dydu-header-content', classes.cookiesDisclaimerContent)}>
           <Skeleton hide={!ready} variant="text" width="6em">
             {body &&
               ready &&
-              body.map((item, index) => <p key={index} tabIndex={0} dangerouslySetInnerHTML={{ __html: item.text }} />)}
+              body.map((item, index) => <p tabIndex={0} key={index} dangerouslySetInnerHTML={{ __html: item.text }} />)}
           </Skeleton>
           <Actions
             actions={actions}
