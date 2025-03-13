@@ -23,6 +23,7 @@ import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
 import Button from '../Button/Button';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import PromiseQueue from '../../tools/hooks/PromiseQueue';
+
 interface InputProps {
   onRequest?: (input: string) => void;
   onResponse?: (input: Servlet.ChatResponseValues) => void;
@@ -162,7 +163,15 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
       return (
         <div className={c('dydu-input-field', classes.field)} data-testid="footer-input">
-          <label htmlFor={textareaId}></label>
+          {/*Delete the old placeholder for RGAA compliance with new label as placeholder classes labelPlaceholder use CSS*/}
+          {/*to position the new label at the same place as the old placeholder.*/}
+          <label
+            htmlFor={textareaId}
+            id="textarea-label"
+            className={c('textarea-label', input.length > 0 ? classes.hidden : classes.labelPlaceholder)}
+          >
+            {displayedPlaceholderTitleAriaLabel}
+          </label>
           <textarea
             {...data}
             maxLength={!Local.livechatType.load() ? maxLength : undefined}
@@ -173,21 +182,16 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             onBlur={handleBlur}
             tabIndex={tabIndex}
             ref={textareaRef}
+            aria-labelledby="textarea-label"
+            aria-describedby="counterRemaining"
           />
           <div children={input} className={classes.fieldShadow} />
           {!!showCounter && !Local.livechatType.load() && (
             <div>
-              <span
-                children={counter}
-                className={classes.counter}
-                aria-labelledby={counterRemaining}
-                title={counterRemaining}
-                placeholder={counterRemaining}
-              />
-              <span
-                className={c('dydu-counter-hidden', classes.hidden)}
-                aria-live={counter === maxLength ? 'off' : 'assertive'}
-              >{`${counterRemaining}`}</span>
+              <span className={classes.counter} children={counter} aria-hidden={true} />
+              <span className={c('dydu-counter-hidden', classes.hidden)} id="counterRemaining">
+                {counterRemaining}
+              </span>
             </div>
           )}
         </div>
@@ -318,9 +322,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     maxLength,
     onChange,
     onKeyDown,
-    placeholder: displayedPlaceholderTitleAriaLabel,
-    title: displayedPlaceholderTitleAriaLabel,
-    'aria-label': displayedPlaceholderTitleAriaLabel,
     value: input,
   };
 
