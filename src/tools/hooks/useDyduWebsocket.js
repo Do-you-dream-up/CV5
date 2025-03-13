@@ -54,8 +54,8 @@ const MESSAGE_TYPE = {
   uploadRequest: 'uploadRequest',
   startPolling: 'StartPolling',
   leaveWaitingQueue: 'LeaveWaitingQueue',
-  dialogPicked: 'DialogPicked',
   checkContextAvailability: 'checkContextAvailabilityResponse',
+  dialogAddedOperatorPanel: 'DialogAddedOperatorPanel',
 };
 
 const completeLivechatPayload = (configuration) => {
@@ -112,7 +112,7 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.endPolling(lastMessageData)) return MESSAGE_TYPE.endPolling;
     if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(lastMessageData)) return MESSAGE_TYPE.notification;
-    if (LivechatPayload.is.dialogPicked(lastMessageData)) return MESSAGE_TYPE.dialogPicked;
+    if (LivechatPayload.is.dialogAddedOperatorPanel(lastMessageData)) return MESSAGE_TYPE.dialogAddedOperatorPanel;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, lastMessageData]);
 
@@ -183,7 +183,7 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.notification:
         return displayNotification();
 
-      case MESSAGE_TYPE.dialogPicked:
+      case MESSAGE_TYPE.dialogAddedOperatorPanel:
         leaveWaitingQueue();
         return displayNotification();
 

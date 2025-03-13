@@ -239,8 +239,8 @@ const LivechatPayloadChecker = {
       payloadValues?.specialAction?.fromBase64()?.equals(RESPONSE_SPECIAL_ACTION.endPolling)
     );
   },
-  dialogPicked: (payload) => {
-    return payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogPicked);
+  dialogAddedOperatorPanel: (payload) => {
+    return payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogAddedOperatorPanel);
   },
   leaveWaitingQueue: (payload) => {
     const payloadValues = payload?.values || payload;
