@@ -158,8 +158,9 @@ export default new (class Dydu {
     return Promise.all(methods.map((it) => emit(SERVLET_API.post, path, qs.stringify({ ...data, object: it }))));
   };
 
+  // true if Gdpr is disabled, or if Gdpr has already been accepted
   hasUserAcceptedGdpr() {
-    return Local.gdpr.load();
+    return !this.getConfiguration()?.gdprDisclaimer?.enable || Local.gdpr.load();
   }
 
   getBot = () => BOT;
