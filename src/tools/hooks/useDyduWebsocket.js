@@ -20,15 +20,18 @@ const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
 
 let endLivechat = null;
+let endLivechatAndCloseTunnel = null;
 let addNewMessageAndNotificationOrResponse = null;
 let decodeAndDisplayNotification = null;
 let showAnimationOperatorWriting = null;
 let leaveWaitingQueue = null;
 let onFailOpenTunnel = null;
 let clearInteractionsAndAddWelcome = null;
+let keepAliveInterval = null;
 
 const linkToLivechatFunctions = (livechatContextFunctions) => {
   endLivechat = livechatContextFunctions.endLivechat;
+  endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
   addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
   decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
   showAnimationOperatorWriting = livechatContextFunctions.showAnimationOperatorWriting;
@@ -72,14 +75,14 @@ const completeLivechatPayload = (configuration) => {
 export default function useDyduWebsocket() {
   const { showUploadFileButton } = useUploadFile();
   const [socketProps, setSocketProps] = useState([null, {}]);
-  const { lastMessage, sendJsonMessage } = useWebsocket(socketProps[0], socketProps[1]);
+  const { lastMessage, sendJsonMessage, sendMessage } = useWebsocket(socketProps[0], socketProps[1]);
   const { history, setHistory } = useConversationHistory();
   const { isEnabled: isTopKnowledgeEnabled, setTopKnowledge, extractPayload } = useTopKnowledge();
   const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
 
   const lastMessageData = useMemo(() => {
-    if (lastMessage && lastMessage.data) {
+    if (lastMessage && lastMessage.data && lastMessage.data !== 'pong') {
       return JSON.parse(lastMessage.data);
     }
     return null;
@@ -155,7 +158,7 @@ export default function useDyduWebsocket() {
 
   const close = useCallback(() => {
     flushSocketProps();
-    if (endLivechat) endLivechat();
+    if (endLivechatAndCloseTunnel) endLivechatAndCloseTunnel();
   }, [flushSocketProps]);
 
   useEffect(() => {
@@ -232,8 +235,13 @@ export default function useDyduWebsocket() {
         sendCheckContextAvailability();
         sendTopKnowledge(configuration);
         sendHistory();
+        keepAliveInterval = setInterval(() => {
+          sendMessage('ping');
+        }, 55000);
       },
       onClose: (closeEvent) => {
+        endLivechat();
+        clearInterval(keepAliveInterval);
         console.log('websocket: on close !', closeEvent);
       },
       onError: (errorEvent) => {

@@ -7,7 +7,7 @@ import dydu from '../dydu';
 
 import LivechatPayload from '../LivechatPayload';
 
-let endLivechat = null;
+let endLivechatAndCloseTunnel = null;
 let addNewMessageAndNotificationOrResponse = null;
 let decodeAndDisplayNotification = null;
 let showAnimationOperatorWriting = null;
@@ -15,7 +15,7 @@ let getSurveyConfiguration = null;
 let showUploadFileButton = null;
 
 export const linkToLivechatFunctions = (livechatContextFunctions) => {
-  endLivechat = livechatContextFunctions.endLivechat;
+  endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
   addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
   decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
   showAnimationOperatorWriting = livechatContextFunctions.showAnimationOperatorWriting;
@@ -58,7 +58,7 @@ const sendNotificationOrMessage = (response) => {
 
     if (LivechatPayload.is.endPolling(notification)) {
       stopPolling();
-      endLivechat();
+      endLivechatAndCloseTunnel();
     }
   }
 };
@@ -128,7 +128,7 @@ export default function useDyduPolling() {
 
   const close = useCallback(() => {
     setIntervalId(null);
-    if (isRunning && endLivechat) endLivechat();
+    if (isRunning && endLivechatAndCloseTunnel) endLivechatAndCloseTunnel();
   }, []);
 
   return {
