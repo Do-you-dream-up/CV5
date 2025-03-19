@@ -250,6 +250,9 @@
   "qualification": {
     "active": false
   },
+  "registerVisit": {
+    "restrictedOnChatboxAccessInsteadOfSiteAccess": false
+  },
   "root": "dydu-root",
   "sidebar": {
     "automatic": {
