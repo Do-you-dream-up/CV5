@@ -149,7 +149,10 @@ const getFilters = () => [
         imgMatch.forEach((imgTag) => {
           const srcMatch = imgTag.match(/src=['"](.*?)['"]/);
           if (srcMatch) {
-            const newImgTag = imgTag.replace('>', ` onclick="window.setZoom('${srcMatch[1]}')">`);
+            const newImgTag = imgTag.replace(
+              '>',
+              ` tabindex="0" onclick="window.setZoom('${srcMatch[1]}')" onkeypress="if(event.key === 'Enter') window.setZoom('${srcMatch[1]}')">`,
+            );
             html = html.replace(imgTag, newImgTag);
           }
         });

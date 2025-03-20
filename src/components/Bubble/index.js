@@ -1,4 +1,4 @@
-import { createElement, useEffect, useState } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 
 import Actions from '../Actions/Actions';
 import Avatar from '../Avatar/Avatar';
@@ -52,7 +52,9 @@ export default function Bubble({
   const { t } = useTranslation('translation');
   const { shadowRoot, shadowAnchor } = useShadow();
   const [canAutoOpen, setCanAutoOpen] = useState(autoOpenSidebar);
+  const { sidebarActive } = useDialog();
   const [isSidebarOpen, setIsSidebarOpen] = useState(step?.sidebar || sidebar || hasSurvey);
+  const buttonRef = useRef(null);
 
   const hasCarouselAndSidebar = carousel && step && step.sidebar;
   const classes = useStyles({ configuration, hasCarouselAndSidebar });
@@ -68,9 +70,22 @@ export default function Bubble({
 
   const actions = [
     ...(sidebar || (hasSurvey && surveyConfig)
-      ? [{ children: isSidebarOpen ? less : more, onClick: () => onSidebarButtonToggle(!isSidebarOpen) }]
+      ? [
+          {
+            children: isSidebarOpen ? less : more,
+            onClick: () => onSidebarButtonToggle(!isSidebarOpen),
+            ref: buttonRef,
+          },
+        ]
       : []),
   ];
+
+  useEffect(() => {
+    if (!sidebarActive && tabbing) {
+      const buttonRefElement = buttonRef.current;
+      buttonRefElement && buttonRefElement.focus();
+    }
+  }, [sidebarActive]);
 
   useEffect(() => {
     if (type !== 'request') {

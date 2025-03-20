@@ -86,7 +86,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
   const { fetch: fetchTopKnowledge } = useTopKnowledge();
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-  const { eventFired } = useUserAction();
+  const { focusTrap, eventFired } = useUserAction();
   const { shadowRoot } = useShadow();
 
   let scrollToBottomTimeout: any = {};
@@ -290,19 +290,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   // you need to change focusableElements array.
   // We use shadowRoot.activeElement to get the active element inside the shadowRoot.
   useEffect(() => {
-    const rootElement = root.current;
-    const focusableElements = rootElement ? rootElement.querySelectorAll('button, textarea') : [];
-    if (focusableElements.length > 0 && eventFired?.key === 'Tab') {
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-      if (eventFired?.shiftKey && shadowRoot?.activeElement === firstElement) {
-        eventFired?.preventDefault();
-        lastElement.focus();
-      } else if (!eventFired?.shiftKey && shadowRoot?.activeElement === lastElement) {
-        eventFired?.preventDefault();
-        firstElement.focus();
-      }
-    }
+    focusTrap && focusTrap(eventFired, root, shadowRoot, 'button, textarea');
   }, [eventFired]);
 
   return (
