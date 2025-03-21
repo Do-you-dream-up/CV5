@@ -49,7 +49,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     autoSuggestionActive,
     setIsWaitingForResponse,
     clearInteractions,
-    promiseQueueList,
+    getPromiseQueueList,
     setIsInputFilled,
   } = useDialog();
   const { configuration } = useConfiguration();
@@ -97,7 +97,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       verifyAvailabilityDialogContext().then((isContextAvailable) => {
         if (!isContextAvailable) {
           clearInteractions && clearInteractions();
-          PromiseQueue.exec(promiseQueueList).then(() => {
+          PromiseQueue.exec(getPromiseQueueList()).then(() => {
             setHasToVerifyContextAfterLivechatClosed && setHasToVerifyContextAfterLivechatClosed(false);
             submit(text);
           });
