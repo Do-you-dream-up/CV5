@@ -66,6 +66,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   const counterRemaining = `${counter} ${t('input.actions.counterRemaining')}`;
   const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
+  const displayedPlaceholderTitleAriaLabel = useRef<string>('');
   const themeColor = useTheme<Models.Theme>();
   const debouncedInput = useDebounce(input, delay);
   const [inputFocused, setInputFocused] = useState(false);
@@ -170,7 +171,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
             id="textarea-label"
             className={c('textarea-label', input.length > 0 ? classes.hidden : classes.labelPlaceholder)}
           >
-            {displayedPlaceholderTitleAriaLabel}
+            {displayedPlaceholderTitleAriaLabel.current}
           </label>
           <textarea
             {...data}
@@ -311,11 +312,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     suggestionsList: c('dydu-suggestions-list', classes.suggestionsList),
   };
 
-  const displayedPlaceholderTitleAriaLabel = (
-    (ready && placeholder) ||
-    (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
-    ''
-  )?.slice?.(0, 50);
+  useEffect(() => {
+    displayedPlaceholderTitleAriaLabel.current = (
+      (ready && placeholder) ||
+      (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
+      ''
+    )?.slice?.(0, 50);
+  }, [placeholder]);
 
   const inputProps = {
     disabled,
