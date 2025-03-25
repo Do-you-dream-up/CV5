@@ -139,6 +139,7 @@ export default function Interaction({
   thinking,
   type,
   typeResponse,
+  lastRequest,
 }) {
   const [bubbles, setBubbles] = useState([]);
   const [hasLoader, setHasLoader] = useState(!!thinking);
@@ -263,7 +264,8 @@ export default function Interaction({
   }, [NameBot, NameUser, avatarDisplayBot, avatarDisplayUser, classes, type]);
 
   const _Feedback = useMemo(() => {
-    return !hasLoader && askFeedback ? <Feedback /> : null;
+    const isPushRule = typeResponse === 'DMClientPush';
+    return !hasLoader && askFeedback ? <Feedback notAddContext={isPushRule} lastRequest={lastRequest} /> : null;
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
@@ -353,6 +355,7 @@ export default function Interaction({
 Interaction.defaultProps = {
   carousel: false,
   scroll: true,
+  lastRequest: '',
 };
 
 Interaction.propTypes = {
@@ -372,6 +375,7 @@ Interaction.propTypes = {
   thinking: PropTypes.bool,
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,
+  lastRequest: PropTypes.string,
 };
 
 const Writing = () => {

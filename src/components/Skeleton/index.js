@@ -65,12 +65,14 @@ Skeleton.defaultProps = {
   children: null,
   hide: true,
   variant: 'text',
+  accessibilityContext: '',
 };
 
 Skeleton.propTypes = {
   children: PropTypes.node,
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   hide: PropTypes.any,
+  accessibilityContext: PropTypes.string,
   variant: PropTypes.oneOf(['circle', 'paragraph', 'rectangle', 'text']),
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };

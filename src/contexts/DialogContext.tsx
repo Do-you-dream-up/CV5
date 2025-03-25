@@ -11,6 +11,7 @@ import {
   useMemo,
   useRef,
   useState,
+  MutableRefObject,
 } from 'react';
 import { isDefined, isOfTypeString, isValidUrl } from '../tools/helpers';
 
@@ -55,6 +56,7 @@ export interface DialogContextProps {
   extractTextWithRegex?: (inputString: string) => string | null;
   lastResponse?: Servlet.ChatResponseValues | null;
   setLastResponse: (response: Servlet.ChatResponseValues) => void;
+  lastRequest?: MutableRefObject<string>;
   add?: (interaction: Servlet.ChatResponse) => void;
   addRequest?: (str: string) => void;
   addResponse?: (response: Servlet.ChatResponseValues) => void;
@@ -121,6 +123,7 @@ interface InteractionProps {
   steps: [];
   templatename?: string;
   type?: string;
+  lastRequest?: string;
 }
 
 export const DialogContext = createContext<DialogContextProps>({});
@@ -176,6 +179,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [voiceContent, setVoiceContent] = useState<{ templateData?: string | null; text?: string } | null>(null);
   const [typeResponse, setTypeResponse] = useState<Servlet.ChatResponseType | null | undefined>(null);
   const [lastResponse, setLastResponse] = useState<Servlet.ChatResponseValues | null>(null);
+  const lastRequest = useRef('');
   const [autoSuggestionActive, setAutoSuggestionActive] = useState<boolean>(suggestionActiveOnConfig);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState<boolean>(false);
@@ -312,8 +316,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     [],
   );
 
-  const isInteractionListEmpty = useMemo(() => interactions?.length === 0, [interactions]);
-
   const add = useCallback((interaction) => {
     const isLastInteractionARequest = interaction?.props?.type === 'request';
     setIsWaitingForResponse(isLastInteractionARequest);
@@ -347,6 +349,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         if (sidebarTransient || isMobile) {
           toggleSidebar(false)();
         }
+        lastRequest.current = text;
         add(<Interaction children={text} type="request" />);
         setPlaceholder(null);
         setLocked(false);
@@ -373,6 +376,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
         askFeedback: isOfTypeString(interactionAttributeObject?.children)
           ? false
           : interactionAttributeObject?.askFeedback,
+        lastRequest: isOfTypeString(interactionAttributeObject?.children)
+          ? undefined
+          : interactionAttributeObject?.lastRequest,
       };
       return <Interaction key={index} {...props} thinking />;
     });
@@ -494,6 +500,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
             sidebar: sidebar,
             steps,
             templatename,
+            lastRequest,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
             interactionChildrenList,
@@ -516,6 +523,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               templatename={templatename}
               thinking
               typeResponse={typeResponse}
+              lastRequest={lastRequest.current}
             />
           );
         }
@@ -537,6 +545,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       dispatchEvent,
       makeInteractionPropsListWithInteractionChildrenListAndData,
       makeInteractionComponentForEachInteractionPropInList,
+      lastRequest,
     ],
   );
 
@@ -645,6 +654,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         isInputFilled,
         setIsInputFilled,
         fileUploadButtonId,
+        lastRequest,
       }}
     />
   );
