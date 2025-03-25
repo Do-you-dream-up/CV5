@@ -94,7 +94,7 @@ export interface DialogContextProps {
   setIsWaitingForResponse?: Dispatch<SetStateAction<boolean>>;
   setRewordAfterGuiAction?: Dispatch<SetStateAction<string>>;
   clearInteractionsAndAddWelcome: () => void;
-  promiseQueueList: [Promise<any>];
+  getPromiseQueueList: () => [Promise<any>];
   isInputFilled?: boolean;
   setIsInputFilled?: Dispatch<SetStateAction<boolean>>;
   fileUploadButtonId?: any;
@@ -199,7 +199,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     callChatboxReady,
   ];
 
-  const promiseQueueList = () => {
+  const getPromiseQueueList = () => {
     if (configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false) {
       baseQueue.splice(2, 1);
     }
@@ -207,7 +207,11 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   const shouldRegisterVisit = useMemo(() => {
-    return hasAfterLoadBeenCalled && isServerAvailable && configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false;
+    return (
+      hasAfterLoadBeenCalled &&
+      isServerAvailable &&
+      configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false
+    );
   }, [hasAfterLoadBeenCalled, isServerAvailable]);
 
   useEffect(() => {
@@ -563,7 +567,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       (!gdprEnabled || gdprPassed) &&
       isServerAvailable
     ) {
-      PromiseQueue.exec(promiseQueueList());
+      PromiseQueue.exec(getPromiseQueueList());
     }
   }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected, isOpen, gdprEnabled, gdprPassed, isServerAvailable]);
 
@@ -637,7 +641,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         setRewordAfterGuiAction,
         rewordAfterGuiAction,
         clearInteractionsAndAddWelcome,
-        promiseQueueList,
+        getPromiseQueueList,
         isInputFilled,
         setIsInputFilled,
         fileUploadButtonId,

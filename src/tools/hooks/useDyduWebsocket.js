@@ -19,7 +19,6 @@ const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
 const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
 
-let endLivechat = null;
 let endLivechatAndCloseTunnel = null;
 let addNewMessageAndNotificationOrResponse = null;
 let decodeAndDisplayNotification = null;
@@ -30,7 +29,6 @@ let clearInteractionsAndAddWelcome = null;
 let keepAliveInterval = null;
 
 const linkToLivechatFunctions = (livechatContextFunctions) => {
-  endLivechat = livechatContextFunctions.endLivechat;
   endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
   addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
   decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
@@ -192,7 +190,9 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.historyResponse:
         if (!history) {
-          clearInteractionsAndAddWelcome();
+          if (!Local.livechatType.load()) {
+            clearInteractionsAndAddWelcome();
+          }
           const decodedInteractions = decode(lastMessageData.values).interactions;
           setHistory(decodedInteractions);
         }
@@ -240,7 +240,6 @@ export default function useDyduWebsocket() {
         }, 55000);
       },
       onClose: (closeEvent) => {
-        endLivechat();
         clearInterval(keepAliveInterval);
         console.log('websocket: on close !', closeEvent);
       },

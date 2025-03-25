@@ -19,7 +19,6 @@ interface LivechatContextProps {
   send?: (str: string, options?) => void;
   sendSurvey?: (str: string) => void;
   typing?: (input: any) => void;
-  endLivechat?: () => void;
   endLivechatAndCloseTunnel?: () => void;
   addNotificationOrResponse?: (values: Servlet.ChatResponseValues) => void;
   isWaitingQueue?: boolean;
@@ -167,31 +166,24 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWaitingQueue(true);
   };
 
-  const endLivechat = () => {
+  const endLivechatAndCloseTunnel = () => {
     if (Local.livechatType.load()) {
       Local.livechatType.remove();
       setHasToVerifyContextAfterLivechatClosed(true);
       leaveWaitingQueue();
       Local.operator.remove();
-      tunnelRef.current = null;
-    }
-  };
-
-  const endLivechatAndCloseTunnel = () => {
-    if (Local.livechatType.load()) {
-      endLivechat();
       closeTunnel();
     }
   };
 
   const closeTunnel = () => {
     tunnelRef.current?.close();
+    tunnelRef.current = null;
   };
 
   const livechatContextFunctions = useMemo(() => {
     return {
       ...lastResponse,
-      endLivechat,
       endLivechatAndCloseTunnel,
       addNewMessageAndNotificationOrResponse,
       decodeAndDisplayNotification,
@@ -205,7 +197,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [
     lastResponse,
     onFailOpenTunnel,
-    endLivechat,
     endLivechatAndCloseTunnel,
     addNewMessageAndNotificationOrResponse,
     decodeAndDisplayNotification,
@@ -321,7 +312,6 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     send,
     sendSurvey,
     typing,
-    endLivechat,
     endLivechatAndCloseTunnel,
     addNotificationOrResponse,
     isWaitingQueue,
