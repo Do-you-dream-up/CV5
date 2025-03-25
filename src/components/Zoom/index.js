@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import useStyles from './styles';
 import { useDialog } from '../../contexts/DialogContext';
 import { useTranslation } from 'react-i18next';
+import { useUserAction } from '../../contexts/UserActionContext';
 
 const Zoom = ({ src }) => {
   const classes = useStyles();
   const { setZoomSrc } = useDialog();
   const { t } = useTranslation('translation');
+  const { eventFired } = useUserAction();
 
   const closeZoom = () => setZoomSrc(null);
 
@@ -18,6 +20,12 @@ const Zoom = ({ src }) => {
       document.body.style.overflow = originalOverflow;
     };
   }, []);
+
+  useEffect(() => {
+    if (eventFired.key === 'Tab' || eventFired.key === 'Escape') {
+      closeZoom();
+    }
+  }, [eventFired]);
 
   return (
     <div className={classes.zoom} onClick={closeZoom}>

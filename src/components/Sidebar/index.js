@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
@@ -20,6 +20,8 @@ import {
 import { useSurvey } from '../../Survey/SurveyProvider';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { useUserAction } from '../../contexts/UserActionContext';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Render sidebar content. The content can be modal and blocking for the rest
@@ -29,9 +31,12 @@ import { useTranslation } from 'react-i18next';
 export default function Sidebar({ anchor, mode }) {
   const { configuration } = useConfiguration();
   const { sidebarActive, sidebarContent } = useDialog();
+  const { focusTrap, eventFired, tabbing } = useUserAction();
+  const { shadowRoot } = useShadow();
 
   const { closeSurveyAndSidebar } = useSurvey();
   const root = useRef(null);
+  const closeSurveyAndSidebarButton = useRef(null);
   const theme = useTheme();
   const { t } = useTranslation('translation');
   const [initialMode, setMode] = useState(configuration.sidebar.mode);
@@ -62,6 +67,17 @@ export default function Sidebar({ anchor, mode }) {
     }
   }
 
+  useEffect(() => {
+    if (sidebarActive && tabbing) {
+      const closeSurveyAndSidebarElement = closeSurveyAndSidebarButton.current;
+      closeSurveyAndSidebarElement && closeSurveyAndSidebarElement.focus();
+    }
+  }, [sidebarActive]);
+
+  useEffect(() => {
+    focusTrap(eventFired, root, shadowRoot, 'button, img, a');
+  }, [eventFired]);
+
   const renderBody = useCallback(() => {
     return isDefined(bodyRenderer) ? (
       bodyRenderer()
@@ -85,7 +101,14 @@ export default function Sidebar({ anchor, mode }) {
       <StyledSidebarHeader $isTransparent={headerTransparency} theme={theme} className={c('dydu-sidebar-header')}>
         {titleContent}
         <StyledSidebarActions className={c('dydu-sidebar-actions')}>
-          <Button color="primary" onClick={closeSurveyAndSidebar} type="button" variant="icon">
+          <Button
+            color="primary"
+            onClick={closeSurveyAndSidebar}
+            type="button"
+            variant="icon"
+            id="closeSurveyAndSidebar"
+            ref={closeSurveyAndSidebarButton}
+          >
             <Icon icon={icons?.close} alt={t('sidebar.close')} />
           </Button>
         </StyledSidebarActions>
@@ -103,6 +126,7 @@ export default function Sidebar({ anchor, mode }) {
       className={c('dydu-sidebar', `dydu-sidebar-${mode}`)}
       ref={root}
       id="dydu-sidebar"
+      tabIndex={-1}
     >
       {renderHeader()}
       {renderBody()}

@@ -1,4 +1,4 @@
-import { createContext, ReactElement, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactElement, useContext, useEffect, useState } from 'react';
 
 import { useShadow } from './ShadowProvider';
 
@@ -12,6 +12,12 @@ interface UserActionProps {
   getRgaaRef?: (ref) => any;
   rgaaRef?: any;
   removeRgaaRef?: (name: string) => void;
+  focusTrap?: (
+    eventFired: KeyboardEvent | null | undefined,
+    root: React.MutableRefObject<any>,
+    shadowRoot: ShadowRoot | null | undefined,
+    querySelector: string,
+  ) => void;
 }
 
 interface UserActionProviderProps {
@@ -87,6 +93,27 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
     });
   };
 
+  const focusTrap = (
+    eventFired: KeyboardEvent | null | undefined,
+    root: React.MutableRefObject<any>,
+    shadowRoot: ShadowRoot | null | undefined,
+    querySelector: string,
+  ) => {
+    const rootElement = root.current;
+    const focusableElements = rootElement ? rootElement.querySelectorAll(querySelector) : [];
+    if (focusableElements.length > 0 && eventFired?.key === 'Tab') {
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (eventFired?.shiftKey && shadowRoot?.activeElement === firstElement) {
+        eventFired?.preventDefault();
+        lastElement.focus();
+      } else if (!eventFired?.shiftKey && shadowRoot?.activeElement === lastElement) {
+        eventFired?.preventDefault();
+        firstElement.focus();
+      }
+    }
+  };
+
   return (
     <UserActionContext.Provider
       children={children}
@@ -98,6 +125,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
         getRgaaRef,
         rgaaRef,
         removeRgaaRef,
+        focusTrap,
       }}
     />
   );
