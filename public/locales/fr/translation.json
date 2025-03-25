@@ -237,7 +237,8 @@
   "screenReader": {
     "chatbot": "l'assistant répond",
     "me": "J'écris",
-    "say": "dit"
+    "say": "dit",
+    "sidebar": "l’assistant répond dans un panneau latéral"
   },
   "spaces": {
     "welcome": "Bonjour et bienvenue sur le chatbot, avant de commencer, je vous invite à sélectionner un espace :"

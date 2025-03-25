@@ -103,7 +103,13 @@ export default function PrettyHtml({ carousel, children, className, component, h
   }, [carousel, templatename]);
 
   const interactionType = useMemo(() => {
-    return type === 'response' ? botName : userName;
+    if (type === 'sidebar') {
+      return t('screenReader.sidebar');
+    } else if (type === 'response') {
+      return botName;
+    } else {
+      return userName;
+    }
   }, [botName, type, userName]);
 
   return createElement(
