@@ -237,7 +237,8 @@
   "screenReader": {
     "chatbot": "chatbot answers",
     "me": "I write",
-    "say": "says"
+    "say": "says",
+    "sidebar": "chatbot answers in a sidebar"
   },
   "spaces": {
     "welcome": "Welcome to the chatbot, please select a space before chatting :"

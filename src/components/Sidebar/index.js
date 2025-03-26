@@ -82,7 +82,7 @@ export default function Sidebar({ anchor, mode }) {
     return isDefined(bodyRenderer) ? (
       bodyRenderer()
     ) : (
-      <PrettyHtml className={c('dydu-sidebar-body', classes.body)} html={body} />
+      <PrettyHtml className={c('dydu-sidebar-body', classes.body)} html={body} type="sidebar" />
     );
   }, [body, bodyRenderer, classes.body]);
 
