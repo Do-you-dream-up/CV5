@@ -8,6 +8,9 @@ export default createUseStyles((theme) => ({
     marginBlockStart: 0,
     marginBlockEnd: 0,
     '@global': {
+      p: {
+        paddingBottom: 1,
+      },
       '@font-face': [
         {
           fontFamily: 'Roboto Regular',
