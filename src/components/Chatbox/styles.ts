@@ -2,11 +2,11 @@ import { createUseStyles } from 'react-jss';
 
 const extendedStyles = {
   bottom: 0,
-  height: '100vw !important',
-  maxHeight: '100vw !important',
+  height: '100% !important',
+  maxHeight: 'inherit !important',
   right: 0,
   width: '100% !important',
-  minWidth: 100,
+  minWidth: 'inherit',
   maxWidth: '100vw',
 };
 
@@ -37,7 +37,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     borderRadius: theme.shape.radius.outer,
     boxShadow: theme.shadows[6],
     [theme.breakpoints?.down('xs')]: {
-      minWidth: 200,
+      minWidth: 'inherit',
     },
   }),
   root: ({ configuration }) => ({
