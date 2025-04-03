@@ -40,5 +40,8 @@ export default createUseStyles((theme) => {
         },
       },
     }),
+    poweredByLogo: {
+      width: '70px',
+    },
   };
 });
