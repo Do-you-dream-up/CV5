@@ -12,7 +12,7 @@ i18n
   .init({
     backend: {
       crossDomain: true,
-      loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json?t=${Date.now()}`,
+      loadPath: `${process.env.PUBLIC_URL}locales/{{lng}}/{{ns}}.json`,
       requestOptions: {
         cache: 'no-store',
       },
