@@ -30,16 +30,16 @@ export default function RadioGroup({ showRequiredMessage, fields, parent }) {
 
   const render = useCallback(() => {
     return (
-      <>
-        <p className={'question'}>
+      <fieldset>
+        <legend className={'question'}>
           {parent.getLabel()}
           <MessageRequired show={showRequiredMessage} field={parent} />
-        </p>
+        </legend>
         {fields.map((field) => (
           <RadioItem key={field.getId()} field={field} onChange={onChange} checked={isCurrentActive(field)} />
         ))}
         {isDefined(current) && current.hasSlaves() && <div className="slaves">{current.renderSlaves()}</div>}
-      </>
+      </fieldset>
     );
   }, [isCurrentActive, onChange, fields]);
 

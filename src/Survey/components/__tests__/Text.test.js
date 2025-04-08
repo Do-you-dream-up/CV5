@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 import { mockFieldClass } from '../utils';
 import { render } from '../../../tools/test-utils';
 
-describe('Text.js', () => {
+describe('Text.tsx', () => {
   it('Should render Text with field props', async () => {
     const { container } = render(<Text field={mockFieldClass} />);
     expect(container.querySelector('.text')).toBeInTheDocument();

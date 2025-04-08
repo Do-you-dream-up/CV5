@@ -7,16 +7,6 @@ jest.mock('../../SurveyProvider', () => ({
   useSurvey: jest.fn(),
 }));
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => {
-      if (key === 'survey.send') {
-        return 'Envoyer ma réponse';
-      }
-    },
-  }),
-}));
-
 describe('SurveyForm', () => {
   test('renders a form with fields and a submit button if instances are defined', () => {
     const mockInstance1 = {
@@ -41,7 +31,7 @@ describe('SurveyForm', () => {
     expect(field1).toBeDefined();
     expect(field2).toBeDefined();
 
-    const submitButton = screen.getByText('Envoyer ma réponse');
+    const submitButton = screen.getByRole('button');
     fireEvent.click(submitButton);
     expect(useSurvey().onSubmit).toHaveBeenCalledTimes(1);
   });

@@ -1,13 +1,13 @@
 import surveyStyle from './style/survey.css';
 
-import { asset, isDefined, isEmptyArray } from '../tools/helpers';
+import { isDefined, isEmptyArray } from '../tools/helpers';
 
-import PropTypes from 'prop-types';
 import { useCallback, useEffect } from 'react';
 import { useSurvey } from './SurveyProvider';
-import { useTheme } from 'react-jss';
 import { useShadow } from '../contexts/ShadowProvider';
 import { useTranslation } from 'react-i18next';
+import Button from '../components/Button/Button';
+import icons from '../tools/icon-constants';
 
 export default function SurveyForm() {
   const { instances, onSubmit, surveyConfig } = useSurvey();
@@ -33,31 +33,19 @@ export default function SurveyForm() {
   return !isDefined(instances) ? (
     <></>
   ) : (
-    <form className="survey-form-container">
+    <form
+      className="survey-form-container"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
       {renderFields()}
       <div className="btn-submit-container">
-        <ButtonSubmit onSubmit={onSubmit} wording={buttonWording} />
+        <Button type={'submit'} icon={icons?.submit}>
+          {buttonWording}
+        </Button>
       </div>
     </form>
   );
 }
-
-const ButtonSubmit = ({ onSubmit, wording }) => {
-  const theme = useTheme();
-
-  return (
-    <button
-      type="button"
-      className={'btn-submit-container'}
-      onClick={onSubmit}
-      style={{ backgroundColor: theme?.palette?.primary?.main ?? '#41479B' }}
-    >
-      <i>{wording}</i> <img src={asset('check-circle.svg')} alt="" />
-    </button>
-  );
-};
-
-ButtonSubmit.propTypes = {
-  onSubmit: PropTypes.func,
-  wording: PropTypes.string,
-};

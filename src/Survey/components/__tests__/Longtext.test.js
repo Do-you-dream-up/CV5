@@ -4,9 +4,9 @@ import LongText from '../LongText';
 import { mockFieldClass } from '../utils';
 import { render } from '../../../tools/test-utils';
 
-describe('Longtext.js', () => {
-  it('Should render Longtext with field props', async () => {
+describe('LongText.tsx', () => {
+  it('Should render LongText with field props', () => {
     const { container } = render(<LongText field={mockFieldClass} />);
-    expect(container.children[0].querySelector('.long-text')).toBeInTheDocument();
+    expect(container.querySelector('.long-text')).toBeInTheDocument();
   });
 });

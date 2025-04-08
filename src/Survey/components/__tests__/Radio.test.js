@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import Field from '../../../Survey/Field';
+import Field from '../../Field';
 import Radio from '../Radio';
 import { fireEvent } from '@testing-library/react';
 import { mockFieldValues } from '../utils';
