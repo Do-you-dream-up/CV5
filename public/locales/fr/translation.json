@@ -235,6 +235,7 @@
     "placeholder": "Saisissez votre email..."
   },
   "screenReader": {
+    "livechat": "L'opérateur livechat répond",
     "chatbot": "l'assistant répond",
     "me": "J'écris",
     "say": "dit",

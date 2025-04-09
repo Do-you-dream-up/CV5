@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
 import { useDialog } from '../../contexts/DialogContext';
 import { cleanHtml } from '../../tools/helpers';
+import { Local } from '../../tools/storage';
 
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
@@ -106,6 +107,9 @@ export default function PrettyHtml({ carousel, children, className, component, h
     if (type === 'sidebar') {
       return t('screenReader.sidebar');
     } else if (type === 'response') {
+      if (Local.livechatType.load()) {
+        return t('screenReader.livechat');
+      }
       return botName;
     } else {
       return userName;

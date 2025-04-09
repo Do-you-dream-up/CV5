@@ -235,6 +235,7 @@
     "placeholder": "Enter your email..."
   },
   "screenReader": {
+    "livechat": "Livechat operator answers",
     "chatbot": "chatbot answers",
     "me": "I write",
     "say": "says",
