@@ -3,7 +3,7 @@ import i18n from '../i18nProvider';
 describe('i18n initialization', () => {
   it('should initialize i18n with the correct configuration', () => {
     expect(i18n.options.backend.crossDomain).toBe(true);
-    expect(i18n.options.backend.loadPath).toContain('locales/{{lng}}/{{ns}}.json?t=');
+    expect(i18n.options.backend.loadPath).toContain('locales/{{lng}}/{{ns}}.json');
     expect(i18n.options.cleanCode).toBe(true);
     expect(i18n.options.debug).toBe(false);
   });
