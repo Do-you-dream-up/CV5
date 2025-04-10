@@ -327,6 +327,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     onChange,
     onKeyDown,
     value: input,
+    title: displayedPlaceholderTitleAriaLabel.current,
   };
 
   const actions: ActionProps[] = [
