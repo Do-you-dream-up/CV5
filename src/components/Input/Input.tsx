@@ -116,6 +116,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       event.preventDefault();
       resetIfNecessaryBeforeSubmit(input);
     }
+    event.stopPropagation();
   };
 
   const onSubmit = (event) => {
