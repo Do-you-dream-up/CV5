@@ -6,7 +6,6 @@ import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import Stt from './stt';
 import Tts from './tts';
-import icons from '../../tools/icon-constants';
 import io from 'socket.io-client';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
@@ -15,6 +14,7 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { generateTts } from './apiVoicebot';
 import dydu from '../../tools/dydu';
+import { MicrophonIcon, PlayIcon, PauseIcon, ReplayIcon, StopIcon } from '../CustomIcons/CustomIcons';
 
 /**
  * TTS / STT
@@ -63,12 +63,12 @@ const Voice = ({ show, v }) => {
   const [audio] = React.useState(new Audio());
 
   const iconMicrophon = (
-    <Icon icon={icons?.microphon || ''} color={themeColor?.palette?.primary.main} alt={startRecord} />
+    <Icon icon={<MicrophonIcon /> || ''} color={themeColor?.palette?.primary.main} alt={startRecord} />
   );
-  const iconPlay = <Icon icon={icons?.play || ''} color={themeColor?.palette?.primary.main} alt={playRecord} />;
-  const iconPause = <Icon icon={icons?.pause || ''} color={themeColor?.palette?.primary.main} alt={pauseRecord} />;
-  const iconReplay = <Icon icon={icons?.replay || ''} color={themeColor?.palette?.primary.main} alt={replayRecord} />;
-  const iconStop = <Icon icon={icons?.stop || ''} color={themeColor?.palette?.primary.main} alt={stopRecord} />;
+  const iconPlay = <Icon icon={<PlayIcon /> || ''} color={themeColor?.palette?.primary.main} alt={playRecord} />;
+  const iconPause = <Icon icon={<PauseIcon /> || ''} color={themeColor?.palette?.primary.main} alt={pauseRecord} />;
+  const iconReplay = <Icon icon={<ReplayIcon /> || ''} color={themeColor?.palette?.primary.main} alt={replayRecord} />;
+  const iconStop = <Icon icon={<StopIcon /> || ''} color={themeColor?.palette?.primary.main} alt={stopRecord} />;
 
   const startRecordButton = Tts.getButtonAction(
     v?.start,

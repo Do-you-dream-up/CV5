@@ -2,11 +2,11 @@ import { ReactNode, Ref, createElement, forwardRef } from 'react';
 
 import Icon from '../Icon/Icon';
 import c from 'classnames';
-import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useUserAction } from '../../contexts/UserActionContext';
+import { MoreIconWhite } from '../CustomIcons/CustomIcons';
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -66,7 +66,7 @@ const Button = ({
     <div className={classes.children}>
       {icon ? (
         <Icon
-          icon={icons?.moreIcon || ''}
+          icon={<MoreIconWhite /> || ''}
           className="button-icon"
           color={theme?.palette?.primary.text}
           alt={rollOver}

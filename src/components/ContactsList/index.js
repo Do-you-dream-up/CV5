@@ -1,8 +1,8 @@
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
-import icons from '../../tools/icon-constants';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
+import { MoreIconBlack } from '../CustomIcons/CustomIcons';
 
 /**
  * Contact list for phone numbers, emails and social networks
@@ -11,6 +11,7 @@ import { useTheme } from 'react-jss';
 export default function ContactsList({ icon, id, list, title }) {
   const classes = useStyles();
   const theme = useTheme();
+
   return (
     <div className={`${classes.root} dydu-contact-${id}`}>
       <div className={classes.title}>
@@ -27,7 +28,7 @@ export default function ContactsList({ icon, id, list, title }) {
               <a href={item.socialUrl} rel="noopener noreferrer" target="_blank">
                 {item.socialText}
               </a>
-              <Icon icon={icons.openInNew} alt="" />
+              <Icon icon={<MoreIconBlack />} alt="" />
             </div>
           )}
         </div>
@@ -37,7 +38,7 @@ export default function ContactsList({ icon, id, list, title }) {
 }
 
 ContactsList.propTypes = {
-  icon: PropTypes.string,
+  icon: PropTypes.any,
   id: PropTypes.string,
   list: PropTypes.arrayOf(
     PropTypes.shape({

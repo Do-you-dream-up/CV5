@@ -1,8 +1,8 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import icons from '../tools/icon-constants';
 import { useConfiguration } from './ConfigurationContext';
+import { ContactIcon, ConversationIcon } from '../components/CustomIcons/CustomIcons';
 
 const ITEM_KEY = {
   dialog: 'dialog',
@@ -10,8 +10,8 @@ const ITEM_KEY = {
 };
 
 const ITEM_KEY_TO_ICON_NAME = {
-  [ITEM_KEY.dialog]: icons.iconConversation,
-  [ITEM_KEY.contacts]: icons.iconContact,
+  [ITEM_KEY.dialog]: <ConversationIcon />,
+  [ITEM_KEY.contacts]: <ContactIcon />,
 };
 
 export const TabContext = createContext();

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ACTIONS } from '../../tools/talk';
 import Actions from '../Actions/Actions';
@@ -15,7 +15,6 @@ import Skeleton from '../Skeleton';
 import Tabs from '../Tabs/Tabs';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
@@ -27,6 +26,17 @@ import { useLivechat } from '../../contexts/LivechatContext';
 import { useDialog } from '../../contexts/DialogContext';
 import { VIEW_MODE } from '../../tools/constants';
 import { useViewMode } from '../../contexts/ViewModeProvider';
+import {
+  DotsIcon,
+  FontIncreaseIcon,
+  FontDecreaseIcon,
+  MaximizeIcon,
+  CollapseIcon,
+  MinimizeIcon,
+  CloseIcon,
+  ExitIcon,
+  MoreOptionsIcon,
+} from '../CustomIcons/CustomIcons';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -158,7 +168,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
 
   const actions = [
     {
-      children: <Icon icon={icons?.dots} color={iconColorWhite} alt={actionTest} ariaLabel={actionTest} />,
+      children: <Icon icon={<DotsIcon />} color={iconColorWhite} alt={actionTest} ariaLabel={actionTest} />,
       items: () => testsMenu,
       variant: 'icon',
       when: !!hasActions.tests && isOnboardingAlreadyDone && testsMenu.flat().length > 0,
@@ -166,7 +176,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-dots',
     },
     {
-      children: <Icon icon={icons?.more} color={iconColorWhite} alt={actionMore} ariaLabel={actionMore} />,
+      children: <Icon icon={<MoreOptionsIcon />} color={iconColorWhite} alt={actionMore} ariaLabel={actionMore} />,
       onClick: onToggleMore,
       variant: 'icon',
       when: checkDisplayParametersInMoreOptionsCog(),
@@ -177,7 +187,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     {
       children: (
         <Icon
-          icon={icons?.fontIncrease}
+          icon={<FontIncreaseIcon />}
           color={iconColorWhite}
           alt={actionFontIncrease}
           ariaLabel={actionFontIncrease}
@@ -193,7 +203,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     {
       children: (
         <Icon
-          icon={icons?.fontDecrease}
+          icon={<FontDecreaseIcon />}
           color={iconColorWhite}
           alt={actionFontDecrease}
           ariaLabel={actionFontDecrease}
@@ -207,7 +217,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-font-decrease',
     },
     {
-      children: <Icon icon={icons?.expand} color={iconColorWhite} alt={actionExpand} ariaLabel={actionExpand} />,
+      children: <Icon icon={<MaximizeIcon />} color={iconColorWhite} alt={actionExpand} ariaLabel={actionExpand} />,
 
       onClick: () => onExpand(true),
       variant: 'icon',
@@ -216,7 +226,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-expand',
     },
     {
-      children: <Icon icon={icons?.collapse} color={iconColorWhite} alt={actionShrink} ariaLabel={actionShrink} />,
+      children: <Icon icon={<CollapseIcon />} color={iconColorWhite} alt={actionShrink} ariaLabel={actionShrink} />,
       onClick: () => onExpand(false),
       variant: 'icon',
       when: !!hasActions.expand && !isMobile && onExpand && extended,
@@ -224,7 +234,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-collapse',
     },
     {
-      children: <Icon icon={icons?.minimize} color={iconColorWhite} alt={actionMinimize} ariaLabel={actionMinimize} />,
+      children: <Icon icon={<MinimizeIcon />} color={iconColorWhite} alt={actionMinimize} ariaLabel={actionMinimize} />,
       onClick: onMinimize,
       variant: 'icon',
       when: !!hasActions.minimize,
@@ -232,7 +242,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-minimize',
     },
     {
-      children: <Icon icon={icons?.close} color={iconColorWhite} alt={actionClose} ariaLabel={actionClose} />,
+      children: <Icon icon={<CloseIcon />} color={iconColorWhite} alt={actionClose} ariaLabel={actionClose} />,
       onClick: onClose,
       variant: 'icon',
       when: !!hasActions.close,
@@ -309,7 +319,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
           <div className={c('dydu-header-buttonContent', classes.buttonContent)}>
             {exitLivechat}
             <Icon
-              icon={icons?.exit}
+              icon={<ExitIcon />}
               alt={exitLivechat}
               className={c('dydu-header-endLivechatIcon', classes.endLivechatIcon)}
             />

@@ -5,7 +5,6 @@ import Icon from '../Icon/Icon';
 import PrettyHtml from '../PrettyHtml';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import icons from '../../tools/icon-constants';
 import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
@@ -22,6 +21,7 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { CloseIcon } from '../CustomIcons/CustomIcons';
 
 /**
  * Render sidebar content. The content can be modal and blocking for the rest
@@ -109,7 +109,7 @@ export default function Sidebar({ anchor, mode }) {
             id="closeSurveyAndSidebar"
             ref={closeSurveyAndSidebarButton}
           >
-            <Icon icon={icons?.close} alt={t('sidebar.close')} />
+            <Icon icon={<CloseIcon />} alt={t('sidebar.close')} />
           </Button>
         </StyledSidebarActions>
       </StyledSidebarHeader>

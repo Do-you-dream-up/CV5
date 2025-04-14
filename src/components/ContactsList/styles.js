@@ -41,7 +41,7 @@ export default createUseStyles((theme) => ({
     '& > h2': {
       fontWeight: 'normal',
       fontSize: '1em',
-      margin: '0',
+      margin: '0 0 0 0.4em;',
     },
     '& > div:before': {
       marginRight: '0.4em',

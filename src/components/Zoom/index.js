@@ -22,7 +22,7 @@ const Zoom = ({ src }) => {
   }, []);
 
   useEffect(() => {
-    if (eventFired.key === 'Tab' || eventFired.key === 'Escape') {
+    if (eventFired?.key === 'Tab' || eventFired?.key === 'Escape') {
       closeZoom();
     }
   }, [eventFired]);

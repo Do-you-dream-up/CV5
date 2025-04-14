@@ -5,12 +5,12 @@ import MenuList from '../MenuList/MenuList';
 import PropTypes from 'prop-types';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useDialog } from '../../contexts/DialogContext';
+import { PrinterIcon, EmailIcon, DatabaseIcon, ShieldIcon } from '../CustomIcons/CustomIcons';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -32,25 +32,25 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
 
   const items = [
     {
-      icon: icons?.printer,
+      icon: <PrinterIcon />,
       onClick: interactions?.length > 1 ? () => dydu.printHistory() : null,
       text: print,
       when: !!_printConversation,
     },
     {
-      icon: icons?.email,
+      icon: <EmailIcon />,
       onClick: () => window.dydu.promptEmail.prompt('exportConv'),
       text: email,
       when: !!exportConversation,
     },
     {
-      icon: icons?.database,
+      icon: <DatabaseIcon />,
       onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
       when: configuration?.spaces?.items?.length > 1,
     },
     {
-      icon: icons?.shield,
+      icon: <ShieldIcon />,
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
       text: gdpr,
       when: !!sendGdprData,
