@@ -8,7 +8,6 @@ import { Local } from '../../tools/storage';
 import Voice from '../Voice';
 import c from 'classnames';
 import dydu from '../../tools/dydu';
-import icons from '../../tools/icon-constants';
 import talk from '../../tools/talk';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useDebounce from '../../tools/hooks/debounce';
@@ -23,6 +22,7 @@ import useIdleTimeout from '../../tools/hooks/useIdleTimeout';
 import Button from '../Button/Button';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import PromiseQueue from '../../tools/hooks/PromiseQueue';
+import { SendIcon } from '../CustomIcons/CustomIcons';
 
 interface InputProps {
   onRequest?: (input: string) => void;
@@ -333,7 +333,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
     {
       children: (
         <Icon
-          icon={icons?.submit || ''}
+          icon={<SendIcon /> || ''}
           color={themeColor?.palette?.primary.main}
           alt={actionSend}
           ariaLabel={actionSend}

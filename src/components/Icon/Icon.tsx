@@ -1,7 +1,7 @@
 import icomoonStyle from '../../../public/assets/Icomoon/style.css';
 
 import { IconWrapper } from './style';
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useShadow } from '../../contexts/ShadowProvider';
 
 interface IconWrapperPropsInterface {
@@ -14,7 +14,7 @@ interface IconWrapperPropsInterface {
 
 interface IconPropsInterface extends IconWrapperPropsInterface {
   size?: number;
-  icon: string;
+  icon: React.ReactNode;
   ariaLabel?: string;
 }
 
@@ -22,7 +22,7 @@ const Icon = ({
   className = '',
   color,
   size = 16,
-  icon = '',
+  icon,
   onClick,
   alt = '',
   title = undefined,
@@ -47,7 +47,7 @@ const Icon = ({
   const iconWrapperProps = useMemo<IconWrapperPropsInterface>(
     () => ({
       color: color,
-      className: `dydu-icon ${className} ${icon}`,
+      className: `dydu-icon ${className}`,
       title: title || alt,
       onClick: onClick,
       size,
@@ -55,7 +55,11 @@ const Icon = ({
     [color, className, title, alt, onClick],
   );
 
-  return <IconWrapper {...iconWrapperProps} aria-label={ariaLabel}></IconWrapper>;
+  return (
+    <IconWrapper {...iconWrapperProps} aria-label={ariaLabel}>
+      {icon}
+    </IconWrapper>
+  );
 };
 
 export default Icon;

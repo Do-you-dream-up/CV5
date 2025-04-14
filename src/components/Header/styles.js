@@ -104,5 +104,9 @@ export default createUseStyles((theme) => ({
   endLivechatIcon: () => ({
     marginLeft: '8px',
     fontSize: '16px',
+    fill: '#120CFF',
+    '&:hover': {
+      fill: 'white',
+    },
   }),
 }));

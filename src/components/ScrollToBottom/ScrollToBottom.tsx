@@ -1,10 +1,10 @@
 import { useShadow } from '../../contexts/ShadowProvider';
 import Button from '../Button/Button';
 import useStyles from './styles';
-import icons from '../../tools/icon-constants';
 import Icon from '../Icon/Icon';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useTranslation } from 'react-i18next';
+import { CaretDownIcon } from '../CustomIcons/CustomIcons';
 
 const ScrollToBottom = () => {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ const ScrollToBottom = () => {
           }, 0);
         }}
       >
-        <Icon className={'dydu-icon-scroll-to-bottom'} icon={icons.caretDown} alt={t('general.scrollToBottom')} />
+        <Icon className={'dydu-icon-scroll-to-bottom'} icon={<CaretDownIcon />} alt={t('general.scrollToBottom')} />
       </Button>
     </>
   );

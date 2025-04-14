@@ -2,12 +2,12 @@ import Actions from '../Actions/Actions';
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import icons from '../../tools/icon-constants';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useState } from 'react';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { FormIcon } from '../CustomIcons/CustomIcons';
 /**
  * Base form component.
  *
@@ -22,7 +22,7 @@ export default function Form({ children, className, onDismiss, onReject, onResol
   const { t } = useTranslation('translation');
   const theme = useTheme();
 
-  const getSubmitIcon = () => thinking && <Icon icon={icons.form} color={theme.palette.primary.text} alt="" />;
+  const getSubmitIcon = () => thinking && <Icon icon={<FormIcon />} color={theme.palette.primary.text} alt="" />;
 
   const onCancel =
     typeof onReject === 'function'

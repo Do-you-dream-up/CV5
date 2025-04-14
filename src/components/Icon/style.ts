@@ -8,7 +8,7 @@ export const IconWrapper = styled.div`
   ${({ color }) =>
     color &&
     css`
-      color: ${({ color }) => color};
+      fill: ${({ color }) => color};
       &:before {
         color: inherit;
       }

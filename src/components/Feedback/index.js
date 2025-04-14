@@ -17,6 +17,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
+import { ThumbDownIcon, ThumbUpIcon } from '../CustomIcons/CustomIcons';
 
 /**
  * Render interfaces for the user to submit feedback.
@@ -130,7 +131,7 @@ export default function Feedback({ notAddContext, lastRequest }) {
               variant="icon"
               data-testid="vote-buttons-down"
             >
-              <Icon icon={icons?.thumbDown} color={theme.palette.primary.text} alt={altDownVote} />
+              <Icon className={icons?.thumbDown} icon={<ThumbDownIcon />} color={theme.palette.primary.text} alt={altDownVote} />
             </Button>
             <Button
               style={{ backgroundColor: `${COLOR_RGAA.success}` }}
@@ -138,7 +139,7 @@ export default function Feedback({ notAddContext, lastRequest }) {
               variant="icon"
               data-testid="vote-buttons-up"
             >
-              <Icon icon={icons?.thumbUp} color={theme.palette.primary.text} alt={altUpVote} />
+              <Icon className={icons?.thumbUp} icon={<ThumbUpIcon />} color={theme.palette.primary.text} alt={altUpVote} />
             </Button>
           </div>
         )}

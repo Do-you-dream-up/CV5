@@ -1,8 +1,8 @@
 import { INTERACTION_NOTIFICATION_TYPE } from '../constants';
 import LivechatPayload from '../LivechatPayload';
-import icons from '../../tools/icon-constants';
 import { isDefined } from '../helpers';
 import { useMemo } from 'react';
+import { PowerIcon, TimerIcon, CheckCircleIcon, TimeIcon } from '../../components/CustomIcons/CustomIcons';
 
 const getNotificationType = (notification) => {
   if (LivechatPayload.is.timeout(notification)) return INTERACTION_NOTIFICATION_TYPE.timeout;
@@ -24,18 +24,18 @@ const getNotificationType = (notification) => {
 };
 
 const notificationTypeToIconName = {
-  [INTERACTION_NOTIFICATION_TYPE.close]: icons.power,
-  [INTERACTION_NOTIFICATION_TYPE.operatorDisconnected]: icons.power,
-  [INTERACTION_NOTIFICATION_TYPE.wait]: icons.timer,
-  [INTERACTION_NOTIFICATION_TYPE.operatorBusy]: icons.timer,
-  [INTERACTION_NOTIFICATION_TYPE.success]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.operatorConnected]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.timeout]: icons.time,
-  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.waitingQueue]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue]: icons.checkCircle,
-  [INTERACTION_NOTIFICATION_TYPE.dmLiveChatConnectionInQueue]: icons.checkCircle,
+  [INTERACTION_NOTIFICATION_TYPE.close]: <PowerIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.operatorDisconnected]: <PowerIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.wait]: <TimerIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.operatorBusy]: <TimerIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.success]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.operatorConnected]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.timeout]: <TimeIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredManually]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.dialogTransferredAutomatically]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.waitingQueue]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.leaveWaitingQueue]: <CheckCircleIcon />,
+  [INTERACTION_NOTIFICATION_TYPE.dmLiveChatConnectionInQueue]: <CheckCircleIcon />,
 };
 
 export default function useNotificationHelper(notification) {
