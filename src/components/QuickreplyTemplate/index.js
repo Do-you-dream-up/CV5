@@ -18,6 +18,16 @@ export default function QuickreplyTemplate({ html }) {
     }
   }, []);
 
+  const newObjectSort = (obj, fn) => {
+    return (
+      obj &&
+      Object.keys(obj).reduce((acc, k) => {
+        acc[fn(obj[k], k, obj)] = obj[k];
+        return acc;
+      }, {})
+    );
+  };
+
   const content = useMemo(() => {
     if (!isDefined(html)) return null;
     let parse = null;
@@ -35,13 +45,17 @@ export default function QuickreplyTemplate({ html }) {
     return content.text;
   }, [content]);
 
-  const quick = useMemo(() => {
+  const sortQuick = useMemo(() => {
     if (!isDefined(content)) return null;
-    return content.quick || {};
-  }, [content]);
+    else {
+      return newObjectSort(content.quick, (val, key) => {
+        return parseInt(key.match(/\d+/));
+      });
+    }
+  });
 
-  const hasQuickButton = (quick) => {
-    return Object.keys(quick).some((key) => quick[key]);
+  const hasQuickButton = (sortQuick) => {
+    return sortQuick && Object.keys(sortQuick).some((key) => sortQuick[key]);
   };
 
   if (!isDefined(content)) return null;
@@ -50,25 +64,26 @@ export default function QuickreplyTemplate({ html }) {
       {!!text && (
         <p
           className={c('dydu-quickreply-template-content', classes.text, {
-            [classes.separator]: hasQuickButton(quick),
+            [classes.separator]: hasQuickButton(sortQuick),
           })}
           dangerouslySetInnerHTML={{ __html: text }}
         />
       )}
-      {Object.keys(quick)
-        .sort()
-        .map((el, index) => {
-          return (
-            quick[el] && (
-              <p
-                className={c('dydu-quickreply-template-buttons', classes.buttons)}
-                key={index}
-                dangerouslySetInnerHTML={{ __html: quick[el] }}
-                onKeyDown={handleKeyDown}
-              />
-            )
-          );
-        })}
+      {sortQuick &&
+        Object.keys(sortQuick)
+          .sort((a, b) => a - b)
+          .map((el, index) => {
+            return (
+              sortQuick[el] && (
+                <p
+                  className={c('dydu-quickreply-template-buttons', classes.buttons)}
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: sortQuick[el] }}
+                  onKeyDown={handleKeyDown}
+                />
+              )
+            );
+          })}
     </div>
   );
 }
