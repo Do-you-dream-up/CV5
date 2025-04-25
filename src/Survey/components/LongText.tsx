@@ -1,9 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
-import Field from '../Field';
-import FieldBlock from '../FieldBlock';
 import MessageRequired from '../MessageRequired';
-import PropTypes from 'prop-types';
 import { useTextInputConfig } from './useTextInputConfig';
 import { useTranslation } from 'react-i18next';
 
@@ -23,28 +20,20 @@ export default function LongText({ field }) {
     return {
       ...attributes.root,
       onChange,
-      defaultValue: field.getUserAnswerValue()?.value,
+      defaultValue: field.userAnswerValue?.value,
       maxLength: 200,
       rows: 5,
       style: attributes.style,
+      id: field.getId(),
     };
   }, [onChange, field]);
 
-  const content = useMemo(() => {
-    return (
-      <div className={'long-text'}>
-        <p className={'question'}>
-          {field.getLabel()}
-          <MessageRequired field={field} />
-        </p>
-        <textarea {...inputTextAttributes()} />
-      </div>
-    );
-  }, [field, inputTextAttributes]);
-
-  return <FieldBlock field={field}>{content}</FieldBlock>;
+  return (
+    <div className={'long-text'}>
+      <label className={'question'} htmlFor={field.getId()}>
+        {field.getLabel()} <MessageRequired field={field} />
+      </label>
+      <textarea {...inputTextAttributes()} />
+    </div>
+  );
 }
-
-LongText.propTypes = {
-  field: PropTypes.instanceOf(Field),
-};

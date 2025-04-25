@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import Field from '../../../Survey/Field';
+import Field from '../../Field';
 import MultipleChoice from '../MultipleChoice';
 import { mockFieldValues } from '../utils';
 import { render } from '../../../tools/test-utils';

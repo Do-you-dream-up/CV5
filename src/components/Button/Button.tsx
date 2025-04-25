@@ -57,7 +57,6 @@ const Button = ({
   ...rest
 }: ButtonProps) => {
   const { configuration } = useConfiguration();
-  const { tabbing } = useUserAction() || false;
   const classes: any = useStyles({ color, configuration });
   const icon = typeof getIcon === 'function' ? getIcon() : getIcon;
   const theme = useTheme<Models.Theme>();

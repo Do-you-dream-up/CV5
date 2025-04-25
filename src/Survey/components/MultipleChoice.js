@@ -1,5 +1,4 @@
 import Field from '../Field';
-import FieldBlock from '../FieldBlock';
 import MessageRequired from '../MessageRequired';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
@@ -8,11 +7,11 @@ export default function MultipleChoice({ field }) {
   const content = useMemo(() => field.renderChildren(), [field]);
   return (
     <div>
-      <p className={'question'}>
+      <label className={'question'} htmlFor={field.getId()}>
         {field.getLabel()}
         <MessageRequired field={field} />
-      </p>
-      <FieldBlock field={field}>{content}</FieldBlock>
+      </label>
+      <div id={field.getId()}>{content}</div>
     </div>
   );
 }

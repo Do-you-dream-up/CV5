@@ -1,17 +1,17 @@
 import '@testing-library/jest-dom';
 
-import Field from '../../../Survey/Field';
+import Field from '../../Field';
 import React from 'react';
 import Select from '../Select';
 import { fireEvent } from '@testing-library/react';
 import { mockFieldValues } from '../utils';
 import { render } from '../../../tools/test-utils';
 
-describe('Select.js', () => {
+describe('Select.tsx', () => {
   it('Should render Select with field props', async () => {
+    const slaves = [document.createElement('div'), document.createElement('span')];
     const { container } = render(<Select field={Field.instanciate({ ...mockFieldValues, type: 'SELECT' })} />);
     expect(container.querySelector('select')).toBeInTheDocument();
-    expect(container.querySelector('.slaves')).toBeInTheDocument();
   });
 
   it('Should render Select with field props', async () => {

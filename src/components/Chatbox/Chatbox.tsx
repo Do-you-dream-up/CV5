@@ -294,7 +294,9 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   // you need to change focusableElements array.
   // We use shadowRoot.activeElement to get the active element inside the shadowRoot.
   useEffect(() => {
-    focusTrap && focusTrap(eventFired, root, shadowRoot, 'button, textarea');
+    if (!sidebarActive && focusTrap) {
+      focusTrap(eventFired, root, shadowRoot, 'button, textarea');
+    }
   }, [eventFired]);
 
   return (

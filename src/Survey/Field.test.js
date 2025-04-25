@@ -505,7 +505,7 @@ describe('Field component', () => {
       expect(field.userAnswerValue.value).toEqual('What is your name?');
     });
 
-    it('should return null if its no value', () => {
+    it('should return emptystring if its no value', () => {
       const fieldData = {
         id: 1,
         label: 'What is your name?',
@@ -517,10 +517,10 @@ describe('Field component', () => {
       const { getByPlaceholderText } = render(field.render());
       const input = getByPlaceholderText('survey.placeholder');
 
-      fireEvent.change(input, { target: { value: null } });
+      fireEvent.change(input, { target: { value: '' } });
       field.saveAsUserAnswer(input.value);
 
-      expect(field.userAnswerValue).toBeNull();
+      expect(field.userAnswerValue?.value).toBe('');
     });
   });
 

@@ -1,4 +1,6 @@
 {
   "id": "f1871fe8-cdea-4695-9ea6-529a4e9460dc",
-  "servers": ["https://localhost:8043"]
+  "servers": [
+    "https://localhost:8043"
+  ]
 }
