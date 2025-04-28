@@ -3,7 +3,7 @@ import useWebsocket from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
 import { Local } from '../storage';
-import { TUNNEL_MODE } from '../constants';
+import { ATRIA_TYPE_RESPONSE, TUNNEL_MODE } from '../constants';
 import dydu from '../dydu';
 import { b64dAllFields, b64decode, b64decodeObject, isDefined } from '../helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
@@ -14,6 +14,8 @@ import { useSurvey } from '../../Survey/SurveyProvider';
 import { BOT } from '../bot';
 import { buildServletUrl } from '../axios';
 import { decode } from '../cipher';
+import i18n from 'i18next';
+import { useDialog } from '../../contexts/DialogContext';
 
 const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
@@ -40,6 +42,9 @@ const linkToLivechatFunctions = (livechatContextFunctions) => {
 
 let needToAnswerSurvey = false;
 let endPollingReceived = false;
+
+let notificationTextFromBackend = '';
+let notificationFromBackend = false;
 
 const MESSAGE_TYPE = {
   survey: 'survey', // received when server informs client that there is a survey to answer, providing surveyId
@@ -78,6 +83,7 @@ export default function useDyduWebsocket() {
   const { isEnabled: isTopKnowledgeEnabled, setTopKnowledge, extractPayload } = useTopKnowledge();
   const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
+  const { addResponse } = useDialog();
 
   const lastMessageData = useMemo(() => {
     if (lastMessage && lastMessage.data && lastMessage.data !== 'pong') {
@@ -154,10 +160,31 @@ export default function useDyduWebsocket() {
     setSocketProps([null, {}]);
   }, []);
 
+  const showSurveyMessage = () => {
+    const textKey = notificationFromBackend ? notificationTextFromBackend : 'survey.textBubble';
+
+    addResponse({
+      text: i18n.t(textKey),
+      survey: b64dAllFields(lastMessageData?.values?.surveyId),
+    });
+
+    notificationFromBackend = false;
+  };
+
   const close = useCallback(() => {
     flushSocketProps();
     if (endLivechatAndCloseTunnel) endLivechatAndCloseTunnel();
   }, [flushSocketProps]);
+
+  const handleSurveySentence = (messageData) => {
+    notificationTextFromBackend = messageData?.values?.text?.fromBase64();
+    notificationFromBackend = true;
+
+    const operator = messageData?.values?.operatorExternalId?.fromBase64();
+    if (operator) {
+      Local.operator.save(operator);
+    }
+  };
 
   useEffect(() => {
     if (!isDefined(messageType)) return;
@@ -169,6 +196,7 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.surveyConfigurationResponse:
         setSurveyConfig(b64dAllFields(lastMessageData?.values));
+        showSurveyMessage();
         if (endPollingReceived) {
           endPollingReceived = false;
           close();
@@ -179,7 +207,13 @@ export default function useDyduWebsocket() {
         return showUploadFileButton();
 
       case MESSAGE_TYPE.operatorResponse:
-        return displayMessage();
+        if (lastMessageData?.values?.typeResponse?.fromBase64()?.equals(ATRIA_TYPE_RESPONSE.opSendSurveySentence)) {
+          handleSurveySentence(lastMessageData);
+        } else {
+          notificationFromBackend = false;
+          return displayMessage();
+        }
+        return;
 
       case MESSAGE_TYPE.notification:
         return displayNotification();

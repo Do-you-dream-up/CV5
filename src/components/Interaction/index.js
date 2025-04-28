@@ -134,6 +134,7 @@ export default function Interaction({
   scroll,
   sidebar,
   hasSurvey,
+  surveyId,
   steps,
   templatename,
   thinking,
@@ -290,6 +291,7 @@ export default function Interaction({
         component: scroll && !index ? Scroll : undefined,
         sidebar: index === bubbles.length - 1 ? sidebar : undefined,
         hasSurvey: hasSurvey,
+        surveyId: surveyId,
         [typeof it === 'string' ? 'html' : 'children']: it,
       };
 
@@ -369,6 +371,7 @@ Interaction.propTypes = {
   sidebar: PropTypes.any,
   activeSidebarName: PropTypes.string,
   hasSurvey: PropTypes.bool,
+  surveyId: PropTypes.string,
   steps: PropTypes.array,
   templatename: PropTypes.string,
   contexts: PropTypes.any,

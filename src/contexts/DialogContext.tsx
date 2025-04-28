@@ -519,6 +519,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               type="response"
               sidebar={sidebar}
               hasSurvey={isDefined(survey)}
+              surveyId={survey}
               steps={steps}
               templatename={templatename}
               thinking

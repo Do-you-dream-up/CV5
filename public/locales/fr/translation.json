@@ -278,7 +278,8 @@
     "send": "Envoyer ma réponse",
     "sentMessage": "Votre réponse au questionnaire a bien été envoyée.",
     "errorMessage": "Une erreur est survenue votre réponse au questionnaire n’a malheureusement pas été envoyée.",
-    "placeholder": "Saisissez votre réponse ici"
+    "placeholder": "Saisissez votre réponse ici",
+    "textBubble": "Dites-nous ce que vous en pensez ! Votre retour nous aide à nous améliorer.\nRépondez au questionnaire en cliquant ci-dessous"
   },
   "livechat": {
     "notif": {

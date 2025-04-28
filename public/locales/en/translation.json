@@ -278,7 +278,8 @@
     "send": "Send my answer",
     "sentMessage": "Your answer to the survey has been sent.",
     "errorMessage": "An error has occurred Your answer to the survey was unfortunately not sent.",
-    "placeholder": "Enter your answer here."
+    "placeholder": "Enter your answer here.",
+    "textBubble": "Tell us what you think! Your feedback helps us improve.\n'Click below to answer the survey"
   },
   "livechat": {
     "notif": {

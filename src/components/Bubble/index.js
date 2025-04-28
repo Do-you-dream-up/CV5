@@ -13,13 +13,14 @@ import { isDefined } from '../../tools/helpers';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
-import { SidebarFormTitle, useSurvey } from '../../Survey/SurveyProvider';
+import { instanciateFields, SidebarFormTitle, useSurvey } from '../../Survey/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import useViewport from '../../tools/hooks/useViewport';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
 import SurveyForm from '../../Survey/SurveyForm';
 import { VIEW_MODE } from '../../tools/constants';
+import dydu from '../../tools/dydu';
 
 /**
  * A conversation bubble.
@@ -38,6 +39,7 @@ export default function Bubble({
   html,
   sidebar,
   hasSurvey,
+  surveyId,
   step,
   templatename,
   thinking,
@@ -45,7 +47,7 @@ export default function Bubble({
   scrollToBottom,
 }) {
   const { configuration } = useConfiguration();
-  const { surveyConfig } = useSurvey();
+  const { setInstances, surveyConfig, setSurveyConfig } = useSurvey();
   const { tabbing } = useUserAction();
   const { activeSidebarName, toggleSidebar, typeResponse } = useDialog();
   const { isMobile } = useViewport();
@@ -69,7 +71,7 @@ export default function Bubble({
   sidebar = stepSidebar ? stepSidebar : sidebar;
 
   const actions = [
-    ...(sidebar || (hasSurvey && surveyConfig)
+    ...(sidebar || (hasSurvey && surveyConfig?.surveyId === surveyId)
       ? [
           {
             children: isSidebarOpen ? less : more,
@@ -90,7 +92,7 @@ export default function Bubble({
   useEffect(() => {
     if (type !== 'request') {
       const isEmptyActiveSidebarName = !activeSidebarName;
-      const isNotSameSurvey = hasSurvey && activeSidebarName && activeSidebarName !== surveyConfig?.surveyId;
+      const isNotSameSurvey = hasSurvey && activeSidebarName && activeSidebarName !== surveyId;
       const isNotSameSidebar = !hasSurvey && activeSidebarName && activeSidebarName !== sidebar?.id;
       if (isEmptyActiveSidebarName || isNotSameSurvey || isNotSameSidebar) {
         setIsSidebarOpen(false);
@@ -98,22 +100,29 @@ export default function Bubble({
         setIsSidebarOpen(true);
       }
     }
-  }, [activeSidebarName, surveyConfig?.surveyId]);
+  }, [activeSidebarName, surveyId]);
 
   const onSidebarButtonToggle = (open) => {
-    const surveyId = surveyConfig?.surveyId;
-    if (toggleSidebar) {
+    if (hasSurvey && surveyId) {
+      dydu.getSurvey(surveyId).then((res) => {
+        setSurveyConfig(res);
+        setInstances(instanciateFields(res?.fields));
+        if (toggleSidebar) {
+          setIsSidebarOpen(open);
+          toggleSidebar(open, {
+            width: configuration?.sidebar?.width || null,
+            bodyRenderer: () => <SurveyForm />,
+            title: () => <SidebarFormTitle />,
+            headerTransparency: false,
+            surveyId,
+          })();
+        }
+      });
+    } else if (toggleSidebar) {
       setIsSidebarOpen(open);
       toggleSidebar(open, {
-        ...(hasSurvey && surveyId
-          ? {
-              width: configuration?.sidebar?.width || null,
-              bodyRenderer: () => <SurveyForm />,
-              title: () => <SidebarFormTitle />,
-              headerTransparency: false,
-              surveyId: surveyId,
-            }
-          : { body: sidebar.content, ...sidebar }),
+        body: sidebar.content,
+        ...sidebar,
       })();
     }
   };
@@ -231,6 +240,7 @@ Bubble.propTypes = {
   html: PropTypes.string,
   sidebar: PropTypes.any,
   hasSurvey: PropTypes.bool,
+  surveyId: PropTypes.string,
   step: PropTypes.object,
   templatename: PropTypes.string,
   thinking: PropTypes.bool,
