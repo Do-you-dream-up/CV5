@@ -265,6 +265,12 @@
     "widthXL": 1200,
     "transient": true
   },
+  "survey": {
+    "automatic": {
+      "desktop": true,
+      "fullScreen": false
+    }
+  },
   "spaces": {
     "active": true,
     "detection": [

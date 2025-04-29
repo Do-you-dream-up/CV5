@@ -1,7 +1,7 @@
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { isArray, isDefined, isEmptyArray, isEmptyString, isString } from '../tools/helpers';
 
-import { CHATBOX_EVENT_NAME } from '../tools/constants';
+import { CHATBOX_EVENT_NAME, VIEW_MODE } from '../tools/constants';
 import Field from './Field';
 import SurveyForm from './SurveyForm';
 import dydu from '../tools/dydu';
@@ -9,6 +9,7 @@ import { useConfiguration } from '../contexts/ConfigurationContext';
 import { useDialog } from '../contexts/DialogContext';
 import { Local } from '../tools/storage';
 import { useEvent } from '../contexts/EventsContext';
+import useViewport from '../tools/hooks/useViewport';
 
 interface SurveyConfigProps {
   fields?: any;
@@ -25,6 +26,7 @@ interface SurveyContextProps {
   flushStates?: () => void;
   surveyClosed?: boolean;
   setSurveyClosed?: (value: boolean) => void;
+  setInstances?: (data: any) => void;
 }
 
 interface SurveyProviderProps {
@@ -44,6 +46,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const [listeningCloseSidebar, setListeningCloseSidebar] = useState(false);
   const surveyId: string | undefined = surveyConfig?.surveyId;
   const [surveyClosed, setSurveyClosed] = useState(false);
+  const { isMobile } = useViewport();
 
   const flushStates = () => {
     setInstances(null);
@@ -95,7 +98,11 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   }, []);
 
   const triggerSurvey = () => {
-    if (surveyId) {
+    const isFullScreen = isMobile || Local.viewMode.load() === VIEW_MODE.full;
+    const automaticSurvey = isFullScreen
+      ? !!configuration?.survey.automatic?.fullScreen
+      : !!configuration?.survey.automatic?.desktop;
+    if (surveyId && automaticSurvey) {
       openSidebar &&
         openSidebar({
           width: configuration?.sidebar?.width || null,
@@ -179,6 +186,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       closeSurveyAndSidebar,
       surveyClosed,
       setSurveyClosed,
+      setInstances,
     }),
     [
       getSurveyConfiguration,
@@ -190,6 +198,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
       closeSurveyAndSidebar,
       surveyClosed,
       setSurveyClosed,
+      setInstances,
     ],
   );
 
@@ -199,7 +208,7 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
 //==================================================/
 // LOCAL HELPERS
 //==================================================/
-const instanciateFields = (listFieldObject: any[] = []) => {
+export const instanciateFields = (listFieldObject: any[] = []) => {
   if (!isArray(listFieldObject)) {
     console.error('instanciateFields [type error]: array typed parameter expected');
     return null;

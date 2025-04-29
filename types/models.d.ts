@@ -30,6 +30,7 @@ declare namespace Models {
     registerVisit: RestrictedOnChatboxAccessInsteadOfSiteAccess;
     root: string;
     sidebar: Sidebar;
+    survey: Survey;
     spaces: Spaces;
     suggestions: Suggestions;
     tabs: Tabs;
@@ -345,6 +346,10 @@ declare namespace Models {
     mode: string;
     width: number;
     transient: boolean;
+  }
+
+  export interface Survey {
+    automatic: Automatic;
   }
 
   export interface Automatic {

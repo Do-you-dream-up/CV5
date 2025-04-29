@@ -61,6 +61,7 @@ export const ATRIA_TYPE_RESPONSE = {
   naAutoCloseDialog: 'NAAutoCloseDialog',
   naAutoCloseDialogBecauseUserLeft: 'NAAutoCloseDialogBecauseUserLeft',
   opLivechatEndByOperator: 'OPLiveChatEndByOperator',
+  opSendSurveySentence: 'OPSendSurveySentence',
 };
 
 export const INTERACTION_NOTIFICATION_TYPE = {
