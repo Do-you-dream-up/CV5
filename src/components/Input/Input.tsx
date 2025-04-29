@@ -1,6 +1,7 @@
 import Actions, { ActionProps } from '../Actions/Actions';
-import { escapeHTML, isDefined } from '../../tools/helpers';
+import { isDefined } from '../../tools/helpers';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import sanitizeHtml from 'sanitize-html';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
@@ -76,6 +77,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const isLivechatTypeDefined = !!Local.livechatType.load();
 
+  const sanitizeInput = (input: string) => {
+    return sanitizeHtml(input, {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+  };
+
   const { idleTimer } = useIdleTimeout({
     onIdle: () => {
       livechatTyping?.(input);
@@ -94,20 +102,21 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   };
 
   const resetIfNecessaryBeforeSubmit = (text): void => {
+    const safeText = sanitizeInput(text.trim());
     if (Local.isDialogTimeOver() || hasToVerifyContextAfterLivechatClosed) {
       verifyAvailabilityDialogContext().then((isContextAvailable) => {
         if (!isContextAvailable) {
           clearInteractions && clearInteractions();
           PromiseQueue.exec(getPromiseQueueList()).then(() => {
             setHasToVerifyContextAfterLivechatClosed && setHasToVerifyContextAfterLivechatClosed(false);
-            submit(text);
+            submit(safeText);
           });
         } else {
-          submit(text);
+          submit(safeText);
         }
       });
     } else {
-      submit(text);
+      submit(safeText);
     }
   };
 
@@ -236,13 +245,13 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   );
 
   const submit = useCallback(
-    (text) => {
-      text = escapeHTML(text.trim());
-      if (text) {
+    (text: string) => {
+      const safeText = sanitizeInput(text.trim());
+      if (safeText) {
         reset();
-        onRequest && onRequest(text);
-        dispatchEvent && dispatchEvent('chatbox', 'questionSent', text);
-        sendInput(text);
+        onRequest && onRequest(safeText);
+        dispatchEvent && dispatchEvent('chatbox', 'questionSent', safeText);
+        sendInput(safeText);
       }
       setTyping(false);
     },
