@@ -76,4 +76,52 @@ describe('Input', () => {
     waitFor(() => expect(onRequestMock).toHaveBeenCalledTimes(1));
     waitFor(() => expect(onResponseMock).not.toHaveBeenCalled());
   });
+  test('should clean input to protect against xss', () => {
+    const newConfig = new ConfigurationFixture();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    const onRequest = jest.fn();
+    const onResponse = jest.fn();
+    let screen;
+    act(() => {
+      screen = render(<Input onRequest={onRequest} onResponse={onResponse} />);
+    });
+
+    const input = screen.getByTestId('textareaId');
+    fireEvent.change(input, { target: { value: '<script>alert("XSS")</script>' } });
+    const submitButton = screen.getByTestId('dydu-submit-footer');
+    fireEvent.click(submitButton);
+    expect(onRequest).not.toHaveBeenCalled();
+  });
+  test('should clean input to protect against xss and send request safe', () => {
+    const newConfig = new ConfigurationFixture();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    const onRequest = jest.fn();
+    const onResponse = jest.fn();
+    let screen;
+    act(() => {
+      screen = render(<Input onRequest={onRequest} onResponse={onResponse} />);
+    });
+
+    const input = screen.getByTestId('textareaId');
+    fireEvent.change(input, { target: { value: '<script>alert("XSS")</script>clean input' } });
+    const submitButton = screen.getByTestId('dydu-submit-footer');
+    fireEvent.click(submitButton);
+    expect(onRequest).toHaveBeenCalledWith('clean input');
+  });
+  test('should clean input to protect against xss with dom node', () => {
+    const newConfig = new ConfigurationFixture();
+    useConfiguration.mockReturnValue({ configuration: newConfig.getConfiguration() });
+    const onRequest = jest.fn();
+    const onResponse = jest.fn();
+    let screen;
+    act(() => {
+      screen = render(<Input onRequest={onRequest} onResponse={onResponse} />);
+    });
+
+    const input = screen.getByTestId('textareaId');
+    fireEvent.change(input, { target: { value: '<b onclick="console.log(\'XSS found\')">' } });
+    const submitButton = screen.getByTestId('dydu-submit-footer');
+    fireEvent.click(submitButton);
+    expect(onRequest).not.toHaveBeenCalled();
+  });
 });
