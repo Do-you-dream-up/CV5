@@ -141,6 +141,7 @@ export default function Interaction({
   type,
   typeResponse,
   lastRequest,
+  feedbackWording,
 }) {
   const [bubbles, setBubbles] = useState([]);
   const [hasLoader, setHasLoader] = useState(!!thinking);
@@ -266,7 +267,9 @@ export default function Interaction({
 
   const _Feedback = useMemo(() => {
     const isPushRule = typeResponse === 'DMClientPush';
-    return !hasLoader && askFeedback ? <Feedback notAddContext={isPushRule} lastRequest={lastRequest} /> : null;
+    return !hasLoader && askFeedback ? (
+      <Feedback notAddContext={isPushRule} lastRequest={lastRequest} feedbackWording={feedbackWording} />
+    ) : null;
   }, [askFeedback, hasLoader]);
 
   const _Loader = useMemo(() => {
@@ -379,6 +382,7 @@ Interaction.propTypes = {
   type: PropTypes.oneOf(['request', 'response']).isRequired,
   typeResponse: PropTypes.string,
   lastRequest: PropTypes.string,
+  feedbackWording: PropTypes.any,
 };
 
 const Writing = () => {

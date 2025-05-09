@@ -3,16 +3,14 @@ import { UserActionContext } from '../../contexts/UserActionContext';
 import c from 'classnames';
 import { useContext } from 'react';
 import useStyles from './styles';
-import { useTranslation } from 'react-i18next';
 import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Render choices for the user to submit feedback.
  */
-export default function FeedbackChoices({ onSelect }) {
-  const { t } = useTranslation('translation');
-  const choices = t('feedback.choices', { defaultValue: [] });
-  const askChoices = t('feedback.question');
+export default function FeedbackChoices({ onSelect, feedbackWording }) {
+  const choices = [feedbackWording.choice0, feedbackWording.choice1, feedbackWording.choice2];
+  const askChoices = feedbackWording.choiceIntroduction;
   const classes = useStyles();
   const { tabbing } = useContext(UserActionContext) || false;
   const { dispatchEvent } = useEvent();
@@ -45,4 +43,5 @@ export default function FeedbackChoices({ onSelect }) {
 
 FeedbackChoices.propTypes = {
   onSelect: PropTypes.func,
+  feedbackWording: PropTypes.any,
 };

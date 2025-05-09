@@ -18,6 +18,8 @@ import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { ThumbDownIcon, ThumbUpIcon } from '../CustomIcons/CustomIcons';
+import {Local} from "../../tools/storage";
+import {BOT} from "../../tools/bot";
 
 /**
  * Render interfaces for the user to submit feedback.
@@ -29,7 +31,7 @@ import { ThumbDownIcon, ThumbUpIcon } from '../CustomIcons/CustomIcons';
  * 1. Comment
  */
 
-export default function Feedback({ notAddContext, lastRequest }) {
+export default function Feedback({ notAddContext, lastRequest, feedbackWording}) {
   const { configuration } = useConfiguration();
   const { addNotificationOrResponse } = useLivechat();
   const [showChoices, setShowChoices] = useState(false);
@@ -39,8 +41,8 @@ export default function Feedback({ notAddContext, lastRequest }) {
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const { active, askChoices, askComment } = configuration.feedback;
-  const commentHelp = t('feedback.comment.help');
-  const commentThanks = t('feedback.comment.thanks');
+  const commentHelp = feedbackWording.commentLabel;
+  const commentThanks = feedbackWording.commentEnd;
   const voteThanks = t('feedback.vote.thanks');
   const downVote = t('feedback.vote.negative');
   const upVote = t('feedback.vote.positive');
@@ -151,7 +153,7 @@ export default function Feedback({ notAddContext, lastRequest }) {
             data-testid="feedback-choices"
             scrollToBottom={true}
           >
-            <FeedbackChoices onSelect={onChoicesSelect} />
+            <FeedbackChoices onSelect={onChoicesSelect} feedbackWording={feedbackWording}/>
           </Bubble>
         )}
         {showComment && (
@@ -171,7 +173,7 @@ export default function Feedback({ notAddContext, lastRequest }) {
                       name="comment"
                       onChange={onChange}
                       onKeyDown={onKeyDown}
-                      placeholder={t('feedback.comment.placeholder')}
+                      placeholder={feedbackWording.commentPlaceholder}
                       value={data.comment}
                     />
                     <div children={data.comment} className={classes.commentFieldShadow} />
@@ -189,4 +191,5 @@ export default function Feedback({ notAddContext, lastRequest }) {
 Feedback.defaultProps = {
   notAddContext: false,
   lastRequest: '',
+  feedbackWording:'',
 };
