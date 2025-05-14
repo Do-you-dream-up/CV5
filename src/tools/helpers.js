@@ -1,4 +1,5 @@
 import { VAR_TYPE } from './constants';
+import sanitizeHtml from 'sanitize-html';
 
 export const isDefined = (val) => val !== null && typeof val !== 'undefined';
 
@@ -324,6 +325,13 @@ export const cleanHtml = (_html) => {
     _html = decodeHtml(_html);
   }
   return _html;
+};
+
+export const sanitize = (input) => {
+  return sanitizeHtml(input, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
 };
 
 export const escapeHTML = (html) => {
