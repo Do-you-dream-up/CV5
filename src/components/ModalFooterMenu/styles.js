@@ -2,6 +2,9 @@ import { createUseStyles } from 'react-jss';
 
 export default createUseStyles((theme) => ({
   actions: () => ({
+    '& button': {
+      zIndex: 1,
+    },
     borderTopColor: theme?.palette?.divider,
     borderTopStyle: 'solid',
     borderTopWidth: 1,
