@@ -17,7 +17,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useShadow } from '../../contexts/ShadowProvider';
 import { useDialog } from '../../contexts/DialogContext';
-import { cleanHtml } from '../../tools/helpers';
+import { cleanHtml, sanitize } from '../../tools/helpers';
 import { Local } from '../../tools/storage';
 
 const RE_HREF_EMPTY = /href="#"/g;
@@ -75,8 +75,11 @@ export default function PrettyHtml({ carousel, children, className, component, h
       }
     });
     _html = cleanHtml(_html);
-
-    setHtmlContent(_html);
+    if (type === 'request') {
+      setHtmlContent(sanitize(_html));
+    } else {
+      setHtmlContent(_html);
+    }
   }, [hrefMatchs, html]);
 
   // to focus the first interactive elements of the last response of the bot
