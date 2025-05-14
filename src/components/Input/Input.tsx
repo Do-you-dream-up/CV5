@@ -1,7 +1,6 @@
 import Actions, { ActionProps } from '../Actions/Actions';
-import { isDefined } from '../../tools/helpers';
+import { isDefined, sanitize } from '../../tools/helpers';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import sanitizeHtml from 'sanitize-html';
 
 import Autosuggest from 'react-autosuggest';
 import Icon from '../Icon/Icon';
@@ -77,13 +76,6 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const isLivechatTypeDefined = !!Local.livechatType.load();
 
-  const sanitizeInput = (input: string) => {
-    return sanitizeHtml(input, {
-      allowedTags: [],
-      allowedAttributes: {},
-    });
-  };
-
   const { idleTimer } = useIdleTimeout({
     onIdle: () => {
       livechatTyping?.(input);
@@ -102,7 +94,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
   };
 
   const resetIfNecessaryBeforeSubmit = (text): void => {
-    const safeText = sanitizeInput(text.trim());
+    const safeText = sanitize(text.trim());
     if (Local.isDialogTimeOver() || hasToVerifyContextAfterLivechatClosed) {
       verifyAvailabilityDialogContext().then((isContextAvailable) => {
         if (!isContextAvailable) {
@@ -246,7 +238,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const submit = useCallback(
     (text: string) => {
-      const safeText = sanitizeInput(text.trim());
+      const safeText = sanitize(text.trim());
       if (safeText) {
         reset();
         onRequest && onRequest(safeText);
