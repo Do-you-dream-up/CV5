@@ -1,4 +1,4 @@
-import { hasWizard, isLoadedFromChannels } from './wizard';
+import { isLoadedFromChannels } from './wizard';
 
 import { Local } from './storage';
 import { getResourceWithoutCache } from './resources';
@@ -26,22 +26,20 @@ export const configuration = new (class Configuration {
     return getResourceWithoutCache('override/configuration.json').then(({ data }) => {
       this.configuration = null;
 
-      if ((isLoadedFromChannels() || hasWizard()) && this.getConfigFromStorage()) {
+      if (isLoadedFromChannels() && this.getConfigFromStorage()) {
         this.configuration = JSON.parse(JSON.stringify(this.getConfigFromStorage()));
 
-        if (isLoadedFromChannels()) {
-          // Replace images with base64 ones
-          const images = JSON.parse(JSON.stringify(this.getImagesFromStorage()));
-          this.configuration.avatar.response.image = images?.logo;
-          this.configuration.avatar.teaser.image = images?.teaser;
-          this.configuration.header.logo.imageLink.understood = images?.understood;
-          this.configuration.header.logo.imageLink.misunderstood = images?.misunderstood;
-          this.configuration.header.logo.imageLink.livechat = images?.livechat;
-          this.configuration.header.logo.imageLink.reword = images?.reword;
-          this.configuration.onboarding.items[0].image.src = images?.onboarding1;
-          this.configuration.onboarding.items[1].image.src = images?.onboarding2;
-          this.configuration.onboarding.items[2].image.src = images?.onboarding3;
-        }
+        // Replace images with base64 ones
+        const images = JSON.parse(JSON.stringify(this.getImagesFromStorage()));
+        this.configuration.avatar.response.image = images?.logo;
+        this.configuration.avatar.teaser.image = images?.teaser;
+        this.configuration.header.logo.imageLink.understood = images?.understood;
+        this.configuration.header.logo.imageLink.misunderstood = images?.misunderstood;
+        this.configuration.header.logo.imageLink.livechat = images?.livechat;
+        this.configuration.header.logo.imageLink.reword = images?.reword;
+        this.configuration.onboarding.items[0].image.src = images?.onboarding1;
+        this.configuration.onboarding.items[1].image.src = images?.onboarding2;
+        this.configuration.onboarding.items[2].image.src = images?.onboarding3;
       } else {
         this.configuration = data;
       }

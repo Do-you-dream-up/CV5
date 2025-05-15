@@ -35,7 +35,7 @@ import dydu from '../../../tools/dydu';
 //       usedKeywords: [],
 //       visitCount: 1,
 //       visitDuration: 0,
-//       windowLocation: 'http://localhost:8080/?dydupanel',
+//       windowLocation: 'http://localhost:8080',
 //     };
 //     const handlePush = jest.fn();
 //     const originalHandlePush = global.handlePush;

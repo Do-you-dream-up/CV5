@@ -144,8 +144,8 @@ export class Local {
     open: 'dydu.chatbox.open' + suffix,
     sidebar: 'dydu.chatbox.sidebar' + suffix,
     space: 'dydu.chatbox.space' + suffix,
-    wizard: 'dydu.chatbox.wizard.data' + suffix,
-    images: 'dydu.chatbox.images' + suffix,
+    wizard: 'dydu.chatbox.wizard.data' + suffix, // used only with channels
+    images: 'dydu.chatbox.images' + suffix, // used only with channels
     saml: 'dydu.chatbox.saml.auth' + suffix,
     visit: 'dydu.chatbox.visit' + suffix,
     welcome: 'dydu.chatbox.welcomeKnowledge' + suffix,

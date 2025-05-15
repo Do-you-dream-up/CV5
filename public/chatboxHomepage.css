@@ -4,36 +4,43 @@
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: normal;
-    src: url('fonts/OpenSans/OpenSans-Regular.ttf') format('truetype'),
+    font-display: auto;
+    src: url('fonts/OpenSans/OpenSans-Regular.woff2') format('woff2'), /* in priority order */
     url('fonts/OpenSans/OpenSans-Regular.woff') format('woff'),
-    url('fonts/OpenSans/OpenSans-Regular.woff2') format('woff2');
+    url('fonts/OpenSans/OpenSans-Regular.ttf') format('truetype')
+    ;
 }
 
 @font-face {
     font-family: 'Open Sans Light';
     font-style: normal;
     font-weight: normal;
-    src: url('fonts/OpenSans/OpenSans-Light.ttf') format('truetype'),
+    font-display: auto;
+    src: url('fonts/OpenSans/OpenSans-Light.woff2') format('woff2'),  /* in priority order */
     url('fonts/OpenSans/OpenSans-Light.woff') format('woff'),
-    url('fonts/OpenSans/OpenSans-Light.woff2') format('woff2');
+    url('fonts/OpenSans/OpenSans-Light.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Open Sans Semi Bold';
     font-style: normal;
     font-weight: normal;
-    src: url('fonts/OpenSans/OpenSans-SemiBold.ttf') format('truetype'),
+    font-display: auto;
+    src: url('fonts/OpenSans/OpenSans-SemiBold.woff2') format('woff2'),  /* in priority order */
     url('fonts/OpenSans/OpenSans-SemiBold.woff') format('woff'),
-    url('fonts/OpenSans/OpenSans-SemiBold.woff2') format('woff2');
+    url('fonts/OpenSans/OpenSans-SemiBold.ttf') format('truetype')
+    ;
 }
 
 @font-face {
     font-family: 'Open Sans Bold';
     font-style: normal;
     font-weight: normal;
-    src: url('fonts/OpenSans/OpenSans-Bold.ttf') format('truetype'),
+    font-display: auto;
+    src: url('fonts/OpenSans/OpenSans-Bold.woff2') format('woff2'),  /* in priority order */
     url('fonts/OpenSans/OpenSans-Bold.woff') format('woff'),
-    url('fonts/OpenSans/OpenSans-Bold.woff2') format('woff2');
+    url('fonts/OpenSans/OpenSans-Bold.ttf') format('truetype')
+    ;
 }
 
 /* ---------- */

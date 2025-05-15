@@ -13,7 +13,6 @@ import {
 } from './helpers';
 import { BOT } from './bot';
 import Bowser from 'bowser';
-import { hasWizard } from './wizard';
 import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
 import {
@@ -411,7 +410,7 @@ export default new (class Dydu {
 
   setQualificationMode = (value) => {
     let isActive = value;
-    if (window.DYDU_QUALIFICATION_MODE && !hasWizard()) {
+    if (window.DYDU_QUALIFICATION_MODE) {
       isActive = window.DYDU_QUALIFICATION_MODE;
     }
     this.qualificationMode = isActive ?? false;

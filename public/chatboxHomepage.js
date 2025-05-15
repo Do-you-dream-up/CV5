@@ -1,8 +1,3 @@
-// hide the homepage if the dydupanel cards are displayed
-if (window.location.href.includes('?dydupanel')) {
-  document.getElementById('iframeForm').style.display = 'none';
-}
-
 const hideSelectedElements = (status) => {
   // search all the span and input elements inside the first div and hide them (except the button)
   const containerVersion = document.getElementById('versionNumber');
@@ -61,10 +56,7 @@ const updateUrlParams = (status) => {
 };
 
 const submitIframe = (status) => {
-  if (
-    !window.location.href.includes('?dydupanel') &&
-    ((status && document.getElementById('urlInput').value) || status === false)
-  ) {
+  if ((status && document.getElementById('urlInput').value) || status === false) {
     updateUrlParams(status);
     updateIframe(status);
     hideSelectedElements(status);

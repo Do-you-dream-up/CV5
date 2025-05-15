@@ -25,7 +25,7 @@ module.exports = (env) =>
       static: {
         directory: Path.resolve(__dirname, 'public'),
       },
-      open: ['/?dydupanel'],
+      open: ['/'],
       client: {
         overlay: {
           errors: true,

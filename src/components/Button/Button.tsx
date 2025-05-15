@@ -5,7 +5,6 @@ import c from 'classnames';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
-import { useUserAction } from '../../contexts/UserActionContext';
 import { MoreIconWhite } from '../CustomIcons/CustomIcons';
 
 export interface ButtonProps {
