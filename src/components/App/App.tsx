@@ -24,7 +24,6 @@ import { UploadFileProvider } from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
 import { WelcomeKnowledgeProvider } from '../../contexts/WelcomeKnowledgeContext';
 import c from 'classnames';
-import { hasWizard } from '../../tools/wizard';
 import { EventsProvider, useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';
 import { useViewMode } from '../../contexts/ViewModeProvider';
@@ -44,7 +43,6 @@ import { PushrulesProvider } from '../../contexts/PushrulesContext';
 const Chatbox = lazy(() =>
   lazyRetry(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper }))),
 );
-const Wizard = lazy(() => import('../Wizard'));
 
 const lazyRetry = function (componentImport) {
   return new Promise<{ default: ComponentType<any> }>((resolve, reject) => {
@@ -71,8 +69,6 @@ interface BodyText {
 
 /**
  * Entry point of the application. Either render the chatbox or the teaser.
- *
- * Optionally render the Wizard when the `dydupanel` URL parameter is found.
  */
 const App = () => {
   const { configuration } = useContext(ConfigurationContext);
@@ -180,7 +176,6 @@ const App = () => {
         <UserActionProvider>
           <ChatboxLoadedProvider areCookiesAllowed={areCookiesAllowed}>
             <Suspense fallback={null}>
-              {hasWizard() && <Wizard />}
               <AuthProvider configuration={authConfiguration}>
                 <AuthProtected enable={configuration?.oidc?.enable}>
                   <OidcProvider>
