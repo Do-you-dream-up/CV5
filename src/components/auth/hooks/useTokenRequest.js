@@ -1,7 +1,7 @@
 import {
   extractObjectFields,
   extractParamFromUrl,
-  loadPkce,
+  loadOidcAuthData,
   removeQueryFromUri,
   responseToJsonOrThrowError,
   snakeCaseFields,
@@ -27,7 +27,7 @@ export default function useTokenRequest(authConfiguration) {
       construct payload
      */
     const payload = {
-      ...snakeCaseFields(extractObjectFields(loadPkce(), ['redirectUri'])),
+      ...snakeCaseFields(extractObjectFields(loadOidcAuthData(), ['redirectUri'])),
       ...{
         client_id: authConfiguration.clientId,
         ...(authConfiguration.clientSecret && { client_secret: authConfiguration.clientSecret }),

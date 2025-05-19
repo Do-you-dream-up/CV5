@@ -10,9 +10,7 @@ import { isLoadedFromChannels } from './wizard';
  */
 export class Session {
   static names = {
-    newMessage: 'dydu.chatbox.newMessage',
     banner: 'dydu.chatbox.banner',
-    lastPoll: 'dydu.chatbox.lastPoll',
     retryLazyRefreshed: 'dydu.chatbox.retry.lazy.refreshed',
     currentServer: 'dydu.chatbox.server',
   };
@@ -156,16 +154,28 @@ export class Local {
     lastInteraction: 'dydu.chatbox.interaction.last' + suffix,
     pushRules: 'dydu.chatbox.pushRules' + suffix,
     pushRulesTrigger: 'dydu.chatbox.pushRulesTriggered' + suffix,
-    pkce_key: 'pkce' + suffix,
-    token_key_id: 'dydu-oauth-token-id' + suffix,
-    auth_url: 'dydu-oauth-url' + suffix,
-    user_info: 'dydu-user-info' + suffix,
-    token_key_access: 'dydu-oauth-token-access' + suffix,
-    token_key_refresh: 'dydu-oauth-token-refresh' + suffix,
-    pkce_code_verifier: 'dydu-code-verifier' + suffix,
-    pkce_code_challenge: 'dydu-code-challenge' + suffix,
-    dydu_chatbox_css: 'dydu.chatbox.css' + suffix,
-    dydu_chatbox_main: 'dydu.chatbox.main' + suffix,
+    userInfo: 'dydu.chatbox.auth.userInfo' + suffix,
+    oidcAuthData: 'dydu.chatbox.oidc.authData' + suffix,
+    oidcUrls: 'dydu.chatbox.oidc.urls' + suffix,
+    oidcIdToken: 'dydu.chatbox.oidc.idToken' + suffix,
+    oidcAccessToken: 'dydu.chatbox.oidc.accessToken' + suffix,
+    oidcRefreshToken: 'dydu.chatbox.oidc.refreshToken' + suffix,
+    oidcPkceCodeVerifier: 'dydu.chatbox.oidc.pkce.codeVerifier' + suffix,
+    oidcPkceCodeChallenge: 'dydu.chatbox.oidc.pkce.codeChallenge' + suffix,
+    css: 'dydu.chatbox.css' + suffix,
+    main: 'dydu.chatbox.main' + suffix,
+  };
+
+  // Ensuring compatibility after key renaming
+  static oldNames = {
+    userInfo: 'dydu-user-info' + suffix,
+    oidcAuthData: 'pkce' + suffix,
+    oidcUrls: 'dydu-oauth-url' + suffix,
+    oidcIdToken: 'dydu-oauth-token-id' + suffix,
+    oidcAccessToken: 'dydu-oauth-token-access' + suffix,
+    oidcRefreshToken: 'dydu-oauth-token-refresh' + suffix,
+    oidcPkceCodeVerifier: 'dydu-code-verifier' + suffix,
+    oidcPkceCodeChallenge: 'dydu-code-challenge' + suffix,
   };
 
   static clearAll() {
@@ -505,101 +515,130 @@ export class Local {
 export default class Auth {
   static setPkceData(codeChallenge, codeVerifier) {
     if (codeChallenge && codeVerifier) {
-      localStorage.setItem(Local?.names?.pkce_code_challenge, codeChallenge);
-      localStorage.setItem(Local?.names?.pkce_code_verifier, codeVerifier);
+      localStorage.setItem(Local?.names?.oidcPkceCodeChallenge, codeChallenge);
+      localStorage.setItem(Local?.names?.oidcPkceCodeVerifier, codeVerifier);
     }
   }
 
   static loadPkceCodeVerifier() {
-    return localStorage.getItem(Local?.names?.pkce_code_verifier);
+    return (
+      localStorage.getItem(Local?.names?.oidcPkceCodeVerifier) ||
+      localStorage.getItem(Local?.oldNames?.oidcPkceCodeVerifier)
+    );
   }
 
   static loadPkceCodeChallenge() {
-    return localStorage.getItem(Local?.names?.pkce_code_challenge);
+    return (
+      localStorage.getItem(Local?.names?.oidcPkceCodeChallenge) ||
+      localStorage.getItem(Local?.oldNames?.oidcPkceCodeChallenge)
+    );
   }
 
-  static savePkce(pkceData) {
-    localStorage.setItem(Local?.names?.pkce_key, JSON.stringify(pkceData));
+  static saveOidcAuthData(pkceData) {
+    localStorage.setItem(Local?.names?.oidcAuthData, JSON.stringify(pkceData));
   }
 
-  static clearPkce() {
-    localStorage.removeItem(Local?.names?.pkce_key);
+  static clearOidcAuthData() {
+    localStorage.removeItem(Local?.names?.oidcAuthData);
+    localStorage.removeItem(Local?.oldNames?.oidcAuthData);
   }
 
-  static loadPkce() {
-    const pkce = localStorage.getItem(Local?.names?.pkce_key);
-    return isDefined(pkce) ? JSON.parse(<string>pkce) : null;
+  static loadOidcAuthData() {
+    const authData =
+      localStorage.getItem(Local?.names?.oidcAuthData) || localStorage.getItem(Local?.oldNames?.oidcAuthData);
+    return isDefined(authData) ? JSON.parse(<string>authData) : null;
   }
 
-  static saveUrls = (urls) => {
-    localStorage.setItem(Local?.names?.auth_url, JSON.stringify(urls));
+  static saveOidcUrls = (urls) => {
+    localStorage.setItem(Local?.names?.oidcUrls, JSON.stringify(urls));
   };
 
-  static loadUrls() {
-    return JSON.parse(<string>localStorage.getItem(Local?.names?.auth_url));
+  static loadOidcUrls() {
+    return (
+      JSON.parse(<string>localStorage.getItem(Local?.names?.oidcUrls)) ||
+      JSON.parse(<string>localStorage.getItem(Local?.oldNames?.oidcUrls))
+    );
   }
 
-  static clearUrls() {
-    localStorage.removeItem(Local?.names?.auth_url);
+  static clearOidcUrls() {
+    localStorage.removeItem(Local?.names?.oidcUrls);
+    localStorage.removeItem(Local?.oldNames?.oidcUrls);
   }
 
   static saveUserInfo = (info) => {
-    localStorage.setItem(Local?.names?.user_info, JSON.stringify(info));
+    localStorage.setItem(Local?.names?.userInfo, JSON.stringify(info));
   };
 
   static loadUserInfo() {
-    return JSON.parse(<string>localStorage.getItem(Local?.names?.user_info));
+    return (
+      JSON.parse(<string>localStorage.getItem(Local?.names?.userInfo)) ||
+      JSON.parse(<string>localStorage.getItem(Local?.oldNames?.userInfo))
+    );
   }
 
   static clearUserInfo() {
-    localStorage.removeItem(Local?.names?.user_info);
+    localStorage.removeItem(Local?.names?.userInfo);
+    localStorage.removeItem(Local?.oldNames?.userInfo);
   }
 
   static saveToken = (token) => {
     cleanUrl();
-    Auth.clearPkce();
+    Auth.clearOidcAuthData();
 
     if (isDefined(token?.id_token)) {
-      localStorage.setItem(Local?.names?.token_key_id, token?.id_token);
+      localStorage.setItem(Local?.names?.oidcIdToken, token?.id_token);
     }
 
     if (isDefined(token?.access_token)) {
-      localStorage.setItem(Local?.names?.token_key_access, token?.access_token);
+      localStorage.setItem(Local?.names?.oidcAccessToken, token?.access_token);
     }
 
     if (isDefined(token?.refresh_token)) {
-      localStorage.setItem(Local?.names?.token_key_refresh, token?.refresh_token);
+      localStorage.setItem(Local?.names?.oidcRefreshToken, token?.refresh_token);
     }
   };
 
   static clearToken() {
-    localStorage.removeItem(Local?.names?.token_key_id);
-    localStorage.removeItem(Local?.names?.token_key_access);
-    localStorage.removeItem(Local?.names?.token_key_refresh);
-    localStorage.removeItem(Local?.names?.pkce_code_verifier);
+    localStorage.removeItem(Local?.names?.oidcIdToken);
+    localStorage.removeItem(Local?.names?.oidcAccessToken);
+    localStorage.removeItem(Local?.names?.oidcRefreshToken);
+    localStorage.removeItem(Local?.names?.oidcPkceCodeVerifier);
+
+    localStorage.removeItem(Local?.oldNames?.oidcIdToken);
+    localStorage.removeItem(Local?.oldNames?.oidcAccessToken);
+    localStorage.removeItem(Local?.oldNames?.oidcRefreshToken);
+    localStorage.removeItem(Local?.oldNames?.oidcPkceCodeVerifier);
   }
 
   static loadToken() {
     return {
-      id_token: isDefined(localStorage.getItem(Local?.names?.token_key_id))
-        ? localStorage.getItem(Local?.names?.token_key_id)
-        : undefined,
-      access_token: isDefined(localStorage.getItem(Local?.names?.token_key_access))
-        ? localStorage.getItem(Local?.names?.token_key_access)
-        : undefined,
-      refresh_token: isDefined(localStorage.getItem(Local?.names?.token_key_refresh))
-        ? localStorage.getItem(Local?.names?.token_key_refresh)
-        : undefined,
+      id_token:
+        isDefined(localStorage.getItem(Local?.names?.oidcIdToken)) ||
+        isDefined(localStorage.getItem(Local?.oldNames?.oidcIdToken))
+          ? localStorage.getItem(Local?.names?.oidcIdToken) || localStorage.getItem(Local?.oldNames?.oidcIdToken)
+          : undefined,
+      access_token:
+        isDefined(localStorage.getItem(Local?.names?.oidcAccessToken)) ||
+        isDefined(localStorage.getItem(Local?.oldNames?.oidcAccessToken))
+          ? localStorage.getItem(Local?.names?.oidcAccessToken) ||
+            localStorage.getItem(Local?.oldNames?.oidcAccessToken)
+          : undefined,
+      refresh_token:
+        isDefined(localStorage.getItem(Local?.names?.oidcRefreshToken)) ||
+        isDefined(localStorage.getItem(Local?.oldNames?.oidcRefreshToken))
+          ? localStorage.getItem(Local?.names?.oidcRefreshToken) ||
+            localStorage.getItem(Local?.oldNames?.oidcRefreshToken)
+          : undefined,
     };
   }
 
   static clearAll() {
-    Auth.clearPkce();
+    Auth.clearOidcAuthData();
     Auth.clearToken();
   }
 
-  static containsPkce() {
-    return Auth.loadPkce() !== null;
+  static containsOidcAuthData() {
+    return Auth.loadOidcAuthData() !== null;
   }
 }
 
