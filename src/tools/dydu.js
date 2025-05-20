@@ -266,6 +266,13 @@ export default new (class Dydu {
     }
   };
 
+  chatStatus = async () => {
+    if (Local.contextId.load(BOT.id)) {
+      const path = `chat/status/${BOT.id}/${Local.contextId.load(BOT.id)}`;
+      return await emit(SERVLET_API.get, path);
+    }
+  };
+
   /**
    * Check if the context ID from the local storage is still available,
    *
