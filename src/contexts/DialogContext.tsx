@@ -461,7 +461,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       function cspEval(guiActionCode) {
         try {
           const newScript = document.createElement('script');
-          newScript.innerHTML = "try {" + guiActionCode + "} catch (e) {console.warn('Error with guiaction '+e,e);}";
+          newScript.innerHTML = 'try {' + guiActionCode + "} catch (e) {console.warn('Error with guiaction '+e,e);}";
           shadowAnchor?.appendChild(newScript);
           shadowAnchor?.removeChild(newScript);
         } catch (e) {
@@ -522,7 +522,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               surveyId={survey}
               steps={steps}
               templatename={templatename}
-              thinking
+              thinking={!response.isFromHistory}
               typeResponse={typeResponse}
               lastRequest={lastRequest.current}
             />
