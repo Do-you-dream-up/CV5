@@ -9,6 +9,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
+import { useEffect, useState } from 'react';
 
 /**
  * The footer typically renders the input field for the user to type text into
@@ -33,6 +34,14 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
   const selectedLanguage = dydu.getLocale();
   const { translate: hasTranslate } = configuration?.footer || {};
   const { botLanguages } = useBotInfo();
+
+  const [hasTTSError, setHasTTSError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (hasTTSError) {
+      setTimeout(() => setHasTTSError(false), 10000);
+    }
+  }, [hasTTSError]);
 
   const actionTranslate = t('footer.translate');
 
@@ -72,11 +81,20 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
       <UploadInput />
     ) : (
       <div className={classes.content}>
-        <Input focus={focus} onRequest={onRequest} onResponse={onResponse} id="dydu-footer-input" />
+        <Input
+          setHasTTSError={setHasTTSError}
+          focus={focus}
+          onRequest={onRequest}
+          onResponse={onResponse}
+          id="dydu-footer-input"
+        />
       </div>
     );
   return (
     <>
+      {hasTTSError ? (
+        <div className={c('dydu-footer-error', classes.error)}>{t('footer.voice.tts.notAllowed')}</div>
+      ) : null}
       <div className={c('dydu-footer', classes.root)} {...rest}>
         <Actions
           actions={actions}

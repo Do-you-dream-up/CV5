@@ -41,4 +41,10 @@ export default createUseStyles<any, any>((theme: any): any => ({
       borderRadius: 0,
     },
   }),
+  error: {
+    width: '100%',
+    backgroundColor: '#ff7777',
+    textAlign: 'center',
+    fontSize: '90%',
+  },
 }));

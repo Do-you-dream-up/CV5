@@ -21,7 +21,7 @@ import { MicrophonIcon, PlayIcon, PauseIcon, ReplayIcon, StopIcon } from '../Cus
  * Speech-to-Text allows to convert sound to text by applying powerful neural network models via an API,
  * it is the reverse of Text-to-Speech that convert streaming sound to a text via API.
  */
-const Voice = ({ show, v }) => {
+const Voice = ({ show, v, setHasTTSError }) => {
   // Stream Audio
   let AudioContext;
   let context;
@@ -145,6 +145,7 @@ const Voice = ({ show, v }) => {
           audio.src = URL.createObjectURL(response);
           audio?.play().catch((error) => {
             console.error('error', error);
+            setHasTTSError(true);
           });
         })
         .catch((error) => {
@@ -419,6 +420,7 @@ Voice.propTypes = {
   configuration: PropTypes.object,
   Actions: PropTypes.node,
   show: PropTypes.bool,
+  setHasTTSError: PropTypes.func,
   v: PropTypes.any,
   iconMicrophon: PropTypes.node,
   iconPlay: PropTypes.node,

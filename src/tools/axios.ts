@@ -300,7 +300,10 @@ const getServerFromIndex = (index: number): string | null => {
 };
 
 const isLocalServer = (server: string | null): boolean => {
-  return server !== null && (server.includes('localhost') || server.endsWith('.loca.lt'));
+  return (
+    server !== null &&
+    (server.includes('localhost') || server.endsWith('.loca.lt') || server.endsWith('.ngrok-free.app'))
+  );
 };
 
 const buildServletUrl = (server?: string | null): string => {

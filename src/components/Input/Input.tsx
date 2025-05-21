@@ -27,11 +27,12 @@ import { SendIcon } from '../CustomIcons/CustomIcons';
 interface InputProps {
   onRequest?: (input: string) => void;
   onResponse?: (input: Servlet.ChatResponseValues) => void;
+  setHasTTSError?: (value: boolean) => void;
   focus?: () => void;
   id?: string;
 }
 
-export default function Input({ onRequest, onResponse }: InputProps) {
+export default function Input({ onRequest, onResponse, setHasTTSError }: InputProps) {
   const {
     send,
     typing: livechatTyping,
@@ -351,7 +352,7 @@ export default function Input({ onRequest, onResponse }: InputProps) {
 
   const renderVoiceInput = useCallback(() => {
     return voice && counter === maxLength ? (
-      <Voice show={dydu.hasUserAcceptedGdpr()} t={t('input.actions.record')} />
+      <Voice show={dydu.hasUserAcceptedGdpr()} setHasTTSError={setHasTTSError} t={t('input.actions.record')} />
     ) : null;
   }, [voice, counter, maxLength]);
 
@@ -372,23 +373,25 @@ export default function Input({ onRequest, onResponse }: InputProps) {
       {t('livechat.queue.leaveQueue')}
     </Button>
   ) : (
-    <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input" data-testid="footer-form">
-      <Autosuggest
-        getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
-        inputProps={inputProps}
-        onSuggestionSelected={onSuggestionSelected}
-        onSuggestionsClearRequested={() => setSuggestions([])}
-        onSuggestionsFetchRequested={({ value }) => value}
-        renderInputComponent={renderInputComponent}
-        renderSuggestion={(suggestion) => suggestion.rootConditionReword || ''}
-        suggestions={suggestions}
-        theme={theme}
-        ref={containerRef}
-        data-testid="suggestId"
-        focusInputOnSuggestionClick={false}
-      />
-      {renderVoiceInput()}
-      {renderSubmit()}
-    </form>
+    <>
+      <form className={c('dydu-input', classes.root)} onSubmit={onSubmit} id="dydu-input" data-testid="footer-form">
+        <Autosuggest
+          getSuggestionValue={(suggestion) => suggestion.rootConditionReword || ''}
+          inputProps={inputProps}
+          onSuggestionSelected={onSuggestionSelected}
+          onSuggestionsClearRequested={() => setSuggestions([])}
+          onSuggestionsFetchRequested={({ value }) => value}
+          renderInputComponent={renderInputComponent}
+          renderSuggestion={(suggestion) => suggestion.rootConditionReword || ''}
+          suggestions={suggestions}
+          theme={theme}
+          ref={containerRef}
+          data-testid="suggestId"
+          focusInputOnSuggestionClick={false}
+        />
+        {renderVoiceInput()}
+        {renderSubmit()}
+      </form>
+    </>
   );
 }

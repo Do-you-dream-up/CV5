@@ -135,7 +135,12 @@
       "pl": "Polski",
       "ro": "Română"
     },
-    "translate": "Langages"
+    "translate": "Langages",
+    "voice": {
+      "tts": {
+        "notAllowed": "Votre navigateur n'autorise pas la lecture de textes audio"
+      }
+    }
   },
   "form": {
     "cancel": "Fermer",
