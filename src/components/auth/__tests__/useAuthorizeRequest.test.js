@@ -33,8 +33,8 @@ describe('useAuthorizeRequest', () => {
     Cookie.get.mockClear();
     Cookie.set.mockClear();
     Cookie.remove.mockClear();
-    jest.spyOn(Auth, 'loadPkce').mockReturnValue(true);
-    jest.spyOn(Auth, 'clearPkce').mockReturnValue(true);
+    jest.spyOn(Auth, 'loadOidcAuthData').mockReturnValue(true);
+    jest.spyOn(Auth, 'clearOidcAuthData').mockReturnValue(true);
     jest.spyOn(window.document, 'cookie', 'get').mockReturnValue('');
     jest.spyOn(window.document, 'cookie', 'set').mockReturnValue('');
     delete window.location;
@@ -42,7 +42,7 @@ describe('useAuthorizeRequest', () => {
   });
 
   beforeAll(() => {
-    Auth.savePkce(false);
+    Auth.saveOidcAuthData(false);
   });
 
   afterAll(() => {
@@ -69,10 +69,6 @@ describe('useAuthorizeRequest', () => {
         scope: 'openid profile',
         pkceActive: true,
         pkceMode: 'S256',
-      };
-      const pkce = {
-        state: 'state123',
-        redirectUri: 'https://example.com/callback',
       };
       Cookie.get.mockReturnValue(undefined);
       Cookie.set.mockReturnValue(undefined);
@@ -106,7 +102,7 @@ describe('useAuthorizeRequest', () => {
       expect(window.location.search).toEqual('?error=');
 
       expect(currentLocationContainsError()).toBe(true);
-      Auth.clearPkce();
+      Auth.clearOidcAuthData();
       expect(() => {
         throw new Error(
           'authorization request error, aborting process',
@@ -138,17 +134,17 @@ describe('useAuthorizeRequest', () => {
     await result.current.authorize();
   });
 
-  it('should construct query params with PKCE and redirect to authorization URL', async () => {
-    const pkce = {
+  it('should construct query params with oidc auth data and redirect to authorization URL', async () => {
+    const authData = {
       state: 'state',
       redirectUri: 'https://example.com/callback',
     };
-    jest.spyOn(Auth, 'loadPkce').mockReturnValueOnce(pkce);
+    jest.spyOn(Auth, 'loadOidcAuthData').mockReturnValueOnce(authData);
 
     const { result } = renderHook(() => useAuthorizeRequest(configuration));
     const queryParams = `?response_type=code&client_id=client-id&scope=scope&state=${
-      pkce.state
-    }&redirect_uri=${encodeURIComponent(pkce.redirectUri)}&code_challenge=${expect.any(
+      authData.state
+    }&redirect_uri=${encodeURIComponent(authData.redirectUri)}&code_challenge=${expect.any(
       String,
     )}&code_challenge_method=S256`;
 
