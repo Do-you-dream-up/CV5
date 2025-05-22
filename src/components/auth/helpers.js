@@ -46,18 +46,18 @@ export const currentLocationContainsError = () => strContains(window.location.se
 
 export const currentLocationContainsCodeParameter = () => strContains(window.location.search, 'code=');
 
-export const createPkce = (configuration = { redirectUri: null }) => {
+export const createOidcAuthData = (configuration = { redirectUri: null }) => {
   const { redirectUri } = configuration;
   const state = generateUID();
-  const pkce = {
+  const authData = {
     state,
     redirectUri: redirectUri || getRedirectUri(),
   };
-  Auth.savePkce(pkce);
-  return pkce;
+  Auth.saveOidcAuthData(authData);
+  return authData;
 };
 
-export let loadPkce = (configuration) => Auth.loadPkce() || createPkce(configuration);
+export let loadOidcAuthData = (configuration) => Auth.loadOidcAuthData() || createOidcAuthData(configuration);
 
 export const cleanUrl = () => {};
 
@@ -126,7 +126,7 @@ export const extractParamFromUrl = (optionalName = null) => {
 };
 
 export const checkProviderStateMatchWithGenerated = () => {
-  const { state: generated } = loadPkce();
+  const { state: generated } = loadOidcAuthData();
   const { state: fromProvider } = extractParamFromUrl();
   return generated === fromProvider;
 };

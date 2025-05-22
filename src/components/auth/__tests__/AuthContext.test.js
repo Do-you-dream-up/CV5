@@ -9,12 +9,14 @@ const jwtToken =
 
 const oidcConfig = {
   enable: true,
-  clientId: 'l5LUWFkMo18GaWJZvzXHde1B0Ehz236tBSdphOvrWN8hn88qbOEVpgvZU0kW2Hnu',
-  clientSecret: '5CowOGbBLi5GOnIlwF6cpSJ5HLdAQwVEBwxvnbyeMeit1XhKsQetH9r7cU6hTzeO',
+  clientId: 'alex-auth',
+  clientSecret: '11c73203-8181-408f-a7be-c7f99d26f62d',
   pkceActive: true,
   pkceMode: 'S256',
-  discoveryUrl: 'https://yawks.net/nextcloud/index.php/apps/oidc/openid-configuration',
-  scopes: ['openid', 'email', 'profile'],
+  authUrl: '',
+  tokenUrl: '',
+  discoveryUrl: 'https://keycloak.security.dydu-priv.com/auth/realms/back_test/.well-known/openid-configuration',
+  scopes: ['openid'],
   withAuth: true,
 };
 
@@ -30,9 +32,9 @@ jest.mock('../../../tools/storage', () => {
     default: {
       loadToken: jest.fn(() => token),
       clearToken: jest.fn(),
-      saveUrls: jest.fn(),
-      loadUrls: jest.fn(),
-      clearUrls: jest.fn(),
+      saveOidcUrls: jest.fn(),
+      loadOidcUrls: jest.fn(),
+      clearOidcUrls: jest.fn(),
       clearUserInfo: jest.fn(),
       saveToken: jest.fn((t) => {
         token = t;
@@ -40,12 +42,12 @@ jest.mock('../../../tools/storage', () => {
       saveUserInfo: jest.fn((t) => {
         token = t;
       }),
-      clearPkce: jest.fn(),
-      loadPkce: jest.fn(() => token),
-      savePkce: jest.fn((t) => {
+      clearOidcAuthData: jest.fn(),
+      loadOidcAuthData: jest.fn(() => token),
+      saveOidcAuthData: jest.fn((t) => {
         token = t;
       }),
-      containsPkce: jest.fn(),
+      containsOidcAuthData: jest.fn(),
     },
     Local: {
       viewMode: {
@@ -89,13 +91,15 @@ describe('AuthProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     Auth.clearUserInfo();
-    Auth.clearUrls();
+    Auth.clearOidcUrls();
+    Auth.clearOidcAuthData();
   });
 
   afterAll(() => {
     Auth.clearToken();
-    Auth.clearPkce();
-    Auth.clearUrls();
+    Auth.clearOidcAuthData();
+    Auth.clearOidcUrls();
+    Auth.clearOidcAuthData();
   });
 
   it('should save urls to storage and set url config', async () => {
@@ -114,12 +118,14 @@ describe('AuthProvider', () => {
     };
 
     Auth.clearUserInfo();
-    Auth.clearUrls();
-    Auth.saveUrls(urls);
+    Auth.clearOidcUrls();
+    Auth.clearOidcAuthData();
+    Auth.saveOidcUrls(urls);
 
     expect(Auth.clearUserInfo).toHaveBeenCalled();
-    expect(Auth.clearUrls).toHaveBeenCalled();
-    expect(Auth.saveUrls).toHaveBeenCalledWith(urls);
+    expect(Auth.clearOidcUrls).toHaveBeenCalled();
+    expect(Auth.clearOidcAuthData).toHaveBeenCalled();
+    expect(Auth.saveOidcUrls).toHaveBeenCalledWith(urls);
   });
 
   test('renders children', () => {

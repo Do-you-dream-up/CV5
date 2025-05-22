@@ -18,7 +18,7 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children, configuration }) {
   const [token, setToken] = useState(Auth.loadToken());
   const { configuration: appConfiguration } = useConfiguration();
-  const [urlConfig, setUrlConfig] = useState(Auth.loadUrls() || null);
+  const [urlConfig, setUrlConfig] = useState(Auth.loadOidcUrls() || null);
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
   const [userInfo, setUserInfo] = useState(null);
 
@@ -39,23 +39,23 @@ export function AuthProvider({ children, configuration }) {
     if (configuration.discoveryUrl) {
       axios.get(configuration.discoveryUrl)?.then(({ data }) => {
         Auth.clearUserInfo();
-        Auth.clearUrls();
+        Auth.clearOidcUrls();
         const config = {
           authUrl: data?.authorization_endpoint,
           tokenUrl: data?.token_endpoint,
           userinfoUrl: data?.userinfo_endpoint,
         };
-        Auth.saveUrls(config);
+        Auth.saveOidcUrls(config);
         setUrlConfig(config);
       });
     } else {
       Auth.clearUserInfo();
-      Auth.clearUrls();
+      Auth.clearOidcUrls();
       const config = {
         authUrl: configuration?.authUrl,
         tokenUrl: configuration?.tokenUrl,
       };
-      Auth.saveUrls(config);
+      Auth.saveOidcUrls(config);
       setUrlConfig(config);
     }
   };

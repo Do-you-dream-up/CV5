@@ -5,7 +5,7 @@ import {
   extractObjectFields,
   extractParamFromUrl,
   isDefined,
-  loadPkce,
+  loadOidcAuthData,
   objectToQueryParam,
   snakeCaseFields,
 } from '../helpers';
@@ -28,10 +28,10 @@ export default function useAuthorizeRequest(configuration) {
   };
 
   useEffect(() => {
-    if (currentLocationContainsCodeParameter() && isDefined(Auth.loadPkce())) {
+    if (currentLocationContainsCodeParameter() && isDefined(Auth.loadOidcAuthData())) {
       setAuthorizeDone(true);
     } else if (currentLocationContainsError()) {
-      Auth.clearPkce();
+      Auth.clearOidcAuthData();
       setError(true);
       throw new Error(
         'authorization request error, aborting process',
@@ -47,7 +47,7 @@ export default function useAuthorizeRequest(configuration) {
   }, [authorizeDone]);
 
   const authorize = useCallback(async () => {
-    const pkce = loadPkce();
+    const oidcAuthData = loadOidcAuthData();
 
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
@@ -60,7 +60,7 @@ export default function useAuthorizeRequest(configuration) {
       const query = {
         responseType: 'code',
         ...extractObjectFields(configuration, ['clientId', 'scope']),
-        ...extractObjectFields(pkce, ['state', 'redirectUri']),
+        ...extractObjectFields(oidcAuthData, ['state', 'redirectUri']),
         ...(configuration?.pkceActive && {
           codeChallenge: storedChallenge,
           codeChallengeMethod: configuration?.pkceMode,

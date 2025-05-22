@@ -10,7 +10,7 @@ global.TextDecoder = TextDecoder;
 const generated = 'generatedState';
 const fromProvider = 'generatedState';
 
-global.loadPkce = () => {
+global.loadOidcAuthData = () => {
   return { state: generated };
 };
 
@@ -47,48 +47,35 @@ describe('Helpers', () => {
     });
   });
 
-  describe('createPkce', () => {
-    const defaultConfiguration = { redirectUri: null };
-
+  describe('createOidcAuthData', () => {
     beforeEach(() => {
-      Auth.savePkce.mockClear();
+      Auth.saveOidcAuthData.mockClear();
     });
 
-    it('should create and save PKCE with default configuration', () => {
-      const pkce = helpers.createPkce();
+    it('should create and save oidc auth data with default configuration', () => {
+      const authData = helpers.createOidcAuthData();
 
-      expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
-      expect(pkce.redirectUri).toBe('http://localhost/');
-      expect(pkce.codeVerifier).toBeUndefined();
-      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
+      expect(authData.state).toMatch('01111111-0111-4111-9111-011111111111');
+      expect(authData.redirectUri).toBe('http://localhost/');
+      expect(Auth.saveOidcAuthData).toHaveBeenCalledWith(authData);
     });
 
-    it('should create and save PKCE with custom redirectUri', () => {
+    it('should create and save oidc auth data with custom redirectUri', () => {
       const configuration = { redirectUri: 'https://example.com' };
-      const pkce = helpers.createPkce(configuration);
+      const authData = helpers.createOidcAuthData(configuration);
 
-      expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
-      expect(pkce.redirectUri).toBe('https://example.com');
-      expect(pkce.codeVerifier).toBeUndefined();
-      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
+      expect(authData.state).toMatch('01111111-0111-4111-9111-011111111111');
+      expect(authData.redirectUri).toBe('https://example.com');
+      expect(Auth.saveOidcAuthData).toHaveBeenCalledWith(authData);
     });
 
-    it('should create and save PKCE with codeVerifier when pkceActive is true', () => {
-      const configuration = { pkceActive: true };
-      const pkce = helpers.createPkce(configuration);
+    it('should create and save oidc auth data with custom redirectUri ', () => {
+      const configuration = { redirectUri: 'https://example.com' };
+      const authData = helpers.createOidcAuthData(configuration);
 
-      expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
-      expect(pkce.redirectUri).toBe('http://localhost/');
-      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
-    });
-
-    it('should create and save PKCE with custom redirectUri and codeVerifier when pkceActive is true', () => {
-      const configuration = { redirectUri: 'https://example.com', pkceActive: true };
-      const pkce = helpers.createPkce(configuration);
-
-      expect(pkce.state).toMatch('01111111-0111-4111-9111-011111111111');
-      expect(pkce.redirectUri).toBe('https://example.com');
-      expect(Auth.savePkce).toHaveBeenCalledWith(pkce);
+      expect(authData.state).toMatch('01111111-0111-4111-9111-011111111111');
+      expect(authData.redirectUri).toBe('https://example.com');
+      expect(Auth.saveOidcAuthData).toHaveBeenCalledWith(authData);
     });
   });
 
@@ -192,7 +179,7 @@ describe('Helpers', () => {
     test('should return true when the generated state matches the state from provider', () => {
       // arrange
 
-      jest.spyOn(global, 'loadPkce').mockReturnValue({ state: generated });
+      jest.spyOn(global, 'loadOidcAuthData').mockReturnValue({ state: generated });
       jest.spyOn(global, 'extractParamFromUrl').mockReturnValue({ state: fromProvider });
 
       // act
@@ -207,7 +194,7 @@ describe('Helpers', () => {
       const generated = 'generatedState';
       const fromProvider = 'otherState';
 
-      jest.spyOn(global, 'loadPkce').mockReturnValue({ state: generated });
+      jest.spyOn(global, 'loadOidcAuthData').mockReturnValue({ state: generated });
       jest.spyOn(global, 'extractParamFromUrl').mockReturnValue({ state: fromProvider });
 
       // act
