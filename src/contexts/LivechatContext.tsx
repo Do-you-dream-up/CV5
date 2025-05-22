@@ -14,6 +14,7 @@ import useDyduWebsocket from '../tools/hooks/useDyduWebsocket';
 import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 import { useConversationHistory } from './ConversationHistoryContext';
 import { useTranslation } from 'react-i18next';
+import { useChatStatus } from './ChatStatusContext';
 
 interface LivechatContextProps {
   send?: (str: string, options?) => void;
@@ -45,6 +46,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const tunnelRef = useRef<any>(null);
   const { getSurveyConfiguration, triggerSurvey, surveyClosed, setSurveyClosed } = useSurvey();
   const { showUploadFileButton } = useUploadFile();
+  const { inWaitingQueue } = useChatStatus();
   const {
     lastResponse,
     setLastResponse,
@@ -74,6 +76,12 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     }
     addNotificationOrResponse(typedInteraction);
   };
+
+  useEffect(() => {
+    if (inWaitingQueue != undefined) {
+      inWaitingQueue ? enterWaitingQueue() : leaveWaitingQueue();
+    }
+  }, [inWaitingQueue]);
 
   useEffect(() => {
     if (welcomeKnowledge && !Local.livechatType.load()) {

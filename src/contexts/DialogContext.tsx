@@ -43,6 +43,7 @@ import { useGdpr } from './GdprContext';
 import { usePushrules } from './PushrulesContext';
 import PromiseQueue from '../tools/hooks/PromiseQueue';
 import useId from '../tools/hooks/useId';
+import { useChatStatus } from './ChatStatusContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -162,6 +163,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     verifyAvailabilityDialogContext,
   } = useWelcomeKnowledge();
   const { fetchPushrules, pushrules } = usePushrules();
+  const { fetchChatStatus } = useChatStatus();
   const { fetchHistory } = useConversationHistory();
   const { fetchVisitorRegistration } = useVisitManager();
   const { connected: saml2Connected } = useSaml();
@@ -195,6 +197,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const baseQueue = [
     verifyAvailabilityDialogContext,
+    fetchChatStatus,
     fetchBotLanguages,
     fetchVisitorRegistration,
     fetchTopKnowledge,
@@ -205,7 +208,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const getPromiseQueueList = () => {
     if (configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false) {
-      baseQueue.splice(2, 1);
+      baseQueue.splice(3, 1);
     }
     return baseQueue;
   };

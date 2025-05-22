@@ -39,6 +39,7 @@ import { GdprProvider } from '../../contexts/GdprContext';
 import { BotInfoProvider } from '../../contexts/BotInfoContext';
 import { ServerStatusProvider } from '../../contexts/ServerStatusContext';
 import { PushrulesProvider } from '../../contexts/PushrulesContext';
+import { ChatStatusProvider } from '../../contexts/ChatStatusContext';
 
 const Chatbox = lazy(() =>
   lazyRetry(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper }))),
@@ -181,47 +182,49 @@ const App = () => {
                   <OidcProvider>
                     <SamlProvider>
                       <GdprProvider>
-                        <ConversationHistoryProvider>
-                          <WelcomeKnowledgeProvider>
-                            <TopKnowledgeProvider>
-                              <ChatboxReadyProvider>
-                                <BotInfoProvider>
-                                  <ServerStatusProvider>
-                                    <PushrulesProvider>
-                                      <DialogProvider>
-                                        <SurveyProvider>
-                                          <CheckCookiesAllowedProvider areCookiesAllowed={areCookiesAllowed}>
-                                            <UploadFileProvider>
-                                              <LivechatProvider>
-                                                <Chatbox />
-                                              </LivechatProvider>
-                                            </UploadFileProvider>
-                                          </CheckCookiesAllowedProvider>
-                                        </SurveyProvider>
-                                        <Teaser
-                                          id={'dydu-teaser'}
-                                          toggle={
-                                            areCookiesAllowed
-                                              ? setMode
-                                              : () => {
-                                                  const newIsOpenDisclaimer = !isOpenDisclaimer;
-                                                  setIsOpenDisclaimer(newIsOpenDisclaimer);
-                                                  if (newIsOpenDisclaimer) {
-                                                    cookiesDisclaimerRef?.current?.focus();
+                        <ChatStatusProvider>
+                          <ConversationHistoryProvider>
+                            <WelcomeKnowledgeProvider>
+                              <TopKnowledgeProvider>
+                                <ChatboxReadyProvider>
+                                  <BotInfoProvider>
+                                    <ServerStatusProvider>
+                                      <PushrulesProvider>
+                                        <DialogProvider>
+                                          <SurveyProvider>
+                                            <CheckCookiesAllowedProvider areCookiesAllowed={areCookiesAllowed}>
+                                              <UploadFileProvider>
+                                                <LivechatProvider>
+                                                  <Chatbox />
+                                                </LivechatProvider>
+                                              </UploadFileProvider>
+                                            </CheckCookiesAllowedProvider>
+                                          </SurveyProvider>
+                                          <Teaser
+                                            id={'dydu-teaser'}
+                                            toggle={
+                                              areCookiesAllowed
+                                                ? setMode
+                                                : () => {
+                                                    const newIsOpenDisclaimer = !isOpenDisclaimer;
+                                                    setIsOpenDisclaimer(newIsOpenDisclaimer);
+                                                    if (newIsOpenDisclaimer) {
+                                                      cookiesDisclaimerRef?.current?.focus();
+                                                    }
                                                   }
-                                                }
-                                          }
-                                          disclaimer={cookiesDisclaimer}
-                                          openDisclaimer={isOpenDisclaimer}
-                                        />
-                                      </DialogProvider>
-                                    </PushrulesProvider>
-                                  </ServerStatusProvider>
-                                </BotInfoProvider>
-                              </ChatboxReadyProvider>
-                            </TopKnowledgeProvider>
-                          </WelcomeKnowledgeProvider>
-                        </ConversationHistoryProvider>
+                                            }
+                                            disclaimer={cookiesDisclaimer}
+                                            openDisclaimer={isOpenDisclaimer}
+                                          />
+                                        </DialogProvider>
+                                      </PushrulesProvider>
+                                    </ServerStatusProvider>
+                                  </BotInfoProvider>
+                                </ChatboxReadyProvider>
+                              </TopKnowledgeProvider>
+                            </WelcomeKnowledgeProvider>
+                          </ConversationHistoryProvider>
+                        </ChatStatusProvider>
                       </GdprProvider>
                     </SamlProvider>
                   </OidcProvider>
