@@ -115,52 +115,53 @@ describe('Auth', () => {
     localStorage.clear();
   });
 
-  describe('savePkce()', () => {
-    it('should save pkce data to local storage', () => {
-      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
-      Auth.savePkce(pkceData);
-      expect(localStorage.getItem('pkce')).toBe(JSON.stringify(pkceData));
+  describe('saveOidcAuthData()', () => {
+    it('should save oidc auth data to local storage', () => {
+      const oidcAuthData = { redirectUrl: 'https://localhost:8080', state: '1234567890' };
+      Auth.saveOidcAuthData(oidcAuthData);
+      const result = Auth.loadOidcAuthData();
+      expect(JSON.stringify(result)).toBe(JSON.stringify(oidcAuthData));
     });
   });
 
-  describe('clearPkce()', () => {
-    it('should remove pkce data from local storage', () => {
-      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
-      Auth.savePkce(pkceData);
-      Auth.clearPkce();
-      expect(localStorage.getItem('pkce')).toBe(null);
+  describe('clearOidcAuthData()', () => {
+    it('should remove oidc auth data from local storage', () => {
+      const oidcAuthData = { redirectUrl: 'https://localhost:8080', state: '1234567890' };
+      Auth.saveOidcAuthData(oidcAuthData);
+      Auth.clearOidcAuthData();
+      expect(Auth.loadOidcAuthData()).toBeNull();
     });
   });
 
-  describe('loadPkce()', () => {
-    it('should load pkce data from local storage', () => {
-      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
-      Auth.savePkce(pkceData);
-      expect(Auth.loadPkce()).toEqual(pkceData);
+  describe('loadOidcAuthData()', () => {
+    it('should load oidc auth data from local storage', () => {
+      const oidcAuthData = { redirectUrl: 'https://localhost:8080', state: '1234567890' };
+      Auth.saveOidcAuthData(oidcAuthData);
+      expect(Auth.loadOidcAuthData()).toEqual(oidcAuthData);
     });
 
-    it('should return null if pkce data is not in local storage', () => {
-      expect(Auth.loadPkce()).toBe(null);
+    it('should return null if oidc auth data is not in local storage', () => {
+      expect(Auth.loadOidcAuthData()).toBeNull();
     });
   });
 
-  describe('containsPkce()', () => {
-    it('should return true if pkce data is in local storage', () => {
-      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
-      Auth.savePkce(pkceData);
-      expect(Auth.containsPkce()).toBe(true);
+  describe('containsOidcAuthData()', () => {
+    it('should return true if oidc auth data is in local storage', () => {
+      const oidcAuthData = { redirectUrl: 'https://localhost:8080', state: '1234567890' };
+      Auth.saveOidcAuthData(oidcAuthData);
+      expect(Auth.containsOidcAuthData()).toBe(true);
     });
 
-    it('should return false if pkce data is in local storage', () => {
-      expect(Auth.containsPkce()).toBe(false);
+    it('should return false if auth data is in local storage', () => {
+      expect(Auth.containsOidcAuthData()).toBe(false);
     });
   });
 
   describe('saveUrls', () => {
     it('saves urls to localStorage', () => {
       const urls = ['http://example.com', 'http://test.com'];
-      Auth.saveUrls(urls);
-      expect(localStorage.getItem('dydu-oauth-url')).toBe(JSON.stringify(urls));
+      Auth.saveOidcUrls(urls);
+      expect(JSON.stringify(Auth.loadOidcUrls())).toBe(JSON.stringify(urls));
     });
   });
 
@@ -168,7 +169,7 @@ describe('Auth', () => {
     it('loads urls from localStorage', () => {
       const urls = ['http://example.com', 'http://test.com'];
       localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
-      expect(Auth.loadUrls()).toEqual(urls);
+      expect(Auth.loadOidcUrls()).toEqual(urls);
     });
   });
 
@@ -176,8 +177,8 @@ describe('Auth', () => {
     it('clears urls from localStorage', () => {
       const urls = ['http://example.com', 'http://test.com'];
       localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
-      Auth.clearUrls();
-      expect(localStorage.getItem('dydu-oauth-url')).toBeNull();
+      Auth.clearOidcUrls();
+      expect(Auth.loadOidcUrls()).toBeNull();
     });
   });
 
@@ -185,7 +186,7 @@ describe('Auth', () => {
     it('saves user info to localStorage', () => {
       const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
       Auth.saveUserInfo(userInfo);
-      expect(localStorage.getItem('dydu-user-info')).toBe(JSON.stringify(userInfo));
+      expect(JSON.stringify(Auth.loadUserInfo())).toBe(JSON.stringify(userInfo));
     });
   });
 
@@ -202,7 +203,7 @@ describe('Auth', () => {
       const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
       localStorage.setItem('dydu-user-info', JSON.stringify(userInfo));
       Auth.clearUserInfo();
-      expect(localStorage.getItem('dydu-user-info')).toBeNull();
+      expect(Auth.loadUserInfo()).toBeNull();
     });
   });
 
@@ -210,8 +211,9 @@ describe('Auth', () => {
     it('should save token data to local storage', () => {
       const token = { access_token: '1234567890', refresh_token: '0987654321' };
       Auth.saveToken(token);
-      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(token.access_token);
-      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(token.refresh_token);
+      const tokens = Auth.loadToken();
+      expect(tokens.access_token).toBe(token.access_token);
+      expect(tokens.refresh_token).toBe(token.refresh_token);
     });
   });
 
@@ -220,8 +222,9 @@ describe('Auth', () => {
       const token = { access_token: '1234567890', refresh_token: '0987654321' };
       Auth.saveToken(token);
       Auth.clearToken();
-      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(null);
-      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(null);
+      const tokens = Auth.loadToken();
+      expect(tokens.access_token).toBeUndefined();
+      expect(tokens.refresh_token).toBeUndefined();
     });
   });
 
@@ -239,15 +242,15 @@ describe('Auth', () => {
 
   describe('clearAll()', () => {
     it('should clear all stored data from local storage', () => {
-      const pkceData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
+      const authData = { codeVerifier: '1234567890', codeChallenge: '0987654321' };
       const token = { access_token: '1234567890', refresh_token: '0987654321' };
-      Auth.savePkce(pkceData);
+      Auth.saveOidcAuthData(authData);
       Auth.saveToken(token);
       Auth.clearAll();
-      expect(localStorage.getItem('pkce')).toBe(null);
-      expect(localStorage.getItem('dydu-oauth-token-access')).toBe(null);
-      expect(localStorage.getItem('dydu-oauth-token-refresh')).toBe(null);
+      const tokens = Auth.loadToken();
+      expect(Auth.loadOidcAuthData()).toBeNull();
+      expect(tokens.access_token).toBeUndefined();
+      expect(tokens.refresh_token).toBeUndefined();
     });
   });
 });
-
