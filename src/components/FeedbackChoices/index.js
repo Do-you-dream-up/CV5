@@ -4,6 +4,7 @@ import c from 'classnames';
 import { useContext } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
+import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Render choices for the user to submit feedback.
@@ -14,9 +15,12 @@ export default function FeedbackChoices({ onSelect }) {
   const askChoices = t('feedback.question');
   const classes = useStyles();
   const { tabbing } = useContext(UserActionContext) || false;
+  const { dispatchEvent } = useEvent();
 
-  const onClick = (index) => () => onSelect(index);
-
+  const onClick = (index) => () => {
+    onSelect(index);
+    dispatchEvent && dispatchEvent('chatbox', 'insatisfactionClicked', index);
+  };
   return (
     !!choices.length && (
       <div className="dydu-feedback-choices">

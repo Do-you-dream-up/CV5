@@ -67,6 +67,9 @@
         ],
         "rewordDisplay": [
           "rewordDisplay"
+        ],
+        "insatisfactionClicked": [
+          "insatisfactionClicked"
         ]
       },
       "gdpr": {

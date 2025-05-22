@@ -1,19 +1,33 @@
 import '@testing-library/jest-dom';
 
 import { fireEvent, render, screen } from '@testing-library/react';
-
 import FeedbackChoices from '../FeedbackChoices';
+
+jest.mock('i18next', () => {
+  return {
+    use: function () {
+      return this;
+    },
+    init: function () {
+      return this;
+    },
+  };
+});
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key) => {
       if (key === 'feedback.choices') {
         return ['choice 1', 'choice 2'];
-      } else if (key === 'feedback.question') {
-        return 'What is your feedback about?';
-      } else {
-        return key;
       }
+      if (key === 'feedback.question') {
+        return 'What is your feedback about?';
+      }
+      return key;
+    },
+    i18n: {
+      language: 'en',
+      changeLanguage: () => new Promise(() => {}),
     },
   }),
 }));
