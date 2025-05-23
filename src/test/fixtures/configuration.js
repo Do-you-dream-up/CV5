@@ -60,6 +60,7 @@ export const getConfigurationObject = (updates = {}) => {
           onMinimize: ['minimize'],
           questionSent: ['questionSent'],
           rewordDisplay: ['rewordDisplay'],
+          insatisfactionClicked: ['insatisfactionClicked'],
         },
         gdpr: {
           acceptGdpr: ['acceptGdpr'],
@@ -329,6 +330,7 @@ export class ConfigurationFixture {
   constructor() {
     this.setConfiguration(getConfigurationObject());
   }
+
   setConfiguration(config = {}) {
     this.configuration = config;
   }
@@ -355,10 +357,12 @@ export class ConfigurationFixture {
     this.getConfiguration().oidc.enable = true;
     return this;
   }
+
   enableSaml() {
     this.getConfiguration().saml.enable = true;
     return this;
   }
+
   enableOnboarding() {
     this.getConfiguration().onboarding.enable = true;
     return this;
