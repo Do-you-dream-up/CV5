@@ -32,7 +32,7 @@ import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
-import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
+import {FeedbackWordingInterface, useWelcomeKnowledge} from './WelcomeKnowledgeContext';
 import { useChatboxReady } from './ChatboxReadyContext';
 import { useShadow } from './ShadowProvider';
 import uuid4 from 'uuid4';
@@ -125,6 +125,7 @@ interface InteractionProps {
   templatename?: string;
   type?: string;
   lastRequest?: string;
+  feedbackWording?: FeedbackWordingInterface;
 }
 
 export const DialogContext = createContext<DialogContextProps>({});
@@ -390,9 +391,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const addResponse = useCallback(
     (response: Servlet.ChatResponseValues = {}) => {
       Local.lastInteraction.save(); // Used to refresh localStorage usage
-
       setLastResponse(response);
       const {
+        feedbackWording: _feedbackWording,
         askFeedback: _askFeedback,
         feedback,
         guiAction,
@@ -407,6 +408,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
       } = response;
 
       const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
+
+      const feedbackWording = _feedbackWording;
 
       const steps = flattenSteps(response);
 
@@ -504,6 +507,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
             steps,
             templatename,
             lastRequest,
+            feedbackWording,
           };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
             interactionChildrenList,
@@ -528,6 +532,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
               thinking={!response.isFromHistory}
               typeResponse={typeResponse}
               lastRequest={lastRequest.current}
+              feedbackWording={feedbackWording}
             />
           );
         }

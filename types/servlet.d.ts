@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+import {FeedbackWordingInterface} from "../src/contexts/WelcomeKnowledgeContext";
 
 declare namespace Servlet {
   export type ChatResponseType =
@@ -19,6 +20,7 @@ declare namespace Servlet {
     hasProfilePicture?: boolean;
     keepPopinMinimized?: boolean;
     askFeedback?: boolean;
+    feedbackWording?: FeedbackWordingInterface;
     knowledgeId?: number;
     actionId?: number;
     serverTime?: number;
