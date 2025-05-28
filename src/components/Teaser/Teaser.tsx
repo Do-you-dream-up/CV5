@@ -10,6 +10,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { VIEW_MODE } from '../../tools/constants';
+import useViewport from "../../tools/hooks/useViewport";
 
 interface TeaserProps {
   id?: string;
@@ -29,6 +30,7 @@ const TEASER_TYPES = {
  */
 const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   const { configuration } = useConfiguration();
+  const { isMobile } = useViewport();
 
   const isDragActive: boolean | undefined = configuration?.dragon?.active;
 
@@ -73,7 +75,7 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   };
 
   useEffect(() => {
-    if (isMinimize) {
+    if (isMinimize && !isMobile) {
       teaserRef?.current?.focus();
     }
   }, [isMinimize, teaserRef]);

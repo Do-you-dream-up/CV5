@@ -88,7 +88,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
     if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
       const rootElement = dyduHeader.current;
       const focusableElements = rootElement ? rootElement.querySelectorAll('button') : [];
-      if (focusableElements.length > 0) {
+      if (focusableElements.length > 0 && !isMobile) {
         focusableElements[0].focus();
       }
     }
