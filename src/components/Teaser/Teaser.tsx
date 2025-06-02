@@ -10,7 +10,9 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import { VIEW_MODE } from '../../tools/constants';
-import useViewport from "../../tools/hooks/useViewport";
+import useViewport from '../../tools/hooks/useViewport';
+import { useUserAction } from '../../contexts/UserActionContext';
+import { Local } from '../../tools/storage';
 
 interface TeaserProps {
   id?: string;
@@ -31,6 +33,8 @@ const TEASER_TYPES = {
 const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   const { configuration } = useConfiguration();
   const { isMobile } = useViewport();
+
+  const { tabbing } = useUserAction();
 
   const isDragActive: boolean | undefined = configuration?.dragon?.active;
 
@@ -75,10 +79,10 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
   };
 
   useEffect(() => {
-    if (isMinimize && !isMobile) {
+    if (isMinimize && !isMobile && tabbing && (!configuration?.cookiesDisclaimer?.enable || Local.cookies.load())) {
       teaserRef?.current?.focus();
     }
-  }, [isMinimize, teaserRef]);
+  }, [isMinimize, teaserRef, tabbing]);
 
   const handleLongPress = () => {
     setIsCommandHandled(true);
