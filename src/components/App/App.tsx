@@ -40,6 +40,7 @@ import { BotInfoProvider } from '../../contexts/BotInfoContext';
 import { ServerStatusProvider } from '../../contexts/ServerStatusContext';
 import { PushrulesProvider } from '../../contexts/PushrulesContext';
 import { ChatStatusProvider } from '../../contexts/ChatStatusContext';
+import useViewport from "../../tools/hooks/useViewport";
 
 const Chatbox = lazy(() =>
   lazyRetry(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper }))),
@@ -74,6 +75,7 @@ interface BodyText {
 const App = () => {
   const { configuration } = useContext(ConfigurationContext);
   const { dispatchEvent } = useEvent();
+  const { isMobile } = useViewport();
   const { ready, t } = useTranslation('translation');
   const cookiesDisclaimerRef = useRef() as MutableRefObject<HTMLDivElement>;
 
@@ -120,7 +122,7 @@ const App = () => {
   ];
 
   useEffect(() => {
-    if (isOpenDisclaimer) {
+    if (isOpenDisclaimer && !isMobile) {
       cookiesDisclaimerRef?.current.focus();
     }
   }, [isOpenDisclaimer]);
