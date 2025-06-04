@@ -441,8 +441,13 @@ export const htmlToJsonForSendUploadFile = (html) => {
 export function getChatboxId() {
   let chatBoxId = getScriptId();
 
-  if (!chatBoxId && isInIframe()) {
-    chatBoxId = new URLSearchParams(window.location.search).get('id');
+  if (!chatBoxId) {
+    if (isInIframe()) {
+      chatBoxId = new URLSearchParams(window.location.search).get('id');
+    } else {
+      // CDN use case
+      chatBoxId = new URLSearchParams(window.location.search).get('bot');
+    }
   }
   return chatBoxId;
 }
