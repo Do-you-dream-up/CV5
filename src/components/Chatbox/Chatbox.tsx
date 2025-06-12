@@ -294,13 +294,16 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   // you need to change focusableElements array.
   // We use shadowRoot.activeElement to get the active element inside the shadowRoot.
   useEffect(() => {
+    if (eventFired?.key === 'Escape') {
+      setMode && setMode(VIEW_MODE.minimize);
+    }
     if (!sidebarActive && focusTrap) {
       focusTrap(eventFired, root, shadowRoot, 'button, textarea');
     }
   }, [eventFired]);
 
   return (
-    <div className={classnames} {...rest} role="region" id="dydu-chatbox">
+    <div className={classnames} {...rest} id="dydu-chatbox">
       <div ref={root} aria-label={labelChatbot} role="dialog" aria-modal={true} id="dydu-root-focus">
         {hasAfterLoadBeenCalled ? (
           <div className={classes.container}>
