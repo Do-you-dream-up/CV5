@@ -158,7 +158,7 @@ functional-test:
       git config --global user.email "infra@dydu.ai"
       git config --global user.name "GitLab CI Bliss"
       git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
-      git clone ssh://git@git.ci.dydu-priv.com:10022/qa/autobox.git /autobox
+      git clone https://$CI_HTTPS_RUNNER_USER:$CI_HTTPS_RUNNER_TOKEN@gitlab.ci.dydu-priv.com/qa/autobox.git /autobox
     - |
       cd /autobox
       git switch -c "${CI_COMMIT_REF_NAME}"
