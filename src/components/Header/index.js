@@ -83,6 +83,10 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
   const { send } = useLivechat();
   const { isOpen, mode } = useViewMode();
   const [prevMode, setPrevMode] = useState(null);
+  const { isFull, isPopin } = useViewMode();
+  const { tabbing } = useUserAction();
+  const collapseRef = useRef(null);
+  const maximizeRef = useRef(null);
 
   useEffect(() => {
     if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
@@ -224,6 +228,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       when: !!hasActions.expand && !isMobile && onExpand && !extended,
       title: actionExpand,
       id: 'dydu-expand',
+      ref: maximizeRef,
     },
     {
       children: <Icon icon={<CollapseIcon />} color={iconColorWhite} alt={actionShrink} ariaLabel={actionShrink} />,
@@ -232,6 +237,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       when: !!hasActions.expand && !isMobile && onExpand && extended,
       title: actionShrink,
       id: 'dydu-collapse',
+      ref: collapseRef,
     },
     {
       children: <Icon icon={<MinimizeIcon />} color={iconColorWhite} alt={actionMinimize} ariaLabel={actionMinimize} />,
@@ -250,6 +256,14 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       id: 'dydu-close',
     },
   ];
+
+  useEffect(() => {
+    if (isFull && !isMobile && tabbing) {
+      collapseRef?.current?.focus();
+    } else if (isPopin && !isMobile && tabbing) {
+      maximizeRef?.current?.focus();
+    }
+  }, [isFull, isPopin, collapseRef, tabbing, maximizeRef]);
 
   const shouldDisplayExitLivechatButton = Local.livechatType.load() && !Local.waitingQueue.load();
 

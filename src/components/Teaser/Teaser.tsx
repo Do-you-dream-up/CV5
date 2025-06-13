@@ -159,6 +159,7 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
         className={c('dydu-teaser', classes.root, { [classes.hidden]: !isMinimize })}
         id={id}
         aria-labelledby={id + '-chatbot'}
+        role="region"
       >
         <div className={c('dydu-teaser-container', classes.dyduTeaserContainer)} id={id + '-chatbot'}>
           {openDisclaimer && disclaimer ? disclaimer() : null}

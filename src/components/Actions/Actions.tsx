@@ -31,6 +31,7 @@ export interface ActionProps {
   testId?: any;
   onClick?: () => void;
   rollOver?: string;
+  ref?: any;
 }
 
 export interface ActionsProps {
@@ -56,7 +57,7 @@ const Actions = ({ actions = [], className, targetStyleKey, groupId, role, rollO
 
   return actions?.length > 0 ? (
     <div className={c('dydu-actions', _classes, className)} aria-labelledby={groupId} role={role}>
-      {filteredActions.map(({ items, rollOver, selected, type = 'button', title, testId, ...rest }, index) => {
+      {filteredActions.map(({ items, rollOver, selected, type = 'button', title, testId, ref, ...rest }, index) => {
         delete rest.when;
         const props: ButtonProps = {
           key: title || index,
@@ -69,7 +70,7 @@ const Actions = ({ actions = [], className, targetStyleKey, groupId, role, rollO
         if (items) {
           return <Menu {...props} component={Button} items={items} selected={selected} />;
         }
-        return <Button {...props} data-testid={testId} title={rollOver} />;
+        return <Button {...props} data-testid={testId} title={rollOver} ref={ref} />;
       })}
     </div>
   ) : null;

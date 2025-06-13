@@ -50,7 +50,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
   const keyListener = (e) => {
     setEventFired(e);
     setTabbing((prevTabbing) => {
-      if (e.key === 'Tab') {
+      if (e.key === 'Tab' || e.key === 'Escape') {
         setShiftPressed(e.shiftKey);
         return true;
       } else if (!pressedAccessibilityKeyDuringTabbing(e, prevTabbing)) {
