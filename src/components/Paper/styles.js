@@ -24,5 +24,6 @@ export default createUseStyles((theme) => ({
     overflow: 'hidden',
     padding: [['1em']],
     position: 'relative',
+    zIndex: 1,
   }),
 }));
