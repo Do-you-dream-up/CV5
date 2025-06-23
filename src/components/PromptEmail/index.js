@@ -68,6 +68,7 @@ export default function PromptEmail({ onResolve, scroll, thinking, type }) {
                     onChange={onChange}
                     placeholder={ready ? t('promptEmail.placeholder') : null}
                     aria-label={ready ? t('promptEmail.placeholder') : null}
+                    title={ready ? t('promptEmail.placeholder') : null}
                     required
                     type="email"
                     value={data.email || ''}
