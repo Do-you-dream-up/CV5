@@ -6,6 +6,17 @@ import { ConfigurationFixture } from '../../test/fixtures/configuration';
 import Input from './Input';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 
+jest.mock('react', () => {
+  return {
+    ...jest.requireActual('react'),
+    useRef: () => {
+      return {
+        current: 0,
+      };
+    },
+  };
+});
+
 jest.mock('../../tools/axios', () => ({
   emit: jest.fn().mockReturnValue(Promise.resolve()),
   SERVLET_API: {

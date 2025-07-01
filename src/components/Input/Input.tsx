@@ -56,7 +56,6 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
   const { configuration } = useConfiguration();
 
   const classes = useStyles();
-  const [counter = 100, setCounter] = useState<number | undefined>(configuration?.input.maxLength);
   const [input, setInput] = useState<string>('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [typing, setTyping] = useState<boolean>(false);
@@ -64,25 +63,29 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
   const actionSend = t('input.actions.send');
   const inputPlaceholder = t('input.placeholder');
   const livechatInputPlaceholder = t('input.livechat.placeholder');
-  const counterRemaining = `${counter} ${t('input.actions.counterRemaining')}`;
-  const { counter: showCounter, delay, maxLength = 100 } = configuration?.input || {};
   const { limit: suggestionsLimit = 3 } = configuration?.suggestions || {};
   const displayedPlaceholderTitleAriaLabel = useRef<string>('');
   const themeColor = useTheme<Models.Theme>();
-  const debouncedInput = useDebounce(input, delay);
   const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<null | any>(null);
   const textareaRef = useRef<null | any>(null);
   const { shadowAnchor } = useShadow();
-
   const isLivechatTypeDefined = !!Local.livechatType.load();
+
+  const { counter: showCounter, delay = 300, maxLength = 100 } = configuration?.input || {};
+  const debouncedInput = useDebounce(input, delay);
+  const livechatMaxLength = 1024; //bdd limit for userTalk column
+
+  const counterRemaining = useRef<number>(configuration?.input.maxLength ? configuration?.input.maxLength : 100);
+  const inputMaxLength = isLivechatTypeDefined ? livechatMaxLength : maxLength;
+  const tooltipCounterRemaining = `${counterRemaining.current} ${t('input.actions.counterRemaining')}`;
 
   const { idleTimer } = useIdleTimeout({
     onIdle: () => {
       livechatTyping?.(input);
     },
     idleTimeout: 1000,
-    disabled: !Local.livechatType.load(),
+    disabled: !isLivechatTypeDefined,
   });
 
   const voice = configuration?.Voice ? configuration?.Voice?.enable : false;
@@ -90,7 +93,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
   const onChange = (event) => {
     setTyping(true);
     setInput(event.target.value);
-    setCounter(maxLength - event.target.value.length);
+    counterRemaining.current = inputMaxLength - event.target.value.length;
     setIsInputFilled && setIsInputFilled(event.target.value.length > 0);
   };
 
@@ -132,7 +135,11 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
 
   useEffect(() => {
     idleTimer.reset();
-  }, [input, Local.livechatType.load(), livechatTyping, typing]);
+  }, [input, isLivechatTypeDefined, livechatTyping, typing]);
+
+  useEffect(() => {
+    counterRemaining.current = inputMaxLength - input?.length;
+  }, [isLivechatTypeDefined, input]);
 
   const onSuggestionSelected = (event, { suggestionValue }) => {
     event.preventDefault();
@@ -178,7 +185,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
           </label>
           <textarea
             {...data}
-            maxLength={!Local.livechatType.load() ? maxLength : undefined}
+            maxLength={inputMaxLength}
             disabled={prompt || locked}
             id={textareaId}
             data-testId="textareaId"
@@ -190,11 +197,11 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
             aria-describedby="counterRemaining"
           />
           <div children={input} className={classes.fieldShadow} />
-          {!!showCounter && !Local.livechatType.load() && (
+          {!!showCounter && (
             <div>
-              <span className={classes.counter} children={counter} aria-hidden={true} />
+              <span className={classes.counter} children={counterRemaining.current} aria-hidden={true} />
               <span className={c('dydu-counter-hidden', classes.hidden)} id="counterRemaining">
-                {counterRemaining}
+                {tooltipCounterRemaining}
               </span>
             </div>
           )}
@@ -205,7 +212,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
       classes.counter,
       classes.field,
       classes.fieldShadow,
-      counter,
+      counterRemaining.current,
       input,
       locked,
       prompt,
@@ -216,13 +223,13 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
   );
 
   const reset = useCallback(() => {
-    setCounter(configuration?.input.maxLength);
+    counterRemaining.current = inputMaxLength - input?.length;
     setInput('');
-  }, [configuration?.input.maxLength]);
+  }, [isLivechatTypeDefined, input]);
 
   const sendInput = useCallback(
     (input, options = {}) => {
-      const livechatType = Local.livechatType.load();
+      const livechatType = isLivechatTypeDefined;
       setIsWaitingForResponse && !livechatType && setIsWaitingForResponse(true);
       if (livechatType) {
         send?.(input, options);
@@ -234,7 +241,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
       }
     },
 
-    [Local.livechatType.load(), send],
+    [isLivechatTypeDefined, send],
   );
 
   const submit = useCallback(
@@ -325,7 +332,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
 
   const inputProps = {
     disabled,
-    maxLength,
+    length: inputMaxLength,
     onChange,
     onKeyDown,
     value: input,
@@ -351,16 +358,16 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
   ];
 
   const renderVoiceInput = useCallback(() => {
-    return voice && counter === maxLength ? (
+    return voice && counterRemaining.current === inputMaxLength ? (
       <Voice show={dydu.hasUserAcceptedGdpr()} setHasTTSError={setHasTTSError} t={t('input.actions.record')} />
     ) : null;
-  }, [voice, counter, maxLength]);
+  }, [voice, counterRemaining, inputMaxLength]);
 
   const renderSubmit = useCallback(() => {
     return !voice
-      ? counter < maxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+      ? counterRemaining.current < inputMaxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
       : null;
-  }, [voice, counter, maxLength]);
+  }, [voice, counterRemaining, inputMaxLength]);
 
   return isWaitingQueue ? (
     <Button
