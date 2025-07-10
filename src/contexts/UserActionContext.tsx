@@ -34,7 +34,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
   const [shiftPressed, setShiftPressed] = useState(false);
 
   const [rgaaRef, setRgaaRef] = useState({});
-  const { shadowAnchor } = useShadow();
+  const { shadowAnchor, shadowRoot } = useShadow();
 
   const pressedAccessibilityKeyDuringTabbing = (e: { code: string }, tabbing: boolean) => {
     return (
@@ -50,7 +50,14 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
   const keyListener = (e) => {
     setEventFired(e);
     setTabbing((prevTabbing) => {
-      if (e.key === 'Tab' || e.key === 'Escape') {
+      const activeElement = shadowRoot?.activeElement;
+      const tagName = activeElement?.tagName?.toLowerCase();
+      const isInputOrTextarea = tagName === 'input' || tagName === 'textarea';
+      if (
+        e.key === 'Tab' ||
+        e.key === 'Escape' ||
+        ((e.key === 'Enter' || e.key === ' ') && !isInputOrTextarea)
+      ) {
         setShiftPressed(e.shiftKey);
         return true;
       } else if (!pressedAccessibilityKeyDuringTabbing(e, prevTabbing)) {
