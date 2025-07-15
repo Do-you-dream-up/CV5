@@ -5,7 +5,6 @@ import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { TUNNEL_MODE } from '../tools/constants';
-import { Servlet } from '../../types/servlet';
 
 type ChatResponseArray = Servlet.ChatResponseValues[];
 

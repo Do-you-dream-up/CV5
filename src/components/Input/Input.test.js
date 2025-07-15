@@ -35,6 +35,14 @@ jest.mock('../../contexts/DialogContext', () => ({
     .mockReturnValue({ disabled: false, locked: false, placeholder: '', autoSuggestionActive: true, prompt: '' }),
 }));
 
+jest.mock('../../tools/dydu', () => ({
+  __esModule: true,
+  default: {
+    makeTalkPayloadWithTextAndOption: jest.fn(),
+    talk: jest.fn(),
+  },
+}));
+
 describe('Input', () => {
   it('should call onChange handler when user types in input field', () => {
     const newConfig = new ConfigurationFixture();

@@ -56,12 +56,10 @@ export default function SurveyProvider({ children }: SurveyProviderProps) {
   const getSurveyConfiguration = (data) => {
     const id = extractId(data);
 
-    if (!Local.livechatType.load()) {
-      flushStates(); // Required to reset useEffect and show new survey
-      dydu.getSurvey(id).then((res) => {
-        setSurveyConfig(res);
-      });
-    }
+    flushStates(); // Required to reset useEffect and show new survey
+    dydu.getSurvey(id).then((res) => {
+      setSurveyConfig(res);
+    });
   };
 
   const closeSurveyAndSidebar = useCallback(() => {

@@ -449,7 +449,7 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   talk = async (text, options = {}) => {
-    const payload = this.#makeTalkPayloadWithTextAndOption(text, options);
+    const payload = this.makeTalkPayloadWithTextAndOption(text, options);
     const data = qs.stringify({
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -533,6 +533,7 @@ export default new (class Dydu {
       reading: true,
       contextId: Local.contextId.load(BOT.id),
       solutionUsed: SOLUTION_TYPE.assistant,
+      mode: Local.livechatType.load() ? Local.livechatType.load().toBase64() : 'Synchron'.toBase64(),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     const path = `chat/reading/${BOT.id}/`;
@@ -553,9 +554,9 @@ export default new (class Dydu {
     if (data.lastPoll) {
       const path = `/chat/poll/last/${this.getBot()?.id}`;
       return emit(SERVLET_API.post, path, toFormUrlEncoded(data));
+    } else {
+      throw new Error('LastPoll missing, cannot Poll');
     }
-
-    return new Promise(() => {});
   };
 
   /**
@@ -628,7 +629,7 @@ export default new (class Dydu {
       return data && data.host;
     });
 
-  #makeTalkPayloadWithTextAndOption = (text, options) => {
+  makeTalkPayloadWithTextAndOption = (text, options) => {
     return {
       alreadyCame: this.alreadyCame(),
       browser: `${browser.name} ${browser.version}`,
@@ -645,6 +646,7 @@ export default new (class Dydu {
         extraParameters: JSON.stringify(options.extra),
       }),
       variables: this.getVariables(),
+      mode: Local.livechatType.load() ? Local.livechatType.load().toBase64() : 'Synchron'.toBase64(),
     };
   };
 
@@ -745,10 +747,10 @@ export default new (class Dydu {
       }),
     };
     try {
-      const response = await fetch(`${buildServletUrl()}chatHttp?data=${_stringify(payload)}`);
+      const response = await fetch(`${buildServletUrl()}chatHttp?data=${encodeURIComponent(_stringify(payload))}`);
       const jsonResponse = await response.json();
       setLastResponse(jsonResponse);
-      return this.displaySurveySent(payload.parameters.reword);
+      return this.displaySurveySent(payload.parameters.reword, {}, response.status);
     } catch (error) {
       console.error(error);
       throw error;

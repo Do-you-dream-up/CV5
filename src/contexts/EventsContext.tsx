@@ -21,7 +21,7 @@ import { Local } from '../tools/storage';
 interface EventsContextProps {
   isMenuListOpen?: boolean;
   setIsMenuListOpen?: Dispatch<SetStateAction<boolean>>;
-  onNewMessage?: (messageCount: number) => void;
+  onNewMessage?: () => void;
   onEvent?: (feature: any) => (event: any, ...rest: any[]) => void;
   event?: (str: string) => void;
   dispatchEvent?: (featureName: string, eventName: string, ...rest: any[]) => void;

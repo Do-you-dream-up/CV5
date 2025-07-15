@@ -3,12 +3,11 @@ import { Dispatch, ReactElement, SetStateAction, createContext, useContext, useS
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { TUNNEL_MODE } from '../tools/constants';
-import { Servlet } from '../../types/servlet';
 
 interface ConversationHistoryContextProps {
   fetchHistory?: () => Promise<any>;
   history?: Servlet.ChatHistoryInteraction[] | null;
-  setHistory?: Dispatch<SetStateAction<Servlet.ChatHistoryResponse | null>>;
+  setHistory?: Dispatch<SetStateAction<Servlet.ChatHistoryInteraction[] | null>>;
 }
 
 interface ConversationHistoryProviderProps {

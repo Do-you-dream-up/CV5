@@ -2,9 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
-import { Local } from '../tools/storage';
-import { TUNNEL_MODE } from '../tools/constants';
-import { Servlet } from '../../types/servlet';
 
 export interface BotInfoProviderProps {
   children?: any;
