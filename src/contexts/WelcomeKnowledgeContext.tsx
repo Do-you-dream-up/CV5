@@ -1,11 +1,10 @@
-import { Dispatch, SetStateAction, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, useContext, useMemo, useState } from 'react';
 import { isDefined, isEmptyString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { BOT } from '../tools/bot';
-import { Servlet } from '../../types/servlet';
 
 type WelcomeKnowledge = Servlet.ChatResponseValues | null;
 
@@ -74,7 +73,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
     });
   };
 
-  const fetchWelcomeKnowledge = async (): Promise<void> => {
+  const fetchWelcomeKnowledge = async (): Promise<any> => {
     const currentContextUUID = Local.contextId.load(BOT.id);
 
     if (mustFetchWelcome()) {

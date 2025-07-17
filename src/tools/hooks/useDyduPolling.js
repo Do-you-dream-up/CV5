@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dydu from '../dydu';
 
 import LivechatPayload from '../LivechatPayload';
+import { Local } from '../storage';
 
 let endLivechatAndCloseTunnel = null;
 let addNewMessageAndNotificationOrResponse = null;
@@ -90,7 +91,9 @@ export default function useDyduPolling() {
           sendNotificationOrMessage(recursiveBase64DecodeString(pollResponse));
         })
         .catch((error) => {
-          console.error('Error polling', error);
+          interval.console.error('Error polling ', error);
+          Local.livechatType.remove();
+          clearInterval(interval);
         });
     }, INTERVAL_MS);
   };
@@ -99,7 +102,6 @@ export default function useDyduPolling() {
     return new Promise((resolve) => {
       if (initialized !== true) {
         linkToLivechatFunctions(livechatContextFunctions);
-        setLastPollingResponse(livechatContextFunctions);
         startPolling();
         initialized = true;
       }

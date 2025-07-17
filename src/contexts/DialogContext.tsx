@@ -32,11 +32,10 @@ import { useServerStatus } from './ServerStatusContext';
 import { useTopKnowledge } from './TopKnowledgeContext';
 import useViewport from '../tools/hooks/useViewport';
 import useVisitManager from '../tools/hooks/useVisitManager';
-import {FeedbackWordingInterface, useWelcomeKnowledge} from './WelcomeKnowledgeContext';
+import { useWelcomeKnowledge } from './WelcomeKnowledgeContext';
 import { useChatboxReady } from './ChatboxReadyContext';
 import { useShadow } from './ShadowProvider';
 import uuid4 from 'uuid4';
-import { Servlet } from '../../types/servlet';
 import { useChatboxLoaded } from './ChatboxLoadedProvider';
 import { useViewMode } from './ViewModeProvider';
 import { useGdpr } from './GdprContext';
@@ -125,7 +124,7 @@ interface InteractionProps {
   templatename?: string;
   type?: string;
   lastRequest?: string;
-  feedbackWording?: FeedbackWordingInterface;
+  feedbackWording?: any;
 }
 
 export const DialogContext = createContext<DialogContextProps>({});
@@ -207,7 +206,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     callChatboxReady,
   ];
 
-  const getPromiseQueueList = () => {
+  const getPromiseQueueList = (): any => {
     if (configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false) {
       baseQueue.splice(3, 1);
     }
@@ -350,6 +349,8 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const addRequest = useCallback(
     (text) => {
       if (text) {
+        Local.lastInteraction.save(); // Used to refresh localStorage usage
+
         if (sidebarTransient || isMobile) {
           toggleSidebar(false)();
         }

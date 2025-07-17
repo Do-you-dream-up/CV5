@@ -29,6 +29,8 @@ let leaveWaitingQueue = null;
 let onFailOpenTunnel = null;
 let clearInteractionsAndAddWelcome = null;
 let keepAliveInterval = null;
+let setTunnelAndMode = null;
+let getWebsocketTunnel = null;
 
 const linkToLivechatFunctions = (livechatContextFunctions) => {
   endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
@@ -38,6 +40,8 @@ const linkToLivechatFunctions = (livechatContextFunctions) => {
   onFailOpenTunnel = livechatContextFunctions.onFailOpenTunnel;
   leaveWaitingQueue = livechatContextFunctions.leaveWaitingQueue;
   clearInteractionsAndAddWelcome = livechatContextFunctions.clearInteractionsAndAddWelcome;
+  setTunnelAndMode = livechatContextFunctions.setTunnelAndMode;
+  getWebsocketTunnel = livechatContextFunctions.getWebsocketTunnel;
 };
 
 let needToAnswerSurvey = false;
@@ -154,7 +158,7 @@ export default function useDyduWebsocket() {
     console.log('_onFail', 'Failing connection !');
     if (isDefined(onFailOpenTunnel)) onFailOpenTunnel();
     flushSocketProps();
-  }, [flushSocketProps]);
+  }, []);
 
   const flushSocketProps = useCallback(() => {
     setSocketProps([null, {}]);
@@ -266,6 +270,7 @@ export default function useDyduWebsocket() {
       onReconnectStop: _onFail,
       onOpen: (onOpen) => {
         console.log('websocket: on open !', onOpen);
+        setTunnelAndMode(getWebsocketTunnel());
         sendCheckContextAvailability();
         sendTopKnowledge(configuration);
         sendHistory();

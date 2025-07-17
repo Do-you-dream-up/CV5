@@ -1,4 +1,4 @@
-import { LIVECHAT_ID_LISTENER, RESPONSE_SPECIAL_ACTION } from '../tools/constants';
+import { LIVECHAT_ID_LISTENER, RESPONSE_SPECIAL_ACTION, TUNNEL_MODE } from '../tools/constants';
 import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
@@ -144,10 +144,22 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     );
   };
 
-  const onSuccessOpenTunnel = (tunnel) => {
+  const onSuccessOpenTunnel = useCallback((tunnel) => {
+    // in websocket onSuccessOpenTunnel may be called while connection is not possible at all
+    // websocket mode is set when receiving websocket message in useDyduWebSocket calling setWebSocketTunnel
+    if (TUNNEL_MODE.polling == tunnel.mode) {
+      setTunnelAndMode(tunnel);
+    }
+  }, []);
+
+  const setTunnelAndMode = useCallback((tunnel) => {
     Local.livechatType.save(tunnel.mode);
     tunnelRef.current = tunnel;
-  };
+  }, []);
+
+  const getWebsocketTunnel = useCallback(() => {
+    return tunnelList[0];
+  }, []);
 
   const onFailOpenTunnel = useCallback(
     (failedTunnel, err) => {
@@ -164,15 +176,15 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     [onSuccessOpenTunnel, tunnelList, tunnelRef.current],
   );
 
-  const leaveWaitingQueue = () => {
+  const leaveWaitingQueue = useCallback(() => {
     Local.waitingQueue.remove();
     setIsWaitingQueue(false);
-  };
+  }, []);
 
-  const enterWaitingQueue = () => {
+  const enterWaitingQueue = useCallback(() => {
     Local.waitingQueue.save(true);
     setIsWaitingQueue(true);
-  };
+  }, []);
 
   const endLivechatAndCloseTunnel = () => {
     if (Local.livechatType.load()) {
@@ -201,6 +213,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       showUploadFileButton,
       leaveWaitingQueue,
       clearInteractionsAndAddWelcome,
+      setTunnelAndMode,
+      getWebsocketTunnel,
     };
   }, [
     lastResponse,
