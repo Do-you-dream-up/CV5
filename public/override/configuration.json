@@ -137,6 +137,9 @@
   "cookiesDisclaimer": {
     "enable": false
   },
+  "userConsentDisclaimer": {
+    "enable": false
+  },
   "header": {
     "actions": {
       "close": false,
