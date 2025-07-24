@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import { useDialog } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
 
-const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked)$/g;
+const RE_UNDERSTOOD = /^(DMUnderstoodQuestion|DMRewordClickedAuto|DMRewordClicked|DMPushReplace|DMMetaUnderstoodQuestion|DMContextualGarbage)$/g;
 const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
-const RE_MISUNDERSTOOD = /^(GB)((TooMany)?)(MisunderstoodQuestion)(s?)$/g;
+const RE_MISUNDERSTOOD = /^(GBMisunderstoodQuestion|GBTooManyMisunderstoodQuestions|GBContextualGarbage|GBKnowledge|GBPushReplace)$/g;
 const RE_LIVECHAT =
   /^(OPRegularOperatorAnswer|OPRegularManagerAnswer|OPAutoReengageOperatorAnswer|OPAutoHelloOperatorAnswer|NAWaitingForOperator|DMLiveChatConnectionSucceed|NANotificationFromOperator|OPAutoOperatorAnswer|DMLiveChatConnectionInQueue)$/g;
 
