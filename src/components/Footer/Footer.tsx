@@ -22,10 +22,13 @@ import { useEffect, useState } from 'react';
 interface FooterProps {
   onRequest?: (value: string) => void;
   onResponse?: (value: Servlet.ChatResponseValues) => void;
+
   [key: string]: any;
+
+  onWheel?: (e: React.WheelEvent<HTMLDivElement>) => void;
 }
 
-export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) {
+export default function Footer({ onRequest, onResponse, onWheel, ...rest }: FooterProps) {
   const { showButtonUploadFile } = useUploadFile() || {};
 
   const { configuration } = useConfiguration();
@@ -95,7 +98,7 @@ export default function Footer({ onRequest, onResponse, ...rest }: FooterProps) 
       {hasTTSError ? (
         <div className={c('dydu-footer-error', classes.error)}>{t('footer.voice.tts.notAllowed')}</div>
       ) : null}
-      <div className={c('dydu-footer', classes.root)} {...rest}>
+      <div className={c('dydu-footer', classes.root)} {...rest} onWheel={onWheel}>
         <Actions
           actions={actions}
           className={c('dydu-footer-actions', classes.actions)}

@@ -38,6 +38,7 @@ import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -89,6 +90,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const { focusTrap, eventFired } = useUserAction();
   const { shadowRoot } = useShadow();
+  const { preventPropagationScroll } = useEvent();
 
   let scrollToBottomTimeout: any = {};
 
@@ -317,6 +319,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                   onClose={onClose}
                   onExpand={expandable ? (value) => setMode(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
                   onMinimize={onMinimize}
+                  onWheel={preventPropagationScroll}
                 />
               )}
               {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
@@ -342,7 +345,13 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                     {poweredByActive && <PoweredBy />}
                   </div>
                   {(sidebarMode === 'over' || isFull) && <Sidebar mode="over" />}
-                  {!current && <Footer onRequest={addRequest} onResponse={addNotificationOrResponse} />}
+                  {!current && (
+                    <Footer
+                      onRequest={addRequest}
+                      onResponse={addNotificationOrResponse}
+                      onWheel={preventPropagationScroll}
+                    />
+                  )}
                 </Onboarding>
               </GdprDisclaimer>
               {showScrollToBottom ? <ScrollToBottom /> : null}
