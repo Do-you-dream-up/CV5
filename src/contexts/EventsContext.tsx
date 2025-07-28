@@ -28,6 +28,7 @@ interface EventsContextProps {
   saveChatboxRef?: (ref) => void;
   getChatboxRef?: () => null;
   messageCount?: number;
+  preventPropagationScroll?: (e: any) => void;
 }
 
 interface EventsProviderProps {
@@ -45,7 +46,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
 
   const [event, setEvent] = useState<any | null>();
   const [isMenuListOpen, setIsMenuListOpen] = useState<boolean>(false);
-  const { shadowAnchor } = useShadow();
+  const { shadowAnchor, shadowRoot } = useShadow();
   const [messageCount, setMessageCount] = useState<number>(0);
   const [chatboxRef, setChatboxRef] = useState<any>();
   const isOpenRef = useRef(isOpen);
@@ -63,6 +64,16 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     }
   };
 
+  const preventPropagationScroll = (e) => {
+    const body = shadowRoot?.getElementById('dydu-dialog');
+    if (body && body.contains(e.target)) {
+      return;
+    } else {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
   useEffect(() => {
     if (isOpenRef.current) {
       handleUserActive();
@@ -73,10 +84,14 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     shadowAnchor?.addEventListener('mouseenter', handleUserActive);
     shadowAnchor?.addEventListener('touchstart', handleUserActive);
     shadowAnchor?.addEventListener('focusin', handleUserActive);
+    shadowAnchor?.addEventListener('wheel', preventPropagationScroll);
+    shadowAnchor?.addEventListener('touchmove', preventPropagationScroll);
     return () => {
       shadowAnchor?.removeEventListener('mouseenter', handleUserActive);
       shadowAnchor?.removeEventListener('touchstart', handleUserActive);
       shadowAnchor?.removeEventListener('focusin', handleUserActive);
+      shadowAnchor?.removeEventListener('wheel', preventPropagationScroll);
+      shadowAnchor?.removeEventListener('touchmove', preventPropagationScroll);
     };
   }, [shadowAnchor]);
 
@@ -152,6 +167,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
         saveChatboxRef,
         messageCount,
         getChatboxRef: () => chatboxRef,
+        preventPropagationScroll,
       }}
     />
   );

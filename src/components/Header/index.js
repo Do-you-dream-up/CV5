@@ -42,7 +42,17 @@ import {
  * Header of the chatbox. Typically placed on top and hold actions such as
  * closing or expanding the chatbox
  */
-export default function Header({ dialogRef, extended, gdprRef, minimal, onClose, onExpand, onMinimize, ...rest }) {
+export default function Header({
+  dialogRef,
+  extended,
+  gdprRef,
+  minimal,
+  onClose,
+  onExpand,
+  onMinimize,
+  onWheel,
+  ...rest
+}) {
   const { configuration } = useConfiguration();
   const { addRgaaRef } = useUserAction();
   const { onDragStart } = useContext(DragonContext) || {};
@@ -284,6 +294,7 @@ export default function Header({ dialogRef, extended, gdprRef, minimal, onClose,
       {...rest}
       id="dydu-header"
       ref={dyduHeader}
+      onWheel={onWheel}
     >
       <div
         className={c('dydu-header-body', classes.body, {
@@ -353,4 +364,5 @@ Header.propTypes = {
   onExpand: PropTypes.func,
   onMinimize: PropTypes.func.isRequired,
   style: PropTypes.object,
+  onWheel: PropTypes.func,
 };
