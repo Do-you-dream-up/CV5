@@ -10,6 +10,17 @@ declare namespace Servlet {
 
   export type ChatResponseFeedbackType = 'positive' | 'negative' | 'withoutAnswer';
 
+  export interface FeedbackWordingInterface {
+    choiceIntroduction?: import('js-base64').Base64 | string;
+    choice0?: import('js-base64').Base64 | string;
+    choice1?: import('js-base64').Base64 | string;
+    choice2?: import('js-base64').Base64 | string;
+    commentLabel?: import('js-base64').Base64 | string;
+    commentPlaceholder?: import('js-base64').Base64 | string;
+    commentSend?: import('js-base64').Base64 | string;
+    commentEnd?: import('js-base64').Base64 | string;
+  }
+
   export interface ChatResponseValues {
     guiAction?: import('js-base64').Base64 | string;
     contextId?: import('js-base64').Base64 | string;
@@ -17,7 +28,7 @@ declare namespace Servlet {
     hasProfilePicture?: boolean;
     keepPopinMinimized?: boolean;
     askFeedback?: boolean;
-    feedbackWording?: any;
+    feedbackWording?: FeedbackWordingInterface;
     knowledgeId?: number;
     actionId?: number;
     serverTime?: number;

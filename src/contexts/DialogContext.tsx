@@ -124,7 +124,7 @@ interface InteractionProps {
   templatename?: string;
   type?: string;
   lastRequest?: string;
-  feedbackWording?: any;
+  feedbackWording?: Servlet.FeedbackWordingInterface | null;
 }
 
 export const DialogContext = createContext<DialogContextProps>({});
