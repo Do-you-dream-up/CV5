@@ -23,6 +23,7 @@ import Button from '../Button/Button';
 import { useWelcomeKnowledge } from '../../contexts/WelcomeKnowledgeContext';
 import PromiseQueue from '../../tools/hooks/PromiseQueue';
 import { SendIcon } from '../CustomIcons/CustomIcons';
+import { useChatboxReady } from '../../contexts/ChatboxReadyContext';
 
 interface InputProps {
   onRequest?: (input: string) => void;
@@ -40,6 +41,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
     hasToVerifyContextAfterLivechatClosed,
     setHasToVerifyContextAfterLivechatClosed,
   } = useLivechat();
+  const { isChatboxReady } = useChatboxReady();
   const { dispatchEvent, isMenuListOpen } = useEvent();
   const { verifyAvailabilityDialogContext } = useWelcomeKnowledge();
   const {
@@ -376,6 +378,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
           leaveLiveChatQueue && leaveLiveChatQueue();
         }
       }}
+      disabled={!isChatboxReady}
     >
       {t('livechat.queue.leaveQueue')}
     </Button>
