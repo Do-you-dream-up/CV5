@@ -376,6 +376,16 @@ export default new (class Dydu {
     i18n.changeLanguage(localeToSet);
   }
 
+  setUiLocale(uiLocaleToSet) {
+    try {
+      i18n.changeLanguage(uiLocaleToSet);
+    } catch (error) {
+      // may occur if no translation.json exists for this language
+      console.log('Error trying to set locale [' + uiLocaleToSet + '] Error is: ', error);
+      i18n.changeLanguage(this.locale);
+    }
+  }
+
   getLocale() {
     return this.locale;
   }

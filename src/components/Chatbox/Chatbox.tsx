@@ -1,4 +1,4 @@
-import { EventsContext } from '../../contexts/EventsContext';
+import { EventsContext, useEvent } from '../../contexts/EventsContext';
 import { GdprContext } from '../../contexts/GdprContext';
 import { LOREM_HTML, LOREM_HTML_SPLIT } from '../../tools/lorem';
 import { ModalContext, ModalProvider } from '../../contexts/ModalContext';
@@ -38,7 +38,6 @@ import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
-import { useEvent } from '../../contexts/EventsContext';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -194,6 +193,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
             .then(() => fetchTopKnowledge?.())
             .then(() => fetchWelcomeKnowledge?.());
         },
+        setUi: (locale) => dydu.setUiLocale(locale),
       };
 
       window.dydu.newdialog = () => {

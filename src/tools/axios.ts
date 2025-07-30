@@ -130,6 +130,9 @@ const handleAxiosResponse = (data: any) => {
     if (data.values.language) {
       dydu.setLocale(data.values.language, true);
     }
+    if (data.values.uiLanguage) {
+      dydu.setUiLocale(data.values.uiLanguage);
+    }
     if (data.values.contextId) {
       dydu.setContextId(data.values.contextId);
     }
