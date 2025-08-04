@@ -109,6 +109,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       decodedResponse.text = t('livechat.queue.addedToQueueForHistory');
       displayNotification && displayNotification(decodedResponse);
     } else if (LivechatPayload.is.startWaitingQueue(response)) {
+      addResponse && addResponse(response);
       // from POST request
       enterWaitingQueue();
       let decodedResponse = null;
