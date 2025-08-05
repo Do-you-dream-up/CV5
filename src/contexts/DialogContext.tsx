@@ -199,7 +199,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     verifyAvailabilityDialogContext,
     fetchChatStatus,
     fetchBotLanguages,
-    fetchVisitorRegistration,
+    fetchVisitorRegistration, // If the index of this item changes, modify the getPromiseQueueList function
     fetchTopKnowledge,
     fetchWelcomeKnowledge,
     fetchHistory,
@@ -207,25 +207,19 @@ export function DialogProvider({ children }: DialogProviderProps) {
   ];
 
   const getPromiseQueueList = (): any => {
-    if (configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false) {
+    const shouldBeLoadedOnChatboxAccess = !!configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess;
+    if (!shouldBeLoadedOnChatboxAccess) {
       baseQueue.splice(3, 1);
     }
     return baseQueue;
   };
 
-  const shouldRegisterVisit = useMemo(() => {
-    return (
-      hasAfterLoadBeenCalled &&
-      isServerAvailable &&
-      configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess === false
-    );
-  }, [hasAfterLoadBeenCalled, isServerAvailable]);
-
   useEffect(() => {
-    if (shouldRegisterVisit) {
+    const shouldBeLoadedOnChatboxAccess = !!configuration?.registerVisit?.restrictedOnChatboxAccessInsteadOfSiteAccess;
+    if (hasAfterLoadBeenCalled && isServerAvailable && !shouldBeLoadedOnChatboxAccess) {
       fetchVisitorRegistration();
     }
-  }, [shouldRegisterVisit]);
+  }, [hasAfterLoadBeenCalled, isServerAvailable]);
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
