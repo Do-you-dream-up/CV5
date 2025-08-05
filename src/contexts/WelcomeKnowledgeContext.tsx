@@ -50,7 +50,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
 
   const mustFetchWelcome = (): boolean => {
     const currentContextUUID = Local.contextId.load(BOT.id);
-    return (
+    return !!(
       (!currentContextUUID || !Local.welcomeKnowledge.load(BOT.id, currentContextUUID)) &&
       !Local.livechatType.load() &&
       isTagWelcomeDefined &&
@@ -91,7 +91,10 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
 
     const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
     if (welcome) {
-      setWelcomeKnowledge(welcome);
+      setWelcomeKnowledge({
+        ...welcome,
+        isFromHistory: true,
+      });
       return Promise.resolve(welcome);
     }
     return Promise.resolve();
