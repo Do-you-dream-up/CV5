@@ -13,6 +13,7 @@ declare namespace Models {
     footer: Footer;
     gdprDisclaimer: GdprDisclaimer;
     cookiesDisclaimer: CookiesDisclaimer;
+    userConsentDisclaimer: UserConsentDisclaimer;
     header: Header;
     input: Input;
     interaction: Interaction;
@@ -212,6 +213,18 @@ declare namespace Models {
 
   export interface CookiesDisclaimer {
     enable: boolean;
+  }
+
+  export interface UserConsentDisclaimer {
+    enable: boolean;
+  }
+
+  export interface UserConsentItem {
+    key: string;
+    description: string;
+    title: string;
+    optional: boolean;
+    selected: boolean;
   }
 
   export interface Header {

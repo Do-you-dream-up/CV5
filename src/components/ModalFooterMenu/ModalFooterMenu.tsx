@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useDialog } from '../../contexts/DialogContext';
 import { DatabaseIcon, EmailIcon, PrinterIcon, ShieldIcon } from '../CustomIcons/CustomIcons';
+import { Local } from '../../tools/storage';
+import { useUserConsent } from '../../contexts/UserConsentContext';
 import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
@@ -19,12 +21,14 @@ import { useShadow } from '../../contexts/ShadowProvider';
 export default function ModalFooterMenu({ className, component, onResolve, ...rest }) {
   const { configuration } = useConfiguration();
   const { getRgaaRef } = useUserAction();
+  const { onDisplayUserConsent, userConsentForCurrentLanguage } = useUserConsent();
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const close = t('footer.menu.close');
   const print = t('footer.menu.print');
   const email = t('footer.menu.email');
   const gdpr = t('footer.menu.gdpr');
+  const consent = t('footer.menu.consent');
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
   const sendGdprData: undefined | boolean = configuration?.moreOptions?.sendGdprData;
@@ -39,6 +43,15 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
     focusTrap && focusTrap(eventFired, root, shadowRoot, 'button, img, a');
   }, [eventFired]);
 
+  const isClientIdAuthorized = () => {
+    return (
+      !configuration?.userConsentDisclaimer.enable ||
+      (configuration?.userConsentDisclaimer.enable &&
+        Local.userConsentOptions.load() &&
+        Local.userConsentOptions.load()['clientId'] === true)
+    );
+  };
+
   const items = [
     {
       icon: <PrinterIcon />,
@@ -50,7 +63,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
       icon: <EmailIcon />,
       onClick: () => window.dydu.promptEmail.prompt('exportConv'),
       text: email,
-      when: !!exportConversation,
+      when: !!exportConversation && isClientIdAuthorized(),
     },
     {
       icon: <DatabaseIcon />,
@@ -62,7 +75,14 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
       icon: <ShieldIcon />,
       onClick: () => window.dydu.promptEmail.prompt('gdpr'),
       text: gdpr,
-      when: !!sendGdprData,
+      when: !!sendGdprData && isClientIdAuthorized(),
+    },
+    {
+      icon: <ShieldIcon />,
+      onClick: () => onDisplayUserConsent && onDisplayUserConsent(),
+      text: consent,
+      when: configuration?.userConsentDisclaimer?.enable,
+      disabled: !userConsentForCurrentLanguage,
     },
   ];
 

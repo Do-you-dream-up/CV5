@@ -1,17 +1,17 @@
 import * as Constants from '../tools/constants';
 
 import {
+  createContext,
   Dispatch,
+  MutableRefObject,
   ReactNode,
   SetStateAction,
-  createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
-  MutableRefObject,
 } from 'react';
 import { isDefined, isOfTypeString, isValidUrl } from '../tools/helpers';
 
@@ -23,7 +23,6 @@ import { eventOnSidebarClosed } from '../events/chatboxIndex';
 import { flattenSteps } from '../tools/steps';
 import { CAROUSEL_ARRAY_TEMPLATE, CAROUSEL_TEMPLATE, knownTemplates, PRODUCT_TEMPLATE } from '../tools/template';
 import parseActions from '../tools/actions';
-import { useBotInfo } from './BotInfoContext';
 import { useConfiguration } from './ConfigurationContext';
 import { useConversationHistory } from './ConversationHistoryContext';
 import { useEvent } from './EventsContext';
@@ -43,6 +42,8 @@ import { usePushrules } from './PushrulesContext';
 import PromiseQueue from '../tools/hooks/PromiseQueue';
 import useId from '../tools/hooks/useId';
 import { useChatStatus } from './ChatStatusContext';
+import { useBotInfo } from './BotInfoContext';
+import { useUserConsent } from './UserConsentContext';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -150,7 +151,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const { hasAfterLoadBeenCalled } = useChatboxLoaded();
 
   const { checkServerStatus, isServerAvailable } = useServerStatus();
-  const { fetchBotLanguages } = useBotInfo();
   const { isOpen } = useViewMode();
   const { gdprEnabled, gdprPassed } = useGdpr();
 
@@ -163,6 +163,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     verifyAvailabilityDialogContext,
   } = useWelcomeKnowledge();
   const { fetchPushrules, pushrules } = usePushrules();
+  const { fetchBotLanguagesAndUserConsent, fetchBotLanguages } = useBotInfo();
   const { fetchChatStatus } = useChatStatus();
   const { fetchHistory } = useConversationHistory();
   const { fetchVisitorRegistration } = useVisitManager();
@@ -188,6 +189,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [rewordAfterGuiAction, setRewordAfterGuiAction] = useState<string>('');
   const [isInputFilled, setIsInputFilled] = useState<boolean>(false);
   const { shadowAnchor } = useShadow();
+  const { userConsentPassed, userConsentEnabled } = useUserConsent();
 
   useEffect(() => {
     if (!isServerAvailable) {
@@ -259,6 +261,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
       fetchPushrules && fetchPushrules();
     }
   }, [fetchPushrules, shouldTriggerPushRules]);
+
+  useEffect(() => {
+    if (!Local.userConsentOptions.load() && hasAfterLoadBeenCalled && isServerAvailable && userConsentEnabled) {
+      fetchBotLanguagesAndUserConsent();
+    }
+  }, [hasAfterLoadBeenCalled, isServerAvailable, userConsentEnabled]);
 
   const toggleSidebar = useCallback(
     (
@@ -578,11 +586,21 @@ export function DialogProvider({ children }: DialogProviderProps) {
       checkIfBehindSamlAndConnected &&
       isOpen &&
       (!gdprEnabled || gdprPassed) &&
-      isServerAvailable
+      isServerAvailable &&
+      (!userConsentEnabled || userConsentPassed)
     ) {
       PromiseQueue.exec(getPromiseQueueList());
     }
-  }, [hasAfterLoadBeenCalled, checkIfBehindSamlAndConnected, isOpen, gdprEnabled, gdprPassed, isServerAvailable]);
+  }, [
+    hasAfterLoadBeenCalled,
+    checkIfBehindSamlAndConnected,
+    isOpen,
+    gdprEnabled,
+    gdprPassed,
+    isServerAvailable,
+    userConsentPassed,
+    userConsentEnabled,
+  ]);
 
   const clearInteractionsAndAddWelcome = () => {
     if (isWelcomeEnabled && welcomeKnowledge) {

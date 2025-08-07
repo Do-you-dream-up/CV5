@@ -114,7 +114,8 @@
       "email": "Exporter la conversation par email",
       "gdpr": "RGPD (export, suppression)",
       "spaces": "Changer d'espace de consultation",
-      "title": "Vos fonctionnalités"
+      "title": "Vos fonctionnalités",
+      "consent": "Consentement utilisateur"
     },
     "rosetta": {
       "en": "English",

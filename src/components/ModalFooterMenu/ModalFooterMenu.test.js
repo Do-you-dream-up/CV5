@@ -39,6 +39,9 @@ describe('ModalFooterMenu', () => {
           items: ['space1', 'space2'],
         },
         _printConversation: true,
+        userConsentDisclaimer: {
+          enable: false,
+        },
       },
     });
 

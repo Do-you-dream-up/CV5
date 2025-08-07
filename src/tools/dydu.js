@@ -16,13 +16,13 @@ import Bowser from 'bowser';
 import i18n from '../contexts/i18nProvider';
 import qs from 'qs';
 import {
-  SERVLET_API,
   buildServletUrl,
   emit,
-  SERVLET,
-  setLastResponse,
   getLastResponse,
+  SERVLET,
+  SERVLET_API,
   setConfiguration,
+  setLastResponse,
 } from './axios';
 
 const { browser, os } = Bowser.getParser(window.navigator.userAgent).parsedResult;
@@ -60,6 +60,24 @@ export default new (class Dydu {
     }
   };
 
+  isClientIdAuthorized() {
+    return this.getConfiguration()?.userConsent?.enable
+      ? Local.userConsentOptions.load() && Local.userConsentOptions.load()['clientId'] === true
+      : true;
+  }
+
+  isOsAndBrowserAuthorized() {
+    return this.getConfiguration()?.userConsent?.enable
+      ? Local.userConsentOptions.load() && Local.userConsentOptions.load()['osAndBrowser'] === true
+      : true;
+  }
+
+  isUrlAuthorized() {
+    return this.getConfiguration()?.userConsent?.enable
+      ? Local.userConsentOptions.load() && Local.userConsentOptions.load()['osAndBrowser'] === true
+      : true;
+  }
+
   /**
    * Export conversation by email
    *
@@ -69,7 +87,7 @@ export default new (class Dydu {
    */
   exportConversation = async (text, options = {}) => {
     const data = qs.stringify({
-      clientId: this.getClientId(),
+      clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
@@ -184,8 +202,8 @@ export default new (class Dydu {
    */
   getContextId = async () => {
     const data = qs.stringify({
-      alreadyCame: this.alreadyCame(),
-      clientId: this.getClientId(),
+      alreadyCame: this.isClientIdAuthorized() ? this.alreadyCame() : false,
+      clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -494,6 +512,16 @@ export default new (class Dydu {
   };
 
   /**
+   * getBotLanguageAndUserConsent
+   *
+   * @returns {Promise}
+   */
+  getBotLanguagesAndUserConsent = () => {
+    const path = `/account/dydubox/bots/language-and-user-consent?botUUID=${BOT.id}`;
+    return emit(SERVLET_API.get, path);
+  };
+
+  /**
    * getSaml2Status - Get auth status.
    *
    * @param {string} text - Input to send.
@@ -641,22 +669,23 @@ export default new (class Dydu {
 
   makeTalkPayloadWithTextAndOption = (text, options) => {
     return {
-      alreadyCame: this.alreadyCame(),
-      browser: `${browser.name} ${browser.version}`,
-      clientId: this.getClientId(),
+      alreadyCame: this.isClientIdAuthorized() ? this.alreadyCame() : false,
+      browser: this.isOsAndBrowserAuthorized() ? `${browser.name} ${browser.version}` : null,
+      clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
-      os: `${os.name} ${os.version}`,
+      os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
       qualificationMode: this.qualificationMode,
       space: this.getSpace(),
       userInput: text,
-      userUrl: getUrl,
+      userUrl: this.isUrlAuthorized() ? getUrl : null,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(options.extra && {
         extraParameters: JSON.stringify(options.extra),
       }),
       variables: this.getVariables(),
       mode: Local.livechatType.load() ? Local.livechatType.load().toBase64() : 'Synchron'.toBase64(),
+      userConsent: Local.userConsentOptions.load() ? JSON.stringify(Local.userConsentOptions.load()) : null,
     };
   };
 
@@ -680,16 +709,16 @@ export default new (class Dydu {
 
   getTalkBasePayload = async (options) => ({
     contextId: Local.contextId.load(BOT.id),
-    alreadyCame: this.alreadyCame(),
-    browser: `${browser.name} ${browser.version}`,
-    clientId: this.getClientId(),
+    alreadyCame: this.isClientIdAuthorized() ? this.alreadyCame() : false,
+    browser: this.isOsAndBrowserAuthorized() ? `${browser.name} ${browser.version}` : null,
+    clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
     doNotRegisterInteraction: options.doNotRegisterInteraction,
     language: this.getLocale(),
-    os: `${os.name} ${os.version}`,
+    os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
     qualificationMode: this.qualificationMode,
     space: this.getSpace(),
     tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
-    userUrl: getUrl,
+    userUrl: this.isUrlAuthorized ? getUrl : null,
     solutionUsed: options?.solutionUsed || SOLUTION_TYPE.assistant,
     ...(options.extra && {
       extraParameters: JSON.stringify(options.extra),

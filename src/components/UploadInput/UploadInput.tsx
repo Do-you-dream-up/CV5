@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUploadFile } from '../../contexts/UploadFileContext';
-import {useDialog} from "../../contexts/DialogContext";
+import { useDialog } from '../../contexts/DialogContext';
 
 interface SendButtonProps {
   title: string;
@@ -37,7 +37,15 @@ const UploadInput = () => {
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
   const { fileUploadButtonId } = useDialog();
-  const { fileSelected, handleCancel, errorFormatMessage, fileName, setIsFileUploadSuccess, setIsFileSent, isFileSent } = useUploadFile();
+  const {
+    fileSelected,
+    handleCancel,
+    errorFormatMessage,
+    fileName,
+    setIsFileUploadSuccess,
+    setIsFileSent,
+    isFileSent,
+  } = useUploadFile();
   const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
@@ -51,7 +59,7 @@ const UploadInput = () => {
       .sendUploadFile(file)
       .then((success) => {
         if (success) {
-          setIsFileUploadSuccess(true);
+          setIsFileUploadSuccess && setIsFileUploadSuccess(true);
           setIsFileSent && setIsFileSent({ ...isFileSent, [fileUploadButtonId]: true });
         } else {
           handleCancel?.();
@@ -76,7 +84,7 @@ const UploadInput = () => {
         />
       </div>
     ) : (
-      <FileUploadButton disabled={false} label={label}/>
+      <FileUploadButton disabled={false} label={label} />
     );
 
   const renderFileInfo = () =>

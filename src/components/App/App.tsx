@@ -1,14 +1,14 @@
 import { AuthProtected, AuthProvider } from '../auth/AuthContext';
 import {
-  Suspense,
+  ComponentType,
   lazy,
+  MutableRefObject,
+  Suspense,
   useContext,
   useEffect,
   useMemo,
-  useState,
   useRef,
-  MutableRefObject,
-  ComponentType,
+  useState,
 } from 'react';
 
 import { ConfigurationContext } from '../../contexts/ConfigurationContext';
@@ -40,7 +40,8 @@ import { BotInfoProvider } from '../../contexts/BotInfoContext';
 import { ServerStatusProvider } from '../../contexts/ServerStatusContext';
 import { PushrulesProvider } from '../../contexts/PushrulesContext';
 import { ChatStatusProvider } from '../../contexts/ChatStatusContext';
-import useViewport from "../../tools/hooks/useViewport";
+import useViewport from '../../tools/hooks/useViewport';
+import { UserConsentProvider } from '../../contexts/UserConsentContext';
 
 const Chatbox = lazy(() =>
   lazyRetry(() => import('../Chatbox/Chatbox').then((module) => ({ default: module.ChatboxWrapper }))),
@@ -81,7 +82,8 @@ const App = () => {
 
   const classes: any = useStyles({ configuration });
 
-  const isCookiesDisclaimerEnabled = configuration?.cookiesDisclaimer?.enable;
+  const isCookiesDisclaimerEnabled =
+    configuration?.cookiesDisclaimer?.enable && !configuration?.userConsentDisclaimer?.enable;
 
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState<boolean>(false);
   const [areCookiesAllowed, setAreCookiesAllowed] = useState<boolean>(
@@ -183,51 +185,53 @@ const App = () => {
                 <AuthProtected enable={configuration?.oidc?.enable}>
                   <OidcProvider>
                     <SamlProvider>
-                      <GdprProvider>
-                        <ChatStatusProvider>
-                          <ConversationHistoryProvider>
-                            <WelcomeKnowledgeProvider>
-                              <TopKnowledgeProvider>
-                                <ChatboxReadyProvider>
-                                  <BotInfoProvider>
-                                    <ServerStatusProvider>
-                                      <PushrulesProvider>
-                                        <DialogProvider>
-                                          <SurveyProvider>
-                                            <CheckCookiesAllowedProvider areCookiesAllowed={areCookiesAllowed}>
-                                              <UploadFileProvider>
-                                                <LivechatProvider>
-                                                  <Chatbox />
-                                                </LivechatProvider>
-                                              </UploadFileProvider>
-                                            </CheckCookiesAllowedProvider>
-                                          </SurveyProvider>
-                                          <Teaser
-                                            id={'dydu-teaser'}
-                                            toggle={
-                                              areCookiesAllowed
-                                                ? setMode
-                                                : () => {
-                                                    const newIsOpenDisclaimer = !isOpenDisclaimer;
-                                                    setIsOpenDisclaimer(newIsOpenDisclaimer);
-                                                    if (newIsOpenDisclaimer) {
-                                                      cookiesDisclaimerRef?.current?.focus();
+                      <UserConsentProvider>
+                        <GdprProvider>
+                          <ChatStatusProvider>
+                            <ConversationHistoryProvider>
+                              <WelcomeKnowledgeProvider>
+                                <TopKnowledgeProvider>
+                                  <ChatboxReadyProvider>
+                                    <BotInfoProvider>
+                                      <ServerStatusProvider>
+                                        <PushrulesProvider>
+                                          <DialogProvider>
+                                            <SurveyProvider>
+                                              <CheckCookiesAllowedProvider areCookiesAllowed={areCookiesAllowed}>
+                                                <UploadFileProvider>
+                                                  <LivechatProvider>
+                                                    <Chatbox />
+                                                  </LivechatProvider>
+                                                </UploadFileProvider>
+                                              </CheckCookiesAllowedProvider>
+                                            </SurveyProvider>
+                                            <Teaser
+                                              id={'dydu-teaser'}
+                                              toggle={
+                                                areCookiesAllowed
+                                                  ? setMode
+                                                  : () => {
+                                                      const newIsOpenDisclaimer = !isOpenDisclaimer;
+                                                      setIsOpenDisclaimer(newIsOpenDisclaimer);
+                                                      if (newIsOpenDisclaimer) {
+                                                        cookiesDisclaimerRef?.current?.focus();
+                                                      }
                                                     }
-                                                  }
-                                            }
-                                            disclaimer={cookiesDisclaimer}
-                                            openDisclaimer={isOpenDisclaimer}
-                                          />
-                                        </DialogProvider>
-                                      </PushrulesProvider>
-                                    </ServerStatusProvider>
-                                  </BotInfoProvider>
-                                </ChatboxReadyProvider>
-                              </TopKnowledgeProvider>
-                            </WelcomeKnowledgeProvider>
-                          </ConversationHistoryProvider>
-                        </ChatStatusProvider>
-                      </GdprProvider>
+                                              }
+                                              disclaimer={cookiesDisclaimer}
+                                              openDisclaimer={isOpenDisclaimer}
+                                            />
+                                          </DialogProvider>
+                                        </PushrulesProvider>
+                                      </ServerStatusProvider>
+                                    </BotInfoProvider>
+                                  </ChatboxReadyProvider>
+                                </TopKnowledgeProvider>
+                              </WelcomeKnowledgeProvider>
+                            </ConversationHistoryProvider>
+                          </ChatStatusProvider>
+                        </GdprProvider>
+                      </UserConsentProvider>
                     </SamlProvider>
                   </OidcProvider>
                 </AuthProtected>

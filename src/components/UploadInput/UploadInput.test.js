@@ -4,13 +4,13 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react';
 
 import UploadInput from './UploadInput';
 import dydu from '../../tools/dydu';
-import { useTranslation } from 'react-i18next';
-import { useUploadFile } from '../../contexts/UploadFileContext';
 
 jest.mock('../../tools/dydu', () => ({
   __esModule: true,
   default: {
     sendUploadFile: jest.fn(),
+    isUrlAuthorized: jest.fn(),
+    isOsAndBrowserAuthorized: jest.fn(),
   },
 }));
 
@@ -64,7 +64,6 @@ describe('UploadInput', () => {
     fireEvent.click(screen.getByText('Envoyer ce fichier'));
 
     waitFor(() => expect(isUploadFileReturnSuccessMock).toHaveBeenCalled());
-
     waitFor(() => expect(mockSendUploadFile).toHaveBeenCalledWith(file));
   });
 });

@@ -2,17 +2,15 @@
 
 import '../prototypes/strings';
 
-import Auth, { Cookie, Local, Session } from '../storage';
-import { objectContainFields, secondsToMs, strContains } from '../helpers';
+import { Cookie, Local } from '../storage';
+import { objectContainFields, strContains } from '../helpers';
 
 import { ConfigurationFixture } from '../../test/fixtures/configuration';
+import { emit, SERVLET_API } from '../axios';
+import { BOT } from '../bot';
 
 const dyduRelativeLocation = '../dydu';
 let _dydu = jest.requireActual(dyduRelativeLocation).default;
-
-import { emit, SERVLET_API } from '../axios';
-import { BOT } from '../bot';
-import { DEFAULT_CONSULTATION_SPACE } from '../constants';
 
 jest.mock('../axios', () => ({
   emit: jest.fn().mockReturnValue(Promise.resolve({})),
@@ -35,6 +33,9 @@ jest.mock('../bot', () => ({
 
 jest.mock('../../tools/storage', () => ({
   Local: {
+    userConsentOptions: {
+      load: jest.fn().mockReturnValue(null),
+    },
     visit: {
       save: jest.fn(),
     },
@@ -1007,7 +1008,7 @@ describe('dydu.js', function () {
     });
   });
 
-  describe('exportConverstaion', function () {
+  describe('exportConversation', function () {
     beforeEach(() => {
       spied = jestSpyOnList(dydu, ['getContextId', 'getClientId', 'getLocale', 'getSpace', 'getConfiguration']);
     });

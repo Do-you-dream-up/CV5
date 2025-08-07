@@ -1,12 +1,11 @@
 import '../../prototypes/strings';
 
-import { act, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { TUNNEL_MODE } from '../../constants';
 import WS from 'jest-websocket-mock';
 import dydu from '../../dydu';
 import { extractDomainFromUrl } from '../../helpers';
-import { renderHook } from '@testing-library/react-hooks';
 import useDyduWebsocket from '../../hooks/useDyduWebsocket';
 
 jest.mock('../../../tools/axios', () => ({
@@ -27,6 +26,8 @@ jest.mock('../../dydu', () => ({
   getBot: jest.fn().mockReturnValue({ server: serverUrl }),
   getBotId: jest.fn().mockReturnValue('57df49eb-cf20-4dd8-84e5-ca57360d5f10'),
   isLocalEnv: jest.fn().mockReturnValue(false),
+  isUrlAuthorized: jest.fn(),
+  isOsAndBrowserAuthorized: jest.fn(),
 }));
 
 const displayResponseText = jest.fn();
@@ -62,10 +63,12 @@ const InterfaceTunnel = {
 
 function instanciateHook(hook, ...hookArg) {
   const returnVal = {};
+
   function TestComponent() {
     Object.assign(returnVal, hook(...hookArg));
     return null;
   }
+
   render(<TestComponent />);
   return returnVal;
 }

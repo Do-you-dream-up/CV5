@@ -134,6 +134,7 @@ export class Local {
     dragon: 'dydu.chatbox.dragon' + suffix,
     fontSize: 'dydu.chatbox.fontSize' + suffix,
     gdpr: 'dydu.chatbox.gdpr' + suffix,
+    userConsentOptions: 'dydu.chatbox.userConsentOptions' + suffix,
     cookies: 'dydu.chatbox.cookies' + suffix,
     botId: 'dydu.chatbox.botId' + suffix,
     // used for chat talk and i18n, filled first if empty with browser Language by i18n
@@ -261,6 +262,27 @@ export class Local {
       return (isGdprAccepted && JSON.parse(isGdprAccepted)) || false;
     },
     reset: () => localStorage.removeItem(Local.names.gdpr),
+  });
+
+  static userConsentOptions = Object.create({
+    save: (data) => {
+      if (data && Object.keys(data).length > 0) {
+        localStorage.setItem(Local.names.userConsentOptions, JSON.stringify(data));
+      }
+    },
+    load: () => {
+      const str = localStorage.getItem(Local.names.userConsentOptions);
+      if (str !== null) {
+        return JSON.parse(str);
+      }
+      return null;
+    },
+    reset: () => {
+      const str = localStorage.getItem(Local.names.userConsentOptions);
+      if (str !== null) {
+        localStorage.removeItem(Local.names.userConsentOptions);
+      }
+    },
   });
 
   static livechatType = Object.create({

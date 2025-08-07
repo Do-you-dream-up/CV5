@@ -37,6 +37,8 @@ import {
   MinimizeIcon,
   MoreOptionsIcon,
 } from '../CustomIcons/CustomIcons';
+import { useUserConsent } from '../../contexts/UserConsentContext';
+import { useBotInfo } from '../../contexts/BotInfoContext';
 
 /**
  * Header of the chatbox. Typically placed on top and hold actions such as
@@ -83,10 +85,11 @@ export default function Header({
   const headerLogo = t('header.logo');
   const [fontSize, setFontSize] = useState(1);
   const gdprPassed = dydu.hasUserAcceptedGdpr();
+  const { userConsentPassed, userConsentForCurrentLanguage } = useUserConsent();
   const singleTab = !configuration.tabs.hasContactTab;
   const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
   const { interactions, typeResponse } = useDialog();
-  const { enable: disclaimerEnable } = configuration.gdprDisclaimer;
+  const { enable: gdprDisclaimerEnable } = configuration.gdprDisclaimer;
   const theme = useTheme();
   const iconColorWhite = theme.palette.primary.text;
   const moreOptionsRef = useRef(null);
@@ -97,6 +100,7 @@ export default function Header({
   const { tabbing } = useUserAction();
   const collapseRef = useRef(null);
   const maximizeRef = useRef(null);
+  const { fetchBotLanguagesAndUserConsent } = useBotInfo();
 
   useEffect(() => {
     if (prevMode === VIEW_MODE.minimize && mode === VIEW_MODE.popin) {
@@ -116,6 +120,9 @@ export default function Header({
   }, [moreOptionsRef]);
 
   const onToggleMore = () => {
+    if (!userConsentForCurrentLanguage) {
+      fetchBotLanguagesAndUserConsent();
+    }
     modal(ModalFooterMenu, null, { variant: 'bottom' }).then(
       () => {},
       () => {},
@@ -150,12 +157,13 @@ export default function Header({
   }, [dialogRef, gdprPassed, gdprRef, fontSize, changeFontSize, hasActions.fontChange]);
 
   const checkDisplayParametersInMoreOptionsCog = useCallback(() => {
-    if (disclaimerEnable === false || gdprPassed) {
+    if (gdprDisclaimerEnable === false || gdprPassed || userConsentPassed) {
       return (
         (!!exportConversation ||
           consultationSpaces.length > 1 ||
           (interactions.length > 1 && !!_printConversation) ||
-          !!sendGdprData) &&
+          !!sendGdprData ||
+          userConsentPassed) &&
         (isOnboardingAlreadyDone || !onboardingEnable)
       );
     } else {
@@ -163,7 +171,7 @@ export default function Header({
     }
   }, [
     _printConversation,
-    disclaimerEnable,
+    gdprDisclaimerEnable,
     exportConversation,
     gdprPassed,
     consultationSpaces,
@@ -171,6 +179,7 @@ export default function Header({
     isOnboardingAlreadyDone,
     onboardingEnable,
     sendGdprData,
+    userConsentPassed,
   ]);
 
   const testsMenu = [
