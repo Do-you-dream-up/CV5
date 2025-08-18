@@ -2,6 +2,7 @@ import { createElement, useEffect, useRef, useState } from 'react';
 
 import useDebounce from '../../tools/hooks/debounce';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { useConfiguration } from '../../contexts/ConfigurationContext';
 
 /**
  * Small wrapper to apply `Element.scrollIntoView` on an element. This feature
@@ -23,6 +24,7 @@ function Scroll({ component = 'div', delay = 0, scrollToBottom = false, ...rest 
   const elementRef = useRef<any>(null);
   const debouncedReady = useDebounce(elementRef, delay);
   const { shadowAnchor } = useShadow();
+  const { configuration } = useConfiguration();
   const [scrollDone, setScrollDone] = useState<boolean>(false);
 
   const scroll = () => {
@@ -34,12 +36,17 @@ function Scroll({ component = 'div', delay = 0, scrollToBottom = false, ...rest 
         const lastRequestBubble: Element | null | undefined = requestBubbles?.item(requestBubbles?.length - 1);
         const lastResponseBubble: Element | null | undefined = responseBubbles?.item(responseBubbles?.length - 1);
 
+        const hasPoweredByBeenEnabled = configuration?.poweredBy?.active;
+        const poweredByComponent = shadowAnchor?.querySelector('.dydu-powered-by');
+        const poweredByHeight = hasPoweredByBeenEnabled && poweredByComponent ? poweredByComponent?.scrollHeight : 0;
+
         if (scrollToBottom) {
-          chatboxDiv.scrollTop = chatboxDiv?.scrollHeight;
+          chatboxDiv.scrollTop = chatboxDiv?.scrollHeight - poweredByHeight;
         } else {
           chatboxDiv.scrollTop =
             chatboxDiv?.scrollHeight -
-            (lastResponseBubble ? lastResponseBubble.scrollHeight + (lastRequestBubble?.scrollHeight || 0) : 0);
+            (lastResponseBubble ? lastResponseBubble.scrollHeight + (lastRequestBubble?.scrollHeight || 0) : 0) -
+            poweredByHeight;
         }
       }
     }, delay);
