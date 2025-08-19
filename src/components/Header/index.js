@@ -273,7 +273,7 @@ export default function Header({
     } else if (isPopin && !isMobile && tabbing) {
       maximizeRef?.current?.focus();
     }
-  }, [isFull, isPopin, collapseRef, tabbing, maximizeRef]);
+  }, [isFull, isPopin, collapseRef, maximizeRef]);
 
   const shouldDisplayExitLivechatButton = Local.livechatType.load() && !Local.waitingQueue.load();
 
