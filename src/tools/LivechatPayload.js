@@ -247,6 +247,9 @@ const LivechatPayloadChecker = {
   dialogAddedOperatorPanel: (payload) => {
     return payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogAddedOperatorPanel);
   },
+  dialogPicked: (payload) => {
+    return payload?.values?.code?.fromBase64()?.equals(LIVECHAT_NOTIFICATION.dialogPicked);
+  },
   leaveWaitingQueue: (payload) => {
     const payloadValues = payload?.values || payload;
     return (

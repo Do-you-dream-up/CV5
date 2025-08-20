@@ -66,6 +66,7 @@ const MESSAGE_TYPE = {
   leaveWaitingQueue: 'LeaveWaitingQueue',
   checkContextAvailability: 'checkContextAvailabilityResponse',
   dialogAddedOperatorPanel: 'DialogAddedOperatorPanel',
+  dialogPicked: 'DialogPicked',
 };
 
 const completeLivechatPayload = (configuration) => {
@@ -124,6 +125,7 @@ export default function useDyduWebsocket() {
     if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
     if (isOperatorStateNotification(lastMessageData)) return MESSAGE_TYPE.notification;
     if (LivechatPayload.is.dialogAddedOperatorPanel(lastMessageData)) return MESSAGE_TYPE.dialogAddedOperatorPanel;
+    if (LivechatPayload.is.dialogPicked(lastMessageData)) return MESSAGE_TYPE.dialogPicked;
     return MESSAGE_TYPE.operatorResponse;
   }, [isOperatorStateNotification, lastMessageData]);
 
@@ -223,6 +225,7 @@ export default function useDyduWebsocket() {
         return displayNotification();
 
       case MESSAGE_TYPE.dialogAddedOperatorPanel:
+      case MESSAGE_TYPE.dialogPicked:
         leaveWaitingQueue();
         return displayNotification();
 

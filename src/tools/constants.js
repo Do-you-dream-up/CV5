@@ -99,6 +99,7 @@ export const LIVECHAT_NOTIFICATION = {
   dialogTransferredManually: 'DialogTransferredManually',
   dialogTransferredAutomatically: 'DialogTransferredAutomatically',
   dialogAddedOperatorPanel: 'DialogAddedOperatorPanel',
+  dialogPicked: 'DialogPicked',
 };
 
 export const RE_REWORD = /^(RW)[\w]+(Reword)(s?)$/g;
