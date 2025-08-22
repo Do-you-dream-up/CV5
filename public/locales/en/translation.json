@@ -126,7 +126,20 @@
       "nl": "Dutch",
       "pt": "Português",
       "pl": "Polski",
-      "ro": "Română"
+      "ro": "Română",
+      "zh": "中文",
+      "th": "ไทย",
+      "sv": "Svenska",
+      "sk": "Slovenský",
+      "ru": "русский",
+      "no": "Norsk",
+      "my": "မြန်မာ",
+      "kr": "한국어",
+      "hu": "Hungarian",
+      "hr": "Hrvatski",
+      "dk": "Dansk",
+      "cz": "Česky",
+      "bg": "Български"
     },
     "translate": "Languages",
     "voice": {
