@@ -1,4 +1,4 @@
-import { createElement, useEffect, useRef } from 'react';
+import { createElement, MutableRefObject, useEffect, useRef } from 'react';
 
 import Button from '../Button/Button';
 import MenuList from '../MenuList/MenuList';
@@ -10,7 +10,8 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useDialog } from '../../contexts/DialogContext';
-import { PrinterIcon, EmailIcon, DatabaseIcon, ShieldIcon } from '../CustomIcons/CustomIcons';
+import { DatabaseIcon, EmailIcon, PrinterIcon, ShieldIcon } from '../CustomIcons/CustomIcons';
+import { useShadow } from '../../contexts/ShadowProvider';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -26,9 +27,17 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
   const gdpr = t('footer.menu.gdpr');
   const title = t('footer.menu.title', { defaultValue: '' });
   const spaces = t('footer.menu.spaces');
-  const { exportConversation, printConversation: _printConversation, sendGdprData } = configuration.moreOptions;
+  const sendGdprData: undefined | boolean = configuration?.moreOptions?.sendGdprData;
+  const _printConversation: undefined | boolean = configuration?.moreOptions?.printConversation;
+  const exportConversation: undefined | boolean = configuration?.moreOptions?.exportConversation;
   const { interactions } = useDialog();
-  const titleRef = useRef(null);
+  const { focusTrap, eventFired } = useUserAction();
+  const root: MutableRefObject<any> = useRef(null);
+  const { shadowRoot } = useShadow();
+
+  useEffect(() => {
+    focusTrap && focusTrap(eventFired, root, shadowRoot, 'button, img, a');
+  }, [eventFired]);
 
   const items = [
     {
@@ -47,7 +56,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
       icon: <DatabaseIcon />,
       onClick: () => window.dydu.space.prompt(),
       text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
-      when: configuration?.spaces?.items?.length > 1,
+      when: configuration?.spaces?.items?.length && configuration?.spaces?.items?.length > 1,
     },
     {
       icon: <ShieldIcon />,
@@ -57,26 +66,25 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
     },
   ];
 
-  useEffect(() => {
-    if (titleRef) {
-      titleRef.current?.focus();
-    }
-  }, []);
-
   return createElement(
     component,
-    { className: c('dydu-footer-menu', className, classes.root), ...rest },
-    <>
-      {title && <h2 ref={titleRef} children={title} className={classes.title} />}
+    {
+      className: c('dydu-footer-menu', className, classes.root),
+      role: 'dialog',
+      'aria-modal': true,
+      'aria-labelledby': title,
+      ...rest,
+    },
+    <div ref={root}>
+      {title && <h2 children={title} className={classes.title} id={title} />}
       <MenuList
         items={items}
         onClose={() => {
           onResolve();
         }}
       />
-      <div children={title} className={classes.actions}>
+      <div className={classes.actions}>
         <Button
-          tabIndex={0}
           children={close}
           grow
           onClick={() => {
@@ -85,7 +93,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
           }}
         />
       </div>
-    </>,
+    </div>,
   );
 }
 

@@ -53,11 +53,7 @@ export function UserActionProvider({ children }: UserActionProviderProps) {
       const activeElement = shadowRoot?.activeElement;
       const tagName = activeElement?.tagName?.toLowerCase();
       const isInputOrTextarea = tagName === 'input' || tagName === 'textarea';
-      if (
-        e.key === 'Tab' ||
-        e.key === 'Escape' ||
-        ((e.key === 'Enter' || e.key === ' ') && !isInputOrTextarea)
-      ) {
+      if (e.key === 'Tab' || e.key === 'Escape' || ((e.key === 'Enter' || e.key === ' ') && !isInputOrTextarea)) {
         setShiftPressed(e.shiftKey);
         return true;
       } else if (!pressedAccessibilityKeyDuringTabbing(e, prevTabbing)) {
