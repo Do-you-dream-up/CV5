@@ -100,6 +100,10 @@
       "negative": "Useless help",
       "positive": "Useful help",
       "thanks": "Thank you for your feedback!"
+    },
+    "label": {
+      "negative": "Report an unhelpful answer",
+      "positive": "Report a helpful answer"
     }
   },
   "footer": {

@@ -132,6 +132,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
               onClick={onVoteNegative}
               variant="icon"
               data-testid="vote-buttons-down"
+              aria-label={t("feedback.label.negative")}
             >
               <Icon className={icons?.thumbDown} icon={<ThumbDownIcon />} color={theme.palette.primary.text} alt={altDownVote} />
             </Button>
@@ -140,6 +141,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
               onClick={onVotePositive}
               variant="icon"
               data-testid="vote-buttons-up"
+              aria-label={t("feedback.label.positive")}
             >
               <Icon className={icons?.thumbUp} icon={<ThumbUpIcon />} color={theme.palette.primary.text} alt={altUpVote} />
             </Button>
