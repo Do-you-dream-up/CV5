@@ -18,8 +18,8 @@ export default function useVisitManager() {
       setResult(true);
     }
 
-    const dateTimeMsLastVisit = Local.visit.load(visitKey);
-    const addOneDayMs = (timeMs) => timeMs + numberOfDayInMs(1);
+    const dateTimeMsLastVisit: number = Local.visit.load(visitKey);
+    const addOneDayMs = (timeMs: number) => timeMs + numberOfDayInMs(1);
     const hasCookieVisitExpired = addOneDayMs(dateTimeMsLastVisit) <= Date.now();
 
     if (hasCookieVisitExpired) {
