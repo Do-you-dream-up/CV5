@@ -14,7 +14,7 @@
       "selected": "rgba(0, 0, 0, .08)"
     },
     "background": {
-      "bullet": "#A4A4A4",
+      "bullet": "#757575",
       "default": "#FFFFFF",
       "dim": "rgba(0, 0, 0, .05)",
       "highlight": "rgba(0, 0, 0, .05)",

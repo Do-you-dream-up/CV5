@@ -18,7 +18,7 @@ export default createUseStyles<any, any>((theme: any): any => {
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.palette.primary.main,
-      opacity: '.5',
+      opacity: '.7',
       position: 'absolute',
       width: '30px',
       height: '30px',
