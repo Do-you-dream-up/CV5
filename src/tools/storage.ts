@@ -326,9 +326,9 @@ export class Local {
 
   static visit = Object.create({
     getKey: () => Local.names.visit,
-    load: (keyString = '') => {
+    load: (keyString = ''): number | null => {
       const content = localStorage.getItem(keyString);
-      return isDefined(content) ? content : null;
+      return isDefined(content) ? Number(content) : null;
     },
     isSet: (keyString = '') => {
       const content = Local.visit.load(keyString);
