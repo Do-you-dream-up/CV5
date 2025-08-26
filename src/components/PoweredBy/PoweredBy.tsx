@@ -13,7 +13,7 @@ const PoweredBy = () => {
   const { t } = useTranslation('translation');
 
   return (
-    <div className={c(classes.poweredText)} lang="en">
+    <div className={c('dydu-powered-by', classes.poweredText)} lang="en">
       <p>
         powered by
         <a
