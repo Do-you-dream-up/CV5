@@ -25,6 +25,7 @@ const ScrollToBottom = () => {
             }
           }, 0);
         }}
+        aria-label={t('general.scrollToBottom')}
       >
         <Icon className={'dydu-icon-scroll-to-bottom'} icon={<CaretDownIcon />} alt={t('general.scrollToBottom')} />
       </Button>
