@@ -85,7 +85,7 @@ export default function Banner() {
   return (
     show &&
     html && (
-      <div className={c('dydu-banner', classes.root)} ref={bannerRef} tabIndex={0}>
+      <div className={c('dydu-banner', classes.root)} ref={bannerRef}>
         <div className={c('dydu-banner-body', classes.body)}>
           <Skeleton hide={!ready} height="2em" variant="paragraph">
             <div dangerouslySetInnerHTML={{ __html: html }} />
