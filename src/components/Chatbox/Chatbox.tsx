@@ -325,6 +325,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
               {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
               <GdprDisclaimer gdprRef={gdprRef}>
                 <Onboarding>
+                  {showScrollToBottom ? <ScrollToBottom /> : null}
                   <div
                     className={c('dydu-chatbox-body', classes.body, {
                       [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || isFull),
@@ -354,7 +355,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                   )}
                 </Onboarding>
               </GdprDisclaimer>
-              {showScrollToBottom ? <ScrollToBottom /> : null}
+
             </>
             <Modal />
           </div>
