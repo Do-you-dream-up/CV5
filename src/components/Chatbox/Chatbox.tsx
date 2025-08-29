@@ -325,7 +325,6 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
               {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
               <GdprDisclaimer gdprRef={gdprRef}>
                 <Onboarding>
-                  {showScrollToBottom ? <ScrollToBottom /> : null}
                   <div
                     className={c('dydu-chatbox-body', classes.body, {
                       [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || isFull),
@@ -345,6 +344,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                     <Tab component={Contacts} value="contacts" children render={false} />
                     {poweredByActive && <PoweredBy />}
                   </div>
+                  {showScrollToBottom ? <ScrollToBottom /> : null}
                   {(sidebarMode === 'over' || isFull) && <Sidebar mode="over" />}
                   {!current && (
                     <Footer
@@ -355,7 +355,6 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                   )}
                 </Onboarding>
               </GdprDisclaimer>
-
             </>
             <Modal />
           </div>
