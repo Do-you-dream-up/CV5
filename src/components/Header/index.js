@@ -8,7 +8,7 @@ import { DragonContext } from '../../contexts/DragonContext';
 import Icon from '../Icon/Icon';
 import { Local } from '../../tools/storage';
 import { ModalContext } from '../../contexts/ModalContext';
-import ModalFooterMenu from '../ModalFooterMenu';
+import ModalFooterMenu from '../ModalFooterMenu/ModalFooterMenu';
 import { useOnboarding } from '../../contexts/OnboardingContext';
 import PropTypes from 'prop-types';
 import Skeleton from '../Skeleton';
@@ -27,14 +27,14 @@ import { useDialog } from '../../contexts/DialogContext';
 import { VIEW_MODE } from '../../tools/constants';
 import { useViewMode } from '../../contexts/ViewModeProvider';
 import {
-  DotsIcon,
-  FontIncreaseIcon,
-  FontDecreaseIcon,
-  MaximizeIcon,
-  CollapseIcon,
-  MinimizeIcon,
   CloseIcon,
+  CollapseIcon,
+  DotsIcon,
   ExitIcon,
+  FontDecreaseIcon,
+  FontIncreaseIcon,
+  MaximizeIcon,
+  MinimizeIcon,
   MoreOptionsIcon,
 } from '../CustomIcons/CustomIcons';
 
@@ -197,6 +197,7 @@ export default function Header({
       title: actionMore,
       id: 'dydu-more',
       ref: moreOptionsRef,
+      ariaHaspopup: 'dialog',
     },
     {
       children: (

@@ -1,10 +1,13 @@
-import ModalFooterMenu from './';
-import dydu from '../../tools/dydu';
+import ModalFooterMenu from './ModalFooterMenu';
 import { fireEvent } from '@testing-library/react';
 import { render } from '../../tools/test-utils';
 
 jest.mock('../../contexts/UserActionContext', () => ({
   useUserAction: () => ({ tabbing: true }),
+}));
+
+jest.mock('../../contexts/DialogContext', () => ({
+  useDialog: () => ({ interactions: [1, 2, 3] }),
 }));
 describe('ModalFooterMenu', () => {
   const onResolveMock = jest.fn();
@@ -35,6 +38,7 @@ describe('ModalFooterMenu', () => {
         spaces: {
           items: ['space1', 'space2'],
         },
+        _printConversation: true,
       },
     });
 
@@ -58,8 +62,14 @@ describe('ModalFooterMenu', () => {
     const { getByText } = render(<ModalFooterMenu onResolve={onResolveMock} />, {
       configuration: {
         moreOptions: {
+          exportConversation: true,
           printConversation: true,
+          sendGdprData: true,
         },
+        spaces: {
+          items: ['space1', 'space2'],
+        },
+        _printConversation: true,
       },
     });
     const printButton = getByText('footer.menu.print');

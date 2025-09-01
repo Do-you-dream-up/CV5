@@ -12,7 +12,7 @@ export default function MenuList({ items, onClose, selected }) {
   const theme = useTheme<Models.Theme>();
 
   const classes = useStyles();
-  items = items.filter((it) => it.when === undefined || it.when);
+  items = items.filter((it) => (it.when === undefined || it.when) && it.onClick);
   selected = typeof selected === 'function' ? selected() : selected;
 
   const onItemClick = (callback) => () => {
