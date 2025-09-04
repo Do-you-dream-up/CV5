@@ -330,7 +330,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
       (isLivechatTypeDefined ? livechatInputPlaceholder : inputPlaceholder) ||
       ''
     )?.slice?.(0, 50);
-  }, [placeholder]);
+  }, [placeholder, inputPlaceholder]);
 
   const inputProps = {
     disabled,
@@ -367,7 +367,9 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
 
   const renderSubmit = useCallback(() => {
     return !voice
-      ? counterRemaining.current < inputMaxLength && <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+      ? counterRemaining.current < inputMaxLength && (
+          <Actions actions={actions} className={c('dydu-input-actions', classes.actions)} />
+        )
       : null;
   }, [voice, counterRemaining, inputMaxLength]);
 
