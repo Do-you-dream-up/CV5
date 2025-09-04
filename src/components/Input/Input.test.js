@@ -40,6 +40,8 @@ jest.mock('../../tools/dydu', () => ({
   default: {
     makeTalkPayloadWithTextAndOption: jest.fn(),
     talk: jest.fn(),
+    isUrlAuthorized: jest.fn(),
+    isOsAndBrowserAuthorized: jest.fn(),
   },
 }));
 

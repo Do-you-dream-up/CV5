@@ -1,6 +1,8 @@
 import {
-  ReactNode,
   createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -12,7 +14,6 @@ import { ALLOWED_FORMAT } from '../tools/constants';
 import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
-import useId from "../tools/hooks/useId";
 
 interface UploadFileContextProps {
   fileSelected?: File | null;
@@ -31,6 +32,9 @@ interface UploadFileContextProps {
   isUploadFileReturnSuccess?: () => void;
   readBuffer?: (file: File) => any;
   arrayBufferToHexString?: (arrayBuffer: ArrayBuffer) => string;
+  setIsFileUploadSuccess?: Dispatch<SetStateAction<boolean>>;
+  setIsFileSent?: Dispatch<SetStateAction<{ id?: boolean }>>;
+  isFileSent?: { id?: boolean };
 }
 
 interface UploadFileProviderProps {
@@ -111,13 +115,9 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
     });
   }
 
-  const onSelectFile = (file) => (
-    setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file)
-  );
+  const onSelectFile = (file) => (setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file));
 
-  const handleCancel = () => (
-    setSelected(null)
-  );
+  const handleCancel = () => setSelected(null);
 
   const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
 

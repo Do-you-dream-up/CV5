@@ -52,6 +52,7 @@ describe('useVisitManager', () => {
     Local.visit.getKey.mockReturnValueOnce('visitKey');
     Local.visit.isSet.mockReturnValueOnce(true);
     Local.visit.load.mockReturnValueOnce(Date.now() - 86400000);
+    Local.userConsentOptions.load.mockReturnValueOnce(null);
 
     const registerVisitMock = jest.fn();
     dydu.welcomeCall.mockResolvedValueOnce(registerVisitMock());

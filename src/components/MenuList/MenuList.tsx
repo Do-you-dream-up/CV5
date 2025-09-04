@@ -31,7 +31,7 @@ export default function MenuList({ items, onClose, selected }) {
 
   return (
     <div className={c('dydu-menu-list', classes.root)}>
-      {items.map(({ icon, id, onClick, text }, index) => (
+      {items.map(({ icon, id, onClick, text, disabled }, index) => (
         <button
           className={c('dydu-menu-list-item', classes.item, onClick ? classes.itemEnabled : classes.itemDisabled, {
             [classes.selected]: selected && selected === id,
@@ -42,6 +42,8 @@ export default function MenuList({ items, onClose, selected }) {
           title={text}
           tabIndex={0}
           autoFocus={index === 0}
+          disabled={disabled}
+          style={disabled ? { cursor: 'not-allowed' } : undefined}
         >
           {isImageUrl(icon) ? (
             <img alt={text} className={classes.icon} src={`${process.env.PUBLIC_URL}${icon}`} />
@@ -66,6 +68,7 @@ MenuList.propTypes = {
       icon: PropTypes.string,
       onClick: PropTypes.func,
       text: PropTypes.string.isRequired,
+      disabled: PropTypes.bool,
     }),
   ).isRequired,
   onClose: PropTypes.func.isRequired,

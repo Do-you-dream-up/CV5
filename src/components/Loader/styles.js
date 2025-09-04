@@ -2,6 +2,31 @@
 
 import { createUseStyles } from 'react-jss';
 
+const getLoaderStyle = (theme) => ({
+  '&:after': {
+    animationDirection: 'alternate',
+    animationDuration: '.2s',
+    animationIterationCount: 'infinite',
+    animationName: '$growForward',
+    animationTimingFunction: 'linear',
+    backgroundColor: theme.palette.text.primary,
+    borderRadius: 2,
+    content: '""',
+    display: 'block',
+    height: '50%',
+    width: '100%',
+  },
+  '&:nth-child(2n+1):after': {
+    animationName: '$growBackward',
+    height: '100%',
+  },
+  alignItems: 'center',
+  display: 'flex',
+  height: '1.2em',
+  margin: [[0, 2]],
+  width: 4,
+});
+
 export default createUseStyles((theme) => ({
   '@keyframes growBackward': {
     from: { height: '100%' },
@@ -16,30 +41,9 @@ export default createUseStyles((theme) => ({
     to: { transform: 'scale(1)' },
   },
 
-  bars: () => ({
-    '&:after': {
-      animationDirection: 'alternate',
-      animationDuration: '.2s',
-      animationIterationCount: 'infinite',
-      animationName: '$growForward',
-      animationTimingFunction: 'linear',
-      backgroundColor: theme.palette.text.primary,
-      borderRadius: 2,
-      content: '""',
-      display: 'block',
-      height: '50%',
-      width: '100%',
-    },
-    '&:nth-child(2n+1):after': {
-      animationName: '$growBackward',
-      height: '100%',
-    },
-    alignItems: 'center',
-    display: 'flex',
-    height: '1.2em',
-    margin: [[0, 2]],
-    width: 4,
-  }),
+  bars: getLoaderStyle(theme),
+  consent: getLoaderStyle(theme),
+
   bubbles: () => ({
     animationName: '$pulse',
     backgroundColor: theme.palette.primary.main,

@@ -38,6 +38,7 @@ import { useChatboxLoaded } from '../../contexts/ChatboxLoadedProvider';
 import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
+import UserConsentDisclaimer from '../UserConsentDisclaimer/UserConsentDisclaimer';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -85,7 +86,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const gdprRef = useRef();
   const poweredByActive = configuration?.poweredBy?.active;
   const { fetchWelcomeKnowledge } = useWelcomeKnowledge();
-  const { fetch: fetchTopKnowledge } = useTopKnowledge();
+  const { fetchTopKnowledge } = useTopKnowledge();
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const { focusTrap, eventFired } = useUserAction();
   const { shadowRoot } = useShadow();
@@ -145,7 +146,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
 
   const onClose = () =>
     modal(ModalClose).then(
-      () => setMode(VIEW_MODE.close),
+      () => setMode && setMode(VIEW_MODE.close),
       () => {},
     );
 
@@ -224,7 +225,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
         upload: () => showUploadFileButton(),
         placeholder: (value) => setPlaceholder && setPlaceholder(value),
         sidebar: (open: boolean, { body, title }) => toggleSidebar && toggleSidebar(open, { body, title })(),
-        toggle: (mode: number) => setMode(mode),
+        toggle: (mode: number) => setMode && setMode(mode),
       };
 
       window.dyduClearPreviousInteractions = window.dydu.chat.empty;
@@ -234,7 +235,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       window._dydu_lockTextField = window.dydu.ui.lock;
       window.dyduKnowledgeUploadFile = window.dydu.ui.upload;
       window.dydu.maximizeIframe = () => {
-        setMode(VIEW_MODE.full);
+        setMode && setMode(VIEW_MODE.full);
         update('chatbox', 'margin', 0);
       };
 
@@ -317,13 +318,14 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                   extended={isFull}
                   minimal={!gdprPassed || (!isOnboardingAlreadyDone && onboardingEnable)}
                   onClose={onClose}
-                  onExpand={expandable ? (value) => setMode(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
+                  onExpand={expandable ? (value) => setMode && setMode(value ? VIEW_MODE.full : VIEW_MODE.popin) : null}
                   onMinimize={onMinimize}
                   onWheel={preventPropagationScroll}
                 />
               )}
               {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
-              <GdprDisclaimer gdprRef={gdprRef}>
+                <UserConsentDisclaimer>
+                    <GdprDisclaimer gdprRef={gdprRef}>
                 <Onboarding>
                   <div
                     className={c('dydu-chatbox-body', classes.body, {
@@ -355,6 +357,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                   )}
                 </Onboarding>
               </GdprDisclaimer>
+                </UserConsentDisclaimer>
             </>
             <Modal />
           </div>

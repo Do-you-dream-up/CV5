@@ -1,0 +1,73 @@
+{
+  "firstPage": {
+    "title": "Consentement utilisateur",
+    "description": "<p>Nous attachons une grande importance à la protection de vos données personnelles.</p><p>Vous pouvez ici définir les modalités de traitement de vos données lors de l'utilisation du chatbot. Vous avez la possibilité d'accepter tous les traitements, de les configurer selon vos préférences, ou de tous les refuser.</p><p>Aucune donnée n'est utilisée à des fins publicitaires ou de marketing.</p>",
+    "acceptAll": "Accepter",
+    "refuseAll": "Refuser",
+    "chooseOptions": "Configurer"
+  },
+  "chooseOption": {
+    "header": "Choisissez précisément comment vos données peuvent être traitées par le chatbot et informez-vous sur les finalités de chaque traitement.",
+    "essential": {
+      "title": "Stockage essentiel",
+      "description": "Ces données sont strictement nécessaires au bon fonctionnement technique et à la sécurité du chatbot. Sans leur traitement, l'accès au service ne peut être garanti.",
+      "conversations": {
+        "title": "Conversations",
+        "description": "<p>Les échanges entre l'utilisateur et le chatbot peuvent être conservés sur nos serveurs à des fins de relecture, d'amélioration de la qualité du service, et de production de statistiques.</p><p>Selon la configuration du chatbot :</p><ul><li>les données peuvent être éventuellement anonymisées dans un certain délai,</li><li>elles peuvent être éventuellement supprimées dans un certain délai.</li></ul>",
+        "optional": false,
+        "selected": true
+      },
+      "technicalCookies": {
+        "title": "Traceurs techniques",
+        "description": "Ces traceurs sont indispensables au fonctionnement du service (gestion de session, sécurité, performance). Leur désactivation empêcherait l'utilisation du chatbot.",
+        "optional": false,
+        "selected": true
+      },
+      "clientId": {
+        "title": "Identifiant client",
+        "description": "L'identifiant client est un identifiant unique aléatoire et non nominatif attribué à chaque utilisateur pour garantir le suivi de l'historique, permettre une réclamation RGPD (droit d'accès ou de suppression) et produire des statistiques techniques liées à l'usage du chatbot.",
+        "optional": true,
+        "selected": true
+      },
+      "additionalText": "Ces données sont indispensables pour garantir un service minimum sécurisé et fonctionnel. En les refusant, l'accès au chatbot ne pourra pas être assuré."
+    },
+    "notEssential": {
+      "title": "Stockage non essentiel",
+      "description": "Le traitement des données ci-dessous n'est pas strictement nécessaire au fonctionnement du service. Il est soumis à votre consentement et vise à améliorer la qualité, la personnalisation et la sécurité du chatbot.",
+      "clientId": {
+        "title": "Identifiant client",
+        "description": "L'identifiant client est un identifiant unique aléatoire et non nominatif attribué à chaque utilisateur pour garantir le suivi de l'historique, permettre une réclamation RGPD (droit d'accès ou de suppression) et produire des statistiques techniques liées à l'usage du chatbot.",
+        "optional": true,
+        "selected": false
+      },
+      "ipAddress": {
+        "title": "Adresse IP",
+        "description": "L'adresse IP est collectée à des fins de sécurité (prévention des abus, détection d'anomalies), d'analyse technique, ainsi que pour l'établissement de statistiques anonymisées sur l'usage du chatbot. Elle peut permettre de déduire une localisation approximative (pays, région).",
+        "optional": false,
+        "selected": true
+      },
+      "osAndBrowser": {
+        "title": "Navigateur et système d'exploitation",
+        "description": "Les informations relatives au navigateur et au système d'exploitation sont collectées afin d'assurer la compatibilité technique du service, de diagnostiquer d'éventuels dysfonctionnements, et d'optimiser l'expérience utilisateur en fonction de l'environnement technique utilisé.",
+        "optional": false,
+        "selected": true
+      },
+      "localization": {
+        "title": "Localisation",
+        "description": "La localisation approximative (déduite via l'adresse IP ou fournie par le navigateur) peut être utilisée à des fins de personnalisation du service, de statistiques d'utilisation selon la zone géographique, ou d'adaptation contextuelle des réponses.",
+        "optional": false,
+        "selected": true
+      },
+      "url": {
+        "title": "Url",
+        "description": "L'URL de provenance (page web d'où l'utilisateur accède au chatbot) est collectée à des fins statistiques, de diagnostic technique et pour permettre l'adaptation du comportement du chatbot selon son contexte d'intégration.",
+        "optional": false,
+        "selected": true
+      },
+      "additionalText": "Ces traitements permettent d'optimiser le service, de mieux comprendre son usage et de proposer une expérience plus adaptée à votre contexte. Vous pouvez les refuser sans impact sur l'accès de base au chatbot."
+    },
+    "footer": "Les paramètres peuvent être modifiés à tout moment via la roue crantée et l'onglet cookies.",
+    "cancel": "Annuler",
+    "valid": "Valider"
+  }
+}

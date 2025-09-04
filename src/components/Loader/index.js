@@ -15,9 +15,10 @@ export default function Loader({ className, scroll, size, variant }) {
   const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { size: defaultSize } = configuration.loader;
+  const containerStyle = variant === 'consent' ? { margin: 'auto' } : undefined;
   return createElement(
     scroll ? Scroll : 'div',
-    { scrollToBottom: true, className: c('dydu-loader', classes.root, className) },
+    { style: containerStyle, scrollToBottom: true, className: c('dydu-loader', classes.root, className) },
     <>
       {[...Array(size || defaultSize)].map((it, index) => (
         <div
@@ -41,5 +42,5 @@ Loader.propTypes = {
   component: PropTypes.elementType,
   scroll: PropTypes.bool,
   size: PropTypes.number,
-  variant: PropTypes.oneOf(['bars', 'bubbles']),
+  variant: PropTypes.oneOf(['bars', 'bubbles', 'consent']),
 };

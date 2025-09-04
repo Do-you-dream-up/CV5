@@ -21,9 +21,9 @@ let PAYLOAD_COMMON_CONTENT = {
   clientId: null,
   language: null,
   solutionUsed: SOLUTION_TYPE.assistant,
-  userUrl: window.location.href,
-  browser: browserName(),
-  os: osName(),
+  userUrl: dydu.isUrlAuthorized() ? window.location.href : null,
+  browser: dydu.isOsAndBrowserAuthorized() ? browserName() : null,
+  os: dydu.isOsAndBrowserAuthorized() ? osName() : null,
   saml2_info: Local.saml.load(),
 };
 
@@ -103,13 +103,18 @@ export const LivechatPayloadCreator = {
       parameters: {
         ...getPayloadCommonContentBase64Encoded(),
         userInput: b64encode(userInput),
-        alreadyCame: dydu.alreadyCame(),
+        alreadyCame:
+          !Local.userConsentOptions.load() ||
+          (Local.userConsentOptions.load() && Local.userConsentOptions.load()['clientId'] === true)
+            ? dydu.alreadyCame()
+            : false,
         contextType: b64encode('Web'),
         qualificationMode: dydu.qualificationMode,
         doNotRegisterInteraction: options?.doNotRegisterInteraction || false,
         useServerCookieForContext: false,
         disableLanguageDetection: true,
         timestamp: nowTime(),
+        userConsent: Local.userConsentOptions.load(),
         ...(extraParameters && {
           extraParameters: extraParameters,
         }),

@@ -114,7 +114,8 @@
       "email": "Export the conversation by email",
       "gdpr": "GDPR (export, delete)",
       "spaces": "Switch consulting space",
-      "title": "Your features"
+      "title": "Your features",
+      "consent": "User Consent"
     },
     "rosetta": {
       "en": "English",

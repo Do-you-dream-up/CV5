@@ -1,13 +1,13 @@
 import {
+  createContext,
   Dispatch,
   ReactElement,
   SetStateAction,
-  createContext,
   useCallback,
   useContext,
   useEffect,
-  useState,
   useRef,
+  useState,
 } from 'react';
 
 import dotget from '../tools/dotget';
@@ -65,8 +65,14 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
   };
 
   const preventPropagationScroll = (e) => {
-    const body = shadowRoot?.getElementById('dydu-dialog');
-    if (body && body.contains(e.target)) {
+    const dialog = shadowRoot?.getElementById('dydu-dialog');
+    const userConsentDisclaimer = shadowRoot?.getElementById('dydu-user-consent-disclaimer');
+    const userConsentOptions = shadowRoot?.getElementById('dydu-user-consent-options');
+    if (dialog && dialog.contains(e.target)) {
+      return;
+    } else if (userConsentDisclaimer && userConsentDisclaimer.contains(e.target)) {
+      return;
+    } else if (userConsentOptions && userConsentOptions.contains(e.target)) {
       return;
     } else {
       e.stopPropagation();
