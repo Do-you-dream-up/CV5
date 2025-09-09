@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useWebsocket from 'react-use-websocket';
 
 import LivechatPayload from '../LivechatPayload';
@@ -21,6 +21,8 @@ const urlExtractDomain = (url) => url.replace(/^http[s]?:\/\//, '');
 
 const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
 
+let keepAlive = null;
+let closeTunnel = null;
 let endLivechatAndCloseTunnel = null;
 let addNewMessageAndNotificationOrResponse = null;
 let decodeAndDisplayNotification = null;
@@ -28,11 +30,14 @@ let showAnimationOperatorWriting = null;
 let leaveWaitingQueue = null;
 let onFailOpenTunnel = null;
 let clearInteractionsAndAddWelcome = null;
+let fallbackKeepAlive = null;
 let keepAliveInterval = null;
 let setTunnelAndMode = null;
 let getWebsocketTunnel = null;
 
 const linkToLivechatFunctions = (livechatContextFunctions) => {
+  keepAlive = livechatContextFunctions.keepAlive;
+  closeTunnel = livechatContextFunctions.closeTunnel;
   endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
   addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
   decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
@@ -89,6 +94,8 @@ export default function useDyduWebsocket() {
   const { flushStates: flushOldSurvey, setSurveyConfig } = useSurvey();
   const { configuration } = useConfiguration();
   const { addResponse } = useDialog();
+  const countInterval = useRef(0);
+  const reallyClosed = useRef(false);
 
   const lastMessageData = useMemo(() => {
     if (lastMessage && lastMessage.data && lastMessage.data !== 'pong') {
@@ -179,7 +186,9 @@ export default function useDyduWebsocket() {
 
   const close = useCallback(() => {
     flushSocketProps();
-    if (endLivechatAndCloseTunnel) endLivechatAndCloseTunnel();
+    if (endLivechatAndCloseTunnel) {
+      endLivechatAndCloseTunnel();
+    }
   }, [flushSocketProps]);
 
   const handleSurveySentence = (messageData) => {
@@ -247,6 +256,7 @@ export default function useDyduWebsocket() {
 
       case MESSAGE_TYPE.checkContextAvailability:
         if (!lastMessageData) {
+          reallyClosed.current = true;
           close();
         }
         return;
@@ -256,6 +266,7 @@ export default function useDyduWebsocket() {
         displayNotification();
         if (!needToAnswerSurvey) {
           endPollingReceived = false;
+          reallyClosed.current = true;
           close();
         }
         return;
@@ -263,9 +274,28 @@ export default function useDyduWebsocket() {
       case MESSAGE_TYPE.leaveWaitingQueue:
         displayNotification();
         leaveWaitingQueue();
+        reallyClosed.current = true;
         return close();
     }
   }, [close, displayMessage, displayNotification, lastMessageData, messageType, showUploadFileButton]);
+
+  const startFallbackKeepAlive = useCallback(() => {
+    closeTunnel();
+    if (reallyClosed.current === false) {
+      fallbackKeepAlive = setInterval(() => {
+        if (countInterval === 150) {
+          // stop after 10 minutes (150 x 4000ms);
+          clearInterval(fallbackKeepAlive);
+          fallbackKeepAlive = null;
+          reallyClosed.current = false;
+          countInterval.current = 0;
+        } else {
+          countInterval.current++;
+          keepAlive('ping');
+        }
+      }, 4000);
+    }
+  }, []);
 
   const getSocketConfig = useCallback(() => {
     return {
@@ -277,6 +307,11 @@ export default function useDyduWebsocket() {
         sendCheckContextAvailability();
         sendTopKnowledge(configuration);
         sendHistory();
+        if (fallbackKeepAlive) {
+          countInterval.current = 0;
+          clearInterval(fallbackKeepAlive);
+          fallbackKeepAlive = null;
+        }
         keepAliveInterval = setInterval(() => {
           sendMessage('ping');
         }, 55000);
@@ -284,10 +319,19 @@ export default function useDyduWebsocket() {
       onClose: (closeEvent) => {
         clearInterval(keepAliveInterval);
         console.log('websocket: on close !', closeEvent);
+        startFallbackKeepAlive();
       },
       onError: (errorEvent) => {
         console.log('websocket: on error !', errorEvent);
-        _onFail();
+        if (Local.livechatType.load() === TUNNEL_MODE.websocket) {
+          // We enter here if the websocket was successfully opened but then fails.
+          // This typically happens when the chatbox is sent in background on iPhone.
+          // Note: in this case we will NOT fall back to polling.
+          clearInterval(keepAliveInterval);
+          startFallbackKeepAlive();
+        } else {
+          _onFail();
+        }
       },
     };
   }, [_onFail, close]);
@@ -324,6 +368,14 @@ export default function useDyduWebsocket() {
     }
   }, []);
 
+  const sendPing = useCallback((ping) => {
+    try {
+      sendMessage(ping);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
   const closeLivechatIfEndSurveyClosed = (surveyClosed) => {
     if (endPollingReceived && surveyClosed) {
       endPollingReceived = false;
@@ -355,6 +407,10 @@ export default function useDyduWebsocket() {
     },
     [sendJsonMessage],
   );
+
+  const setReallyClosed = (boolean) => {
+    reallyClosed.current = boolean;
+  };
 
   const sendHistory = useCallback(() => {
     const message = LivechatPayload.create.historyMessage();
@@ -397,7 +453,9 @@ export default function useDyduWebsocket() {
     mode: TUNNEL_MODE.websocket,
     open,
     send,
+    setReallyClosed,
     sendSurvey,
+    sendPing,
     close,
     onUserTyping,
     closeLivechatIfEndSurveyClosed,
