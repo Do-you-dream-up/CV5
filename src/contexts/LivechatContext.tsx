@@ -21,6 +21,8 @@ interface LivechatContextProps {
   sendSurvey?: (str: string) => void;
   typing?: (input: any) => void;
   endLivechatAndCloseTunnel?: () => void;
+  keepAlive?: () => void;
+  closeTunnel?: () => void;
   addNotificationOrResponse?: (values: Servlet.ChatResponseValues) => void;
   isWaitingQueue?: boolean;
   hasToVerifyContextAfterLivechatClosed?: boolean;
@@ -202,10 +204,23 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     tunnelRef.current = null;
   };
 
+  const keepAlive = useCallback(() => {
+    const _tunnel = findFirstAvailableTunnelInList(tunnelList);
+    const isTunnelStillAvailable =
+      tunnelRef.current?.mode && tunnelRef.current?.mode === _tunnel?.mode && _tunnel?.mode;
+    if (isTunnelStillAvailable) {
+      tunnelRef.current?.sendPing?.('ping');
+    } else {
+      startLivechat(_tunnel)?.then(() => tunnelRef.current?.sendPing?.('ping'));
+    }
+  }, []);
+
   const livechatContextFunctions = useMemo(() => {
     return {
       ...lastResponse,
       endLivechatAndCloseTunnel,
+      keepAlive,
+      closeTunnel,
       addNewMessageAndNotificationOrResponse,
       decodeAndDisplayNotification,
       onFailOpenTunnel,
@@ -221,6 +236,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     lastResponse,
     onFailOpenTunnel,
     endLivechatAndCloseTunnel,
+    keepAlive,
+    closeTunnel,
     addNewMessageAndNotificationOrResponse,
     decodeAndDisplayNotification,
     showAnimationOperatorWriting,
@@ -270,6 +287,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   useEffect(() => {
     if (shouldEndLivechat) {
+      tunnelRef.current?.setReallyClosed(true);
       endLivechatAndCloseTunnel();
     } else if (shouldStartLivechat() && !tunnelRef.current) {
       startLivechat();
@@ -278,6 +296,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   useEffect(() => {
     if (shouldEndLivechat) {
+      tunnelRef.current?.setReallyClosed(true);
       endLivechatAndCloseTunnel();
     }
   }, [shouldEndLivechat, endLivechatAndCloseTunnel]);
@@ -336,6 +355,8 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     sendSurvey,
     typing,
     endLivechatAndCloseTunnel,
+    keepAlive,
+    closeTunnel,
     addNotificationOrResponse,
     isWaitingQueue,
     hasToVerifyContextAfterLivechatClosed,
