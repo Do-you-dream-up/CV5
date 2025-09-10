@@ -19,6 +19,7 @@ import { useShadow } from '../../contexts/ShadowProvider';
 import { useDialog } from '../../contexts/DialogContext';
 import { cleanHtml, sanitize } from '../../tools/helpers';
 import { Local } from '../../tools/storage';
+import Html2ReactParser from '../../html-to-react/lib/parser';
 
 const RE_HREF_EMPTY = /href="#"/g;
 //const RE_ONCLICK_LOWERCASE = /onclick/g;
@@ -30,6 +31,7 @@ const RE_HREF = /(<a href([^>]+)>)/g;
  */
 export default function PrettyHtml({ carousel, children, className, component, html, templatename, type, ...rest }) {
   const [htmlContent, setHtmlContent] = useState('');
+  const [jsxElement, setJsxElement] = useState(null);
   const classes = useStyles();
   const { t } = useTranslation('translation');
   const { configuration } = useConfiguration();
@@ -76,9 +78,12 @@ export default function PrettyHtml({ carousel, children, className, component, h
     });
     _html = cleanHtml(_html);
     if (type === 'request') {
-      setHtmlContent(sanitize(_html));
+      const sanitizedHtml = sanitize(_html);
+      setHtmlContent(sanitizedHtml);
+      setJsxElement(new Html2ReactParser().parse(sanitizedHtml));
     } else {
       setHtmlContent(_html);
+      setJsxElement(new Html2ReactParser().parse(_html));
     }
   }, [hrefMatchs, html]);
 
@@ -130,9 +135,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
         <CarouselTemplate html={htmlContent} />
       )}
       {templatename === QUICK_REPLY && <QuickreplyTemplate html={htmlContent} />}
-      {!knownTemplates.includes(templatename) && htmlContent && (
-        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-      )}
+      {!knownTemplates.includes(templatename) && htmlContent && jsxElement}
     </>,
   );
 }
@@ -164,7 +167,7 @@ const getFilters = () => [
           if (srcMatch) {
             const newImgTag = imgTag.replace(
               '>',
-              ` tabindex="0" onclick="window.setZoom('${srcMatch[1]}')" onkeypress="if(event.key === 'Enter') window.setZoom('${srcMatch[1]}')">`,
+              ` tabindex="0" onclick="window.setZoom('${srcMatch[1]}')" onkeypress="if('Enter'.equals('event.code')) window.setZoom('${srcMatch[1]}')">`,
             );
             html = html.replace(imgTag, newImgTag);
           }

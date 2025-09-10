@@ -2,21 +2,12 @@ import { isDefined, isOfTypeObject } from '../../tools/helpers';
 
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import useStyles from './styles';
+import Html2ReactParser from '../../html-to-react/lib/parser';
 
 export default function QuickreplyTemplate({ html }) {
   const classes = useStyles();
-
-  const handleKeyDown = useCallback((event) => {
-    if (event.key === ' ' || event.key === 'Enter') {
-      event.preventDefault();
-      const linkElement = event.currentTarget.querySelector('a');
-      if (linkElement) {
-        linkElement.click();
-      }
-    }
-  }, []);
 
   const newObjectSort = (obj, fn) => {
     return (
@@ -54,17 +45,24 @@ export default function QuickreplyTemplate({ html }) {
     }
   });
 
-  const hasQuickButton = (sortQuick) => {
+  const hasQuickButton = () => {
     return sortQuick && Object.keys(sortQuick).some((key) => sortQuick[key]);
   };
 
   if (!isDefined(content)) return null;
+
+  if (sortQuick !== null) {
+    for (const key in sortQuick) {
+      sortQuick[key] = new Html2ReactParser().parse(sortQuick[key]);
+    }
+  }
+
   return (
     <div className={c('dydu-quickreply-template', classes.quick)}>
       {!!text && (
         <p
           className={c('dydu-quickreply-template-content', classes.text, {
-            [classes.separator]: hasQuickButton(sortQuick),
+            [classes.separator]: hasQuickButton(),
           })}
           dangerouslySetInnerHTML={{ __html: text }}
         />
@@ -72,17 +70,8 @@ export default function QuickreplyTemplate({ html }) {
       {sortQuick &&
         Object.keys(sortQuick)
           .sort((a, b) => a - b)
-          .map((el, index) => {
-            return (
-              sortQuick[el] && (
-                <p
-                  className={c('dydu-quickreply-template-buttons', classes.buttons)}
-                  key={index}
-                  dangerouslySetInnerHTML={{ __html: sortQuick[el] }}
-                  onKeyDown={handleKeyDown}
-                />
-              )
-            );
+          .map((el) => {
+            return <p className={c('dydu-quickreply-template-buttons', classes.buttons)}>{sortQuick[el]}</p>;
           })}
     </div>
   );
