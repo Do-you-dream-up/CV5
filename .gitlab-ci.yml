@@ -145,7 +145,7 @@ functional-test:
   variables:
     TEST_REVISION: '${CI_COMMIT_REF_NAME} ${CI_COMMIT_SHORT_SHA} ${CI_JOB_ID}'
     TEST_TOKEN: 'zspdHMbuc1EShADrYxSu'
-    TEST_URL: 'https://gitlab.ci.dydu-priv.com/api/v4/projects/402'
+    TEST_URL: 'https://gitlab.dydu.tech/api/v4/projects/402'
   before_script:
     - apk add git openssh-client curl jq
     - |
@@ -158,7 +158,7 @@ functional-test:
       git config --global user.email "infra@dydu.ai"
       git config --global user.name "GitLab CI Bliss"
       git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
-      git clone https://$CI_HTTPS_RUNNER_USER:$CI_HTTPS_RUNNER_TOKEN@gitlab.ci.dydu-priv.com/qa/autobox.git /autobox
+      git clone https://$CI_HTTPS_RUNNER_USER:$CI_HTTPS_RUNNER_TOKEN@gitlab.dydu.tech/qa/autobox.git /autobox
     - |
       cd /autobox
       git switch -c "${CI_COMMIT_REF_NAME}"
@@ -181,7 +181,7 @@ functional-test:
       "${TEST_URL}/pipelines/${TEST_PIPELINE}/jobs?include_retried=true&order_by=id&sort=desc" \
       | jq --raw-output '.[0].id')"
       echo "Please check: \
-      https://gitlab.ci.dydu-priv.com/qa/autobox/-/jobs/${TEST_JOB}"
+      https://gitlab.dydu.tech/qa/autobox/-/jobs/${TEST_JOB}"
       while true
       do
         sleep 60

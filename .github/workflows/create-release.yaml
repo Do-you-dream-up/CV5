@@ -25,7 +25,7 @@ jobs:
         then
             echo "Updating $version"
             git checkout main
-            git remote add bliss "https://github_fetch:$GITLAB_TOKEN@gitlab.ci.dydu-priv.com/front/bliss.git"
+            git remote add bliss "https://github_fetch:$GITLAB_TOKEN@gitlab.dydu.tech/front/bliss.git"
             git config --global user.email "infra@dydu.ai"
             git config --global user.name "dyduai"
         
