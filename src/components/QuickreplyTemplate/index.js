@@ -1,4 +1,4 @@
-import { isDefined, isOfTypeObject } from '../../tools/helpers';
+import { isDefined, isOfTypeObject, sortQuickReply } from '../../tools/helpers';
 
 import PropTypes from 'prop-types';
 import c from 'classnames';
@@ -8,16 +8,6 @@ import Html2ReactParser from '../../html-to-react/lib/parser';
 
 export default function QuickreplyTemplate({ html }) {
   const classes = useStyles();
-
-  const newObjectSort = (obj, fn) => {
-    return (
-      obj &&
-      Object.keys(obj).reduce((acc, k) => {
-        acc[fn(obj[k], k, obj)] = obj[k];
-        return acc;
-      }, {})
-    );
-  };
 
   const content = useMemo(() => {
     if (!isDefined(html)) return null;
@@ -39,9 +29,7 @@ export default function QuickreplyTemplate({ html }) {
   const sortQuick = useMemo(() => {
     if (!isDefined(content)) return null;
     else {
-      return newObjectSort(content.quick, (val, key) => {
-        return parseInt(key.match(/\d+/));
-      });
+      return sortQuickReply(content.quick);
     }
   });
 
