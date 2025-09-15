@@ -341,6 +341,10 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
     title: displayedPlaceholderTitleAriaLabel.current,
   };
 
+  const focusTextarea = () => {
+    textareaRef?.current?.focus();
+  };
+
   const actions: ActionProps[] = [
     {
       children: (
@@ -356,6 +360,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
       title: actionSend,
       id: 'dydu-submit-action',
       testId: 'dydu-submit-footer',
+      onClick: focusTextarea,
     },
   ];
 
