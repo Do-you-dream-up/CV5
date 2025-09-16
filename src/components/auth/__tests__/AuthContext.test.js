@@ -72,7 +72,7 @@ jest.mock('../../../tools/dydu', () => {
   return {
     __esModule: true,
     default: {
-      setSpaceToDefault: jest.fn(),
+      setSpace: jest.fn(),
       fetchUrlConfig: jest.fn(),
       setLocale: jest.fn(),
       getBotLanguages: jest.fn(

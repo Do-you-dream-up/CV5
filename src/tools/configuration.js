@@ -3,7 +3,6 @@ import { isLoadedFromChannels } from './wizard';
 import { Local } from './storage';
 import { getResourceWithoutCache } from './resources';
 import dydu from './dydu';
-import { DEFAULT_CONSULTATION_SPACE } from './constants';
 
 /**
  * Helper class to find values in a JSON configuration file.
@@ -46,8 +45,8 @@ export const configuration = new (class Configuration {
 
       if (!isLoadedFromChannels()) {
         const currentSpace = Local.space.load();
-        if (currentSpace === null || currentSpace === DEFAULT_CONSULTATION_SPACE) {
-          dydu.setSpace(this.configuration?.spaces?.items[0]);
+        if (currentSpace === null) {
+          dydu.getSpace();
         }
       }
 

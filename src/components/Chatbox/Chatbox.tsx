@@ -210,11 +210,11 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       };
 
       window.dydu.space = {
-        get: (strategy) => dydu.getSpace(strategy),
+        get: () => dydu.getSpace(),
         prompt: () => setPrompt && setPrompt('spaces'),
         set: (space, { quiet = true } = {}) => {
           dydu.setSpace(space);
-          !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${dydu.getSpace()}'.`);
+          !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`);
         },
       };
 
@@ -324,40 +324,40 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
                 />
               )}
               {sidebarMode !== 'over' && !isFull && <Sidebar anchor={root} />}
-                <UserConsentDisclaimer>
-                    <GdprDisclaimer gdprRef={gdprRef}>
-                <Onboarding>
-                  <div
-                    className={c('dydu-chatbox-body', classes.body, {
-                      [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || isFull),
-                    })}
-                    onScroll={handleScroll}
-                    tabIndex={-1}
-                  >
-                    <Tab
-                      component={Dialog}
-                      dialogRef={dialogRef}
-                      interactions={interactions}
-                      open={isOpen}
-                      render
-                      value="dialog"
-                      children
-                    />
-                    <Tab component={Contacts} value="contacts" children render={false} />
-                    {poweredByActive && <PoweredBy />}
-                  </div>
-                  {showScrollToBottom ? <ScrollToBottom /> : null}
-                  {(sidebarMode === 'over' || isFull) && <Sidebar mode="over" />}
-                  {!current && (
-                    <Footer
-                      onRequest={addRequest}
-                      onResponse={addNotificationOrResponse}
-                      onWheel={preventPropagationScroll}
-                    />
-                  )}
-                </Onboarding>
-              </GdprDisclaimer>
-                </UserConsentDisclaimer>
+              <UserConsentDisclaimer>
+                <GdprDisclaimer gdprRef={gdprRef}>
+                  <Onboarding>
+                    <div
+                      className={c('dydu-chatbox-body', classes.body, {
+                        [classes.bodyHidden]: sidebarActive && (sidebarMode === 'over' || isFull),
+                      })}
+                      onScroll={handleScroll}
+                      tabIndex={-1}
+                    >
+                      <Tab
+                        component={Dialog}
+                        dialogRef={dialogRef}
+                        interactions={interactions}
+                        open={isOpen}
+                        render
+                        value="dialog"
+                        children
+                      />
+                      <Tab component={Contacts} value="contacts" children render={false} />
+                      {poweredByActive && <PoweredBy />}
+                    </div>
+                    {showScrollToBottom ? <ScrollToBottom /> : null}
+                    {(sidebarMode === 'over' || isFull) && <Sidebar mode="over" />}
+                    {!current && (
+                      <Footer
+                        onRequest={addRequest}
+                        onResponse={addNotificationOrResponse}
+                        onWheel={preventPropagationScroll}
+                      />
+                    )}
+                  </Onboarding>
+                </GdprDisclaimer>
+              </UserConsentDisclaimer>
             </>
             <Modal />
           </div>

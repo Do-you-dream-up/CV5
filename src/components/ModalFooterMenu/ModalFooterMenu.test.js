@@ -49,7 +49,7 @@ describe('ModalFooterMenu', () => {
     expect(getByText('footer.menu.email')).toBeDefined();
     expect(getByText('footer.menu.print')).toBeDefined();
     expect(getByText('footer.menu.gdpr')).toBeDefined();
-    expect(getByText('footer.menu.spaces')).toBeDefined();
+    expect(getByText('footer.menu.spaces: Defaut')).toBeDefined();
   });
 
   it('calls the onResolve function when clicking on the Close button', () => {
