@@ -5,6 +5,9 @@
   "license": "MIT",
   "start_url": ".",
   "dependencies": {
+    "domhandler": "^5.0",
+    "htmlparser2": "^9.0",
+    "lodash.camelcase": "^4.3.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@types/react": "^18.0.26",
