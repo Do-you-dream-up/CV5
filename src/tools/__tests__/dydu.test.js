@@ -137,7 +137,7 @@ describe('dydu.js', function () {
 
   describe('onConfigurationLoaded', function () {
     beforeEach(() => {
-      spied = jestSpyOnList(dydu, ['setInitialSpace', 'setQualificationMode', 'getSpace', 'getConfiguration']);
+      spied = jestSpyOnList(dydu, ['setQualificationMode', 'getSpace', 'getConfiguration']);
       const c = new ConfigurationFixture();
       spied.getConfiguration.mockReturnValue(c.getConfiguration());
     });
@@ -145,7 +145,7 @@ describe('dydu.js', function () {
       jestRestoreMocked(Object.values(spied));
     });
     it('should call initializers', () => {
-      const initializerFnList = ['setInitialSpace', 'setQualificationMode'];
+      const initializerFnList = ['setQualificationMode'];
       dydu.onConfigurationLoaded();
       initializerFnList.forEach((initializerFn) => {
         expect(spied[initializerFn]).toHaveBeenCalled();
@@ -582,13 +582,21 @@ describe('dydu.js', function () {
   describe('setSpace', () => {
     it('should set the |space| class attribute to the argument', () => {
       //GIVEN
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
       const newSpace = 'newSpace';
 
-      //WHEN
+      // WHEN
       dydu.setSpace(newSpace);
 
-      //THEN
-      expect(dydu.space).toEqual(newSpace);
+      // THEN
+      expect(Local.space.save).toHaveBeenCalledWith(newSpace);
+      expect(Local.space.load()).toEqual(newSpace);
     });
   });
   describe('getContextVariables', () => {
@@ -631,11 +639,17 @@ describe('dydu.js', function () {
       spied = jestSpyOnList(dydu, ['getConfiguration']);
       spied.getConfiguration.mockReturnValue({ spaces: { items: [defaultSpace] } });
 
-      // WHEN
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
 
-      dydu.space = null;
-      const nullArg = null;
-      const receivedSpace = dydu.getSpace(nullArg);
+      // WHEN
+      storedValue = undefined;
+      const receivedSpace = dydu.getSpace();
 
       // THEN
       expect(receivedSpace).toEqual(defaultSpace);
@@ -644,8 +658,16 @@ describe('dydu.js', function () {
       // GIVEN
       const currentSpace = 'current-space';
 
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
+
       // WHEN
-      dydu.space = currentSpace;
+      dydu.setSpace(currentSpace);
       const receivedSpace = dydu.getSpace();
 
       // THEN
@@ -662,9 +684,17 @@ describe('dydu.js', function () {
         };
       });
 
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
+
       // WHEN
       const currentSpace = null;
-      dydu.space = currentSpace;
+      dydu.setSpace(currentSpace);
       const receivedSpace = dydu.getSpace(strategiesAllDisabled);
 
       // THEN
@@ -680,10 +710,18 @@ describe('dydu.js', function () {
         active: true,
         value: cookieModeValue,
       };
+
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
       const configuration = new ConfigurationFixture();
       configuration.updateSpaceDetectionMode(cookieDetectionItem);
       const strategies = configuration.getSpaceConfig().detection;
-
+      dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
       // WHEN
       const receivedSpace = dydu.getSpace(strategies);
 
@@ -705,6 +743,14 @@ describe('dydu.js', function () {
       const configuration = new ConfigurationFixture();
       configuration.updateSpaceDetectionMode(globalModeItem);
       const strategies = configuration.getSpaceConfig().detection;
+      dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
 
       // WHEN
       const receivedSpace = dydu.getSpace(strategies);
@@ -726,29 +772,20 @@ describe('dydu.js', function () {
       const configuration = new ConfigurationFixture();
       configuration.updateSpaceDetectionMode(localstorageModeItem);
       const strategies = configuration.getSpaceConfig().detection;
+      dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
+      let storedValue;
+      Local.space = {
+        save: jest.fn((val) => {
+          storedValue = val;
+        }),
+        load: jest.fn(() => storedValue),
+      };
 
       // WHEN
       const receivedSpace = dydu.getSpace(strategies);
 
       // THEN
       expect(receivedSpace).toEqual(expectedResult);
-    });
-  });
-
-  describe('getConfiguration', () => {
-    it('should return |configuration| class attribute value', () => {
-      // GIVEN
-      spied = jestSpyOnList(dydu, ['onConfigurationLoaded', 'getSpace', 'setInitialSpace', 'setQualificationMode']);
-
-      const config = new ConfigurationFixture();
-      const _config = config.getConfiguration();
-      dydu.configuration = _config;
-
-      // WHEN
-      const receivedValue = dydu.getConfiguration();
-
-      // THEN
-      expect(receivedValue).toEqual(_config);
     });
   });
 

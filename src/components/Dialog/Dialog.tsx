@@ -29,16 +29,16 @@ const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFr
   const classes = useStyles();
   const { isEnabled: isTopKnowledgeEnabled } = useTopKnowledge();
   const { t } = useTranslation('translation');
-  const { active: spacesActive, detection: spacesDetection } = configuration?.spaces || {};
+  const { active: spacesActive } = configuration?.spaces || {};
   const { shadowAnchor } = useShadow();
 
   useEffect(() => {
     if (spacesActive) {
-      if (!isDefined(dydu.getSpace(spacesDetection))) {
+      if (!isDefined(dydu.getSpace())) {
         setPrompt && setPrompt('spaces');
       }
     }
-  }, [spacesActive, setPrompt, spacesDetection]);
+  }, [spacesActive, setPrompt]);
 
   /**
    * Scroll to the bottom of the dialog on open chatbox

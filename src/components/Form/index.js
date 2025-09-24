@@ -2,12 +2,12 @@ import Actions from '../Actions/Actions';
 import Icon from '../Icon/Icon';
 import PropTypes from 'prop-types';
 import c from 'classnames';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useState } from 'react';
 import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { FormIcon } from '../CustomIcons/CustomIcons';
+import dydu from '../../tools/dydu';
 /**
  * Base form component.
  *
@@ -15,9 +15,8 @@ import { FormIcon } from '../CustomIcons/CustomIcons';
  * onchange callback as parameters.
  */
 export default function Form({ children, className, onDismiss, onReject, onResolve, thinking }) {
-  const { configuration } = useConfiguration();
   const classes = useStyles();
-  const currentSpace = window.dydu ? window.dydu.space.get() : configuration.spaces.items[0];
+  const currentSpace = dydu.getSpace();
   const [data, setData] = useState({ space: currentSpace });
   const { t } = useTranslation('translation');
   const theme = useTheme();

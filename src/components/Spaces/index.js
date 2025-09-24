@@ -5,6 +5,7 @@ import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useDialog } from '../../contexts/DialogContext';
+import { Local } from '../../tools/storage';
 
 /**
  * Display a form and enable consulting space selection.
@@ -19,7 +20,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
 
   const onSubmit = ({ space }) => {
     setPrompt('');
-    window.dydu.space.set(space);
+    Local.space.save(space);
   };
 
   const onDismiss = () => {

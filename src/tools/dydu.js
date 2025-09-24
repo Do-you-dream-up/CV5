@@ -40,7 +40,6 @@ export default new (class Dydu {
     this.configuration = {};
     this.locale = null;
     this.getSurveyCallback = null;
-    this.space = null;
     this.maxTimeoutForAnswer = secondsToMs(50);
     this.qualificationMode = false;
   }
@@ -226,19 +225,15 @@ export default new (class Dydu {
   }
 
   /**
-   * Return the currently selected space.
+   * Set the consultation space from detection strategies or default space if there is no space in Local.
+   * and return space from local storage.
    *
-   * @param {Object[]} strategy - Order in which space should be detected.
-   * @param {boolean} strategy.active - Whether the strategy should be applied.
-   * @param {string} strategy.mode - The type of strategy.
-   * @param {string|Object} strategy.value - Data needed to extract the space value.
-   * @returns {string}
    */
-  getSpace = (strategy = []) => {
-    const atLeastOneStrategyActive = strategy?.some(({ active }) => active);
-
-    if (!this.space || atLeastOneStrategyActive) {
-      if (Array.isArray(strategy)) {
+  getSpace = () => {
+    const detectionStrategy = this.getConfiguration()?.spaces?.detection;
+    const atLeastOneStrategyActive = detectionStrategy?.some(({ active }) => active);
+    if (!Local.space.load() && atLeastOneStrategyActive) {
+      if (Array.isArray(detectionStrategy)) {
         const get = (mode) =>
           ({
             cookie: (value) => Cookie.get(value),
@@ -255,16 +250,20 @@ export default new (class Dydu {
               return value[result];
             },
           }[mode]);
-        strategy.reverse().map(({ active, mode, value }) => {
+        for (const { active, mode, value } of detectionStrategy) {
           if (active) {
             const _get = get(mode);
-            this.space = isDefined(_get) ? _get(value) : this.space;
+            if (isDefined(_get)) {
+              Local.space.save(_get(value));
+              break;
+            }
           }
-        });
+        }
       }
     }
-    if (!isDefined(this.space)) this.space = this.getConfiguration().spaces?.items[0];
-    return this.space;
+    if (!isDefined(Local.space.load()))
+      Local.space.save(this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
+    return Local.space.load();
   };
 
   /**
@@ -429,10 +428,6 @@ export default new (class Dydu {
     return list;
   };
 
-  setInitialSpace(initialSpace = DEFAULT_CONSULTATION_SPACE) {
-    this.space = initialSpace;
-  }
-
   /**
    * Set the current space and save it in the local storage.
    *
@@ -440,7 +435,7 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   setSpace = (space) => {
-    this.space = space?.trim();
+    Local.space.save(space?.trim());
   };
 
   setQualificationMode = (value) => {
@@ -495,7 +490,6 @@ export default new (class Dydu {
   handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) {
-      this.setSpace(guiCSName);
       Local.space.save(guiCSName);
     }
     return response;
@@ -648,7 +642,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
-      space: this.getSpace() || DEFAULT_CONSULTATION_SPACE,
+      space: this.getSpace(),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       variables: this.getVariables(),
     });
@@ -866,13 +860,9 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.setInitialSpace(this.getSpace(this.getConfiguration().spaces.detection));
+    this.getSpace();
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
-  }
-
-  setSpaceToDefault() {
-    this.setInitialSpace(DEFAULT_CONSULTATION_SPACE);
   }
 
   setGetSurveyCallback(getSurvey) {

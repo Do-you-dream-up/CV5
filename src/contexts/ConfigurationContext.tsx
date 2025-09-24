@@ -27,7 +27,7 @@ export const ConfigurationProvider = ({ children, configuration: configurationPr
     try {
       dydu.setConfiguration(configurationProp);
     } catch (e) {
-      dydu.setSpaceToDefault();
+      dydu.setSpace('Defaut');
     }
   }, []);
 

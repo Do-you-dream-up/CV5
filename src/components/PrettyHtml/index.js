@@ -62,11 +62,20 @@ export default function PrettyHtml({ carousel, children, className, component, h
     let _html = html;
     const hasEmptyHref = (el) => el.match(RE_HREF_EMPTY);
 
+    const quote = templatename === QUICK_REPLY ? '\\"' : '"';
+    _html = _html.replace(/<a ([^>]*)>(.*?)<\/a>/g, (match, attrs, content) => {
+      const ariaLabel = content.replace(/<[^>]+>/g, '').trim();
+      return `<a ${attrs} aria-label=${quote}${ariaLabel}${quote}>${content}</a>`;
+    });
+
     if (hrefMatchs) {
       hrefMatchs.forEach((el) => {
         if (hasEmptyHref(el)) {
           _html = _html.replace(el, el.replace(RE_HREF_EMPTY, 'href="javascript:void(0)"'));
         }
+      });
+      _html = _html.replace(/<svg([^>]*)>/g, (match, attrs) => {
+        return `<svg${attrs} aria-hidden="true">`;
       });
     }
 
