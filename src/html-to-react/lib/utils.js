@@ -87,35 +87,35 @@ function createElement(node, index, data, children) {
           key = 'className';
         } else if (key === 'for') {
           key = 'htmlFor';
-        } else if (key.equals('viewbox')) {
+        } else if (key === 'viewbox') {
           key = 'viewBox';
-        } else if (key.equals('fill-rule')) {
+        } else if (key === 'fill-rule') {
           key = 'fillRule';
-        } else if (key.equals('xlink:href')) {
+        } else if (key === 'xlink:href') {
           key = 'xlinkHref';
-        } else if (key.equals('tabindex')) {
+        } else if (key === 'tabindex') {
           key = 'tabIndex';
-        } else if (key.equals('frameborder')) {
+        } else if (key === 'frameborder') {
           key = 'frameBorder';
-        } else if (key.equals('allowfullscreen')) {
+        } else if (key === 'allowfullscreen') {
           key = 'allowFullScreen';
-        } else if (key.equals('href')) {
-          if ('javascript:void(0)'.equals(value)) {
+        } else if (key === 'href') {
+          if ('javascript:void(0)' === value) {
             value = '#';
           }
-        } else if (key.equals('onclick')) {
+        } else if (key === 'onclick') {
           key = 'onClick';
           const html = value;
           value = () => {
             executeScript(html);
           };
-        } else if (key.equals('onkeypress')) {
+        } else if (key === 'onkeypress') {
           key = 'onKeyPress';
           const html = value;
           value = (event) => {
             executeScript(html, event);
           };
-        } else if (key.equals('onkeydown')) {
+        } else if (key === 'onkeydown') {
           key = 'onKeyDown';
           const html = value;
           value = (event) => {

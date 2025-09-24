@@ -35,7 +35,7 @@ describe('talk', () => {
       '<dt>Bot ID</dt><dd>-</dd>',
       '<dt>Deployed On</dt><dd>-</dd>',
       `<dt>Language</dt><dd>${locale}</dd>`,
-      '<dt>Space</dt><dd>-</dd>',
+      '<dt>Space</dt><dd>Defaut</dd>',
       `<dt>Operating System</dt><dd>${os.name} ${os.versionName}</dd>`,
       `<dt>Browser</dt><dd>${browser.name} ${browser.version}</dd>`,
       `<dt>Platform</dt><dd>${platform.type}</dd>`,
