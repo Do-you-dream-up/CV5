@@ -44,6 +44,7 @@ import {
   b64dAllFields,
   isValidUrl,
   cleanHtml,
+  sortQuickReply,
 } from '../helpers';
 
 import { VAR_TYPE } from '../constants';
@@ -1280,5 +1281,59 @@ describe('cleanHtml', () => {
     const jsonToClean =
       '{"text":"<p><span>Veuillez consulter la définition ci-contre.<br/></span><span><em></em></span></p> <br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Je souhaiterais obtenir des informations sur Compliance Catalyst.\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Je souhaiterais obtenir des informations sur Compliance Catalyst.</a><br/><br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Comment utiliser le bouton &quot;RAID&quot; ?\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Comment utiliser le bouton \\"RAID\\" ?</a><br/><br/><a href=\\"#\\" class=\\"reword\\" onclick=\\"try {reword(\'Qu\'est qu\'une diligence d\'honorabilité ?\',{\'personality_id\':794,\'lastcondition\':92276,\'botsource\':794,\'type\':\'redirection_knowledge\'}); return false;}catch(e){}\\">Qu\'est qu\'une diligence d\'honorabilité ?</a>","separator":true,"quick":{"button4":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1452966751_DBWikiPage/compliance-catalyst-dans-l-application-sylab\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Bouton Compliance Catalyst\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1452966751_DBWikiPage/compliance-catalyst-dans-l-application-sylab\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Bouton Compliance Catalyst</a>","button5":null,"button2":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/pr1_3042678/information-negative-ou-presse-negative\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Termes à connaitre\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/pr1_3042678/information-negative-ou-presse-negative\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Glossaire</a>","button3":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1566501934_DBWikiPage/raid-recherche-automatisee-d-information-defavorable-dans-sylab\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"RAID : Recherche Automatisée d\'Information Défavorable\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1566501934_DBWikiPage/raid-recherche-automatisee-d-information-defavorable-dans-sylab\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Bouton RAID</a>","button8":null,"button9":null,"button6":null,"button7":null,"button1":"<a href=\\"https://next.caissedesdepots.fr/jplatform/jcms/1380190548_DBWikiPage/recherche-de-presse/information-negative-dans-le-cadre-de-la-lcb-ft\\" target=\\"_blank\\" rel=\\"nofeedback noopener\\" title=\\"Recherche de Presse/Information négative dans le cadre de la LCB-FT\\" onclick=\\"try {reword(\'https://next.caissedesdepots.fr/jplatform/jcms/1380190548_DBWikiPage/recherche-de-presse/information-negative-dans-le-cadre-de-la-lcb-ft\',{botsource:794,type:\'redirection_newpage\'});}catch(e){}\\">Recherche Presse négative</a>"}}';
     expect(cleanHtml(jsonToClean)).toBe(jsonToClean);
+  });
+  it('devrait trier un objet correctement en fonction de la clé numérique à l’aide de sortQuickReply', () => {
+    const contentQuick = {
+      quick4: 'Bouton 4',
+      quick1: 'Bouton 1',
+      quick12: 'Bouton 12',
+      quick2: 'Bouton 2',
+      quick11: 'Bouton 11',
+      quick3: 'Bouton 3',
+    };
+    const sorted = sortQuickReply(contentQuick);
+
+    const expectedKeys = ['quick1', 'quick2', 'quick3', 'quick4', 'quick11', 'quick12'];
+    expect(Object.keys(sorted)).toEqual(expectedKeys);
+
+    expect(sorted['quick1']).toBe('Bouton 1');
+    expect(sorted['quick2']).toBe('Bouton 2');
+    expect(sorted['quick4']).toBe('Bouton 4');
+    expect(sorted['quick12']).toBe('Bouton 12');
+    expect(sorted['quick11']).toBe('Bouton 11');
+    expect(sorted['quick3']).toBe('Bouton 3');
+  });
+  it(' if no number in quick keys, sortQuickReply should keep original order', () => {
+    const contentQuick = {
+      quickA: 'Button A',
+      quickC: 'Button C',
+      quickB: 'Button B',
+    };
+
+    const sorted = sortQuickReply(contentQuick);
+
+    const expectedKeys = ['quickA', 'quickC', 'quickB'];
+    expect(Object.keys(sorted)).toEqual(expectedKeys);
+
+    expect(sorted['quickA']).toBe('Button A');
+    expect(sorted['quickC']).toBe('Button C');
+    expect(sorted['quickB']).toBe('Button B');
+  });
+  it(' if mixed keys in quick, sortQuickReply should keep initial sort', () => {
+    const contentQuick = {
+      quick2: 'Button 2',
+      quickA: 'Button A',
+      quick1: 'Button 1',
+      quickB: 'Button B',
+    };
+
+    const sorted = sortQuickReply(contentQuick);
+    const expectedKeys = ['quick2', 'quickA', 'quick1', 'quickB'];
+    expect(Object.keys(sorted)).toEqual(expectedKeys);
+
+    expect(sorted['quick2']).toBe('Button 2');
+    expect(sorted['quickA']).toBe('Button A');
+    expect(sorted['quick1']).toBe('Button 1');
+    expect(sorted['quickB']).toBe('Button B');
   });
 });

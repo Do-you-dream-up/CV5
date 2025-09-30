@@ -1,6 +1,6 @@
 import QuickreplyTemplate from './';
 import { render } from '../../tools/test-utils';
-import { newObjectSort } from './';
+import { sortQuickReply } from '../../tools/helpers';
 
 describe('QuickreplyTemplate', () => {
   it('renders null if html is not defined', () => {
@@ -25,32 +25,19 @@ describe('QuickreplyTemplate', () => {
     expect(getByText('Button 1')).toBeDefined();
     expect(getByText('Button 2')).toBeDefined();
   });
-  it('devrait trier un objet correctement en fonction de la clé numérique à l’aide de newObjectSort', () => {
-    const contentQuick = {
-      quick4: 'Bouton 3',
-      quick1: 'Bouton 1',
-      quick2: 'Bouton 2',
-      quick12: 'Bouton 12',
-    };
-    const newObjectSort = (obj, fn) => {
-      return Object.keys(obj).reduce((acc, k) => {
-        acc[fn(obj[k], k, obj)] = obj[k];
-        return acc;
-      }, {});
-    };
-
-    const sortFn = (val, key) => {
-      return parseInt(key.match(/\d+/));
-    };
-
-    const sorted = newObjectSort(contentQuick, sortFn);
-
-    const expectedKeys = ['1', '2', '4', '12'];
-    expect(Object.keys(sorted)).toEqual(expectedKeys);
-
-    expect(sorted['1']).toBe('Bouton 1');
-    expect(sorted['2']).toBe('Bouton 2');
-    expect(sorted['4']).toBe('Bouton 3');
-    expect(sorted['12']).toBe('Bouton 12');
+  it(' if quick is empty, sortQuickReply should return an empty object', () => {
+    const contentQuick = {};
+    const sorted = sortQuickReply(contentQuick);
+    expect(sorted).toEqual({});
+  });
+  it(' if quick is null, sortQuickReply should return null', () => {
+    const contentQuick = null;
+    const sorted = sortQuickReply(contentQuick);
+    expect(sorted).toBeNull();
+  });
+  it(' if quick is undefined, sortQuickReply should return undefined', () => {
+    const contentQuick = undefined;
+    const sorted = sortQuickReply(contentQuick);
+    expect(sorted).toBeUndefined();
   });
 });

@@ -438,6 +438,29 @@ export const htmlToJsonForSendUploadFile = (html) => {
   return JSON.parse(correctedJsonText);
 };
 
+// Sort quick replies object by numeric key if any, otherwise keep original order
+export const sortQuickReply = (obj) => {
+  if (!obj) return obj;
+
+  const keys = Object.keys(obj);
+  const allHaveNumber = keys.every((k) => /\d+/.test(k));
+
+  if (!allHaveNumber) {
+    return { ...obj };
+  }
+  return keys
+    .map((key) => ({
+      sortKey: parseInt(key.match(/\d+/)[0], 10),
+      key,
+      value: obj[key],
+    }))
+    .sort((a, b) => a.sortKey - b.sortKey)
+    .reduce((acc, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+};
+
 export function getChatboxId() {
   let chatBoxId = getScriptId();
 

@@ -14,7 +14,8 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { generateTts } from './apiVoicebot';
 import dydu from '../../tools/dydu';
-import { MicrophonIcon, PlayIcon, PauseIcon, ReplayIcon, StopIcon } from '../CustomIcons/CustomIcons';
+import { MicrophonIcon, PauseIcon, PlayIcon, ReplayIcon, StopIcon } from '../CustomIcons/CustomIcons';
+import { sortQuickReply } from '../../tools/helpers';
 
 /**
  * TTS / STT
@@ -120,6 +121,15 @@ const Voice = ({ show, v, setHasTTSError }) => {
   window.dydu.voice = {
     startRecording: () => (isChrome ? startRecordChrome() : startRecording()),
   };
+  const mergeTextAndTemplatedataFromVoiceContent = (voiceContent) => {
+    if (!voiceContent) return null;
+    if (!voiceContent.templateData) return voiceContent.text;
+    const { templateData, ...rest } = voiceContent;
+    const templateDataObject = templateData ? JSON.parse(templateData) : {};
+    const sortTemplateData = sortQuickReply(templateDataObject);
+
+    return [...Object.values(rest), ...Object.values(sortTemplateData)].filter(Boolean).join(' ');
+  };
 
   React.useEffect(() => {
     if (voiceContent && handelVoice) {
@@ -137,7 +147,7 @@ const Voice = ({ show, v, setHasTTSError }) => {
         ttsServerUser,
         ttsServerPassword,
         nameOfCallBotSelected,
-        voiceContent.text,
+        mergeTextAndTemplatedataFromVoiceContent(voiceContent),
         providerSelected,
         selectedLanguage,
       )
