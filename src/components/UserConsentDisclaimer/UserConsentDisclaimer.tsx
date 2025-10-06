@@ -6,6 +6,7 @@ import UserConsentOptions from '../UserConsentOptions/UserConsentOptions';
 import { useBotInfo } from '../../contexts/BotInfoContext';
 import Loader from '../Loader';
 import { Local } from 'src/tools/storage';
+import Button from '../Button/Button';
 
 /**
  * User Consent disclaimer. Ask the user at first visit what information he chooses to share.
@@ -29,24 +30,26 @@ export default function UserConsentDisclaimer({ children, ...rest }: UserConsent
   const { isUserConsentFetched } = useBotInfo();
 
   const idLabel = 'dydu-userConsent-text';
-  const actions = [
-    {
-      children: userConsentForCurrentLanguage?.firstPage?.refuseAll,
-      id: 'dydu-disclaimer-refuse',
-      onClick: onDecline,
-      sidebar: true,
-    },
-    {
-      children: userConsentForCurrentLanguage?.firstPage?.acceptAll,
-      onClick: () => onAccept && onAccept(true),
-      id: 'dydu-disclaimer-ok',
-    },
-    {
-      children: userConsentForCurrentLanguage?.firstPage?.chooseOptions,
-      onClick: onChooseOptions,
-      id: 'dydu-disclaimer-options',
-    },
-  ];
+
+  const horizontalActions = () => {
+    return (
+      <div className={classes.horizontalActions}>
+        <Button className={classes.horizontalButton} id={'dydu-disclaimer-refuse'} onClick={onDecline} sidebar={true}>
+          {userConsentForCurrentLanguage?.firstPage?.refuseAll}
+        </Button>
+        <Button
+          className={classes.horizontalButton}
+          id={'dydu-disclaimer-ok'}
+          onClick={() => onAccept && onAccept(true)}
+        >
+          {userConsentForCurrentLanguage?.firstPage?.acceptAll}
+        </Button>
+        <Button className={classes.horizontalButton} id={'dydu-disclaimer-options'} onClick={onChooseOptions}>
+          {userConsentForCurrentLanguage?.firstPage?.chooseOptions}
+        </Button>
+      </div>
+    );
+  };
 
   if (!isUserConsentFetched && userConsentEnabled && !Local.userConsentOptions.load()) {
     return <Loader variant="consent" size={9} />;
@@ -67,12 +70,7 @@ export default function UserConsentDisclaimer({ children, ...rest }: UserConsent
             </div>
           </>
         }
-        <Actions
-          actions={actions}
-          className={c('dydu-userConsent-disclaimer-actions', classes.actions)}
-          groupId={idLabel}
-          role="group"
-        />
+        {horizontalActions()}
       </div>
     );
   } else if (userConsentEnabled && (!userConsentPassed || displayUserConsent) && displayUserConsentOptions) {

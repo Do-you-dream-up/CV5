@@ -104,9 +104,9 @@ export default function UserConsentOptions({ ...rest }: UserConsentOptionsProps)
       sidebar: true,
     },
     {
-      children: userConsentForCurrentLanguage?.chooseOption?.valid,
+      children: userConsentForCurrentLanguage?.chooseOption?.confirm,
       onClick: onValid,
-      id: 'dydu-disclaimer-options-valid',
+      id: 'dydu-disclaimer-options-confirm',
     },
   ];
 
@@ -167,7 +167,7 @@ export default function UserConsentOptions({ ...rest }: UserConsentOptionsProps)
             <div className={c('dydu-gdpr-disclaimer-body-non-essential', classes.body)}>
               {notEssentialOptions &&
                 notEssentialOptions
-                  .filter((item) => !item.optional || (item.optional && item.selected))
+                  .filter((item) => item.show)
                   .map((item) => (
                     <div key={item.key} style={{ marginBottom: '1rem' }}>
                       <label>

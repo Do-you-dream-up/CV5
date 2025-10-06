@@ -223,8 +223,7 @@ declare namespace Models {
     key: string;
     description: string;
     title: string;
-    optional: boolean;
-    selected: boolean;
+    show: boolean;
   }
 
   export interface Header {

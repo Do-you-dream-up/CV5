@@ -1,21 +1,20 @@
 {
   "font": {
     "monospace": "monospace",
-    "sansSerif": "'Roboto Regular', 'Open Sans', sans-serif",
+    "sansSerif": "'Open Sans', sans-serif",
     "serif": "sans-serif"
   },
-
   "palette": {
     "action": {
       "active": "rgba(0, 0, 0, .4)",
       "disabled": "rgba(0, 0, 0, .26)",
       "disabledBackground": "rgba(0, 0, 0, .12)",
-      "hover": "rgba(112, 145, 216, .10)",
+      "hover": "rgba(0, 0, 0, .14)",
       "selected": "rgba(0, 0, 0, .08)"
     },
     "background": {
-      "bullet": "#757575",
-      "default": "#FFFFFF",
+      "bullet": "#A4A4A4",
+      "default": "#F5F5F5",
       "dim": "rgba(0, 0, 0, .05)",
       "highlight": "rgba(0, 0, 0, .05)",
       "menu": "#FFFFFF",
@@ -40,7 +39,7 @@
       "text": "rgba(0, 0, 0, .87)"
     },
     "response": {
-      "background": "#EDF1F5",
+      "background": "#FFFFFF",
       "text": "rgba(0, 0, 0, .87)"
     },
     "sidebar": {
@@ -48,7 +47,7 @@
       "text": "#FFFFFF"
     },
     "success": {
-      "main": "#26A675",
+      "main": "#2CBF87",
       "text": "#FFFFFF"
     },
     "text": {
@@ -61,12 +60,11 @@
       "background": "#616161E6",
       "text": "#FFFFFF"
     },
-    "warning":{
+    "warning": {
       "main": "#F3B63B",
       "text": "#FFFFFF"
     }
   },
-
   "shadows": [
     "none",
     "0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12)",
@@ -94,7 +92,6 @@
     "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
     "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)"
   ],
-
   "shape": {
     "radius": {
       "inner": 4,

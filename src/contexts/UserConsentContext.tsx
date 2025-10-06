@@ -51,20 +51,10 @@ export function UserConsentProvider({ children }: UserConsentProviderProps) {
   const [userConsentForCurrentLanguage, setUserConsentForCurrentLanguage] = useState<any>();
   const [displayUserConsent, setDisplayUserConsent] = useState<boolean>(false);
 
-  const essential: Record<string, Models.UserConsentItem> = userConsentForCurrentLanguage?.chooseOption?.essential;
+  const essentialOptions: Models.UserConsentItem[] = userConsentForCurrentLanguage?.chooseOption?.essential?.items;
 
-  const essentialOptions: Models.UserConsentItem[] = Object.entries(essential || {})
-    .filter(([, item]) => item && typeof item === 'object')
-    .filter(([, item]) => item.selected)
-    .map(([key, item]) => ({ key, ...item }));
-
-  const notEssential: Record<string, Models.UserConsentItem> =
-    userConsentForCurrentLanguage?.chooseOption?.notEssential;
-
-  const notEssentialOptions: Models.UserConsentItem[] = Object.entries(notEssential || {})
-    .filter(([, item]) => item && typeof item === 'object')
-    .filter(([, item]) => item.selected)
-    .map(([key, item]) => ({ key, ...item }));
+  const notEssentialOptions: Models.UserConsentItem[] =
+    userConsentForCurrentLanguage?.chooseOption?.notEssential?.items;
 
   const currentLanguage = Local.locale.load() ? Local.locale.load() : dydu.getLocale();
 

@@ -10,10 +10,17 @@ export default createUseStyles({
       justifyContent: 'center',
       width: '50%',
     },
-    '& [class*="txt"]': {
-      maxHeight: 'none',
-      minHeight: '1.4em',
-    },
+    justifyContent: 'center',
+  },
+  horizontalActions: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+  },
+  horizontalButton: {
+    textAlign: 'center',
+    marginLeft: '10px',
+    marginRight: '10px',
     justifyContent: 'center',
   },
   body: {

@@ -24,7 +24,7 @@ export interface ButtonProps {
   type?: string;
   variant?: 'contained' | 'icon' | 'text';
   rollOver?: string;
-  className?: any[];
+  className?: any;
 }
 
 export default forwardRef((props: ButtonProps, ref) => <Button {...props} reference={ref} />);
