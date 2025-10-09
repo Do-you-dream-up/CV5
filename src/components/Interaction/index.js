@@ -57,7 +57,7 @@ const templateNameToBubbleCreateAction = {
   [INTERACTION_TEMPLATE.carousel]: (list) => {
     const bubbles = [];
     /* if the interaction is a carousel template, this first divides and orders its content in 5 objects based on the
-                    product number (last character of property name), then creates a sortedArray with each product as a string */
+                                product number (last character of property name), then creates a sortedArray with each product as a string */
     list.forEach((el) => {
       const bubble = {};
       if (typeof el === 'string') {
@@ -259,7 +259,7 @@ export default function Interaction({
     if (type?.equals(INTERACTION_TYPE.response) && NameBot && !!avatarDisplayBot) name = NameBot;
 
     return (
-      <span className={c(`dydu-name-${type}`, classes[`name${type}`])} aria-hidden="true">
+      <span className={c(`dydu-name-${type}`, classes[`name${type}`])} aria-hidden={true}>
         {name}
       </span>
     );
