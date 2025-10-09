@@ -75,7 +75,7 @@ export default function PrettyHtml({ carousel, children, className, component, h
         }
       });
       _html = _html.replace(/<svg([^>]*)>/g, (match, attrs) => {
-        return `<svg${attrs} aria-hidden="true">`;
+        return `<svg${attrs} aria-hidden={true}>`;
       });
     }
 
