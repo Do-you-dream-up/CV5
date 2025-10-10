@@ -6,6 +6,7 @@ const Merge = require('webpack-merge');
 const configuration = require('./public/override/configuration.json');
 const common = require('./webpack.common');
 const GitRevision = require('git-revision-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env) => {
@@ -41,6 +42,21 @@ module.exports = (env) => {
         env.CHATBOX_REVISION || getCommitHash()
       }.js`,
       path: Path.resolve(__dirname, 'build/'.concat(buildTime)), // backend will know buildtime based on the name of this directory
+    },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            output: {
+              // force all non-ASCII characters to be unicode escaped (\uXXXX)
+              ascii_only: true,
+            },
+          },
+        }),
+        // if we use a CSS minifier, list it here
+        // new CssMinimizerPlugin(),
+      ],
     },
     plugins: [
       // new WebpackBundleAnalyzer(), // uncomment this line in local to analyze bundles
