@@ -69,6 +69,7 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     const userConsentDisclaimer = shadowRoot?.getElementById('dydu-user-consent-disclaimer');
     const userConsentOptions = shadowRoot?.getElementById('dydu-user-consent-options');
     const sidebar = shadowRoot?.getElementById('dydu-sidebar');
+    const gdprDisclaimer = shadowRoot?.getElementById('dydu-gdpr-disclaimer');
     if (dialog && dialog.contains(e.target)) {
       return;
     } else if (userConsentDisclaimer && userConsentDisclaimer.contains(e.target)) {
@@ -76,6 +77,8 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     } else if (userConsentOptions && userConsentOptions.contains(e.target)) {
       return;
     } else if (sidebar && sidebar.contains(e.target)) {
+      return;
+    } else if (gdprDisclaimer && gdprDisclaimer.contains(e.target)) {
       return;
     } else {
       e.stopPropagation();

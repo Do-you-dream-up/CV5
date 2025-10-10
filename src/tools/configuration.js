@@ -43,13 +43,6 @@ export const configuration = new (class Configuration {
         this.configuration = data;
       }
 
-      if (!isLoadedFromChannels()) {
-        const currentSpace = Local.space.load();
-        if (currentSpace === null) {
-          dydu.getSpace();
-        }
-      }
-
       dydu.setConfiguration(this.configuration);
       return this.configuration;
     });

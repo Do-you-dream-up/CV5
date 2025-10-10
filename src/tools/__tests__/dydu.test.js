@@ -164,7 +164,6 @@ describe('dydu.js', function () {
       const infosEntity = {
         botId: '',
         locale: '',
-        space: '',
       };
 
       // WHEN

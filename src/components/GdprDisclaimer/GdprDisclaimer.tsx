@@ -62,6 +62,7 @@ export default function GdprDisclaimer({
         component,
         {
           className: c('dydu-gdpr-disclaimer', className, classes.root),
+          id: 'dydu-gdpr-disclaimer',
           ref: gdprRef,
           ...rest,
         },

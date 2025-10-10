@@ -849,7 +849,6 @@ export default new (class Dydu {
     return {
       botId: BOT.id,
       locale: this.getLocale(),
-      space: this.getSpace(),
     };
   };
 
@@ -860,7 +859,6 @@ export default new (class Dydu {
   }
 
   onConfigurationLoaded() {
-    this.getSpace();
     this.setQualificationMode(this.getConfiguration().qualification?.active);
     this.initLocaleWithConfiguration(this.getConfiguration());
   }
