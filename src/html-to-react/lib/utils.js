@@ -103,6 +103,9 @@ function createElement(node, index, data, children) {
           if ('javascript:void(0)' === value) {
             value = '#';
           }
+          if ((value === '#' || value === '\\"#\\"') && node.attribs.class?.contains('reword')) {
+            key = 'hrefIgnored';
+          }
         } else if (key === 'onclick') {
           key = 'onClick';
           const html = value;
