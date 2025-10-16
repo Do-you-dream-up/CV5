@@ -8,9 +8,6 @@ import PromptEmail from '../PromptEmail';
 import Spaces from '../Spaces';
 import Top from '../Top';
 import c from 'classnames';
-import dydu from '../../tools/dydu';
-import { isDefined } from '../../tools/helpers';
-import { useConfiguration } from '../../contexts/ConfigurationContext';
 import { useDialog } from '../../contexts/DialogContext';
 import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
@@ -24,21 +21,11 @@ interface DialogProps {
 }
 
 const Dialog: React.FC<DialogProps> = ({ dialogRef, open, style, ...otherPropsFromChatbox }) => {
-  const { configuration } = useConfiguration();
   const { interactions, prompt, setPrompt, isWaitingForResponse } = useDialog();
   const classes = useStyles();
   const { isEnabled: isTopKnowledgeEnabled } = useTopKnowledge();
   const { t } = useTranslation('translation');
-  const { active: spacesActive } = configuration?.spaces || {};
   const { shadowAnchor } = useShadow();
-
-  useEffect(() => {
-    if (spacesActive) {
-      if (!isDefined(dydu.getSpace())) {
-        setPrompt && setPrompt('spaces');
-      }
-    }
-  }, [spacesActive, setPrompt]);
 
   /**
    * Scroll to the bottom of the dialog on open chatbox
