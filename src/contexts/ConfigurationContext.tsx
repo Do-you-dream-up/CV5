@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import dydu from '../tools/dydu';
+import { BOT } from '../tools/bot';
 
 interface ConfigurationProviderProps {
   children: ReactNode;
@@ -27,7 +28,7 @@ export const ConfigurationProvider = ({ children, configuration: configurationPr
     try {
       dydu.setConfiguration(configurationProp);
     } catch (e) {
-      dydu.setSpace('Defaut');
+      dydu.setSpace(BOT.id, 'Defaut');
     }
   }, []);
 

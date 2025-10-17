@@ -3,6 +3,7 @@ import { act } from '@testing-library/react';
 import dydu from '../../dydu';
 import { renderHook } from '@testing-library/react-hooks';
 import useVisitManager from '../useVisitManager';
+import { BOT } from '../../bot';
 
 jest.mock('../../dydu', () => ({
   getInfos: jest.fn(),
@@ -17,60 +18,47 @@ describe('useVisitManager', () => {
   });
 
   it('should not call welcomeCall when visit is found and has not expired', async () => {
-    const getInfosMock = jest.fn(() => ({
-      someInfo: 'someValue',
-    }));
-    dydu.getInfos.mockResolvedValueOnce(getInfosMock());
-
-    Local.visit.getKey.mockReturnValueOnce('visitKey');
     Local.visit.isSet.mockReturnValueOnce(true);
     Local.visit.load.mockReturnValueOnce(Date.now());
 
     const { result, waitFor } = renderHook(() => useVisitManager());
 
-    expect(result.current.result).toBe(false);
-
     await act(async () => {
       await result.current.fetchVisitorRegistration();
       await waitFor(() => result.current.result === true);
     });
 
-    expect(getInfosMock).toHaveBeenCalled();
-    expect(Local.visit.getKey).toHaveBeenCalled();
-    expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
-    expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
-    expect(result.current.result).toBe(true);
+    expect(Local.visit.isSet).toHaveBeenCalledWith(BOT.id);
+    expect(Local.visit.load).toHaveBeenCalledWith(BOT.id);
+
     expect(dydu.welcomeCall).not.toHaveBeenCalled();
+    expect(dydu.getInfos).not.toHaveBeenCalled();
+    expect(Local.visit.save).not.toHaveBeenCalled();
+
+    expect(result.current.result).toBe(true);
   });
 
   it('should call welcomeCall when visit is found but has expired', async () => {
-    const getInfosMock = jest.fn(() => ({
-      someInfo: 'someValue',
-    }));
-    dydu.getInfos.mockResolvedValueOnce(getInfosMock());
+    const mockInfos = { someInfo: 'someValue' };
 
-    Local.visit.getKey.mockReturnValueOnce('visitKey');
+    dydu.getInfos.mockReturnValueOnce(mockInfos);
+    dydu.welcomeCall.mockResolvedValueOnce(undefined);
+
     Local.visit.isSet.mockReturnValueOnce(true);
     Local.visit.load.mockReturnValueOnce(Date.now() - 86400000);
-    Local.userConsentOptions.load.mockReturnValueOnce(null);
-
-    const registerVisitMock = jest.fn();
-    dydu.welcomeCall.mockResolvedValueOnce(registerVisitMock());
 
     const { result, waitFor } = renderHook(() => useVisitManager());
-
-    expect(result.current.result).toBe(false);
 
     await act(async () => {
       await result.current.fetchVisitorRegistration();
       await waitFor(() => result.current.result === true);
     });
 
-    expect(getInfosMock).toHaveBeenCalled();
-    expect(Local.visit.getKey).toHaveBeenCalled();
-    expect(Local.visit.isSet).toHaveBeenCalledWith('visitKey');
-    expect(Local.visit.load).toHaveBeenCalledWith('visitKey');
+    expect(Local.visit.isSet).toHaveBeenCalledWith(BOT.id);
+    expect(Local.visit.load).toHaveBeenCalledWith(BOT.id);
     expect(dydu.welcomeCall).toHaveBeenCalled();
+    expect(dydu.getInfos).toHaveBeenCalled();
+    expect(Local.visit.save).toHaveBeenCalledWith(BOT.id, mockInfos);
     expect(result.current.result).toBe(true);
   });
 });

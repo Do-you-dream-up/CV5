@@ -14,6 +14,7 @@ import { DatabaseIcon, EmailIcon, PrinterIcon, ShieldIcon } from '../CustomIcons
 import { Local } from '../../tools/storage';
 import { useUserConsent } from '../../contexts/UserConsentContext';
 import { useShadow } from '../../contexts/ShadowProvider';
+import { BOT } from '../../tools/bot';
 
 /**
  * Footer menu. Display a list of hidden features.
@@ -68,7 +69,7 @@ export default function ModalFooterMenu({ className, component, onResolve, ...re
     {
       icon: <DatabaseIcon />,
       onClick: () => window.dydu.space.prompt(),
-      text: [spaces, dydu.getSpace()].filter((it) => it).join(': '),
+      text: [spaces, dydu.getSpace(BOT.id)].filter((it) => it).join(': '),
       when: configuration?.spaces?.items?.length && configuration?.spaces?.items?.length > 1,
     },
     {

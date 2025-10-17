@@ -90,7 +90,7 @@ export default new (class Dydu {
       doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       userInput: `#dydumailto:${Local.contextId.load(BOT.id)}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -229,11 +229,11 @@ export default new (class Dydu {
    * and return space from local storage.
    *
    */
-  getSpace = () => {
+  getSpace = (botId) => {
     const detectionStrategy = this.getConfiguration()?.spaces?.detection;
     const atLeastOneStrategyActive = detectionStrategy?.some(({ active }) => active);
     const saveDefaultSpace = () => {
-      Local.space.save(this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
+      Local.space.save(botId, this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
     };
     if (!Local.space.load() && atLeastOneStrategyActive) {
       if (Array.isArray(detectionStrategy)) {
@@ -257,7 +257,7 @@ export default new (class Dydu {
           if (active) {
             const _get = get(mode);
             if (isDefined(_get(value))) {
-              Local.space.save(_get(value));
+              Local.space.save(botId, _get(value));
               break;
             } else {
               saveDefaultSpace();
@@ -266,10 +266,8 @@ export default new (class Dydu {
         }
       }
     }
-    if (!isDefined(Local.space.load())) {
-      saveDefaultSpace();
-    }
-    return Local.space.load();
+    if (!isDefined(Local.space.load(botId))) saveDefaultSpace();
+    return Local.space.load(botId);
   };
 
   /**
@@ -437,11 +435,12 @@ export default new (class Dydu {
   /**
    * Set the current space and save it in the local storage.
    *
+   * @param botId
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = (space) => {
-    Local.space.save(space?.trim());
+  setSpace = (botId, space) => {
+    Local.space.save(botId, space?.trim());
   };
 
   setQualificationMode = (value) => {
@@ -462,7 +461,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       language: this.getLocale(),
       search: text,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       onlyShowRewordables: true, // to display only the activates rewords / suggestions
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -496,7 +495,7 @@ export default new (class Dydu {
   handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) {
-      Local.space.save(guiCSName);
+      Local.space.save(BOT.id, guiCSName);
     }
     return response;
   }
@@ -582,7 +581,7 @@ export default new (class Dydu {
     const data = {
       solutionUsed: SOLUTION_TYPE.livechat,
       format: RESPONSE_QUERY_FORMAT.json,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       contextUuid: contextId || context?.fromBase64() || Local.contextId.load(BOT.id),
       language: this.getLocale(),
       lastPoll: pollUpdatedInteractionDate || serverTime,
@@ -608,7 +607,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       maxKnowledge: size,
       period: period,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -648,7 +647,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       variables: this.getVariables(),
     });
@@ -676,7 +675,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
       qualificationMode: this.qualificationMode,
-      space: this.getSpace(),
+      space: this.getSpace(BOT.id),
       userInput: text,
       userUrl: this.isUrlAuthorized() ? getUrl : null,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -716,7 +715,7 @@ export default new (class Dydu {
     language: this.getLocale(),
     os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
     qualificationMode: this.qualificationMode,
-    space: this.getSpace(),
+    space: this.getSpace(BOT.id),
     tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
     userUrl: this.isUrlAuthorized ? getUrl : null,
     solutionUsed: options?.solutionUsed || SOLUTION_TYPE.assistant,
@@ -884,6 +883,12 @@ export default new (class Dydu {
       }
     } catch (e) {
       console.log('catched Error', e);
+    }
+  }
+
+  setBotId(newBotId) {
+    if (isDefined(newBotId) && newBotId !== BOT.id) {
+      BOT.id = newBotId;
     }
   }
 })();

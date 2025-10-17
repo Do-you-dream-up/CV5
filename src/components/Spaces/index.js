@@ -6,6 +6,7 @@ import useStyles from './styles';
 import { useTranslation } from 'react-i18next';
 import { useDialog } from '../../contexts/DialogContext';
 import { Local } from '../../tools/storage';
+import { BOT } from '../../tools/bot';
 
 /**
  * Display a form and enable consulting space selection.
@@ -20,7 +21,7 @@ export default function Spaces({ onResolve, scroll, thinking }) {
 
   const onSubmit = ({ space }) => {
     setPrompt('');
-    Local.space.save(space);
+    Local.space.save(BOT.id, space);
   };
 
   const onDismiss = () => {

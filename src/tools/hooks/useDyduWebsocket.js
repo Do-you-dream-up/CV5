@@ -79,7 +79,7 @@ const completeLivechatPayload = (configuration) => {
   return LivechatPayload.addPayloadCommonContent({
     contextId: configuration.contextId || Local.contextId.load(botId),
     botId: botId,
-    space: dydu.getSpace() || Local.space.load(),
+    space: dydu.getSpace(botId) || Local.space.load(botId),
     clientId: dydu.isClientIdAuthorized() ? dydu.getClientId() || Local.clientId.load() : false,
     language: dydu.getLocale() || Local.locale.load(),
   });
