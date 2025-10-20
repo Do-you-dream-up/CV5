@@ -7,7 +7,7 @@ export default createUseStyles((theme) => ({
     '&:has(div[style*="text-align"])': {
       width: '100%',
     },
-    '& > button[href], a[class*="reword"]': {
+    '& > button[href], a[href]': {
       color: theme.palette.primary.text,
       fontSize: '1em',
       flexShrink: '0',
