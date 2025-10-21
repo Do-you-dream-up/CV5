@@ -100,11 +100,8 @@ function createElement(node, index, data, children) {
         } else if (key === 'allowfullscreen') {
           key = 'allowFullScreen';
         } else if (key === 'href') {
-          if ('javascript:void(0)' === value) {
-            value = '#';
-          }
           if ((value === '#' || value === '\\"#\\"') && node.attribs.class?.contains('reword')) {
-            key = 'hrefIgnored';
+            value = 'javascript:void(0)';
           }
         } else if (key === 'onclick') {
           key = 'onClick';
