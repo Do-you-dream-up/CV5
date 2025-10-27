@@ -5,7 +5,7 @@ import {isLoadedFromChannels} from "./wizard";
 /**
  * - Wait for the bot ID and the API server then create default API based on the server ;
  * - Use BOT from local storage for the chatbox preview in Channels ;
- * - Protocol http is used when bliss is used in local with Channels.
+ * - Protocol http is used when chatbox-v5 is used in local with Channels.
  */
 
 interface BotConfig {

@@ -156,7 +156,7 @@ functional-test:
       chmod 700 ~/.ssh
     - |
       git config --global user.email "infra@dydu.ai"
-      git config --global user.name "GitLab CI Bliss"
+      git config --global user.name "GitLab CI Chatbox-V5"
       git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
       git clone https://$CI_HTTPS_RUNNER_USER:$CI_HTTPS_RUNNER_TOKEN@gitlab.dydu.tech/qa/autobox.git /autobox
     - |

@@ -25,12 +25,12 @@ jobs:
         then
             echo "Updating $version"
             git checkout main
-            git remote add bliss "https://github_fetch:$GITLAB_TOKEN@gitlab.dydu.tech/front/bliss.git"
+            git remote add chatbox-v5 "https://github_fetch:$GITLAB_TOKEN@gitlab.dydu.tech/front/chatbox-v5.git"
             git config --global user.email "infra@dydu.ai"
             git config --global user.name "dyduai"
         
             git fetch --all
-            git reset --hard bliss/$version
+            git reset --hard chatbox-v5/$version
 
             # Suppression des répertoires cachés
             rm -rf .ssh
@@ -47,7 +47,7 @@ jobs:
             git push --force-with-lease
             git tag $version
             git push origin tag $version
-            git remote remove bliss
+            git remote remove chatbox-v5
             echo "Done, now go to and create a release from the last tag"
         else
             echo "Specified version is invalid"
