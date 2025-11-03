@@ -232,6 +232,9 @@ export default new (class Dydu {
   getSpace = () => {
     const detectionStrategy = this.getConfiguration()?.spaces?.detection;
     const atLeastOneStrategyActive = detectionStrategy?.some(({ active }) => active);
+    const saveDefaultSpace = () => {
+      Local.space.save(this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
+    };
     if (!Local.space.load() && atLeastOneStrategyActive) {
       if (Array.isArray(detectionStrategy)) {
         const get = (mode) =>
@@ -253,16 +256,19 @@ export default new (class Dydu {
         for (const { active, mode, value } of detectionStrategy) {
           if (active) {
             const _get = get(mode);
-            if (isDefined(_get)) {
+            if (isDefined(_get(value))) {
               Local.space.save(_get(value));
               break;
+            } else {
+              saveDefaultSpace();
             }
           }
         }
       }
     }
-    if (!isDefined(Local.space.load()))
-      Local.space.save(this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
+    if (!isDefined(Local.space.load())) {
+      saveDefaultSpace();
+    }
     return Local.space.load();
   };
 
