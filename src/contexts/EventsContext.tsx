@@ -96,12 +96,14 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     shadowAnchor?.addEventListener('mouseenter', handleUserActive);
     shadowAnchor?.addEventListener('touchstart', handleUserActive);
     shadowAnchor?.addEventListener('focusin', handleUserActive);
+    shadowAnchor?.addEventListener('keypress', handleUserActive);
     shadowAnchor?.addEventListener('wheel', preventPropagationScroll);
     shadowAnchor?.addEventListener('touchmove', preventPropagationScroll);
     return () => {
       shadowAnchor?.removeEventListener('mouseenter', handleUserActive);
       shadowAnchor?.removeEventListener('touchstart', handleUserActive);
       shadowAnchor?.removeEventListener('focusin', handleUserActive);
+      shadowAnchor?.removeEventListener('keypress', handleUserActive);
       shadowAnchor?.removeEventListener('wheel', preventPropagationScroll);
       shadowAnchor?.removeEventListener('touchmove', preventPropagationScroll);
     };
