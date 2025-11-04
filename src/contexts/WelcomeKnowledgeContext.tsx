@@ -63,8 +63,8 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
     return dydu.checkContextIdStillAvailable().then(async (response): Promise<boolean> => {
       if (!response) {
         Local.livechatType.remove();
-        Local.space.remove();
-        Local.lastInteraction.reset();
+        Local.space.remove(BOT.id);
+        Local.lastInteraction.reset(BOT.id);
         Local.welcomeKnowledge.reset(BOT.id, currentContextUUID);
         Local.contextId.reset(BOT.id);
         return Promise.resolve(false);

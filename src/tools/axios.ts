@@ -125,7 +125,7 @@ const handleAxiosResponse = (data: any) => {
   if (hasProperty(data, 'values')) {
     data.values = decode(data.values);
     if (data.values.guiCSName) {
-      dydu.setSpace(data.values.guiCSName);
+      dydu.setSpace(BOT.id, data.values.guiCSName);
     }
     if (data.values.language) {
       dydu.setLocale(data.values.language, true);

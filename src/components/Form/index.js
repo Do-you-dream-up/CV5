@@ -8,6 +8,7 @@ import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { FormIcon } from '../CustomIcons/CustomIcons';
 import dydu from '../../tools/dydu';
+import { BOT } from '../../tools/bot';
 /**
  * Base form component.
  *
@@ -16,7 +17,7 @@ import dydu from '../../tools/dydu';
  */
 export default function Form({ children, className, onDismiss, onReject, onResolve, thinking }) {
   const classes = useStyles();
-  const currentSpace = dydu.getSpace();
+  const currentSpace = dydu.getSpace(BOT.id);
   const [data, setData] = useState({ space: currentSpace });
   const { t } = useTranslation('translation');
   const theme = useTheme();

@@ -4,6 +4,7 @@ import cookie from 'js-cookie';
 import uuid4 from 'uuid4';
 import { cleanUrl } from '../components/auth/helpers';
 import { isLoadedFromChannels } from './wizard';
+import { BOT } from './bot';
 
 /**
  * Small wrapper featuring a getter and a setter for browser session.
@@ -179,13 +180,24 @@ export class Local {
     oidcPkceCodeChallenge: 'dydu-code-challenge' + suffix,
   };
 
-  static clearAll() {
-    Object.keys(localStorage)
-      .filter(
-        (key: string) =>
-          key.startsWith('dydu') || key.startsWith('pushruleTrigger_') || key.startsWith('DYDU_') || key === 'pkce',
-      )
-      .forEach((key: string) => localStorage.removeItem(key));
+  static clearAll(botId?: string) {
+    const prefixes = ['dydu', 'pushruleTrigger_', 'DYDU_'];
+    if (!botId) {
+      Object.keys(localStorage)
+        .filter((key: string) => {
+          const hasPrefix = prefixes.some((prefix) => key.startsWith(prefix));
+          return hasPrefix || key === 'pkce';
+        })
+        .forEach((key: string) => localStorage.removeItem(key));
+    } else {
+      Object.keys(localStorage)
+        .filter((key: string) => {
+          const hasPrefix = prefixes.some((prefix) => key.startsWith(prefix));
+          const hasSuffix = botId && key.endsWith(botId);
+          return hasPrefix && hasSuffix;
+        })
+        .forEach((key: string) => localStorage.removeItem(key));
+    }
   }
 
   /**
@@ -332,9 +344,16 @@ export class Local {
   });
 
   static space = Object.create({
-    save: (data) => localStorage.setItem(Local.names.space, data),
-    load: () => localStorage.getItem(Local.names.space) || null,
-    remove: () => localStorage.removeItem(Local.names.space),
+    getKey: (botId: string) => `${Local.names.space}_${botId}`,
+    save: (botId: string, data) => {
+      localStorage.setItem(Local.space.getKey(botId), data);
+    },
+    load: (botId: string) => {
+      return localStorage.getItem(Local.space.getKey(botId)) || null;
+    },
+    remove: (botId: string) => {
+      localStorage.removeItem(Local.space.getKey(botId));
+    },
   });
 
   static viewMode = Object.create({
@@ -347,31 +366,40 @@ export class Local {
   });
 
   static visit = Object.create({
-    getKey: () => Local.names.visit,
-    load: (keyString = ''): number | null => {
-      const content = localStorage.getItem(keyString);
+    getKey: (botId: string) => {
+      return `${Local.names.visit}_${botId}`;
+    },
+    load: (botId: string): number | null => {
+      const key = Local.visit.getKey(botId);
+      const content = localStorage.getItem(key);
       return isDefined(content) ? Number(content) : null;
     },
-    isSet: (keyString = '') => {
-      const content = Local.visit.load(keyString);
-      return [isDefined, (c) => !isEmptyObject(c)].every((fn) => fn(content));
+    isSet: (botId: string) => {
+      const content = Local.visit.load(botId);
+      return isDefined(content);
     },
-    save: (keyStringParams = {}) => {
-      const key = Local.visit.getKey(keyStringParams);
+    save: (botId: string) => {
+      const key = Local.visit.getKey(botId);
       localStorage.setItem(key, Date.now().toString());
     },
   });
 
   static lastInteraction = Object.create({
-    load: () => {
-      const content = localStorage.getItem(Local.names.lastInteraction);
+    getKey: (botId: string) => `${Local.names.lastInteraction}_${botId}`,
+
+    load: (botId: string) => {
+      const key = Local.lastInteraction.getKey(botId);
+      const content = localStorage.getItem(key);
       return isDefined(content) && content ? Number(content) : null;
     },
-    save: () => {
-      localStorage.setItem(Local.names.lastInteraction, Date.now().toString());
+
+    save: (botId: string) => {
+      const key = Local.lastInteraction.getKey(botId);
+      localStorage.setItem(key, Date.now().toString());
     },
-    reset: () => {
-      localStorage.removeItem(Local.names.lastInteraction);
+    reset: (botId: string) => {
+      const key = Local.lastInteraction.getKey(botId);
+      localStorage.removeItem(key);
     },
   });
 
@@ -402,15 +430,15 @@ export class Local {
   });
 
   static welcomeKnowledge = Object.create({
-    getKey: (botId) => `${Local.names.welcome}_${botId}`,
-    load: (botId, contextId) => {
+    getKey: (botId: string) => `${Local.names.welcome}_${botId}`,
+    load: (botId: string, contextId) => {
       const data = localStorage.getItem(Local.welcomeKnowledge.getKey(botId));
       if (data) {
         return JSON.parse(data)[contextId];
       }
       return null;
     },
-    save: (botId, newValue) => {
+    save: (botId: string, newValue) => {
       if (newValue) {
         const contextId = newValue.contextId;
         const stored = Local.welcomeKnowledge.load(botId, contextId) || {};
@@ -418,7 +446,7 @@ export class Local {
         localStorage.setItem(Local.welcomeKnowledge.getKey(botId), JSON.stringify(stored));
       }
     },
-    reset: (botId) => {
+    reset: (botId: string) => {
       localStorage.removeItem(Local.welcomeKnowledge.getKey(botId));
     },
   });
@@ -503,24 +531,47 @@ export class Local {
     },
   });
 
-  static resetAllLocalStorageIfTooOld = (timeToKeep) => {
-    const lastInteraction = Local.lastInteraction.load();
+  static resetAllLocalStorageIfTooOld = (timeToKeep: number): boolean => {
+    const lastInteractionKeyPrefix = Local.names.lastInteraction;
+    const now = Date.now();
+    const allInteractionKeys = Object.keys(localStorage).filter((key) =>
+      key.startsWith(lastInteractionKeyPrefix)
+    );
+    const expiredBotIds: string[] = [];
+    let hasAtLeastOneValidKey = false;
+    let hasClearedSomething = false;
+    allInteractionKeys.forEach((key) => {
+      const content = localStorage.getItem(key);
+      const lastInteraction = content ? Number(content) : null;
 
-    if (lastInteraction) {
-      const now = Date.now();
-      const timeSpent = now - lastInteraction;
-
-      if (timeSpent > timeToKeep) {
-        console.log('LocalStorage too old (', timeSpent, 'ms). Cleaning...');
-        Local.clearAll();
-        return true;
+      if (!lastInteraction || Number.isNaN(lastInteraction)) {
+        hasAtLeastOneValidKey = true;
+        return;
       }
+
+      const timeSpent = now - lastInteraction;
+      if (timeSpent > timeToKeep) {
+        const botId = key.slice(lastInteractionKeyPrefix.length);
+        expiredBotIds.push(botId);
+      } else {
+        hasAtLeastOneValidKey = true;
+      }
+    });
+    expiredBotIds.forEach((botId) => {
+      console.log(`Local storage for bot ${botId} is too old. Clearing its data.`);
+      Local.clearAll(botId);
+      hasClearedSomething = true;
+    });
+    if (!hasAtLeastOneValidKey) {
+      Local.clearAll();
+      hasClearedSomething = true;
     }
-    return false;
+
+    return hasClearedSomething;
   };
 
   static isDialogTimeOver = () => {
-    const lastInteraction = Local.lastInteraction.load();
+    const lastInteraction = Local.lastInteraction.load(BOT.id);
 
     if (lastInteraction) {
       const now = Date.now();

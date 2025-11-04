@@ -39,6 +39,7 @@ import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
 import UserConsentDisclaimer from '../UserConsentDisclaimer/UserConsentDisclaimer';
+import { BOT } from '../../tools/bot';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -210,12 +211,22 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       };
 
       window.dydu.space = {
-        get: () => dydu.getSpace(),
+        get: () => dydu.getSpace(BOT.id),
         prompt: () => setPrompt && setPrompt('spaces'),
         set: (space, { quiet = true } = {}) => {
-          dydu.setSpace(space);
+          dydu.setSpace(BOT.id, space);
           !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`);
         },
+      };
+
+      window.dydu.setBotId = (newBotId: string) => {
+        const oldBotId = dydu.getBot().id;
+        if (newBotId && oldBotId !== newBotId) {
+          Promise.resolve()
+            .then(() => dydu.setBotId(newBotId))
+            .then(() => clearInteractions?.())
+            .then(() => fetchWelcomeKnowledge?.());
+        }
       };
 
       window.dydu.ui = {
