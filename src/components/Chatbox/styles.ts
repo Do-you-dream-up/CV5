@@ -24,6 +24,7 @@ export default createUseStyles<any, any>((theme: any): any => ({
     overflowY: 'auto',
     position: 'relative',
     scrollBehavior: 'smooth',
+    overscrollBehavior: 'contain',
   }),
   bodyHidden: () => ({
     display: 'none',
