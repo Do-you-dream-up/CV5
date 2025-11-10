@@ -64,21 +64,33 @@ export const EventsProvider = ({ children }: EventsProviderProps) => {
     }
   };
 
+  const isScrollable = (element) => {
+    return element && element.scrollHeight > element.clientHeight;
+  };
+  // La methode permet d'eviter la propagation du scroll
+  // cette methode doit etre vérifier pour chaque nouvel element qui peut etre scrollable dans le chatbox
   const preventPropagationScroll = (e) => {
     const dialog = shadowRoot?.getElementById('dydu-dialog');
     const userConsentDisclaimer = shadowRoot?.getElementById('dydu-user-consent-disclaimer');
     const userConsentOptions = shadowRoot?.getElementById('dydu-user-consent-options');
     const sidebar = shadowRoot?.getElementById('dydu-sidebar');
     const gdprDisclaimer = shadowRoot?.getElementById('dydu-gdpr-disclaimer');
-    if (dialog && dialog.contains(e.target)) {
+    const chatboxBody = shadowRoot?.getElementById('dydu-chatbox-body');
+    if (dialog && dialog.contains(e.target) && isScrollable(dialog.parentElement)) {
       return;
-    } else if (userConsentDisclaimer && userConsentDisclaimer.contains(e.target)) {
+    } else if (
+      userConsentDisclaimer &&
+      userConsentDisclaimer.contains(e.target) &&
+      isScrollable(userConsentDisclaimer)
+    ) {
       return;
-    } else if (userConsentOptions && userConsentOptions.contains(e.target)) {
+    } else if (userConsentOptions && userConsentOptions.contains(e.target) && isScrollable(userConsentOptions)) {
       return;
-    } else if (sidebar && sidebar.contains(e.target)) {
+    } else if (sidebar && sidebar.contains(e.target) && isScrollable(sidebar)) {
       return;
-    } else if (gdprDisclaimer && gdprDisclaimer.contains(e.target)) {
+    } else if (gdprDisclaimer && gdprDisclaimer.contains(e.target) && isScrollable(gdprDisclaimer)) {
+      return;
+    } else if (chatboxBody && chatboxBody.contains(e.target) && isScrollable(chatboxBody)) {
       return;
     } else {
       e.stopPropagation();

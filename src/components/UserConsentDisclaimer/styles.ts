@@ -42,6 +42,7 @@ export default createUseStyles({
   },
   root: {
     overflowY: 'auto',
+    overscrollBehavior: 'contain',
     display: 'grid',
     height: '100%',
   },
