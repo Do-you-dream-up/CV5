@@ -133,6 +133,7 @@ export default function UserConsentOptions({ ...rest }: UserConsentOptionsProps)
                       <input
                         type="checkbox"
                         checked={checkedStateEssential[item.key]}
+                        disabled={true}
                         onChange={(e) => handleCheckboxChangeEssential(e, item.key)}
                       />
                       {item.title}
