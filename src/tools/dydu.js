@@ -730,12 +730,13 @@ export default new (class Dydu {
     return Boolean(status && status >= startHttpCode && status <= endHttpCode);
   };
 
-  sendUploadFile = (file) => {
+  sendFiles = (files) => {
     const formData = new FormData();
-    formData.append('dydu-upload-file', file);
+    files.forEach((item) => formData.append(item.name, item));
+    // formData.append('dydu-upload-file', files[0]);
     const path = `fileupload?ctx=${Local.contextId.load(
       BOT.id,
-    )}&fin=dydu-upload-file&cb=dyduUploadCallBack_0PW&origin=http%3A%2F%2F0.0.0.0%3A9999`;
+    )}&fin=dydu-upload-file&cb=chatbox-upload-callback&origin=chatbox_origin`;
 
     return SERVLET.post(path, formData)
       .then((response) => {
@@ -743,10 +744,19 @@ export default new (class Dydu {
 
         if (responseObject && responseObject.params.status === 'fail') {
           console.log('La requête a échoué :', responseObject);
-          window.dydu.chat.reply(i18n.t('uploadFile.errorMessage'));
+          window.dydu.chat.reply(
+            i18n.t(
+              responseObject.params.filesNotUploaded.length === 1
+                ? 'uploadFile.errorMessage'
+                : 'uploadFiles.errorMessage',
+              {
+                name: responseObject.params.filesNotUploaded.join(', '),
+              },
+            ),
+          );
           throw new Error('La requête a échoué');
         } else {
-          this.displayUploadFileSent(file.name);
+          this.displayFilesUploaded(responseObject.params.filesUploaded, responseObject.params.filesNotUploaded);
           return true;
         }
       })
@@ -761,13 +771,21 @@ export default new (class Dydu {
     return Boolean(!getLastResponse().data?.values?.startLivechat);
   };
 
-  displayUploadFileSent = (fileName) => {
+  displayFilesUploaded = (filesUploaded, filesNotUploaded) => {
     const statusOk = this.isLastResponseStatusInRange(200, 206);
 
     if (this.isLastResponseStartsLivechat() && statusOk) {
-      window.dydu.chat.reply(i18n.t('uploadFile.sentMessage', { name: fileName }));
+      window.dydu.chat.reply(
+        i18n.t(filesUploaded.length === 1 ? 'uploadFile.sentMessage' : 'uploadFiles.sentMessage', {
+          name: filesUploaded.join(', '),
+        }),
+      );
     } else if (this.isLastResponseStartsLivechat()) {
-      window.dydu.chat.reply(i18n.t('uploadFile.errorMessage', { name: fileName }));
+      window.dydu.chat.reply(
+        i18n.t(filesNotUploaded.length === 1 ? 'uploadFile.errorMessage' : 'uploadFiles.errorMessage', {
+          name: filesNotUploaded.join(', '),
+        }),
+      );
     }
   };
 

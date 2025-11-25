@@ -206,6 +206,7 @@
       "send": "Envoyez votre message",
       "counterRemaining": "caractères restants",
       "reupload": "Remplacer le fichier à télécharger",
+      "reuploads": "Remplacer les fichiers à télécharger",
       "record": {
         "pause": "Pause",
         "play": "Lire",
@@ -285,6 +286,13 @@
     "errorSizeMessage": "La taille du fichier est trop élevée (max accepté 10 Mo)",
     "sentMessage": "Votre fichier <strong>{{name}}</strong> a bien été chargé !",
     "errorMessage": "Votre fichier <strong>{{name}}</strong> n’a malheureusement pas pu être chargé."
+  },
+  "uploadFiles": {
+    "send": "Envoyer ces fichiers",
+    "label": "Télécharger",
+    "tooMuchSelected": "Trop de fichiers selectionnés, le maximum est {{maxSize}}",
+    "sentMessage": "Vos fichiers <strong>{{name}}</strong> ont bien été chargés !",
+    "errorMessage": "Vos fichiers <strong>{{name}}</strong> n’ont malheureusement pas pu être chargés."
   },
   "survey": {
     "send": "Envoyer ma réponse",

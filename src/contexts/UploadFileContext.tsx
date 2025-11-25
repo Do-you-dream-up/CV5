@@ -1,39 +1,19 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-import { ALLOWED_FORMAT } from '../tools/constants';
-import { isDefined } from '../tools/helpers';
 import { useDialog } from './DialogContext';
 import { useTranslation } from 'react-i18next';
 
 interface UploadFileContextProps {
-  fileSelected?: File | null;
-  isFileUploadSuccess?: boolean;
-  fileName?: string;
-  validateFile?: (file: File) => boolean;
-  displaySuccessOrErrorMessage?: (isFormatAllowed: Promise<boolean>, file: File) => boolean;
-  onSelectFile?: (file: File) => void;
-  errorFormatMessage?: string | null;
-  showButtonUploadFile?: boolean;
-  getFileSize?: (file: File) => number;
-  extractFileFromEvent?: (event: any) => File;
+  selectedFiles: File[];
+  onSelectFiles?: (event: any, inputRef: any) => void;
+  invalidSelectedFilesMessage?: string;
+  mustShowSendSelectedFilesButton?: boolean;
   handleCancel?: () => void;
-  showConfirmSelectedFile?: boolean;
   showUploadFileButton?: any;
-  isUploadFileReturnSuccess?: () => void;
-  readBuffer?: (file: File) => any;
-  arrayBufferToHexString?: (arrayBuffer: ArrayBuffer) => string;
-  setIsFileUploadSuccess?: Dispatch<SetStateAction<boolean>>;
-  setIsFileSent?: Dispatch<SetStateAction<{ id?: boolean }>>;
+  setIsFilesUploadSuccess: (isSuccess: boolean) => void;
+  buttonIdDisabled: any;
+  setButtonIdDisabled?: Dispatch<SetStateAction<{ id: boolean | undefined }>>;
+  allowedFormatExtensions: string[];
   isFileSent?: { id?: boolean };
 }
 
@@ -47,39 +27,118 @@ export const useUploadFile = () => useContext(UploadFileContext);
 export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
   const { t } = useTranslation('translation');
   const { showUploadFileButton, rewordAfterGuiAction } = useDialog();
-  const [selected, setSelected] = useState<File | null>(null);
-  const [errorFormatMessage, setErrorFormatMessage] = useState<string | null>(null);
-  const [fileSelected, setFileSelected] = useState<File | null>(null);
-  const [isFileUploadSuccess, setIsFileUploadSuccess] = useState<boolean>(false);
-  const fileName = useMemo(() => fileSelected?.name || '', [fileSelected]);
-  const extractFileFromEvent = (event) => (setFileSelected(event.target.files[0]), event.target.files[0]);
-  const getFileSize = (file) => Math.ceil(file.size / 1024 ** 1);
-  const MSG_FORMAT_MAGIC_NUMBER = 'D0CF11E0A1B11AE1';
+  const [inputRef, setInputRef] = useState<any>(null);
+  const [invalidSelectedFilesMessage, setInvalidSelectedFilesMessage] = useState<string>('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>(new Array(0));
+  const [isFilesUploadSuccess, setIsFilesUploadSuccess] = useState<boolean>(false);
+  const [buttonIdDisabled, setButtonIdDisabled] = useState<{ id?: boolean }>({});
   const [isFileSent, setIsFileSent] = useState<{ id?: boolean }>({});
+  const getFileSize = (file) => Math.ceil(file.size / 1024);
+  const MSG_FORMAT_MAGIC_NUMBER = 'D0CF11E0A1B11AE1';
 
-  const validateFile: (file: File) => boolean = useCallback((file: File) => {
-    let isFormatAllowed: Promise<boolean>;
-    if (file.type) {
-      isFormatAllowed = Promise.resolve(ALLOWED_FORMAT.includes(file.type));
-    } else if (file.name?.slice(-4) === '.msg') {
-      isFormatAllowed = checkMsgFormat(file);
-    } else {
-      isFormatAllowed = Promise.resolve(false);
+  // commented parts could be uncommented on demand later
+  // idea is to keep enum as small as possible as it is also used in the filter zone
+  // of the '<input...>' element
+  enum AllowedFormat {
+    '.png' = 'image/png',
+    '.jpg' = 'image/jpeg',
+    '.jpeg' = 'image/jpeg',
+    '.jfif' = 'image/jpeg',
+    '.pjpeg' = 'image/jpeg',
+    '.pjp' = 'image/jpeg',
+    '.svg' = 'image/svg+xml',
+    '.gif' = 'image/gif',
+    '.webp' = 'image/webp',
+    // '.bmp' = 'image/bmp',
+    // '.ico' = 'image/x-icon',
+    // '.cur' = 'image/x-icon',
+    // '.tif' = 'image/tiff',
+    // '.tiff' = 'image/tiff',
+    '.pdf' = 'application/pdf',
+    '.csv' = 'text/csv',
+    '.txt' = 'text/plain',
+    '.doc' = 'application/msword',
+    '.dot' = 'application/msword',
+    '.docx' = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.xlsx' = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    '.xls' = 'application/vnd.ms-excel',
+    '.xlt' = 'application/vnd.ms-excel',
+    '.xla' = 'application/vnd.ms-excel',
+    // '.ppt' = 'application/vnd.ms-powerpoint',
+    // '.pot' = 'application/vnd.ms-powerpoint',
+    // '.pps' = 'application/vnd.ms-powerpoint',
+    // '.ppa' = 'application/vnd.ms-powerpoint',
+    '.pptx' = 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    '.odt' = 'application/vnd.oasis.opendocument.text',
+    '.ods' = 'application/vnd.oasis.opendocument.spreadsheet',
+    '.odp' = 'application/vnd.oasis.opendocument.presentation',
+  }
+
+  const allowedFormatExtensions: string[] = Object.keys(AllowedFormat);
+  const allowedFormatTypes: string[] = Object.values(AllowedFormat);
+
+  function validateFiles(files: File[]): boolean {
+    let allErrorMessages = '';
+
+    if (files && files.length > 0) {
+      let isFormatAllowed: boolean;
+      files.forEach((file: File) => {
+        isFormatAllowed = false;
+        if (file.type) {
+          isFormatAllowed = allowedFormatTypes.includes(file.type);
+        } else if (file.name?.slice(-4) === '.msg') {
+          checkMsgFormat(file).then((e: boolean) => {
+            isFormatAllowed = e;
+          });
+        }
+        const errorMessage = computeErrorMessage(isFormatAllowed, file);
+        if (errorMessage.length > 0) {
+          if (allErrorMessages.length == 0) {
+            allErrorMessages = errorMessage;
+          } else {
+            allErrorMessages += '\n<br>' + computeErrorMessage(isFormatAllowed, file);
+          }
+        }
+      });
     }
-    return displaySuccessOrErrorMessage(isFormatAllowed, file);
-  }, []);
+    if (allErrorMessages.length > 0) {
+      console.log('UploadFileContext: validateFiles with errors ' + allErrorMessages);
+      setInvalidSelectedFilesMessage(allErrorMessages);
+      return true;
+    } else {
+      setInvalidSelectedFilesMessage('');
+    }
+    return true;
+  }
 
-  function displaySuccessOrErrorMessage(isFormatAllowed, file): boolean {
-    return isFormatAllowed.then((isFormatAllowedResult: boolean) => {
-      const fileSize = getFileSize(file);
-      if (isFormatAllowedResult && fileSize <= 10000) setErrorFormatMessage('');
-      else if (!isFormatAllowedResult && fileSize > 10000)
-        setErrorFormatMessage(t('uploadFile.errorFormatAndSizeMessage'));
-      else if (!isFormatAllowedResult) setErrorFormatMessage(t('uploadFile.errorFormatMessage'));
-      else setErrorFormatMessage(t('uploadFile.errorSizeMessage'));
+  function computeErrorMessage(isFormatAllowed: boolean, file: File): string {
+    let errorMessage = '';
+    const fileSize = getFileSize(file);
 
-      return isFormatAllowedResult && fileSize <= 10000;
-    });
+    if (!isFormatAllowed) {
+      if (fileSize > 10000) {
+        errorMessage =
+          file.name + ' (' + getReadableFileSizeString(file.size) + '): ' + t('uploadFile.errorFormatAndSizeMessage'); // The file size is too large and the format is not accepted
+      } else {
+        errorMessage =
+          file.name + ' (' + getReadableFileSizeString(file.size) + '): ' + t('uploadFile.errorFormatMessage'); // The file format is not accepted
+      }
+    } else if (fileSize > 10000) {
+      errorMessage = file.name + ' (' + getReadableFileSizeString(file.size) + '): ' + t('uploadFile.errorSizeMessage'); // The file size is too large (max accepted 10 Mo)
+    }
+
+    return errorMessage;
+  }
+
+  function getReadableFileSizeString(fileSizeInBytes): string {
+    let i = -1;
+    const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+    do {
+      fileSizeInBytes /= 1024;
+      i++;
+    } while (fileSizeInBytes > 1024);
+
+    return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
   }
 
   function checkMsgFormat(file): Promise<boolean> {
@@ -115,58 +174,58 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
     });
   }
 
-  const onSelectFile = (file) => (setIsFileUploadSuccess(false), validateFile?.(file), setSelected(file));
+  function onSelectFiles(event: any, inputRef: any) {
+    if (event.target.files.length > 5) {
+      alert(t('uploadFiles.tooMuchSelected', { maxSize: '5' }));
+      return;
+    }
+    const filesToCheck: File[] = Array.from(event.target.files);
+    setIsFilesUploadSuccess(false);
 
-  const handleCancel = () => setSelected(null);
+    validateFiles(filesToCheck);
+    setInputRef(inputRef);
+    setSelectedFiles(filesToCheck);
+  }
 
-  const showConfirmSelectedFile = useMemo(() => isDefined(selected), [selected]);
+  function handleCancel() {
+    setSelectedFiles(new Array(0));
+    if (inputRef) {
+      setButtonIdDisabled({ ...buttonIdDisabled, [inputRef.current.id]: false });
+      inputRef.current.value = null;
+    }
+  }
+
+  const showConfirmSelectedFile = useMemo(() => selectedFiles?.length > 0, [selectedFiles]);
 
   useEffect(() => {
-    if (isFileUploadSuccess) {
+    if (isFilesUploadSuccess) {
       window.dydu?.chat?.handleRewordClicked(rewordAfterGuiAction, { hide: true, doNotRegisterInteraction: true });
     }
-  }, [isFileUploadSuccess]);
+  }, [isFilesUploadSuccess]);
 
-  const showButtonUploadFile = showConfirmSelectedFile && !isFileUploadSuccess;
+  const mustShowSendSelectedFilesButton = showConfirmSelectedFile && !isFilesUploadSuccess;
 
   const dataContext = useMemo(
     () => ({
-      fileSelected,
-      validateFile,
-      onSelectFile,
-      errorFormatMessage,
-      showButtonUploadFile,
-      getFileSize,
-      extractFileFromEvent,
+      selectedFiles,
+      onSelectFiles,
+      invalidSelectedFilesMessage,
+      mustShowSendSelectedFilesButton,
       handleCancel,
-      showConfirmSelectedFile,
       showUploadFileButton,
-      isFileUploadSuccess,
-      setIsFileUploadSuccess,
-      fileName,
-      displaySuccessOrErrorMessage,
-      arrayBufferToHexString,
-      readBuffer,
+      setIsFilesUploadSuccess,
+      setButtonIdDisabled,
+      allowedFormatExtensions,
       isFileSent,
       setIsFileSent,
     }),
     [
-      onSelectFile,
-      fileSelected,
-      errorFormatMessage,
-      showButtonUploadFile,
-      extractFileFromEvent,
-      showConfirmSelectedFile,
-      validateFile,
-      getFileSize,
-      handleCancel,
+      selectedFiles,
+      invalidSelectedFilesMessage,
+      mustShowSendSelectedFilesButton,
       showUploadFileButton,
-      isFileUploadSuccess,
-      setIsFileUploadSuccess,
-      fileName,
-      displaySuccessOrErrorMessage,
-      arrayBufferToHexString,
-      readBuffer,
+      isFilesUploadSuccess,
+      buttonIdDisabled,
       isFileSent,
       setIsFileSent,
     ],
