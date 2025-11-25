@@ -23,16 +23,16 @@ describe('validateFile', () => {
     const file = new File(['Hello, World!'], 'hello.txt', { type: 'text/plain' });
 
     const TestComponent = () => {
-      const { validateFile } = useUploadFile();
-      const [isValidated, setIsValidated] = useState(null);
+      const { validateFiles } = useUploadFile();
+      const [isValidated, setIsValidated] = useState(false);
 
       useEffect(() => {
-        if (validateFile) {
-          validateFile(file).then((result) => {
-            setIsValidated(result);
-          });
+        if (validateFiles) {
+          const filesToCheck: File[] = [file];
+          const result = validateFiles(filesToCheck);
+          setIsValidated(result);
         }
-      }, [file, validateFile]);
+      }, [file, validateFiles]);
 
       return <div>{isValidated !== null ? isValidated.toString() : ''}</div>;
     };
@@ -51,16 +51,16 @@ describe('validateFile', () => {
     const file = new File(['Hello, World!'], 'hello.zip', { type: 'application/zip' });
 
     const TestComponent = () => {
-      const { validateFile } = useUploadFile();
-      const [isValidated, setIsValidated] = useState(null);
+      const { validateFiles } = useUploadFile();
+      const [isValidated, setIsValidated] = useState(false);
 
       useEffect(() => {
-        if (validateFile) {
-          validateFile(file).then((result) => {
-            setIsValidated(result);
-          });
+        if (validateFiles) {
+          const filesToCheck: File[] = [file];
+          const result = validateFiles(filesToCheck);
+          setIsValidated(result);
         }
-      }, [file, validateFile]);
+      }, [file, validateFiles]);
 
       return <div>{isValidated !== null ? isValidated.toString() : ''}</div>;
     };

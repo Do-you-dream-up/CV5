@@ -29,7 +29,7 @@ interface FooterProps {
 }
 
 export default function Footer({ onRequest, onResponse, onWheel, ...rest }: FooterProps) {
-  const { showButtonUploadFile } = useUploadFile() || {};
+  const { mustShowSendSelectedFilesButton } = useUploadFile() || {};
 
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
@@ -80,7 +80,7 @@ export default function Footer({ onRequest, onResponse, onWheel, ...rest }: Foot
   ];
 
   const renderInput = () =>
-    showButtonUploadFile ? (
+    mustShowSendSelectedFilesButton ? (
       <UploadInput />
     ) : (
       <div className={classes.content}>

@@ -178,9 +178,9 @@ const Teaser = ({ id, toggle, openDisclaimer, disclaimer }: TeaserProps) => {
               aria-haspopup="dialog"
             >
               {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === TEXT_ONLY) && (
-                <p className={c('dydu-teaser-button', classes.button)}>
+                <div className={c('dydu-teaser-button', classes.button)}>
                   <Skeleton children={title} hide={!ready} width="3em" />
-                </p>
+                </div>
               )}
               {(initialTeaserType === AVATAR_AND_TEXT || initialTeaserType === AVATAR_ONLY) && (
                 <div
