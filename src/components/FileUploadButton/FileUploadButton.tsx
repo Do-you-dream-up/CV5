@@ -1,5 +1,5 @@
-import { documentCreateElement } from '../../tools/helpers';
-import { useMemo, useRef } from 'react';
+import { documentCreateElement, isDefined } from '../../tools/helpers';
+import {useCallback, useMemo, useRef} from 'react';
 
 import { Button } from '../../styles/styledComponent';
 import Scroll from '../Scroll/Scroll';
@@ -16,49 +16,53 @@ interface FileUploadButtonProps {
   id?: any;
 }
 
+
 export default function FileUploadButton({ label, id }: FileUploadButtonProps) {
   const [t] = useTranslation('translation');
-  const { isFileSent } = useUploadFile();
-  const defaultLabel = useMemo(() => label || t('uploadFiles.label'), [label]);
-
+  const { onSelectFile, extractFileFromEvent, isFileSent } = useUploadFile();
+  const defaultLabel = useMemo(() => label || t('uploadFile.label'), [label]);
   const disableButton = useMemo(() => isFileSent[id], [isFileSent[id]]);
-
   const { configuration } = useConfiguration();
   const classes: any = useStyles({ configuration });
 
-  const { onSelectFiles, buttonIdDisabled, setButtonIdDisabled, allowedFormatExtensions } = useUploadFile();
-
   const inputId = useId();
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const processUserFileSelection = useCallback(
+    (file) => {
+      try {
+        onSelectFile?.(file);
+      } catch (e) {
+        console.error('While handling file selection', e);
+      }
+    },
+    [onSelectFile],
+  );
 
-  function onSelect(event) {
-    setButtonIdDisabled && setButtonIdDisabled({ ...buttonIdDisabled, [inputRef.current.id]: true });
-    onSelectFiles && onSelectFiles(event, inputRef);
-  }
+  const onSelect = useCallback(
+    (event) => {
+      const file = extractFileFromEvent?.(event);
+      const hasUserCanceledFileSelection = !isDefined(file?.name);
+      if (hasUserCanceledFileSelection) {
+        throw new Error('error while cancel selection');
+      }
+      processUserFileSelection(file);
+    },
+    [defaultLabel, onSelectFile, processUserFileSelection],
+  );
 
-  function openFileOnClick() {
-    const input = documentCreateElement('input', {
-      id: inputId,
-      type: 'file',
-      hidden: 'true',
-      multiple: 'true',
-      accept: allowedFormatExtensions.join(', '),
-    });
-
+  const openFileonClick = useCallback(() => {
+    const input = documentCreateElement('input', { id: inputId, type: 'file', hidden: 'true' });
     input.onchange = onSelect;
-    inputRef.current = input;
-
     input.click();
-  }
+  }, [onSelect]);
 
   return (
     <Scroll>
       <Button
         className={classes.upload}
         data-testid="file-upload-button"
-        onClick={openFileOnClick}
-        disabled={disableButton || buttonIdDisabled?.[inputId]}
+        onClick={openFileonClick}
+        disabled={disableButton}
         id={id}
       >
         {defaultLabel}

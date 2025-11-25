@@ -36,21 +36,33 @@ const UploadInput = () => {
   const { configuration } = useConfiguration();
   const classes = useStyles({ configuration });
   const { t } = useTranslation('translation');
-  const { selectedFiles, handleCancel, invalidSelectedFilesMessage, setIsFilesUploadSuccess } = useUploadFile();
+  const { fileUploadButtonId } = useDialog();
+  const {
+    fileSelected,
+    handleCancel,
+    errorFormatMessage,
+    fileName,
+    setIsFileUploadSuccess,
+    setIsFileSent,
+    isFileSent,
+  } = useUploadFile();
   const [isClicked, setIsClicked] = useState<boolean>(false);
 
-  const label = useMemo(() => {
-    const sendMessage = selectedFiles.length > 1 ? t('uploadFiles.send') : t('uploadFile.send');
-    const reuploadMessage = selectedFiles.length > 1 ? t('input.actions.reuploads') : t('input.actions.reupload');
-    return !invalidSelectedFilesMessage ? sendMessage : reuploadMessage;
-  }, [invalidSelectedFilesMessage]);
+  const formatFileSize = (file) => Math.ceil(file?.size / Math.pow(1024, 1));
+  const label = useMemo(
+    () => (!errorFormatMessage ? t('uploadFile.send') : t('input.actions.reupload')),
+    [errorFormatMessage],
+  );
 
-  const sendFiles = (files: File[]) => {
+  const sendFile = (file) => {
     return dydu
-      .sendFiles(files)
+      .sendUploadFile(file)
       .then((success) => {
         if (success) {
-          setIsFilesUploadSuccess(true);
+          setIsFileUploadSuccess && setIsFileUploadSuccess(true);
+          setIsFileSent && setIsFileSent({ ...isFileSent, [fileUploadButtonId]: true });
+        } else {
+          handleCancel?.();
         }
       })
       .catch((error) => {
@@ -59,17 +71,15 @@ const UploadInput = () => {
   };
 
   const renderAction = () =>
-    !invalidSelectedFilesMessage ? (
+    !errorFormatMessage ? (
       <div>
         <SendButton
           title={label}
           onClick={() => {
-            if (selectedFiles.length <= 5) {
-              sendFiles(selectedFiles);
-              setIsClicked(true);
-            }
+            sendFile(fileSelected);
+            setIsClicked(true);
           }}
-          className={classes.upload}
+          className={classes.sendfile}
           isClicked={isClicked}
         />
       </div>
@@ -78,17 +88,11 @@ const UploadInput = () => {
     );
 
   const renderFileInfo = () =>
-    isDefined(selectedFiles) && (
+    isDefined(fileSelected) && (
       <>
-        <span className={c(classes.color, 'name-file')}>
-          {selectedFiles
-            .map(function (f) {
-              return f.name;
-            })
-            .join(', ')}{' '}
-        </span>
-        {/*<span className="overflow-hidden size-file">{formatFileSize(selectedFiles)} ko</span>*/}
-        {invalidSelectedFilesMessage && <ErrorMessage>{invalidSelectedFilesMessage}</ErrorMessage>}
+        <span className={c(classes.color, 'name-file')}>{fileName} </span>
+        <span className="overflow-hidden size-file">{formatFileSize(fileSelected)} ko</span>
+        {errorFormatMessage && <ErrorMessage>{errorFormatMessage}</ErrorMessage>}
       </>
     );
 
