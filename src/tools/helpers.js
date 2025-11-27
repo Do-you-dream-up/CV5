@@ -425,9 +425,7 @@ export const documentCreateElement = (htmlTag, attibutesOptions) => {
 export const htmlToJsonForSendUploadFile = (html) => {
   const startIndex = html.indexOf('{');
   const endIndex = html.lastIndexOf('}');
-  const jsonText = html.substring(startIndex, endIndex + 1);
-
-  let correctedJsonText = jsonText;
+  let correctedJsonText = html.substring(startIndex, endIndex + 1);
   // remplacer les simple quotes par des doubles quotes la valeur de la clé api
   correctedJsonText = correctedJsonText.replace(/api:'(.*?)'/g, 'api:"$1"');
   // Ajouter des doubles quotes autour de la clé api

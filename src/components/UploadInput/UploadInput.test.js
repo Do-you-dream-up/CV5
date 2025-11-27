@@ -32,7 +32,6 @@ jest.mock('../../contexts/UploadFileContext', () => ({
     errorFormatMessage: '',
     isUploadFileReturnSuccess: false,
     fileName: 'file name',
-    setIsFileUploadSuccess: jest.fn(),
   }),
 }));
 describe('UploadInput', () => {

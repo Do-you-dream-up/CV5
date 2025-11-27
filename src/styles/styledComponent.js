@@ -114,4 +114,6 @@ export const ErrorMessage = styled.div`
   border-radius: 5px;
   padding: 10px;
   margin: 20px 0 30px;
+  white-space: pre-line;
+  line-height: 1.2;
 `;
