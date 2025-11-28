@@ -280,6 +280,7 @@ export default new (class Dydu {
       const data = qs.stringify({
         contextUuid: Local.contextId.load(BOT.id),
         solutionUsed: SOLUTION_TYPE.assistant,
+        uiLocale: i18n.language,
         ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       });
       const path = `chat/history/${BOT.id}/`;
@@ -672,6 +673,7 @@ export default new (class Dydu {
       browser: this.isOsAndBrowserAuthorized() ? `${browser.name} ${browser.version}` : null,
       clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       doNotRegisterInteraction: options.doNotRegisterInteraction,
+      uiLocale: options.uiLocale,
       language: this.getLocale(),
       os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
       qualificationMode: this.qualificationMode,

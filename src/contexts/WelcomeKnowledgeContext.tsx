@@ -5,6 +5,7 @@ import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
 import { BOT } from '../tools/bot';
+import i18n from './i18nProvider';
 
 type WelcomeKnowledge = Servlet.ChatResponseValues | null;
 
@@ -51,7 +52,9 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   const mustFetchWelcome = (): boolean => {
     const currentContextUUID = Local.contextId.load(BOT.id);
     return !!(
-      (!currentContextUUID || !Local.welcomeKnowledge.load(BOT.id, currentContextUUID)) &&
+      (!currentContextUUID ||
+        !Local.welcomeKnowledge.load(BOT.id, currentContextUUID) ||
+        Local.welcomeKnowledge.load(BOT.id, currentContextUUID)?.uiLanguage !== i18n.language) &&
       !Local.livechatType.load() &&
       isTagWelcomeDefined &&
       isEnabled
@@ -77,7 +80,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
     const currentContextUUID = Local.contextId.load(BOT.id);
 
     if (mustFetchWelcome()) {
-      const talkOption = { hide: true, doNotRegisterInteraction: true };
+      const talkOption = { hide: true, doNotRegisterInteraction: true, uiLocale: i18n.language };
       const talkResponse: TalkResponseInterface = await dydu.talk(tagWelcome, talkOption);
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
 
