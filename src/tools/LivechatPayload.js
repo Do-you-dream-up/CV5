@@ -9,6 +9,7 @@ import {
   isOfTypeString,
   osName,
   recursiveBase64EncodeString,
+  sanitize,
 } from './helpers';
 
 import { Local } from './storage';
@@ -73,14 +74,17 @@ export const LivechatPayloadCreator = {
       },
     };
   },
-  userTypingMessage: (userInput = '') => ({
-    type: REQUEST_TYPE.typing,
-    parameters: {
-      ...getPayloadCommonContentBase64Encoded(),
-      typing: !isEmptyString(userInput),
-      content: b64encode(userInput),
-    },
-  }),
+  userTypingMessage: (userInput = '') => {
+    const sanitizedInput = sanitize(userInput);
+    return {
+      type: REQUEST_TYPE.typing,
+      parameters: {
+        ...getPayloadCommonContentBase64Encoded(),
+        typing: !isEmptyString(sanitizedInput),
+        content: b64encode(sanitizedInput),
+      },
+    };
+  },
 
   userReadingMessage: () => ({
     type: REQUEST_TYPE.reading,
