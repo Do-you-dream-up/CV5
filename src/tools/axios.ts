@@ -77,9 +77,9 @@ const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig): AxiosInstance 
 const handleSwitchToBackup = (currentServerPreviouslyUsed?: number) => {
   if (lastStatus === 'Error') {
     const backupServer: string | null = BOT.getNextServer(currentServerIndex, currentServerPreviouslyUsed);
-    console.log('Status error, switching to server=' + backupServer);
 
     if (backupServer) {
+      console.log('Status error, switching to server=' + backupServer);
       currentServerIndex++;
       if (currentServerIndex >= BOT.servers.length) {
         currentServerIndex = 0;
