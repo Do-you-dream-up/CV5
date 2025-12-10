@@ -327,6 +327,9 @@ declare namespace Models {
     discoveryUrl: string;
     scopes: string[];
     withAuth: boolean;
+    stateLength: number;
+    nonceActive: boolean;
+    nonceLength: number;
   }
 
   export interface ConfigurationOnboarding {

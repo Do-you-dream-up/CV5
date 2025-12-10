@@ -1,4 +1,4 @@
-import Auth from '../../tools/storage';
+import Auth, { Session } from '../../tools/storage';
 import { encode as base64encode } from 'base64-arraybuffer';
 
 export const getRedirectUri = () => window.location.origin + window.location.pathname;
@@ -20,10 +20,14 @@ export const objectToQueryParam = (o) => {
 };
 
 export const extractObjectFields = (o, fieldList) => {
-  return Object.keys(o).reduce((resultObject, field) => {
-    if (fieldList.includes(field)) resultObject[field] = o[field];
-    return resultObject;
-  }, {});
+  if (o) {
+    return Object.keys(o).reduce((resultObject, field) => {
+      if (fieldList.includes(field)) resultObject[field] = o[field];
+      return resultObject;
+    }, {});
+  }
+
+  return {};
 };
 
 export const toSnakeCase = (str) =>
@@ -44,18 +48,33 @@ const strContains = (s, sub) => s.indexOf(sub) >= 0;
 
 export const currentLocationContainsError = () => strContains(window.location.search, 'error=');
 
-export const currentLocationContainsCodeParameter = () => strContains(window.location.search, 'code=');
+export const createOidcAuthData = (
+  configuration = { redirectUri: null, stateLength: 36, nonceActive: false, nonceLength: 36 },
+) => {
+  const { redirectUri, stateLength, nonceActive, nonceLength } = configuration;
+  const state = generateRandomString(stateLength);
 
-export const createOidcAuthData = (configuration = { redirectUri: null }) => {
-  const { redirectUri } = configuration;
-  const state = generateUID();
+  const noncePart = nonceActive
+    ? {
+        nonce: generateRandomString(nonceLength),
+      }
+    : {};
+  console.log('Generated new nonce : ', noncePart?.nonce, nonceActive);
+
+  if (nonceActive) {
+    Session.nonce.save(noncePart.nonce);
+  }
+
   const authData = {
     state,
     redirectUri: redirectUri || getRedirectUri(),
+    ...noncePart,
   };
   Auth.saveOidcAuthData(authData);
   return authData;
 };
+
+export const currentLocationContainsCodeParameter = () => strContains(window.location.search, 'code=');
 
 export let loadOidcAuthData = (configuration) => Auth.loadOidcAuthData() || createOidcAuthData(configuration);
 
@@ -163,12 +182,15 @@ export const responseToJsonOrThrowError = (r, caller) => {
 };
 
 export const removeQueryFromUri = (url) => {
-  const path = url.split('?')[0];
-  if (strContains(path, '&')) {
-    const idx = path.index('&');
-    return path.substring(0, idx);
+  if (url) {
+    const path = url.split('?')[0];
+    if (strContains(path, '&')) {
+      const idx = path.index('&');
+      return path.substring(0, idx);
+    }
+    return path;
   }
-  return path;
+  return url;
 };
 
 export async function generateCodeChallenge(codeVerifier) {
@@ -185,4 +207,14 @@ export async function generateCodeChallenge(codeVerifier) {
 
 export const base64_urlencode = (str) => {
   return encodeURI(btoa(str));
+};
+
+const generateRandomString = (length) => {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };

@@ -14,6 +14,7 @@ export class Session {
     banner: 'dydu.chatbox.banner',
     retryLazyRefreshed: 'dydu.chatbox.retry.lazy.refreshed',
     currentServer: 'dydu.chatbox.server',
+    nonce: 'dydu.chatbox.oidc.nonce',
   };
 
   /**
@@ -69,6 +70,12 @@ export class Session {
     save: (data): void => sessionStorage.setItem(Session.names.currentServer, data),
     load: (): number => Number(sessionStorage.getItem(Session.names.currentServer)) || 0,
     remove: (): void => sessionStorage.removeItem(Session.names.currentServer),
+  });
+
+  static nonce = Object.create({
+    save: (data: string): void => sessionStorage.setItem(Session.names.nonce, data),
+    load: (): string => sessionStorage.getItem(Session.names.nonce) || '',
+    remove: (): void => sessionStorage.removeItem(Session.names.nonce),
   });
 }
 
@@ -163,6 +170,7 @@ export class Local {
     oidcIdToken: 'dydu.chatbox.oidc.idToken' + suffix,
     oidcAccessToken: 'dydu.chatbox.oidc.accessToken' + suffix,
     oidcRefreshToken: 'dydu.chatbox.oidc.refreshToken' + suffix,
+    oidcRetry: 'dydu.chatbox.oidc.retry' + suffix,
     oidcPkceCodeVerifier: 'dydu.chatbox.oidc.pkce.codeVerifier' + suffix,
     oidcPkceCodeChallenge: 'dydu.chatbox.oidc.pkce.codeChallenge' + suffix,
     css: 'dydu.chatbox.css' + suffix,
@@ -602,6 +610,7 @@ export default class Auth {
     if (codeChallenge && codeVerifier) {
       localStorage.setItem(Local?.names?.oidcPkceCodeChallenge, codeChallenge);
       localStorage.setItem(Local?.names?.oidcPkceCodeVerifier, codeVerifier);
+      console.log('Storing challenge/verifier');
     }
   }
 
@@ -725,6 +734,15 @@ export default class Auth {
   static containsOidcAuthData() {
     return Auth.loadOidcAuthData() !== null;
   }
+
+  static retry = Object.create({
+    load: () => {
+      const d = localStorage.getItem(Local.names.oidcRetry);
+      return isDefined(d) ? _parse(d) : 0;
+    },
+    save: (value: number) => localStorage.setItem(Local.names.oidcRetry, String(value)),
+    reset: () => localStorage.setItem(Local.names.oidcRetry, '0'),
+  });
 }
 
 const generateClientUuid = (charSize = 15) => uuid4().replaceAll('-', '').slice(0, charSize);

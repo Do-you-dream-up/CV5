@@ -5,39 +5,37 @@ import PropTypes from 'prop-types';
 import Auth from '../../tools/storage';
 import axios from 'axios';
 import { isLoadedFromChannels } from '../../tools/wizard';
-import jwtDecode from 'jwt-decode';
 import useAuthorizeRequest from './hooks/useAuthorizeRequest';
 import { useConfiguration } from '../../contexts/ConfigurationContext';
 import useTokenRequest from './hooks/useTokenRequest';
-import useUserInfo from './hooks/useUserInfo';
 import { setCallOidcLogin } from '../../tools/axios';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
-export function AuthProvider({ children, configuration }) {
+export function AuthProvider({ children }) {
   const [token, setToken] = useState(Auth.loadToken());
-  const { configuration: appConfiguration } = useConfiguration();
+  const { configuration } = useConfiguration();
   const [urlConfig, setUrlConfig] = useState(Auth.loadOidcUrls() || null);
   const [isLoggedIn, setIsLoggedIn] = useState(isDefined(token?.access_token) || false);
-  const [userInfo, setUserInfo] = useState(null);
+  const [isCodeHandled, setIsCodeHandled] = useState(false);
 
-  const authConfig = useMemo(() => ({ ...configuration, ...urlConfig }), [urlConfig]);
+  const authConfig = useMemo(() => ({ ...configuration?.oidc, ...urlConfig }), [urlConfig]);
 
   const { authorize } = useAuthorizeRequest(authConfig);
   const { fetchToken, tokenRetries } = useTokenRequest(authConfig);
-  const { getUserInfoWithToken } = useUserInfo(authConfig);
 
   useEffect(() => {
     if (tokenRetries > 3) {
+      console.error('Token retries limit reached. Forcing new authorization flow.');
       Auth.clearToken();
       login();
     }
-  }, [tokenRetries]);
+  }, [tokenRetries, login]);
 
   const fetchUrlConfig = () => {
-    if (configuration.discoveryUrl) {
-      axios.get(configuration.discoveryUrl)?.then(({ data }) => {
+    if (authConfig.discoveryUrl) {
+      axios.get(authConfig.discoveryUrl)?.then(({ data }) => {
         Auth.clearUserInfo();
         Auth.clearOidcUrls();
         const config = {
@@ -52,8 +50,8 @@ export function AuthProvider({ children, configuration }) {
       Auth.clearUserInfo();
       Auth.clearOidcUrls();
       const config = {
-        authUrl: configuration?.authUrl,
-        tokenUrl: configuration?.tokenUrl,
+        authUrl: authConfig?.authUrl,
+        tokenUrl: authConfig?.tokenUrl,
       };
       Auth.saveOidcUrls(config);
       setUrlConfig(config);
@@ -67,14 +65,19 @@ export function AuthProvider({ children, configuration }) {
           Authorization: `Bearer ${token?.access_token}`,
         },
       })
-      ?.then(({ data }) => data && Auth.saveUserInfo(data));
+      ?.then(({ data }) => data && Auth.saveUserInfo(data))
+      .catch((err) => {
+        console.log("Can't fetch user info : ", err);
+        Auth.clearToken();
+        login();
+      });
 
   useEffect(() => {
     setCallOidcLogin(authorize);
   }, []);
 
   useLayoutEffect(() => {
-    appConfiguration?.oidc?.enable && !urlConfig && fetchUrlConfig();
+    authConfig?.enable && !urlConfig && fetchUrlConfig();
   }, []);
 
   useEffect(() => {
@@ -82,40 +85,76 @@ export function AuthProvider({ children, configuration }) {
   }, [token, urlConfig]);
 
   useEffect(() => {
+    const codePresent = currentLocationContainsCodeParameter();
+
+    if (isCodeHandled && codePresent) {
+      console.log('Code present but already handled. Waiting for URL clean.');
+      return;
+    }
+
+    const codeInUrl = currentLocationContainsCodeParameter();
+    const isTokenExchangeAllowed = tokenRetries <= 3;
+
     const canRequestToken =
       urlConfig &&
-      currentLocationContainsCodeParameter() &&
-      (!appConfiguration?.oidc?.pkceActive || isDefined(Auth.loadPkceCodeChallenge())) &&
+      codeInUrl &&
+      (!authConfig?.pkceActive || isDefined(Auth.loadPkceCodeChallenge())) &&
       !isDefined(token?.access_token) &&
-      !currentLocationContainsError();
+      !currentLocationContainsError() &&
+      isTokenExchangeAllowed;
 
-    if (canRequestToken)
-      fetchToken().then((tkn) => {
-        setIsLoggedIn(true);
-        setToken(tkn);
-      });
-  }, [fetchToken, token, token?.access_token, urlConfig]);
+    if (canRequestToken && !isCodeHandled) {
+      setIsCodeHandled(true);
 
-  useEffect(() => {
-    if (isLoggedIn && token?.access_token) {
-      try {
-        const userInfo = jwtDecode(token?.id_token);
-        setUserInfo(userInfo);
-      } catch (error) {
-        console.error(error);
-      }
+      fetchToken()
+        .then((tkn) => {
+          if (tkn && !tkn.isInvalid) {
+            console.log('Token exchange successful.');
+            setIsLoggedIn(true);
+            setToken(tkn);
+          } else {
+            clearAndLogin();
+          }
+        })
+        .catch((error) => {
+          console.error('Fatal error during token exchange:', error);
+          setIsLoggedIn(false);
+          setToken(null);
+
+          if (error.message === 'OIDC_NONCE_FATAL_ERROR') {
+            console.error('Nonce mismatch detected. ABORTING OIDC FLOW. User must clear cache or manually refresh.');
+            return;
+          }
+
+          clearAndLogin();
+        });
     }
-  }, [token, isLoggedIn, getUserInfoWithToken]);
+
+    if (isCodeHandled && !codeInUrl) {
+      console.log('Authorization code removed from URL. Resetting code handler.');
+      setIsCodeHandled(false);
+    }
+  }, [fetchToken, isCodeHandled, token, token?.access_token, urlConfig]);
+
+  const clearAndLogin = useCallback(() => {
+    setIsLoggedIn(false);
+    Auth.clearOidcAuthData();
+    Auth.clearToken();
+    setToken(null);
+    login();
+  }, []);
 
   const login = useCallback(() => {
     const canRequestAuthorize =
       urlConfig && !token?.access_token && !currentLocationContainsCodeParameter() && !currentLocationContainsError();
-    if (tokenRetries > 3 || canRequestAuthorize) authorize();
+
+    if (tokenRetries > 3 || canRequestAuthorize) {
+      authorize();
+    }
   }, [authorize, isLoggedIn, tokenRetries, urlConfig]);
 
   const dataContext = useMemo(
     () => ({
-      userInfo,
       isLoggedIn,
       login,
       token,
@@ -124,7 +163,7 @@ export function AuthProvider({ children, configuration }) {
       setUrlConfig,
       ...authConfig,
     }),
-    [authConfig, isLoggedIn, login, token, userInfo],
+    [authConfig, isLoggedIn, login, token],
   );
 
   return <AuthContext.Provider value={dataContext}>{children}</AuthContext.Provider>;
@@ -158,15 +197,6 @@ export function AuthProtected({ children, enable = false }) {
 
 AuthProvider.propTypes = {
   children: PropTypes.any,
-  configuration: PropTypes.shape({
-    clientId: PropTypes.string,
-    tokenPath: PropTypes.string,
-    redirectUri: PropTypes.string,
-    tokenUrl: PropTypes.string,
-    authUrl: PropTypes.string,
-    discoveryUrl: PropTypes.string,
-    scope: PropTypes.array,
-  }),
 };
 
 AuthProtected.propTypes = {

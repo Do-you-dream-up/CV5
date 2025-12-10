@@ -2,30 +2,19 @@ import {
   base64_urlencode,
   currentLocationContainsCodeParameter,
   currentLocationContainsError,
-  extractObjectFields,
   extractParamFromUrl,
   isDefined,
   loadOidcAuthData,
   objectToQueryParam,
-  snakeCaseFields,
 } from '../helpers';
 import { useCallback, useEffect, useState } from 'react';
 
 import Auth from '../../../tools/storage';
 import getPkce from 'oauth-pkce';
 
-export default function useAuthorizeRequest(configuration) {
+export default function useAuthorizeRequest(authConfiguration) {
   const [authorizeDone, setAuthorizeDone] = useState(false);
   const [error, setError] = useState(false);
-
-  const cleanUrl = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('code');
-    url.searchParams.delete('error');
-    url.searchParams.delete('state');
-    url.searchParams.delete('session_state');
-    window.history.replaceState(null, '', url);
-  };
 
   useEffect(() => {
     if (currentLocationContainsCodeParameter() && isDefined(Auth.loadOidcAuthData())) {
@@ -40,42 +29,30 @@ export default function useAuthorizeRequest(configuration) {
     }
   }, []);
 
-  useEffect(() => {
-    if (authorizeDone && currentLocationContainsCodeParameter()) {
-      cleanUrl();
-    }
-  }, [authorizeDone]);
-
   const authorize = useCallback(async () => {
-    const oidcAuthData = loadOidcAuthData();
+    const oidcAuthData = loadOidcAuthData(authConfiguration);
 
     getPkce(50, (error, { verifier, challenge }) => {
       error && console.log('getPkce ~ error', error);
-      const storedChallenge = configuration?.pkceMode === 'S256' ? challenge : base64_urlencode(verifier);
+      const storedChallenge = authConfiguration?.pkceMode === 'S256' ? challenge : base64_urlencode(verifier);
       Auth.setPkceData(storedChallenge, verifier);
 
-      /*
-      construct query params
-     */
-      const query = {
-        responseType: 'code',
-        ...extractObjectFields(configuration, ['clientId', 'scope']),
-        ...extractObjectFields(oidcAuthData, ['state', 'redirectUri']),
-        ...(configuration?.pkceActive && {
-          codeChallenge: storedChallenge,
-          codeChallengeMethod: configuration?.pkceMode,
+      const queryParams = objectToQueryParam({
+        response_type: 'code',
+        client_id: authConfiguration?.clientId,
+        scope: authConfiguration?.scopes?.join(' '),
+        state: oidcAuthData?.state,
+        redirect_uri: oidcAuthData?.redirectUri,
+        nonce: oidcAuthData?.nonce,
+        ...(authConfiguration?.pkceActive && {
+          code_challenge: storedChallenge,
+          code_challenge_method: authConfiguration?.pkceMode,
         }),
-      };
+      });
 
-      const queryParams = objectToQueryParam(snakeCaseFields(query));
-
-      /*
-      construct url
-     */
-      const { authUrl } = configuration;
-      window.location.replace(authUrl + '?' + queryParams);
+      window.location.replace(`${authConfiguration?.authUrl}?${queryParams}`);
     });
-  }, [configuration]);
+  }, [authConfiguration]);
 
   return {
     authorize,
