@@ -3,13 +3,12 @@ import { useState } from 'react';
 import { Local } from '../storage';
 import { numberOfDayInMs } from '../helpers';
 import dydu from '../dydu';
-import { BOT } from '../bot';
 
 export default function useVisitManager() {
   const [result, setResult] = useState(false);
 
   const fetchVisitorRegistration = async (): Promise<any> => {
-    const visitFound = Local.visit.isSet(BOT.id);
+    const visitFound = Local.visit.isSet();
 
     if (!visitFound) {
       setResult(true);
@@ -18,7 +17,7 @@ export default function useVisitManager() {
       setResult(true);
     }
 
-    const dateTimeMsLastVisit: number = Local.visit.load(BOT.id);
+    const dateTimeMsLastVisit: number = Local.visit.load();
     const addOneDayMs = (timeMs: number) => timeMs + numberOfDayInMs(1);
     const hasCookieVisitExpired = addOneDayMs(dateTimeMsLastVisit) <= Date.now();
 
@@ -34,7 +33,7 @@ export default function useVisitManager() {
       .welcomeCall()
       .then(() => {
         const keyInfos = dydu.getInfos();
-        Local.visit.save(BOT.id, keyInfos);
+        Local.visit.save(keyInfos);
         return Promise.resolve();
       })
       .catch((e) => {

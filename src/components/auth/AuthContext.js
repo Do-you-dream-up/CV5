@@ -68,8 +68,8 @@ export function AuthProvider({ children }) {
       ?.then(({ data }) => data && Auth.saveUserInfo(data))
       .catch((err) => {
         console.log("Can't fetch user info : ", err);
-        Auth.clearToken();
-        login();
+        clear();
+        throw Error("Can't fetch user info");
       });
 
   useEffect(() => {
@@ -136,11 +136,15 @@ export function AuthProvider({ children }) {
     }
   }, [fetchToken, isCodeHandled, token, token?.access_token, urlConfig]);
 
-  const clearAndLogin = useCallback(() => {
+  const clear = useCallback(() => {
     setIsLoggedIn(false);
     Auth.clearOidcAuthData();
     Auth.clearToken();
     setToken(null);
+  }, []);
+
+  const clearAndLogin = useCallback(() => {
+    clear();
     login();
   }, []);
 

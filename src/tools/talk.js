@@ -17,7 +17,7 @@ export const meta = () => {
       { label: 'Bot ID', value: BOT.id || '-' },
       { label: 'Deployed On', value: '-' },
       { label: 'Language', value: dydu.getLocale() || '-' },
-      { label: 'Space', value: dydu.getSpace(BOT.id) || '-' },
+      { label: 'Space', value: dydu.getSpace() || '-' },
       { label: 'Operating System', value: `${os.name} ${os.versionName}` },
       { label: 'Browser', value: `${browser.name} ${browser.version}` },
       { label: 'Platform', value: platform.type },

@@ -6,6 +6,79 @@ import { cleanUrl } from '../components/auth/helpers';
 import { isLoadedFromChannels } from './wizard';
 import { BOT } from './bot';
 
+abstract class CustomStorageBase {
+  buildBotKey(key: string): string {
+    const botId = typeof BOT !== 'undefined' && BOT.id ? BOT.id : 'unknown';
+    return `${key}_${botId}`;
+  }
+
+  abstract getItem(key: string): string | null;
+  abstract setItem(key: string, value: string): void;
+  abstract removeItem(key: string): void;
+  abstract clear(): void;
+
+  getItemForBot(key: string): string | null {
+    return this.getItem(this.buildBotKey(key));
+  }
+
+  setItemForBot(key: string, value: string): void {
+    this.setItem(this.buildBotKey(key), value);
+  }
+
+  removeItemForBot(key: string): void {
+    this.removeItem(this.buildBotKey(key));
+  }
+}
+
+class ExtendedLocalStorage extends CustomStorageBase {
+  public static INSTANCE: ExtendedLocalStorage = new ExtendedLocalStorage();
+  private constructor() {
+    super();
+  }
+
+  getItem(key: string): string | null {
+    return localStorage.getItem(key);
+  }
+
+  setItem(key: string, value: string): void {
+    localStorage.setItem(key, value);
+  }
+
+  removeItem(key: string): void {
+    localStorage.removeItem(key);
+  }
+
+  clear(): void {
+    localStorage.clear();
+  }
+}
+
+class ExtendedSessionStorage extends CustomStorageBase {
+  public static INSTANCE: ExtendedSessionStorage = new ExtendedSessionStorage();
+  private constructor() {
+    super();
+  }
+
+  getItem(key: string): string | null {
+    return sessionStorage.getItem(key);
+  }
+
+  setItem(key: string, value: string): void {
+    sessionStorage.setItem(key, value);
+  }
+
+  removeItem(key: string): void {
+    sessionStorage.removeItem(key);
+  }
+
+  clear(): void {
+    sessionStorage.clear();
+  }
+}
+
+const customLocalStorage = ExtendedLocalStorage.INSTANCE;
+const customSessionStorage = ExtendedSessionStorage.INSTANCE;
+
 /**
  * Small wrapper featuring a getter and a setter for browser session.
  */
@@ -33,7 +106,7 @@ export class Session {
    * @returns {*} Value of the variable that was found.
    */
   static get = (name: string, fallback?: any, save?: any) => {
-    let value = sessionStorage.getItem(name);
+    let value = customSessionStorage.getItem(name);
     if (!value && fallback !== undefined) {
       value = typeof fallback === 'function' ? fallback() : fallback;
       if (save) {
@@ -56,7 +129,7 @@ export class Session {
   static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
     value = typeof value === 'object' ? JSON.stringify(value) : value;
-    sessionStorage.setItem(name, value);
+    customSessionStorage.setItem(name, value);
   };
 
   /**
@@ -64,18 +137,18 @@ export class Session {
    *
    * @param {string} [name] - Name of the session storage variable to delete.
    */
-  static clear = (name) => (name ? sessionStorage.removeItem(name) : sessionStorage.clear());
+  static clear = (name) => (name ? customSessionStorage.removeItem(name) : customSessionStorage.clear());
 
   static serverIndex = Object.create({
-    save: (data): void => sessionStorage.setItem(Session.names.currentServer, data),
-    load: (): number => Number(sessionStorage.getItem(Session.names.currentServer)) || 0,
-    remove: (): void => sessionStorage.removeItem(Session.names.currentServer),
+    save: (data): void => customSessionStorage.setItem(Session.names.currentServer, data),
+    load: (): number => Number(customSessionStorage.getItem(Session.names.currentServer)) || 0,
+    remove: (): void => customSessionStorage.removeItem(Session.names.currentServer),
   });
 
   static nonce = Object.create({
-    save: (data: string): void => sessionStorage.setItem(Session.names.nonce, data),
-    load: (): string => sessionStorage.getItem(Session.names.nonce) || '',
-    remove: (): void => sessionStorage.removeItem(Session.names.nonce),
+    save: (data: string): void => customSessionStorage.setItem(Session.names.nonce, data),
+    load: (): string => customSessionStorage.getItem(Session.names.nonce) || '',
+    remove: (): void => customSessionStorage.removeItem(Session.names.nonce),
   });
 }
 
@@ -191,22 +264,15 @@ export class Local {
 
   static clearAll(botId?: string) {
     const prefixes = ['dydu', 'pushruleTrigger_', 'DYDU_'];
-    if (!botId) {
-      Object.keys(localStorage)
-        .filter((key: string) => {
-          const hasPrefix = prefixes.some((prefix) => key.startsWith(prefix));
-          return hasPrefix || key === 'pkce';
-        })
-        .forEach((key: string) => localStorage.removeItem(key));
-    } else {
-      Object.keys(localStorage)
-        .filter((key: string) => {
-          const hasPrefix = prefixes.some((prefix) => key.startsWith(prefix));
-          const hasSuffix = botId && key.endsWith(botId);
-          return hasPrefix && hasSuffix;
-        })
-        .forEach((key: string) => localStorage.removeItem(key));
-    }
+    Object.keys(localStorage)
+      .filter((key: string) => {
+        const hasPrefix = prefixes.some((prefix) => key.startsWith(prefix));
+        return hasPrefix && (!botId || (botId && key.endsWith(botId)));
+      })
+      .forEach((key: string) => {
+        console.log('Removing key=' + key + ' bot=', botId);
+        customLocalStorage.removeItem(key);
+      });
   }
 
   /**
@@ -214,7 +280,7 @@ export class Local {
    *
    * @param {string} [name] - Name of the local storage variable to delete.
    */
-  static clear = (name) => (name ? localStorage.removeItem(name) : localStorage.clear());
+  static clear = (name) => (name ? customLocalStorage.removeItem(name) : customLocalStorage.clear());
 
   /**
    * Retrieve a value stored in the local storage.
@@ -232,7 +298,7 @@ export class Local {
    * @returns {*} Value of the variable that was found.
    */
   static get = (name: string, fallback?: any, save?: any) => {
-    let value = localStorage.getItem(name);
+    let value = customLocalStorage.getItem(name);
     if (!value && fallback !== undefined) {
       value = typeof fallback === 'function' ? fallback() : fallback;
       if (save) {
@@ -255,180 +321,168 @@ export class Local {
   static set = (name, value) => {
     value = value === undefined ? Math.floor(Date.now() / 1000) : value;
     value = typeof value === 'object' ? JSON.stringify(value) : value;
-    localStorage.setItem(name, value);
+    customLocalStorage.setItem(name, value);
   };
 
   static cookies = Object.create({
-    save: (data) => localStorage.setItem(Local.names.cookies, data),
+    save: (data) => customLocalStorage.setItem(Local.names.cookies, data),
     load: () => {
-      const areCookiesAccepted = localStorage.getItem(Local.names.cookies);
+      const areCookiesAccepted = customLocalStorage.getItem(Local.names.cookies);
       return (areCookiesAccepted && JSON.parse(areCookiesAccepted)) || false;
     },
-    reset: () => localStorage.removeItem(Local.names.cookies),
+    reset: () => customLocalStorage.removeItem(Local.names.cookies),
   });
 
   static dragon = Object.create({
-    save: (data) => localStorage.setItem(Local.names.dragon, JSON.stringify(data)),
+    save: (data) => customLocalStorage.setItem(Local.names.dragon, JSON.stringify(data)),
     load: () => {
-      const dragonValue = localStorage.getItem(Local.names.dragon);
+      const dragonValue = customLocalStorage.getItem(Local.names.dragon);
       return (dragonValue && JSON.parse(dragonValue)) || null;
     },
-    reset: () => localStorage.removeItem(Local.names.dragon),
+    reset: () => customLocalStorage.removeItem(Local.names.dragon),
   });
 
   static gdpr = Object.create({
-    save: (data) => localStorage.setItem(Local.names.gdpr, data),
+    save: (data) => customLocalStorage.setItem(Local.names.gdpr, data),
     load: () => {
-      const isGdprAccepted = localStorage.getItem(Local.names.gdpr);
+      const isGdprAccepted = customLocalStorage.getItem(Local.names.gdpr);
       return (isGdprAccepted && JSON.parse(isGdprAccepted)) || false;
     },
-    reset: () => localStorage.removeItem(Local.names.gdpr),
+    reset: () => customLocalStorage.removeItem(Local.names.gdpr),
   });
 
   static userConsentOptions = Object.create({
     save: (data) => {
       if (data && Object.keys(data).length > 0) {
-        localStorage.setItem(Local.names.userConsentOptions, JSON.stringify(data));
+        customLocalStorage.setItem(Local.names.userConsentOptions, JSON.stringify(data));
       }
     },
     load: () => {
-      const str = localStorage.getItem(Local.names.userConsentOptions);
+      const str = customLocalStorage.getItem(Local.names.userConsentOptions);
       if (str !== null) {
         return JSON.parse(str);
       }
       return null;
     },
     reset: () => {
-      const str = localStorage.getItem(Local.names.userConsentOptions);
+      const str = customLocalStorage.getItem(Local.names.userConsentOptions);
       if (str !== null) {
-        localStorage.removeItem(Local.names.userConsentOptions);
+        customLocalStorage.removeItem(Local.names.userConsentOptions);
       }
     },
   });
 
   static livechatType = Object.create({
-    save: (data) => localStorage.setItem(Local.names.livechatType, data),
-    load: () => localStorage.getItem(Local.names.livechatType),
-    remove: () => localStorage.removeItem(Local.names.livechatType),
+    save: (data) => customLocalStorage.setItemForBot(Local.names.livechatType, data),
+    load: () => customLocalStorage.getItemForBot(Local.names.livechatType),
+    remove: () => customLocalStorage.removeItemForBot(Local.names.livechatType),
   });
 
   static waitingQueue = Object.create({
-    save: (data) => localStorage.setItem(Local.names.waitingQueue, data),
+    save: (data) => customLocalStorage.setItemForBot(Local.names.waitingQueue, data),
     load: () => {
-      const waitingQueue = localStorage.getItem(Local.names.waitingQueue);
+      const waitingQueue = customLocalStorage.getItemForBot(Local.names.waitingQueue);
       return (waitingQueue && JSON.parse(waitingQueue)) || false;
     },
-    remove: () => localStorage.removeItem(Local.names.waitingQueue),
+    remove: () => customLocalStorage.removeItemForBot(Local.names.waitingQueue),
   });
 
   static servers = Object.create({
     load: () => {
-      const servers = localStorage.getItem(Local.names.servers);
+      const servers = customLocalStorage.getItem(Local.names.servers);
       return servers && JSON.parse(servers);
     },
   });
 
   static botIdForChannels = Object.create({
-    save: (data: string) => localStorage.setItem(Local.names.botId, data),
-    load: () => localStorage.getItem(Local.names.botId) || null,
-    remove: () => localStorage.removeItem(Local.names.botId),
+    save: (data: string) => customLocalStorage.setItem(Local.names.botId, data),
+    load: () => customLocalStorage.getItem(Local.names.botId) || null,
+    remove: () => customLocalStorage.removeItem(Local.names.botId),
   });
 
   static saml = Object.create({
-    save: (data) => localStorage.setItem(Local.names.saml, data),
-    load: () => localStorage.getItem(Local.names.saml) || null,
-    remove: () => localStorage.removeItem(Local.names.saml),
+    save: (data) => customLocalStorage.setItemForBot(Local.names.saml, data),
+    load: () => customLocalStorage.getItemForBot(Local.names.saml) || null,
+    remove: () => customLocalStorage.removeItemForBot(Local.names.saml),
   });
 
   static operator = Object.create({
-    save: (data) => localStorage.setItem(Local.names.operator, data),
-    load: () => localStorage.getItem(Local.names.operator) || null,
-    remove: () => localStorage.removeItem(Local.names.operator),
+    save: (data) => customLocalStorage.setItemForBot(Local.names.operator, data),
+    load: () => customLocalStorage.getItemForBot(Local.names.operator) || null,
+    remove: () => customLocalStorage.removeItemForBot(Local.names.operator),
   });
 
   static locale = Object.create({
-    save: (data) => localStorage.setItem(Local.names.locale, data),
-    load: () => localStorage.getItem(Local.names.locale) || null,
-    remove: () => localStorage.removeItem(Local.names.locale),
+    save: (data) => customLocalStorage.setItem(Local.names.locale, data),
+    load: () => customLocalStorage.getItem(Local.names.locale) || null,
+    remove: () => customLocalStorage.removeItem(Local.names.locale),
   });
 
   static space = Object.create({
-    getKey: (botId: string) => `${Local.names.space}_${botId}`,
-    save: (botId: string, data) => {
-      localStorage.setItem(Local.space.getKey(botId), data);
+    save: (data) => {
+      customLocalStorage.setItemForBot(Local.names.space, data);
     },
-    load: (botId: string) => {
-      return localStorage.getItem(Local.space.getKey(botId)) || null;
+    load: () => {
+      return customLocalStorage.getItemForBot(Local.names.space) || null;
     },
-    remove: (botId: string) => {
-      localStorage.removeItem(Local.space.getKey(botId));
+    remove: () => {
+      customLocalStorage.removeItemForBot(Local.names.space);
     },
   });
 
   static manualSpaceSet = Object.create({
-    getKey: (botId: string) => `${Local.names.manualSpaceSet}_${botId}`,
-    save: (botId: string) => {
-      localStorage.setItem(Local.manualSpaceSet.getKey(botId), 'true');
+    save: () => {
+      customLocalStorage.setItemForBot(Local.names.manualSpaceSet, 'true');
     },
-    load: (botId: string) => {
-      return localStorage.getItem(Local.manualSpaceSet.getKey(botId)) == 'true' || false;
+    load: () => {
+      return customLocalStorage.getItemForBot(Local.names.manualSpaceSet) == 'true' || false;
     },
-    remove: (botId: string) => {
-      localStorage.removeItem(Local.manualSpaceSet.getKey(botId));
+    remove: () => {
+      customLocalStorage.removeItemForBot(Local.names.manualSpaceSet);
     },
   });
 
   static viewMode = Object.create({
     load: () => {
-      const d = localStorage.getItem(Local.names.open);
+      const d = customLocalStorage.getItem(Local.names.open);
       return isDefined(d) ? _parse(d) : null;
     },
-    save: (value) => localStorage.setItem(Local.names.open, value),
-    remove: () => localStorage.removeItem(Local.names.open),
+    save: (value) => customLocalStorage.setItem(Local.names.open, value),
+    remove: () => customLocalStorage.removeItem(Local.names.open),
   });
 
   static visit = Object.create({
-    getKey: (botId: string) => {
-      return `${Local.names.visit}_${botId}`;
-    },
-    load: (botId: string): number | null => {
-      const key = Local.visit.getKey(botId);
-      const content = localStorage.getItem(key);
+    load: (): number | null => {
+      const content = customLocalStorage.getItemForBot(Local.names.visit);
       return isDefined(content) ? Number(content) : null;
     },
-    isSet: (botId: string) => {
-      const content = Local.visit.load(botId);
+    isSet: () => {
+      const content = Local.visit.load();
       return isDefined(content);
     },
-    save: (botId: string) => {
-      const key = Local.visit.getKey(botId);
-      localStorage.setItem(key, Date.now().toString());
+    save: () => {
+      customLocalStorage.setItemForBot(Local.names.visit, Date.now().toString());
     },
   });
 
   static lastInteraction = Object.create({
-    getKey: (botId: string) => `${Local.names.lastInteraction}_${botId}`,
-
-    load: (botId: string) => {
-      const key = Local.lastInteraction.getKey(botId);
-      const content = localStorage.getItem(key);
+    load: () => {
+      const content = customLocalStorage.getItemForBot(Local.names.lastInteraction);
       return isDefined(content) && content ? Number(content) : null;
     },
 
-    save: (botId: string) => {
-      const key = Local.lastInteraction.getKey(botId);
-      localStorage.setItem(key, Date.now().toString());
+    save: () => {
+      customLocalStorage.setItemForBot(Local.names.lastInteraction, Date.now().toString());
     },
-    reset: (botId: string) => {
-      const key = Local.lastInteraction.getKey(botId);
-      localStorage.removeItem(key);
+    reset: () => {
+      customLocalStorage.removeItemForBot(Local.names.lastInteraction);
     },
   });
 
   static clientId = Object.create({
     getKey: () => Local.names.client,
     load: (keyString = '') => {
-      const content = localStorage.getItem(keyString);
+      const content = customLocalStorage.getItem(keyString);
       return isDefined(content) ? content : '';
     },
     isSet: (keyString = '') => {
@@ -438,118 +492,112 @@ export class Local {
     createAndSave: (keyString, clientId = null) => {
       const ID_CHAR_SIZE = 15;
       const generatedClientId = clientId || generateClientUuid(ID_CHAR_SIZE).toString();
-      localStorage.setItem(keyString, generatedClientId);
+      customLocalStorage.setItem(keyString, generatedClientId);
     },
   });
 
   static sidebar = Object.create({
     getKey: () => Local.names.sidebar,
-    load: () => localStorage.getItem(Local.sidebar.getKey()) || false,
+    load: () => customLocalStorage.getItemForBot(Local.sidebar.getKey()) || false,
     save: (newValue) => {
       const currentSaved = Local.sidebar.load();
-      if (currentSaved !== newValue) localStorage.setItem(Local.sidebar.getKey(), newValue);
+      if (currentSaved !== newValue) customLocalStorage.setItemForBot(Local.sidebar.getKey(), newValue);
     },
   });
 
   static welcomeKnowledge = Object.create({
-    getKey: (botId: string) => `${Local.names.welcome}_${botId}`,
-    load: (botId: string, contextId) => {
-      const data = localStorage.getItem(Local.welcomeKnowledge.getKey(botId));
+    getKey: () => Local.names.welcome,
+    load: (contextId) => {
+      const data = customLocalStorage.getItemForBot(Local.welcomeKnowledge.getKey());
       if (data) {
         return JSON.parse(data)[contextId];
       }
       return null;
     },
-    save: (botId: string, newValue) => {
+    save: (newValue) => {
       if (newValue) {
         const contextId = newValue.contextId;
-        const stored = Local.welcomeKnowledge.load(botId, contextId) || {};
+        const stored = Local.welcomeKnowledge.load(contextId) || {};
         stored[contextId] = newValue;
-        localStorage.setItem(Local.welcomeKnowledge.getKey(botId), JSON.stringify(stored));
+        customLocalStorage.setItemForBot(Local.welcomeKnowledge.getKey(), JSON.stringify(stored));
       }
     },
-    reset: (botId: string) => {
-      localStorage.removeItem(Local.welcomeKnowledge.getKey(botId));
+    reset: () => {
+      customLocalStorage.removeItemForBot(Local.welcomeKnowledge.getKey());
     },
   });
 
   static pushRules = Object.create({
-    getKey: (space: string, botId: string) => `${Local.names.pushRules}_${space}_${botId}`,
-    load: (space: string, botId: string) => {
-      const data = localStorage.getItem(Local.pushRules.getKey(space, botId));
+    getKey: (space: string) => `${Local.names.pushRules}_${space}`,
+    load: (space: string) => {
+      const data = customLocalStorage.getItemForBot(Local.pushRules.getKey(space));
       if (data) {
         return JSON.parse(data) || {};
       }
       return {};
     },
-    save: (space: string, botId: string, key: string, value: any) => {
+    save: (space: string, key: string, value: any) => {
       if (key && value) {
-        const stored = Local.pushRules.load(space, botId) || {};
+        const stored = Local.pushRules.load(space) || {};
         stored[key] = value;
-        localStorage.setItem(Local.pushRules.getKey(space, botId), JSON.stringify(stored));
+        customLocalStorage.setItemForBot(Local.pushRules.getKey(space), JSON.stringify(stored));
       }
     },
-    reset: (space: string, botId: string) => {
-      localStorage.removeItem(Local.pushRules.getKey(space, botId));
+    reset: (space: string) => {
+      customLocalStorage.removeItemForBot(Local.pushRules.getKey(space));
     },
-    getValueOfRuleCondition: (
-      space: string,
-      botId: string,
-      ruleId: string,
-      conditionId: string,
-      defaultValue: string,
-    ): string => {
+    getValueOfRuleCondition: (space: string, ruleId: string, conditionId: string, defaultValue: string): string => {
       const ruleKey = `r_${ruleId}`;
-      const cookieData = Local.pushRules.load(space, botId);
+      const cookieData = Local.pushRules.load(space);
       const ruleConditions = cookieData[ruleKey];
 
       return ruleConditions?.[conditionId] ?? defaultValue;
     },
-    setValueOfRuleCondition: (space: string, botId: string, ruleId: string, conditionId: string, value: any): void => {
+    setValueOfRuleCondition: (space: string, ruleId: string, conditionId: string, value: any): void => {
       const ruleKey = `r_${ruleId}`;
-      const cookieData = Local.pushRules.load(space, botId);
+      const cookieData = Local.pushRules.load(space);
       const ruleConditions = cookieData[ruleKey] || {};
 
       ruleConditions[conditionId] = value;
-      Local.pushRules.save(space, botId, ruleKey, ruleConditions);
+      Local.pushRules.save(space, ruleKey, ruleConditions);
     },
   });
 
   static pushRulesTrigger = Object.create({
-    getKey: (botId: string): string => `${Local.names.pushRulesTrigger}_${botId}`,
-    load: (botId: string): string[] => {
-      const data: string | null = localStorage.getItem(Local.pushRulesTrigger.getKey(botId));
+    getKey: (): string => Local.names.pushRulesTrigger,
+    load: (): string[] => {
+      const data: string | null = customLocalStorage.getItemForBot(Local.pushRulesTrigger.getKey());
       if (data) {
         return JSON.parse(data) || [];
       }
       return [];
     },
-    save: (botId: string, value: any): void => {
+    save: (value: any): void => {
       if (value) {
-        const stored: string[] = Local.pushRulesTrigger.load(botId) || [];
+        const stored: string[] = Local.pushRulesTrigger.load() || [];
         if (!stored.some((item: string) => item === value)) {
           stored.push(value);
         }
-        localStorage.setItem(Local.pushRulesTrigger.getKey(botId), JSON.stringify(stored));
+        customLocalStorage.setItemForBot(Local.pushRulesTrigger.getKey(), JSON.stringify(stored));
       }
     },
-    reset: (botId: string): void => {
-      localStorage.removeItem(Local.pushRulesTrigger.getKey(botId));
+    reset: (): void => {
+      customLocalStorage.removeItemForBot(Local.pushRulesTrigger.getKey());
     },
   });
 
   static contextId = Object.create({
-    getKey: (botId: string) => `${Local.names.context}_${botId}`,
-    load: (botId: string) => {
-      return localStorage.getItem(Local.contextId.getKey(botId));
+    getKey: () => Local.names.context,
+    load: () => {
+      return customLocalStorage.getItemForBot(Local.contextId.getKey());
     },
-    save: (botId: string, newValue: string) => {
+    save: (newValue: string) => {
       if (newValue) {
-        localStorage.setItem(Local.contextId.getKey(botId), newValue);
+        customLocalStorage.setItemForBot(Local.contextId.getKey(), newValue);
       }
     },
-    reset: (botId) => {
-      localStorage.removeItem(Local.contextId.getKey(botId));
+    reset: () => {
+      customLocalStorage.removeItemForBot(Local.contextId.getKey());
     },
   });
 
@@ -558,23 +606,20 @@ export class Local {
     const now = Date.now();
     const allInteractionKeys = Object.keys(localStorage).filter((key) => key.startsWith(lastInteractionKeyPrefix));
     const expiredBotIds: string[] = [];
-    let hasAtLeastOneValidKey = false;
+    let isAllBotExpired = allInteractionKeys?.length !== 0;
     let hasClearedSomething = false;
     allInteractionKeys.forEach((key) => {
-      const content = localStorage.getItem(key);
+      const content = customLocalStorage.getItem(key);
       const lastInteraction = content ? Number(content) : null;
 
-      if (!lastInteraction || Number.isNaN(lastInteraction)) {
-        hasAtLeastOneValidKey = true;
-        return;
-      }
-
-      const timeSpent = now - lastInteraction;
-      if (timeSpent > timeToKeep) {
-        const botId = key.slice(lastInteractionKeyPrefix.length);
-        expiredBotIds.push(botId);
-      } else {
-        hasAtLeastOneValidKey = true;
+      if (lastInteraction && !Number.isNaN(lastInteraction)) {
+        const timeSpent = now - lastInteraction;
+        if (timeSpent > timeToKeep) {
+          const botId = key.slice(lastInteractionKeyPrefix.length);
+          expiredBotIds.push(botId);
+        } else {
+          isAllBotExpired = false;
+        }
       }
     });
     expiredBotIds.forEach((botId) => {
@@ -582,7 +627,8 @@ export class Local {
       Local.clearAll(botId);
       hasClearedSomething = true;
     });
-    if (!hasAtLeastOneValidKey) {
+
+    if (isAllBotExpired) {
       Local.clearAll();
       hasClearedSomething = true;
     }
@@ -591,7 +637,7 @@ export class Local {
   };
 
   static isDialogTimeOver = () => {
-    const lastInteraction = Local.lastInteraction.load(BOT.id);
+    const lastInteraction = Local.lastInteraction.load();
 
     if (lastInteraction) {
       const now = Date.now();
@@ -608,71 +654,72 @@ export class Local {
 export default class Auth {
   static setPkceData(codeChallenge, codeVerifier) {
     if (codeChallenge && codeVerifier) {
-      localStorage.setItem(Local?.names?.oidcPkceCodeChallenge, codeChallenge);
-      localStorage.setItem(Local?.names?.oidcPkceCodeVerifier, codeVerifier);
+      customLocalStorage.setItem(Local?.names?.oidcPkceCodeChallenge, codeChallenge);
+      customLocalStorage.setItem(Local?.names?.oidcPkceCodeVerifier, codeVerifier);
       console.log('Storing challenge/verifier');
     }
   }
 
   static loadPkceCodeVerifier() {
     return (
-      localStorage.getItem(Local?.names?.oidcPkceCodeVerifier) ||
-      localStorage.getItem(Local?.oldNames?.oidcPkceCodeVerifier)
+      customLocalStorage.getItem(Local?.names?.oidcPkceCodeVerifier) ||
+      customLocalStorage.getItem(Local?.oldNames?.oidcPkceCodeVerifier)
     );
   }
 
   static loadPkceCodeChallenge() {
     return (
-      localStorage.getItem(Local?.names?.oidcPkceCodeChallenge) ||
-      localStorage.getItem(Local?.oldNames?.oidcPkceCodeChallenge)
+      customLocalStorage.getItem(Local?.names?.oidcPkceCodeChallenge) ||
+      customLocalStorage.getItem(Local?.oldNames?.oidcPkceCodeChallenge)
     );
   }
 
   static saveOidcAuthData(pkceData) {
-    localStorage.setItem(Local?.names?.oidcAuthData, JSON.stringify(pkceData));
+    customLocalStorage.setItem(Local?.names?.oidcAuthData, JSON.stringify(pkceData));
   }
 
   static clearOidcAuthData() {
-    localStorage.removeItem(Local?.names?.oidcAuthData);
-    localStorage.removeItem(Local?.oldNames?.oidcAuthData);
+    customLocalStorage.removeItem(Local?.names?.oidcAuthData);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcAuthData);
   }
 
   static loadOidcAuthData() {
     const authData =
-      localStorage.getItem(Local?.names?.oidcAuthData) || localStorage.getItem(Local?.oldNames?.oidcAuthData);
+      customLocalStorage.getItem(Local?.names?.oidcAuthData) ||
+      customLocalStorage.getItem(Local?.oldNames?.oidcAuthData);
     return isDefined(authData) ? JSON.parse(<string>authData) : null;
   }
 
   static saveOidcUrls = (urls) => {
-    localStorage.setItem(Local?.names?.oidcUrls, JSON.stringify(urls));
+    customLocalStorage.setItem(Local?.names?.oidcUrls, JSON.stringify(urls));
   };
 
   static loadOidcUrls() {
     return (
-      JSON.parse(<string>localStorage.getItem(Local?.names?.oidcUrls)) ||
-      JSON.parse(<string>localStorage.getItem(Local?.oldNames?.oidcUrls))
+      JSON.parse(<string>customLocalStorage.getItem(Local?.names?.oidcUrls)) ||
+      JSON.parse(<string>customLocalStorage.getItem(Local?.oldNames?.oidcUrls))
     );
   }
 
   static clearOidcUrls() {
-    localStorage.removeItem(Local?.names?.oidcUrls);
-    localStorage.removeItem(Local?.oldNames?.oidcUrls);
+    customLocalStorage.removeItem(Local?.names?.oidcUrls);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcUrls);
   }
 
   static saveUserInfo = (info) => {
-    localStorage.setItem(Local?.names?.userInfo, JSON.stringify(info));
+    customLocalStorage.setItem(Local?.names?.userInfo, JSON.stringify(info));
   };
 
   static loadUserInfo() {
     return (
-      JSON.parse(<string>localStorage.getItem(Local?.names?.userInfo)) ||
-      JSON.parse(<string>localStorage.getItem(Local?.oldNames?.userInfo))
+      JSON.parse(<string>customLocalStorage.getItem(Local?.names?.userInfo)) ||
+      JSON.parse(<string>customLocalStorage.getItem(Local?.oldNames?.userInfo))
     );
   }
 
   static clearUserInfo() {
-    localStorage.removeItem(Local?.names?.userInfo);
-    localStorage.removeItem(Local?.oldNames?.userInfo);
+    customLocalStorage.removeItem(Local?.names?.userInfo);
+    customLocalStorage.removeItem(Local?.oldNames?.userInfo);
   }
 
   static saveToken = (token) => {
@@ -680,48 +727,49 @@ export default class Auth {
     Auth.clearOidcAuthData();
 
     if (isDefined(token?.id_token)) {
-      localStorage.setItem(Local?.names?.oidcIdToken, token?.id_token);
+      customLocalStorage.setItem(Local?.names?.oidcIdToken, token?.id_token);
     }
 
     if (isDefined(token?.access_token)) {
-      localStorage.setItem(Local?.names?.oidcAccessToken, token?.access_token);
+      customLocalStorage.setItem(Local?.names?.oidcAccessToken, token?.access_token);
     }
 
     if (isDefined(token?.refresh_token)) {
-      localStorage.setItem(Local?.names?.oidcRefreshToken, token?.refresh_token);
+      customLocalStorage.setItem(Local?.names?.oidcRefreshToken, token?.refresh_token);
     }
   };
 
   static clearToken() {
-    localStorage.removeItem(Local?.names?.oidcIdToken);
-    localStorage.removeItem(Local?.names?.oidcAccessToken);
-    localStorage.removeItem(Local?.names?.oidcRefreshToken);
-    localStorage.removeItem(Local?.names?.oidcPkceCodeVerifier);
+    customLocalStorage.removeItem(Local?.names?.oidcIdToken);
+    customLocalStorage.removeItem(Local?.names?.oidcAccessToken);
+    customLocalStorage.removeItem(Local?.names?.oidcRefreshToken);
+    customLocalStorage.removeItem(Local?.names?.oidcPkceCodeVerifier);
 
-    localStorage.removeItem(Local?.oldNames?.oidcIdToken);
-    localStorage.removeItem(Local?.oldNames?.oidcAccessToken);
-    localStorage.removeItem(Local?.oldNames?.oidcRefreshToken);
-    localStorage.removeItem(Local?.oldNames?.oidcPkceCodeVerifier);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcIdToken);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcAccessToken);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcRefreshToken);
+    customLocalStorage.removeItem(Local?.oldNames?.oidcPkceCodeVerifier);
   }
 
   static loadToken() {
     return {
       id_token:
-        isDefined(localStorage.getItem(Local?.names?.oidcIdToken)) ||
-        isDefined(localStorage.getItem(Local?.oldNames?.oidcIdToken))
-          ? localStorage.getItem(Local?.names?.oidcIdToken) || localStorage.getItem(Local?.oldNames?.oidcIdToken)
+        isDefined(customLocalStorage.getItem(Local?.names?.oidcIdToken)) ||
+        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcIdToken))
+          ? customLocalStorage.getItem(Local?.names?.oidcIdToken) ||
+            customLocalStorage.getItem(Local?.oldNames?.oidcIdToken)
           : undefined,
       access_token:
-        isDefined(localStorage.getItem(Local?.names?.oidcAccessToken)) ||
-        isDefined(localStorage.getItem(Local?.oldNames?.oidcAccessToken))
-          ? localStorage.getItem(Local?.names?.oidcAccessToken) ||
-            localStorage.getItem(Local?.oldNames?.oidcAccessToken)
+        isDefined(customLocalStorage.getItem(Local?.names?.oidcAccessToken)) ||
+        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcAccessToken))
+          ? customLocalStorage.getItem(Local?.names?.oidcAccessToken) ||
+            customLocalStorage.getItem(Local?.oldNames?.oidcAccessToken)
           : undefined,
       refresh_token:
-        isDefined(localStorage.getItem(Local?.names?.oidcRefreshToken)) ||
-        isDefined(localStorage.getItem(Local?.oldNames?.oidcRefreshToken))
-          ? localStorage.getItem(Local?.names?.oidcRefreshToken) ||
-            localStorage.getItem(Local?.oldNames?.oidcRefreshToken)
+        isDefined(customLocalStorage.getItem(Local?.names?.oidcRefreshToken)) ||
+        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcRefreshToken))
+          ? customLocalStorage.getItem(Local?.names?.oidcRefreshToken) ||
+            customLocalStorage.getItem(Local?.oldNames?.oidcRefreshToken)
           : undefined,
     };
   }
@@ -737,11 +785,11 @@ export default class Auth {
 
   static retry = Object.create({
     load: () => {
-      const d = localStorage.getItem(Local.names.oidcRetry);
+      const d = customLocalStorage.getItem(Local.names.oidcRetry);
       return isDefined(d) ? _parse(d) : 0;
     },
-    save: (value: number) => localStorage.setItem(Local.names.oidcRetry, String(value)),
-    reset: () => localStorage.setItem(Local.names.oidcRetry, '0'),
+    save: (value: number) => customLocalStorage.setItem(Local.names.oidcRetry, String(value)),
+    reset: () => customLocalStorage.setItem(Local.names.oidcRetry, '0'),
   });
 }
 

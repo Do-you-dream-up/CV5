@@ -581,22 +581,21 @@ describe('dydu.js', function () {
   describe('setSpace', () => {
     it('should set the |space| class attribute to the argument', () => {
       //GIVEN
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn(() => mockStorage || null),
       };
       const newSpace = 'newSpace';
-      const botId = 'botId';
 
       // WHEN
-      dydu.setSpace(botId, newSpace);
+      dydu.setSpace(newSpace);
 
       // THEN
-      expect(Local.space.save).toHaveBeenCalledWith(botId, newSpace);
-      expect(Local.space.load(botId)).toEqual(newSpace);
+      expect(Local.space.save).toHaveBeenCalledWith(newSpace);
+      expect(Local.space.load()).toEqual(newSpace);
     });
   });
   describe('getContextVariables', () => {
@@ -639,16 +638,16 @@ describe('dydu.js', function () {
       spied = jestSpyOnList(dydu, ['getConfiguration']);
       spied.getConfiguration.mockReturnValue({ spaces: { items: [defaultSpace] } });
 
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
-      const botId = 'bot-id';
+
       // WHEN
-      const receivedSpace = dydu.getSpace(botId);
+      const receivedSpace = dydu.getSpace();
 
       // THEN
       expect(receivedSpace).toEqual(defaultSpace);
@@ -657,19 +656,17 @@ describe('dydu.js', function () {
       // GIVEN
       const currentSpace = 'current-space';
 
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
 
-      const botId = 'bot-id';
-
       // WHEN
-      dydu.setSpace(botId, currentSpace);
-      const receivedSpace = dydu.getSpace(botId);
+      dydu.setSpace(currentSpace);
+      const receivedSpace = dydu.getSpace();
 
       // THEN
       expect(receivedSpace).toEqual(currentSpace);
@@ -685,19 +682,18 @@ describe('dydu.js', function () {
         };
       });
 
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
 
       // WHEN
       const currentSpace = null;
-      const botId = 'bot-id';
-      dydu.setSpace(botId, currentSpace);
-      const receivedSpace = dydu.getSpace(botId, strategiesAllDisabled);
+      dydu.setSpace(currentSpace);
+      const receivedSpace = dydu.getSpace(strategiesAllDisabled);
 
       // THEN
       expect(receivedSpace).toEqual(dydu.getConfiguration().spaces.items[0]);
@@ -713,20 +709,20 @@ describe('dydu.js', function () {
         value: cookieModeValue,
       };
 
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
+
       const configuration = new ConfigurationFixture();
       configuration.updateSpaceDetectionMode(cookieDetectionItem);
       const strategies = configuration.getSpaceConfig().detection;
-      const botId = 'bot-id';
       dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
       // WHEN
-      const receivedSpace = dydu.getSpace(botId, strategies);
+      const receivedSpace = dydu.getSpace(strategies);
 
       // THEN
       expect(Cookie.get).toHaveBeenCalledWith(cookieModeValue);
@@ -747,16 +743,16 @@ describe('dydu.js', function () {
       configuration.updateSpaceDetectionMode(globalModeItem);
       const strategies = configuration.getSpaceConfig().detection;
       dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
-      const botId = 'bot-id';
+
       // WHEN
-      const receivedSpace = dydu.getSpace(botId, strategies);
+      const receivedSpace = dydu.getSpace(strategies);
 
       // THEN
       expect(receivedSpace).toEqual(expectedResult);
@@ -776,17 +772,16 @@ describe('dydu.js', function () {
       configuration.updateSpaceDetectionMode(localstorageModeItem);
       const strategies = configuration.getSpaceConfig().detection;
       dydu.getConfiguration = jest.fn(() => configuration.getConfiguration());
-      const mockStorage = {};
+      let mockStorage = null;
       Local.space = {
-        save: jest.fn((key, val) => {
-          mockStorage[key] = val;
+        save: jest.fn((val) => {
+          mockStorage = val;
         }),
-        load: jest.fn((key) => mockStorage[key] || null),
+        load: jest.fn((key) => mockStorage || null),
       };
-      const botId = 'bot-id';
 
       // WHEN
-      const receivedSpace = dydu.getSpace(botId, strategies);
+      const receivedSpace = dydu.getSpace(strategies);
 
       // THEN
       expect(receivedSpace).toEqual(expectedResult);

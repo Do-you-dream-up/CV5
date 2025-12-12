@@ -1,4 +1,4 @@
-import Auth, { Cookie, Session } from '../storage';
+import Auth, { Cookie, Local, Session } from '../storage';
 
 import cookie from 'js-cookie';
 
@@ -10,7 +10,7 @@ describe('Session', () => {
 
   test('should get the value from session storage', () => {
     const value = { name: 'test' };
-    sessionStorage.setItem('test', JSON.stringify(value));
+    Session.set('test', JSON.stringify(value));
     const result = Session.get('test');
     expect(result).toEqual(value);
   });
@@ -22,13 +22,13 @@ describe('Session', () => {
 
   test('should get the fallback value if the name is not found and save it if the save flag is true', () => {
     Session.get('test', 'fallback', true);
-    const result = sessionStorage.getItem('test');
+    const result = Session.get('test');
     expect(result).toEqual('fallback');
   });
 
   test('should set a value to session storage', () => {
     Session.set('test', { name: 'test' });
-    const result = JSON.parse(sessionStorage.getItem('test'));
+    const result = Session.get('test');
     expect(result).toEqual({ name: 'test' });
   });
 
@@ -36,7 +36,7 @@ describe('Session', () => {
     const date = new Date().getTime();
     jest.spyOn(Date, 'now').mockImplementation(() => date);
     Session.set('test');
-    const result = parseInt(sessionStorage.getItem('test'));
+    const result = parseInt(Session.get('test'));
     expect(result).toEqual(Math.floor(date / 1000));
     jest.spyOn(Date, 'now').mockRestore();
   });
@@ -44,15 +44,15 @@ describe('Session', () => {
   test('should clear a specific item from session storage', () => {
     sessionStorage.setItem('test', 'value');
     Session.clear('test');
-    expect(sessionStorage.getItem('test')).toBeNull();
+    expect(Session.get('test')).toBeNull();
   });
 
   test('should clear all items from session storage', () => {
     sessionStorage.setItem('test1', 'value1');
     sessionStorage.setItem('test2', 'value2');
     Session.clear();
-    expect(sessionStorage.getItem('test1')).toBeNull();
-    expect(sessionStorage.getItem('test2')).toBeNull();
+    expect(Session.get('test1')).toBeNull();
+    expect(Session.get('test2')).toBeNull();
   });
 });
 
@@ -168,7 +168,7 @@ describe('Auth', () => {
   describe('loadUrls', () => {
     it('loads urls from localStorage', () => {
       const urls = ['http://example.com', 'http://test.com'];
-      localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
+      Local.set('dydu-oauth-url', JSON.stringify(urls));
       expect(Auth.loadOidcUrls()).toEqual(urls);
     });
   });
@@ -176,7 +176,7 @@ describe('Auth', () => {
   describe('clearUrls', () => {
     it('clears urls from localStorage', () => {
       const urls = ['http://example.com', 'http://test.com'];
-      localStorage.setItem('dydu-oauth-url', JSON.stringify(urls));
+      Local.set('dydu-oauth-url', JSON.stringify(urls));
       Auth.clearOidcUrls();
       expect(Auth.loadOidcUrls()).toBeNull();
     });
@@ -193,7 +193,7 @@ describe('Auth', () => {
   describe('loadUserInfo', () => {
     it('loads user info from localStorage', () => {
       const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
-      localStorage.setItem('dydu-user-info', JSON.stringify(userInfo));
+      Local.set('dydu-user-info', JSON.stringify(userInfo));
       expect(Auth.loadUserInfo()).toEqual(userInfo);
     });
   });
@@ -201,7 +201,7 @@ describe('Auth', () => {
   describe('clearUserInfo', () => {
     it('clears user info from localStorage', () => {
       const userInfo = { name: 'John Doe', email: 'john.doe@example.com' };
-      localStorage.setItem('dydu-user-info', JSON.stringify(userInfo));
+      Local.set('dydu-user-info', JSON.stringify(userInfo));
       Auth.clearUserInfo();
       expect(Auth.loadUserInfo()).toBeNull();
     });

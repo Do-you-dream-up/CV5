@@ -1,4 +1,4 @@
-import { WelcomeKnowledgeProvider, useWelcomeKnowledge } from '../WelcomeKnowledgeContext';
+import WelcomeKnowledgeProvider, { useWelcomeKnowledge } from '../WelcomeKnowledgeContext';
 
 import { Local } from '../../tools/storage';
 import { renderHook } from '@testing-library/react-hooks';

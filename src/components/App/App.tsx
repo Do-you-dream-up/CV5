@@ -22,7 +22,7 @@ import Teaser from '../Teaser/Teaser';
 import { TopKnowledgeProvider } from '../../contexts/TopKnowledgeContext';
 import { UploadFileProvider } from '../../contexts/UploadFileContext';
 import { UserActionProvider } from '../../contexts/UserActionContext';
-import { WelcomeKnowledgeProvider } from '../../contexts/WelcomeKnowledgeContext';
+import WelcomeKnowledgeProvider from '../../contexts/WelcomeKnowledgeContext';
 import c from 'classnames';
 import { EventsProvider, useEvent } from '../../contexts/EventsContext';
 import useStyles from './styles';

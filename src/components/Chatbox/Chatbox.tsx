@@ -39,7 +39,6 @@ import { useTopKnowledge } from '../../contexts/TopKnowledgeContext';
 import { useUserAction } from '../../contexts/UserActionContext';
 import { useShadow } from '../../contexts/ShadowProvider';
 import UserConsentDisclaimer from '../UserConsentDisclaimer/UserConsentDisclaimer';
-import { BOT } from '../../tools/bot';
 
 /**
  * Root component of the chatbox. It implements the `window` API as well.
@@ -52,7 +51,7 @@ interface ChatboxProps {
 export default function Chatbox({ root, ...rest }: ChatboxProps) {
   const { configuration, update } = useConfiguration();
   const { send } = useLivechat();
-  const { mode, setMode, isFull, isOpen } = useViewMode();
+  const { setMode, isFull, isOpen } = useViewMode();
   const {
     lastRequest,
     addRequest,
@@ -211,20 +210,30 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
       };
 
       window.dydu.space = {
-        get: () => dydu.getSpace(BOT.id),
+        get: () => dydu.getSpace(),
         prompt: () => setPrompt && setPrompt('spaces'),
         set: (space, { quiet = true } = {}) => {
-          dydu.setSpace(BOT.id, space);
-          Local.manualSpaceSet.save(BOT.id);
+          dydu.setSpace(space);
+          Local.manualSpaceSet.save();
           !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`);
         },
       };
 
-      window.dydu.setBotId = (newBotId: string) => {
+      window.dydu.setBotId = (newBotId: string, space?: string, lang?: string) => {
         const oldBotId = dydu.getBot().id;
         if (newBotId && oldBotId !== newBotId) {
           Promise.resolve()
-            .then(() => dydu.setBotId(newBotId))
+            .then(() => {
+              dydu.setBotId(newBotId);
+
+              if (space) {
+                dydu.setSpace(space);
+              }
+
+              if (lang) {
+                dydu.setLocale(lang, true);
+              }
+            })
             .then(() => clearInteractions?.())
             .then(() => fetchWelcomeKnowledge?.());
         }

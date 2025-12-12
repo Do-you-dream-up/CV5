@@ -55,7 +55,7 @@ export default new (class Dydu {
 
   setContextId = (value) => {
     if (isDefined(value)) {
-      Local.contextId.save(BOT.id, value);
+      Local.contextId.save(value);
     }
   };
 
@@ -90,13 +90,13 @@ export default new (class Dydu {
       doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
-      space: this.getSpace(BOT.id),
-      userInput: `#dydumailto:${Local.contextId.load(BOT.id)}:${text}#`,
+      space: this.getSpace(),
+      userInput: `#dydumailto:${Local.contextId.load()}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       ...(options.extra && { extraParameters: options.extra }),
     });
-    const path = `chat/talk/${BOT.id}/${Local.contextId.load(BOT.id) ? `${Local.contextId.load(BOT.id)}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${Local.contextId.load() ? `${Local.contextId.load()}/` : ''}`;
     return emit(SERVLET_API.post, path, data);
   };
 
@@ -108,7 +108,7 @@ export default new (class Dydu {
    */
   feedback = async (value) => {
     const data = qs.stringify({
-      contextUUID: Local.contextId.load(BOT.id),
+      contextUUID: Local.contextId.load(),
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -126,7 +126,7 @@ export default new (class Dydu {
   feedbackComment = async (comment) => {
     const data = qs.stringify({
       comment,
-      contextUUID: Local.contextId.load(BOT.id),
+      contextUUID: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -143,7 +143,7 @@ export default new (class Dydu {
   feedbackInsatisfaction = async (choiceKey) => {
     const data = qs.stringify({
       choiceKey,
-      contextUUID: Local.contextId.load(BOT.id),
+      contextUUID: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -229,11 +229,11 @@ export default new (class Dydu {
    * and return space from local storage.
    *
    */
-  getSpace = (botId) => {
+  getSpace = () => {
     const detectionStrategy = this.getConfiguration()?.spaces?.detection;
     const atLeastOneStrategyActive = detectionStrategy?.some(({ active }) => active);
     const saveDefaultSpace = () => {
-      Local.space.save(botId, this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
+      Local.space.save(this.getConfiguration().spaces?.items[0] || DEFAULT_CONSULTATION_SPACE);
     };
     if (!Local.space.load() && atLeastOneStrategyActive) {
       if (Array.isArray(detectionStrategy)) {
@@ -257,7 +257,7 @@ export default new (class Dydu {
           if (active) {
             const _get = get(mode);
             if (isDefined(_get(value))) {
-              Local.space.save(botId, _get(value));
+              Local.space.save(_get(value));
               break;
             } else {
               saveDefaultSpace();
@@ -266,8 +266,8 @@ export default new (class Dydu {
         }
       }
     }
-    if (!isDefined(Local.space.load(botId))) saveDefaultSpace();
-    return Local.space.load(botId);
+    if (!isDefined(Local.space.load())) saveDefaultSpace();
+    return Local.space.load();
   };
 
   /**
@@ -276,9 +276,9 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   history = async () => {
-    if (Local.contextId.load(BOT.id)) {
+    if (Local.contextId.load()) {
       const data = qs.stringify({
-        contextUuid: Local.contextId.load(BOT.id),
+        contextUuid: Local.contextId.load(),
         solutionUsed: SOLUTION_TYPE.assistant,
         uiLocale: i18n.language,
         ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -289,8 +289,8 @@ export default new (class Dydu {
   };
 
   chatStatus = async () => {
-    if (Local.contextId.load(BOT.id)) {
-      const path = `chat/status/${BOT.id}/${Local.contextId.load(BOT.id)}`;
+    if (Local.contextId.load()) {
+      const path = `chat/status/${BOT.id}/${Local.contextId.load()}`;
       return await emit(SERVLET_API.get, path);
     }
   };
@@ -301,7 +301,7 @@ export default new (class Dydu {
    * @returns {Promise} The context ID is still available or not.
    */
   checkContextIdStillAvailable = () => {
-    const contextUuid = Local.contextId.load(BOT.id);
+    const contextUuid = Local.contextId.load();
     if (contextUuid) {
       const path = `chat/availablecontext/${BOT.id}/${contextUuid}/`;
       return Promise.resolve(emit(SERVLET_API.post, path))
@@ -328,10 +328,8 @@ export default new (class Dydu {
    *
    */
   printHistory = async () => {
-    if (Local.contextId.load(BOT.id)) {
-      const path = `${buildServletUrl()}history?context=${Local.contextId.load(
-        BOT.id,
-      )}&format=html&userLabel=Moi&botLabel=Chatbot`;
+    if (Local.contextId.load()) {
+      const path = `${buildServletUrl()}history?context=${Local.contextId.load()}&format=html&userLabel=Moi&botLabel=Chatbot`;
 
       // Create a new window to display the conversation history
       const newWindow = window.open(path, '_blank');
@@ -436,12 +434,11 @@ export default new (class Dydu {
   /**
    * Set the current space and save it in the local storage.
    *
-   * @param botId
    * @param {string} space - Selected space.
    * @returns {Promise}
    */
-  setSpace = (botId, space) => {
-    Local.space.save(botId, space?.trim());
+  setSpace = (space) => {
+    Local.space.save(space?.trim());
   };
 
   setQualificationMode = (value) => {
@@ -462,7 +459,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       language: this.getLocale(),
       search: text,
-      space: this.getSpace(BOT.id),
+      space: this.getSpace(),
       onlyShowRewordables: true, // to display only the activates rewords / suggestions
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -483,7 +480,7 @@ export default new (class Dydu {
       ...payload,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
-    const path = `chat/talk/${BOT.id}/${Local.contextId.load(BOT.id) ? `${Local.contextId.load(BOT.id)}/` : ''}`;
+    const path = `chat/talk/${BOT.id}/${Local.contextId.load() ? `${Local.contextId.load()}/` : ''}`;
     return emit(SERVLET_API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
 
@@ -496,7 +493,7 @@ export default new (class Dydu {
   handleSpaceWithTalkResponse(response) {
     const guiCSName = response?.guiCSName?.fromBase64();
     if (guiCSName) {
-      Local.space.save(BOT.id, guiCSName);
+      Local.space.save(guiCSName);
     }
     return response;
   }
@@ -558,7 +555,7 @@ export default new (class Dydu {
     const data = qs.stringify({
       typing: true,
       content: input?.toBase64(),
-      contextId: Local.contextId.load(BOT.id),
+      contextId: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -569,7 +566,7 @@ export default new (class Dydu {
   reading = async () => {
     const data = qs.stringify({
       reading: true,
-      contextId: Local.contextId.load(BOT.id),
+      contextId: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       mode: Local.livechatType.load() ? Local.livechatType.load().toBase64() : 'Synchron'.toBase64(),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -582,8 +579,8 @@ export default new (class Dydu {
     const data = {
       solutionUsed: SOLUTION_TYPE.livechat,
       format: RESPONSE_QUERY_FORMAT.json,
-      space: this.getSpace(BOT.id),
-      contextUuid: contextId || context?.fromBase64() || Local.contextId.load(BOT.id),
+      space: this.getSpace(),
+      contextUuid: contextId || context?.fromBase64() || Local.contextId.load(),
       language: this.getLocale(),
       lastPoll: pollUpdatedInteractionDate || serverTime,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
@@ -608,7 +605,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       maxKnowledge: size,
       period: period,
-      space: this.getSpace(BOT.id),
+      space: this.getSpace(),
       solutionUsed: SOLUTION_TYPE.assistant,
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
@@ -627,7 +624,7 @@ export default new (class Dydu {
    */
   setDialogVariable = async (name, value) => {
     const data = qs.stringify({
-      contextUuid: Local.contextId.load(BOT.id),
+      contextUuid: Local.contextId.load(),
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
@@ -644,11 +641,11 @@ export default new (class Dydu {
    */
   welcomeCall = async () => {
     const data = qs.stringify({
-      contextUuid: Local.contextId.load(BOT.id),
+      contextUuid: Local.contextId.load(),
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
-      space: this.getSpace(BOT.id),
+      space: this.getSpace(),
       ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       variables: this.getVariables(),
     });
@@ -677,7 +674,7 @@ export default new (class Dydu {
       language: this.getLocale(),
       os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
       qualificationMode: this.qualificationMode,
-      space: this.getSpace(BOT.id),
+      space: this.getSpace(),
       userInput: text,
       userUrl: this.isUrlAuthorized() ? getUrl : null,
       solutionUsed: SOLUTION_TYPE.assistant,
@@ -709,7 +706,7 @@ export default new (class Dydu {
   };
 
   getTalkBasePayload = async (options) => ({
-    contextId: Local.contextId.load(BOT.id),
+    contextId: Local.contextId.load(),
     alreadyCame: this.isClientIdAuthorized() ? this.alreadyCame() : false,
     browser: this.isOsAndBrowserAuthorized() ? `${browser.name} ${browser.version}` : null,
     clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
@@ -717,7 +714,7 @@ export default new (class Dydu {
     language: this.getLocale(),
     os: this.isOsAndBrowserAuthorized() ? `${os.name} ${os.version}` : null,
     qualificationMode: this.qualificationMode,
-    space: this.getSpace(BOT.id),
+    space: this.getSpace(),
     tokenUserData: Cookie.get('dydu-oauth-token') ? Cookie.get('dydu-oauth-token').id_token : null,
     userUrl: this.isUrlAuthorized ? getUrl : null,
     solutionUsed: options?.solutionUsed || SOLUTION_TYPE.assistant,
@@ -735,9 +732,7 @@ export default new (class Dydu {
   sendFiles = (files) => {
     const formData = new FormData();
     files.forEach((item) => formData.append(item.name, item));
-    const path = `fileupload?ctx=${Local.contextId.load(
-      BOT.id,
-    )}&fin=dydu-upload-file&cb=chatbox-upload-callback&origin=chatbox_origin`;
+    const path = `fileupload?ctx=${Local.contextId.load()}&fin=dydu-upload-file&cb=chatbox-upload-callback&origin=chatbox_origin`;
 
     return SERVLET.post(path, formData)
       .then((response) => {
@@ -815,7 +810,7 @@ export default new (class Dydu {
 
   async createSurveyPayload(surveyId, fieldObject) {
     return {
-      ctx: Local.contextId.load(BOT.id),
+      ctx: Local.contextId.load(),
       uuid: surveyId,
       ...fieldObject,
     };
@@ -858,7 +853,7 @@ export default new (class Dydu {
     if (!isDefined(surveyId) || isEmptyString(surveyId)) return null;
     const path = `/chat/survey/configuration/${BOT.id}`;
     const data = toFormUrlEncoded({
-      contextUuid: Local.contextId.load(BOT.id),
+      contextUuid: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,

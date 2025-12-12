@@ -1,5 +1,4 @@
 import contextPush from './contextPushExt';
-import { BOT } from '../bot';
 import ComplianceInfo from './complianceInfo';
 import { ExternalInfos } from '../../contexts/PushrulesContext';
 
@@ -88,7 +87,7 @@ export const rulesDefinitions: Rule[] = [
 
         for (let i = 0; i < pageConditions.length; i++) {
           const conditionId = condition.index + '-' + pageConditions[i].index;
-          let pageVisitCount = parseInt(contextPush.getPushData('', BOT.id, ruleId, conditionId, '0'));
+          let pageVisitCount = parseInt(contextPush.getPushData('', ruleId, conditionId, '0'));
           if (pageConditions[i].type === 'CurrentPage') {
             pageVisitCount++;
           }
@@ -99,9 +98,8 @@ export const rulesDefinitions: Rule[] = [
 
         for (let j = 0; j < compliantConditionIndexes.length; j++) {
           const compliantConditionId = condition.index + '-' + compliantConditionIndexes[j].index;
-          const compliantPageVisitCount =
-            parseInt(contextPush.getPushData('', BOT.id, ruleId, compliantConditionId, '0')) + 1;
-          contextPush.setPushData('', BOT.id, ruleId, compliantConditionId, compliantPageVisitCount);
+          const compliantPageVisitCount = parseInt(contextPush.getPushData('', ruleId, compliantConditionId, '0')) + 1;
+          contextPush.setPushData('', ruleId, compliantConditionId, compliantPageVisitCount);
         }
 
         if (isCompliant) {

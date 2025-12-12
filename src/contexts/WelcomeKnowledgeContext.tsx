@@ -4,7 +4,6 @@ import { isDefined, isEmptyString } from '../tools/helpers';
 import { Local } from '../tools/storage';
 import dydu from '../tools/dydu';
 import { useConfiguration } from './ConfigurationContext';
-import { BOT } from '../tools/bot';
 import i18n from './i18nProvider';
 
 type WelcomeKnowledge = Servlet.ChatResponseValues | null;
@@ -42,7 +41,7 @@ export interface WelcomeKnowledgeContextProps {
 export const WelcomeKnowledgeContext = createContext({} as WelcomeKnowledgeContextProps);
 export const useWelcomeKnowledge = () => useContext<WelcomeKnowledgeContextProps>(WelcomeKnowledgeContext);
 
-export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderProps) => {
+const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderProps) => {
   const { configuration } = useConfiguration();
   const [welcomeKnowledge, setWelcomeKnowledge] = useState<WelcomeKnowledge>(null);
   const tagWelcome = configuration?.welcome?.knowledgeName;
@@ -50,11 +49,11 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   const isEnabled = configuration?.welcome?.enable;
 
   const mustFetchWelcome = (): boolean => {
-    const currentContextUUID = Local.contextId.load(BOT.id);
+    const currentContextUUID = Local.contextId.load();
     return !!(
       (!currentContextUUID ||
-        !Local.welcomeKnowledge.load(BOT.id, currentContextUUID) ||
-        Local.welcomeKnowledge.load(BOT.id, currentContextUUID)?.uiLanguage !== i18n.language) &&
+        !Local.welcomeKnowledge.load(currentContextUUID) ||
+        Local.welcomeKnowledge.load(currentContextUUID)?.uiLanguage !== i18n.language) &&
       !Local.livechatType.load() &&
       isTagWelcomeDefined &&
       isEnabled
@@ -62,17 +61,17 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   };
 
   const verifyAvailabilityDialogContext = async (): Promise<boolean> => {
-    const currentContextUUID = Local.contextId.load(BOT.id);
+    const currentContextUUID = Local.contextId.load();
     return dydu.checkContextIdStillAvailable().then(async (response): Promise<boolean> => {
       if (!response) {
         Local.livechatType.remove();
-        if (!Local.manualSpaceSet.load(BOT.id)) {
-          Local.space.remove(BOT.id);
+        if (!Local.manualSpaceSet.load()) {
+          Local.space.remove();
         }
-        Local.manualSpaceSet.remove(BOT.id);
-        Local.lastInteraction.reset(BOT.id);
-        Local.welcomeKnowledge.reset(BOT.id, currentContextUUID);
-        Local.contextId.reset(BOT.id);
+        Local.manualSpaceSet.remove();
+        Local.lastInteraction.reset();
+        Local.welcomeKnowledge.reset(currentContextUUID);
+        Local.contextId.reset();
         return Promise.resolve(false);
       }
       return Promise.resolve(true);
@@ -80,7 +79,7 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
   };
 
   const fetchWelcomeKnowledge = async (): Promise<any> => {
-    const currentContextUUID = Local.contextId.load(BOT.id);
+    const currentContextUUID = Local.contextId.load();
 
     if (mustFetchWelcome()) {
       const talkOption = { hide: true, doNotRegisterInteraction: true, uiLocale: i18n.language };
@@ -91,11 +90,11 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
         return Promise.resolve();
       }
       setWelcomeKnowledge(talkResponse);
-      Local.welcomeKnowledge.save(BOT.id, talkResponse);
+      Local.welcomeKnowledge.save(talkResponse);
       return Promise.resolve(talkResponse);
     }
 
-    const welcome = Local.welcomeKnowledge.load(BOT.id, currentContextUUID);
+    const welcome = Local.welcomeKnowledge.load(currentContextUUID);
     if (welcome) {
       setWelcomeKnowledge({
         ...welcome,
@@ -116,3 +115,4 @@ export const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderP
 
   return <WelcomeKnowledgeContext.Provider value={props}>{children}</WelcomeKnowledgeContext.Provider>;
 };
+export default WelcomeKnowledgeProvider;

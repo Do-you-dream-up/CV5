@@ -19,8 +19,8 @@ interface ContextPushProps {
   setCity: (value: string) => void;
   computeDurationSinceLastVisit: (now: number) => void;
   getDurationSinceLastVisit: () => number;
-  setPushData: (space: string, botId: string, ruleId: string, conditionId: string, value: any) => void;
-  getPushData: (space: string, botId: string, ruleId: string, conditionId: string, defaultValue: string) => string;
+  setPushData: (space: string, ruleId: string, conditionId: string, value: any) => void;
+  getPushData: (space: string, ruleId: string, conditionId: string, defaultValue: string) => string;
   processKeywords: (ref: string) => string[];
 }
 
@@ -29,63 +29,54 @@ enum SPACE {
   SESSION = 'session',
 }
 
-// BOT configuré à partir des paramètres d'URL
-const BOT = {
-  ...bot,
-  ...(qs.parse(window.location.search, { ignoreQueryPrefix: true }).bot && {
-    id: qs.parse(window.location.search, { ignoreQueryPrefix: true }).bot,
-  }),
-};
-
 const getGlobalVisitDuration = (now: number): number => (now - getLastVisitTime(now)) / 1000;
 
 const getGlobalVisitCount = (): number =>
-  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'visit', 'count', '0'), 10);
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, 'visit', 'count', '0'), 10);
 
 const setGlobalVisitCount = (count: number): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'visit', 'count', count);
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, 'visit', 'count', count);
 
 const getLastVisitTime = (now: number): number =>
-  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'time', `${now}`), 10);
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, 'lastvisit', 'time', `${now}`), 10);
 
 const setLastVisitTime = (now: number): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'time', now);
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, 'lastvisit', 'time', now);
 
 const getLastPageLoadedTime = (): number =>
-  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'lastpageloaded', 'time', '-1'), 10);
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, 'lastpageloaded', 'time', '-1'), 10);
 
 const setLastPageLoadedTime = (now: number): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'lastpageloaded', 'time', now);
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, 'lastpageloaded', 'time', now);
 
 const setPagesViewedCount = (value: number): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'pagesViewed', 'count', value);
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, 'pagesViewed', 'count', value);
 
 const getCountry = (): string =>
-  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'country', 'undefined');
+  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, 'localisation', 'country', 'undefined');
 
 const setCountry = (value: string): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'country', value);
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, 'localisation', 'country', value);
 
 const getCity = (): string =>
-  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'city', 'undefined');
+  Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, 'localisation', 'city', 'undefined');
 
 const setCity = (value: string): void =>
-  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, BOT.id, 'localisation', 'city', value);
+  Local.pushRules.setValueOfRuleCondition(SPACE.SESSION, 'localisation', 'city', value);
 
 const getPagesViewedCount = (): number => {
-  const count =
-    parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, BOT.id, 'pagesViewed', 'count', '0'), 10) + 1;
+  const count = parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.SESSION, 'pagesViewed', 'count', '0'), 10) + 1;
   setPagesViewedCount(count);
   return count;
 };
 
 const computeDurationSinceLastVisit = (now: number): void => {
   const timeSinceLastVisit = now - getLastVisitTime(now);
-  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'durationsince', timeSinceLastVisit);
+  Local.pushRules.setValueOfRuleCondition(SPACE.GLOBAL, 'lastvisit', 'durationsince', timeSinceLastVisit);
 };
 
 const getDurationSinceLastVisit = (): number =>
-  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, BOT.id, 'lastvisit', 'durationsince', '0'), 10) / 1000;
+  parseInt(Local.pushRules.getValueOfRuleCondition(SPACE.GLOBAL, 'lastvisit', 'durationsince', '0'), 10) / 1000;
 
 const resetSessionCount = (now: number): void => {
   computeDurationSinceLastVisit(now);

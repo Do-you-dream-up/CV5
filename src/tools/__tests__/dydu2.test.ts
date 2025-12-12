@@ -50,7 +50,7 @@ describe('dydu.ts', function () {
       const configuration = {
         application: { languages: ['ro', 'en', 'it'], defaultLanguage: ['fr'], getDefaultLanguageFromSite: true },
       };
-      Local.set(Local.names.locale, 'ro'); // simulate an 'ro' browser language, set by i18nProvider
+      Local.locale.save('ro'); // simulate an 'ro' browser language, set by i18nProvider
       //WHEN
       dydu.initLocaleWithConfiguration(configuration);
       //THEN
@@ -62,7 +62,7 @@ describe('dydu.ts', function () {
       const configuration = {
         application: { languages: ['gb', 'en', 'it'], defaultLanguage: ['fr'], getDefaultLanguageFromSite: true },
       };
-      Local.set(Local.names.locale, 'ro'); // simulate an 'ro' browser language, set by i18nProvider
+      Local.locale.save('ro'); // simulate an 'ro' browser language, set by i18nProvider
       //WHEN
       dydu.initLocaleWithConfiguration(configuration);
       //THEN
@@ -74,25 +74,25 @@ describe('dydu.ts', function () {
     it('should set locale to fr if locale not in activatedAndActiveBotLanguages', () => {
       //GIVEN
       dydu.locale = 'ro';
-      Local.set(Local.names.locale, 'ro');
+      Local.locale.save('ro');
       const activatedAndActiveBotLanguages = ['fr', 'en'];
       //WHEN
       dydu.correctLocaleFromBotLanguages(activatedAndActiveBotLanguages);
       //THEN
       expect(dydu.locale).toEqual('fr');
-      expect(Local.get(Local.names.locale)).toEqual('ro');
+      expect(Local.locale.load()).toEqual('ro');
     });
 
     it('should not change locale if already belonging to activatedAndActiveBotLanguages', () => {
       //GIVEN
       dydu.locale = 'en';
-      Local.set(Local.names.locale, 'en');
+      Local.locale.save('en');
       const activatedAndActiveBotLanguages = ['fr', 'en'];
       //WHEN
       dydu.correctLocaleFromBotLanguages(activatedAndActiveBotLanguages);
       //THEN
       expect(dydu.locale).toEqual('en');
-      expect(Local.get(Local.names.locale)).toEqual('en');
+      expect(Local.locale.load()).toEqual('en');
     });
   });
 });

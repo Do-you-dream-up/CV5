@@ -44,7 +44,6 @@ import useId from '../tools/hooks/useId';
 import { useChatStatus } from './ChatStatusContext';
 import { useBotInfo } from './BotInfoContext';
 import { useUserConsent } from './UserConsentContext';
-import { BOT } from '../tools/bot';
 
 interface DialogProviderProps {
   children: ReactNode;
@@ -222,7 +221,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
     if (hasAfterLoadBeenCalled && isServerAvailable && !shouldBeLoadedOnChatboxAccess) {
       fetchVisitorRegistration();
     }
-  }, [hasAfterLoadBeenCalled, isServerAvailable, BOT.id]);
+  }, [hasAfterLoadBeenCalled, isServerAvailable]);
 
   const addAdditionalInteraction = (interaction) => {
     additionalListInteraction.current = additionalListInteraction.current.concat(interaction);
@@ -352,7 +351,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const addRequest = useCallback(
     (text) => {
       if (text) {
-        Local.lastInteraction.save(BOT.id); // Used to refresh localStorage usage
+        Local.lastInteraction.save(); // Used to refresh localStorage usage
 
         if (sidebarTransient || isMobile) {
           toggleSidebar(false)();
@@ -394,7 +393,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
 
   const addResponse = useCallback(
     (response: Servlet.ChatResponseValues = {}) => {
-      Local.lastInteraction.save(BOT.id); // Used to refresh localStorage usage
+      Local.lastInteraction.save(); // Used to refresh localStorage usage
       setLastResponse(response);
       const {
         feedbackWording: _feedbackWording,
