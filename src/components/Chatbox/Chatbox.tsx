@@ -215,6 +215,7 @@ export default function Chatbox({ root, ...rest }: ChatboxProps) {
         prompt: () => setPrompt && setPrompt('spaces'),
         set: (space, { quiet = true } = {}) => {
           dydu.setSpace(BOT.id, space);
+          Local.manualSpaceSet.save(BOT.id);
           !quiet && window.dydu.chat.reply(`${t('interaction.spaceChange')} '${space}'.`);
         },
       };

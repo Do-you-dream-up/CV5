@@ -146,6 +146,7 @@ export class Local {
     open: 'dydu.chatbox.open' + suffix,
     sidebar: 'dydu.chatbox.sidebar' + suffix,
     space: 'dydu.chatbox.space' + suffix,
+    manualSpaceSet: 'dydu.chatbox.manualSpaceSet' + suffix,
     wizard: 'dydu.chatbox.wizard.data' + suffix, // used only with channels
     images: 'dydu.chatbox.images' + suffix, // used only with channels
     saml: 'dydu.chatbox.saml.auth' + suffix,
@@ -356,6 +357,19 @@ export class Local {
     },
   });
 
+  static manualSpaceSet = Object.create({
+    getKey: (botId: string) => `${Local.names.manualSpaceSet}_${botId}`,
+    save: (botId: string) => {
+      localStorage.setItem(Local.manualSpaceSet.getKey(botId), 'true');
+    },
+    load: (botId: string) => {
+      return localStorage.getItem(Local.manualSpaceSet.getKey(botId)) == 'true' || false;
+    },
+    remove: (botId: string) => {
+      localStorage.removeItem(Local.manualSpaceSet.getKey(botId));
+    },
+  });
+
   static viewMode = Object.create({
     load: () => {
       const d = localStorage.getItem(Local.names.open);
@@ -534,9 +548,7 @@ export class Local {
   static resetAllLocalStorageIfTooOld = (timeToKeep: number): boolean => {
     const lastInteractionKeyPrefix = Local.names.lastInteraction;
     const now = Date.now();
-    const allInteractionKeys = Object.keys(localStorage).filter((key) =>
-      key.startsWith(lastInteractionKeyPrefix)
-    );
+    const allInteractionKeys = Object.keys(localStorage).filter((key) => key.startsWith(lastInteractionKeyPrefix));
     const expiredBotIds: string[] = [];
     let hasAtLeastOneValidKey = false;
     let hasClearedSomething = false;
