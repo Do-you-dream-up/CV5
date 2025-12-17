@@ -49,7 +49,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
     try {
       return new Promise(() => {
         dydu
-          .getSaml2Status(saml2Info)
+          .getSaml2Status()
           ?.then((response) => {
             try {
               const { values } = JSON.parse(response);
@@ -64,7 +64,7 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
             }
           })
           .catch((error) => {
-            console.log(error);
+            console.log('Saml status error : ', error);
           });
       });
     } catch (error) {
@@ -75,9 +75,10 @@ export const SamlProvider = ({ children }: SamlProviderProps) => {
   const fetchUserinfo = () => {
     return new Promise(() => {
       dydu
-        .getSaml2UserInfo(saml2Info)
+        .getSaml2UserInfo()
         .then((response) => {
           try {
+            console.log('Userinfo response=', response);
             const data = response?.attribute || {};
             setUserInfo(data);
             response?.attribute && Auth.saveUserInfo(data);

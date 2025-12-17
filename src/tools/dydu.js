@@ -85,7 +85,7 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   exportConversation = async (text, options = {}) => {
-    const data = qs.stringify({
+    const data = {
       clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       doNotRegisterInteraction: options.doNotRegisterInteraction,
       language: this.getLocale(),
@@ -93,9 +93,8 @@ export default new (class Dydu {
       space: this.getSpace(),
       userInput: `#dydumailto:${Local.contextId.load()}:${text}#`,
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       ...(options.extra && { extraParameters: options.extra }),
-    });
+    };
     const path = `chat/talk/${BOT.id}/${Local.contextId.load() ? `${Local.contextId.load()}/` : ''}`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -107,12 +106,11 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedback = async (value) => {
-    const data = qs.stringify({
+    const data = {
       contextUUID: Local.contextId.load(),
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/feedback/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -124,12 +122,11 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedbackComment = async (comment) => {
-    const data = qs.stringify({
+    const data = {
       comment,
       contextUUID: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/feedback/comment/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -141,12 +138,11 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   feedbackInsatisfaction = async (choiceKey) => {
-    const data = qs.stringify({
+    const data = {
       choiceKey,
       contextUUID: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -168,10 +164,9 @@ export default new (class Dydu {
       clientId: this.getClientId(),
       language: this.getLocale(),
       mail: email,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
     const path = `chat/gdpr/${BOT.id}/`;
-    return Promise.all(methods.map((it) => emit(SERVLET_API.post, path, qs.stringify({ ...data, object: it }))));
+    return Promise.all(methods.map((it) => emit(SERVLET_API.post, path, { ...data, object: it })));
   };
 
   // true if Gdpr is disabled, or if Gdpr has already been accepted
@@ -200,15 +195,14 @@ export default new (class Dydu {
    * @returns {object} The context ID.
    */
   getContextId = async () => {
-    const data = qs.stringify({
+    const data = {
       alreadyCame: this.isClientIdAuthorized() ? this.alreadyCame() : false,
       clientId: this.isClientIdAuthorized() ? this.getClientId() : null,
       language: this.getLocale(),
       space: this.getLocale(),
       solutionUsed: SOLUTION_TYPE.assistant,
       qualificationMode: this.qualificationMode,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
 
     const path = `chat/context/${BOT.id}/`;
     try {
@@ -277,12 +271,11 @@ export default new (class Dydu {
    */
   history = async () => {
     if (Local.contextId.load()) {
-      const data = qs.stringify({
+      const data = {
         contextUuid: Local.contextId.load(),
         solutionUsed: SOLUTION_TYPE.assistant,
         uiLocale: i18n.language,
-        ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-      });
+      };
       const path = `chat/history/${BOT.id}/`;
       return await emit(SERVLET_API.post, path, data);
     }
@@ -456,13 +449,12 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   suggest = (text) => {
-    const data = qs.stringify({
+    const data = {
       language: this.getLocale(),
       search: text,
       space: this.getSpace(),
       onlyShowRewordables: true, // to display only the activates rewords / suggestions
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/search/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -476,10 +468,9 @@ export default new (class Dydu {
    */
   talk = async (text, options = {}) => {
     const payload = this.makeTalkPayloadWithTextAndOption(text, options);
-    const data = qs.stringify({
+    const data = {
       ...payload,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/talk/${BOT.id}/${Local.contextId.load() ? `${Local.contextId.load()}/` : ''}`;
     return emit(SERVLET_API.post, path, data, this.maxTimeoutForAnswer).then(this.processTalkResponse);
   };
@@ -525,13 +516,15 @@ export default new (class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  getSaml2Status = (saml2Info_token) => {
-    const data = qs.stringify({
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: saml2Info_token }),
-      botUUID: BOT.id,
-    });
-    const path = `saml2/status?${data}`;
-    return emit(SERVLET_API.get, path);
+  getSaml2Status = () => {
+    const params = {
+      params: {
+        botUUID: BOT.id,
+      },
+    };
+
+    const path = `saml2/status`;
+    return emit(SERVLET_API.get, path, params);
   };
 
   /**
@@ -541,36 +534,36 @@ export default new (class Dydu {
    * @param {Object} [options] - Extra parameters.
    * @returns {Promise}
    */
-  getSaml2UserInfo = (saml2Info_token) => {
-    const data = qs.stringify({
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: saml2Info_token }),
-      botUUID: BOT.id,
-    });
-    const path = `saml2/userinfo?${data}`;
-    return emit(SERVLET_API.get, path);
+  getSaml2UserInfo = () => {
+    const params = {
+      params: {
+        botUUID: BOT.id,
+      },
+    };
+
+    const path = `saml2/userinfo`;
+    return emit(SERVLET_API.get, path, params);
   };
 
   typing = async (input) => {
     if (!isDefined(input)) return;
-    const data = qs.stringify({
+    const data = {
       typing: true,
       content: input?.toBase64(),
       contextId: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/typing/${BOT.id}/`;
     return this.post(path, data);
   };
 
   reading = async () => {
-    const data = qs.stringify({
+    const data = {
       reading: true,
       contextId: Local.contextId.load(),
       solutionUsed: SOLUTION_TYPE.assistant,
       mode: Local.livechatType.load() ? Local.livechatType.load().toBase64() : 'Synchron'.toBase64(),
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/reading/${BOT.id}/`;
     return this.post(path, data);
   };
@@ -583,7 +576,6 @@ export default new (class Dydu {
       contextUuid: contextId || context?.fromBase64() || Local.contextId.load(),
       language: this.getLocale(),
       lastPoll: pollUpdatedInteractionDate || serverTime,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     };
 
     if (data.lastPoll) {
@@ -601,14 +593,13 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   top = (period, size) => {
-    const data = qs.stringify({
+    const data = {
       language: this.getLocale(),
       maxKnowledge: size,
       period: period,
       space: this.getSpace(),
       solutionUsed: SOLUTION_TYPE.assistant,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/topknowledge/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -623,13 +614,12 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   setDialogVariable = async (name, value) => {
-    const data = qs.stringify({
+    const data = {
       contextUuid: Local.contextId.load(),
       name,
       solutionUsed: SOLUTION_TYPE.assistant,
       value,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
-    });
+    };
     const path = `chat/variable/${BOT.id}/`;
     return emit(SERVLET_API.post, path, data);
   };
@@ -640,15 +630,14 @@ export default new (class Dydu {
    * @returns {Promise}
    */
   welcomeCall = async () => {
-    const data = qs.stringify({
+    const data = {
       contextUuid: Local.contextId.load(),
       language: this.getLocale(),
       qualificationMode: this.qualificationMode,
       solutionUsed: SOLUTION_TYPE.assistant,
       space: this.getSpace(),
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
       variables: this.getVariables(),
-    });
+    };
     const path = `chat/welcomecall/${BOT.id}`;
     return Promise.resolve(emit(SERVLET_API.post, path, data));
   };
@@ -857,7 +846,6 @@ export default new (class Dydu {
       solutionUsed: SOLUTION_TYPE.assistant,
       language: this.getLocale(),
       surveyId,
-      ...(this.getConfiguration()?.saml?.enable && { saml2_info: Local.saml.load() }),
     });
     // get survey is a POST
     return this.post(path, data);

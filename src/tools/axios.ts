@@ -5,6 +5,7 @@ import { getOidcEnableWithAuthStatus } from './oidc';
 import { decode } from './cipher';
 import dydu from './dydu';
 import Auth, { Local, Session } from './storage';
+import qs from 'qs';
 
 interface AxiosDyduConfig {
   server: string;
@@ -56,7 +57,34 @@ const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig): AxiosInstance 
         if (accessToken) {
           config.headers['OIDCAccessToken'] = `${accessToken}`;
         }
+      } else if (
+        dydu.getConfiguration()?.saml?.enable &&
+        (config.url?.includes('chat/') || config.url?.includes('saml2/'))
+      ) {
+        const saml2Info = Local.saml.load();
+        if (saml2Info) {
+          switch (config.method) {
+            case 'get': {
+              config.params = { ...config.params, saml2_info: saml2Info };
+              break;
+            }
+            default:
+              if (!config.data) {
+                config.data = {};
+              }
+              config.data = {
+                ...config.data,
+                saml2_info: saml2Info,
+              };
+              break;
+          }
+        }
       }
+
+      if (config.data && typeof config.data === 'object') {
+        config.data = qs.stringify(config.data);
+      }
+
       return config;
     },
     (error) => {
@@ -240,16 +268,23 @@ const formatConsoleError = (error: any) => {
   console.log('Status : ', error.status || error?.response?.status);
   console.log('Request : [%s] %s%s', error.config.method.toUpperCase(), error.config.baseURL, error.config.url);
   console.log('Headers :', JSON.stringify(error.config.headers));
-  console.log(
-    'Data :\n%s',
-    error.config.data
-      ? error.config.data
+  console.log('Params :\n%s', error.config.params ? JSON.stringify(error.config.params) : 'no params');
+  if (error.config.data) {
+    if (typeof error.config.data === 'string') {
+      console.log(
+        'Data :\n%s',
+        error.config.data
           .trim()
           .split('&')
           .map((s: string) => decodeURIComponent(s))
-          .join('\n')
-      : 'no data',
-  );
+          .join('\n'),
+      );
+    } else {
+      console.log('Data :\n%s', JSON.stringify(error.config.data));
+    }
+  } else {
+    console.log('Data :\nno data');
+  }
   console.groupEnd();
 };
 
