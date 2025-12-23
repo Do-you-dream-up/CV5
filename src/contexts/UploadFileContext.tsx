@@ -201,7 +201,7 @@ export const UploadFileProvider = ({ children }: UploadFileProviderProps) => {
 
   useEffect(() => {
     if (isFilesUploadSuccess) {
-      window.dydu?.chat?.handleRewordClicked(rewordAfterGuiAction, { hide: true, doNotRegisterInteraction: true });
+      window.dydu?.chat?.handleRewordClicked(rewordAfterGuiAction, { hide: true });
     }
   }, [isFilesUploadSuccess]);
 
