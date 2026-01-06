@@ -654,72 +654,72 @@ export class Local {
 export default class Auth {
   static setPkceData(codeChallenge, codeVerifier) {
     if (codeChallenge && codeVerifier) {
-      customLocalStorage.setItem(Local?.names?.oidcPkceCodeChallenge, codeChallenge);
-      customLocalStorage.setItem(Local?.names?.oidcPkceCodeVerifier, codeVerifier);
+      customLocalStorage.setItem(Local.names.oidcPkceCodeChallenge, codeChallenge);
+      customLocalStorage.setItem(Local.names.oidcPkceCodeVerifier, codeVerifier);
       console.log('Storing challenge/verifier');
     }
   }
 
   static loadPkceCodeVerifier() {
     return (
-      customLocalStorage.getItem(Local?.names?.oidcPkceCodeVerifier) ||
-      customLocalStorage.getItem(Local?.oldNames?.oidcPkceCodeVerifier)
+      customLocalStorage.getItem(Local.names.oidcPkceCodeVerifier) ||
+      customLocalStorage.getItem(Local.oldNames.oidcPkceCodeVerifier)
     );
   }
 
   static loadPkceCodeChallenge() {
     return (
-      customLocalStorage.getItem(Local?.names?.oidcPkceCodeChallenge) ||
-      customLocalStorage.getItem(Local?.oldNames?.oidcPkceCodeChallenge)
+      customLocalStorage.getItem(Local.names.oidcPkceCodeChallenge) ||
+      customLocalStorage.getItem(Local.oldNames.oidcPkceCodeChallenge)
     );
   }
 
   static saveOidcAuthData(pkceData) {
-    customLocalStorage.setItem(Local?.names?.oidcAuthData, JSON.stringify(pkceData));
+    customLocalStorage.setItem(Local.names.oidcAuthData, JSON.stringify(pkceData));
   }
 
   static clearOidcAuthData() {
-    customLocalStorage.removeItem(Local?.names?.oidcAuthData);
-    customLocalStorage.removeItem(Local?.oldNames?.oidcAuthData);
+    customLocalStorage.removeItem(Local.names.oidcAuthData);
+    customLocalStorage.removeItem(Local.oldNames.oidcAuthData);
   }
 
   static loadOidcAuthData() {
     const authData =
-      customLocalStorage.getItem(Local?.names?.oidcAuthData) ||
-      customLocalStorage.getItem(Local?.oldNames?.oidcAuthData);
+      customLocalStorage.getItem(Local.names.oidcAuthData) ||
+      customLocalStorage.getItem(Local.oldNames.oidcAuthData);
     return isDefined(authData) ? JSON.parse(<string>authData) : null;
   }
 
   static saveOidcUrls = (urls) => {
-    customLocalStorage.setItem(Local?.names?.oidcUrls, JSON.stringify(urls));
+    customLocalStorage.setItem(Local.names.oidcUrls, JSON.stringify(urls));
   };
 
   static loadOidcUrls() {
     return (
-      JSON.parse(<string>customLocalStorage.getItem(Local?.names?.oidcUrls)) ||
-      JSON.parse(<string>customLocalStorage.getItem(Local?.oldNames?.oidcUrls))
+      JSON.parse(<string>customLocalStorage.getItem(Local.names.oidcUrls)) ||
+      JSON.parse(<string>customLocalStorage.getItem(Local.oldNames.oidcUrls))
     );
   }
 
   static clearOidcUrls() {
-    customLocalStorage.removeItem(Local?.names?.oidcUrls);
-    customLocalStorage.removeItem(Local?.oldNames?.oidcUrls);
+    customLocalStorage.removeItem(Local.names.oidcUrls);
+    customLocalStorage.removeItem(Local.oldNames.oidcUrls);
   }
 
   static saveUserInfo = (info) => {
-    customLocalStorage.setItem(Local?.names?.userInfo, JSON.stringify(info));
+    customLocalStorage.setItem(Local.names.userInfo, JSON.stringify(info));
   };
 
   static loadUserInfo() {
     return (
-      JSON.parse(<string>customLocalStorage.getItem(Local?.names?.userInfo)) ||
-      JSON.parse(<string>customLocalStorage.getItem(Local?.oldNames?.userInfo))
+      JSON.parse(<string>customLocalStorage.getItem(Local.names.userInfo)) ||
+      JSON.parse(<string>customLocalStorage.getItem(Local.oldNames.userInfo))
     );
   }
 
   static clearUserInfo() {
-    customLocalStorage.removeItem(Local?.names?.userInfo);
-    customLocalStorage.removeItem(Local?.oldNames?.userInfo);
+    customLocalStorage.removeItem(Local.names.userInfo);
+    customLocalStorage.removeItem(Local.oldNames.userInfo);
   }
 
   static saveToken = (token) => {
@@ -727,49 +727,49 @@ export default class Auth {
     Auth.clearOidcAuthData();
 
     if (isDefined(token?.id_token)) {
-      customLocalStorage.setItem(Local?.names?.oidcIdToken, token?.id_token);
+      customLocalStorage.setItem(Local.names.oidcIdToken, token?.id_token);
     }
 
     if (isDefined(token?.access_token)) {
-      customLocalStorage.setItem(Local?.names?.oidcAccessToken, token?.access_token);
+      customLocalStorage.setItem(Local.names.oidcAccessToken, token?.access_token);
     }
 
     if (isDefined(token?.refresh_token)) {
-      customLocalStorage.setItem(Local?.names?.oidcRefreshToken, token?.refresh_token);
+      customLocalStorage.setItem(Local.names.oidcRefreshToken, token?.refresh_token);
     }
   };
 
   static clearToken() {
-    customLocalStorage.removeItem(Local?.names?.oidcIdToken);
-    customLocalStorage.removeItem(Local?.names?.oidcAccessToken);
-    customLocalStorage.removeItem(Local?.names?.oidcRefreshToken);
-    customLocalStorage.removeItem(Local?.names?.oidcPkceCodeVerifier);
+    customLocalStorage.removeItem(Local.names.oidcIdToken);
+    customLocalStorage.removeItem(Local.names.oidcAccessToken);
+    customLocalStorage.removeItem(Local.names.oidcRefreshToken);
+    customLocalStorage.removeItem(Local.names.oidcPkceCodeVerifier);
 
-    customLocalStorage.removeItem(Local?.oldNames?.oidcIdToken);
-    customLocalStorage.removeItem(Local?.oldNames?.oidcAccessToken);
-    customLocalStorage.removeItem(Local?.oldNames?.oidcRefreshToken);
-    customLocalStorage.removeItem(Local?.oldNames?.oidcPkceCodeVerifier);
+    customLocalStorage.removeItem(Local.oldNames.oidcIdToken);
+    customLocalStorage.removeItem(Local.oldNames.oidcAccessToken);
+    customLocalStorage.removeItem(Local.oldNames.oidcRefreshToken);
+    customLocalStorage.removeItem(Local.oldNames.oidcPkceCodeVerifier);
   }
 
   static loadToken() {
     return {
       id_token:
-        isDefined(customLocalStorage.getItem(Local?.names?.oidcIdToken)) ||
-        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcIdToken))
-          ? customLocalStorage.getItem(Local?.names?.oidcIdToken) ||
-            customLocalStorage.getItem(Local?.oldNames?.oidcIdToken)
+        isDefined(customLocalStorage.getItem(Local.names.oidcIdToken)) ||
+        isDefined(customLocalStorage.getItem(Local.oldNames.oidcIdToken))
+          ? customLocalStorage.getItem(Local.names.oidcIdToken) ||
+            customLocalStorage.getItem(Local.oldNames.oidcIdToken)
           : undefined,
       access_token:
-        isDefined(customLocalStorage.getItem(Local?.names?.oidcAccessToken)) ||
-        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcAccessToken))
-          ? customLocalStorage.getItem(Local?.names?.oidcAccessToken) ||
-            customLocalStorage.getItem(Local?.oldNames?.oidcAccessToken)
+        isDefined(customLocalStorage.getItem(Local.names.oidcAccessToken)) ||
+        isDefined(customLocalStorage.getItem(Local.oldNames.oidcAccessToken))
+          ? customLocalStorage.getItem(Local.names.oidcAccessToken) ||
+            customLocalStorage.getItem(Local.oldNames.oidcAccessToken)
           : undefined,
       refresh_token:
-        isDefined(customLocalStorage.getItem(Local?.names?.oidcRefreshToken)) ||
-        isDefined(customLocalStorage.getItem(Local?.oldNames?.oidcRefreshToken))
-          ? customLocalStorage.getItem(Local?.names?.oidcRefreshToken) ||
-            customLocalStorage.getItem(Local?.oldNames?.oidcRefreshToken)
+        isDefined(customLocalStorage.getItem(Local.names.oidcRefreshToken)) ||
+        isDefined(customLocalStorage.getItem(Local.oldNames.oidcRefreshToken))
+          ? customLocalStorage.getItem(Local.names.oidcRefreshToken) ||
+            customLocalStorage.getItem(Local.oldNames.oidcRefreshToken)
           : undefined,
     };
   }
