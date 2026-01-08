@@ -96,9 +96,6 @@ export default function useTokenRequest(authConfiguration) {
 
         token.isInvalid = false;
         Auth.saveToken(token);
-        if (token?.refresh_token) {
-          setCallTokenRefresher(fetchToken);
-        }
         return token;
       })
       .catch((e) => {
@@ -130,6 +127,8 @@ export default function useTokenRequest(authConfiguration) {
       fetchToken(); // refresh token every 30mn
     }
   }, 60 * 1000 * 30);
+
+  setCallTokenRefresher(fetchToken);
 
   return {
     fetchToken,

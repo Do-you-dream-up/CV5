@@ -10,6 +10,7 @@ jest.mock('../../tools/axios', () => ({
     get: jest.fn(),
   },
   setCallOidcLogin: jest.fn(),
+  setCallTokenRefresher: jest.fn()
 }));
 
 describe('App', () => {
