@@ -1,5 +1,5 @@
 import { LIVECHAT_ID_LISTENER, RESPONSE_SPECIAL_ACTION, TUNNEL_MODE } from '../tools/constants';
-import { ReactElement, createContext, useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react';
+import { createContext, ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import SurveyProvider, { useSurvey } from '../Survey/SurveyProvider';
 import { isDefined, recursiveBase64DecodeString } from '../tools/helpers';
 
@@ -20,9 +20,10 @@ interface LivechatContextProps {
   send?: (str: string, options?) => void;
   sendSurvey?: (str: string) => void;
   typing?: (input: any) => void;
-  endLivechatAndCloseTunnel?: () => void;
+  endLivechat?: (removeLivechatDataFromStorage: boolean) => void;
+  endLivechatAndCloseTunnel?: (removeLivechatDataFromStorage: boolean) => void;
   keepAlive?: () => void;
-  closeTunnel?: () => void;
+  closeTunnel?: (removeLivechatDataFromStorage: boolean) => void;
   addNotificationOrResponse?: (values: Servlet.ChatResponseValues) => void;
   isWaitingQueue?: boolean;
   hasToVerifyContextAfterLivechatClosed?: boolean;
@@ -46,7 +47,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const { t } = useTranslation();
   const tunnelList = [useDyduWebsocket(), useDyduPolling()];
   const tunnelRef = useRef<any>(null);
-  const { getSurveyConfiguration, triggerSurvey, surveyClosed, setSurveyClosed } = useSurvey();
+  const { getSurveyConfiguration, surveyClosed, setSurveyClosed } = useSurvey();
   const { showUploadFileButton } = useUploadFile();
   const { inWaitingQueue } = useChatStatus();
   const {
@@ -114,17 +115,21 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       addResponse && addResponse(response);
       // from POST request
       enterWaitingQueue();
-      let decodedResponse = null;
+      let decodedResponse: any = null;
       decodedResponse = recursiveBase64DecodeString(response);
-      decodedResponse.text =
-        t('livechat.queue.start') +
-        t('livechat.queue.position', { position: LivechatPayload.is.waitingQueuePosition(decodedResponse) }) +
-        t('livechat.queue.estimation', {
-          estimation: LivechatPayload.is.waitingQueueEstimatedWaitingDuration(decodedResponse),
-        });
-      displayNotification && displayNotification(decodedResponse);
+      if (decodedResponse) {
+        decodedResponse.text =
+          t('livechat.queue.start') +
+          t('livechat.queue.position', { position: LivechatPayload.is.waitingQueuePosition(decodedResponse) }) +
+          t('livechat.queue.estimation', {
+            estimation: LivechatPayload.is.waitingQueueEstimatedWaitingDuration(decodedResponse),
+          });
+        displayNotification && displayNotification(decodedResponse);
+      }
+      startOrEndLivechat(response);
     } else if (LivechatPayload.is.startLivechat(response)) {
       decodeAndDisplayNotification(response);
+      startOrEndLivechat(response);
     } else {
       addResponse && addResponse(response);
     }
@@ -140,11 +145,9 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
 
   const isStartWaitingQueue = (response) => response?.specialAction?.equals(RESPONSE_SPECIAL_ACTION.startWaitingQueue);
 
-  const shouldStartLivechat = () => {
-    return (
-      Local.livechatType.load() ||
-      (isDefined(lastResponse) && (containsStartLivechat(lastResponse) || isStartWaitingQueue(lastResponse)))
-    );
+  const shouldStartLivechat = (response?: any) => {
+    const res = response || lastResponse;
+    return Local.livechatType.load() || (isDefined(res) && (containsStartLivechat(res) || isStartWaitingQueue(res)));
   };
 
   const onSuccessOpenTunnel = useCallback((tunnel) => {
@@ -189,18 +192,25 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     setIsWaitingQueue(true);
   }, []);
 
-  const endLivechatAndCloseTunnel = () => {
+  const endLivechat = (removeLivechatDataFromStorage: boolean) => {
     if (Local.livechatType.load()) {
-      Local.livechatType.remove();
+      if (removeLivechatDataFromStorage) {
+        Local.livechatType.remove();
+        leaveWaitingQueue();
+        Local.operator.remove();
+      }
       setHasToVerifyContextAfterLivechatClosed(true);
-      leaveWaitingQueue();
-      Local.operator.remove();
-      closeTunnel();
+      tunnelRef.current = null;
     }
   };
 
-  const closeTunnel = () => {
-    tunnelRef.current?.close();
+  const endLivechatAndCloseTunnel = (removeLivechatDataFromStorage: boolean) => {
+    closeTunnel(removeLivechatDataFromStorage);
+    endLivechat(removeLivechatDataFromStorage);
+  };
+
+  const closeTunnel = (removeLivechatDataFromStorage: boolean) => {
+    tunnelRef.current?.close(removeLivechatDataFromStorage);
     tunnelRef.current = null;
   };
 
@@ -218,7 +228,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   const livechatContextFunctions = useMemo(() => {
     return {
       ...lastResponse,
-      endLivechatAndCloseTunnel,
+      endLivechat,
       keepAlive,
       closeTunnel,
       addNewMessageAndNotificationOrResponse,
@@ -235,7 +245,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [
     lastResponse,
     onFailOpenTunnel,
-    endLivechatAndCloseTunnel,
+    endLivechat,
     keepAlive,
     closeTunnel,
     addNewMessageAndNotificationOrResponse,
@@ -286,26 +296,15 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
   }, [surveyClosed]);
 
   useEffect(() => {
-    if (shouldEndLivechat) {
-      tunnelRef.current?.setReallyClosed(true);
-      endLivechatAndCloseTunnel();
-    } else if (shouldStartLivechat() && !tunnelRef.current) {
-      startLivechat();
-    }
+    startOrEndLivechat();
   }, [currentServerIndex]);
 
   useEffect(() => {
     if (shouldEndLivechat) {
       tunnelRef.current?.setReallyClosed(true);
-      endLivechatAndCloseTunnel();
+      endLivechatAndCloseTunnel(true);
     }
   }, [shouldEndLivechat, endLivechatAndCloseTunnel]);
-
-  useEffect(() => {
-    if (shouldStartLivechat() && !tunnelRef.current) {
-      startLivechat();
-    }
-  }, [lastResponse]);
 
   useEffect(() => {
     if (tunnelRef.current) {
@@ -328,6 +327,15 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
       tunnelRef.current?.onUserReading();
     }
   }, [messageCount]);
+
+  const startOrEndLivechat = useCallback((response?: any) => {
+    if (shouldEndLivechat) {
+      tunnelRef.current?.setReallyClosed(true);
+      endLivechatAndCloseTunnel(true);
+    } else if (shouldStartLivechat(response) && !tunnelRef.current) {
+      startLivechat();
+    }
+  }, []);
 
   const send = useCallback(
     (userInput, options) => {
@@ -355,6 +363,7 @@ export function LivechatProvider({ children }: LivechatProviderProps) {
     sendSurvey,
     typing,
     endLivechatAndCloseTunnel,
+    endLivechat,
     keepAlive,
     closeTunnel,
     addNotificationOrResponse,

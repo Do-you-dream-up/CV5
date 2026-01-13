@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext, useContext, useMemo, useState } from 'react';
+import { createContext, Dispatch, SetStateAction, useContext, useMemo, useState } from 'react';
 import { isDefined, isEmptyString } from '../tools/helpers';
 
 import { Local } from '../tools/storage';
@@ -7,6 +7,8 @@ import { useConfiguration } from './ConfigurationContext';
 import i18n from './i18nProvider';
 
 type WelcomeKnowledge = Servlet.ChatResponseValues | null;
+
+const WELCOME_FALLBACK_TAG = '#welcome#';
 
 export interface WelcomeKnowledgeProviderProps {
   children?: any;
@@ -62,20 +64,23 @@ const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderProps) =
 
   const verifyAvailabilityDialogContext = async (): Promise<boolean> => {
     const currentContextUUID = Local.contextId.load();
-    return dydu.checkContextIdStillAvailable().then(async (response): Promise<boolean> => {
-      if (!response) {
-        Local.livechatType.remove();
-        if (!Local.manualSpaceSet.load()) {
-          Local.space.remove();
+    if (!Local.livechatType.load()) {
+      return dydu.checkContextIdStillAvailable().then(async (response): Promise<boolean> => {
+        if (!response) {
+          Local.livechatType.remove();
+          if (!Local.manualSpaceSet.load()) {
+            Local.space.remove();
+          }
+          Local.manualSpaceSet.remove();
+          Local.lastInteraction.reset();
+          Local.welcomeKnowledge.reset(currentContextUUID);
+          Local.contextId.reset();
+          return Promise.resolve(false);
         }
-        Local.manualSpaceSet.remove();
-        Local.lastInteraction.reset();
-        Local.welcomeKnowledge.reset(currentContextUUID);
-        Local.contextId.reset();
-        return Promise.resolve(false);
-      }
-      return Promise.resolve(true);
-    });
+        return Promise.resolve(true);
+      });
+    }
+    return Promise.resolve(true);
   };
 
   const fetchWelcomeKnowledge = async (): Promise<any> => {
@@ -83,7 +88,7 @@ const WelcomeKnowledgeProvider = ({ children }: WelcomeKnowledgeProviderProps) =
 
     if (mustFetchWelcome()) {
       const talkOption = { hide: true, doNotRegisterInteraction: true, uiLocale: i18n.language };
-      const talkResponse: TalkResponseInterface = await dydu.talk(tagWelcome, talkOption);
+      const talkResponse: TalkResponseInterface = await dydu.talk(tagWelcome || WELCOME_FALLBACK_TAG, talkOption);
       const isInteractionResponse = isDefined(talkResponse?.text) && 'text' in talkResponse;
 
       if (!isInteractionResponse) {

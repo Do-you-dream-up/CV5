@@ -216,8 +216,7 @@ const LivechatPayloadChecker = {
     );
   },
   checkContextAvailabilityResponse: (payload) => {
-    const payloadValues = payload?.values || payload;
-    return payloadValues?.isContextStillAvailable;
+    return payload?.type?.equals('checkContextAvailabilityResponse');
   },
   getContextResponse: (payload) => {
     return payload?.type?.equals('getContextResponse');

@@ -111,6 +111,7 @@ export default function Input({ onRequest, onResponse, setHasTTSError }: InputPr
           });
         } else {
           submit(safeText);
+          setHasToVerifyContextAfterLivechatClosed && setHasToVerifyContextAfterLivechatClosed(false);
         }
       });
     } else {

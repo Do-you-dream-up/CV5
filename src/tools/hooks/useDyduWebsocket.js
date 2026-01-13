@@ -23,7 +23,7 @@ const makeWsUrl = (url) => 'wss://' + urlExtractDomain(url) + '/chatWs';
 
 let keepAlive = null;
 let closeTunnel = null;
-let endLivechatAndCloseTunnel = null;
+let endLivechat = null;
 let addNewMessageAndNotificationOrResponse = null;
 let decodeAndDisplayNotification = null;
 let showAnimationOperatorWriting = null;
@@ -38,7 +38,7 @@ let getWebsocketTunnel = null;
 const linkToLivechatFunctions = (livechatContextFunctions) => {
   keepAlive = livechatContextFunctions.keepAlive;
   closeTunnel = livechatContextFunctions.closeTunnel;
-  endLivechatAndCloseTunnel = livechatContextFunctions.endLivechatAndCloseTunnel;
+  endLivechat = livechatContextFunctions.endLivechat;
   addNewMessageAndNotificationOrResponse = livechatContextFunctions.addNewMessageAndNotificationOrResponse;
   decodeAndDisplayNotification = livechatContextFunctions.decodeAndDisplayNotification;
   showAnimationOperatorWriting = livechatContextFunctions.showAnimationOperatorWriting;
@@ -116,25 +116,26 @@ export default function useDyduWebsocket() {
     );
   }, []);
 
-  const messageType = useMemo(() => {
-    if (!isDefined(lastMessageData)) return null;
-    if (LivechatPayload.is.leaveWaitingQueue(lastMessageData)) return MESSAGE_TYPE.leaveWaitingQueue;
-    if (LivechatPayload.is.getContextResponse(lastMessageData)) return MESSAGE_TYPE.contextResponse;
-    if (LivechatPayload.is.checkContextAvailabilityResponse(lastMessageData))
-      return MESSAGE_TYPE.checkContextAvailabilityResponse;
-    if (LivechatPayload.is.historyResponse(lastMessageData)) return MESSAGE_TYPE.historyResponse;
-    if (LivechatPayload.is.operatorSendSurvey(lastMessageData)) return MESSAGE_TYPE.survey;
-    if (LivechatPayload.is.surveyConfigurationResponse(lastMessageData)) {
+  const getMessageType = (websocketResponseData) => {
+    if (!isDefined(websocketResponseData)) return null;
+    if (LivechatPayload.is.leaveWaitingQueue(websocketResponseData)) return MESSAGE_TYPE.leaveWaitingQueue;
+    if (LivechatPayload.is.getContextResponse(websocketResponseData)) return MESSAGE_TYPE.contextResponse;
+    if (LivechatPayload.is.checkContextAvailabilityResponse(websocketResponseData))
+      return MESSAGE_TYPE.checkContextAvailability;
+    if (LivechatPayload.is.historyResponse(websocketResponseData)) return MESSAGE_TYPE.historyResponse;
+    if (LivechatPayload.is.operatorSendSurvey(websocketResponseData)) return MESSAGE_TYPE.survey;
+    if (LivechatPayload.is.surveyConfigurationResponse(websocketResponseData)) {
       return MESSAGE_TYPE.surveyConfigurationResponse;
     }
-    if (LivechatPayload.is.topKnowledgeResponse(lastMessageData)) return MESSAGE_TYPE.topKnowledge;
-    if (LivechatPayload.is.endPolling(lastMessageData)) return MESSAGE_TYPE.endPolling;
-    if (LivechatPayload.is.operatorSendUploadRequest(lastMessageData)) return MESSAGE_TYPE.uploadRequest;
-    if (isOperatorStateNotification(lastMessageData)) return MESSAGE_TYPE.notification;
-    if (LivechatPayload.is.dialogAddedOperatorPanel(lastMessageData)) return MESSAGE_TYPE.dialogAddedOperatorPanel;
-    if (LivechatPayload.is.dialogPicked(lastMessageData)) return MESSAGE_TYPE.dialogPicked;
+    if (LivechatPayload.is.topKnowledgeResponse(websocketResponseData)) return MESSAGE_TYPE.topKnowledge;
+    if (LivechatPayload.is.endPolling(websocketResponseData)) return MESSAGE_TYPE.endPolling;
+    if (LivechatPayload.is.operatorSendUploadRequest(websocketResponseData)) return MESSAGE_TYPE.uploadRequest;
+    if (isOperatorStateNotification(websocketResponseData)) return MESSAGE_TYPE.notification;
+    if (LivechatPayload.is.dialogAddedOperatorPanel(websocketResponseData))
+      return MESSAGE_TYPE.dialogAddedOperatorPanel;
+    if (LivechatPayload.is.dialogPicked(websocketResponseData)) return MESSAGE_TYPE.dialogPicked;
     return MESSAGE_TYPE.operatorResponse;
-  }, [isOperatorStateNotification, lastMessageData]);
+  };
 
   const messageText = useMemo(() => {
     if (!isDefined(lastMessageData)) return null;
@@ -184,12 +185,15 @@ export default function useDyduWebsocket() {
     notificationFromBackend = false;
   };
 
-  const close = useCallback(() => {
-    flushSocketProps();
-    if (endLivechatAndCloseTunnel) {
-      endLivechatAndCloseTunnel();
-    }
-  }, [flushSocketProps]);
+  const close = useCallback(
+    (removeLivechatDataFromStorage) => {
+      flushSocketProps();
+      if (endLivechat) {
+        endLivechat(removeLivechatDataFromStorage);
+      }
+    },
+    [flushSocketProps],
+  );
 
   const handleSurveySentence = (messageData) => {
     notificationTextFromBackend = messageData?.values?.text?.fromBase64();
@@ -202,6 +206,7 @@ export default function useDyduWebsocket() {
   };
 
   useEffect(() => {
+    const messageType = getMessageType(lastMessageData);
     if (!isDefined(messageType)) return;
     switch (messageType) {
       case MESSAGE_TYPE.survey:
@@ -214,7 +219,7 @@ export default function useDyduWebsocket() {
         showSurveyMessage();
         if (endPollingReceived) {
           endPollingReceived = false;
-          close();
+          close(true);
         }
         return;
 
@@ -255,9 +260,9 @@ export default function useDyduWebsocket() {
         return;
 
       case MESSAGE_TYPE.checkContextAvailability:
-        if (!lastMessageData) {
+        if (!lastMessageData?.values?.isContextStillAvailable) {
           reallyClosed.current = true;
-          close();
+          close(true);
         }
         return;
 
@@ -267,7 +272,7 @@ export default function useDyduWebsocket() {
         if (!needToAnswerSurvey) {
           endPollingReceived = false;
           reallyClosed.current = true;
-          close();
+          close(true);
         }
         return;
 
@@ -275,12 +280,12 @@ export default function useDyduWebsocket() {
         displayNotification();
         leaveWaitingQueue();
         reallyClosed.current = true;
-        return close();
+        return close(true);
     }
-  }, [close, displayMessage, displayNotification, lastMessageData, messageType, showUploadFileButton]);
+  }, [close, displayMessage, displayNotification, lastMessageData, showUploadFileButton]);
 
   const startFallbackKeepAlive = useCallback(() => {
-    closeTunnel();
+    closeTunnel(false);
     if (reallyClosed.current === false) {
       fallbackKeepAlive = setInterval(() => {
         if (countInterval === 150) {
@@ -346,9 +351,9 @@ export default function useDyduWebsocket() {
 
   const open = useCallback(
     (livechatContextFunctions) => {
+      linkToLivechatFunctions(livechatContextFunctions);
       return new Promise((resolve) => {
         completeLivechatPayload(livechatContextFunctions);
-        linkToLivechatFunctions(livechatContextFunctions);
         initSocketProps();
         resolve(true);
       });
@@ -379,7 +384,7 @@ export default function useDyduWebsocket() {
   const closeLivechatIfEndSurveyClosed = (surveyClosed) => {
     if (endPollingReceived && surveyClosed) {
       endPollingReceived = false;
-      close();
+      close(true);
     }
   };
 
