@@ -3,7 +3,7 @@ import { hasProperty, isDefined, isPositiveNumber, secondsToMs } from './helpers
 import { BOT, initBotInfoFromJsonOrChannels } from './bot';
 import { getOidcEnableWithAuthStatus } from './oidc';
 import { decode } from './cipher';
-import dydu from './dydu';
+import dydu, { FILE_UPLOAD } from './dydu';
 import Auth, { Local, Session } from './storage';
 import qs from 'qs';
 
@@ -81,7 +81,7 @@ const getAxiosInstanceWithDyduConfig = (config: AxiosDyduConfig): AxiosInstance 
         }
       }
 
-      if (config.data && typeof config.data === 'object') {
+      if (config.data && typeof config.data === 'object' && !config.url?.startsWith(FILE_UPLOAD)) {
         config.data = qs.stringify(config.data);
       }
 
