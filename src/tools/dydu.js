@@ -31,6 +31,8 @@ const getUrl = window.location.href;
 
 const variables = {};
 
+export const FILE_UPLOAD = 'fileupload';
+
 /**
  * Implement JavaScript bindings for Dydu's REST API.
  * https://uat.mars.doyoudreamup.com/servlet/api/doc3/index.html
@@ -721,7 +723,9 @@ export default new (class Dydu {
   sendFiles = (files) => {
     const formData = new FormData();
     files.forEach((item) => formData.append(item.name, item));
-    const path = `fileupload?ctx=${Local.contextId.load()}&fin=dydu-upload-file&cb=chatbox-upload-callback&origin=chatbox_origin`;
+    const path =
+      FILE_UPLOAD +
+      `?ctx=${Local.contextId.load()}&fin=dydu-upload-file&cb=chatbox-upload-callback&origin=chatbox_origin`;
 
     return SERVLET.post(path, formData)
       .then((response) => {
