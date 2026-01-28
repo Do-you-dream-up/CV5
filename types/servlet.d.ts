@@ -52,6 +52,7 @@ declare namespace Servlet {
     isFromHistory?: boolean;
     specialAction?: import('js-base64').Base64 | string;
     hideRequest?: boolean;
+    interactionDate?: number;
   }
 
   interface ChatHistoryInteractionSidebar {
