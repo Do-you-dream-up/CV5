@@ -105,12 +105,14 @@ export default new (class Dydu {
    * Send the user feedback.
    *
    * @param {true|false|undefined} value - Value of the feedback.
+   * @param {number} responseDate - date of the interaction on which the feedback is about
    * @returns {Promise}
    */
-  feedback = async (value) => {
+  feedback = async (value, responseDate) => {
     const data = {
       contextUUID: Local.contextId.load(),
       feedBack: { false: 'negative', true: 'positive' }[value] || 'withoutAnswer',
+      interactionDate: responseDate,
       solutionUsed: SOLUTION_TYPE.assistant,
     };
     const path = `chat/feedback/${BOT.id}/`;
@@ -121,12 +123,14 @@ export default new (class Dydu {
    * Send the user feedback comment.
    *
    * @param {string} comment - Comment to send.
+   * @param {number} responseDate - date of the interaction on which the feedback is about
    * @returns {Promise}
    */
-  feedbackComment = async (comment) => {
+  feedbackComment = async (comment, responseDate) => {
     const data = {
       comment,
       contextUUID: Local.contextId.load(),
+      interactionDate: responseDate,
       solutionUsed: SOLUTION_TYPE.assistant,
     };
     const path = `chat/feedback/comment/${BOT.id}/`;
@@ -137,12 +141,14 @@ export default new (class Dydu {
    * Send the user feedback insatisfaction.
    *
    * @param {string} choiceKey - Choice key to send.
+   * @param {number} responseDate - date of the interaction on which the feedback is about
    * @returns {Promise}
    */
-  feedbackInsatisfaction = async (choiceKey) => {
+  feedbackInsatisfaction = async (choiceKey, responseDate) => {
     const data = {
       choiceKey,
       contextUUID: Local.contextId.load(),
+      interactionDate: responseDate,
       solutionUsed: SOLUTION_TYPE.assistant,
     };
     const path = `chat/feedback/insatisfaction/${BOT.id}/`;

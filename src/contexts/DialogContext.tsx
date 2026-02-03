@@ -118,6 +118,7 @@ interface SidebarContentProps {
 
 interface InteractionProps {
   askFeedback: boolean;
+  interactionDate?: number;
   carousel: boolean;
   children: any;
   sidebar: any;
@@ -383,6 +384,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         askFeedback: isOfTypeString(interactionAttributeObject?.children)
           ? false
           : interactionAttributeObject?.askFeedback,
+        responseDate: interactionAttributeObject.interactionDate,
         lastRequest: isOfTypeString(interactionAttributeObject?.children)
           ? undefined
           : interactionAttributeObject?.lastRequest,
@@ -408,6 +410,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
         typeResponse,
         urlRedirect,
         enableAutoSuggestion,
+        interactionDate,
       } = response;
 
       const askFeedback = _askFeedback || feedback === Constants.FEEDBACK_RESPONSE.noResponseGiven; // to display the feedback after refresh (with "history" api call)
@@ -502,19 +505,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
           templatename === PRODUCT_TEMPLATE ||
           templatename === CAROUSEL_ARRAY_TEMPLATE
         ) {
-          const interactionData = {
-            askFeedback,
-            carousel: steps.length > 1,
-            type: 'response',
-            sidebar: sidebar,
-            steps,
-            templatename,
-            lastRequest,
-            feedbackWording,
-          };
           const interactionPropsList = makeInteractionPropsListWithInteractionChildrenListAndData(
             interactionChildrenList,
-            interactionData,
+            interactionDate,
           );
           return makeInteractionComponentForEachInteractionPropInList(interactionPropsList);
         } else {
@@ -524,6 +517,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
             <Interaction
               autoOpenSidebar={!isResponseFromHistory && steps.length === 1}
               askFeedback={askFeedback}
+              interactionDate={interactionDate}
               carousel={steps.length > 1}
               children={interactionChildrenList}
               type="response"

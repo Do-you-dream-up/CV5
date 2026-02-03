@@ -18,8 +18,6 @@ import useStyles from './styles';
 import { useTheme } from 'react-jss';
 import { useTranslation } from 'react-i18next';
 import { ThumbDownIcon, ThumbUpIcon } from '../CustomIcons/CustomIcons';
-import {Local} from "../../tools/storage";
-import {BOT} from "../../tools/bot";
 
 /**
  * Render interfaces for the user to submit feedback.
@@ -31,7 +29,7 @@ import {BOT} from "../../tools/bot";
  * 1. Comment
  */
 
-export default function Feedback({ notAddContext, lastRequest, feedbackWording}) {
+export default function Feedback({ notAddContext, lastRequest, feedbackWording, responseDate }) {
   const { configuration } = useConfiguration();
   const { addNotificationOrResponse } = useLivechat();
   const [showChoices, setShowChoices] = useState(false);
@@ -54,7 +52,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
   const onComment = ({ comment }) => {
     const value = comment ? comment.trim() : '';
     if (value.length) {
-      dydu.feedbackComment(value).then(() => {
+      dydu.feedbackComment(value, responseDate).then(() => {
         setShowComment(false);
         if (commentThanks) {
           addNotificationOrResponse({ text: commentThanks });
@@ -71,7 +69,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
   };
 
   const onVoteNegative = () => {
-    dydu.feedback(false).then(() => {
+    dydu.feedback(false, responseDate).then(() => {
       setShowVote(false);
       if (customFeedback?.enable && customFeedback?.negativeCustom?.length > 0) {
         dydu.talk(customFeedback?.negativeCustom, { doNotRegisterInteraction: false, hide: false }).then((response) => {
@@ -88,7 +86,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
   };
 
   const onVotePositive = () => {
-    dydu.feedback(true)?.then(() => {
+    dydu.feedback(true, responseDate)?.then(() => {
       setShowVote(false);
 
       if (customFeedback?.enable && customFeedback?.positiveCustom?.length > 0) {
@@ -103,7 +101,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
 
   const onChoicesSelect = (value) => {
     setThinking(true);
-    dydu.feedbackInsatisfaction(value).then(() =>
+    dydu.feedbackInsatisfaction(value, responseDate).then(() =>
       setTimeout(() => {
         setShowChoices(false);
         if (askComment) {
@@ -132,18 +130,28 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
               onClick={onVoteNegative}
               variant="icon"
               data-testid="vote-buttons-down"
-              aria-label={t("feedback.label.negative")}
+              aria-label={t('feedback.label.negative')}
             >
-              <Icon className={icons?.thumbDown} icon={<ThumbDownIcon />} color={theme.palette.primary.text} alt={altDownVote} />
+              <Icon
+                className={icons?.thumbDown}
+                icon={<ThumbDownIcon />}
+                color={theme.palette.primary.text}
+                alt={altDownVote}
+              />
             </Button>
             <Button
               style={{ backgroundColor: `${COLOR_RGAA.success}` }}
               onClick={onVotePositive}
               variant="icon"
               data-testid="vote-buttons-up"
-              aria-label={t("feedback.label.positive")}
+              aria-label={t('feedback.label.positive')}
             >
-              <Icon className={icons?.thumbUp} icon={<ThumbUpIcon />} color={theme.palette.primary.text} alt={altUpVote} />
+              <Icon
+                className={icons?.thumbUp}
+                icon={<ThumbUpIcon />}
+                color={theme.palette.primary.text}
+                alt={altUpVote}
+              />
             </Button>
           </div>
         )}
@@ -155,7 +163,7 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
             data-testid="feedback-choices"
             scrollToBottom={true}
           >
-            <FeedbackChoices onSelect={onChoicesSelect} feedbackWording={feedbackWording}/>
+            <FeedbackChoices onSelect={onChoicesSelect} feedbackWording={feedbackWording} />
           </Bubble>
         )}
         {showComment && (
@@ -193,5 +201,5 @@ export default function Feedback({ notAddContext, lastRequest, feedbackWording})
 Feedback.defaultProps = {
   notAddContext: false,
   lastRequest: '',
-  feedbackWording:'',
+  feedbackWording: '',
 };

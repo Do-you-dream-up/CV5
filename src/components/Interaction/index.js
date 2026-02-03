@@ -127,6 +127,7 @@ const templateNameToBubbleCreateAction = {
 export default function Interaction({
   autoOpenSidebar,
   askFeedback,
+  interactionDate,
   carousel,
   children,
   className,
@@ -268,7 +269,12 @@ export default function Interaction({
   const _Feedback = useMemo(() => {
     const isPushRule = typeResponse === 'DMClientPush';
     return !hasLoader && askFeedback ? (
-      <Feedback notAddContext={isPushRule} lastRequest={lastRequest} feedbackWording={feedbackWording} />
+      <Feedback
+        notAddContext={isPushRule}
+        lastRequest={lastRequest}
+        feedbackWording={feedbackWording}
+        responseDate={interactionDate}
+      />
     ) : null;
   }, [askFeedback, hasLoader]);
 
@@ -366,6 +372,7 @@ Interaction.defaultProps = {
 Interaction.propTypes = {
   autoOpenSidebar: PropTypes.bool,
   askFeedback: PropTypes.bool,
+  interactionDate: PropTypes.number,
   carousel: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node]),
   className: PropTypes.string,
